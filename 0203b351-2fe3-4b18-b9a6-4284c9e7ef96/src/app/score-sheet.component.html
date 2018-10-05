@@ -1,0 +1,94 @@
+<div *ngIf="loading" class="d-flex justify-content-center">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <p *ngIf="!classList.length" class="text-center mt-3">您無班級資料可查詢</p>
+    <ng-container *ngIf="classList.length">
+        <mat-form-field *ngIf="classList.length > 1" class="mr-3">
+            <mat-select placeholder="班級"
+                [(value)]="currClass"
+                (selectionChange)="changeClass($event)">
+                <mat-option *ngFor="let item of classList" [value]="item">
+                {{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="mr-3">
+            <input matInput [matDatepicker]="picker" placeholder="選擇日期"
+                [formControl]="date"
+                [max]="maxDate"
+                (dateChange)="addEvent($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <span *ngIf="classList.length === 1" class="mr-3">{{currClass.ClassName}}</span>
+        的評分
+
+        <div class="card mb-3" *ngFor="let item of dayScoreSheet">
+            <div class="row text-center">
+                <div class="col-6 col-sm-1 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">加扣分</h5>
+                    <span *ngIf="(+item.score) > 0" class="text-success">+{{item.score}}</span>
+                    <span *ngIf="(+item.score) < 0" class="text-danger">{{item.score}}</span>
+                    <span *ngIf="item.score == '0'">0</span>
+                </div>
+                <div class="col-6 col-sm-1 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">人次</h5>
+                    {{(item.coordinate.split(',').length + (item.seat_no.split(',').length))}}
+                </div>
+                <div class="col-6 col-sm-1 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">時段</h5>
+                    {{item.period_name}}
+                </div>
+                <div class="col-6 col-sm-3 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">評分項目</h5>
+                    {{item.check_item_name}}
+                </div>
+                <div class="col-6 col-sm-3 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">座標</h5>
+                    {{item.coordinate || '無'}}
+                </div>
+                <div class="col-6 col-sm-3 px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">座號</h5>
+                    {{item.seat_no || '無'}}
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-6 col-sm-6 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">補充說明</h5>
+                    {{item.remark || '無'}}
+                </div>
+                <div class="col-6 col-sm-1 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">照片1</h5>
+                    <img *ngIf="item.picture1" [src]="item.picture1"
+                        class="img-fluid" style="cursor: pointer; max-height: 2rem"
+                        (click)="openImage(item.picture1)"
+                    >
+                    <span *ngIf="!item.picture1">無</span>
+                </div>
+                <div class="col-6 col-sm-2 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">說明1</h5>
+                    {{item.pic1_comment || '無'}}
+                </div>
+                <div class="col-6 col-sm-1 border-right px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">照片2</h5>
+                    <img *ngIf="item.picture2" [src]="item.picture2"
+                        class="img-fluid" style="cursor: pointer; max-height: 2rem"
+                        (click)="openImage(item.picture2)">
+                    <span *ngIf="!item.picture2">無</span>
+                </div>
+                <div class="col-6 col-sm-2 px-0 pb-2">
+                    <h5 class="border-bottom py-2 mb-2 bg-light">說明2</h5>
+                    {{item.pic2_comment || '無'}}
+                </div>
+
+
+            </div>
+        </div>
+        <p *ngIf="!dayScoreSheet.length" class="text-center mt-3">目前無資料</p>
+    </ng-container>
+</ng-container>
+
+<ng-template #previewImage>
+    <img [src]="previewImgUrl" style="max-height: 80vh" />
+</ng-template>

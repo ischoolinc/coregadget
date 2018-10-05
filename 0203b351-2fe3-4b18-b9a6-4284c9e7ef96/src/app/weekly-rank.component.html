@@ -1,0 +1,35 @@
+<div *ngIf="loading" class="d-flex justify-content-center">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <div class="chooseWeekly">
+        <p>班級週排名，選擇週次：{{currWeekNumber.week_number}}</p>
+        <div class="d-flex flex-row flex-wrap">
+            <button class="btn-sm mr-3 mb-3" type="button"
+                *ngFor="let item of weekNumbers"
+                (click)="toggleWeekNumber(item)"
+                [ngClass]="{
+                    'btn-success': item.week_number === currWeekNumber.week_number,
+                    'btn-light': item.week_number !== currWeekNumber.week_number
+                }">{{item.week_number}}</button>
+        </div>
+    </div>
+
+    <div *ngFor="let grade of weekRank">
+        <h4 class="pt-2">{{grade.grade_year}} 年級</h4>
+        <div class="table-list">
+            <ul>
+                <li class="table-w-4">週排名</li>
+                <li class="table-w-4">班級</li>
+                <li class="table-w-4">週總分</li>
+            </ul>
+            <ul class="list-group-item"
+                *ngFor="let item of grade.weekly_rank">
+                <li class="table-w-4" data-label="週排名">{{item.rank}}</li>
+                <li class="table-w-4" data-label="班級">{{item.class_name}}</li>
+                <li class="table-w-4" data-label="週總分">{{item.week_total}}</li>
+            </ul>
+        </div>
+    </div>
+    <p *ngIf="!weekRank.length" class="text-center mt-3">目前無資料</p>
+</ng-container>
