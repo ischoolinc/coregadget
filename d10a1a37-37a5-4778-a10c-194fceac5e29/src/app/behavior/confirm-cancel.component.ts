@@ -15,6 +15,7 @@ export class ConfirmCancelComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
+   this.reason = this.data.reason;
   }
 
   onNoClick(): void {

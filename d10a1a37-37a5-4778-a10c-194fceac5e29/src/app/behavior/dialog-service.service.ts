@@ -20,7 +20,7 @@ export class DialogService {
     return new Promise<boolean>((r, j) => {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '250px',
-        data: { title: title, body: body }
+        data: { title: title, body: body}
       });
 
       dialogRef.afterClosed().subscribe(result => {
@@ -36,7 +36,7 @@ export class DialogService {
    * @param title 標題
    * @param body 內容
    */
-  public async confirmCancel(title: string, body: string, reason: string = '', width: string = '300px'):Promise<CancelResult> {
+  public async confirmCancel(title: string, body: string, reason: string, width: string = '300px'):Promise<CancelResult> {
 
     return new Promise<CancelResult>((r, j) => {
       const dialogRef = this.dialog.open(ConfirmCancelComponent, {
