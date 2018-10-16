@@ -68,7 +68,7 @@
                 [ngClass]="{'btn-primary': currAbs==abs, 'btn-default': currAbs!=abs}">{{abs.name}}</button>
       </div>
     </div>
-    <table class="table table-bordered table-hover"
+    <table class="table table-bordered table-hover table-striped"
            style="margin-top: 15px;">
       <thead>
         <tr>
@@ -110,33 +110,33 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let stu of students">
-          <td (click)="setStudentAllPeriodAbs(stu)"
-              class="setBtn">
-            {{stu.seatNo}}. {{stu.name}}
-          </td>
-          <td *ngFor="let period of periods"
-              (click)="setStudentPeroidAbs(stu, period)"
-              title="{{period.name}}"
-              class="setBtn"
-              style="position:relative">
-            <div *ngIf="stu.leaveList.get(period.name)?.absName != stu.orileaveList.get(period.name)?.absName"
-                 style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;"></div>
-            <span>{{toShort(stu.leaveList.get(period.name)?.absName)}}</span>
-          </td>
-        </tr>
+        <ng-container *ngFor="let stu of students;let i = index">
+          <tr *ngIf="i > 0 && i % 5 ==0">
+            <th class="thBorder">
+            </th>
+            <th *ngFor="let period of periods"
+                (click)="setAllStudentsAbs(period)"
+                class="setBtn thBorder text-center">
+              {{period.name}}
+            </th>
+          </tr>
+          <tr>
+            <td (click)="setStudentAllPeriodAbs(stu)"
+                class="setBtn">
+              {{stu.seatNo}}. {{stu.name}}
+            </td>
+            <td *ngFor="let period of periods"
+                (click)="setStudentPeroidAbs(stu, period)"
+                title="{{period.name}}"
+                class="setBtn"
+                style="position:relative">
+              <div *ngIf="stu.leaveList.get(period.name)?.absName != stu.orileaveList.get(period.name)?.absName"
+                   style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;"></div>
+              <span>{{toShort(stu.leaveList.get(period.name)?.absName)}}</span>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
-      <thead>
-        <tr>
-          <th class="thBorder">
-          </th>
-          <th *ngFor="let period of periods"
-              (click)="setAllStudentsAbs(period)"
-              class="setBtn thBorder text-center">
-            {{period.name}}
-          </th>
-        </tr>
-      </thead>
     </table>
     <p *ngIf="students.length==0">目前無資料</p>
   </div>
