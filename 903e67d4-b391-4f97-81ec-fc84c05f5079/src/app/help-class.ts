@@ -17,7 +17,7 @@ export class Student {
     this.orileaveList = orileaveList || new Map<string, Leave>();
   }
 
-  setAbsence(periodName: string, absName: string) {    
+  setAbsence(periodName: string, absName: string) {
     if (periodName) {
       if (absName) {
         this.leaveList.set(periodName, new Leave(periodName, absName));
@@ -52,4 +52,10 @@ export class Leave {
     this.periodName = periodName;
     this.absName = absName;
   }
+}
+
+/**班導師點名設定 */
+export interface Config {
+  absenceNames: string[];
+  crossDate: boolean;
 }

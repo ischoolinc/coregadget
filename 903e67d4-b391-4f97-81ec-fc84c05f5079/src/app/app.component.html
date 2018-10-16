@@ -1,7 +1,7 @@
 <div>
   <h1>導師-線上點名</h1>
   <div>
-    <div style="margin-top:15px;">
+    <div *ngIf="canCrossDate" style="margin-top:15px;">
       <span>日期：</span>
       <div style="position: relative;display: inline-block;vertical-align: middle;">
         <div class="input-group input-group-sm"
@@ -37,6 +37,9 @@
       </div>
       <span *ngIf="inputDate!=getDateString(currentDate)"
             class="text-danger">日期格式錯誤</span>
+    </div>
+    <div *ngIf="!canCrossDate" style="margin-top:15px;">
+      <span>日期：{{getDateString(todayDate)}}</span>
     </div>
     <div style="margin-top:15px;">
       <span>請選擇班級：</span>

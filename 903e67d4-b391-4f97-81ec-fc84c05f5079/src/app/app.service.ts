@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Class, Student, Absence, Period, Leave } from "./help-class";
+import { Class, Student, Absence, Period, Leave, Config } from "./help-class";
 import * as Rx from "rxjs/Rx";
 
 type SendOptions = { contact: string, service: string, body: any, map: (rsp) => any };
@@ -104,7 +104,7 @@ export class AppService {
 
   /**取得今天某班級點名狀態 */
   getRollcallState(selClass: Class): Rx.Observable<boolean> {
-    
+
     return this.send({
       contact: "p_kcbs.rollCallBook.teacher",
       service: "_.checkTodayRollCall",
@@ -160,4 +160,35 @@ export class AppService {
       }
     }) as Rx.Observable<boolean>;
   }
+
+  /**取得班導師點名設定 */
+  getConfig(): Rx.Observable<Config> {
+
+    return this.send({
+      contact: "cloud.public",
+      service: "beta.GetSystemConfig",
+      body: { Name: '班導師點名設定' },
+      map: (rsp) => {
+        const absenceNames = new Array<string>();
+        let crossDate = false;
+
+        if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.Absence) {
+          rsp.List.Content.AbsenceList.Absence = [].concat(rsp.List.Content.AbsenceList.Absence || []);
+          rsp.List.Content.AbsenceList.Absence.forEach((item) => {
+            if (item['@text'] === 'True') {
+              absenceNames.push(item.Name);
+            }
+          });
+        }
+        if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.CrossDate) {
+          crossDate = (rsp.List.Content.AbsenceList.CrossDate === 'True');
+        }
+        return {
+          absenceNames: absenceNames,
+          crossDate: crossDate,
+        };
+      }
+    }) as Rx.Observable<Config>;
+  }
+
 }

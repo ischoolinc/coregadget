@@ -22,6 +22,8 @@ export class AppComponent implements OnInit {
   classSubject$: rx.Subject<Class> = new rx.Subject();
   /**今天該班點名狀態 */
   completed: boolean;
+  /**允許跨日設定 */
+  canCrossDate = false;
 
   currentDate: Date = new Date(new Date().toDateString());
   todayDate: Date = new Date(new Date().toDateString());
@@ -39,8 +41,23 @@ export class AppComponent implements OnInit {
 
     // 取得假別、節次、老師帶班
     rx.Observable.combineLatest(
-      this.appService.getAbsences(), this.appService.getPeriods(), this.appService.getMyClass(), (x, y, z) => {
-        this.absences = x;
+      this.appService.getConfig(),
+      this.appService.getAbsences(),
+      this.appService.getPeriods(),
+      this.appService.getMyClass(), (config, x, y, z) => {
+        this.canCrossDate = config.crossDate;
+        // 比對設定檔，為 true 的假別才顯示
+        if (config.absenceNames.length) {
+          const absencesList: Absence[] = [];
+          for (const item of x) {
+            if (config.absenceNames.indexOf(item.name) !== -1) {
+              absencesList.push(item);
+            }
+          }
+          this.absences = absencesList;
+        } else {
+          this.absences = x;
+        }
         this.periods = y;
         y.forEach((p) => {
           this.periodMap.set(p.name, p);
