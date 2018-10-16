@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Class, Student, Absence, Period, Leave, Config } from "./help-class";
+import { Class, Student, Absence, Period, Leave, Config } from './help-class';
 import * as Rx from "rxjs/Rx";
 
 type SendOptions = { contact: string, service: string, body: any, map: (rsp) => any };
@@ -116,24 +116,28 @@ export class AppService {
   }
 
   /**取得班級學生及今天請假狀態 */
-  getClassStudentsLeave(selClass: Class, occurDate:string): Rx.Observable<Student[]> {
+  getClassStudentsLeave(selClass: Class, occurDate: string, absences: Absence[]): Rx.Observable<Student[]> {
+    const aryAbsence: string[] = [];
+    for (const item of absences) { aryAbsence.push(item.name); }
 
     return this.send({
       contact: "p_kcbs.rollCallBook.teacher",
       service: "_.getStudentAttendance",
-      body: { classId: selClass.classId , OccurDate:occurDate},
+      body: { classId: selClass.classId , OccurDate: occurDate},
       map: (rsp) => {
-        let students = new Array<Student>();
+        const students = new Array<Student>();
         if (rsp.Student) {
-          let stus = [].concat(rsp.Student || []);
+          const stus = [].concat(rsp.Student || []);
           stus.forEach((item) => {
-            let leaves: Map<string, Leave> = new Map<string, Leave>();
-            let orileaves: Map<string, Leave> = new Map<string, Leave>();
+            const leaves: Map<string, Leave> = new Map<string, Leave>();
+            const orileaves: Map<string, Leave> = new Map<string, Leave>();
             if (item.Detail && item.Detail.Attendance && item.Detail.Attendance.Period) {
-              let periods: any = [].concat(item.Detail.Attendance.Period || []);
+              const periods: any = [].concat(item.Detail.Attendance.Period || []);
               periods.forEach((p) => {
-                leaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType));
-                orileaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType));
+
+                const isLock = (aryAbsence.indexOf(p.AbsenceType) !== -1) ? false : true;
+                leaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType, isLock));
+                orileaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType, isLock));
               });
             }
             students.push(new Student(item.StudentId, item.StudentName, item.SeatNo, leaves, orileaves));
@@ -172,6 +176,7 @@ export class AppService {
         const absenceNames = new Array<string>();
         let crossDate = false;
 
+        // 可設定的假別
         if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.Absence) {
           rsp.List.Content.AbsenceList.Absence = [].concat(rsp.List.Content.AbsenceList.Absence || []);
           rsp.List.Content.AbsenceList.Absence.forEach((item) => {

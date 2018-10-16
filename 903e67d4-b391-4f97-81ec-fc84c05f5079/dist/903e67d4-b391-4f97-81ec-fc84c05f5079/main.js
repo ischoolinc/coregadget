@@ -41,7 +41,7 @@ module.exports = ".setBtn {\n    cursor: pointer;\n}\n.thBorder {\n    backgroun
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n  <h1>導師-線上點名</h1>\n  <div>\n    <div *ngIf=\"canCrossDate\" style=\"margin-top:15px;\">\n      <span>日期：</span>\n      <div style=\"position: relative;display: inline-block;vertical-align: middle;\">\n        <div class=\"input-group input-group-sm\"\n             style=\"width:380px;\">\n          <input type=\"text\"\n                 class=\"form-control\"\n                 [ngModel]=\"inputDate\"\n                 (ngModelChange)=\"checkDate($event)\" />\n          <span class=\"input-group-btn\">\n            <button type=\"button\"\n                    class=\"btn btn-default\"\n                    (click)=\"setCurrentDate(todayDate)\"\n                    [ngClass]=\"{'btn-primary': getDateString(currentDate)==getDateString(todayDate)}\">今天\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, -1)\"\n                    class=\"btn btn-default\">前一天\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, 1)\"\n                    class=\"btn btn-default\">後一天\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, -7)\"\n                    class=\"btn btn-default\">上一週\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, 7)\"\n                    class=\"btn btn-default\">下一週\n            </button>\n          </span>\n        </div>\n      </div>\n      <span *ngIf=\"inputDate!=getDateString(currentDate)\"\n            class=\"text-danger\">日期格式錯誤</span>\n    </div>\n    <div *ngIf=\"!canCrossDate\" style=\"margin-top:15px;\">\n      <span>日期：{{getDateString(todayDate)}}</span>\n    </div>\n    <div style=\"margin-top:15px;\">\n      <span>請選擇班級：</span>\n      <div class=\"btn-group\"\n           role=\"group\"\n           aria-label=\"假別\">\n        <button *ngFor=\"let item of classes\"\n                (click)=\"toggleClassDate(item)\"\n                type=\"button\"\n                class=\"btn btn-sm\"\n                [ngClass]=\"{'btn-primary': selClass==item, 'btn-default': selClass!=item}\">{{item.className}}</button>\n      </div>\n    </div>\n  </div>\n  <div *ngIf=\"selClass\">\n    <div style=\"margin-top:15px;\">\n      <span>請選擇假別：</span>\n      <div class=\"btn-group\"\n           role=\"group\"\n           aria-label=\"假別\">\n        <button (click)=\"currAbs=clearAbs\"\n                type=\"button\"\n                class=\"btn btn-sm\"\n                [ngClass]=\"{'btn-primary': currAbs==clearAbs, 'btn-default': currAbs!=clearAbs}\">清除</button>\n        <button *ngFor=\"let abs of absences\"\n                (click)=\"currAbs=abs\"\n                type=\"button\"\n                class=\"btn btn-sm\"\n                [ngClass]=\"{'btn-primary': currAbs==abs, 'btn-default': currAbs!=abs}\">{{abs.name}}</button>\n      </div>\n    </div>\n    <table class=\"table table-bordered table-hover table-striped\"\n           style=\"margin-top: 15px;\">\n      <thead>\n        <tr>\n          <th class=\"thBorder\"\n              style=\"min-width:110px;\">\n            <div *ngIf=\"getDateString(currentDate)==getDateString(todayDate)\">\n              <div class=\"btn-group\">\n                <button (click)=\"saveData()\"\n                        type=\"button\"\n                        class=\"btn btn-sm\"\n                        [ngClass]=\"{'btn-success': completed=='t', 'btn-warning': completed!='t'}\">\n                  {{(completed=='t') ? '儲存變更' : '完成點名'}}\n                </button>\n              </div>\n              <span *ngIf=\"completed=='t'\"\n                    class=\"text-muted\">\n                已點名\n              </span>\n            </div>\n            <div *ngIf=\"getDateString(currentDate)!=getDateString(todayDate)\">\n              <div class=\"btn-group\">\n                <button (click)=\"saveData()\"\n                        type=\"button\"\n                        class=\"btn btn-sm btn-danger\">\n                  儲存變更\n                </button>\n              </div>\n              <span *ngIf=\"completed=='t'\"\n                    class=\"text-danger\">\n                {{getDateString(currentDate)}}\n              </span>\n            </div>\n          </th>\n          <th *ngFor=\"let period of periods\"\n              (click)=\"setAllStudentsAbs(period)\"\n              class=\"setBtn thBorder text-center\">\n            {{period.name}}\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        <ng-container *ngFor=\"let stu of students;let i = index\">\n          <tr *ngIf=\"i > 0 && i % 5 ==0\">\n            <th class=\"thBorder\">\n            </th>\n            <th *ngFor=\"let period of periods\"\n                (click)=\"setAllStudentsAbs(period)\"\n                class=\"setBtn thBorder text-center\">\n              {{period.name}}\n            </th>\n          </tr>\n          <tr>\n            <td (click)=\"setStudentAllPeriodAbs(stu)\"\n                class=\"setBtn\">\n              {{stu.seatNo}}. {{stu.name}}\n            </td>\n            <td *ngFor=\"let period of periods\"\n                (click)=\"setStudentPeroidAbs(stu, period)\"\n                title=\"{{period.name}}\"\n                class=\"setBtn\"\n                style=\"position:relative\">\n              <div *ngIf=\"stu.leaveList.get(period.name)?.absName != stu.orileaveList.get(period.name)?.absName\"\n                   style=\"display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;\"></div>\n              <span>{{toShort(stu.leaveList.get(period.name)?.absName)}}</span>\n            </td>\n          </tr>\n        </ng-container>\n      </tbody>\n    </table>\n    <p *ngIf=\"students.length==0\">目前無資料</p>\n  </div>\n</div>"
+module.exports = "<div>\n  <h1>導師-線上點名</h1>\n  <div>\n    <div *ngIf=\"canCrossDate\" style=\"margin-top:15px;\">\n      <span>日期：</span>\n      <div style=\"position: relative;display: inline-block;vertical-align: middle;\">\n        <div class=\"input-group input-group-sm\"\n             style=\"width:380px;\">\n          <input type=\"text\"\n                 class=\"form-control\"\n                 [ngModel]=\"inputDate\"\n                 (ngModelChange)=\"checkDate($event)\" />\n          <span class=\"input-group-btn\">\n            <button type=\"button\"\n                    class=\"btn btn-default\"\n                    (click)=\"setCurrentDate(todayDate)\"\n                    [ngClass]=\"{'btn-primary': getDateString(currentDate)==getDateString(todayDate)}\">今天\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, -1)\"\n                    class=\"btn btn-default\">前一天\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, 1)\"\n                    class=\"btn btn-default\">後一天\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, -7)\"\n                    class=\"btn btn-default\">上一週\n            </button>\n            <button type=\"button\"\n                    (click)=\"setCurrentDate(currentDate, 7)\"\n                    class=\"btn btn-default\">下一週\n            </button>\n          </span>\n        </div>\n      </div>\n      <span *ngIf=\"inputDate!=getDateString(currentDate)\"\n            class=\"text-danger\">日期格式錯誤</span>\n    </div>\n    <div *ngIf=\"!canCrossDate\" style=\"margin-top:15px;\">\n      <span>日期：{{getDateString(todayDate)}}</span>\n    </div>\n    <div style=\"margin-top:15px;\">\n      <span>請選擇班級：</span>\n      <div class=\"btn-group\"\n           role=\"group\"\n           aria-label=\"假別\">\n        <button *ngFor=\"let item of classes\"\n                (click)=\"toggleClassDate(item)\"\n                type=\"button\"\n                class=\"btn btn-sm\"\n                [ngClass]=\"{'btn-primary': selClass==item, 'btn-default': selClass!=item}\">{{item.className}}</button>\n      </div>\n    </div>\n  </div>\n  <div *ngIf=\"selClass\">\n    <div style=\"margin-top:15px;\">\n      <span>請選擇假別：</span>\n      <div class=\"btn-group\"\n           role=\"group\"\n           aria-label=\"假別\">\n        <button (click)=\"currAbs=clearAbs\"\n                type=\"button\"\n                class=\"btn btn-sm\"\n                [ngClass]=\"{'btn-primary': currAbs==clearAbs, 'btn-default': currAbs!=clearAbs}\">清除</button>\n        <button *ngFor=\"let abs of absences\"\n                (click)=\"currAbs=abs\"\n                type=\"button\"\n                class=\"btn btn-sm\"\n                [ngClass]=\"{'btn-primary': currAbs==abs, 'btn-default': currAbs!=abs}\">{{abs.name}}</button>\n      </div>\n    </div>\n    <table class=\"table table-bordered table-hover table-striped\"\n           style=\"margin-top: 15px;\">\n      <thead>\n        <tr>\n          <th class=\"thBorder\"\n              style=\"min-width:110px;\">\n            <div *ngIf=\"getDateString(currentDate)==getDateString(todayDate)\">\n              <div class=\"btn-group\">\n                <button (click)=\"saveData()\"\n                        type=\"button\"\n                        class=\"btn btn-sm\"\n                        [ngClass]=\"{'btn-success': completed=='t', 'btn-warning': completed!='t'}\">\n                  {{(completed=='t') ? '儲存變更' : '完成點名'}}\n                </button>\n              </div>\n              <span *ngIf=\"completed=='t'\"\n                    class=\"text-muted\">\n                已點名\n              </span>\n            </div>\n            <div *ngIf=\"getDateString(currentDate)!=getDateString(todayDate)\">\n              <div class=\"btn-group\">\n                <button (click)=\"saveData()\"\n                        type=\"button\"\n                        class=\"btn btn-sm btn-danger\">\n                  儲存變更\n                </button>\n              </div>\n              <span *ngIf=\"completed=='t'\"\n                    class=\"text-danger\">\n                {{getDateString(currentDate)}}\n              </span>\n            </div>\n          </th>\n          <th *ngFor=\"let period of periods\"\n              (click)=\"setAllStudentsAbs(period)\"\n              class=\"setBtn thBorder text-center\">\n            {{period.name}}\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        <ng-container *ngFor=\"let stu of students;let i = index\">\n          <tr *ngIf=\"i > 0 && i % 5 ==0\">\n            <th class=\"thBorder\">\n            </th>\n            <th *ngFor=\"let period of periods\"\n                (click)=\"setAllStudentsAbs(period)\"\n                class=\"setBtn thBorder text-center\">\n              {{period.name}}\n            </th>\n          </tr>\n          <tr>\n            <td (click)=\"setStudentAllPeriodAbs(stu)\"\n                class=\"setBtn\">\n              {{stu.seatNo}}. {{stu.name}}\n            </td>\n            <td *ngFor=\"let period of periods\"\n                (click)=\"setStudentPeroidAbs(stu, period)\"\n                title=\"{{period.name}}\"\n                [class.setBtn]=\"!(stu.leaveList.get(period.name)?.isLock)\"\n                style=\"position:relative\">\n              <div *ngIf=\"stu.leaveList.get(period.name)?.absName != stu.orileaveList.get(period.name)?.absName\"\n                   style=\"display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;\"></div>\n              <span [class.text-muted]=\"(stu.leaveList.get(period.name)?.isLock)\">\n                {{toShort(stu.leaveList.get(period.name)?.absName)}}\n              </span>\n            </td>\n          </tr>\n        </ng-container>\n      </tbody>\n    </table>\n    <p *ngIf=\"students.length==0\">目前無資料</p>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -77,8 +77,10 @@ var AppComponent = /** @class */ (function () {
         this.appService = appService;
         this.change = change;
         this.classes = new Array();
-        /**假別 */
+        /**可設定的假別 */
         this.absences = new Array();
+        /**全部的假別 */
+        this.allAbsences = new Array();
         this.clearAbs = new _help_class__WEBPACK_IMPORTED_MODULE_1__["Absence"](null, null);
         /**節次 */
         this.periods = new Array();
@@ -113,6 +115,7 @@ var AppComponent = /** @class */ (function () {
             else {
                 _this.absences = x;
             }
+            _this.allAbsences = x;
             _this.periods = y;
             y.forEach(function (p) {
                 _this.periodMap.set(p.name, p);
@@ -126,7 +129,7 @@ var AppComponent = /** @class */ (function () {
                 _this.selClass = _this.classes[0];
                 // 訂閱班級異動
                 _this.classSubject$.subscribe(function (c) {
-                    rxjs_Rx__WEBPACK_IMPORTED_MODULE_3__["Observable"].combineLatest(_this.appService.getClassStudentsLeave(c, _this.getDateString(_this.currentDate)), _this.appService.getRollcallState(c), function (studs, complete) {
+                    rxjs_Rx__WEBPACK_IMPORTED_MODULE_3__["Observable"].combineLatest(_this.appService.getClassStudentsLeave(c, _this.getDateString(_this.currentDate), _this.absences), _this.appService.getRollcallState(c), function (studs, complete) {
                         _this.students = studs;
                         _this.completed = complete;
                     })
@@ -170,7 +173,7 @@ var AppComponent = /** @class */ (function () {
     };
     /**假別簡稱 */
     AppComponent.prototype.toShort = function (name) {
-        for (var _i = 0, _a = this.absences; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.allAbsences; _i < _a.length; _i++) {
             var n = _a[_i];
             if (n.name == name) {
                 return n.abbreviation;
@@ -430,7 +433,12 @@ var AppService = /** @class */ (function () {
         });
     };
     /**取得班級學生及今天請假狀態 */
-    AppService.prototype.getClassStudentsLeave = function (selClass, occurDate) {
+    AppService.prototype.getClassStudentsLeave = function (selClass, occurDate, absences) {
+        var aryAbsence = [];
+        for (var _i = 0, absences_1 = absences; _i < absences_1.length; _i++) {
+            var item = absences_1[_i];
+            aryAbsence.push(item.name);
+        }
         return this.send({
             contact: "p_kcbs.rollCallBook.teacher",
             service: "_.getStudentAttendance",
@@ -445,8 +453,9 @@ var AppService = /** @class */ (function () {
                         if (item.Detail && item.Detail.Attendance && item.Detail.Attendance.Period) {
                             var periods = [].concat(item.Detail.Attendance.Period || []);
                             periods.forEach(function (p) {
-                                leaves.set(p['@text'], new _help_class__WEBPACK_IMPORTED_MODULE_1__["Leave"](p['@text'], p.AbsenceType));
-                                orileaves.set(p['@text'], new _help_class__WEBPACK_IMPORTED_MODULE_1__["Leave"](p['@text'], p.AbsenceType));
+                                var isLock = (aryAbsence.indexOf(p.AbsenceType) !== -1) ? false : true;
+                                leaves.set(p['@text'], new _help_class__WEBPACK_IMPORTED_MODULE_1__["Leave"](p['@text'], p.AbsenceType, isLock));
+                                orileaves.set(p['@text'], new _help_class__WEBPACK_IMPORTED_MODULE_1__["Leave"](p['@text'], p.AbsenceType, isLock));
                             });
                         }
                         students.push(new _help_class__WEBPACK_IMPORTED_MODULE_1__["Student"](item.StudentId, item.StudentName, item.SeatNo, leaves, orileaves));
@@ -480,6 +489,7 @@ var AppService = /** @class */ (function () {
             map: function (rsp) {
                 var absenceNames = new Array();
                 var crossDate = false;
+                // 可設定的假別
                 if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.Absence) {
                     rsp.List.Content.AbsenceList.Absence = [].concat(rsp.List.Content.AbsenceList.Absence || []);
                     rsp.List.Content.AbsenceList.Absence.forEach(function (item) {
@@ -552,8 +562,13 @@ var Student = /** @class */ (function () {
     }
     Student.prototype.setAbsence = function (periodName, absName) {
         if (periodName) {
+            if (this.leaveList.has(periodName)) {
+                if (this.leaveList.get(periodName).isLock) {
+                    return;
+                }
+            }
             if (absName) {
-                this.leaveList.set(periodName, new Leave(periodName, absName));
+                this.leaveList.set(periodName, new Leave(periodName, absName, false));
             }
             else {
                 this.leaveList.delete(periodName);
@@ -589,11 +604,13 @@ var Period = /** @class */ (function () {
 
 /**學生請假的類別 */
 var Leave = /** @class */ (function () {
-    function Leave(periodName, absName) {
+    function Leave(periodName, absName, isLock) {
         this.periodName = periodName;
         this.absName = absName;
+        this.isLock = isLock;
         this.periodName = periodName;
         this.absName = absName;
+        this.isLock = isLock;
     }
     return Leave;
 }());

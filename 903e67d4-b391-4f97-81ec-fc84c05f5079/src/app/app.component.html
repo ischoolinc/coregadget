@@ -131,11 +131,13 @@
             <td *ngFor="let period of periods"
                 (click)="setStudentPeroidAbs(stu, period)"
                 title="{{period.name}}"
-                class="setBtn"
+                [class.setBtn]="!(stu.leaveList.get(period.name)?.isLock)"
                 style="position:relative">
               <div *ngIf="stu.leaveList.get(period.name)?.absName != stu.orileaveList.get(period.name)?.absName"
                    style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;"></div>
-              <span>{{toShort(stu.leaveList.get(period.name)?.absName)}}</span>
+              <span [class.text-muted]="(stu.leaveList.get(period.name)?.isLock)">
+                {{toShort(stu.leaveList.get(period.name)?.absName)}}
+              </span>
             </td>
           </tr>
         </ng-container>

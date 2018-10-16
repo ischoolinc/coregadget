@@ -12,8 +12,10 @@ export class AppComponent implements OnInit {
   selClass: Class;
   currAbs: Absence;
   classes: Class[] = new Array<Class>();
-  /**假別 */
+  /**可設定的假別 */
   absences: Absence[] = new Array<Absence>();
+  /**全部的假別 */
+  allAbsences: Absence[] = new Array<Absence>();
   clearAbs: Absence = new Absence(null, null);
   /**節次 */
   periods: Period[] = new Array<Period>();
@@ -58,6 +60,7 @@ export class AppComponent implements OnInit {
         } else {
           this.absences = x;
         }
+        this.allAbsences = x;
         this.periods = y;
         y.forEach((p) => {
           this.periodMap.set(p.name, p);
@@ -72,7 +75,7 @@ export class AppComponent implements OnInit {
           // 訂閱班級異動
           this.classSubject$.subscribe((c) => {
             rx.Observable.combineLatest(
-              this.appService.getClassStudentsLeave(c, this.getDateString(this.currentDate)), this.appService.getRollcallState(c), (studs, complete) => {
+              this.appService.getClassStudentsLeave(c, this.getDateString(this.currentDate), this.absences), this.appService.getRollcallState(c), (studs, complete) => {
                 this.students = studs;
                 this.completed = complete;
               })
@@ -121,7 +124,7 @@ export class AppComponent implements OnInit {
 
   /**假別簡稱 */
   toShort(name: string): string {
-    for (let n of this.absences) {
+    for (let n of this.allAbsences) {
       if (n.name == name) {
         return n.abbreviation;
       }
