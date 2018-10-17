@@ -62,6 +62,7 @@ Core Gadget
 * 11c45293-adcf-4c66-9c1f-85ca3e107a2d 教師APP(老師)
 * 5e040722-375a-4bd6-b2b5-76e213404222 家長APP(家長)
 * 608fb524-93ed-4b4a-8115-a46ec8bf34bf PaGamO(老師、學生、家長)
+* c1ebfca6-f0fa-4b27-90eb-a9eaf29d7ed9 課堂點名
 
 客製化
 
@@ -84,6 +85,7 @@ Core Gadget
 * 6ec306b3-906b-4f32-88ab-589866f85a73 新民高中調整學生選課(班導師)
 * 903e67d4-b391-4f97-81ec-fc84c05f5079 康橋國小線上點名(班導師)
 * 05bd1ec2-c673-49cc-b56c-f13c384439ba 台中惠文高中學雜費減免(老師)
+* d10a1a37-37a5-4778-a10c-194fceac5e29 康橋外師(attendance、behavior、weekly report)
 
 台大EMBA
 
