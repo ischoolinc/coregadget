@@ -17,12 +17,15 @@ export class Student {
     this.orileaveList = orileaveList || new Map<string, Leave>();
   }
 
-  setAbsence(periodName: string, absName: string) {    
+  setAbsence(periodName: string, absName: string) {
     if (periodName) {
-      if (absName) {
-        this.leaveList.set(periodName, new Leave(periodName, absName));
+      if (this.leaveList.has(periodName)) {
+        if (this.leaveList.get(periodName).isLock) { return; }
       }
-      else {
+
+      if (absName) {
+        this.leaveList.set(periodName, new Leave(periodName, absName, false));
+      } else {
         this.leaveList.delete(periodName);
       }
     }
@@ -48,8 +51,15 @@ export class Period {
 
 /**學生請假的類別 */
 export class Leave {
-  constructor(public periodName: string, public absName: string) {
+  constructor(public periodName: string, public absName: string, public isLock: boolean) {
     this.periodName = periodName;
     this.absName = absName;
+    this.isLock = isLock;
   }
+}
+
+/**班導師點名設定 */
+export interface Config {
+  absenceNames: string[];
+  crossDate: boolean;
 }

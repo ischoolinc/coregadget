@@ -10,11 +10,13 @@ import { AddComponent } from './add/add.component';
 import { ListComponent } from './list/list.component';
 import { CommentComponent } from './comment/comment.component';
 
+import {MatFormFieldModule} from '@angular/material/form-field';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    BehaviorRoutingModule
+    BehaviorRoutingModule,
+    MatFormFieldModule,
   ],
   declarations: [
     AppComponent,
@@ -22,6 +24,8 @@ import { CommentComponent } from './comment/comment.component';
     AddComponent,
     ListComponent,
     CommentComponent,
+  ],
+  entryComponents: [
   ]
 })
 export class BehaviorModule { }

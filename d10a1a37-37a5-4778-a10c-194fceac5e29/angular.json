@@ -13,6 +13,9 @@
           "spec": false,
           "inlineStyle": true,
           "flat": false
+        },
+        "@schematics/angular:service": {
+          "spec": false
         }
       },
       "architect": {
