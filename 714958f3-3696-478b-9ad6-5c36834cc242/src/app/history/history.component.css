@@ -1,0 +1,15 @@
+/* small */
+@media screen and (max-width:599px) {
+
+  .rwd-list span {
+    display: block;
+  }
+
+  .rwd-list p {
+    margin: 0 0 0 50%;
+  }
+
+  .rwd-list p:first-child {
+    margin: -1em 0 0 50%;
+  }
+}

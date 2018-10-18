@@ -1,0 +1,139 @@
+<div *ngIf="loading" class="d-flex justify-content-center">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <h2 mat-dialog-title>
+        {{data.sportEvent.name}}
+    </h2>
+    <div class="mb-3">人數限制：{{memberCountText}}</div>
+    <mat-dialog-content class="mat-typography">
+        <mat-form-field class="full-width" *ngIf="data.options.needTeamName">
+            <input matInput placeholder="隊伍名稱" [(ngModel)]="teamName" required #inputTeamName="ngModel">
+            <mat-error *ngIf="inputTeamName.invalid">必填</mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <input type="text" [placeholder]="inputPlaceholder" aria-label="隊員名單"
+                matInput #memberInput [formControl]="myControl" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedFn($event)">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.class_name}} - {{option.name}} ({{option.seat_no}})
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        <ng-container *ngIf="data.options.source === 'classmate' && data.options.needTeamLeader">
+            <div class="rwd-list list-header bg-light">
+                <ul>
+                    <li class="rwd-w-3">姓名</li>
+                    <li class="rwd-w-3">座號</li>
+                    <li class="rwd-w-3">隊長</li>
+                    <li class="rwd-w-3">取消報名</li>
+                </ul>
+            </div>
+            <div class="rwd-list mb-1">
+                <ul class="list-group-item list-group-item-action" *ngFor="let item of players | mapsToArray">
+                    <li class="rwd-w-3" data-label="姓名">{{item.name}}</li>
+                    <li class="rwd-w-3" data-label="座號">{{item.seat_no}}</li>
+                    <li class="rwd-w-3" data-label="隊長">
+                        <ng-container *ngIf="registerForceTeamLeader">
+                            <i class="material-icons text-muted" *ngIf="item.is_team_leader" disabled>check_box</i>
+                        </ng-container>
+                        <ng-container *ngIf="!registerForceTeamLeader">
+                            <a href="javascript:;" (click)="setLeader(item)">
+                                <i class="material-icons text-info" *ngIf="!item.is_team_leader">check_box_outline_blank</i>
+                                <i class="material-icons text-info" *ngIf="item.is_team_leader">check_box</i>
+                            </a>
+                        </ng-container>
+                    </li>
+                    <li class="rwd-w-3" data-label="取消報名">
+                        <a class="btn-link text-info" href="javascript:;" (click)="removePlayer(item)" *ngIf="!item.forceJoin">
+                            <i class="material-icons">close</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.options.source === 'student' && data.options.needTeamLeader">
+            <div class="rwd-list list-header bg-light">
+                <ul>
+                    <li class="rwd-w-3">班級</li>
+                    <li class="rwd-w-3">姓名</li>
+                    <li class="rwd-w-2">座號</li>
+                    <li class="rwd-w-2">隊長</li>
+                    <li class="rwd-w-2">取消報名</li>
+                </ul>
+            </div>
+            <div class="rwd-list mb-1">
+                <ul class="list-group-item list-group-item-action" *ngFor="let item of players | mapsToArray">
+                    <li class="rwd-w-3" data-label="班級">{{item.class_name}}</li>
+                    <li class="rwd-w-3" data-label="姓名">{{item.name}}</li>
+                    <li class="rwd-w-2" data-label="座號">{{item.seat_no}}</li>
+                    <li class="rwd-w-2" data-label="隊長">
+                        <ng-container *ngIf="registerForceTeamLeader">
+                            <i class="material-icons text-muted" *ngIf="item.is_team_leader" disabled>check_box</i>
+                        </ng-container>
+                        <ng-container *ngIf="!registerForceTeamLeader">
+                            <a href="javascript:;" (click)="setLeader(item)">
+                                <i class="material-icons text-info" *ngIf="!item.is_team_leader">check_box_outline_blank</i>
+                                <i class="material-icons text-info" *ngIf="item.is_team_leader">check_box</i>
+                            </a>
+                        </ng-container>
+                    </li>
+                    <li class="rwd-w-2" data-label="取消報名">
+                        <a class="btn-link text-info" href="javascript:;" (click)="removePlayer(item)" *ngIf="!item.forceJoin">
+                            <i class="material-icons">close</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.options.source === 'classmate' && !data.options.needTeamLeader">
+            <div class="rwd-list list-header bg-light">
+                <ul>
+                    <li class="rwd-w-4">姓名</li>
+                    <li class="rwd-w-4">座號</li>
+                    <li class="rwd-w-4">取消報名</li>
+                </ul>
+            </div>
+            <div class="rwd-list mb-1">
+                <ul class="list-group-item list-group-item-action" *ngFor="let item of players | mapsToArray">
+                    <li class="rwd-w-4" data-label="姓名">{{item.name}}</li>
+                    <li class="rwd-w-4" data-label="座號">{{item.seat_no}}</li>
+                    <li class="rwd-w-4" data-label="取消報名">
+                        <a class="btn-link text-info" href="javascript:;" (click)="removePlayer(item)" *ngIf="!item.forceJoin">
+                            <i class="material-icons">close</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.options.source === 'student' && !data.options.needTeamLeader">
+            <div class="rwd-list list-header bg-light">
+                <ul>
+                    <li class="rwd-w-3">班級</li>
+                    <li class="rwd-w-3">姓名</li>
+                    <li class="rwd-w-3">座號</li>
+                    <li class="rwd-w-3">取消報名</li>
+                </ul>
+            </div>
+            <div class="rwd-list mb-1">
+                <ul class="list-group-item list-group-item-action" *ngFor="let item of players | mapsToArray">
+                    <li class="rwd-w-3" data-label="班級">{{item.class_name}}</li>
+                    <li class="rwd-w-3" data-label="姓名">{{item.name}}</li>
+                    <li class="rwd-w-3" data-label="座號">{{item.seat_no}}</li>
+                    <li class="rwd-w-3" data-label="取消報名">
+                        <a class="btn-link text-info" href="javascript:;" (click)="removePlayer(item)" *ngIf="!item.forceJoin">
+                            <i class="material-icons">close</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <ng-container>
+            <button mat-button mat-dialog-close>關閉</button>
+            <button mat-button color="primary" cdkFocusInitial (click)="save()">{{(saving) ? '儲存中...' : '送出報名'}}</button>
+        </ng-container>
+    </mat-dialog-actions>
+</ng-container>

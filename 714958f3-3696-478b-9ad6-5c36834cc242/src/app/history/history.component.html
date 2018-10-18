@@ -1,0 +1,98 @@
+<!-- 歷史賽事結果 -->
+<div class="tab-pane" id="m-history" aria-labelledby="my-history">
+    <div class="d-flex flex-column flex-md-row mb-3">
+        <div class="mr-md-2 mb-2 mb-md-0">
+            <mat-form-field class="mr-3">
+                <mat-select [placeholder]="(schoolYearList.length) ? '選擇學年度' : '學年度無資料'"
+                    [value]="currYear"
+                    (selectionChange)="changeYear($event)">
+                    <mat-option *ngFor="let item of schoolYearList" [value]="item">
+                        {{item}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-select [placeholder]="(categories.length) ? '選擇類別' : '類別無資料'"
+                    [value]="currCategory"
+                    (selectionChange)="changeCategory($event)">
+                    <mat-option *ngFor="let item of categories" [value]="item">
+                        {{item}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="rwd-list list-header bg-light">
+        <ul>
+            <li class="rwd-w-1">類型</li>
+            <li class="rwd-w-1">類別</li>
+            <li class="rwd-w-2">競賽名稱</li>
+            <li class="rwd-w-2">組別</li>
+            <li class="rwd-w-2">活動日期</li>
+            <li class="rwd-w-4">名次</li>
+        </ul>
+    </div>
+    <ng-container *ngFor="let item of sportEvents | filterCategory: currCategory as result">
+        <div class="rwd-list" (click)="toggleShowed(item)">
+            <ul class="list-group-item list-group-item-action point" [class.list-group-item-light]="item.isShowed">
+                <li class="rwd-w-1" data-label="類型">{{item.is_team === 't' ? '團體賽' : '個人賽'}}</li>
+                <li class="rwd-w-1" data-label="類別">{{item.category}}</li>
+                <li class="rwd-w-2" data-label="競賽名稱">{{item.name}}</li>
+                <li class="rwd-w-2" data-label="組別">{{item.group_types_name || '不分組'}}</li>
+                <li class="rwd-w-2" data-label="活動日期"><p>{{item.event_start_date}} - {{item.event_end_date}}</p></li>
+                <li class="rwd-w-4" data-label="名次">
+                    <ng-container *ngIf="!item.ranks.length">無名次資料</ng-container>
+
+                    <ng-container *ngIf="item.ranks.length">
+                        <ng-container *ngIf="item.is_team === 't' else single_simply">
+                            <p *ngFor="let rank of item.ranks | topRank: 3">{{rank.rank}}. {{rank.team_name}}</p>
+                        </ng-container>
+                    </ng-container>
+                    <ng-template #single_simply>
+                        <ng-container *ngFor="let rank of item.ranks | topRank: 3">
+                            <p *ngFor="let player of rank.players">{{rank.rank}}. {{player.name}}（{{player.class_name}})
+                        </ng-container>
+                    </ng-template>
+                </li>
+            </ul>
+        </div>
+        <div class="rwd-list" [hidden]="!item.isShowed">
+            <ul class="list-group-item list-group-item-action"
+                *ngIf="!item.ranks.length">
+                <li class="rwd-w-12" data-label="名次">無名次資料</li>
+            </ul>
+
+            <ng-container *ngIf="item.is_team === 't' else single_fully">
+                <ul class="list-group-item list-group-item-action"
+                    *ngFor="let rank of item.ranks">
+                    <li class="rwd-w-2" data-label="名次">第{{rank.rank}}名</li>
+                    <li class="rwd-w-3" data-label="隊名">{{rank.team_name}}</li>
+                    <li class="rwd-w-7 member-list text-left" data-label="隊員">
+                        <ng-container *ngFor="let player of rank.players">
+                            <span [class.text-danger]="item.is_team_leader === 't'">
+                                <i *ngIf="item.is_team_leader === 't'" class="material-icons">whatshot</i>
+                                {{player.name}}（{{player.class_name}}，{{player.seat_no}}號)
+                            </span>
+                        </ng-container>
+                    </li>
+                </ul>
+            </ng-container>
+            <ng-template #single_fully>
+                <ul class="list-group-item list-group-item-action"
+                    *ngFor="let rank of item.ranks">
+                    <li class="rwd-w-2" data-label="名次">第{{rank.rank}}名</li>
+                    <li class="rwd-w-10 member-list" data-label="隊員">
+                        <ng-container *ngFor="let player of rank.players">
+                            <span>{{player.name}}（{{player.class_name}}，{{player.seat_no}}號）</span>
+                        </ng-container>
+                    </li>
+                </ul>
+            </ng-template>
+            <div class="mb-2"></div>
+        </div>
+        <div class="mt-3" *ngIf="!(sportEvents | filterCategory: currCategory)?.length">無競賽資料</div>
+    </ng-container>
+</div>

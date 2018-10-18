@@ -1,0 +1,22 @@
+<div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 100%">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <div class="container-fluid cbs d-flex justify-content-between flex-column">
+        <nav>
+            <div class="nav nav-tabs mb-3">
+                <a (click)="toggle('報名')" class="nav-item nav-link" [class.active]="currentPage === '報名'" routerLink="/apply">報名／抽籤</a>
+                <!-- <a (click)="toggle('賽程')" class="nav-item nav-link" [class.active]="currentPage === '賽程'" routerLink="/schedule">賽程表</a> -->
+                <a (click)="toggle('歷史')" class="nav-item nav-link" [class.active]="currentPage === '歷史'" routerLink="/history">歷史賽事結果</a>
+            </div>
+        </nav>
+
+        <div class="tab-content">
+            <router-outlet></router-outlet>
+        </div>
+
+        <footer class="text-center p-2 mt-auto">
+            Powered By ischool
+        </footer>
+    </div>
+</ng-container>
