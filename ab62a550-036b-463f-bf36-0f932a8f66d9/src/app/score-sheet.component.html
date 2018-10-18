@@ -1,0 +1,65 @@
+<div *ngIf="loading" class="d-flex justify-content-center">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <p *ngIf="!classList.length" class="text-center mt-3">您無班級資料可查詢</p>
+    <ng-container *ngIf="classList.length">
+        <mat-form-field *ngIf="classList.length > 1" class="mr-3">
+            <mat-select placeholder="班級"
+                [(value)]="currClass"
+                (selectionChange)="changeClass($event)">
+                <mat-option *ngFor="let item of classList" [value]="item">
+                {{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="mr-3">
+            <input matInput [matDatepicker]="picker" placeholder="選擇日期"
+                [formControl]="date"
+                [max]="maxDate"
+                (dateChange)="addEvent($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <span *ngIf="classList.length === 1" class="mr-3">{{currClass.ClassName}}</span>
+        的評分
+
+        <div class="rwd-list">
+            <ul>
+                <li class="rwd-w-3">扣分原因(扣分)</li>
+                <li class="rwd-w-3">補充說明</li>
+                <li class="rwd-w-1">照片1</li>
+                <li class="rwd-w-2">說明1</li>
+                <li class="rwd-w-1">照片2</li>
+                <li class="rwd-w-2">說明2</li>
+            </ul>
+            <ul class="list-group-item"
+                *ngFor="let item of dayScoreSheet">
+                <li class="rwd-w-3" data-label="扣分原因(扣分)">{{item.deduction_item_name}} / {{item.deduction_standard_name}}
+                    (<span class="text-danger">-{{item.deduction_standard_points}}</span>)
+                </li>
+                <li class="rwd-w-3" data-label="補充說明">{{item.remark}}</li>
+                <li class="rwd-w-1" data-label="照片1">
+                    <img *ngIf="item.picture1" [src]="item.picture1"
+                        class="img-fluid" style="cursor: pointer; max-height: 2rem"
+                        (click)="openImage(item.picture1)"
+                    >
+                    <span *ngIf="!item.picture1">無</span>
+                </li>
+                <li class="rwd-w-2" data-label="說明1">{{item.pic1_comment || '無'}}</li>
+                <li class="rwd-w-1" data-label="照片2">
+                    <img *ngIf="item.picture2" [src]="item.picture2"
+                        class="img-fluid" style="cursor: pointer; max-height: 2rem"
+                        (click)="openImage(item.picture2)">
+                    <span *ngIf="!item.picture2">無</span>
+                </li>
+                <li class="rwd-w-2" data-label="說明2">{{item.pic2_comment || '無'}}</li>
+            </ul>
+        </div>
+        <p *ngIf="!dayScoreSheet.length" class="text-center mt-3">目前無資料</p>
+    </ng-container>
+</ng-container>
+
+<ng-template #previewImage>
+    <img [src]="previewImgUrl" style="max-height: 80vh" />
+</ng-template>
