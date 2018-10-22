@@ -852,6 +852,10 @@
                                             });
                                             $scope.Filter({ keyCode: 13 });
                                             $scope.init = true;
+
+                                            if ($scope.ConselStudent.length > 0) {
+                                                $scope.SetCurrent($scope.ConselStudent[0]);
+                                            }
                                         }
                                     });
                                 }
