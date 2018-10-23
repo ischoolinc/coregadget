@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { WeeklyDataService } from '../weekly-data.service';
 import { GadgetService, Contract } from 'src/app/gadget.service';
@@ -23,9 +23,9 @@ export class DetailComponent implements OnInit {
   endDate: string;
   generalComment: string;
   behaviorDataList: any;
-  teacherName:string = "";
+  teacherName: string = "";
 
-  constructor(private route: ActivatedRoute, private gadget: GadgetService, private weeklyData: WeeklyDataService) {
+  constructor(private route: ActivatedRoute, private gadget: GadgetService, private weeklyData: WeeklyDataService, private router: Router) {
     // 取得 contract 連線。
 
   }
@@ -65,46 +65,42 @@ export class DetailComponent implements OnInit {
       this.weeklyDataInfo = Utils.array(rsp, "Response/WeeklyData");
 
 
-      this.weeklyDataList = [];      
+      this.weeklyDataList = [];
       // this.behaviorDataList = [];
       for (const data of this.weeklyDataInfo) {
-        let disp:boolean = false;
+        let disp: boolean = false;
         data.displayGradebook = disp;
         data.displayBehavior = disp;
-        
+
         try {
           let xx = JSON.parse(data.BehaviorData);
           data.behaviorDataList = xx;
-          
-          if (data.behaviorDataList.length > 0)
-          {            
-             data.displayBehavior = true;
+
+          if (data.behaviorDataList.length > 0) {
+            data.displayBehavior = true;
           }
 
         } catch (err) {
           console.log(err);
-        }finally{
+        } finally {
         }
 
         try {
           let ss = JSON.parse(data.GradeBookData);
           data.gradeBookDataList = ss;
 
-          if (data.gradeBookDataList.length > 0)
-          {
-             data.displayGradebook = true;
+          if (data.gradeBookDataList.length > 0) {
+            data.displayGradebook = true;
           }
           // 處理沒有值
-          for(const gg of data.gradeBookDataList)
-          {
-            if(!gg.Value)
-            {
+          for (const gg of data.gradeBookDataList) {
+            if (!gg.Value) {
               gg.Value = "--";
             }
           }
         } catch (err) {
           console.log(err);
-        }finally{}
+        } finally { }
 
         this.weeklyDataList.push(data);
 
@@ -116,6 +112,11 @@ export class DetailComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+  }
+
+  edit() {
+    this.router.navigate(['/weekly_report/add-s1/' + this.route.snapshot.paramMap.get("courseid") + '/' + this.courseName + '/' + this.weeklyReportUID], {
+    });
   }
 }
 

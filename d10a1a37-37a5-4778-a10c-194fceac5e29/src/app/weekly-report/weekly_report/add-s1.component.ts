@@ -36,7 +36,7 @@ export class AddS1Component implements OnInit {
     this.weeklyDataMain = new WeeklyReportEntry();
     this.weeklyDataMain.CourseID = this.route.snapshot.paramMap.get("id");
     this.weeklyDataMain.CourseName = this.route.snapshot.paramMap.get("name");
-    this.weeklyDataMain.uid = this.route.snapshot.paramMap.get("uid");
+    this.weeklyDataMain.uid = this.route.snapshot.paramMap.get("wruid");
     this.weeklyData.selectWeeklyReportUID = this.weeklyDataMain.uid;
     this.contract = await this.gadget.getContract('kcis');
     if (this.weeklyData.selectWeeklyReportUID === '') {
