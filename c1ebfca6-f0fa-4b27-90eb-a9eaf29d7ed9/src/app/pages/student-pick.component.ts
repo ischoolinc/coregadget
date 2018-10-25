@@ -5,6 +5,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MenuPositionX } from '@angular/material/menu';
 import { StudentCheck } from './student-check';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { GadgetService } from '../service/gadget.service';
 
 @Component({
   selector: 'gd-student-pick',
@@ -30,14 +32,15 @@ export class StudentPickComponent implements OnInit {
     private route: ActivatedRoute,
     private alert: AlertService,
     private config: ConfigService,
-    private change: ChangeDetectorRef
+    private change: ChangeDetectorRef,
+    private gadget: GadgetService
   ) {
     this.today = dsa.getToday();
   }
 
   async ngOnInit() {
-    
-    this.groupInfo = {type: '', id: '', name: ''};
+
+    this.groupInfo = { type: '', id: '', name: '' };
 
     await this.config.ready;
 
@@ -55,12 +58,17 @@ export class StudentPickComponent implements OnInit {
       // 可點節次。
       this.periodConf = this.config.getPeriod(period);
       this.periodConf.Absence = [].concat(this.periodConf.Absence) || [];
-      
+
       try {
         // 學生清單（含點名資料）。 
         await this.reloadStudentAttendances();
-      } catch(error) {
-        this.alert.json(error);
+      } catch (error) {
+        this.alert.json(error.message);
+      }
+
+      // 當有假別預設選第1個
+      if (this.periodConf.Absence.length > 0) {
+        this.selectedAbsence = this.periodConf.Absence[0].Name;
       }
     });
   }
@@ -69,23 +77,33 @@ export class StudentPickComponent implements OnInit {
   public async reloadStudentAttendances(msg?: string) {
     const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today);
     this.studentChecks = [];
+
+    const c = await this.gadget.getContract("1campus.mobile.v2.teacher");
+    const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
+    console.log(session.SessionID);
+
     for (const stu of students) {
+
+      // 取得學生照片 url
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
       const status = this.getSelectedAttendance(stu);
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
+
+      // console.log(stu.PhotoUrl);
     }
     this.calcSummaryText();
 
-    if(msg) this.alert.snack(msg);
+    if (msg) this.alert.snack(msg);
   }
 
   changeAttendance(stu: StudentCheck) {
-    
-    if(!this.selectedAbsence) {
+
+    if (!this.selectedAbsence) {
       this.alert.snack('請選擇假別！');
       return;
     }
 
-    if(!stu.acceptChange()) {
+    if (!stu.acceptChange()) {
       this.alert.snack('此學生無法調整缺曠。');
       return;
     }
@@ -100,13 +118,13 @@ export class StudentPickComponent implements OnInit {
 
   /** 計算統計值。 */
   calcSummaryText() {
-    const summary = new Map<string,number>();
-    for(const check of this.studentChecks) {
+    const summary = new Map<string, number>();
+    for (const check of this.studentChecks) {
 
-      if(!check.acceptChange()) continue;
-      if(!check.status) continue;
+      if (!check.acceptChange()) continue;
+      if (!check.status) continue;
 
-      if(!summary.has(check.status.AbsenceType)) {
+      if (!summary.has(check.status.AbsenceType)) {
         summary.set(check.status.AbsenceType, 0);
       }
 
@@ -114,7 +132,7 @@ export class StudentPickComponent implements OnInit {
     }
 
     let text: string[] = [];
-    for(let k of Array.from(summary)) {
+    for (let k of Array.from(summary)) {
       text.push(`${k[0]}: ${k[1]}`);
     }
 
@@ -125,7 +143,7 @@ export class StudentPickComponent implements OnInit {
     return stu.status ? stu.status.AbsenceType : 'Check';
   }
 
-  getAttendanceStyle(stu: StudentCheck) {   
+  getAttendanceStyle(stu: StudentCheck) {
 
     let bgColor = 'white';
     let fgColor = 'rgba(0,0,0,.12)';
@@ -133,7 +151,9 @@ export class StudentPickComponent implements OnInit {
     if (stu.status) {
       const absType = stu.status.AbsenceType;
       const absConf = this.config.getAbsence(absType);
-      bgColor = this.config.getAbsenceColor(absConf.Abbr);
+      if (absConf.Abbr) {
+        bgColor = this.config.getAbsenceColor(absConf.Abbr);
+      }
       fgColor = 'white';
     }
 
@@ -148,7 +168,7 @@ export class StudentPickComponent implements OnInit {
    * @param stu 學生資料。
    */
   private getSelectedAttendance(stu: Student) {
-    if(!stu.Attendance) return;
+    if (!stu.Attendance) return;
     const period = this.periodConf.Name;
     const dateAtts = [].concat(stu.Attendance.Period) as PeriodStatus[];
     return dateAtts.find(v => v['@text'] === period);

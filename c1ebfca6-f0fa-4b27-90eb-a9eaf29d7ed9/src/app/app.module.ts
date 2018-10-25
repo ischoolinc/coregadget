@@ -15,7 +15,11 @@ import { StudentPickComponent } from './pages/student-pick.component';
 import { DebugComponent } from './modal/debug.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { WaitingComponent } from './modal/waiting.component';
-
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { SubstituteComponent } from './pages/substitute.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,12 +28,17 @@ import { WaitingComponent } from './modal/waiting.component';
     StudentPickComponent,
     DebugComponent,
     WaitingComponent,
+    SubstituteComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppMaterialModule,
     AppRoutingModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatIconModule
   ],
   providers: [GadgetService, DSAService, ConfigService, AlertService],
   bootstrap: [AppComponent],
