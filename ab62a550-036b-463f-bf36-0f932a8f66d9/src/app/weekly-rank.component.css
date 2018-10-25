@@ -1,0 +1,50 @@
+.chooseWeekly {
+  background-color: rgba(0,0,0,.05);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.table-list {
+  display: table;
+  width: 100%;
+  text-align: center;
+}
+
+.table-list ul {
+  display: table-row;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .12), 0 1px 3px 0 rgba(0, 0, 0, .2);
+}
+
+.table-list ul.collapse {
+  display: none !important;
+}
+
+.table-list ul.collapse.show {
+  display: table-row !important;
+}
+
+.table-list ul:first-child li {
+  background-color: #eee;
+}
+
+.table-list ul>li {
+  display: table-cell;
+  padding: .830357rem .5rem;
+  vertical-align: middle;
+}
+
+.table-w-1 {
+  width: calc(100% / 12);
+}
+
+.table-w-2 {
+  width: calc(100% / 12 * 2);
+}
+
+.table-w-3 {
+  width: calc(100% / 12 * 3);
+}
+
+.table-w-4 {
+  width: calc(100% / 12 * 4);
+}

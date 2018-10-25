@@ -20,7 +20,7 @@ export class ListComponent implements OnInit {
   courseID: string;
   courseName: string;
 
-  constructor(private route: ActivatedRoute, private gadget: GadgetService,private weeklyData:WeeklyDataService, private router: Router) {
+  constructor(private route: ActivatedRoute, private gadget: GadgetService, private weeklyData: WeeklyDataService, private router: Router) {
     // 取得 contract 連線。
 
   }
@@ -37,10 +37,10 @@ export class ListComponent implements OnInit {
 
   }
 
-  add(CourseID:string,CourseName:string,uid:string){
+  add(CourseID: string, CourseName: string, wruid: string) {
     this.weeklyData.selectWeeklyReportUID = '';
     this.weeklyData.addWeeklyReportEntry = null;
-    this.router.navigate(['../../../add-s1', CourseID, CourseName,uid], {
+    this.router.navigate(['../../../add-s1', CourseID, CourseName, wruid], {
       relativeTo: this.route
     });
   }
@@ -54,7 +54,7 @@ export class ListComponent implements OnInit {
           CourseID: this.courseID
         }
       })
-      this.weeklyDataInfo = Utils.array(rsp,"Response/WeeklyReport");
+      this.weeklyDataInfo = Utils.array(rsp, "Response/WeeklyReport");
 
       const rsp3 = await this.contract.send('weekly.GetWeeklyReportReadCount');
       this.weeklyData.weeklyReportHasReadCountLst = Utils.array(rsp3, "Response/WeeklyHasReadCount");
@@ -63,8 +63,7 @@ export class ListComponent implements OnInit {
       for (const data of this.weeklyDataInfo) {
         // 先塞暫存資料
         let hasRead = this.weeklyData.weeklyReportHasReadCountLst.filter(v => v.WeeklyReportUID === data.UID)
-        if (hasRead.length > 0)
-        {
+        if (hasRead.length > 0) {
           data.HasRead = hasRead[0]["HasRead"];
           data.Total = hasRead[0]["Total"];
         }
@@ -74,7 +73,7 @@ export class ListComponent implements OnInit {
 
       this.weeklyData.currentCousreWeeklyReportList = this.weeklyDataList;
 
-     
+
 
 
       // console.log(this.weeklyDataList);

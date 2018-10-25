@@ -17,28 +17,30 @@
     <ul class="list-group mb-3">
         <li class="list-group-item active d-flex align-items-center py-2">
             {{courseName}}
-
             <button class="ml-auto btn btn-info"
                     [routerLink]="['/behavior/add', courseID, courseName]"><i class="material-icons mr-1">add</i>ADD</button>
         </li>
         <li class="list-group-item"
             *ngFor="let data of behaviorDataList">
             <div class="row">
-
-                <div class="col-md-3 col-lg-3 text-nowrap">
+                <div class="col-md-3 col-lg-2 text-nowrap">
                     <span class="pr-3">{{data.CreateDate2}}</span>
                     <span class="">{{data.Name}}</span>
                 </div>
-                <div class="col-md-7 col-lg-7">{{data.Comment}}</div>
-                <div class="col-md-1 col-lg-1"><button class="ml-auto btn btn-info"
-                            (click)="editComment(data)"><i class="material-icons mr-1">edit</i>EDIT
-                    </button></div>
-                    <div class="col-md-1 col-lg-1"><button class="ml-auto btn btn-danger"
-                        (click)="delete(data)"><i class="material-icons mr-1">delete</i>DELETE</button>
+                <div class="col-md-9 col-lg-10">
+                    <span>{{data.Comment}}</span>
+                    <div class="float-right">
+                        <a class="h6 text-info point"
+                           (click)="editComment(data)">
+                            <i class="material-icons mr-1">edit</i>
+                        </a>
+                        <a class="h6 text-danger point"
+                           (click)="delete(data)">
+                            <i class="material-icons mr-1">delete</i>
+                        </a>
+                    </div>
                 </div>
-
             </div>
         </li>
-
     </ul>
 </div>

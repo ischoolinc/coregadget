@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import 'themes/custom-theme.scss';
+
+/* bootstrap */
+@import "~daemonite-material/css/material.min.css";
+
+@import "assets/css/style.css";
+@import "assets/css/default.css";
+
+
+/** 調整 angular material 的 padding，使其更符合 bootstrap 樣式。 */
+/* .mat-dialog-container {
+    padding: 0px !important;
+} */
+
+/** 把按鈕 focus 時的藍框去除 */
+*:focus { outline: none !important; border: 0 !important; }

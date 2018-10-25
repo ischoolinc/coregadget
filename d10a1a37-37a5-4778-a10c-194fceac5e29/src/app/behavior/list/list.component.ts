@@ -39,7 +39,7 @@ export class ListComponent implements OnInit {
 
   // 修改 comment
   async editComment(data) {
-    const result = await this.dialogService.confirmCancel("Edit "+data.Name, "Comment",data.Comment);
+    const result = await this.dialogService.confirmCancel("Edit " + data.CreateDate2 + " " + data.Name, "Comment", data.Comment);
     if (result.confirm) {
       try {
         const rsp = await this.contract.send("behavior.EditBehaviorData", {

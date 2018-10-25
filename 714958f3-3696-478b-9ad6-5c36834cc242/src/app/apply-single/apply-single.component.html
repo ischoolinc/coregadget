@@ -1,0 +1,73 @@
+<!-- 個人賽 -->
+<div *ngIf="loading" class="d-flex justify-content-center">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <div id="single">
+        <div class="d-flex flex-column flex-md-row align-items-md-center mb-2">
+            <h4 class="pt-2 mr-auto">
+                <span class="badge badge-primary mb-1" *ngIf="sportEvent.is_sport_meet === 't'">運</span>
+                {{sportEvent.name}}
+                <span class="badge badge-info mr-1">{{sportEvent.category}}</span>
+                <span class="badge badge-success mr-1">個人賽</span>
+                <span class="badge badge-primary mr-1">{{sportEvent.group_types_name}}</span>
+                <span class="badge badge-secondary mr-1" *ngIf="sportEvent.athletic_only === 't'">體</span>
+                <span class="badge badge-secondary mr-1" *ngIf="sportEvent.is_reg_limit === 't'">特</span>
+            </h4>
+            <div *ngIf="sportEvent.is_draw_lots === 't'" class="mr-1">
+                <i class="material-icons">casino</i>
+                抽籤({{sportEvent.draw_lots_start_date || '未定'}} - {{sportEvent.draw_lots_end_date || '未定'}})
+            </div>
+            <div *ngIf="!isRegPeriod" class="mr-1">
+                <i class="material-icons">add</i>
+                非報名期間
+            </div>
+            <button type="button" class="btn btn-info"
+                *ngIf="isRegPeriod && isCanReg"
+                (click)="openReg()">
+                <i class="material-icons">add</i>
+                報名
+            </button>
+        </div>
+        <div class="rwd-list list-header bg-light">
+            <ul>
+                <li *ngIf="sportEvent.is_draw_lots === 't'" class="rwd-w-1">籤號</li>
+                <li [class.rwd-w-2]="sportEvent.is_draw_lots === 't'"
+                    [class.rwd-w-3]="sportEvent.is_draw_lots !== 't'">班級</li>
+                <li class="rwd-w-3">姓名</li>
+                <li class="rwd-w-3">座號</li>
+                <li class="rwd-w-3">取消報名</li>
+            </ul>
+        </div>
+        <div class="rwd-list">
+            <ul class="list-group-item list-group-item-action" *ngFor="let item of players">
+                <li *ngIf="sportEvent.is_draw_lots === 't'" class="rwd-w-1" data-label="籤號">
+                    <ng-container *ngIf="isDrawLotPeriod && item.isCanDrawLot && !item.lot_no; else lotText">
+                        <button type="button" class="btn btn-info mr-1"
+                            (click)="onDrawLotClick(item)">
+                            <i class="material-icons">casino</i>
+                        </button>
+                    </ng-container>
+                    <ng-template #lotText>
+                        {{item.lot_no || '-'}}
+                    </ng-template>
+                </li>
+                <li data-label="班級"
+                    [class.rwd-w-2]="sportEvent.is_draw_lots === 't'"
+                    [class.rwd-w-3]="sportEvent.is_draw_lots !== 't'">
+                    {{item.class_name}}
+                </li>
+                <li class="rwd-w-3" data-label="姓名">{{item.name}}</li>
+                <li class="rwd-w-3" data-label="座號">{{item.seat_no}}</li>
+                <li class="rwd-w-3" data-label="取消報名">
+                    <a *ngIf="isRegPeriod && (item.created_by === myInfo.sa_login_name)"
+                        class="btn-link text-info" href="javascript:;"
+                        (click)="removeJoin(item)">
+                        <i class="material-icons">close</i>
+                    </a>
+                </li>
+            </ul>
+            <div class="mt-3" *ngIf="!players.length">目前無資料</div>
+        </div>
+    </div>
+</ng-container>
