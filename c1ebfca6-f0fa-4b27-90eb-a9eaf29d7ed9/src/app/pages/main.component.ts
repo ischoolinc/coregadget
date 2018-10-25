@@ -66,10 +66,9 @@ export class MainComponent implements OnInit {
     const md1 = schedule.ClassID ? 'Class' : 'Course';
     const md2 = schedule.ClassID ? schedule.ClassID : schedule.CourseID;
     const md3 = schedule.Period;
+    const md4 = schedule.ClassID ? schedule.ClassName : schedule.CourseName;
 
-    this.router.navigate(['../pick', md1, md2, md3], {
-      queryParams: { DisplayName: schedule.CourseName }
-    });
+    this.router.navigate(['/pick', md1, md2, md3, md4]);
   }
 
   //開啟節次點名介面

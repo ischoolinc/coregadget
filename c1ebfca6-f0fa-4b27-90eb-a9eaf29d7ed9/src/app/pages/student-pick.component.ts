@@ -2,7 +2,7 @@ import { ConfigService, AbsenceConf, PeriodConf } from './../service/config.serv
 import { AlertService } from './../service/alert.service';
 import { DSAService, Student, AttendanceItem, PeriodStatus, GroupType, RollCallCheck } from './../service/dsa.service';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MenuPositionX } from '@angular/material/menu';
 import { StudentCheck } from './student-check';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -33,6 +33,7 @@ export class StudentPickComponent implements OnInit {
     private alert: AlertService,
     private config: ConfigService,
     private change: ChangeDetectorRef,
+    private router: Router,
     private gadget: GadgetService
   ) {
     this.today = dsa.getToday();
@@ -44,20 +45,15 @@ export class StudentPickComponent implements OnInit {
 
     await this.config.ready;
 
-    // 取得前一頁傳來的資料。
-    this.route.queryParamMap.subscribe(p => {
-      // 課程名稱或班級名稱。
-      this.groupInfo.name = p.get('DisplayName');
-    });
-
     this.route.paramMap.subscribe(async pm => {
       this.groupInfo.type = pm.get('type') as GroupType; // course or class
       this.groupInfo.id = pm.get('id'); // course id
-      const period = pm.get('p'); // period name
+      const period = pm.get('period'); // period name
+      this.groupInfo.name = pm.get('display');
 
       // 可點節次。
       this.periodConf = this.config.getPeriod(period);
-      this.periodConf.Absence = [].concat(this.periodConf.Absence) || [];
+      this.periodConf.Absence = [].concat(this.periodConf.Absence || []);
 
       try {
         // 學生清單（含點名資料）。 
@@ -140,7 +136,7 @@ export class StudentPickComponent implements OnInit {
   }
 
   getAttendanceText(stu: StudentCheck) {
-    return stu.status ? stu.status.AbsenceType : 'Check';
+    return stu.status ? stu.status.AbsenceType : '--';
   }
 
   getAttendanceStyle(stu: StudentCheck) {
@@ -186,7 +182,8 @@ export class StudentPickComponent implements OnInit {
 
     try {
       await this.dsa.setRollCall(this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);
-      await this.reloadStudentAttendances();
+      // await this.reloadStudentAttendances();
+      this.router.navigate(['/main']);
     } catch (error) {
       this.alert.json(error);
     } finally {

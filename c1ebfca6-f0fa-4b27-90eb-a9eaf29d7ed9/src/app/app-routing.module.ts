@@ -7,7 +7,7 @@ import { SubstituteComponent } from './pages/substitute.component';
 const routes: Routes = [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
     { path: 'main', component: MainComponent },
-    { path: 'pick/:type/:id/:p', component: StudentPickComponent },
+    { path: 'pick/:type/:id/:period/:display', component: StudentPickComponent },
     { path: 'sub', component: SubstituteComponent }
 ];
 
