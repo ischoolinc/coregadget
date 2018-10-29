@@ -61,6 +61,7 @@ export class GadgetService {
           + "&application=" + this.application
           + "&scope=" + this.application + ":kcis"
         );
+
       if (vars.sessionID) {
         var resignUrl = this.authorizationUrl;
 
@@ -87,7 +88,18 @@ export class GadgetService {
     }
     else {
       if (requireSignIn) {
-        window.location.assign(this.authorizationUrl);
+        if (vars.keepsignin == 'true') {
+          window.location.assign(
+            "https://auth.ischool.com.tw/oauth/authorize.php?lang=English"
+            + "&client_id=" + clientID
+            + "&response_type=token&redirect_uri=" + redirect_uri
+            + "&application=" + this.application
+            + "&scope=" + this.application + ":kcis"
+          );
+        }
+        else {
+          window.location.assign(this.authorizationUrl);
+        }
         return;
       }
     }
