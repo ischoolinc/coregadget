@@ -191,4 +191,9 @@ export class StudentPickComponent implements OnInit {
     }
 
   }
+
+  selectedAbsenceItem(abbr) {
+    console.log(abbr);
+    this.selectedAbsence = abbr.Name;
+  }
 }

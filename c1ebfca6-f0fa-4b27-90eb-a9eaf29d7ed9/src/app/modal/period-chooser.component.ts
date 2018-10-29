@@ -21,17 +21,18 @@ export class PeriodChooserComponent implements OnInit {
     private router: Router,
     private config: ConfigService,
     public dialogRef: MatDialogRef<PeriodChooserComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { course: CourseConf }
+    @Inject(MAT_DIALOG_DATA) private data: { course: CourseConf, period: PeriodConf[] }
   ) {
 
     this.title = data.course.CourseName;
+    this.periods = data.period;
 
     dialogRef.updateSize('650px');
   }
 
   async ngOnInit() {
     await this.config.ready;
-    this.periods = this.config.getPeriods();
+    // this.periods = this.config.getPeriods();
   }
 
   gotoPick(period) {

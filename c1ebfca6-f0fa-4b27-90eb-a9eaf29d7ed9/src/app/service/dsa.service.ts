@@ -141,7 +141,7 @@ export class DSAService {
       v.Absence = [].concat(v.Absence || []) as AbsenceConf[];
     });
 
-    return { CourseConf: courses, PeriodConf: periods, Schedule: schedules }
+    return { CourseConf: courses, PeriodConf: periods, Schedule: schedules } as ConfigData
   }
 
   public async getAllCourse() {
@@ -164,6 +164,8 @@ export class DSAService {
 }
 
 export type GroupType = '' | 'Course' | 'Class'
+
+export type ConfigData = { CourseConf: CourseConf[], PeriodConf: PeriodConf[], Schedule: Schedule[] };
 
 /**
  * 班級課程項目。
