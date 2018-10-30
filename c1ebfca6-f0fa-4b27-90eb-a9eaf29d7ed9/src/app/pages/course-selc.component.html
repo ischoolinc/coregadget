@@ -1,3 +1,34 @@
-<p>
-  course-selc works!
-</p>
+<div>
+  <nav aria-label="breadcrumb text-nowrap text-truncate">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="#" [routerLink]="['']">課堂點名（{{today}}）</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="#" [routerLink]="['/sub']">{{className}}</a>
+      </li>
+      <ng-container *ngIf="loading; else titleText">
+        <li class="breadcrumb-item active" aria-current="sub">loading...</li>
+      </ng-container>
+      <ng-template #titleText>
+        <li class="breadcrumb-item active" aria-current="sub">請選擇課程</li>
+      </ng-template>
+    </ol>
+  </nav>
+
+  <ng-container *ngIf="loading; else jClass">
+    <div style="position:absolute;top:40%;left: 0px;right: 0px;text-align: center;">
+      loading...
+    </div>
+  </ng-container>
+
+  <ng-template #jClassTemp>
+
+
+
+
+
+
+  </ng-template>
+
+  </div>

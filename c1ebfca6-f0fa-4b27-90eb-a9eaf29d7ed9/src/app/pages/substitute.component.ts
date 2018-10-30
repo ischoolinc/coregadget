@@ -40,7 +40,7 @@ export class SubstituteComponent implements OnInit {
 
       this.gradeYeares = await this.dsa.getAllCourse();
 
-      console.log(this.gradeYeares);
+      // console.log(this.gradeYeares);
 
     } catch (error) {
       this.alert.json(error);
@@ -52,9 +52,10 @@ export class SubstituteComponent implements OnInit {
 
   //開啟課程選擇清單
   openClass(oClass: ClassObj) {
-    this.router.navigate(['/course' ], {
-      queryParams: {iClass: oClass}
-    });
+
+    console.log(oClass);
+
+    this.router.navigate(['/course', oClass.ClassName]);
 
   }
 

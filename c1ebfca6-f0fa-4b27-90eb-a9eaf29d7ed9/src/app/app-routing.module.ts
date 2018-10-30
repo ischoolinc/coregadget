@@ -10,7 +10,7 @@ const routes: Routes = [
     { path: 'main', component: MainComponent },
     { path: 'pick/:type/:id/:period', component: StudentPickComponent },
     { path: 'sub', component: SubstituteComponent },
-    { path: 'course', component: CourseSelcComponent }
+    { path: 'course/:classname', component: CourseSelcComponent }
 ];
 
 @NgModule({
