@@ -1,9 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { DSAService, GradeYearObj } from '../service/dsa.service';
+import { Component, OnInit } from '@angular/core';
+import { DSAService, GradeYearObj, ClassObj } from '../service/dsa.service';
 import { ConfigService } from '../service/config.service';
-import { GadgetService } from '../service/gadget.service';
 import { AlertService } from '../service/alert.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'gd-substitute',
@@ -16,16 +15,14 @@ export class SubstituteComponent implements OnInit {
   gradeAndCourse;
   today: string; // 今日。
 
-  gradeYeares : GradeYearObj[];
+  gradeYeares: GradeYearObj[];
   yearColumns: string[] = ['GradeYear'];
   courseColumns: string[] = ['Period'];
 
   constructor(private dsa: DSAService,
-    private route: ActivatedRoute,
     private alert: AlertService,
     private config: ConfigService,
-    private change: ChangeDetectorRef,
-    private gadget: GadgetService) {
+    private router: Router) {
 
     this.today = dsa.getToday();
 
@@ -50,6 +47,14 @@ export class SubstituteComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+
+  }
+
+  //開啟課程選擇清單
+  openClass(oClass: ClassObj) {
+    this.router.navigate(['/course' ], {
+      queryParams: {iClass: oClass}
+    });
 
   }
 

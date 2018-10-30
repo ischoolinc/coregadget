@@ -6,7 +6,6 @@ import { DSAService, RollCallRecord, SuggestRecord, PeriodConf, AbsenceConf, Sch
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
 import * as moment from 'moment';
 import { SubstituteComponent } from './substitute.component';
 
@@ -75,9 +74,7 @@ export class MainComponent implements OnInit {
 
   //開啟節次點名介面
   async openPicker(course: CourseConf) {
-
-    console.log(course);
-
+    // console.log(course);
     this.dialog.open(PeriodChooserComponent, {
       data: { course: course, period: this.conf.PeriodConf },
     });

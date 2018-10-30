@@ -40,10 +40,11 @@
                 </div>
             </div>
         </li>
-
         <li *ngIf="conf.CourseConf && conf.CourseConf.length"
             class="list-group-item active d-flex align-items-center py-2 ">
-            <div>課程</div><div style="flex: 1"></div><button (click)=openSubstitute() type="button" class="btn btn-lg btn-info">代課課程</button>
+            <div>課程</div>
+            <div style="flex: 1"></div>
+            <button (click)=openSubstitute() type="button" class="btn btn-lg btn-info">代課課程</button>
         </li>
         <li class="list-group-item "
             *ngFor="let course of conf.CourseConf"

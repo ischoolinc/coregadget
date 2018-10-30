@@ -20,6 +20,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { SubstituteComponent } from './pages/substitute.component';
+import { CourseSelcComponent } from './pages/course-selc.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +30,7 @@ import { SubstituteComponent } from './pages/substitute.component';
     DebugComponent,
     WaitingComponent,
     SubstituteComponent,
+    CourseSelcComponent
   ],
   imports: [
     BrowserModule,

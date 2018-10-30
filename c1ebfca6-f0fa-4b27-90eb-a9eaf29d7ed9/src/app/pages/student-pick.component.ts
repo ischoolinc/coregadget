@@ -4,7 +4,7 @@ import { DSAService, Student, AttendanceItem, PeriodStatus, GroupType, RollCallC
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuPositionX } from '@angular/material/menu';
-import { StudentCheck } from './student-check';
+import { StudentCheck } from '../student-check';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { GadgetService } from '../service/gadget.service';
 

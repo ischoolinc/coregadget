@@ -151,9 +151,9 @@ export class DSAService {
 
     gradeYears.forEach(v => {
 
-      v.jClass = [].concat(v.jClass || []) as ClassObj[];
+      v.Class = [].concat(v.Class || []) as ClassObj[];
 
-      v.jClass.forEach(v => {
+      v.Class.forEach(v => {
         v.Course = [].concat(v.Course || []) as CourseObj[];
       });
 
@@ -268,7 +268,7 @@ export interface CourseConf {
 
 export interface GradeYearObj {
   GradeYear: string;
-  jClass: ClassObj[];
+  Class: ClassObj[];
 
 }
 
@@ -276,7 +276,6 @@ export interface ClassObj {
   ClassID: string;
   ClassName: string;
   Course: CourseObj[];
-
 }
 export interface CourseObj {
   CourseID: string;
