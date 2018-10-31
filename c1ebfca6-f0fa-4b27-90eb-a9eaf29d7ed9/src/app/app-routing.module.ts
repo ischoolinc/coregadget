@@ -8,9 +8,9 @@ import { CourseSelcComponent } from './pages/course-selc.component';
 const routes: Routes = [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
     { path: 'main', component: MainComponent },
-    { path: 'pick/:type/:id/:period', component: StudentPickComponent },
+    { path: 'pick/:type/:id/:period/:name', component: StudentPickComponent },
     { path: 'sub', component: SubstituteComponent },
-    { path: 'course/:classname', component: CourseSelcComponent }
+    { path: 'course', component: CourseSelcComponent }
 ];
 
 @NgModule({

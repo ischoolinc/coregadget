@@ -49,7 +49,9 @@ export class StudentPickComponent implements OnInit {
       this.groupInfo.type = pm.get('type') as GroupType; // course or class
       this.groupInfo.id = pm.get('id'); // course id
       const period = pm.get('period'); // period name
-      this.groupInfo.name = pm.get('display');
+      this.groupInfo.name = pm.get('name');
+
+      console.log(pm.get('name'));
 
       // 可點節次。
       this.periodConf = this.config.getPeriod(period);

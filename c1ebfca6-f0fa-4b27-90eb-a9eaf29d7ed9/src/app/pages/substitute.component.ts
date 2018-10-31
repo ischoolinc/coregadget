@@ -3,6 +3,7 @@ import { DSAService, GradeYearObj, ClassObj } from '../service/dsa.service';
 import { ConfigService } from '../service/config.service';
 import { AlertService } from '../service/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DataCacheService } from '../service/data-cache.service';
 
 @Component({
   selector: 'gd-substitute',
@@ -22,7 +23,8 @@ export class SubstituteComponent implements OnInit {
   constructor(private dsa: DSAService,
     private alert: AlertService,
     private config: ConfigService,
-    private router: Router) {
+    private router: Router,
+    private cache: DataCacheService) {
 
     this.today = dsa.getToday();
 
@@ -53,9 +55,8 @@ export class SubstituteComponent implements OnInit {
   //開啟課程選擇清單
   openClass(oClass: ClassObj) {
 
-    console.log(oClass);
-
-    this.router.navigate(['/course', oClass.ClassName]);
+    this.cache.selectedClass = oClass;
+    this.router.navigate(['/course']);
 
   }
 

@@ -67,9 +67,7 @@ export class MainComponent implements OnInit {
     const md3 = schedule.Period;
     const md4 = schedule.ClassID ? schedule.ClassName : schedule.CourseName;
 
-    this.router.navigate(['/pick', md1, md2, md3], {
-      queryParams: {DisplayName: md4}
-    });
+    this.router.navigate(['/pick', md1, md2, md3, md4]);
   }
 
   //開啟節次點名介面
@@ -82,6 +80,6 @@ export class MainComponent implements OnInit {
 
   //開啟代課清單
   async openSubstitute() {
-    this.router.navigate(['../sub']); 
+    this.router.navigate(['../sub']);
   }
 }

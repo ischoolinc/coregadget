@@ -21,32 +21,35 @@ export class PeriodChooserComponent implements OnInit {
     private router: Router,
     private config: ConfigService,
     public dialogRef: MatDialogRef<PeriodChooserComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { course: CourseConf, period: PeriodConf[] }
+    @Inject(MAT_DIALOG_DATA) private data: { course: CourseConf }
   ) {
 
     this.title = data.course.CourseName;
-    this.periods = data.period;
 
     dialogRef.updateSize('650px');
   }
 
   async ngOnInit() {
     await this.config.ready;
-    // this.periods = this.config.getPeriods();
+    this.periods = this.config.getPeriods();
   }
 
   gotoPick(period) {
     //Type 傳入是課程還是班級
     //CourseName
     //PeriodName
-    this.router.navigate(['../pick', "Course", this.data.course.CourseID, period.Name], {
-      queryParams: { DisplayName: this.title }
-    });
+    this.router.navigate(['../pick', "Course",
+      this.data.course.CourseID, period.Name,
+      this.data.course.CourseName]);
     this.dialogRef.close();
   }
 
   // 該節是否可以點名。
   allow_choose(period: PeriodConf) {
-    return period.Absence.length <= 0
+    if (period.Absence) {
+      return period.Absence.length <= 0
+    } else {
+      return 0;
+    }
   }
 }

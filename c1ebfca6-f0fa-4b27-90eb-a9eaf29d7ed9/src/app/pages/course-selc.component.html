@@ -5,30 +5,23 @@
         <a href="#" [routerLink]="['']">課堂點名（{{today}}）</a>
       </li>
       <li class="breadcrumb-item">
-        <a href="#" [routerLink]="['/sub']">{{className}}</a>
+        <a href="#" [routerLink]="['/sub']">{{className?className:"未分班級"}}</a>
       </li>
-      <ng-container *ngIf="loading; else titleText">
-        <li class="breadcrumb-item active" aria-current="sub">loading...</li>
-      </ng-container>
-      <ng-template #titleText>
-        <li class="breadcrumb-item active" aria-current="sub">請選擇課程</li>
-      </ng-template>
+      <li class="breadcrumb-item active" aria-current="selc">請選擇課程</li>
     </ol>
   </nav>
-
-  <ng-container *ngIf="loading; else jClass">
-    <div style="position:absolute;top:40%;left: 0px;right: 0px;text-align: center;">
-      loading...
+  <li *ngIf="jClass && jClass.Course.length" class="list-group-item active d-flex align-items-center py-2 ">
+    <div class="col-md-4 col-lg-3 text-nowrap">課程</div>
+    <div class="col-md-4 col-lg-3 text-nowrap">授課教師</div>
+  </li>
+  <li class="list-group-item point" *ngFor="let course of jClass.Course" (click)="openPicker(course)">
+    <div class="row">
+      <div class="col-md-4 col-lg-3 text-nowrap">
+        <span class="pr-3">{{course.CourseName}}</span>
+      </div>
+      <div class="col-md-4 col-lg-3 text-nowrap">
+        <span class="pr-3">{{course.TeacherName?course.TeacherName:"無"}}</span>
+      </div>
     </div>
-  </ng-container>
-
-  <ng-template #jClassTemp>
-
-
-
-
-
-
-  </ng-template>
-
-  </div>
+  </li>
+</div>
