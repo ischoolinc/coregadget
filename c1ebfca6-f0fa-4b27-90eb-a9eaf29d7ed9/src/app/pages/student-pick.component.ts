@@ -138,13 +138,13 @@ export class StudentPickComponent implements OnInit {
   }
 
   getAttendanceText(stu: StudentCheck) {
-    return stu.status ? stu.status.AbsenceType : '--';
+    return stu.status ? stu.status.AbsenceType : '- -';
   }
 
   getAttendanceStyle(stu: StudentCheck) {
 
-    let bgColor = 'white';
-    let fgColor = 'rgba(0,0,0,.12)';
+    let bgColor = 'rgba(255,255,255, 0.1)';
+    let fgColor = 'rgba(0,0,0,0.5)';
 
     if (stu.status) {
       const absType = stu.status.AbsenceType;

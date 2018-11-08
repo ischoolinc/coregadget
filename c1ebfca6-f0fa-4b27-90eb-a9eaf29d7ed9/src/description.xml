@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="課堂點名" description="導師-課堂點名">
+  <ModulePrefs title="課堂點名" description="課堂點名">
     <Title lang="zh-TW">課堂點名</Title>
     <Icon>icon.png</Icon>
     <Mobile />

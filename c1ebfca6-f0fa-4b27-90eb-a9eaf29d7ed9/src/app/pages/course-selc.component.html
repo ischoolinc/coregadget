@@ -11,15 +11,19 @@
     </ol>
   </nav>
   <li *ngIf="jClass && jClass.Course.length" class="list-group-item active d-flex align-items-center py-2 ">
-    <div class="col-md-4 col-lg-3 text-nowrap">課程</div>
-    <div class="col-md-4 col-lg-3 text-nowrap">授課教師</div>
+    <div class="col-4 text-nowrap">課程</div>
+    <div class="col-1 text-nowrap">節數</div>
+    <div class="col-3 text-nowrap">授課教師</div>
   </li>
   <li class="list-group-item point" *ngFor="let course of jClass.Course" (click)="openPicker(course)">
     <div class="row">
-      <div class="col-md-4 col-lg-3 text-nowrap">
+      <div class="col-4 text-nowrap">
         <span class="pr-3">{{course.CourseName}}</span>
       </div>
-      <div class="col-md-4 col-lg-3 text-nowrap">
+      <div class="col-1 text-nowrap">
+        <span class="pr-3">{{course.Credit}}</span>
+      </div>
+      <div class="col-3 text-nowrap">
         <span class="pr-3">{{course.TeacherName?course.TeacherName:"無"}}</span>
       </div>
     </div>

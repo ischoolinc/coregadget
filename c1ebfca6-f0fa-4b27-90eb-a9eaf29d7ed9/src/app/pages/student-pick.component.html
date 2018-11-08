@@ -1,15 +1,19 @@
 <!-- 開始點名 -->
-<div id="attendence-page" page>
+<div id="attendence-page"
+     page>
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#" [routerLink]="['/main']">課堂點名</a>
+        <a href="#"
+           [routerLink]="['/main']">課堂點名</a>
       </li>
       <ng-container *ngIf="!studentChecks; else titleText">
-        <li class="breadcrumb-item active" aria-current="page">loading...</li>
+        <li class="breadcrumb-item active"
+            aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active" aria-current="page">{{groupInfo.name}}&nbsp;&nbsp;({{today}}：{{periodConf?.Name}})</li>
+        <li class="breadcrumb-item active"
+            aria-current="page">{{groupInfo.name}}&nbsp;&nbsp;({{today}}：{{periodConf?.Name}})</li>
       </ng-template>
     </ol>
   </nav>
@@ -42,18 +46,23 @@
       <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
 
-    <div class="st-list d-flex flex-wrap mt-3 mt-lg-1">
+    <div class="d-flex flex-wrap mt-3 mt-lg-1">
       <div *ngFor="let student of studentChecks"
-           (click)="changeAttendance(student)"
-           class="card st-check">
-        <img src="{{student.data.PhotoUrl}}" />
-        <div [ngStyle]="getAttendanceStyle(student)"
-             class="ad-status text-truncate">{{getAttendanceText(student)}}</div>
-        <!-- <div class="ad-status text-truncate">{{student.ID}}</div> -->
-        <div class="card-body py-2 text-truncate">
-          <h5 class="mb-0 text-truncate">{{student.data?.Name}}</h5>
-          <div class="text-gray text-truncate d-flex">{{student.data?.StudentNumber}}
-            <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
+           class="col-xs-12 col-sm-4 col-lg-3 col-xl-2 p-2">
+        <div class="card st-check w-100"
+             style="height: 22em;background-position: center;background-size: cover;"
+             [ngStyle]="{ 'background-image': 'url('+ student.data.PhotoUrl +')'}"
+             (click)="changeAttendance(student)">
+          <div style="position:absolute;bottom:0px;width:100%;">
+            <div [ngStyle]="getAttendanceStyle(student)"
+                 class="w-100 ad-status text-truncate">{{getAttendanceText(student)}}</div>
+            <div class="card-body py-2 text-truncate w-100"
+                 style="background-color:rgba(255,255,255,0.8)">
+              <h5 class="mb-0 text-truncate">{{student.data?.Name}}</h5>
+              <div class="text-gray text-truncate d-flex">{{student.data?.StudentNumber}}
+                <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -65,7 +74,7 @@
     </div>
   </ng-template>
 
-<!-- 
+  <!-- 
   <ng-container *ngIf="!studentChecks; else elseTemplate">
     <div>loading...</div>
   </ng-container>
@@ -104,7 +113,9 @@
   </ng-template> -->
 
   <ng-template #save>
-    <button (click)="saveRollCall()" type="button" class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
+    <button (click)="saveRollCall()"
+            type="button"
+            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
       +')': '儲存'}}</button>
   </ng-template>
 </div>
