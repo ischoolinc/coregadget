@@ -1,0 +1,6 @@
+.table{
+    font-size: 14px;
+}
+.table-hover tbody tr:hover > td {
+    cursor: pointer;
+}

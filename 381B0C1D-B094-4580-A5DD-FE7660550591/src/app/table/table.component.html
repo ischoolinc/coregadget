@@ -1,0 +1,23 @@
+
+    <div *ngIf="loading" class="alert alert-info">資料載入中...</div>
+
+    <input type="date" [(ngModel)]="inputDateString" (ngModelChange)="onDateChanged()" />
+    
+    <!--
+      <P>日期:{{inputDateString}}</P>
+    -->
+    <p>table row click {{count}} times</p>
+    
+    <table class="table table-bordered table-hover">
+      <tr>
+        <th *ngFor="let key of colKeys">
+          {{columns[key]}}
+        </th>
+      </tr>
+      <tr *ngFor="let data of dataRow" ng-click="count = count + 1" ng-init="count=0"> 
+        <td *ngFor="let key of colKeys">
+          {{data[key]}}
+        </td>
+      </tr>
+
+    </table>

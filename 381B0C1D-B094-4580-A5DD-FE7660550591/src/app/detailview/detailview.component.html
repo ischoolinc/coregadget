@@ -1,0 +1,11 @@
+<div *ngIf="loading"
+     style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
+  loading...
+</div>
+<div *ngIf="!loading">
+  <p>班級：{{behavior.ClassName}}</p>
+  <p>學號：{{behavior.StudentNumber}}</p>
+  <p>姓名：{{behavior.StudentName}}</p>
+  <p>課程：{{behavior.CourseName}}</p>
+  <p>內容：{{behavior.Comment}}</p>
+</div>
