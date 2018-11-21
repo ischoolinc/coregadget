@@ -9,3 +9,21 @@
   <p>課程：{{behavior.CourseName}}</p>
   <p>內容：{{behavior.Comment}}</p>
 </div>
+
+
+<label >需通知家長
+  <input type="checkbox" [checked]="behavior.NotifyParent" (change)="behavior.NotifyParent = !behavior.NotifyParent">
+</label>
+
+<label >需通知學生
+  <input type="checkbox" [checked]="behavior.NotifyStudent" (change)="behavior.NotifyStudent = !behavior.NotifyStudent">
+</label>
+
+
+<button type="button" (click)="save()">Save</button>
+
+<button (click)="goBack()">Go Back</button>
+
+<p>{{behavior.NotifyParent}}</p>
+<p>{{behavior.NotifyStudent}}</p>
+

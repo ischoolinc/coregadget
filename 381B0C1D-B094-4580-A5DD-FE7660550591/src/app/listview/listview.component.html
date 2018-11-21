@@ -1,3 +1,26 @@
-<p>
-  listview works!
-</p>
+
+<div *ngIf="loading" class="alert alert-info">資料載入中...</div>
+
+<input type="date" [(ngModel)]="inputDateString" (ngModelChange)="onDateChanged()" />
+
+<!--
+  <P>日期:{{inputDateString}}</P>
+-->
+<p>the record uid:{{uid}}</p>
+
+<table class="table table-bordered table-hover">
+  <tr>
+    <th *ngFor="let key of colKeys">
+      {{columns[key]}}
+    </th>
+  </tr>
+  <tr *ngFor="let data of dataRow" > 
+    <td *ngFor="let key of colKeys" routerLink="/detail/{{data.UID}}">
+      {{data[key]}}
+    </td>
+  </tr>
+
+</table>
+
+
+
