@@ -2,28 +2,38 @@
      style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
   loading...
 </div>
-<div *ngIf="!loading">
-  <p>班級：{{behavior.ClassName}}</p>
-  <p>學號：{{behavior.StudentNumber}}</p>
-  <p>姓名：{{behavior.StudentName}}</p>
-  <p>課程：{{behavior.CourseName}}</p>
-  <p>內容：{{behavior.Comment}}</p>
+<div *ngIf="!loading"
+     style="padding: 16px;max-width: 480px;">
+  <div>班級：{{behavior.ClassName}}</div>
+  <div>座號：{{behavior.SeatNo}}</div>
+  <div>學號：{{behavior.StudentNumber}}</div>
+  <div>學生姓名：{{behavior.StudentName}}</div>
+  <div>英文姓名：{{behavior.StudentEnglishName}}</div>
+  <div>課程名稱：{{behavior.CourseName}}</div>
+  <div>教師名稱：{{behavior.TeacherWhoWrite}}</div>
+  <div>輸入日期：{{behavior.CreateDate}}</div>
+  <div>內容：</div>
+  <div style="text-indent: 25px;word-break: break-word;padding-left: 25px;">{{behavior.Comment}}</div>
+
+  <div>
+    <label style="display: inline-block;">
+      <input type="checkbox"
+             [disabled]="behavior.MailSendParent"
+             [checked]="behavior.NotifyParent"
+             (change)="behavior.NotifyParent = !behavior.NotifyParent">
+      <span>通知家長</span>
+      <span *ngIf="behavior.MailSendParent">(已通知)</span>
+    </label>
+
+    <!-- <label style="display: inline-block;">
+    <input type="checkbox"
+           [disabled]="behavior.MailSendStudent"
+           [checked]="behavior.NotifyStudent"
+           (change)="behavior.NotifyStudent = !behavior.NotifyStudent">
+      <span>通知學生</span>
+      <span *ngIf="behavior.MailSendStudent">(已通知)</span>
+    </label> -->
+    <button type="button"
+            (click)="save()">儲存</button>
+  </div>
 </div>
-
-
-<label >需通知家長
-  <input type="checkbox" [checked]="behavior.NotifyParent" (change)="behavior.NotifyParent = !behavior.NotifyParent">
-</label>
-
-<label >需通知學生
-  <input type="checkbox" [checked]="behavior.NotifyStudent" (change)="behavior.NotifyStudent = !behavior.NotifyStudent">
-</label>
-
-
-<button type="button" (click)="save()">Save</button>
-
-<button (click)="goBack()">Go Back</button>
-
-<p>{{behavior.NotifyParent}}</p>
-<p>{{behavior.NotifyStudent}}</p>
-

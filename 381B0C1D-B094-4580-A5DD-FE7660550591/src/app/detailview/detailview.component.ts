@@ -10,7 +10,7 @@ import { GadgetService, Contract } from '../gadget.service';
 })
 export class DetailviewComponent implements OnInit {
   private uid: string;
-  private loading: boolean = true;
+  loading: boolean = true;
   private connection: Contract;
   private behavior: any;
   private error: any;
@@ -27,26 +27,32 @@ export class DetailviewComponent implements OnInit {
       this.uid = pm.get("uid");
       this.connection = await this.gadget.getContract("behavior.notification");
       this.behavior = (await this.connection.send("GetBehaviorByUID", { UID: this.uid })).Behavior;
-      this.behavior.NotifyParent = this.behavior.NotifyParent == "true" ? true : false;
-      this.behavior.NotifyStudent = this.behavior.NotifyStudent == "true" ? true : false;
+      this.behavior.NotifyParent = this.behavior.NotifyParent == "true";
+      this.behavior.NotifyStudent = this.behavior.NotifyStudent == "true";
+      this.behavior.MailSendParent = this.behavior.MailSendParent == "true";
+      this.behavior.MailSendStudent = this.behavior.MailSendStudent == "true";
+
+      var createDate = new Date(Number(this.behavior.CreateDate));
+      this.behavior.CreateDate = createDate.getFullYear() + "/" + (createDate.getMonth() + 1) + "/" + createDate.getDate();
+
       this.loading = false;
     });
   }
 
-  getString(){
+  getString() {
     return JSON.stringify(this.behavior);
   }
 
-  goBack(): void{
+  goBack(): void {
     this.location.back();
   }
 
-  async save(){
+  async save() {
     this.loading = true;
-    try{
-      await this.connection.send("SetNotifyConfig", { UID: this.uid ,NotifyParent: this.behavior.NotifyParent,NotifyStudent: this.behavior.NotifyStudent});
+    try {
+      await this.connection.send("SetNotifyConfig", { UID: this.uid, NotifyParent: this.behavior.NotifyParent, NotifyStudent: this.behavior.NotifyStudent });
     }
-    catch(err){
+    catch (err) {
       this.error = err;
     }
     this.loading = false;
