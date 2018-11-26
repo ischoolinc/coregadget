@@ -30,6 +30,8 @@ export class AppComponent implements OnInit {
   currentDate: Date = new Date(new Date().toDateString());
   todayDate: Date = new Date(new Date().toDateString());
 
+  quickSelectDate: Date[] = [];
+
   inputDate: string;
 
   constructor(private appService: AppService, private change: ChangeDetectorRef) {
@@ -40,6 +42,13 @@ export class AppComponent implements OnInit {
     this.currAbs = this.clearAbs;
     this.completed = false;
     this.inputDate = this.getDateString(this.currentDate);
+
+    this.quickSelectDate = [];
+    [1, 2, 3, 4, 5].forEach(i => {
+      var qdate = new Date(this.currentDate);
+      qdate.setDate(qdate.getDate() - qdate.getDay() + i);
+      this.quickSelectDate.push(qdate);
+    });
 
     // 取得假別、節次、老師帶班
     rx.Observable.combineLatest(
@@ -90,6 +99,14 @@ export class AppComponent implements OnInit {
     return dateTime.getFullYear() + "/" + (dateTime.getMonth() + 1) + "/" + dateTime.getDate();
   }
 
+  getDisplayDateString(dateTime: Date): string {
+    return (
+      (dateTime.getMonth() <= 8 ? "0" : "") + (dateTime.getMonth() + 1)
+      + "/" + (dateTime.getDate() <= 9 ? "0" : "") + + dateTime.getDate()
+      + " (" + ["日", "一", "二", "三", "四", "五", "六"][dateTime.getDay()] + ")"
+    );
+  }
+
   checkDate(input: string) {
     var d = Date.parse(input);
     if (d) {
@@ -110,6 +127,13 @@ export class AppComponent implements OnInit {
       this.toggleClassDate();
     }
     this.inputDate = this.getDateString(this.currentDate);
+
+    this.quickSelectDate = [];
+    [1, 2, 3, 4, 5].forEach(i => {
+      var qdate = new Date(this.currentDate);
+      qdate.setDate(qdate.getDate() - qdate.getDay() + i);
+      this.quickSelectDate.push(qdate);
+    });
   }
 
   /**切換班級或缺曠日期，取得「該日學生缺曠」、「點名完成」狀態 */

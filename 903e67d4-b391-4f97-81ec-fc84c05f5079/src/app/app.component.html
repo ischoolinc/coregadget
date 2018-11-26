@@ -1,11 +1,12 @@
 <div>
   <h1>導師-線上點名</h1>
   <div>
-    <div *ngIf="canCrossDate" style="margin-top:15px;">
+    <div *ngIf="canCrossDate"
+         style="margin-top:15px;">
       <span>日期：</span>
       <div style="position: relative;display: inline-block;vertical-align: middle;">
         <div class="input-group input-group-sm"
-             style="width:380px;">
+             style="width:600px;">
           <input type="text"
                  class="form-control"
                  [ngModel]="inputDate"
@@ -18,27 +19,34 @@
             </button>
             <button type="button"
                     (click)="setCurrentDate(currentDate, -1)"
-                    class="btn btn-default">前一天
+                    class="btn btn-default">&lt;&lt;
+            </button>
+            <button type="button"
+                    *ngFor="let qdate of quickSelectDate"
+                    class="btn btn-default"
+                    [ngClass]="{'btn-primary': getDateString(qdate)==getDateString(currentDate)&&getDateString(currentDate)==getDateString(todayDate), 'btn-warning': getDateString(qdate)==getDateString(currentDate)&&getDateString(currentDate)!==getDateString(todayDate)}"
+                    (click)="setCurrentDate(qdate)">{{getDisplayDateString(qdate)}}
             </button>
             <button type="button"
                     (click)="setCurrentDate(currentDate, 1)"
-                    class="btn btn-default">後一天
+                    class="btn btn-default">>>
             </button>
-            <button type="button"
+            <!-- <button type="button"
                     (click)="setCurrentDate(currentDate, -7)"
                     class="btn btn-default">上一週
             </button>
             <button type="button"
                     (click)="setCurrentDate(currentDate, 7)"
                     class="btn btn-default">下一週
-            </button>
+            </button> -->
           </span>
         </div>
       </div>
       <span *ngIf="inputDate!=getDateString(currentDate)"
             class="text-danger">日期格式錯誤</span>
     </div>
-    <div *ngIf="!canCrossDate" style="margin-top:15px;">
+    <div *ngIf="!canCrossDate"
+         style="margin-top:15px;">
       <span>日期：{{getDateString(todayDate)}}</span>
     </div>
     <div style="margin-top:15px;">
@@ -83,7 +91,8 @@
                         type="button"
                         class="btn btn-sm"
                         [ngClass]="{'btn-success': completed=='t', 'btn-warning': completed!='t'}">
-                  {{(completed=='t') ? '儲存變更' : '完成點名'}}
+                  {{(completed=='t') ? '儲存變更 '+getDisplayDateString(currentDate)+'' : '完成點名
+                  '+getDisplayDateString(currentDate)+''}}
                 </button>
               </div>
               <span *ngIf="completed=='t'"
@@ -96,13 +105,9 @@
                 <button (click)="saveData()"
                         type="button"
                         class="btn btn-sm btn-danger">
-                  儲存變更
+                  {{'儲存變更 '+getDisplayDateString(currentDate)+''}}
                 </button>
               </div>
-              <span *ngIf="completed=='t'"
-                    class="text-danger">
-                {{getDateString(currentDate)}}
-              </span>
             </div>
           </th>
           <th *ngFor="let period of periods"
