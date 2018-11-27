@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="讀取中" description="參數設定超連結" preload="true">
+    <Icon></Icon>
+  </ModulePrefs>
+</Module>

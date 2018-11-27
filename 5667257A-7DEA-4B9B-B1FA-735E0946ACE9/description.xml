@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="Behavior" description="康橋Behavior" preload="true">
+    <Icon>icon.png</Icon>
+    <Title lang="zh-TW">Behavior</Title>
+  </ModulePrefs>
+</Module>

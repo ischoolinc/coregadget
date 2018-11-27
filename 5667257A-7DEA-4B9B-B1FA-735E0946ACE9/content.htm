@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<!-- 特殊封裝不另行處理 -->
+	<script type='text/javascript'>
+        var gadget = window.parent.appsLoader.getGadget((function () {
+            var vars = [], hash;
+            var p = window.location.href.slice(window.location.href.indexOf('?') + 1);
+            if (p.indexOf("#") >= 0)
+                p = p.substring(0, p.indexOf("#"));
+            var hashes = p.split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = decodeURI(hashes[i]);
+                var key = hash.substring(0, hash.indexOf("="));
+                vars.push(key);
+                vars[key] = hash.substring(hash.indexOf("=") + 1);
+            }
+            return vars;
+        }()).id);
+        function next() {
+			var targetpage = "https://web2.ischool.com.tw/deployment/d10a1a37-37a5-4778-a10c-194fceac5e29/index.html?dsns="+gadget.getApplication().accessPoint+"&keepsignin=true#/behavior/main";
+			gadget.gadgetItem.find(".clickLink").attr("href", targetpage).attr('target', '_blank');	
+			gadget.setExterior({'icon':gadget.params.icon||'icon.png',title:gadget.params.title||''});
+        }
+    </script>
+</head>
+<body>
+    <img src="https://auth.ischool.com.tw/auth/loading.gif" style="position: fixed; left: 50%; right: 50%; top: 50%; bottom: 50%;
+        margin-top: -50px; margin-left: -50px;" onerror="next();" onload="next();" />
+</body>
+</html>
