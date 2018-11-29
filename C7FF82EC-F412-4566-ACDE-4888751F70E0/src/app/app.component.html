@@ -1,0 +1,1974 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column">
+    <div id="index"
+         page>
+        <nav aria-label="breadcrumb text-nowrap text-truncate">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"
+                    aria-current="page">輔導紀錄</li>
+            </ol>
+        </nav>
+        <!-- TAB NAV -->
+        <ul class="nav nav-justified nav-tabs mb-3">
+            <li class="nav-item">
+                <a aria-controls="tabOne"
+                   aria-selected="true"
+                   class="nav-link active"
+                   data-toggle="tab"
+                   href="#tabOne">輔導學生</a>
+            </li>
+            <li class="nav-item">
+                <a aria-controls="tabTwo"
+                   aria-selected="false"
+                   class="nav-link"
+                   data-toggle="tab"
+                   href="#tabTwo">輔導統計</a>
+            </li>
+            <li class="nav-item">
+                <a aria-controls="tabThree"
+                   aria-selected="false"
+                   class="nav-link"
+                   data-toggle="tab"
+                   href="#tabThree">
+                    轉介學生
+                    <span class="badge badge-pill badge-danger">1</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-controls="tabFour"
+                   aria-selected="false"
+                   class="nav-link"
+                   data-toggle="tab"
+                   href="#tabFour">個案資料</a>
+            </li>
+            <li class="nav-item">
+                <a aria-controls="tabFive"
+                   aria-selected="false"
+                   class="nav-link"
+                   data-toggle="tab"
+                   href="#tabFive">訪談填寫狀況</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- TAB 1 輔導學生 -->
+            <div aria-labelledby="tabOne-tab"
+                 class="tab-pane fade show active"
+                 id="tabOne">
+                <app-counsel-list></app-counsel-list>
+            </div>
+
+            <!-- TAB 2 輔導統計 -->
+            <div aria-labelledby="tabTwo-tab"
+                 class="tab-pane fade"
+                 id="tabTwo">
+                <app-counsel-statistics></app-counsel-statistics>
+            </div>
+
+            <!-- TAB 3 轉介學生 -->
+
+            <div aria-labelledby="tabThree-tab"
+                 class="tab-pane fade"
+                 id="tabThree">
+                <app-referral-list></app-referral-list>
+                <!-- <div class="dropdown">
+                  <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">全部</button>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="#">未處理</a>
+                      <a class="dropdown-item" href="#">已處理</a>
+                  </div>
+              </div>
+              <ul class="rwd-table">
+                  <li class="thead">
+                      <ol class="tr">
+                          <li>班級</li>
+                          <li>座號</li>
+                          <li>姓名</li>
+                          <li>性別</li>
+                          <li>班導師</li>
+                          <li>轉介日期</li>
+                          <li>轉介說明</li>
+                          <li>授理狀況</li>
+                          <li>授理日期</li>
+                          <li></li>
+                      </ol>
+                  </li>
+                  <li class="tbody">
+                      <ol class="tr">
+                          <li data-title="班級">三年一班</li>
+                          <li data-title="座號">1</li>
+                          <li data-title="姓名">吳明秋</li>
+                          <li data-title="性別">男</li>
+                          <li data-title="班導師">蔡貞儀</li>
+                          <li data-title="轉介日期">2018-12-01</li>
+                          <li class="text-left text-normal" data-title="轉介說明">邀請參加家長座談會</li>
+                          <li data-title="授理狀況">未處理</li>
+                          <li data-title="授理日期"></li>
+                          <li data-title="">
+                              <button class="btn btn-light" data-toggle="modal" data-backdrop="static"
+                                  data-target="#grant">編輯授理狀況</button>
+                              <button class="btn btn-light" data-toggle="modal" data-backdrop="static"
+                                  data-target="#case" disabled>建立個案</button>
+                          </li>
+                      </ol>
+                      <ol class="tr">
+                          <li data-title="班級">三年六班</li>
+                          <li data-title="座號">36</li>
+                          <li data-title="姓名">巫左光</li>
+                          <li data-title="性別">男</li>
+                          <li data-title="班導師">蔡貞儀</li>
+                          <li data-title="轉介日期">2018-12-01</li>
+                          <li class="text-left text-normal" data-title="轉介說明">邀請參加家長座談會</li>
+                          <li data-title="授理狀況">已處理</li>
+                          <li data-title="授理日期">2018-12-09</li>
+                          <li data-title="">
+                              <button class="btn btn-light" data-toggle="modal" data-backdrop="static"
+                                  data-target="#grant">編輯授理狀況</button>
+                              <button class="btn btn-light" data-toggle="modal" data-backdrop="static"
+                                  data-target="#case">建立個案</button>
+                          </li>
+                      </ol>
+                  </li>
+              </ul> -->
+            </div>
+
+            <!-- TAB 4 個案資料 -->
+            <div aria-labelledby="tabFour-tab"
+                 class="tab-pane fade"
+                 id="tabFour">
+                <mat-checkbox>Check me!</mat-checkbox>
+                <app-case-list></app-case-list>
+                <!-- <div class="d-flex">
+                  <button class="btn btn-info ml-auto" data-toggle="modal" data-backdrop="static" data-target="#newCase">
+                      <i class="material-icons">add</i>
+                      建立新個案
+                  </button>
+              </div>
+              <ul class="rwd-table">
+                  <li class="thead">
+                      <ol class="tr">
+                          <li>班級</li>
+                          <li>座號</li>
+                          <li>姓名</li>
+                          <li>性別</li>
+                          <li>學生身份</li>
+                          <li>個案編號</li>
+                          <li>問題類別</li>
+                          <li>認輔老師</li>
+                          <li>訪談次數</li>
+                          <li>結案</li>
+                          <li></li>
+                      </ol>
+                  </li>
+                  <li class="tbody">
+                      <ol class="tr">
+                          <li data-title="班級">三年一班</li>
+                          <li data-title="座號">1</li>
+                          <li data-title="姓名">吳明秋</li>
+                          <li data-title="性別">男</li>
+                          <li data-title="學生身份">一般生</li>
+                          <li data-title="個案編號">10126-0005</li>
+                          <li class="text-left text-normal" data-title="問題類別">家庭結構問題</li>
+                          <li data-title="認輔老師">蔡貞儀</li>
+                          <li data-title="訪談次數">4</li>
+                          <li data-title="結案">否</li>
+                          <li data-title="">
+                              <button class="btn btn-light" data-toggle="modal" data-backdrop="static"
+                                  data-target="#case">編輯</button>
+                          </li>
+                      </ol>
+                  </li>
+              </ul> -->
+            </div>
+
+            <!-- TAB 5 訪談填寫狀況 -->
+            <div aria-labelledby="tabFive-tab"
+                 class="tab-pane fade"
+                 id="tabFive">
+                <app-interview-statistics></app-interview-statistics>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增／修改訪談 Modal -->
+    <div class="modal fade"
+         id="addInterview"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addInterviewLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="addInterviewLabel">新增／修改訪談紀錄 - 吳明秋</h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="schoolYear"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                學年度
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="schoolYear"
+                                   placeholder="請輸入學年度"
+                                   value="107">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                學期
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="請輸入學期"
+                                   value="1">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="interviewDate"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                訪談日期
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="interviewDate"
+                                   placeholder="請輸入訪談日期"
+                                   value="2018-11-01">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            訪談方式
+                        </label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-light dropdown-toggle"
+                                        type="button"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">請選擇訪談方式</button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item"
+                                       href="#">個人</a>
+                                    <a class="dropdown-item"
+                                       href="#">電話</a>
+                                    <a class="dropdown-item"
+                                       href="#">聯絡簿</a>
+                                    <a class="dropdown-item"
+                                       href="#">個別約談家長</a>
+                                    <a class="dropdown-item"
+                                       href="#">其他</a>
+                                </div>
+                            </div>
+                            <input type="text"
+                                   class="form-control"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="interviewee"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                訪談對象
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="interviewee"
+                                   placeholder="請輸入訪談對象"
+                                   value="吳容江">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="recorder"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                記錄者
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="recorder"
+                                   placeholder="請輸入記錄者"
+                                   value="蔡貞儀">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            聯絡事項
+                        </label>
+                        <textarea class="form-control"
+                                  id="contactMatter"
+                                  rows="1"
+                                  placeholder="請輸入聯絡事項"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="description"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            輔導內容說明
+                            <span class="text-muted">（會顯示於輔導記錄卡）</span>
+                        </label>
+                        <textarea class="form-control"
+                                  id="description"
+                                  rows="1"
+                                  placeholder="請輸入輔導內容說明"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            上傳附件
+                        </label>
+                        <div class="custom-file">
+                            <input type="file"
+                                   class="custom-file-input"
+                                   id="customFile">
+                            <label class="custom-file-label"
+                                   for="customFile">選擇檔案</label>
+                        </div>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox"
+                               class="custom-control-input"
+                               id="referral">
+                        <label class="custom-control-label"
+                               for="referral">轉介輔導室</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="referralDescription"
+                               class="col-form-label">轉介說明</label>
+                        <textarea class="form-control"
+                                  id="referralDescription"
+                                  rows="1"
+                                  placeholder="請輸入轉介說明"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-dark"
+                            data-dismiss="modal">取消</button>
+                    <button type="button"
+                            class="btn btn-info">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 檢視訪談 Modal -->
+    <div class="modal fade"
+         id="viewInterview"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="viewInterviewLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="viewInterviewLabel">吳明秋（2018-12-01 107學年度 第1學期）</h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-md-3">
+                            訪談方式
+                        </dt>
+                        <dd class="col-md-9">
+                            個別約談家長
+                        </dd>
+                        <dt class="col-md-3">
+                            訪談對象
+                        </dt>
+                        <dd class="col-md-9">
+                            吳明秋的爸爸
+                        </dd>
+                        <dt class="col-md-3">
+                            記錄者
+                        </dt>
+                        <dd class="col-md-9">
+                            蔡貞儀
+                        </dd>
+                        <dt class="col-md-3">
+                            聯絡事項
+                        </dt>
+                        <dd class="col-md-9">
+                            邀請參加家長座談會
+                        </dd>
+                        <dt class="col-md-3">
+                            輔導內容說明
+                        </dt>
+                        <dd class="col-md-9">
+                            輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明
+                        </dd>
+                        <dt class="col-md-3">
+                            附件檔案
+                        </dt>
+                        <dd class="col-md-9">
+                            <a href="#"
+                               class="btn btn-link text-green pl-0">
+                                <i class="material-icons">attach_file</i>
+                                abcd.doc
+                            </a>
+                            <a href="#"
+                               class="btn btn-link text-green pl-0">
+                                <i class="material-icons">attach_file</i>
+                                abcd.doc
+                            </a>
+                        </dd>
+                        <dt class="col-md-3">
+                            轉介輔導室
+                        </dt>
+                        <dd class="col-md-9">
+                            否
+                        </dd>
+                        <dt class="col-md-3">
+                            轉介說明
+                        </dt>
+                        <dd class="col-md-9">
+                            無
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <div class="dropdown">
+                        <button aria-expanded="false"
+                                aria-haspopup="true"
+                                class="btn btn-dark"
+                                data-toggle="dropdown"
+                                id="dropdownMenuButton1"
+                                type="button">
+                            <i class="material-icons">print</i>
+                        </button>
+                        <div aria-labelledby="dropdownMenuButton1"
+                             class="dropdown-menu menu">
+                            <a class="dropdown-item"
+                               href="#">Excel</a>
+                            <a class="dropdown-item"
+                               href="#">Html</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編輯授理狀況 Modal -->
+    <!-- <div class="modal fade"
+         id="grant"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="grantLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document"> 
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="grantLabel">編輯授理狀況</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <div class="row bg-light border p-3">
+                      <div class="col-md-2 mb-3 font-weight-bold">班級座號</div>
+                      <div class="col-md-4 mb-3">三年一班 1號</div>
+                      <div class="col-md-2 mb-3 font-weight-bold">姓名性別</div>
+                      <div class="col-md-4 mb-3">吳明秋(男)</div>
+                      <div class="col-md-2 mb-3 font-weight-bold">班導師</div>
+                      <div class="col-md-4 mb-3">蔡貞儀</div>
+                      <div class="col-md-2 mb-3 font-weight-bold">轉介日期</div>
+                      <div class="col-md-4 mb-3">2018-12-01</div>
+                      <div class="col-md-2 font-weight-bold">轉介說明</div>
+                      <div class="col-md-10">邀請參加家長座談會</div>
+                  </div>
+                  <div class="form-group">
+                      <label for="contactMatter" class="col-form-label">
+                          <span class="text-samll text-danger">*</span>
+                          輔導室接受情形
+                      </label>
+                      <textarea class="form-control" id="contactMatter" rows="1" placeholder="請輸入輔導室接受情形"></textarea>
+                  </div>
+                  <div class="form-group">
+                      <label for="semester" class="col-form-label">
+                          <span class="text-samll text-danger">*</span>
+                          授理狀況
+                      </label>
+                      <div>
+                          <div class="custom-control custom-radio custom-control-inline">
+                              <input type="radio" id="r1" name="grantradio" class="custom-control-input" checked>
+                              <label class="custom-control-label" for="r1">未處理</label>
+                          </div>
+                          <div class="custom-control custom-radio custom-control-inline">
+                              <input type="radio" id="r2" name="grantradio" class="custom-control-input">
+                              <label class="custom-control-label" for="r2">已處理</label>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="interviewDate" class="col-form-label">
+                          <span class="text-samll text-danger">*</span>
+                          授理日期
+                      </label>
+                      <input type="text" class="form-control" id="interviewDate" placeholder="請輸入授理日期" value="0000-00-00">
+                  </div>
+                  <div class="form-group">
+                      <label for="contactMatter" class="col-form-label">
+                          <span class="text-samll text-danger">*</span>
+                          授理說明
+                      </label>
+                      <textarea class="form-control" id="contactMatter" rows="1" placeholder="請輸入授理說明"></textarea>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-dark" data-dismiss="modal">取消</button>
+                  <button type="button" class="btn btn-info">儲存</button>
+              </div>
+          </div>
+      </div> 
+    </div> -->
+
+    <!-- 建立個案 Modal -->
+    <div class="modal fade"
+         [attr.id]="'case'"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="caseLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="caseLabel">建立個案輔導資料</h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row bg-light border p-3">
+                        <div class="col-md-3">
+                            <img src="../assets/img/sample02.png"
+                                 class="w-100">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-3 mb-3 font-weight-bold">班級座號</div>
+                                <div class="col-md-9 mb-3">三年一班 1號</div>
+                                <div class="col-md-3 mb-3 font-weight-bold">姓名性別</div>
+                                <div class="col-md-9 mb-3">吳明秋(男)</div>
+                                <div class="col-md-3 mb-3 font-weight-bold">班導師</div>
+                                <div class="col-md-9 mb-3">蔡貞儀</div>
+                                <div class="col-md-3 font-weight-bold">學籍資料</div>
+                                <div class="col-md-9"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="schoolYear"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                個案編號
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="schoolYear"
+                                   placeholder="請輸入個案編號">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                個案日期
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="請輸入個案日期"
+                                   value="2018-12-01">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="interviewDate"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                個案來源
+                            </label>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    請選擇個案來源
+                                </button>
+                                <div class="dropdown-menu"
+                                     aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item"
+                                       href="#">導師轉介</a>
+                                    <a class="dropdown-item"
+                                       href="#">路邊捕獲</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            學生身分
+                        </label>
+                        <div class="custom-control custom-radio">
+                            <input type="radio"
+                                   id="kind1"
+                                   name="kind"
+                                   class="custom-control-input"
+                                   checked>
+                            <label class="custom-control-label"
+                                   for="kind1">
+                                一般生
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio"
+                                   id="kind2"
+                                   name="kind"
+                                   class="custom-control-input">
+                            <label class="custom-control-label"
+                                   for="kind2">
+                                疑似特殊生
+                                <div class="d-flex align-items-center my-1">┖ 類別：
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenuButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            請選擇類別
+                                        </button>
+                                        <div class="dropdown-menu"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                               href="#">視覺障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">聽覺機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">平衡機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">第五類消化、新陳代謝與內分泌系統相關構造及其功能</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio"
+                                   id="kind3"
+                                   name="kind"
+                                   class="custom-control-input">
+                            <label class="custom-control-label"
+                                   for="kind3">
+                                特殊生
+                                <div class="d-flex align-items-center my-1">┠ 等級：
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenuButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            請選擇等級
+                                        </button>
+                                        <div class="dropdown-menu"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                               href="#">輕度</a>
+                                            <a class="dropdown-item"
+                                               href="#">中度</a>
+                                            <a class="dropdown-item"
+                                               href="#">重度</a>
+                                            <a class="dropdown-item"
+                                               href="#">極重</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center my-1">┠ 類別：
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenuButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            請選擇類別
+                                        </button>
+                                        <div class="dropdown-menu"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                               href="#">視覺障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">聽覺機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">平衡機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">第五類消化、新陳代謝與內分泌系統相關構造及其功能</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex align-items-center">
+                                    <label for="semester"
+                                           class="col-form-label">
+                                        ┖ 領有身心障礙手冊：
+                                    </label>
+                                    <div>
+                                        <div class="custom-control custom-radio custom-control-inline mb-0">
+                                            <input type="radio"
+                                                   id="h1"
+                                                   name="handbook"
+                                                   class="custom-control-input">
+                                            <label class="custom-control-label"
+                                                   for="h1">是</label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline mb-0">
+                                            <input type="radio"
+                                                   id="h2"
+                                                   name="handbook"
+                                                   class="custom-control-input">
+                                            <label class="custom-control-label"
+                                                   for="h2">否</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            偏差行為
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior1">
+                                <label class="custom-control-label"
+                                       for="behavior1">外向性攻擊行為</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior2">
+                                <label class="custom-control-label"
+                                       for="behavior2">內向性攻擊行為</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior3">
+                                <label class="custom-control-label"
+                                       for="behavior3">偷竊</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior4">
+                                <label class="custom-control-label"
+                                       for="behavior4">離家出走</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior5">
+                                <label class="custom-control-label"
+                                       for="behavior5">孤僻羞怯</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior6">
+                                <label class="custom-control-label"
+                                       for="behavior6">衝動行為</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior7">
+                                <label class="custom-control-label"
+                                       for="behavior7">逃學</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior8">
+                                <label class="custom-control-label"
+                                       for="behavior8">焦慮反應</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior9">
+                                <label class="custom-control-label"
+                                       for="behavior9">容易分心</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior10">
+                                <label class="custom-control-label"
+                                       for="behavior10">說謊</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior11">
+                                <label class="custom-control-label"
+                                       for="behavior11">適應性不良</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior12">
+                                <label class="custom-control-label"
+                                       for="behavior12">恐嚇勒索</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior13">
+                                <label class="custom-control-label"
+                                       for="behavior13">遊蕩</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior14">
+                                <label class="custom-control-label"
+                                       for="behavior14">參加不良幫派</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior15">
+                                <label class="custom-control-label"
+                                       for="behavior15">賭博</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior16">
+                                <label class="custom-control-label"
+                                       for="behavior16">抽煙</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior17">
+                                <label class="custom-control-label"
+                                       for="behavior17">吸毒</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior18">
+                                <label class="custom-control-label"
+                                       for="behavior18">喝酒</label>
+                            </div>
+                            <div class="input-group w-50">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="behavior19">
+                                        <label class="custom-control-label"
+                                               for="behavior19">其他</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入其他內容">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            問題類別
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q1">
+                                <label class="custom-control-label"
+                                       for="q1">學習適應問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q2">
+                                <label class="custom-control-label"
+                                       for="q2">親職教育問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q3">
+                                <label class="custom-control-label"
+                                       for="q3">注意力缺陷與過動特質</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q4">
+                                <label class="custom-control-label"
+                                       for="q4">特殊需求兒童社會福利</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q5">
+                                <label class="custom-control-label"
+                                       for="q5">學校適應問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q6">
+                                <label class="custom-control-label"
+                                       for="q6">家庭結構問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q7">
+                                <label class="custom-control-label"
+                                       for="q7">發展障礙</label>
+                            </div>
+                            <div class="input-group w-50">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="q8">
+                                        <label class="custom-control-label"
+                                               for="q8">其他</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入其他內容">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            問題描述
+                        </label>
+                        <textarea class="form-control"
+                                  id="contactMatter"
+                                  rows="1"
+                                  placeholder="請輸入 500 字以內問題描述"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            特殊狀況
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="input-group w-100 mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="s1">
+                                        <label class="custom-control-label"
+                                               for="s1">長期服用藥物，藥名：</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入藥名">
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s2">
+                                <label class="custom-control-label"
+                                       for="s2">曾有自殺、自傷企圖</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s3">
+                                <label class="custom-control-label"
+                                       for="s3">已建檔之個案</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s4">
+                                <label class="custom-control-label"
+                                       for="s4">新移民子女</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s5">
+                                <label class="custom-control-label"
+                                       for="s5">原住民子女</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s6">
+                                <label class="custom-control-label"
+                                       for="s6">單親家庭</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s7">
+                                <label class="custom-control-label"
+                                       for="s7">隔代教養</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s8">
+                                <label class="custom-control-label"
+                                       for="s8">家暴議題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s9">
+                                <label class="custom-control-label"
+                                       for="s9">寄養家庭</label>
+                            </div>
+                            <div class="input-group w-100">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="s10">
+                                        <label class="custom-control-label"
+                                               for="s10">其他</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入其他內容">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            評估結果
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result1">
+                                <label class="custom-control-label"
+                                       for="result1">轉介認輔教師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result2">
+                                <label class="custom-control-label"
+                                       for="result2">轉介兼輔教師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result3">
+                                <label class="custom-control-label"
+                                       for="result3">轉介專輔教師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result4">
+                                <label class="custom-control-label"
+                                       for="result4">轉介駐區心理師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result5">
+                                <label class="custom-control-label"
+                                       for="result5">轉介駐區社工</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result6">
+                                <label class="custom-control-label"
+                                       for="result6">轉介駐區精神科醫師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result7">
+                                <label class="custom-control-label"
+                                       for="result7">轉介社會局</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewDate"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            認輔老師
+                        </label>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle"
+                                    type="button"
+                                    id="dropdownMenuButton"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">
+                                請選擇認輔老師
+                            </button>
+                            <div class="dropdown-menu"
+                                 aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item"
+                                   href="#">ABC</a>
+                                <a class="dropdown-item"
+                                   href="#">DEF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="schoolYear"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                是否結案
+                            </label>
+                            <div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio"
+                                           id="closingCaseYes"
+                                           name="closingCase"
+                                           class="custom-control-input">
+                                    <label class="custom-control-label"
+                                           for="closingCaseYes">是</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio"
+                                           id="closingCaseNo"
+                                           name="closingCase"
+                                           class="custom-control-input">
+                                    <label class="custom-control-label"
+                                           for="closingCaseNo">否</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                結案日期
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="0000-00-00">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                結案人員
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="請輸入結案人員">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            結案說明
+                        </label>
+                        <textarea class="form-control"
+                                  id="contactMatter"
+                                  rows="1"
+                                  placeholder="請輸入 400 字以內結案說明"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-dark"
+                            data-dismiss="modal">取消</button>
+                    <button type="button"
+                            class="btn btn-info">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 建立新個案 Modal -->
+    <div class="modal fade"
+         id="newCase"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="newCaseLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="newCaseLabel">建立新個案輔導資料</h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex">
+                        <div class="dropdown mr-2 mb-3">
+                            <button class="btn btn-light dropdown-toggle"
+                                    type="button"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">請選擇班級</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item"
+                                   href="#">一年一班</a>
+                                <a class="dropdown-item"
+                                   href="#">一年二班</a>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle"
+                                    type="button"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">請選擇座號</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item"
+                                   href="#">1</a>
+                                <a class="dropdown-item"
+                                   href="#">2</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row bg-light border p-3">
+                        <div class="col-md-3">
+                            <img src="../assets/img/nophoto.png"
+                                 class="w-100">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-3 mb-3 font-weight-bold">姓名性別</div>
+                                <div class="col-md-9 mb-3"></div>
+                                <div class="col-md-3 mb-3 font-weight-bold">班導師</div>
+                                <div class="col-md-9 mb-3"></div>
+                                <div class="col-md-3 font-weight-bold">學籍資料</div>
+                                <div class="col-md-9"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="schoolYear"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                個案編號
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="schoolYear"
+                                   placeholder="請輸入個案編號">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                個案日期
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="請輸入個案日期"
+                                   value="2018-12-01">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="interviewDate"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                個案來源
+                            </label>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    請選擇個案來源
+                                </button>
+                                <div class="dropdown-menu"
+                                     aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item"
+                                       href="#">導師轉介</a>
+                                    <a class="dropdown-item"
+                                       href="#">路邊捕獲</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            學生身分
+                        </label>
+                        <div class="custom-control custom-radio">
+                            <input type="radio"
+                                   id="kind1"
+                                   name="kind"
+                                   class="custom-control-input"
+                                   checked>
+                            <label class="custom-control-label"
+                                   for="kind1">
+                                一般生
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio"
+                                   id="kind2"
+                                   name="kind"
+                                   class="custom-control-input">
+                            <label class="custom-control-label"
+                                   for="kind2">
+                                疑似特殊生
+                                <div class="d-flex align-items-center my-1">┖ 類別：
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenuButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            請選擇類別
+                                        </button>
+                                        <div class="dropdown-menu"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                               href="#">視覺障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">聽覺機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">平衡機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">第五類消化、新陳代謝與內分泌系統相關構造及其功能</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio"
+                                   id="kind3"
+                                   name="kind"
+                                   class="custom-control-input">
+                            <label class="custom-control-label"
+                                   for="kind3">
+                                特殊生
+                                <div class="d-flex align-items-center my-1">┠ 等級：
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenuButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            請選擇等級
+                                        </button>
+                                        <div class="dropdown-menu"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                               href="#">輕度</a>
+                                            <a class="dropdown-item"
+                                               href="#">中度</a>
+                                            <a class="dropdown-item"
+                                               href="#">重度</a>
+                                            <a class="dropdown-item"
+                                               href="#">極重</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center my-1">┠ 類別：
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenuButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            請選擇類別
+                                        </button>
+                                        <div class="dropdown-menu"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                               href="#">視覺障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">聽覺機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">平衡機能障礙者</a>
+                                            <a class="dropdown-item"
+                                               href="#">第五類消化、新陳代謝與內分泌系統相關構造及其功能</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex align-items-center">
+                                    <label for="semester"
+                                           class="col-form-label">
+                                        ┖ 領有身心障礙手冊：
+                                    </label>
+                                    <div>
+                                        <div class="custom-control custom-radio custom-control-inline mb-0">
+                                            <input type="radio"
+                                                   id="h1"
+                                                   name="handbook"
+                                                   class="custom-control-input">
+                                            <label class="custom-control-label"
+                                                   for="h1">是</label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline mb-0">
+                                            <input type="radio"
+                                                   id="h2"
+                                                   name="handbook"
+                                                   class="custom-control-input">
+                                            <label class="custom-control-label"
+                                                   for="h2">否</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            偏差行為
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior1">
+                                <label class="custom-control-label"
+                                       for="behavior1">外向性攻擊行為</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior2">
+                                <label class="custom-control-label"
+                                       for="behavior2">內向性攻擊行為</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior3">
+                                <label class="custom-control-label"
+                                       for="behavior3">偷竊</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior4">
+                                <label class="custom-control-label"
+                                       for="behavior4">離家出走</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior5">
+                                <label class="custom-control-label"
+                                       for="behavior5">孤僻羞怯</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior6">
+                                <label class="custom-control-label"
+                                       for="behavior6">衝動行為</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior7">
+                                <label class="custom-control-label"
+                                       for="behavior7">逃學</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior8">
+                                <label class="custom-control-label"
+                                       for="behavior8">焦慮反應</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior9">
+                                <label class="custom-control-label"
+                                       for="behavior9">容易分心</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior10">
+                                <label class="custom-control-label"
+                                       for="behavior10">說謊</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior11">
+                                <label class="custom-control-label"
+                                       for="behavior11">適應性不良</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior12">
+                                <label class="custom-control-label"
+                                       for="behavior12">恐嚇勒索</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior13">
+                                <label class="custom-control-label"
+                                       for="behavior13">遊蕩</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior14">
+                                <label class="custom-control-label"
+                                       for="behavior14">參加不良幫派</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior15">
+                                <label class="custom-control-label"
+                                       for="behavior15">賭博</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior16">
+                                <label class="custom-control-label"
+                                       for="behavior16">抽煙</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior17">
+                                <label class="custom-control-label"
+                                       for="behavior17">吸毒</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-25">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="behavior18">
+                                <label class="custom-control-label"
+                                       for="behavior18">喝酒</label>
+                            </div>
+                            <div class="input-group w-50">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="behavior19">
+                                        <label class="custom-control-label"
+                                               for="behavior19">其他</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入其他內容">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            問題類別
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q1">
+                                <label class="custom-control-label"
+                                       for="q1">學習適應問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q2">
+                                <label class="custom-control-label"
+                                       for="q2">親職教育問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q3">
+                                <label class="custom-control-label"
+                                       for="q3">注意力缺陷與過動特質</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q4">
+                                <label class="custom-control-label"
+                                       for="q4">特殊需求兒童社會福利</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q5">
+                                <label class="custom-control-label"
+                                       for="q5">學校適應問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q6">
+                                <label class="custom-control-label"
+                                       for="q6">家庭結構問題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="q7">
+                                <label class="custom-control-label"
+                                       for="q7">發展障礙</label>
+                            </div>
+                            <div class="input-group w-50">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="q8">
+                                        <label class="custom-control-label"
+                                               for="q8">其他</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入其他內容">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            問題描述
+                        </label>
+                        <textarea class="form-control"
+                                  id="contactMatter"
+                                  rows="1"
+                                  placeholder="請輸入 500 字以內問題描述"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            特殊狀況
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="input-group w-100 mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="s1">
+                                        <label class="custom-control-label"
+                                               for="s1">長期服用藥物，藥名：</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入藥名">
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s2">
+                                <label class="custom-control-label"
+                                       for="s2">曾有自殺、自傷企圖</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s3">
+                                <label class="custom-control-label"
+                                       for="s3">已建檔之個案</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s4">
+                                <label class="custom-control-label"
+                                       for="s4">新移民子女</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s5">
+                                <label class="custom-control-label"
+                                       for="s5">原住民子女</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s6">
+                                <label class="custom-control-label"
+                                       for="s6">單親家庭</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s7">
+                                <label class="custom-control-label"
+                                       for="s7">隔代教養</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s8">
+                                <label class="custom-control-label"
+                                       for="s8">家暴議題</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="s9">
+                                <label class="custom-control-label"
+                                       for="s9">寄養家庭</label>
+                            </div>
+                            <div class="input-group w-100">
+                                <div class="input-group-prepend">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="s10">
+                                        <label class="custom-control-label"
+                                               for="s10">其他</label>
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="請輸入其他內容">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            評估結果
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result1">
+                                <label class="custom-control-label"
+                                       for="result1">轉介認輔教師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result2">
+                                <label class="custom-control-label"
+                                       for="result2">轉介兼輔教師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result3">
+                                <label class="custom-control-label"
+                                       for="result3">轉介專輔教師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result4">
+                                <label class="custom-control-label"
+                                       for="result4">轉介駐區心理師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result5">
+                                <label class="custom-control-label"
+                                       for="result5">轉介駐區社工</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result6">
+                                <label class="custom-control-label"
+                                       for="result6">轉介駐區精神科醫師</label>
+                            </div>
+                            <div class="custom-control custom-checkbox w-50">
+                                <input type="checkbox"
+                                       class="custom-control-input"
+                                       id="result7">
+                                <label class="custom-control-label"
+                                       for="result7">轉介社會局</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewDate"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            認輔老師
+                        </label>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle"
+                                    type="button"
+                                    id="dropdownMenuButton"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">
+                                請選擇認輔老師
+                            </button>
+                            <div class="dropdown-menu"
+                                 aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item"
+                                   href="#">ABC</a>
+                                <a class="dropdown-item"
+                                   href="#">DEF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="schoolYear"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                是否結案
+                            </label>
+                            <div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio"
+                                           id="closingCaseYes"
+                                           name="closingCase"
+                                           class="custom-control-input">
+                                    <label class="custom-control-label"
+                                           for="closingCaseYes">是</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio"
+                                           id="closingCaseNo"
+                                           name="closingCase"
+                                           class="custom-control-input">
+                                    <label class="custom-control-label"
+                                           for="closingCaseNo">否</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                結案日期
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="0000-00-00">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="semester"
+                                   class="col-form-label">
+                                <span class="text-samll text-danger">*</span>
+                                結案人員
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="semester"
+                                   placeholder="請輸入結案人員">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMatter"
+                               class="col-form-label">
+                            <span class="text-samll text-danger">*</span>
+                            結案說明
+                        </label>
+                        <textarea class="form-control"
+                                  id="contactMatter"
+                                  rows="1"
+                                  placeholder="請輸入 400 字以內結案說明"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-dark"
+                            data-dismiss="modal">取消</button>
+                    <button type="button"
+                            class="btn btn-info">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center p-2 mt-auto">
+        Powered By ischool
+    </footer>
+</div>
