@@ -302,6 +302,151 @@ var app = angular
                 $scope.$apply();
             }
         }
+        // 體適能測驗項目
+        $scope.arrayTestItem = [
+            {
+                Name: "測驗日期",
+                Key: "test_date",
+                Validate: isValidDate2,
+                errorMsg: "資料格式不正確，請填入EX:2014/08/07"
+            },
+            {
+                Name: "身高(cm)",
+                Key: "height",
+                Validate: /^[1-9]\d*$|^[1-9]\d*\.\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "體重(kg)",
+                Key: "weight",
+                Validate: /^[1-9]\d*$|^[1-9]\d*\.\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "坐姿體前彎(cm)",
+                Key: "sit_and_reach",
+                Validate: /^[1-9]\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "立定跳遠(cm)",
+                Key: "standing_long_jump",
+                Validate: /^[1-9]\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "仰臥起坐(次)",
+                Key: "sit_up",
+                Validate: /^[1-9]\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "心肺適能(秒)",
+                Key: "cardiorespiratory",
+                Validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
+                errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
+            },
+        ];
+        // 匯入的項目
+        $scope.targetItem = {};
+        // 初始匯入按鈕
+        $scope.initImportItem = function () {
+            $scope.arrayTestItem.forEach(function (item) {
+                item.Fn = function () {
+                    delete item.InputData;
+                    delete item.InputValues;
+                    $('#importModal').modal('show');
+                    $scope.targetItem = item
+                };
+                item.Parse = function () {
+                    item.InputData = item.InputData || '';
+                    item.InputValues = item.InputData.split("\n");
+                    item.HasError = false;
+                    // 資料驗證
+                    for (var i = 0; i < item.InputValues.length; i++) {
+                        var flag = false;
+                        $scope.list[i][item.Key] = item.InputValues[i];
+                        var value = $scope.list[i][item.Key];
+                        //var value = Number(item.InputValues[i].trim());
+
+                        if (!isNaN(Number(value))) {
+                            if (item.InputValues[i] != '') {
+                                flag = true;
+                            }
+                        }
+                        // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
+                        if (item.InputValues[i] == '-') {
+                            flag = true;
+                            item.InputValues[i] = '';
+                        }
+                        // 執行驗證規則
+                        if (angular.isFunction(item.Validate)) {
+                            if (item.Validate(value)) {
+                                flag = true;
+                            }
+                        }
+                        else {
+                            if (value.match(item.Validate)) {
+                                flag = true;
+                            }
+                        }
+                        // 最後
+                        if (flag) {
+                            if (!isNaN(value) && item.InputValues[i] != '') {
+                                item.InputValues[i] = value;
+                            }
+                        }
+                        else {
+                            item.InputValues[i] = '錯誤';//item.errorMsg;
+                            item.HasError = true;
+                        }
+                        
+                    }
+                    // 狀況:匯入的資料超過學生數
+                    $scope.list.forEach(function (stuRec, index) {
+                        if (index >= item.InputValues.length) {
+                            item.InputValues.push('錯誤');
+                            item.HasError = true;
+                        }
+                    });
+                };
+                item.GoBack = function () {
+                    delete item.InputValues;
+                };
+                item.Import = function () {
+                    if (item.HasError == true)
+                        return;
+                    // 介面暫存資料
+                    //$scope.list.forEach(function (stuRec, index) {
+                    //    if (!item.InputValues[index] && item.InputValues[index] !== '')
+                    //        stuRec[item.Key] = '';
+                    //    else
+                    //        stuRec[item.Key] = item.InputValues[index];
+                    //});
+                    // 資料整理
+                    var dataRow = [];
+                    $scope.list.forEach(function (stuRec, index) {
+                        dataRow.push({
+                            uid: stuRec.uid,
+                            student_id: stuRec.student_id,
+                            seat_no: stuRec.seat_no,
+                            name: stuRec.name,
+                            value: stuRec[item.Key]
+                        });
+                    });
+
+                    // 儲存置資料庫
+                    $scope.save({
+                        column: item.Key,
+                        course_id: $scope.current.id,
+                        detail: dataRow
+                    });
+
+                    $('#importModal').modal('hide');
+                };
+            });
+        };
+
     });
 var set_error_message = function(select_str, serviceName, error) {
     var tmp_msg;
