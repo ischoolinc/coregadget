@@ -271,7 +271,7 @@
                             if (!response)
                                 alert('GetHomeVisitingRecord Error' + JSON.stringify(error));
                             else {
-                                stuRec.HomeVisitRecord = [].concat(response.HomeVisitingRecord || []);
+                                stuRec.HomeVisitRecord = [].concat(response.HomeVisitingRecord || []).reverse();
                                 
                                 console.log(stuRec.HomeVisitRecord);
                                 

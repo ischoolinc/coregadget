@@ -388,12 +388,12 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-4" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">
+                                        <div class="col-xs-12" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">
                                             <span>訪談內容：</span><span>{{rec.Content}}</span>
                                         </div>
                                     </div>
                                     <!-- 如果有轉介，則出現下方-->
-                                    <div class="row" ng-if="rec.IsReferral">
+                                    <div class="row hide" ng-if="rec.IsReferral">
                                         <div class="col-xs-12" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">
                                             <span>轉介說明：</span><span>{{rec.ReferralDesc}}</span>
                                         </div>
@@ -447,11 +447,12 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-4" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">
-                                            <span>訪談內容：</span><span>{{HomeVisitDetial.Content}}</span>
+                                        <div class="col-xs-12">
+                                            <span>訪談內容：</span>
+                                            <div style="padding: 10px 0px 0px 30px;white-space: pre-wrap;">{{HomeVisitDetial.Content}}</div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <!--<div class="row">
                                         <div class="col-xs-12 col-sm-4" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">
                                             <span>轉介輔導室：</span>
                                             <span>{{ HomeVisitDetial.IsReferral }}</span>
@@ -462,7 +463,7 @@
                                         <div class="col-xs-12" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">
                                             <span>輔導室受理說明：</span><span>{{rec.ReferralResponse}}</span>
                                         </div>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -619,7 +620,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div style="display: inline-block;width: 100%;">
+                                            <!--<div style="display: inline-block;width: 100%;">
                                                 <div class="form-group col-sm-12"
                                                         style="padding:0px;">
                                                     <label class="col-sm-2 control-label" for="Referral">
@@ -639,7 +640,7 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>-->
 
                                             <!-- <div class="form-group">
                                                 <label class="col-sm-2 control-label">敏感資訊：</label>
@@ -657,7 +658,7 @@
                                             </div> -->
 
                                             <!-- 轉介說明-->
-                                            <div style="display: inline-block;width: 100%;" ng-if="HomeVisitDetial.IsReferral">
+                                            <!--<div style="display: inline-block;width: 100%;" ng-if="HomeVisitDetial.IsReferral">
                                                 <div class="form-group col-sm-12"
                                                         style="padding:0px;">
                                                     <label class="col-sm-2 control-label" for="ReferralDesc">
@@ -672,7 +673,7 @@
                                                             ng-model="HomeVisitDetial.ReferralDesc"></textarea>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>-->
 
                                             
                                         </fieldset>
