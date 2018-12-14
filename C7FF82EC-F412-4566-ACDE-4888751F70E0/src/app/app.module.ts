@@ -9,6 +9,19 @@ import { CounselListComponent } from './counsel/counsel-list/counsel-list.compon
 import { GrantModalComponent } from './referral/grant-modal/grant-modal.component';
 import { MatModuleModule } from './mat-module/mat-module.module';
 import { InterviewStatisticsComponent } from './statistics/interview-statistics/interview-statistics.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AddInterviewModalComponent } from './counsel/counsel-detail/interview-detail/add-interview-modal/add-interview-modal.component';
+import { ViewInterviewModalComponent } from './counsel/counsel-detail/interview-detail/view-interview-modal/view-interview-modal.component';
+import { NewCaseModalComponent } from './case/new-case-modal/new-case-modal.component';
+import { MainComponent } from './main/main.component';
+import { CounselComponent } from './counsel/counsel.component';
+import { CounselDetailComponent } from './counsel/counsel-detail/counsel-detail.component';
+import { InterviewDetailComponent } from './counsel/counsel-detail/interview-detail/interview-detail.component';
+import { PsychologicalTestDetailComponent } from './counsel/counsel-detail/psychological-test-detail/psychological-test-detail.component';
+import { AbsentDetailComponent } from './counsel/counsel-detail/absent-detail/absent-detail.component';
+import { ExamScoreDetailComponent } from './counsel/counsel-detail/exam-score-detail/exam-score-detail.component';
+import { SemesterScoreDetailComponent } from './counsel/counsel-detail/semester-score-detail/semester-score-detail.component';
+import { CounselItemDetailComponent } from './counsel/counsel-detail/counsel-item-detail/counsel-item-detail.component';
 
 @NgModule({
   declarations: [
@@ -18,11 +31,24 @@ import { InterviewStatisticsComponent } from './statistics/interview-statistics/
     CaseListComponent,
     CounselListComponent,
     GrantModalComponent,
-    InterviewStatisticsComponent
+    InterviewStatisticsComponent,
+    AddInterviewModalComponent,
+    ViewInterviewModalComponent,
+    NewCaseModalComponent,
+    MainComponent,
+    CounselComponent,
+    CounselDetailComponent,
+    InterviewDetailComponent,
+    PsychologicalTestDetailComponent,
+    AbsentDetailComponent,
+    ExamScoreDetailComponent,
+    SemesterScoreDetailComponent,
+    CounselItemDetailComponent
   ],
   imports: [
     BrowserModule,
-    MatModuleModule
+    MatModuleModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
