@@ -517,6 +517,10 @@
                                      ng-attr-title="{{stuRec['Origin_'+assessmentRec.Key]?'Origin：'+stuRec['Origin_'+assessmentRec.Key]:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
+                                <div ng-if="!checkCustomAccessment(stuRec, assessmentRec.Key)"
+                                     ng-attr-title="{{stuRec['Check_'+assessmentRec.Key]?'Preview：'+stuRec['Check_'+assessmentRec.Key]:''}}"
+                                     style="display:inline-block;background-color:darkgoldenrod;position:absolute;right:3px;top:3px;width:5px;height:6px;border-radius:5px;">
+                                </div>
                                 <span>
                                     {{stuRec['Val_'+assessmentRec.Key]}}
                                 </span>

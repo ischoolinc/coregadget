@@ -155,10 +155,10 @@
                                                     assessmentRec.Percentage = Math.round(10000 * weight / (totalWeight || 1)) / 100;
                                                 }
 
-                                                assessmentRec.TermName = termRec.Name
-                                                assessmentRec.SubjectName = subjRec.Name
-                                                assessmentRec.AssessmentName = assessmentRec.Name
-                                                assessmentRec.CustomAssessmentName = ""
+                                                assessmentRec.TermName = termRec.Name;
+                                                assessmentRec.SubjectName = subjRec.Name;
+                                                assessmentRec.AssessmentName = assessmentRec.Name;
+                                                assessmentRec.CustomAssessmentName = "";
                                                 assessmentRec.Key = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName + "^_^" + assessmentRec.AssessmentName + "^_^" + assessmentRec.CustomAssessmentName;
 
                                                 assessmentRec.Editable = false;
@@ -355,6 +355,7 @@
                         $scope.AssessmentItem.forEach(function (assessmentItem) {
                             $scope.studentList.forEach(function (stuRec) {
                                 stuRec["Val_" + assessmentItem.Key] = stuRec["Origin_" + assessmentItem.Key];
+                                delete stuRec["Check_" + assessmentItem.Key];
                             });
                         });
                     }
@@ -366,7 +367,7 @@
                     else {
                         var index = 0;
                         [].concat($scope.AssessmentItem || []).forEach(function (item, i) {
-                            if (!index && item.Editable)
+                            if (!index && item.Editable && item.AllowCustomAssessment !== 'true')
                                 index = i;
                         });
                         $scope.setCurrent(null, $scope.AssessmentItem[index], true, true);
@@ -484,9 +485,8 @@
                 }
             };
 
-            $scope.calcCustomAssessment = function (assessment) {
+            $scope.calcCustomAssessment = function (assessment, forCheck) {
                 if ($scope.current.Subject.Assessment.indexOf(assessment) >= 0 && assessment.TeacherSequence == $scope.current.Course.MySequence) {
-
                     $scope.connection.send({
                         service: "gradebook.GetCustomAssessment",
                         autoRetry: true,
@@ -516,13 +516,25 @@
                                                 hasVal = true;
                                             }
                                         });
-                                        if (hasVal) {
-                                            stuRec["Val_" + assessment.Key] = Math.round(100 * weightSum / (totalWeight || 1)) / 100;
+                                        if (forCheck) {
+                                            //檢查成績不一致用
+                                            if (hasVal) {
+                                                stuRec["Check_" + assessment.Key] = Math.round(100 * weightSum / (totalWeight || 1)) / 100;
+                                            }
+                                            else {
+                                                delete stuRec["Check_" + assessment.Key];
+                                            }
                                         }
                                         else {
-                                            delete stuRec["Val_" + assessment.Key];
+                                            //計算成績
+                                            if (hasVal) {
+                                                stuRec["Val_" + assessment.Key] = Math.round(100 * weightSum / (totalWeight || 1)) / 100;
+                                            }
+                                            else {
+                                                delete stuRec["Val_" + assessment.Key];
+                                            }
+                                            $scope.calc();
                                         }
-                                        $scope.calc();
                                     });
                                 });
                             }
@@ -733,6 +745,14 @@
                     $timeout(function () {
                         $('.pg-grade-textbox:visible').select();
                     }, 1);
+                }
+                //試算子成績項目是否應重算
+                if ($scope.current.AssessmentMode == "ReportCard" && $scope.current.Term.InputSession == "input") {
+                    [].concat($scope.current.Subject.Assessment || []).forEach(function (assessmentRec) {
+                        if (assessmentRec.AllowCustomAssessment == 'true') {
+                            $scope.calcCustomAssessment(assessmentRec, true);
+                        }
+                    });
                 }
             };
 
@@ -1071,12 +1091,34 @@
                     return true;
                 }
                 else {
-                    if ((studentRec['Origin_' + key] || "") == (studentRec['Val_' + key] || ""))
+                    if ((studentRec['Origin_' + key] || "") === (studentRec['Val_' + key] || "")
+                        && studentRec['Origin_' + key] !== 0
+                        && studentRec['Val_' + key] !== 0
+                    )
                         return true;
                     else
                         return false;
                 }
-                //return (studentRec['Origin_' + key] == studentRec['Val_' + key]) || (studentRec['Origin_' + key] || "" !== studentRec['Val_' + key] || "");
+            };
+
+            $scope.checkCustomAccessment = function (studentRec, key) {
+                if (studentRec['Check_' + key] == 0 || studentRec['Check_' + key]) {
+                    if (studentRec['Check_' + key] == studentRec['Val_' + key]) {
+                        return true;
+                    }
+                    else {
+                        if ((studentRec['Check_' + key] || "") === (studentRec['Val_' + key] || "")
+                            && studentRec['Check_' + key] !== 0
+                            && studentRec['Val_' + key] !== 0
+                        )
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+                else {
+                    return true;
+                }
             };
         }
     ])
