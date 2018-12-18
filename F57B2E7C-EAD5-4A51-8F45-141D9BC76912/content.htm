@@ -203,12 +203,12 @@
             </div>
             <div class="btn-group">
                 <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    {{current.AssessmentMode == "ReportCard"?"Report Card":current.Assessment.Name}}
+                    {{current.AssessmentMode == "ReportCard"?"Submit":current.Assessment.Name}}
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <li ng-class="{active:current.AssessmentMode == 'ReportCard'}">
-                        <a href="javascript:void(0)" ng-click="checkChange()?setAssessment('ReportCard'):null">Report Card</a>
+                        <a href="javascript:void(0)" ng-click="checkChange()?setAssessment('ReportCard'):null">Submit</a>
                     </li>
                     <li ng-if="(current.Subject.Assessment).length> 0" class="divider"></li>
                     <li ng-repeat="assessment in current.Subject.Assessment"
