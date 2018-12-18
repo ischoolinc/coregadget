@@ -323,6 +323,7 @@
                         Name: "Term Score"
                         , Key: $scope.current.Term.Name + "^_^" + $scope.current.Subject.Name + "^_^Avg.^_^"
                         , Type: "Program"
+                        , IsPreview: true
                         , Editable: false
                         , Percentage: 0
                         , Calc: function () {
@@ -333,7 +334,7 @@
                                     if (assessmentRec != assessmentAvg) {
                                         var weight = Number(assessmentRec.Weight);
                                         var score = Number(stuRec["Val_" + assessmentRec.Key]);
-                                        if (weight && (score || (score === 0 && "" + stuRec["Val_" + assessmentRec.Key] != "" ))) {
+                                        if (weight && (score || (score === 0 && "" + stuRec["Val_" + assessmentRec.Key] != ""))) {
                                             totalWeight += weight;
                                             weightSum += score * weight;
                                         }
@@ -400,6 +401,7 @@
                                         , AssessmentName: $scope.current.Assessment.Name
                                         , CustomAssessmentName: "" + $scope.current.Assessment.Name
                                         , Type: "Program"
+                                        , IsPreview: true
                                         , Editable: false
                                         , Percentage: 0
                                         , Calc: function () {
@@ -410,7 +412,7 @@
                                                     if (assessmentRec != assessmentAvg) {
                                                         var weight = Number(assessmentRec.Weight);
                                                         var score = Number(stuRec["Val_" + assessmentRec.Key]);
-                                                        if (weight && (score || (score === 0 && "" + stuRec["Val_" + assessmentRec.Key] != "" ))) {
+                                                        if (weight && (score || (score === 0 && "" + stuRec["Val_" + assessmentRec.Key] != ""))) {
                                                             totalWeight += weight;
                                                             weightSum += score * weight;
                                                         }
@@ -508,7 +510,7 @@
                                             assessmentRec.Key = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName + "^_^" + assessmentRec.AssessmentName + "^_^" + assessmentRec.CustomAssessmentName;
                                             var weight = Number(assessmentRec.Weight);
                                             var score = Number(stuRec["Origin_" + assessmentRec.Key]);
-                                            if (weight && (score || (score === 0 && "" + stuRec["Origin_" + assessmentRec.Key] != "" ))) {
+                                            if (weight && (score || (score === 0 && "" + stuRec["Origin_" + assessmentRec.Key] != ""))) {
                                                 totalWeight += weight;
                                                 weightSum += score * weight;
                                                 hasVal = true;
@@ -727,7 +729,7 @@
                 else
                     $scope.current.Value = "";
                 if (setFocus) {
-                    $('.pg-grade-textbox:visible').focus()
+                    $('.pg-grade-textbox:visible').focus();
                     $timeout(function () {
                         $('.pg-grade-textbox:visible').select();
                     }, 1);
@@ -747,7 +749,7 @@
                 $timeout(function () {
                     $('.pg-grade-textbox:visible').select();
                 }, 1);
-            }
+            };
 
             $scope.goNext = function () {
                 var currentIndex = $scope.current.Student ? $scope.current.Student.index : 0;
@@ -762,7 +764,7 @@
                 $timeout(function () {
                     $('.pg-grade-textbox:visible').select();
                 }, 1);
-            }
+            };
 
             $scope.enterGrade = function (event) {
                 if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
@@ -784,6 +786,8 @@
                     }
                 }
                 else if ($scope.current.AssessmentItem.Type == 'Indicator') {
+                    if ($scope.current.Value == "")
+                        flag = true;
                     $scope.current.AssessmentItem.Indicators.Indicator.forEach(function (val) {
                         if (val.Name.toLowerCase() == $scope.current.Value.replace(/^\s+|\s+$/g, '').toLowerCase()) {
                             $scope.current.Value = val.Name;
@@ -800,7 +804,7 @@
                 if (flag) {
                     $scope.submitGrade();
                 }
-            }
+            };
 
             $scope.selectValue = function (val) {
                 $scope.current.Value = val;
@@ -808,7 +812,10 @@
             };
 
             $scope.submitGrade = function (matchNext) {
-                $scope.current.Student["Val_" + $scope.current.AssessmentItem.Key] = $scope.current.Value;
+                if ($scope.current.Value === "")
+                    delete $scope.current.Student["Val_" + $scope.current.AssessmentItem.Key];
+                else
+                    $scope.current.Student["Val_" + $scope.current.AssessmentItem.Key] = $scope.current.Value;
                 $scope.calc();
                 $scope.goNext();
             };
@@ -1036,7 +1043,7 @@
                         errMsg += (errMsg ? "\n" : "") + "Weight is required and must be number.";
                     alert(errMsg);
                 }
-            }
+            };
 
             $scope.checkChange = function (next) {
                 if (!$scope.checkAllTable()) {
@@ -1045,7 +1052,7 @@
                 else {
                     return true;
                 }
-            }
+            };
 
             $scope.checkAllTable = function () {
                 var pass = true;
@@ -1057,11 +1064,20 @@
                     }
                 });
                 return pass;
-            }
+            };
 
             $scope.checkOneCell = function (studentRec, key) {
-                return (studentRec['Origin_' + key] == studentRec['Val_' + key]);
-            }
+                if (studentRec['Origin_' + key] == studentRec['Val_' + key]) {
+                    return true;
+                }
+                else {
+                    if ((studentRec['Origin_' + key] || "") == (studentRec['Val_' + key] || ""))
+                        return true;
+                    else
+                        return false;
+                }
+                //return (studentRec['Origin_' + key] == studentRec['Val_' + key]) || (studentRec['Origin_' + key] || "" !== studentRec['Val_' + key] || "");
+            };
         }
     ])
     .provider('$affix', function () {

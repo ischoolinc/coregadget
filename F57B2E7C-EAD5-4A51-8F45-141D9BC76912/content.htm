@@ -138,7 +138,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-header">Calculation</li>
+                        <li class="dropdown-header">Calculate</li>
                         <li ng-repeat="assessmentRec in current.Subject.Assessment"
                             ng-if="assessmentRec.AllowCustomAssessment == 'true'">
                             <a ng-class="{'disabled': assessmentRec.AllowCustomAssessment !== 'true' || assessmentRec.TeacherSequence != current.Course.MySequence || assessmentRec.Editable != true}"
@@ -474,10 +474,24 @@
                         <tr>
                             <th ng-repeat="assessmentRec in AssessmentItem"
                                 class="text-center"
-                                style="padding: 1px;">
+                                style="padding: 1px;position: relative;">
                                 <small ng-if="assessmentRec.Percentage">{{assessmentRec.Percentage}}%</small>
-                                <small ng-if="assessmentRec.Percentage==0">--</small>
-                                <small ng-if="assessmentRec.Percentage==undefined">&nbsp;</small>
+                                <small ng-if="assessmentRec.Percentage&&assessmentRec.AllowCustomAssessment === 'true'">
+                                    <a ng-class="{'disabled': assessmentRec.AllowCustomAssessment !== 'true' || assessmentRec.TeacherSequence != current.Course.MySequence || assessmentRec.Editable != true}"
+                                       ng-click="calcCustomAssessment(assessmentRec)" 
+                                       title="Calculate"
+                                       style="position: absolute;z-index: 1;top: 0px;right: 0px;"
+                                       class="btn btn-link btn-xs"
+                                       href="javascript:void(0)">
+                                        <i class="fa fa-calculator text-muted"></i>
+                                    </a>
+                                </small>
+                                <small ng-if="assessmentRec.Percentage==0&&!assessmentRec.IsPreview">--</small>
+                                <small ng-if="assessmentRec.Percentage==undefined&&!assessmentRec.IsPreview">&nbsp;</small>
+                                <small ng-if="!assessmentRec.Percentage&&assessmentRec.IsPreview"
+                                       class="text-muted">
+                                    Preview
+                                </small>
                             </th>
                         </tr>
                     </thead>
