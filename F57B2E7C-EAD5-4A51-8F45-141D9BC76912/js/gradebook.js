@@ -143,12 +143,24 @@
                                                     totalWeight += weight;
                                             });
                                             subjRec.Assessment.forEach(function (assessmentRec) {
-                                                if (assessmentRec.TeacherSequence == courseRec.MySequence && !!!jumpCourse && termRec.InputEndTimeDate >= new Date()) {
-                                                    jumpCourse = courseRec;
-                                                    jumpTerm = termRec;
-                                                    jumpSubject = subjRec;
-                                                    if (termRec.InputStartTimeDate > new Date())
+                                                if (assessmentRec.TeacherSequence == courseRec.MySequence) {
+                                                    //繳交時間優先導進來
+                                                    if (termRec.InputSession == "input" && (!jumpTerm || jumpTerm.InputSession !== "input")) {
+                                                        jumpCourse = courseRec;
+                                                        jumpTerm = termRec;
+                                                        jumpSubject = subjRec;
+                                                        jumpAssessment = null;
+                                                    }
+                                                    //不在繳交時間內導入第一個未來要繳交的自訂項目
+                                                    if ((termRec.InputSession == "before" && !jumpTerm)
+                                                        && !(jumpTerm && jumpTerm.InputSession === "input")
+                                                        && (assessmentRec.AllowCustomAssessment === "true" && !jumpAssessment)
+                                                    ) {
+                                                        jumpCourse = courseRec;
+                                                        jumpTerm = termRec;
+                                                        jumpSubject = subjRec;
                                                         jumpAssessment = assessmentRec;
+                                                    }
                                                 }
                                                 var weight = Number(assessmentRec.Weight);
                                                 if (weight || weight == 0) {
