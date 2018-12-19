@@ -1,7 +1,6 @@
 ﻿angular.module('gradebook', ['ui.sortable', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.helpers.debounce'])
 
-.controller('MainCtrl', ['$scope', '$timeout',
-    function ($scope, $timeout) {
+    .controller('MainCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
         var $scope長這個樣子 = {
             current: {
                 SelectMode: "No.",
@@ -11,7 +10,7 @@
                     SeatNo: "5",
                     StudentName: "凱澤",
                     StudentID: "3597",
-                    StudentScoreTag :"成績身分:一般生"
+                    StudentScoreTag: "成績身分:一般生"
                 },
                 Exam: {
                     Name: 'Midterm',
@@ -22,7 +21,8 @@
                 },
                 ExamOrder: [],
                 Course: {},
-                VisibleExam: []
+                VisibleExam: [],
+                Table: '成績管理 or 平時評量'
             },
             studentList: [
                 {
@@ -62,23 +62,359 @@
                     Name: 'Comment',
                     Type: 'Text'
                 },
-				{
-				    Name: 'Avg',
-				    Type: 'Function',
-				    Fn: function (obj) {
-				        return ((obj.Midterm || 0) + (obj.Final || 0)) / 2;
-				    }
-				}
+                {
+                    Name: 'Avg',
+                    Type: 'Function',
+                    Fn: function (obj) {
+                        return ((obj.Midterm || 0) + (obj.Final || 0)) / 2;
+                    }
+                }
             ],
             process: [{
-
             }],
             haveNoCourse: true
         };
 
+        $scope.connection = gadget.getContract("ta");
         $scope.params = gadget.params;
-
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
+        // 模式清單
+        $scope.modelList = [
+            {
+                Name: '成績管理',
+                Click: function () {
+                    $scope.modelList[0].Selected = true;
+                    $scope.modelList[1].Selected = false;
+                    $scope.currentModel = $scope.modelList[0];
+                    $scope.current.Table = '成績管理';
+                    if ($scope.studentList) {
+                        var data_changed = !$scope.checkAllTable('平時評量');
+                        if (data_changed) {
+                            if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
+                                return;
+                            }
+                            else {
+                                // 資料Reload
+                                $scope.setCurrentCourse($scope.current.Course);
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                Name: '平時評量',
+                Show: false,
+                Click: function () {
+                    $scope.modelList[0].Selected = false;
+                    $scope.modelList[1].Selected = true;
+                    $scope.currentModel = $scope.modelList[1];
+                    $scope.current.Table = '平時評量';
+                    if ($scope.studentList) {
+                        var data_changed = !$scope.checkAllTable('成績管理');
+                        if (data_changed) {
+                            if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
+                                return;
+                            }
+                            else {
+                                // 資料Reload
+                                $scope.setCurrentCourse($scope.current.Course);
+                            }
+                        }
+                    }
+                }
+            }
+        ];
+        // 初始化
+        $scope.currentModel = $scope.modelList[0];
+        $scope.currentModel.Selected = true;
+        // 取得平時評量項目、設定欄位清單、設定平時評量匯入項目
+        $scope.getGradeItem = function () {
+            $scope.importGradeItemList = [];
+
+            $scope.connection.send({
+                service: "TeacherAccess.GetCourseExtensions",
+                body: {
+                    Content: {
+                        ExtensionCondition: {
+                            '@CourseID': '' + $scope.current.Course.CourseID,
+                            Name: 'GradeItem'
+                        }
+                    }
+                },
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert("TeacherAccess.GetCourseExtensions Error");
+                    } else {
+                        //console.log(response);
+                        $scope.$apply(function () {
+                            if (response !== null && response.Response !== null && response.Response !== '') {
+
+                                $scope.columnList = [
+                                    {
+                                        Name: 'ClassName',
+                                        Text: '班級'
+                                    },
+                                    {
+                                        Name: 'SeatNo',
+                                        Text: '座號'
+                                    },
+                                    {
+                                        Name: 'StudentName',
+                                        Text: '姓名'
+                                    },
+                                    {
+                                        Name: 'Effort',
+                                        Text: '努力程度'
+                                    },
+                                    {
+                                        Name: 'Score',
+                                        Text: '成績'
+                                    },
+                                ];
+                                $scope.gradeItemList = [].concat(response.Response.CourseExtension.Extension.GradeItem.Item);
+                                $scope.gradeItemList.forEach(function (item) {
+                                    // examList 物件結構
+                                    item.Type = 'Number';
+                                    item.Range = {
+                                        Max: 100,
+                                        Min: 0
+                                    };
+                                    item.Permission = 'Editor'
+
+                                    var gradeItem = {
+                                        Name: item.SubExamID,
+                                        Text: item.Name
+                                    };
+                                    $scope.columnList.push(gradeItem);
+
+                                    // 匯入物件
+                                    var importGradeItem = {
+                                        Name: '匯入' + item.Name,
+                                        Type: 'Function',
+                                        Fn: function () {
+                                            delete importGradeItem.ParseString;
+                                            delete importGradeItem.ParseValues;
+                                            $scope.importProcess = importGradeItem;
+                                            $('#importModal').modal('show');
+                                        },
+                                        Parse: function () { // 資料解析
+                                            importGradeItem.ParseString = importGradeItem.ParseString || '';
+                                            importGradeItem.ParseValues = importGradeItem.ParseString.split("\n");
+                                            importGradeItem.HasError = false;
+                                            for (var i = 0; i < importGradeItem.ParseValues.length; i++) {
+                                                var flag = false;
+                                                var temp = Number(importGradeItem.ParseValues[i]);
+                                                if (!isNaN(temp) && temp <= 100 && temp >= 0) {
+
+                                                    if (importGradeItem.ParseValues[i] != '') {
+                                                        flag = true;
+                                                    }
+                                                    //if (!$scope.current.Exam.Group) {
+                                                    //    var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
+                                                    //    temp = Math.round(temp * round) / round;
+                                                    //}
+                                                }
+                                                // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
+                                                if (importGradeItem.ParseValues[i] == '-') {
+                                                    flag = true;
+                                                    importGradeItem.ParseValues[i] = '';
+                                                }
+                                                if (flag) {
+                                                    if (!isNaN(temp) && importGradeItem.ParseValues[i] != '') {
+                                                        importGradeItem.ParseValues[i] = temp;
+                                                    }
+                                                }
+                                                else {
+                                                    importGradeItem.ParseValues[i] = '錯誤';
+                                                    importGradeItem.HasError = true;
+                                                }
+                                            }
+                                            $scope.studentList.forEach(function (stuRec, index) {
+                                                if (index >= importGradeItem.ParseValues.length) {
+                                                    importGradeItem.ParseValues.push('錯誤');
+                                                    importGradeItem.HasError = true;
+                                                }
+                                            });
+                                        },
+                                        Clear: function () {
+                                            delete importGradeItem.ParseValues;
+                                        },
+                                        Import: function () {
+                                            if (importGradeItem.HasError == true)
+                                                return;
+                                            $scope.studentList.forEach(function (stuRec, index) {
+                                                if (!importGradeItem.ParseValues[index] && importGradeItem.ParseValues[index] !== 0) {
+                                                    stuRec[item.SubExamID] = '';
+                                                }
+                                                else {
+                                                    stuRec[item.SubExamID] = importGradeItem.ParseValues[index];
+                                                }
+
+                                                var n = 0;
+                                                var tatalScore = 0;
+                                                var done = false;
+                                                $scope.gradeItemList.forEach(function (item) {
+                                                    if (stuRec[item.SubExamID]) {
+                                                        tatalScore += stuRec[item.SubExamID] * item.Weight;
+                                                        n++;
+                                                    }
+                                                });
+
+                                                stuRec['_Exam平時評量'] = (tatalScore / n).toFixed(2);
+                                                $scope.effortPairList.forEach(function (effortItem) {
+                                                    if (!done && stuRec['_Exam平時評量'] >= effortItem.Score) {
+                                                        stuRec['_Exam平時評量_努力程度'] = effortItem.Code;
+
+                                                        done = true;
+                                                    }
+                                                });
+                                            });
+
+                                            $('#importModal').modal('hide');
+                                        }
+                                    };
+
+                                    $scope.importGradeItemList.push(importGradeItem);
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        // 顯示編輯評分項目
+        $scope.showCustomAssessmentConfig = function () {
+            $scope.current.ConfigCustomAssessmentItem = {
+                Item: []
+                , Mode: "Editor"
+                , JSONCode: ""
+                , DeleteItem: function (item) {
+                    var index = $scope.current.ConfigCustomAssessmentItem.Item.indexOf(item);
+                    if (index > -1) {
+                        $scope.current.ConfigCustomAssessmentItem.Item.splice(index, 1);
+                    }
+                }
+                , AddItem: function () {
+                    $scope.current.ConfigCustomAssessmentItem.Item.push({
+                        Name: ""
+                        , Weight: "1"
+                        , SubExamID: ""
+                        , Index: $scope.current.ConfigCustomAssessmentItem.Item.length + 1
+                    });
+                }
+                , JSONMode: function () {
+                    $scope.current.ConfigCustomAssessmentItem.Mode = "JSON";
+                    var jsonList = [];
+                    $scope.current.ConfigCustomAssessmentItem.Item.forEach(function (item) {
+                        jsonList.push({
+                            Name: item.Name
+                            , Weight: item.Weight
+                            , SubExamID: item.SubExamID
+                            , Index: item.Index
+                        });
+                    });
+                    $scope.current.ConfigCustomAssessmentItem.JSONCode = JSON.stringify(jsonList, null, "    ");
+                }
+                , CommitJSON: function () {
+                    var jsonParse;
+                    var jsonList = [];
+                    try {
+                        jsonParse = JSON.parse($scope.current.ConfigCustomAssessmentItem.JSONCode);
+                    }
+                    catch{
+                        alert("Syntax Error");
+                        return;
+                    }
+                    if (jsonParse.length || jsonParse.length === 0) {
+                        jsonList = [].concat(jsonParse);
+                    }
+                    else {
+                        alert("Parse Error");
+                        return;
+                    }
+                    $scope.current.ConfigCustomAssessmentItem.Item = [];
+                    jsonList.forEach(function (item) {
+                        $scope.current.ConfigCustomAssessmentItem.Item.push({
+                            Name: item.Name
+                            , Weight: item.Weight
+                            , SubExamID: item.SubExamID
+                            , Index: item.Index
+                        });
+                    });
+                    $scope.current.ConfigCustomAssessmentItem.Mode = "Editor";
+                }
+            };
+            $scope.gradeItemList.forEach(function (item) {
+                $scope.current.ConfigCustomAssessmentItem.Item.push(angular.copy(item));
+            });
+            $('#editScoreItemModal').modal('show');
+        }
+        // 儲存評分項目
+        $scope.saveCustomAssessmentConfig = function () {
+            var body = {
+                Content: {
+                    CourseExtension: {
+                        '@CourseID': '' + $scope.current.Course.CourseID
+                        , Extension: {
+                            '@Name': 'GradeItem'
+                            , GradeItem: {
+                                Item: []
+                            }
+                        }
+                    }
+                }
+            };
+
+            var namePass = true;
+            var weightPass = true;
+            $scope.current.ConfigCustomAssessmentItem.Item.forEach(function (item) {
+                var pass = true;
+                if (!item.Name) {
+                    namePass = false;
+                    pass = false;
+                }
+                if (!item.Weight || Number.isNaN(+item.Weight)) {
+                    weightPass = false;
+                    pass = false;
+                }
+
+                if (pass) {
+                    body.Content.CourseExtension.Extension.GradeItem.Item.push({
+                        '@SubExamID': item.SubExamID == "" ? item.Name : item.SubExamID,
+                        '@Name': item.Name,
+                        '@Weight': item.Weight,
+                        '@Index': item.Index
+                    });
+                }
+            });
+            if (namePass && weightPass) {
+                $scope.connection.send({
+                    service: "TeacherAccess.SetCourseExtensions",
+                    autoRetry: true,
+                    body: body,
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.SetCourseExtensions Error");
+                        } else {
+                            $scope.$apply(function () {
+                                $('#editScoreItemModal').modal('hide');
+                                // 資料Reload
+                                $scope.getGradeItem();
+                                //$scope.setAssessment("CustomAssessment", $scope.current.Assessment);
+                            });
+                        }
+                    }
+                });
+            }
+            else {
+                var errMsg = "";
+                if (!namePass)
+                    errMsg += (errMsg ? "\n" : "") + "Name is required.";
+                if (!weightPass)
+                    errMsg += (errMsg ? "\n" : "") + "Weight is required and must be number.";
+                alert(errMsg);
+            }
+        }
 
         $scope.calc = function () {
             [].concat($scope.examList).reverse().forEach(function (examItem) {
@@ -113,11 +449,10 @@
                 }, 1);
             }
 
-
             // 2017/8/3 穎驊新增功能，讓每次新選 exam 時 才跳出其子項目成績
             $scope.examList.forEach(function (examRec, index) {
 
-                if (examRec.Group && $scope.current.Exam.SubName!='努力程度') {
+                if (examRec.Group && $scope.current.Exam.SubName != '努力程度') {
 
                     if (examRec.Group.Name == $scope.current.Exam.Name) {
                         examRec.SubVisible = true;
@@ -135,9 +470,7 @@
                         examRec.SubVisible = false;
                     }
                 }
-
             });
-
         }
 
         $scope.submitStudentNo = function (event) {
@@ -201,36 +534,53 @@
         }
 
         $scope.enterGrade = function (event) {
-            if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
-            var flag = false;
-            if ($scope.current.Exam.Type == 'Number') {
-                var temp = Number($scope.current.Value);
-                if (!isNaN(temp)
-                    && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
-                    && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
-                    flag = true;
-                    if (!$scope.current.Exam.Group) {
-                        var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
-                        temp = Math.round(temp * round) / round;
+            if ($scope.current.Table == '成績管理') {
+                if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
+                var flag = false;
+                if ($scope.current.Exam.Type == 'Number') {
+                    var temp = Number($scope.current.Value);
+                    if (!isNaN(temp)
+                        && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
+                        && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
+                        flag = true;
+                        if (!$scope.current.Exam.Group) {
+                            var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
+                            temp = Math.round(temp * round) / round;
+                        }
+                    }
+                    if ($scope.current.Value == "缺")
+                        flag = true;
+                    if (flag) {
+                        if ($scope.current.Value != "" && $scope.current.Value != "缺")
+                            $scope.current.Value = temp;
                     }
                 }
-                if ($scope.current.Value == "缺")
+                else {
                     flag = true;
+                }
                 if (flag) {
-                    if ($scope.current.Value != "" && $scope.current.Value != "缺")
-                        $scope.current.Value = temp;
+                    $scope.submitGrade();
                 }
             }
             else {
-                flag = true;
-            }
-            if (flag) {
-                $scope.submitGrade();
+                if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
+                if ($scope.current.Exam.Type == 'Number') {
+                    var temp = Number($scope.current.Value);
+                    if (!isNaN(temp)
+                        && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
+                        && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
+                        if (!$scope.current.Exam.Group) {
+                            // 平時評量成績
+                            $scope.current.Student[$scope.current.Exam.SubExamID] = temp;
+                            $scope.submitGrade();
+                        }
+                    }
+                }
             }
         }
 
         gadget.onLeave(function () {
-            var data_changed = !$scope.checkAllTable();
+            var data_changed = !$scope.checkAllTable($scope.current.Table);
 
             if (data_changed) {
                 return "尚未儲存資料，現在離開視窗將不會儲存本次更動";
@@ -238,7 +588,6 @@
             else {
                 return "";
             }
-
         });
 
         $scope.selectValue = function (val) {
@@ -247,67 +596,78 @@
         }
 
         $scope.submitGrade = function (matchNext) {
+            if ($scope.current.Table == '成績管理') {
+                $scope.Data_is_original = false;
+                $scope.Data_has_changed = true;
 
-            $scope.Data_is_original = false;
-            $scope.Data_has_changed = true;
+                $scope.current.Student["Exam" + $scope.current.Exam.ExamID] = $scope.current.Value;
 
-            $scope.current.Student["Exam" + $scope.current.Exam.ExamID] = $scope.current.Value;
+                var done = false;
 
+                $scope.effortPairList.forEach(function (effortItem) {
+                    if (!done && $scope.current.Value >= effortItem.Score) {
+                        $scope.current.Student["Exam" + $scope.current.Exam.Name + "_" + "努力程度"] = effortItem.Code;
 
-            var done = false;
+                        done = true;
+                    }
+                });
+                $scope.calc();
+                var nextStudent =
+                    $scope.studentList.length > ($scope.current.Student.index + 1) ?
+                        $scope.studentList[$scope.current.Student.index + 1] :
+                        $scope.studentList[0];
 
-            $scope.effortPairList.forEach(function (effortItem) {
-
-                if (!done && $scope.current.Value >= effortItem.Score)
-                {
-                    $scope.current.Student["Exam" + $scope.current.Exam.Name + "_" + "努力程度"] = effortItem.Code;
-
-                    done = true;
-                }
-                
-            });
-            
-            $scope.calc();
-            var nextStudent =
-                $scope.studentList.length > ($scope.current.Student.index + 1) ?
-                $scope.studentList[$scope.current.Student.index + 1] :
-                $scope.studentList[0];
-
-            $scope.setCurrent(nextStudent, $scope.current.Exam, true, false);
-
-            if ($scope.current.SelectMode != 'Seq.')
-                $('.pg-seatno-textbox:visible').select().focus();
-            else {
-                $('.pg-grade-textbox:visible').select().focus();
-            }
-            $timeout(function () {
+                $scope.setCurrent(nextStudent, $scope.current.Exam, true, false);
                 if ($scope.current.SelectMode != 'Seq.')
-                    $('.pg-seatno-textbox:visible').select();
+                    $('.pg-seatno-textbox:visible').select().focus();
                 else {
-                    $('.pg-grade-textbox:visible').select();
+                    $('.pg-grade-textbox:visible').select().focus();
                 }
-            }, 1);
+                $timeout(function () {
+                    if ($scope.current.SelectMode != 'Seq.')
+                        $('.pg-seatno-textbox:visible').select();
+                    else {
+                        $('.pg-grade-textbox:visible').select();
+                    }
+                }, 1);
+            }
+            else { // 平時評量
+                var n = 0;
+                var tatalScore = 0;
+                $scope.gradeItemList.forEach(function (item) {
+                    if ($scope.current.Student[item.SubExamID]) {
+                        tatalScore += $scope.current.Student[item.SubExamID] * item.Weight;
+                        n++;
+                    }
+                });
+                if (n > 0) {
+                    $scope.current.Student['_Exam平時評量'] = (tatalScore / n).toFixed(2);
+
+                    $scope.effortPairList.forEach(function (effortItem) {
+                        if (!done && $scope.current.Student['_Exam平時評量'] >= effortItem.Score) {
+                            $scope.current.Student['_Exam平時評量_努力程度'] = effortItem.Code;
+
+                            done = true;
+                        }
+                    });
+                }
+            }
         }
 
         $scope.saveAll = function () {
-
             //  儲存文字評量 放這邊
             //2018/1/11 穎驊發現平時評量的分數也是該放這邊
-
             // 文字評量的上傳物件
             var text_body = {
                 Content:
                 {
                     AttendExtension: []
-                }                                
+                }
             };
-
-
 
             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
 
                 var obj = {
-
                     Extension: {
                         Extension: {
                             Text: studentRec["Exam" + "文字評量"],
@@ -324,8 +684,6 @@
 
                 text_body.Content.AttendExtension.push(obj);
             });
-
-
 
             var body = {
                 Content: {
@@ -345,13 +703,12 @@
 
                             // 2017/7/31 穎驊註解， 下列 為成績輸入2.0 的儲存格式，但其不與舊高雄 Flash 成績輸入相容， 因此更改其讀取成績結構位置，又另外由於serve端 Score 必輸入，因此一律補0。
                             //'@Score': studentRec["Exam" + examRec.ExamID],
-
                             // 2017/7/31 穎驊註解， 新增努力程度儲存
                             '@Score': 0,
                             Extension: {
                                 Extension: {
                                     Score: studentRec["Exam" + examRec.ExamID],
-                                    Effort: studentRec["Exam" + examRec.Name +"_"+"努力程度"]
+                                    Effort: studentRec["Exam" + examRec.Name + "_" + "努力程度"]
                                 }
                             }
                         };
@@ -365,10 +722,6 @@
                     body.Content.Exam.push(eItem);
                 }
             });
-
-
-
-
 
             $scope.connection.send({
                 service: "TeacherAccess.SetCourseExamScoreWithExtension",
@@ -404,10 +757,98 @@
                         });
                     }
                 }
-            });                        
+            });
         }
 
+        $scope.saveGradeItemScore = function () {
+            // service: TeacherAccess.SetSCAttendExtensionKH
+            //var extensionBody = {
+            //    Content: {
+            //        AttendExtension: []
+            //    }
+            //};
+            //[].concat($scope.studentList || []).forEach(function (studentRec, index) {
+            //    var obj = {
+            //        Extension: {
+            //            Extension: {
+            //                OrdinarilyEffort: studentRec["_Exam平時評量_努力程度"],
+            //                OrdinarilyScore: studentRec["_Exam平時評量"]
+            //            }
+            //        },
+            //        Condition: {
+            //            StudentID: studentRec.StudentID,
+            //            CourseID: $scope.current.Course.CourseID,
+            //        }
+            //    };
 
+            //    extensionBody.Content.AttendExtension.push(obj);
+            //});
+            //$scope.connection.send({
+            //    service: "TeacherAccess.SetSCAttendExtensionKH",
+            //    autoRetry: true,
+            //    body: extensionBody,
+            //    result: function (response, error, http) {
+            //        if (error) {
+            //            alert("TeacherAccess.SetSCAttendExtensionKH Error");
+            //        } else {
+            //        }
+            //    }
+            //});
+
+            // service: TeacherAccess.SetSCAttendExtensions
+            var extensionsBody = {
+                Content: {
+                    SCAttendExtension:[]
+                }
+            };
+            [].concat($scope.studentList || []).forEach(function (stuRec, index) {
+
+                var objs = {
+                    '@CourseID': $scope.current.Course.CourseID,
+                    '@StudentID': stuRec.StudentID,
+                    Extension: {
+                        '@Name':'GradeBook',
+                        Exam: {
+                            '@Score': stuRec['_Exam平時評量'],
+                            '@Degree': stuRec['_Exam平時評量_努力程度'],
+                            Item:[]
+                        }
+                    }
+                };
+                [].concat($scope.gradeItemList || []).forEach(function (item) {
+                    var obj = {
+                        '@SubExamID': item.SubExamID,
+                        '@Score': stuRec[item.SubExamID] == undefined ? '' : stuRec[item.SubExamID] 
+                    }
+
+                    objs.Extension.Exam.Item.push(obj);
+                });
+
+                extensionsBody.Content.SCAttendExtension.push(objs);
+            });
+            $scope.connection.send({
+                service: "TeacherAccess.SetSCAttendExtensions",
+                autoRetry: true,
+                body: extensionsBody,
+                result: function (response, error, http) {
+                    if (error) {
+                        alert("TeacherAccess.SetSCAttendExtensions Error");
+                    } else {
+
+                        $scope.$apply(function () {
+                            $scope.studentList.forEach(function (stuRec, index) {
+                                // 原始資料更新
+                                $scope.gradeItemList.forEach(function (item) {
+                                    stuRec['Origin' + item.SubExamID] = stuRec[item.SubExamID];
+                                });
+                                
+                            });
+                        });
+                        alert("儲存完成。");
+                    }
+                }
+            });
+        }
 
         $scope.isMobile = navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/gi) ? true : false;
 
@@ -480,9 +921,9 @@
             Exam: null,
             Course: null
         };
-
-        $scope.connection = gadget.getContract("ta");
-
+        var schoolYear;
+        var semester;
+        // 取得學年度學期 、 課程清單 、成績輸入時間
         $scope.connection.send({
             service: "TeacherAccess.GetCurrentSemester",
             autoRetry: true,
@@ -492,9 +933,10 @@
                 if (error) {
                     alert("TeacherAccess.GetCurrentSemester Error");
                 } else {
-                    var schoolYear = response.Current.SchoolYear;
-                    var semester = response.Current.Semester;
+                    schoolYear = response.Current.SchoolYear;
+                    semester = response.Current.Semester;
 
+                    // 取得課程清單
                     $scope.connection.send({
                         service: "TeacherAccess.GetMyCourses",
                         autoRetry: true,
@@ -505,7 +947,6 @@
                             }
                         },
                         result: function (response, error, http) {
-
                             if (error) {
                                 alert("TeacherAccess.GetMyCourses Error");
                             } else {
@@ -523,11 +964,9 @@
                                     if ($scope.courseList[0]) {
                                         $scope.setCurrentCourse($scope.courseList[0]);
                                     }
-                                    else
-                                    {
+                                    else {
                                         $scope.haveNoCourse = true;
                                     }
-                                    
                                 });
                             }
                         }
@@ -565,7 +1004,7 @@
                     //    Fn: function () {
 
                     //        [].concat($scope.current.Course.Scores.Score || []).forEach(function (examRec, index) {
-                                                                  
+
                     //            [].concat($scope.studentList || []).forEach(function (studentRec, index) {
 
                     //                var done = false;
@@ -584,7 +1023,7 @@
                     //        });
                     //        alert('努力程度已代入。');
                     //    },
-                        
+
                     //}
                 ];
 
@@ -613,26 +1052,24 @@
                                         && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
 
                                         if (importProcess.ParseValues[i] != '') {
-                                            flag = true;    
+                                            flag = true;
                                         }
-                                        
+
                                         if (!$scope.current.Exam.Group) {
                                             var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
                                             temp = Math.round(temp * round) / round;
                                         }
                                     }
                                     // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
-                                    if (importProcess.ParseValues[i] == '-')
-                                    {
+                                    if (importProcess.ParseValues[i] == '-') {
                                         flag = true;
                                         importProcess.ParseValues[i] = '';
-                                    }                                   
+                                    }
                                     if (flag) {
-                                        if (!isNaN(temp) && importProcess.ParseValues[i] != '')
-                                        {
+                                        if (!isNaN(temp) && importProcess.ParseValues[i] != '') {
                                             importProcess.ParseValues[i] = temp;
-                                        }                                                                                
-                                    }                                     
+                                        }
+                                    }
                                     else {
                                         importProcess.ParseValues[i] = '錯誤';
                                         importProcess.HasError = true;
@@ -674,19 +1111,18 @@
                                             done = true;
                                         }
                                     });
-                                }); 
+                                });
 
                                 $scope.calc();
                                 $('#importModal').modal('hide');
                             },
                             Disabled: examRec.Lock
                         };
-                        
+
                         importProcesses.push(importProcess);
 
                         //2017/10/12 穎驊新增 自動計算努力程度 ，恩正說 調成分每次段考計算
-                        if (!examRec.Name.includes("努力程度") && !examRec.Name.includes("學期成績") )
-                        {
+                        if (!examRec.Name.includes("努力程度") && !examRec.Name.includes("學期成績")) {
                             var autoEffort = {
                                 Name: '計算' + examRec.Name + "努力程度",
                                 Type: 'Function_Effort',
@@ -703,13 +1139,13 @@
                                                 done = true;
                                             }
                                         });
-                                    });  
+                                    });
                                     alert('努力程度已計算。');
                                 },
                                 Disabled: examRec.Lock
                             }
                             importProcesses.push(autoEffort);
-                        }                        
+                        }
                     }
 
                     // 2017/11/29 穎驊因應 高雄小組項目  [04-02A1][03] web2的flash問題 2017/11 的進度 修改
@@ -736,7 +1172,7 @@
                                 // 2017/12/1，穎驊註解， 為了要處理原始來自Excel 來源的資料會有跨行(自動換行Excel 貼出來的字會有幫前後字串加綴雙引號")
                                 //、還有原始的資料會有直接輸入雙引號"等會造成parser 的讀取轉換問題，
                                 //穎驊參考 java 轉CSV的檔案解法: https://stackoverflow.com/questions/8493195/how-can-i-parse-a-csv-string-with-javascript-which-contains-comma-in-data
-                                
+
                                 // Return array of string values, or NULL if CSV string not well formed.
                                 function CSVtoArray(text) {
                                     //var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
@@ -745,7 +1181,7 @@
                                     // 本案不需要驗證
                                     // Return NULL if input string is not well formed CSV string.
                                     //if (!re_valid.test(text)) return null;
-                                    
+
                                     var a = [];                     // Initialize array to receive values.
                                     text.replace(re_value, // "Walk" the string using replace with callback.
                                         function (m0, m1, m2, m3) {
@@ -753,8 +1189,7 @@
                                             if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
                                             // Remove backslash from \" in double quoted values.
                                             else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
-                                            else if (m3 !== undefined)
-                                            {
+                                            else if (m3 !== undefined) {
                                                 var list_1 = [];
 
                                                 list_1 = m3.split("\n")
@@ -762,7 +1197,7 @@
                                                 list_1.forEach(function (text, index) {
 
                                                     a.push(text);
-                                                });                                                
+                                                });
                                             }
                                             return ''; // Return empty string.
                                         });
@@ -771,22 +1206,19 @@
                                     return a;
                                 };
 
-                                
                                 var a = CSVtoArray(text_trimmed);
 
                                 importProcess.ParseValues = a;
-
-
                                 importProcess.HasError = false;
                                 for (var i = 0; i < importProcess.ParseValues.length; i++) {
                                     var flag = false;
                                     var temp = importProcess.ParseValues[i];
-                                    if (!temp == '' && temp !='-'){
-                                        
+                                    if (!temp == '' && temp != '-') {
+
                                         temp = importProcess.ParseValues[i];
-                                    }     
+                                    }
                                     // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
-                                    else if (temp =='-') {
+                                    else if (temp == '-') {
                                         importProcess.ParseValues[i] = '';
                                         //importProcess.HasError = true;
                                     }
@@ -834,7 +1266,6 @@
                 }
                 //#endregion
 
-
                 $scope.process = process;
             }
             else {
@@ -844,13 +1275,12 @@
 
         $scope.setCurrentCourse = function (course) {
             if ($scope.studentList) {
-                var data_changed = !$scope.checkAllTable();
+                var data_changed = !$scope.checkAllTable($scope.current.Table);
                 if (data_changed) {
                     if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動"))
                         return;
                 }
             }
-
             $scope.current.Student = null;
             $scope.studentList = null;
             $scope.current.VisibleExam = [];
@@ -858,11 +1288,46 @@
             $scope.current.Course = course;
             $scope.examList = [];
 
+            // 取得課程平時評量成績輸入時間
+            $scope.connection.send({
+                service: "TeacherAccess.GetCourses",
+                autoRetry: true,
+                body: {
+                    Content: {
+                        Field: { All: '' },
+                        Order: { CourseName: '' }
+                    }
+                },
+                result: function (response, error, http) {
+                    if (error) {
+                        alert("TeacherAccess.GetCourses Error");
+                    } else {
+                        $scope.$apply(function () {
+
+                            [].concat(response.Courses.Course || []).forEach(function (courseRec, index) {
+                                if (courseRec.SchoolYear == schoolYear && courseRec.Semester == semester && courseRec.CourseID == course.CourseID) {
+
+                                    var currDate = Date.parse(new Date().toDateString());
+                                    $scope.OrdinarilyStartTime = Date.parse(courseRec.TemplateExtension.Extension.OrdinarilyStartTime);
+                                    $scope.OrdinarilyEndTime = Date.parse(courseRec.TemplateExtension.Extension.OrdinarilyEndTime);
+
+                                    if (currDate >= $scope.OrdinarilyStartTime && currDate <= $scope.OrdinarilyEndTime){
+                                        $scope.OrdinarilyEditable = true;
+                                    }
+                                    else {
+                                        $scope.OrdinarilyEditable = false;
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
+            });
+
             [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
                 examRec.Type = 'Number';
                 examRec.Permission = "Editor";
                 examRec.Lock = !(new Date(examRec.InputStartTime) < new Date() && new Date() < new Date(examRec.InputEndTime));
-
 
                 //2017/8/2 穎驊新增  各個評量_努力程度 子成績項目
                 var examScoreEffort = {
@@ -871,21 +1336,16 @@
                     SubName: '努力程度',
                     Type: 'Number',
                     Permission: 'Editor',
-                    Lock: examRec.Lock,////2017/8/2 穎驊新增   若其母exam項目 為Lock，也跟著鎖上。
+                    Lock: examRec.Lock,//2017/8/2 穎驊新增  若其母exam項目 為Lock，也跟著鎖上。
                     Group: examRec,
-                    SubVisible : false,
+                    SubVisible: false,
                 };
 
                 examRec.SubExamList = [examScoreEffort];
-
-
                 $scope.examList.push(examRec, examScoreEffort);
                 $scope.current.VisibleExam.push(examRec.Name, examScoreEffort.Name);
                 $scope.current.ExamOrder.push(examRec.Name, examScoreEffort.Name);
-
-
             });
-
 
             var finalScore = { ExamID: '學期成績', Name: '學期成績', Type: 'Number', Permission: 'Editor', Lock: !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date() && new Date() < new Date(course.InputEndTime)) };
             var finalScorePreview = {
@@ -913,11 +1373,11 @@
                     // 比值 為 1.5
                     // 故直接 將 總加權母數base *1.5 作為 平時評量的加權數即可
                     // 如此一來可以動到最少程式碼
-                    if (stu["Exam" + "平時評量"] != "缺"){
+                    if (stu["Exam" + "平時評量"] != "缺") {
 
                         if (stu["Exam" + "平時評量"] || stu["Exam" + "平時評量"] == "0") {
                             total += seed * base * 1.5 * Number(stu["Exam" + "平時評量"]);
-                            base += base*1.5;
+                            base += base * 1.5;
                         }
                     }
 
@@ -932,16 +1392,13 @@
             };
 
             finalScore.SubExamList = [finalScorePreview];
-
             $scope.examList.splice(0, 0, finalScore, finalScorePreview);
             $scope.current.VisibleExam.push('學期成績', '學期成績_試算');
             $scope.current.ExamOrder.push('學期成績', '學期成績_試算');
 
-
             //2017/8/2 穎驊新增  平時評量
             var usualScore = {
                 ExamID: '平時評量', Name: '平時評量', Type: 'Number', Permission: 'Editor', Lock: course.TemplateExtension == "" ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)) //  平時評量的 輸入開放與否，依照系統 評量設定的 開放時間為基準。
-
             };
 
             //2017/8/2 穎驊新增  平時評量_努力程度 子成績項目
@@ -952,7 +1409,7 @@
                 Type: 'Number',
                 Permission: 'Editor',
                 Lock: course.TemplateExtension == "" ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)),
-                Group: usualScore,       
+                Group: usualScore,
                 SubVisible: false,
             };
 
@@ -960,9 +1417,8 @@
 
             $scope.examList.push(usualScore, usualScoreEffort);
 
-            $scope.current.VisibleExam.push('平時評量','平時評量_努力程度');
+            $scope.current.VisibleExam.push('平時評量', '平時評量_努力程度');
             $scope.current.ExamOrder.push('平時評量', '平時評量_努力程度');
-
 
             //2017/8/2 穎驊新增  文字評量
             var textScore = {
@@ -970,7 +1426,7 @@
                 Name: '文字評量',
                 Type: 'Text',
                 Permission: 'Editor',
-                Lock: course.TemplateExtension == "" ? true :!(new Date(course.TemplateExtension.Extension.TextStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.TextEndTime)) //  文字評量的 輸入開放與否，依照系統 評量設定的 開放時間為基準。
+                Lock: course.TemplateExtension == "" ? true : !(new Date(course.TemplateExtension.Extension.TextStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.TextEndTime)) //  文字評量的 輸入開放與否，依照系統 評量設定的 開放時間為基準。
             };
 
             $scope.examList.push(textScore);
@@ -1006,7 +1462,6 @@
                                                 subExamRec.Group = examRec;
                                                 examRec.SubExamList.push(subExamRec);
 
-
                                                 $scope.examList.splice(examIndex + examRec.SubExamList.length, 0, subExamRec);
                                                 $scope.current.VisibleExam.splice(examIndex + examRec.SubExamList.length, 0, subExamRec.Name);
                                             });
@@ -1041,7 +1496,6 @@
                                                             if (stu["Exam" + examRec.ExamID] !== "缺")
                                                                 stu["Exam" + examRec.ExamID] = '';
                                                         }
-
                                                     }
                                                 };
                                             }
@@ -1051,7 +1505,6 @@
                                 });
                             }
                         });
-
 
                         $scope.connection.send({
                             service: "TeacherAccess.GetCourseStudents",
@@ -1076,13 +1529,12 @@
                                             //2017/6/15 穎驊新增，因應 [A09][06] 子成績輸入-顯示成績身分 項目 ，加入顯示身分類別 ，以利老師在輸入成績時作為判別資訊。
                                             if (studentRec.Tags) {
                                                 [].concat(studentRec.Tags.Tag || []).forEach(function (tag) {
-
                                                     if (tag.Name.includes("成績身分")) {
                                                         studentRec.StudentScoreTag = tag.Name;
                                                     }
                                                 });
                                             }
-                                            
+
                                             studentRec.index = index;
                                             $scope.examList.forEach(function (examRec) {
                                                 studentRec["Exam" + examRec.ExamID] = '';
@@ -1128,7 +1580,6 @@
 
                                                                 // 2017/7/31 穎驊註解， 新增努力程度取得
                                                                 studentMapping[examScoreRec.StudentID]["Exam" + examRec.Name + "_" + "努力程度"] = examScoreRec.Extension.Extension.Effort;
-
                                                             }
                                                         });
                                                     });
@@ -1204,39 +1655,71 @@
                                                 },
                                                 Condition: {
                                                     CourseID: course.CourseID
-                                                }                                               
+                                                }
                                             }
                                         },
                                         result: function (response, error, http) {
                                             if (error) {
                                                 alert("TeacherAccess.GetSCAttendExtension Error");
                                             } else {
-
                                                 $scope.$apply(function () {
+
                                                     [].concat(response.AttendExtensionList.AttendExtension || []).forEach(function (AttendExtensionRec, index) {
-
                                                         if (AttendExtensionRec.Extension.Extension) {
-
                                                             studentMapping[AttendExtensionRec.StudentID]["Exam" + "文字評量"] = AttendExtensionRec.Extension.Extension.Text;
-
+                                                            // 成績管理Table用
                                                             studentMapping[AttendExtensionRec.StudentID]["Exam" + "平時評量"] = AttendExtensionRec.Extension.Extension.OrdinarilyScore;
                                                             studentMapping[AttendExtensionRec.StudentID]["Exam" + "平時評量" + "_" + "努力程度"] = AttendExtensionRec.Extension.Extension.OrdinarilyEffort;
-                                                        }                                                        
+                                                        }
                                                     });
-                                                    
-                                                    $scope.studentList.forEach(function (studentRec, index) {
 
+                                                    $scope.studentList.forEach(function (studentRec, index) {
                                                         var rawStudentRec = angular.copy(studentRec);
                                                         for (var key in rawStudentRec) {
                                                             if (!key.match(/Origin$/gi))
                                                                 studentRec[key + 'Origin'] = studentRec[key];
                                                         }
                                                     });
-                                                    $scope.setupCurrent();                                                    
+                                                    $scope.setupCurrent();
                                                 });
                                             }
                                         }
                                     });
+
+                                    $scope.connection.send({
+                                        service: "TeacherAccess.GetSCAttendExtensions",
+                                        autoRetry: true,
+                                        body: {
+                                            Content: {
+                                                ExtensionCondition: {
+                                                    '@CourseID': course.CourseID,
+                                                    Name: 'GradeBook'
+                                                }
+                                            }
+                                        },
+                                        result: function (response, error, http) {
+                                            if (error) {
+                                                alert("TeacherAccess.GetSCAttendExtensions Error");
+                                            } else {
+                                                $scope.$apply(function () {
+                                                    [].concat(response.Response.SCAttendExtension || []).forEach(function (item, index) {
+                                                        // 平時評量Table用
+                                                        studentMapping[item.StudentID]["_Exam平時評量"] = item.Extension.Exam.Score;
+                                                        studentMapping[item.StudentID]["_Exam平時評量_努力程度"] = item.Extension.Exam.Degree;
+
+                                                        if (item.Extension.Exam.Item) {
+                                                            item.Extension.Exam.Item.forEach(function (data, index) {
+                                                                studentMapping[item.StudentID][data.SubExamID] = data.Score;
+                                                                // 紀錄原始成績
+                                                                studentMapping[item.StudentID]['Origin' + data.SubExamID] = data.Score;
+                                                            });
+                                                        }
+                                                    });
+                                                });
+                                            }
+                                        }
+                                    });
+
                                 }
                             }
                         });
@@ -1245,6 +1728,17 @@
             });
         }
 
+        $scope.calcOrdinarilyScore = function () {
+            if ($scope.OrdinarilyEditable) {
+
+                [].concat($scope.studentList || []).forEach(function (stuRec) {
+                    stuRec['Exam平時評量'] = stuRec['_Exam平時評量'];
+                });
+            }
+            else {
+                alert('不在平時評量成績輸入時間內!');
+            }
+        }
 
         //2017/8/3  穎驊新增 抓努力程度對照表
         $scope.connection.send({
@@ -1267,11 +1761,11 @@
 
                                 response.Response.EffortList.Effort.forEach(function (effortRec) {
 
-                                    var effortItem ={
+                                    var effortItem = {
                                         Code: effortRec.Code,
                                         Score: effortRec.Score,
                                         Name: effortRec.Name
-                                        }
+                                    }
                                     $scope.effortPairList.push(effortItem);
                                 });
 
@@ -1284,257 +1778,273 @@
             }
         });
 
-        $scope.checkAllTable = function () {
+        $scope.checkAllTable = function (target) {
             var pass = true;
-            [].concat($scope.examList || []).forEach(function (examRec) {
-                if (pass)
-                    [].concat($scope.studentList || []).forEach(function (stuRec) {
-                        if (pass)
-                            pass = !!$scope.checkOneCell(stuRec, 'Exam' + examRec.ExamID);
-                    });
-            });
-            return pass;
+            if (target == '成績管理') { 
+                [].concat($scope.examList || []).forEach(function (examRec) {
+                    if (pass)
+                        [].concat($scope.studentList || []).forEach(function (stuRec) {
+                            if (pass)
+                                pass = !!$scope.checkOneCell(stuRec, 'Exam' + examRec.ExamID);
+                        });
+                });
+                return pass;
+            }
+            else if (target == '平時評量') {
+                [].concat($scope.gradeItemList || []).forEach(function (item) {
+                    if (pass) {
+                        [].concat($scope.studentList || []).forEach(function (stuRec) {
+                            if (pass) {
+                                pass = !!$scope.checkCellValue(stuRec, item.SubExamID);
+                            }
+                        });
+                    }
+                });
+                return pass;
+            }
+            else
+                return pass;
         }
-
+        // 成績管理Table用
         $scope.checkOneCell = function (studentRec, examKey) {
             var pass = true;
             pass = (studentRec[examKey] == studentRec[examKey + 'Origin']) || (studentRec[examKey + 'Origin'] === undefined) || (examKey == "Exam學期成績_試算");
             return pass;
+
         }
-
-
-        //#endregion
-        //#endregion
-
+        // 平時評量Table用
+        $scope.checkCellValue = function (student, subExamID) {
+            var pass = true;
+            pass = (student[subExamID] == student['Origin' + subExamID]);
+            return pass;
+        }
     }
-])
-.provider('$affix', function () {
+    ])
+    .provider('$affix', function () {
 
-    var defaults = this.defaults = {
-        offsetTop: 'auto'
-    };
+        var defaults = this.defaults = {
+            offsetTop: 'auto'
+        };
 
-    this.$get = function ($window, debounce, dimensions) {
+        this.$get = function ($window, debounce, dimensions) {
 
-        var bodyEl = angular.element($window.document.body);
-        var windowEl = angular.element($window);
+            var bodyEl = angular.element($window.document.body);
+            var windowEl = angular.element($window);
 
-        function AffixFactory(element, config) {
+            function AffixFactory(element, config) {
 
-            var $affix = {};
+                var $affix = {};
 
-            // Common vars
-            var options = angular.extend({}, defaults, config);
-            var targetEl = options.target;
+                // Common vars
+                var options = angular.extend({}, defaults, config);
+                var targetEl = options.target;
 
-            // Initial private vars
-            var reset = 'affix affix-top affix-bottom',
-                initialAffixTop = 0,
-                initialOffsetTop = 0,
-                offsetTop = 0,
-                offsetBottom = 0,
-                affixed = null,
-                unpin = null;
-
-            var parent = element.parent();
-            // Options: custom parent
-            if (options.offsetParent) {
-                if (options.offsetParent.match(/^\d+$/)) {
-                    for (var i = 0; i < (options.offsetParent * 1) - 1; i++) {
-                        parent = parent.parent();
-                    }
-                }
-                else {
-                    parent = angular.element(options.offsetParent);
-                }
-            }
-
-            $affix.init = function () {
-
-                $affix.$parseOffsets();
-                initialOffsetTop = dimensions.offset(element[0]).top + initialAffixTop;
-
-                // Bind events
-                targetEl.on('scroll', $affix.checkPosition);
-                targetEl.on('click', $affix.checkPositionWithEventLoop);
-                windowEl.on('resize', $affix.$debouncedOnResize);
-
-                // Both of these checkPosition() calls are necessary for the case where
-                // the user hits refresh after scrolling to the bottom of the page.
-                $affix.checkPosition();
-                $affix.checkPositionWithEventLoop();
-
-            };
-
-            $affix.destroy = function () {
-
-                // Unbind events
-                targetEl.off('scroll', $affix.checkPosition);
-                targetEl.off('click', $affix.checkPositionWithEventLoop);
-                windowEl.off('resize', $affix.$debouncedOnResize);
-
-            };
-
-            $affix.checkPositionWithEventLoop = function () {
-
-                setTimeout($affix.checkPosition, 1);
-
-            };
-
-            $affix.checkPosition = function () {
-                // if (!this.$element.is(':visible')) return
-
-                var scrollTop = getScrollTop();
-                var position = dimensions.offset(element[0]);
-                var elementHeight = dimensions.height(element[0]);
-
-                // Get required affix class according to position
-                var affix = getRequiredAffixClass(unpin, position, elementHeight);
-
-                // Did affix status changed this last check?
-                if (affixed === affix) return;
-                affixed = affix;
-
-                // Add proper affix class
-                element.removeClass(reset).addClass('affix' + ((affix !== 'middle') ? '-' + affix : ''));
-
-                if (affix === 'top') {
+                // Initial private vars
+                var reset = 'affix affix-top affix-bottom',
+                    initialAffixTop = 0,
+                    initialOffsetTop = 0,
+                    offsetTop = 0,
+                    offsetBottom = 0,
+                    affixed = null,
                     unpin = null;
-                    element.css('position', (options.offsetParent) ? '' : 'relative');
-                    element.css('top', '');
-                } else if (affix === 'bottom') {
-                    if (options.offsetUnpin) {
-                        unpin = -(options.offsetUnpin * 1);
+
+                var parent = element.parent();
+                // Options: custom parent
+                if (options.offsetParent) {
+                    if (options.offsetParent.match(/^\d+$/)) {
+                        for (var i = 0; i < (options.offsetParent * 1) - 1; i++) {
+                            parent = parent.parent();
+                        }
                     }
                     else {
-                        // Calculate unpin threshold when affixed to bottom.
-                        // Hopefully the browser scrolls pixel by pixel.
-                        unpin = position.top - scrollTop;
+                        parent = angular.element(options.offsetParent);
                     }
-                    element.css('position', (options.offsetParent) ? '' : 'relative');
-                    element.css('top', (options.offsetParent) ? '' : ((bodyEl[0].offsetHeight - offsetBottom - elementHeight - initialOffsetTop) + 'px'));
-                } else { // affix === 'middle'
-                    unpin = null;
-                    element.css('position', 'fixed');
-                    element.css('top', initialAffixTop + 'px');
                 }
 
-            };
+                $affix.init = function () {
 
-            $affix.$onResize = function () {
-                $affix.$parseOffsets();
-                $affix.checkPosition();
-            };
-            $affix.$debouncedOnResize = debounce($affix.$onResize, 50);
+                    $affix.$parseOffsets();
+                    initialOffsetTop = dimensions.offset(element[0]).top + initialAffixTop;
 
-            $affix.$parseOffsets = function () {
+                    // Bind events
+                    targetEl.on('scroll', $affix.checkPosition);
+                    targetEl.on('click', $affix.checkPositionWithEventLoop);
+                    windowEl.on('resize', $affix.$debouncedOnResize);
 
-                // Reset position to calculate correct offsetTop
-                element.css('position', (options.offsetParent) ? '' : 'relative');
+                    // Both of these checkPosition() calls are necessary for the case where
+                    // the user hits refresh after scrolling to the bottom of the page.
+                    $affix.checkPosition();
+                    $affix.checkPositionWithEventLoop();
 
-                if (options.offsetTop) {
-                    if (options.offsetTop === 'auto') {
-                        options.offsetTop = '+0';
-                    }
-                    if (options.offsetTop.match(/^[-+]\d+$/)) {
-                        initialAffixTop = -options.offsetTop * 1;
-                        if (options.offsetParent) {
-                            offsetTop = dimensions.offset(parent[0]).top + (options.offsetTop * 1);
+                };
+
+                $affix.destroy = function () {
+
+                    // Unbind events
+                    targetEl.off('scroll', $affix.checkPosition);
+                    targetEl.off('click', $affix.checkPositionWithEventLoop);
+                    windowEl.off('resize', $affix.$debouncedOnResize);
+
+                };
+
+                $affix.checkPositionWithEventLoop = function () {
+
+                    setTimeout($affix.checkPosition, 1);
+
+                };
+
+                $affix.checkPosition = function () {
+                    // if (!this.$element.is(':visible')) return
+
+                    var scrollTop = getScrollTop();
+                    var position = dimensions.offset(element[0]);
+                    var elementHeight = dimensions.height(element[0]);
+
+                    // Get required affix class according to position
+                    var affix = getRequiredAffixClass(unpin, position, elementHeight);
+
+                    // Did affix status changed this last check?
+                    if (affixed === affix) return;
+                    affixed = affix;
+
+                    // Add proper affix class
+                    element.removeClass(reset).addClass('affix' + ((affix !== 'middle') ? '-' + affix : ''));
+
+                    if (affix === 'top') {
+                        unpin = null;
+                        element.css('position', (options.offsetParent) ? '' : 'relative');
+                        element.css('top', '');
+                    } else if (affix === 'bottom') {
+                        if (options.offsetUnpin) {
+                            unpin = -(options.offsetUnpin * 1);
                         }
                         else {
-                            offsetTop = dimensions.offset(element[0]).top - dimensions.css(element[0], 'marginTop', true) + (options.offsetTop * 1);
+                            // Calculate unpin threshold when affixed to bottom.
+                            // Hopefully the browser scrolls pixel by pixel.
+                            unpin = position.top - scrollTop;
+                        }
+                        element.css('position', (options.offsetParent) ? '' : 'relative');
+                        element.css('top', (options.offsetParent) ? '' : ((bodyEl[0].offsetHeight - offsetBottom - elementHeight - initialOffsetTop) + 'px'));
+                    } else { // affix === 'middle'
+                        unpin = null;
+                        element.css('position', 'fixed');
+                        element.css('top', initialAffixTop + 'px');
+                    }
+
+                };
+
+                $affix.$onResize = function () {
+                    $affix.$parseOffsets();
+                    $affix.checkPosition();
+                };
+                $affix.$debouncedOnResize = debounce($affix.$onResize, 50);
+
+                $affix.$parseOffsets = function () {
+
+                    // Reset position to calculate correct offsetTop
+                    element.css('position', (options.offsetParent) ? '' : 'relative');
+
+                    if (options.offsetTop) {
+                        if (options.offsetTop === 'auto') {
+                            options.offsetTop = '+0';
+                        }
+                        if (options.offsetTop.match(/^[-+]\d+$/)) {
+                            initialAffixTop = -options.offsetTop * 1;
+                            if (options.offsetParent) {
+                                offsetTop = dimensions.offset(parent[0]).top + (options.offsetTop * 1);
+                            }
+                            else {
+                                offsetTop = dimensions.offset(element[0]).top - dimensions.css(element[0], 'marginTop', true) + (options.offsetTop * 1);
+                            }
+                        }
+                        else {
+                            offsetTop = options.offsetTop * 1;
                         }
                     }
-                    else {
-                        offsetTop = options.offsetTop * 1;
+
+                    if (options.offsetBottom) {
+                        if (options.offsetParent && options.offsetBottom.match(/^[-+]\d+$/)) {
+                            // add 1 pixel due to rounding problems...
+                            offsetBottom = getScrollHeight() - (dimensions.offset(parent[0]).top + dimensions.height(parent[0])) + (options.offsetBottom * 1) + 1;
+                        }
+                        else {
+                            offsetBottom = options.offsetBottom * 1;
+                        }
                     }
+
+                };
+
+                // Private methods
+
+                function getRequiredAffixClass(unpin, position, elementHeight) {
+
+                    var scrollTop = getScrollTop();
+                    var scrollHeight = getScrollHeight();
+
+                    if (scrollTop <= offsetTop) {
+                        return 'top';
+                    } else if (unpin !== null && (scrollTop + unpin <= position.top)) {
+                        return 'middle';
+                    } else if (offsetBottom !== null && (position.top + elementHeight + initialAffixTop >= scrollHeight - offsetBottom)) {
+                        return 'bottom';
+                    } else {
+                        return 'middle';
+                    }
+
                 }
 
-                if (options.offsetBottom) {
-                    if (options.offsetParent && options.offsetBottom.match(/^[-+]\d+$/)) {
-                        // add 1 pixel due to rounding problems...
-                        offsetBottom = getScrollHeight() - (dimensions.offset(parent[0]).top + dimensions.height(parent[0])) + (options.offsetBottom * 1) + 1;
-                    }
-                    else {
-                        offsetBottom = options.offsetBottom * 1;
-                    }
+                function getScrollTop() {
+                    return targetEl[0] === $window ? $window.pageYOffset : targetEl[0].scrollTop;
                 }
 
-            };
-
-            // Private methods
-
-            function getRequiredAffixClass(unpin, position, elementHeight) {
-
-                var scrollTop = getScrollTop();
-                var scrollHeight = getScrollHeight();
-
-                if (scrollTop <= offsetTop) {
-                    return 'top';
-                } else if (unpin !== null && (scrollTop + unpin <= position.top)) {
-                    return 'middle';
-                } else if (offsetBottom !== null && (position.top + elementHeight + initialAffixTop >= scrollHeight - offsetBottom)) {
-                    return 'bottom';
-                } else {
-                    return 'middle';
+                function getScrollHeight() {
+                    return targetEl[0] === $window ? $window.document.body.scrollHeight : targetEl[0].scrollHeight;
                 }
+
+                $affix.init();
+                return $affix;
 
             }
 
-            function getScrollTop() {
-                return targetEl[0] === $window ? $window.pageYOffset : targetEl[0].scrollTop;
+            return AffixFactory;
+        };
+    })
+    .directive('bsAffix', function ($affix, $window) {
+        return {
+            restrict: 'EAC',
+            require: '^?bsAffixTarget',
+            link: function postLink(scope, element, attr, affixTarget) {
+
+                var options = { scope: scope, offsetTop: 'auto', target: affixTarget ? affixTarget.$element : angular.element($window) };
+                angular.forEach(['offsetTop', 'offsetBottom', 'offsetParent', 'offsetUnpin'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                var affix = $affix(element, options);
+                scope.$on('$destroy', function () {
+                    affix && affix.destroy();
+                    options = null;
+                    affix = null;
+                });
+
             }
+        };
 
-            function getScrollHeight() {
-                return targetEl[0] === $window ? $window.document.body.scrollHeight : targetEl[0].scrollHeight;
+    })
+    .directive('bsAffixTarget', function () {
+        return {
+            controller: function ($element) {
+                this.$element = $element;
             }
-
-            $affix.init();
-            return $affix;
-
-        }
-
-        return AffixFactory;
-
-    };
-
-})
-.directive('bsAffix', function ($affix, $window) {
-    return {
-        restrict: 'EAC',
-        require: '^?bsAffixTarget',
-        link: function postLink(scope, element, attr, affixTarget) {
-
-            var options = { scope: scope, offsetTop: 'auto', target: affixTarget ? affixTarget.$element : angular.element($window) };
-            angular.forEach(['offsetTop', 'offsetBottom', 'offsetParent', 'offsetUnpin'], function (key) {
-                if (angular.isDefined(attr[key])) options[key] = attr[key];
-            });
-
-            var affix = $affix(element, options);
-            scope.$on('$destroy', function () {
-                affix && affix.destroy();
-                options = null;
-                affix = null;
-            });
-
-        }
-    };
-
-})
-.directive('bsAffixTarget', function () {
-    return {
-        controller: function ($element) {
-            this.$element = $element;
-        }
-    };
-})
-.directive('selectOnClick', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, element, attrs) {
-            element.on('click', function () {
-                this.select();
-            });
-        }
-    };
-});
+        };
+    })
+    .directive('selectOnClick', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element.on('click', function () {
+                    this.select();
+                });
+            }
+        };
+    });
