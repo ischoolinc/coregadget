@@ -19,15 +19,15 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: '',
-                password: window.prompt('password:')
+                account: 'bubu@debug.ischool.com.tw',
+                password: '1234'//window.prompt('password:')
             }
         });
     </script>
 
-
     <title>GradeBook</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="css/font-awesome.min.css" rel="stylesheet" />
     <link href="css/base.css" rel="stylesheet" />
     <script src="js/jquery.min.js"></script>
@@ -47,9 +47,7 @@
     <script src="js/xml2json.js"></script>
     <script src="js/angular-strap.min.js"></script>
     <script src="js/angular-strap.tpl.min.js"></script>
-
     <script src="js/gradebook.js"></script>
-
     <style>
         .dropdown-header {
             padding: 3px 10px;
@@ -71,15 +69,34 @@
     </style>
 </head>
 
-
 <body ng-controller="MainCtrl">
+    <div id="mainMsg"></div>
     <div ng-if="!(current && studentList && examList || haveNoCourse) " style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
     <div ng-if="(haveNoCourse)" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有設定任何課程，請洽教務處行政人員</div>
     <div id="gadget" class="my-page" ng-if="current && studentList && examList">
-        <h1 class="hidden-xs">成績管理</h1>
+        <h1 class="hidden-xs">{{currentModel.Name}}</h1>
         <div>
-            <div class="btn-group pull-right"
-                 ng-init="getProcess()">
+            <!--課程按鈕-->
+            <div class="btn-group">
+                <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span> </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="course in courseList"
+                        ng-class="{active:course==current.Course}">
+                        <a href="javascript:;" ng-click="setCurrentCourse(course)">{{course.CourseName}}</a>
+                    </li>
+                </ul>
+            </div>
+            <!--成績管理、平時評量(模式切換)-->
+            <div class="btn-group">
+                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{modelList[0].Name}}&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="model in modelList" ng-class="{'active':model.Selected}">
+                        <a href="javascript:;" ng-click="model.Click()">{{model.Name}}</a>
+                    </li>
+                </ul>
+            </div>
+            <!--成績管理模式:功能按鈕-->
+            <div ng-if="modelList[0].Selected" class="btn-group pull-right" ng-init="getProcess()">
                 <div class="btn-group"
                      ng-if="process">
                     <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -100,7 +117,7 @@
                                 {{item.Name}}
                             </a>
                             <a ng-if="item.Type=='Function_Effort'"
-                               href="javascript:;" 
+                               href="javascript:;"
                                style="font-size:smaller; padding-left:40px"
                                ng-click="(item.Type!='Function_Effort'||item.Disabled)?'':item.Fn()">
                                 {{item.Name}}
@@ -108,34 +125,52 @@
                         </li>
                     </ul>
                 </div>
-                <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable()}">
+                <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable('成績管理')}">
                     <i class="fa fa-floppy-o"></i>
                     儲存
                 </a>
-                <a ng-if="_HIDE_"
-                   ng-click="showCreateModal()" class="btn btn-default">
+                <!--<a ng-if="_HIDE_"
+                    ng-click="showCreateModal()" class="btn btn-default">
                     <i class="fa fa-plus"></i>
                     新增
                 </a>
                 <a ng-if="_HIDE_"
-                   ng-click="showManageModal()" class="btn btn-default">
+                    ng-click="showManageModal()" class="btn btn-default">
                     <i class="fa fa-list-alt"></i>
                     編輯欄位
-                </a>
+                </a>-->
             </div>
-            <div class="btn-group">
-                <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-                    <li ng-repeat="course in courseList"
-                        ng-class="{active:course==current.Course}">
-                        <a href="javascript:;" ng-click="setCurrentCourse(course)">{{course.CourseName}}</a>
-                    </li>
-                </ul>
+            <!--平時評量模式:功能按鈕-->
+            <button ng-if="modelList[1].Selected" style="margin-left:10px;">
+                <i class="fa fa-edit" ng-click="showCustomAssessmentConfig()">
+                    編輯評分項目
+                </i>
+            </button>
+            <div ng-if="modelList[1].Selected" class="btn-group pull-right">
+                <div class="btn-group">
+                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+                        <span>批次</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="item in importGradeItemList">
+                            <a ng-if="item.Type=='Function'"
+                               href="javascript:;" ng-click="item.Fn()">
+                                {{item.Name}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a ng-click="saveGradeItemScore()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable('平時評量')}">
+                    <i class="fa fa-floppy-o"></i>
+                    儲存
+                </a>
             </div>
         </div>
         <div ng-if="studentList" class="hidden-xs" style="margin-top:10px;">
-            <div style="position:relative;float:right;width:260px;"  >
-                <div data-offset-top="145"  bs-affix>
+            <div style="position:relative;float:right;width:260px;">
+                <div data-offset-top="145" bs-affix>
                     <!-- 成績輸入 -->
                     <table class="table table-bordered table-striped"
                            style="width:260px;">
@@ -148,7 +183,10 @@
                             <tr>
                                 <td style="width:95px;">
                                     <div class="btn-group btn-block">
-                                        <a href="" class="btn btn-link btn-block dropdown-toggle" data-toggle="dropdown" style="padding:0; color:#333; text-align:left;">{{current.SelectMode=='No.'?"座號搜尋":"切換學生"}} <span class="caret"></span> </a>
+                                        <a href="" class="btn btn-link btn-block dropdown-toggle" data-toggle="dropdown" style="padding:0; color:#333; text-align:left;">
+                                            {{current.SelectMode=='No.'?"座號搜尋":"切換學生"}}
+                                            <span class="caret"></span>
+                                        </a>
                                         <ul class="dropdown-menu" style="width:100%;">
                                             <li ng-class="{active:current.SelectMode=='No.'}">
                                                 <a href="javascript:;" ng-click="changeSelectMode('No.')">座號搜尋</a>
@@ -224,9 +262,9 @@
                                                style="min-width: 14px;"
                                                class="fa fa-edit"></i>
                                             {{current.Exam?current.Exam.Name:'請選擇'}}
-                                            <span class="caret"></span>
+                                            <span ng-if="modelList[0].Selected" class="caret"></span>
                                         </a>
-                                        <ul class="dropdown-menu" style="width:100%;">
+                                        <ul ng-if="modelList[0].Selected" class="dropdown-menu" style="width:100%;">
                                             <li ng-repeat="examItem in examList | filter: filterPermission" ng-class="{active:examItem==current.Exam}">
                                                 <a href="javascript:;" ng-click="setCurrent(current.Student, examItem, false, true)">
                                                     <i ng-if="examItem.Lock"
@@ -271,7 +309,6 @@
                                          class="text-center">
                                         {{current.Student['Exam'+current.Exam.ExamID]=='0'?('0'):(current.Student['Exam'+current.Exam.ExamID]||'&nbsp;')}}
                                     </div>
-
                                     <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Number' && current.Exam.Permission == 'Editor'"
                                          class="input-group">
                                         <input ng-model="current.Value"
@@ -287,7 +324,6 @@
                                             </a>
                                         </span>
                                     </div>
-
                                     <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
                                          class="input-group">
                                         <input ng-model="current.Value"
@@ -303,7 +339,6 @@
                                             </a>
                                         </span>
                                     </div>
-
                                     <div ng-if="!current.Exam.Lock && current.Student && (current.Exam.Type == 'Enum') && current.Exam.Permission == 'Editor'"
                                          class="btn-group">
                                         <button ng-repeat="option in current.Exam.Option"
@@ -315,7 +350,6 @@
                                             {{option.Label}}
                                         </button>
                                     </div>
-
                                 </td>
                                 <td ng-if="!current.Exam || !current.Student"
                                     class="text-center">
@@ -324,8 +358,6 @@
                             </tr>
                         </tbody>
                     </table>
-
-
                     <!-- 2017/8/3 穎驊新增 努力程度對照表 -->
                     <table class="table table-bordered table-striped"
                            style="width:260px;">
@@ -348,44 +380,38 @@
                             </tr>
                         </tbody>
                     </table>
-
                     <!-- 文字評量代碼對照表  2017/8/3 穎驊註解，恩正說這部分先不要做，等日後回饋-->
                     <!--<table class="table table-bordered table-striped"
-           style="width:260px;"
-           data-offset-top="145" bs-affix>
-        <thead>
-            <tr>
-                <th class="text-center" colspan="3">文字評量代碼</th>
-            </tr>
-            <tr>
-                <th class="text-center" style="width:50px;">分類</th>
-                <th class="text-center" style="width:50px;">代碼</th>
-                <th class="text-center">文字描述</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="text-center" style="padding:0px;"></td>
-                <td class="text-center" style="padding:0px;"></td>
-                <td class="text-center" style="padding:0px;"></td>
-            </tr>
-        </tbody>
-    </table>-->
-
-
+                            style="width:260px;"
+                            data-offset-top="145" bs-affix>
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="3">文字評量代碼</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center" style="width:50px;">分類</th>
+                                <th class="text-center" style="width:50px;">代碼</th>
+                                <th class="text-center">文字描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" style="padding:0px;"></td>
+                                <td class="text-center" style="padding:0px;"></td>
+                                <td class="text-center" style="padding:0px;"></td>
+                            </tr>
+                        </tbody>
+                    </table>-->
                 </div>
-                
             </div>
-            
-            
-
-            <div style="margin-right:270px;">
+            <!--成績管理Table-->
+            <div ng-if="modelList[0].Selected" style="margin-right:270px;">
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 95px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 學生
                             </th>
@@ -398,8 +424,17 @@
                                       style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
                                     {{exam.Name}}
                                 </span>
-                                <span ng-if="exam.Group"></span>                                
-                            </th>                            
+                                <span ng-if="exam.Name == '平時評量'"
+                                      style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis; padding-left:5px;">
+                                    <a ng-class="{'disabled':OrdinarilyEditable}"
+                                       ng-click="calcOrdinarilyScore();"
+                                       title="計算平時評量成績"
+                                       style="cursor:pointer">
+                                        <i class="fa fa-calculator text-muted"></i>
+                                    </a>
+                                </span>
+                                <span ng-if="exam.Group"></span>
+                            </th>
                         </tr>
                         <tr>
                             <th ng-repeat="exam in examList | filter: filterPermission"
@@ -440,9 +475,48 @@
                                 </h6>
                                 <span ng-if="!exam.Group"
                                       ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < 60}"
-                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap"
-                                      >
+                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec['Exam'+exam.ExamID]}}
+                                </span>
+                                <div ng-if="stuRec['Exam平時評量']!= stuRec['_Exam平時評量'] && exam.Name == '平時評量'" 
+                                     ng-attr-title="{{stuRec['_Exam平時評量']?'Preview：'+stuRec['_Exam平時評量']:''}}" 
+                                     style="display:inline-block;background-color:darkgoldenrod;position:absolute;right:3px;top:3px;width:5px;height:6px;border-radius:5px;">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--平時評量Table-->
+            <div ng-if="modelList[1].Selected" style="margin-right:270px;">
+                <table ng-init="getGradeItem()" class="table table-bordered table-striped table-hover text-center" style="table-layout:fixed;">
+                    <thead>
+                        <tr>
+                            <th colspan="3">基本資料</th>
+                            <th colspan="2">平時評量成績</th>
+                            <th colspan="{{gradeItemList.length}}">平時評量項目</th>
+                        </tr>
+                        <tr>
+                            <th ng-repeat="item in columnList">{{item.Text}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="student in studentList">
+                            <td>{{student.ClassName}}</td>
+                            <td>{{student.SeatNumber}}</td>
+                            <td>{{student.StudentName}}</td>
+                            <td>{{student['_Exam平時評量_努力程度']}}</td>
+                            <td>{{student['_Exam平時評量']}}</td>
+                            <td ng-repeat="item in gradeItemList" 
+                                class="text-center"
+                                style="position:relative;"
+                                ng-click="setCurrent(student, item, true, true)">
+                                <div ng-if="!checkCellValue(student, item.SubExamID)"
+                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
+                                </div>
+                                <span ng-class="{'text-danger':student[item.SubExamID] < 60}"
+                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
+                                    {{student[item.SubExamID]}}
                                 </span>
                             </td>
                         </tr>
@@ -451,7 +525,7 @@
             </div>
         </div>
     </div>
-
+    <!--匯入畫面-->
     <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importModal">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -509,8 +583,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < 60}"
-                                             >{{importProcess.ParseValues[$index]}}</div>
+                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < 60}">{{importProcess.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -572,7 +645,78 @@
             </div>
         </div>
     </div>
-
+    <!--編輯評分項目-->
+    <div id="editScoreItemModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="editScoreItem">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h1>平時評量設定</h1>
+                    <h4>{{current.Course.CourseName}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table ng-if="current.ConfigCustomAssessmentItem.Mode == 'Editor'" class="table table-bordered table-striped table-hover text-center" style="table-layout:fixed;">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="padding: 8px 2px;">評分名稱</th>
+                                <th class="text-center" style="padding: 8px 2px;">權重</th>
+                                <th class="text-center" style="padding: 8px 2px;">刪除</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in current.ConfigCustomAssessmentItem.Item">
+                                <td class="text-center" style="position:relative; padding:0px">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <input ng-model="item.Name" type="text" class="form-control pg-grade-textbox ng-pristine ng-valid" select-on-click="">
+                                    </div>
+                                </td>
+                                <td class="text-center" style="position:relative; padding:0px">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <input ng-model="item.Weight" type="text" class="form-control pg-grade-textbox ng-pristine ng-valid" select-on-click="">
+                                    </div>
+                                </td>
+                                <td style="padding:0px">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <a style="height:100%;width: 100%" ng-click="current.ConfigCustomAssessmentItem.DeleteItem(item)" class="btn btn-default">
+                                            <i class="fa fa-minus-square"></i>
+                                            刪除
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0px" colspan="3">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <a style="height:100%;width: 100%" ng-click="current.ConfigCustomAssessmentItem.AddItem()" class="btn btn-default">
+                                            <i class="fa fa-plus-square"></i>
+                                            加入項目
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <textarea ng-if="current.ConfigCustomAssessmentItem.Mode=='JSON'"
+                              ng-model="current.ConfigCustomAssessmentItem.JSONCode"
+                              style="min-height: 360px;resize: vertical;word-wrap: normal;white-space: nowrap;"
+                              type="text"
+                              class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid">
+                    </textarea>
+                </div>
+                <div class="modal-footer">
+                    <a ng-if="current.ConfigCustomAssessmentItem.Mode=='Editor'" ng-click="current.ConfigCustomAssessmentItem.JSONMode()" class="btn btn-link pull-left ng-scope" ng-class="{'btn-danger':!checkAllTable()}">
+                        JSON Editor
+                    </a>
+                    <a ng-if="current.ConfigCustomAssessmentItem.Mode=='JSON'" ng-click="current.ConfigCustomAssessmentItem.CommitJSON()" class="btn btn-link pull-left ng-scope" ng-class="{'btn-danger':!checkAllTable()}">
+                        Parse JSON
+                    </a>
+                    <a ng-click="saveCustomAssessmentConfig()" class="btn btn-default ng-scope" ng-class="{'btn-danger':!checkAllTable()}">
+                        <i class="fa fa-floppy-o"></i>
+                        儲存
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
-
 </html>
