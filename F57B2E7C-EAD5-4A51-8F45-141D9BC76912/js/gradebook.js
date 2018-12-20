@@ -979,7 +979,7 @@
                         try {
                             jsonParse = JSON.parse($scope.current.ConfigCustomAssessmentItem.JSONCode);
                         }
-                        catch{
+                        catch (ex) {
                             alert("Syntax Error");
                             return;
                         }
