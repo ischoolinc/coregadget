@@ -192,7 +192,7 @@ angular.module('learning', ['ngAnimate'])
                                     var targetStudent = studentKey[item.StudentID];
 
                                     targetStudent[item.SchoolYear + item.Semester] = item.Sum;
-                                    targetStudent[item.SchoolYear + 'total'] += parseInt(item.Sum == "" ? "0" : item.Sum);
+                                    targetStudent[item.SchoolYear + 'total'] += Number(item.Sum == "" ? "0" : item.Sum);
                                 })
                             }
                         });
