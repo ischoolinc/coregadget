@@ -28,6 +28,7 @@
     <title>GradeBook</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
     <link href="css/font-awesome.min.css" rel="stylesheet" />
     <link href="css/base.css" rel="stylesheet" />
     <script src="js/jquery.min.js"></script>
@@ -48,6 +49,8 @@
     <script src="js/angular-strap.min.js"></script>
     <script src="js/angular-strap.tpl.min.js"></script>
     <script src="js/gradebook.js"></script>
+    <script src="js/xlsx.full.min.js"></script>
+    <script src="js/FileSaver.js"></script>
     <style>
         .dropdown-header {
             padding: 3px 10px;
@@ -61,8 +64,8 @@
             margin: 3px 0px;
         }
 
-            .importStudentPreview .studentInfo {
-            }
+        .importStudentPreview .studentInfo {
+        }
 
         .my-page {
         }
@@ -96,9 +99,13 @@
                 </ul>
             </div>
             <!--成績管理模式:功能按鈕-->
+            <div ng-if="modelList[0].Selected" class="btn btn-default">
+                <i class="far fa-file-excel" ng-click="exportExcel()">
+                    匯出報表
+                </i>
+            </div>
             <div ng-if="modelList[0].Selected" class="btn-group pull-right" ng-init="getProcess()">
-                <div class="btn-group"
-                     ng-if="process">
+                <div class="btn-group" ng-if="process">
                     <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-cog" aria-hidden="true"></i>
                         <span>批次</span>
@@ -141,11 +148,11 @@
                 </a>-->
             </div>
             <!--平時評量模式:功能按鈕-->
-            <button ng-if="modelList[1].Selected" style="margin-left:10px;">
+            <div ng-if="modelList[1].Selected" class="btn btn-default">
                 <i class="fa fa-edit" ng-click="showCustomAssessmentConfig()">
                     編輯評分項目
                 </i>
-            </button>
+            </div>
             <div ng-if="modelList[1].Selected" class="btn-group pull-right">
                 <div class="btn-group">
                     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -293,7 +300,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr ng-if="current.Exam.Type != 'Text'">
                                 <td style="position:relative;">
                                     <span>{{current.Exam?current.Exam.SubName||current.Exam.Name:''}}</span>
                                     <div ng-if="current.Student&&current.Student.StudentScoreTag"
@@ -324,7 +331,7 @@
                                             </a>
                                         </span>
                                     </div>
-                                    <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
+                                    <!--<div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
                                          class="input-group">
                                         <input ng-model="current.Value"
                                                ng-keydown="enterGrade($event)"
@@ -338,7 +345,7 @@
                                                 送出
                                             </a>
                                         </span>
-                                    </div>
+                                    </div>-->
                                     <div ng-if="!current.Exam.Lock && current.Student && (current.Exam.Type == 'Enum') && current.Exam.Permission == 'Editor'"
                                          class="btn-group">
                                         <button ng-repeat="option in current.Exam.Option"
@@ -352,6 +359,48 @@
                                     </div>
                                 </td>
                                 <td ng-if="!current.Exam || !current.Student"
+                                    class="text-center">
+                                    --
+                                </td>
+                            </tr>
+                            <!--文字評量輸入-->
+                            <tr ng-if="current.Exam.Type == 'Text'">
+                                <td ng-if="current.Exam && current.Student" colspan="2">
+                                    <div ng-if="!current.Exam.Lock && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
+                                         class="input-group">
+                                        <!--文字輸入區域-->
+                                        <textarea ng-model="current.Value"
+                                                  ng-keydown="enterGrade($event)"
+                                                  maxlength="200"
+                                                  placeholder="{{isMobile?'':'Enter送出'}}"
+                                                  style="min-height: 60px;height:120px;resize: vertical;"
+                                                  type="text"
+                                                  class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid"
+                                                  select-on-click>
+                                        </textarea>
+                                        <div class="pull-right">
+                                            <span class="input-group-btn">
+                                                <a ng-click="openCommentCode()"
+                                                   class="btn btn-default">
+                                                    <i class="far fa-file-code">
+                                                        文字代碼表
+                                                    </i>
+                                                </a>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <a ng-click="enterGrade()"
+                                                   class="btn btn-default">
+                                                    送出
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div ng-if="current.Exam.Lock && current.Exam.Permission == 'Editor'">
+                                        &nbsp
+                                    </div>
+                                </td>
+                                <td ng-if="!current.Exam || !current.Student"
+                                    colspan="2"
                                     class="text-center">
                                     --
                                 </td>
@@ -380,28 +429,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!-- 文字評量代碼對照表  2017/8/3 穎驊註解，恩正說這部分先不要做，等日後回饋-->
-                    <!--<table class="table table-bordered table-striped"
-                            style="width:260px;"
-                            data-offset-top="145" bs-affix>
-                        <thead>
-                            <tr>
-                                <th class="text-center" colspan="3">文字評量代碼</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center" style="width:50px;">分類</th>
-                                <th class="text-center" style="width:50px;">代碼</th>
-                                <th class="text-center">文字描述</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" style="padding:0px;"></td>
-                                <td class="text-center" style="padding:0px;"></td>
-                                <td class="text-center" style="padding:0px;"></td>
-                            </tr>
-                        </tbody>
-                    </table>-->
                 </div>
             </div>
             <!--成績管理Table-->
@@ -452,7 +479,8 @@
                             ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
                             style="cursor:pointer;">
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)"
+                                ng-class="{'boy':stuRec.Gender == '男' ,'girl': stuRec.Gender == '女'}">
                                 <span ng-if="stuRec.SeatNo"
                                       style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
                                 <span>{{stuRec.StudentName}}</span>
@@ -463,7 +491,7 @@
                                 ng-if="!exam.Group || exam.SubVisible"
                                 ng-click="setCurrent(stuRec, exam, true, true)">
                                 <div ng-if="!checkOneCell(stuRec, 'Exam'+exam.ExamID)"
-                                     ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
+                                     ng-attr-title="資料已修改，尚未儲存! {{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
                                 <h6 ng-if="exam.Group" style="margin:0px;display:inline-block;">
@@ -474,12 +502,12 @@
                                     </small>
                                 </h6>
                                 <span ng-if="!exam.Group"
-                                      ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < 60}"
+                                      ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < 60 && current.Exam.Type != 'Text'}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec['Exam'+exam.ExamID]}}
                                 </span>
                                 <div ng-if="stuRec['Exam平時評量']!= stuRec['_Exam平時評量'] && exam.Name == '平時評量'" 
-                                     ng-attr-title="{{stuRec['_Exam平時評量']?'Preview：'+stuRec['_Exam平時評量']:''}}" 
+                                     ng-attr-title="平時評量成績尚未結算! {{stuRec['_Exam平時評量']?'預覽：'+stuRec['_Exam平時評量']:''}}" 
                                      style="display:inline-block;background-color:darkgoldenrod;position:absolute;right:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
                             </td>
@@ -512,6 +540,7 @@
                                 style="position:relative;"
                                 ng-click="setCurrent(student, item, true, true)">
                                 <div ng-if="!checkCellValue(student, item.SubExamID)"
+                                     ng-attr-title="資料已修改，尚未儲存! {{student['Origin'+item.SubExamID]?'原值為：'+student['Origin'+item.SubExamID]:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
                                 <span ng-class="{'text-danger':student[item.SubExamID] < 60}"

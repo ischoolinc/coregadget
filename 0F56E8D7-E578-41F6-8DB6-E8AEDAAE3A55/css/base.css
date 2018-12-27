@@ -9,6 +9,13 @@
   background: #fdfdfd;
 }*/
 
+.boy{
+    color:black;
+}
+.girl {
+    color: #D6905A;
+}
+
 .navbar {
   border: 1px dashed transparent;
 }
