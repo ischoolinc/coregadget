@@ -630,41 +630,42 @@
                     Name: 'Import ' + assessmentRec.Name,
                     Parse: function () {
                         importProcess.ParseString = importProcess.ParseString || '';
-                        // 2017/11/30穎驊註解，由於Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
-                        //var text_trimmed = importProcess.ParseString.replace('""', '')
-                        var text_trimmed = importProcess.ParseString.replace(/""/g, "");
-                        function CSVtoArray(text) {
-                            //var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
-                            var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:\n|$)/g;
+                        importProcess.ParseValues = importProcess.ParseString.split("\n");
+                        //// 2017/11/30穎驊註解，由於Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
+                        ////var text_trimmed = importProcess.ParseString.replace('""', '')
+                        //var text_trimmed = importProcess.ParseString.replace(/""/g, "");
+                        //function CSVtoArray(text) {
+                        //    //var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
+                        //    var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:\n|$)/g;
 
-                            // 本案不需要驗證
-                            // Return NULL if input string is not well formed CSV string.
-                            //if (!re_valid.test(text)) return null;
+                        //    // 本案不需要驗證
+                        //    // Return NULL if input string is not well formed CSV string.
+                        //    //if (!re_valid.test(text)) return null;
 
-                            var a = [];                     // Initialize array to receive values.
-                            text.replace(re_value, // "Walk" the string using replace with callback.
-                                function (m0, m1, m2, m3) {
-                                    // Remove backslash from \' in single quoted values.
-                                    if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
-                                    // Remove backslash from \" in double quoted values.
-                                    else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
-                                    else if (m3 !== undefined) {
-                                        var list_1 = [];
+                        //    var a = [];                     // Initialize array to receive values.
+                        //    text.replace(re_value, // "Walk" the string using replace with callback.
+                        //        function (m0, m1, m2, m3) {
+                        //            // Remove backslash from \' in single quoted values.
+                        //            if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+                        //            // Remove backslash from \" in double quoted values.
+                        //            else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
+                        //            else if (m3 !== undefined) {
+                        //                var list_1 = [];
 
-                                        list_1 = m3.split("\n")
+                        //                list_1 = m3.split("\n")
 
-                                        list_1.forEach(function (text, index) {
+                        //                list_1.forEach(function (text, index) {
 
-                                            a.push(text);
-                                        });
-                                    }
-                                    return ''; // Return empty string.
-                                });
-                            // Handle special case of empty last value.
-                            if (/,\s*$/.test(text)) a.push('');
-                            return a;
-                        };
-                        importProcess.ParseValues = CSVtoArray(text_trimmed);
+                        //                    a.push(text);
+                        //                });
+                        //            }
+                        //            return ''; // Return empty string.
+                        //        });
+                        //    // Handle special case of empty last value.
+                        //    if (/,\s*$/.test(text)) a.push('');
+                        //    return a;
+                        //};
+                        //importProcess.ParseValues = CSVtoArray(text_trimmed);
                         importProcess.HasError = false;
                         for (var i = 0; i < importProcess.ParseValues.length; i++) {
                             var flag = false;
