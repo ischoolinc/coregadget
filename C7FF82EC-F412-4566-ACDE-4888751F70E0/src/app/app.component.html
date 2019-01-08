@@ -1,50 +1,54 @@
 <div class="container-fluid cbs d-flex justify-content-between flex-column">
-        <div id="index"
-        page>
-     <nav aria-label="breadcrumb text-nowrap text-truncate">
-       <ol class="breadcrumb">
-         <li class="breadcrumb-item active"
-             aria-current="page">輔導紀錄</li>
-       </ol>
-     </nav>
-     <!-- TAB NAV -->
-     <ul class="nav nav-justified nav-tabs mb-3">
-       <li class="nav-item">
-         <a class="nav-link"
-            data-toggle="tab"
-            (click)="routeTo('/counsel')"
-            [ngClass]="{'active': currentPath == 'counsel'}">輔導學生</a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link"
-            data-toggle="tab"
-            (click)="routeTo('/counsel_statistics')"
-            [ngClass]="{'active': currentPath == 'counsel_statistics'}">輔導統計</a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link"
-            data-toggle="tab"
-            (click)="routeTo('/referral')"
-            [ngClass]="{'active': currentPath == 'referral'}">
-           轉介學生
-           <span class="badge badge-pill badge-danger">1</span>
-         </a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link"
-            data-toggle="tab"
-            (click)="routeTo('/case')"
-            [ngClass]="{'active': currentPath == 'case'}">個案資料</a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link"
-            data-toggle="tab"
-            (click)="routeTo('/interview_statistics')"
-            [ngClass]="{'active': currentPath == 'interview_statistics'}">訪談填寫狀況</a>
-       </li>
-     </ul>
+  <div id="index"
+       page>
+    <nav aria-label="breadcrumb text-nowrap text-truncate">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active"
+            aria-current="page">輔導紀錄</li>
+      </ol>
+    </nav>
+    <!-- TAB NAV -->
+    <ul class="nav nav-justified nav-tabs mb-3">
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableCounsel?'tab':null"
+           (click)="!roleService.enableCounsel || routeTo('/counsel')"
+           [ngClass]="{'active': currentComponent == 'counsel', 'disabled': !roleService.enableCounsel}">
+          輔導學生</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableCounselStatistics?'tab':null"
+           (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
+           [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">
+          輔導統計</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableReferral?'tab':null"
+           (click)="!roleService.enableReferral || routeTo('/referral')"
+           [ngClass]="{'active': currentComponent == 'referral', 'disabled': !roleService.enableReferral}">
+          轉介學生
+          <span class="d-none badge badge-pill badge-danger">1</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableCase?'tab':null"
+           (click)="!roleService.enableCase || routeTo('/case')"
+           [ngClass]="{'active': currentComponent == 'case', 'disabled': !roleService.enableCase}">
+          個案資料</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
+           (click)="!roleService.enableInterviewStatistics || routeTo('/interview_statistics')"
+           [ngClass]="{'active': currentComponent == 'interview_statistics', 'disabled': !roleService.enableInterviewStatistics}">
+          輔導填寫狀況</a>
+      </li>
+    </ul>
     <router-outlet></router-outlet>
     <footer class="text-center p-2 mt-auto">
-        Powered By ischool
+      Powered By ischool
     </footer>
-</div>
+  </div>

@@ -1,199 +1,175 @@
-<!-- 班級訪談紀錄 -->
-<!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    顯示條件：
-    1.「訪談紀錄」
-    2.「某年某班」
-    3.尚未在 input 內輸入搜尋條件
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
-<div class="class-page">
-    <div class="d-md-flex align-items-center pt-3">
-        <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle"
-                    type="button"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">107學年度 第1學期</button>
-            <div class="dropdown-menu">
-                <a class="dropdown-item"
-                   href="#">107學年度 第1學期</a>
-                <a class="dropdown-item"
-                   href="#">106學年度 第2學期</a>
-                <a class="dropdown-item"
-                   href="#">106學年度 第1學期</a>
+<div *ngIf="!counselStudentService.isLoading; else tmpLoading">
+    <app-permission-denied *ngIf="deny"></app-permission-denied>
+    <div *ngIf="!deny">
+        <!-- 班級輔導紀錄 -->
+        <!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            顯示條件：
+            1.「輔導紀錄」
+            2.「某年某班」
+            3.尚未在 input 內輸入搜尋條件
+        ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
+        <div *ngIf="mod==='class'"
+             class="class-page">
+            <!-- <div class="d-md-flex align-items-center pt-3">
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">107學年度 第1學期</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item"
+                       href="#">107學年度 第1學期</a>
+                    <a class="dropdown-item"
+                       href="#">106學年度 第2學期</a>
+                    <a class="dropdown-item"
+                       href="#">106學年度 第1學期</a>
+                </div>
             </div>
+            <div class="custom-control custom-checkbox mt-3 mt-md-0 mb-0 ml-auto">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       id="customCheck1">
+                <label class="custom-control-label"
+                       for="customCheck1">只顯示末完成之學生</label>
+            </div>
+        </div> -->
+            <ul class="rwd-table">
+                <li class="thead">
+                    <ol class="tr">
+                        <li>座號</li>
+                        <li>姓名</li>
+                        <li>筆數</li>
+                        <li>最後輔導日期</li>
+                        <li>輔導對象</li>
+                        <li>輔導方式</li>
+                        <li>聯絡事項</li>
+                        <li>轉介</li>
+                    </ol>
+                </li>
+                <li class="tbody">
+                    <ol *ngFor="let stuRec of targetList"
+                        class="tr"
+                        [routerLink]="['/counsel','detail', stuRec.StudentID]"
+                        routerLink="/counsel/detail/123">
+                        <li data-title="座號">{{stuRec.SeatNo}}</li>
+                        <li data-title="姓名">{{stuRec.StudentName}}</li>
+                        <li data-title="筆數">{{stuRec.InterviewCount}}</li>
+                        <li data-title="最後輔導日期">{{stuRec.LastInterviewDate}}</li>
+                        <li class="text-normal"
+                            data-title="輔導對象">{{stuRec.LastInterviewContact}}</li>
+                        <li class="text-normal"
+                            data-title="輔導方式">{{stuRec.LastInterviewType}}{{stuRec.LastInterviewTypeOther}}</li>
+                        <li class="text-left text-normal"
+                            data-title="聯絡事項">{{stuRec.LastInterviewContent}}</li>
+                        <li data-title="轉介">{{stuRec.LastInterviewReferral?'是':''}}</li>
+                    </ol>
+                </li>
+            </ul>
         </div>
-        <div class="custom-control custom-checkbox mt-3 mt-md-0 mb-0 ml-auto">
-            <input type="checkbox"
-                   class="custom-control-input"
-                   id="customCheck1">
-            <label class="custom-control-label"
-                   for="customCheck1">只顯示末完成之學生</label>
-        </div>
-    </div>
-    <ul class="rwd-table">
-        <li class="thead">
-            <ol class="tr">
-                <li>座號</li>
-                <li>姓名</li>
-                <li>筆數</li>
-                <li>最後訪談日期</li>
-                <li>訪談對象</li>
-                <li>訪談方式</li>
-                <li>聯絡事項</li>
-                <li>轉介</li>
-            </ol>
-        </li>
-        <li class="tbody">
-            <ol class="tr"
-                routerLink="/counsel/detail/123">
-                <li data-title="座號">1</li>
-                <li data-title="姓名">吳明秋</li>
-                <li data-title="筆數">4</li>
-                <li data-title="最後訪談日期">2018-12-01</li>
-                <li class="text-normal"
-                    data-title="訪談對象">吳明秋的爸爸</li>
-                <li class="text-normal"
-                    data-title="訪談方式">電話</li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項">邀請參加家長座談會</li>
-                <li data-title="轉介"></li>
-            </ol>
-            <ol class="tr">
-                <li data-title="座號">2</li>
-                <li data-title="姓名">方靜宜</li>
-                <li data-title="筆數">0</li>
-                <li data-title="最後訪談日期"></li>
-                <li class="text-normal"
-                    data-title="訪談對象"></li>
-                <li class="text-normal"
-                    data-title="訪談方式"></li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項"></li>
-                <li data-title="轉介"></li>
-            </ol>
-            <ol class="tr">
-                <li data-title="座號">3</li>
-                <li data-title="姓名">陳健偉</li>
-                <li data-title="筆數">1</li>
-                <li data-title="最後訪談日期">2018-11-03</li>
-                <li class="text-normal"
-                    data-title="訪談對象">陳健偉的媽媽</li>
-                <li class="text-normal"
-                    data-title="訪談方式">家庭訪問</li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項">長期遲到作業未繳交</li>
-                <li data-title="轉介">是</li>
-            </ol>
-            <ol class="tr">
-                <li data-title="座號">4</li>
-                <li data-title="姓名">吳俊勝</li>
-                <li data-title="筆數">0</li>
-                <li data-title="最後訪談日期"></li>
-                <li class="text-normal"
-                    data-title="訪談對象"></li>
-                <li class="text-normal"
-                    data-title="訪談方式"></li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項"></li>
-                <li data-title="轉介"></li>
-            </ol>
-        </li>
-    </ul>
-</div>
 
-<!-- 認輔學生訪談紀錄 -->
-<!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    顯示條件：
-    1.「認輔紀錄」
-    2.「全部」
-    3.尚未在 input 內輸入搜尋條件
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
-<div id="adoption-page">
-    <div class="d-md-flex align-items-center pt-3">
-        <div class="custom-control custom-checkbox mb-0 ml-auto">
-            <input type="checkbox"
-                   class="custom-control-input"
-                   id="customCheck1">
-            <label class="custom-control-label"
-                   for="customCheck1">只顯示末完成之學生</label>
+        <!-- 認輔學生輔導紀錄 -->
+        <!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            顯示條件：
+            1.「認輔紀錄」
+            2.「全部」
+            3.尚未在 input 內輸入搜尋條件
+        ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
+        <div *ngIf="mod==='guidance'">
+            <div class="d-md-flex align-items-center pt-3">
+                <div class="custom-control custom-checkbox mb-0 ml-auto">
+                    <input type="checkbox"
+                           class="custom-control-input"
+                           id="customCheck1">
+                    <label class="custom-control-label"
+                           for="customCheck1">只顯示末完成之學生</label>
+                </div>
+            </div>
+            <div class="font-weight-bold">107學年度 第1學期</div>
+            <ul class="rwd-table">
+                <li class="thead">
+                    <ol class="tr">
+                        <li>班級</li>
+                        <li>座號</li>
+                        <li>姓名</li>
+                        <li>筆數</li>
+                        <li>最後輔導日期</li>
+                        <li>輔導對象</li>
+                        <li>輔導方式</li>
+                        <li>聯絡事項</li>
+                        <li>轉介</li>
+                    </ol>
+                </li>
+                <li class="tbody">
+                    <ol class="tr">
+                        <li data-title="班級">三年一班</li>
+                        <li data-title="座號">1</li>
+                        <li data-title="姓名">方慶花</li>
+                        <li data-title="筆數">4</li>
+                        <li data-title="最後輔導日期">2018-12-01</li>
+                        <li class="text-normal"
+                            data-title="輔導對象">方慶花的爸爸</li>
+                        <li class="text-normal"
+                            data-title="輔導方式">電話</li>
+                        <li class="text-left text-normal"
+                            data-title="聯絡事項">邀請參加家長座談會</li>
+                        <li data-title="轉介"></li>
+                    </ol>
+                    <ol class="tr">
+                        <li data-title="班級">三年三班</li>
+                        <li data-title="座號">2</li>
+                        <li data-title="姓名">王明軒</li>
+                        <li data-title="筆數">0</li>
+                        <li data-title="最後輔導日期"></li>
+                        <li class="text-normal"
+                            data-title="輔導對象"></li>
+                        <li class="text-normal"
+                            data-title="輔導方式"></li>
+                        <li class="text-left text-normal"
+                            data-title="聯絡事項"></li>
+                        <li data-title="轉介"></li>
+                    </ol>
+                </li>
+            </ul>
+            <div class="font-weight-bold">106學年度 第2學期</div>
+            <ul class="rwd-table">
+                <li class="thead">
+                    <ol class="tr">
+                        <li>班級</li>
+                        <li>座號</li>
+                        <li>姓名</li>
+                        <li>筆數</li>
+                        <li>最後輔導日期</li>
+                        <li>輔導對象</li>
+                        <li>輔導方式</li>
+                        <li>聯絡事項</li>
+                        <li>轉介</li>
+                    </ol>
+                </li>
+                <li class="tbody">
+                    <ol class="tr">
+                        <li data-title="班級">三年一班</li>
+                        <li data-title="座號">1</li>
+                        <li data-title="姓名">方慶花</li>
+                        <li data-title="筆數">4</li>
+                        <li data-title="最後輔導日期">2017-12-01</li>
+                        <li class="text-normal"
+                            data-title="輔導對象">方慶花的爸爸</li>
+                        <li class="text-normal"
+                            data-title="輔導方式">電話</li>
+                        <li class="text-left text-normal"
+                            data-title="聯絡事項">邀請參加家長座談會</li>
+                        <li data-title="轉介"></li>
+                    </ol>
+                </li>
+            </ul>
         </div>
     </div>
-    <div class="font-weight-bold">107學年度 第1學期</div>
-    <ul class="rwd-table">
-        <li class="thead">
-            <ol class="tr">
-                <li>班級</li>
-                <li>座號</li>
-                <li>姓名</li>
-                <li>筆數</li>
-                <li>最後訪談日期</li>
-                <li>訪談對象</li>
-                <li>訪談方式</li>
-                <li>聯絡事項</li>
-                <li>轉介</li>
-            </ol>
-        </li>
-        <li class="tbody">
-            <ol class="tr">
-                <li data-title="班級">三年一班</li>
-                <li data-title="座號">1</li>
-                <li data-title="姓名">方慶花</li>
-                <li data-title="筆數">4</li>
-                <li data-title="最後訪談日期">2018-12-01</li>
-                <li class="text-normal"
-                    data-title="訪談對象">方慶花的爸爸</li>
-                <li class="text-normal"
-                    data-title="訪談方式">電話</li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項">邀請參加家長座談會</li>
-                <li data-title="轉介"></li>
-            </ol>
-            <ol class="tr">
-                <li data-title="班級">三年三班</li>
-                <li data-title="座號">2</li>
-                <li data-title="姓名">王明軒</li>
-                <li data-title="筆數">0</li>
-                <li data-title="最後訪談日期"></li>
-                <li class="text-normal"
-                    data-title="訪談對象"></li>
-                <li class="text-normal"
-                    data-title="訪談方式"></li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項"></li>
-                <li data-title="轉介"></li>
-            </ol>
-        </li>
-    </ul>
-    <div class="font-weight-bold">106學年度 第2學期</div>
-    <ul class="rwd-table">
-        <li class="thead">
-            <ol class="tr">
-                <li>班級</li>
-                <li>座號</li>
-                <li>姓名</li>
-                <li>筆數</li>
-                <li>最後訪談日期</li>
-                <li>訪談對象</li>
-                <li>訪談方式</li>
-                <li>聯絡事項</li>
-                <li>轉介</li>
-            </ol>
-        </li>
-        <li class="tbody">
-            <ol class="tr">
-                <li data-title="班級">三年一班</li>
-                <li data-title="座號">1</li>
-                <li data-title="姓名">方慶花</li>
-                <li data-title="筆數">4</li>
-                <li data-title="最後訪談日期">2017-12-01</li>
-                <li class="text-normal"
-                    data-title="訪談對象">方慶花的爸爸</li>
-                <li class="text-normal"
-                    data-title="訪談方式">電話</li>
-                <li class="text-left text-normal"
-                    data-title="聯絡事項">邀請參加家長座談會</li>
-                <li data-title="轉介"></li>
-            </ol>
-        </li>
-    </ul>
 </div>
+<ng-template #tmpLoading
+             class="container">
+    <div class="row justify-content-center"
+         style="margin-top:250px;margin-bottom:200px;">
+        Loading...
+    </div>
+</ng-template>

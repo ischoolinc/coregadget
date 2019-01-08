@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
+import { RoleService } from "./role.service";
 
 @Component({
   selector: 'app-root',
@@ -7,41 +8,28 @@ import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  currentPath: string;
 
   constructor(
-    private route: ActivatedRoute
+    private activeRoute: ActivatedRoute
     , private router: Router
+    , private roleService: RoleService
   ) {
   }
 
   ngOnInit() {
-    this.router.events.subscribe((data) => {
-      if (data instanceof RoutesRecognized) {
-        const comp = data.state.root.firstChild.component as any;
-
-        if (comp.name == "CaseListComponent")
-          this.currentPath = "case";
-        else if (comp.name == "CounselListComponent")
-          this.currentPath = "counsel";
-        else if (comp.name == "ReferralListComponent")
-          this.currentPath = "referral";
-        else if (comp.name == "CounselStatisticsComponent")
-          this.currentPath = "counsel_statistics";
-        else if (comp.name == "InterviewStatisticsComponent")
-          this.currentPath = "interview_statistics";
-        else
-          this.currentPath = "counsel";
-      }
-    });
   }
 
   routeTo(to) {
     //讓特效跑
-    setTimeout(function () {
+    setTimeout(() => {
       this.router.navigate([].concat(to || []), {
-        relativeTo: this.route
+        relativeTo: this.activeRoute
       });
-    }.bind(this), 200);
+    }, 200);
   }
+
+  private _CurrentComponent: string;
+  public get currentComponent(): string { return this._CurrentComponent; }
+  public set currentComponent(currentComponent: string) { setTimeout(() => { this._CurrentComponent = currentComponent; }); }
+
 }

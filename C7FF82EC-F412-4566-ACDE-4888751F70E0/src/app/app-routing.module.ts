@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-// import { MainComponent } from './main/main.component';
 import { CounselComponent } from "./counsel/counsel.component";
-import { CaseListComponent } from './case/case-list/case-list.component';
+import { CaseComponent } from './case/case.component';
 import { CounselDetailComponent } from "./counsel/counsel-detail/counsel-detail.component";
 import { CounselItemDetailComponent } from "./counsel/counsel-detail/counsel-item-detail/counsel-item-detail.component";
 import { InterviewDetailComponent } from "./counsel/counsel-detail/interview-detail/interview-detail.component";
@@ -11,21 +10,27 @@ import { AbsentDetailComponent } from "./counsel/counsel-detail/absent-detail/ab
 import { ExamScoreDetailComponent } from "./counsel/counsel-detail/exam-score-detail/exam-score-detail.component";
 import { SemesterScoreDetailComponent } from "./counsel/counsel-detail/semester-score-detail/semester-score-detail.component";
 import { CounselListComponent } from './counsel/counsel-list/counsel-list.component';
-import { ReferralListComponent } from './referral/referral-list/referral-list.component';
-import { CounselStatisticsComponent } from './statistics/counsel-statistics/counsel-statistics.component';
-import { InterviewStatisticsComponent } from './statistics/interview-statistics/interview-statistics.component';
+import { ReferralComponent } from './referral/referral.component';
+import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
+import { InterviewStatisticsComponent } from './interview-statistics/interview-statistics.component';
+import { PermissionDeniedComponent } from "./permission-denied/permission-denied.component";
+import { CounselRoutingComponent } from "./counsel/counsel-routing/counsel-routing.component";
+import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/detail-routing.component";
+// import { CaseRoleGuard, CounselRoleGuard, CounselStatisticsRoleGuard, ReferralRoleGuard, InterviewStatisticsRoleGuard } from "./role.guard";
 
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'counsel' },
+  { path: 'permission_denied', component: PermissionDeniedComponent },
   {
     path: 'counsel', component: CounselComponent,
     children: [
-      { path: '', component: CounselListComponent },
+      { path: '', pathMatch: 'full', component: CounselRoutingComponent },
+      { path: 'list/:mod/:target', component: CounselListComponent },
       {
-        path: 'detail/:sid', component: CounselDetailComponent,
+        path: 'detail/:studentID', component: CounselDetailComponent,
         children: [
-          { path: '', component: CounselItemDetailComponent },
+          { path: '', pathMatch: 'full', component: DetailRoutingComponent },
           { path: 'counsel', component: CounselItemDetailComponent },
           { path: 'interview', component: InterviewDetailComponent },
           { path: 'psychological_test', component: PsychologicalTestDetailComponent },
@@ -37,8 +42,8 @@ const routes: Routes = [
     ]
   },
   { path: 'counsel_statistics', component: CounselStatisticsComponent },
-  { path: 'referral', component: ReferralListComponent },
-  { path: 'case', component: CaseListComponent },
+  { path: 'referral', component: ReferralComponent },
+  { path: 'case', component: CaseComponent },
   { path: 'interview_statistics', component: InterviewStatisticsComponent }
 ];
 
