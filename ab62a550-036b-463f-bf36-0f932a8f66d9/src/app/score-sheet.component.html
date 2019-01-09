@@ -27,7 +27,8 @@
         <div class="rwd-list">
             <ul>
                 <li class="rwd-w-3">扣分原因(扣分)</li>
-                <li class="rwd-w-3">補充說明</li>
+                <li class="rwd-w-1">時段</li>
+                <li class="rwd-w-2">補充說明</li>
                 <li class="rwd-w-1">照片1</li>
                 <li class="rwd-w-2">說明1</li>
                 <li class="rwd-w-1">照片2</li>
@@ -38,7 +39,8 @@
                 <li class="rwd-w-3" data-label="扣分原因(扣分)">{{item.deduction_item_name}} / {{item.deduction_standard_name}}
                     (<span class="text-danger">-{{item.deduction_standard_points}}</span>)
                 </li>
-                <li class="rwd-w-3" data-label="補充說明">{{item.remark}}</li>
+                <li class="rwd-w-1" data-label="時段">{{item.period_name}}</li>
+                <li class="rwd-w-2" data-label="補充說明">{{item.remark}}</li>
                 <li class="rwd-w-1" data-label="照片1">
                     <img *ngIf="item.picture1" [src]="item.picture1"
                         class="img-fluid" style="cursor: pointer; max-height: 2rem"
