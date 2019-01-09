@@ -365,8 +365,9 @@ var app = angular
                     // 資料驗證
                     for (var i = 0; i < item.InputValues.length; i++) {
                         var flag = false;
-                        $scope.list[i][item.Key] = item.InputValues[i];
-                        var value = $scope.list[i][item.Key];
+                        //$scope.list[i][item.Key] = item.InputValues[i];
+                        //var value = $scope.list[i][item.Key];
+                        var value = item.InputValues[i].trim();
                         //var value = Number(item.InputValues[i].trim());
 
                         if (!isNaN(Number(value))) {
@@ -383,6 +384,9 @@ var app = angular
                         if (angular.isFunction(item.Validate)) {
                             if (item.Validate(value)) {
                                 flag = true;
+                            }
+                            else {
+                                flag = false;
                             }
                         }
                         else {
@@ -417,12 +421,12 @@ var app = angular
                     if (item.HasError == true)
                         return;
                     // 介面暫存資料
-                    //$scope.list.forEach(function (stuRec, index) {
-                    //    if (!item.InputValues[index] && item.InputValues[index] !== '')
-                    //        stuRec[item.Key] = '';
-                    //    else
-                    //        stuRec[item.Key] = item.InputValues[index];
-                    //});
+                    $scope.list.forEach(function (stuRec, index) {
+                        if (!item.InputValues[index] && item.InputValues[index] !== '')
+                            stuRec[item.Key] = '';
+                        else
+                            stuRec[item.Key] = item.InputValues[index];
+                    });
                     // 資料整理
                     var dataRow = [];
                     $scope.list.forEach(function (stuRec, index) {
