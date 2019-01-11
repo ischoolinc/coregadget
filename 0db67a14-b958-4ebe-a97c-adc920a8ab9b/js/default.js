@@ -13,19 +13,24 @@ function parseDateUTC(input) {
 //Expect input as y/m/d
 //http://stackoverflow.com/questions/5812220/how-to-validate-a-date
 function isValidDate2(s) {
-    var bits = s.split('/');
-    var y = bits[0],
-        m = bits[1],
-        d = bits[2];
-    // Assume not leap year by default (note zero index for Jan)
-    var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    // If evenly divisible by 4 and not evenly divisible by 100,
-    // or is evenly divisible by 400, then a leap year
-    if ((!(y % 4) && y % 100) || !(y % 400)) {
-        daysInMonth[1] = 29;
+    if (s == '-'){
+        return true;
     }
-    return d <= daysInMonth[--m]
+    else {
+        var bits = s.split('/');
+        var y = bits[0],
+            m = bits[1],
+            d = bits[2];
+        // Assume not leap year by default (note zero index for Jan)
+        var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        // If evenly divisible by 4 and not evenly divisible by 100,
+        // or is evenly divisible by 400, then a leap year
+        if ((!(y % 4) && y % 100) || !(y % 400)) {
+            daysInMonth[1] = 29;
+        }
+        return d <= daysInMonth[--m]
+    }
 }
 var app = angular
     .module("app", ['ui.bootstrap'])
@@ -180,12 +185,12 @@ var app = angular
             $scope.init();
         }
         function listCheck() {
-            for (var i = 0; i < $scope.list.length; i++) {
-                if ( !$scope.list[i].test_date ) {
-                    $scope.checkListBool = false;
-                    return false;
-                }
-            };
+            //for (var i = 0; i < $scope.list.length; i++) {
+            //    if ( !$scope.list[i].test_date ) {
+            //        $scope.checkListBool = false;
+            //        return false;
+            //    }
+            //};
             $scope.checkListBool = true;
             return true ;
         }
@@ -378,7 +383,10 @@ var app = angular
                         // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
                         if (item.InputValues[i] == '-') {
                             flag = true;
-                            item.InputValues[i] = '';
+                            //item.InputValues[i] = '';
+                            //if (item.Key != 'test_date'){
+                            //    item.InputValues[i] = '';
+                            //}
                         }
                         // 執行驗證規則
                         if (angular.isFunction(item.Validate)) {
@@ -421,23 +429,45 @@ var app = angular
                     if (item.HasError == true)
                         return;
                     // 介面暫存資料
-                    $scope.list.forEach(function (stuRec, index) {
-                        if (!item.InputValues[index] && item.InputValues[index] !== '')
-                            stuRec[item.Key] = '';
-                        else
-                            stuRec[item.Key] = item.InputValues[index];
-                    });
+                    //$scope.list.forEach(function (stuRec, index) {
+                    //    if (item.InputValues[index] == '-') {
+                    //        stuRec[item.Key] = '';
+                    //    }
+                    //    else {
+                    //        stuRec[item.Key] = item.InputValues[index];
+                    //    }
+                    //});
                     // 資料整理
                     var dataRow = [];
                     $scope.list.forEach(function (stuRec, index) {
-                        dataRow.push({
-                            uid: stuRec.uid,
-                            student_id: stuRec.student_id,
-                            seat_no: stuRec.seat_no,
-                            name: stuRec.name,
-                            value: stuRec[item.Key]
-                        });
+                        if (item.InputValues[index] == '-'){
+                            dataRow.push({
+                                uid: stuRec.uid,
+                                student_id: stuRec.student_id,
+                                seat_no: stuRec.seat_no,
+                                name: stuRec.name,
+                                value: ''
+                            });
+                        }
+                        else {
+                            dataRow.push({
+                                uid: stuRec.uid,
+                                student_id: stuRec.student_id,
+                                seat_no: stuRec.seat_no,
+                                name: stuRec.name,
+                                value: item.InputValues[index]
+                            });
+                        }
                     });
+                    //$scope.list.forEach(function (stuRec, index) {
+                    //    dataRow.push({
+                    //        uid: stuRec.uid,
+                    //        student_id: stuRec.student_id,
+                    //        seat_no: stuRec.seat_no,
+                    //        name: stuRec.name,
+                    //        value: stuRec[item.Key]
+                    //    });
+                    //});
 
                     // 儲存置資料庫
                     $scope.save({
@@ -529,7 +559,7 @@ var ModalInstanceCtrl = function($scope, column, tmplist) {
         for (var i = 0; i < $scope.tmplist.length; i++) {
             tmp = $scope.tmplist[i];
             tmp.value = tmp.value.trim();
-            if ( angular.isFunction(columnObj[column].validate) ) {
+            if (angular.isFunction(columnObj[column].validate)) {
                 tmp.unvalidated = !columnObj[column].validate(tmp.value);
             } else {
                 match = tmp.value.match(columnObj[column].validate);
@@ -538,6 +568,11 @@ var ModalInstanceCtrl = function($scope, column, tmplist) {
             if ( tag && tmp.unvalidated ) {
                 tmp.focus = true;
                 tag = false;
+            }
+            else {
+                if (tmp.value == '-') {
+                    $scope.tmplist[i].value = '';
+                }
             }
         };
         if (tag) {
