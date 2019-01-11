@@ -1,177 +1,300 @@
 <!-- 新增／修改輔導 Modal -->
-<div class="modal fade"
-     id="addInterview"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="addInterviewLabel"
-     aria-hidden="true">
-  <div class="modal-dialog"
-       role="document">
+<div
+  class="modal fade"
+  id="addInterview"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addInterviewLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"
-            id="addInterviewLabel">新增／修改輔導紀錄 - 吳明秋</h5>
-        <button type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <label for="schoolYear"
-                   class="col-form-label">
-              <span class="text-samll text-danger">*</span>
-              學年度
-            </label>
-            <input type="text"
-                   class="form-control"
-                   id="schoolYear"
-                   placeholder="請輸入學年度"
-                   value="107">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="semester"
-                   class="col-form-label">
-              <span class="text-samll text-danger">*</span>
-              學期
-            </label>
-            <input type="text"
-                   class="form-control"
-                   id="semester"
-                   placeholder="請輸入學期"
-                   value="1">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="interviewDate"
-                   class="col-form-label">
-              <span class="text-samll text-danger">*</span>
-              輔導日期
-            </label>
-            <input type="text"
-                   class="form-control"
-                   id="interviewDate"
-                   placeholder="請輸入輔導日期"
-                   value="2018-11-01">
-          </div>
+      <form (ngSubmit)="save()" #addCounselForm="ngForm" >
+        <div class="modal-header">
+          <h5 class="modal-title" id="addInterviewLabel">
+            新增輔導紀錄 - {{ _studentName }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="form-group">
-          <label class="col-form-label">
-            <span class="text-samll text-danger">*</span>
-            輔導方式
-          </label>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <button class="btn btn-light dropdown-toggle"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">請選擇輔導方式</button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item"
-                   href="#">個人</a>
-                <a class="dropdown-item"
-                   href="#">電話</a>
-                <a class="dropdown-item"
-                   href="#">聯絡簿</a>
-                <a class="dropdown-item"
-                   href="#">個別約談家長</a>
-                <a class="dropdown-item"
-                   href="#">其他</a>
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="schoolYear" class="col-form-label">
+                <span class="text-samll text-danger">*</span> 學年度
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="schoolYear"
+                name="schoolYear"
+                placeholder="請輸入學年度"
+                required
+                [(ngModel)]="_CounselInterview.SchoolYear"
+                #schoolYear="ngModel"
+              />
+              <div
+                *ngIf="
+                  schoolYear.invalid && (schoolYear.dirty || schoolYear.touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="schoolYear.errors.required">學年度必填</div>
               </div>
             </div>
-            <input type="text"
-                   class="form-control"
-                   readonly>
+            <div class="form-group col-md-4">
+              <label for="semester" class="col-form-label">
+                <span class="text-samll text-danger">*</span> 學期
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="semester"
+                name="semester"
+                placeholder="請輸入學期"
+                required
+                [(ngModel)]="_CounselInterview.Semester"
+                #semester="ngModel"
+              />
+              <div
+                *ngIf="semester.invalid && (semester.dirty || semester.touched)"
+                class="alert alert-danger"
+              >
+                <div *ngIf="semester.errors.required">學期必填</div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="interviewDate" class="col-form-label">
+                <span class="text-samll text-danger">*</span> 輔導日期
+              </label>
+              <input
+                type="date"
+                class="form-control"
+                id="interviewDate"
+                placeholder="請輸入輔導日期"
+                name="interviewDate"
+                #interviewDate="ngModel"
+                required
+                [(ngModel)]="_CounselInterview.OccurDate"
+              />
+              <div
+                *ngIf="
+                  interviewDate.invalid &&
+                  (interviewDate.dirty || interviewDate.touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="interviewDate.errors.required">輔導日期必填</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="interviewee"
-                   class="col-form-label">
-              <span class="text-samll text-danger">*</span>
-              輔導對象
+          <div class="form-group">
+            <label class="col-form-label">
+              <span class="text-samll text-danger">*</span> 輔導方式
             </label>
-            <input type="text"
-                   class="form-control"
-                   id="interviewee"
-                   placeholder="請輸入輔導對象"
-                   value="吳容江">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <button
+                  class="btn btn-light dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  請選擇輔導方式
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="setCounselType('個人')"
+                    >個人</a
+                  >
+                  <a class="dropdown-item" (click)="setCounselType('電話')"
+                    >電話</a
+                  >
+                  <a class="dropdown-item" (click)="setCounselType('聯絡簿')"
+                    >聯絡簿</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    (click)="setCounselType('個別約談家長')"
+                    >個別約談家長</a
+                  >
+                  <a class="dropdown-item" (click)="setCounselType('其他')"
+                    >其他</a
+                  >
+                </div>
+              </div>
+              <input
+                type="text"
+                id="CounselType"
+                class="form-control"
+                name="CounselType"
+                #CounselType="ngModel"
+                readonly="true"
+                [(ngModel)]="_CounselInterview.CounselType"
+                required
+              />
+              <div
+                *ngIf="
+                  CounselType.invalid &&
+                  (CounselType.dirty || CounselType.touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="CounselType.errors.required">輔導方式必填</div>
+              </div>
+            </div>
           </div>
-          <div class="form-group col-md-6">
-            <label for="recorder"
-                   class="col-form-label">
-              <span class="text-samll text-danger">*</span>
-              記錄者
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="interviewee" class="col-form-label">
+                <span class="text-samll text-danger">*</span> 輔導對象
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="interviewee"
+                name="interviewee"
+                #interviewee="ngModel"
+                placeholder="請輸入輔導對象"
+                [(ngModel)]="_CounselInterview.ContactName"
+                required
+              />
+              <div
+                *ngIf="
+                  interviewee.invalid &&
+                  (interviewee.dirty || interviewee.touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="interviewee.errors.required">輔導對象必填</div>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="recorder" class="col-form-label">
+                <span class="text-samll text-danger">*</span> 記錄者
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="recorder"
+                placeholder="請輸入記錄者"
+                name="recorder"
+                #recorder="ngModel"
+                [(ngModel)]="_CounselInterview.AuthorName"
+                required
+              />
+              <div
+                *ngIf="recorder.invalid && (recorder.dirty || recorder.touched)"
+                class="alert alert-danger"
+              >
+                <div *ngIf="recorder.errors.required">記錄者必填</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="contactMatter" class="col-form-label">
+              <span class="text-samll text-danger">*</span> 聯絡事項
             </label>
-            <input type="text"
-                   class="form-control"
-                   id="recorder"
-                   placeholder="請輸入記錄者"
-                   value="蔡貞儀">
+            <textarea
+              class="form-control"
+              id="contactMatter"
+              rows="1"
+              name="contactMatter"
+              #contactMatter="ngModel"
+              placeholder="請輸入聯絡事項"
+              [(ngModel)]="_CounselInterview.ContactItem"
+              required
+              [ngModelOptions]="{standalone: true}"
+            ></textarea>
+            <div
+              *ngIf="
+                contactMatter.invalid &&
+                (contactMatter.dirty || contactMatter.touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="contactMatter.errors.required">聯絡事項必填</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="description" class="col-form-label">
+              <span class="text-samll text-danger">*</span> 輔導內容說明
+              <span class="text-muted">（會顯示於輔導記錄卡）</span>
+            </label>
+            <textarea
+              class="form-control"
+              id="description"
+              rows="1"
+              name="description"
+              #description="ngModel"
+              placeholder="請輸入輔導內容說明"
+              [(ngModel)]="_CounselInterview.Content"
+              required
+            ></textarea>
+            <div
+              *ngIf="description.invalid &&
+                (description.dirty || description.touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="description.errors.required">輔導內容說明必填</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="contactMatter" class="col-form-label"> 上傳附件 </label>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="customFile" />
+              <label class="custom-file-label" for="customFile">選擇檔案</label>
+            </div>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="referral"
+              [(ngModel)]="_CounselInterview.isReferral"
+            />
+            <label class="custom-control-label" for="referral"
+              >轉介輔導室</label
+            >
+          </div>
+          <div class="form-group">
+            <label for="referralDescription" class="col-form-label"
+              >轉介說明</label
+            >
+            <textarea
+              class="form-control"
+              id="referralDescription"
+              rows="1"
+              placeholder="請輸入轉介說明"
+              [(ngModel)]="_CounselInterview.ReferralDesc"
+            ></textarea>
           </div>
         </div>
-        <div class="form-group">
-          <label for="contactMatter"
-                 class="col-form-label">
-            <span class="text-samll text-danger">*</span>
-            聯絡事項
-          </label>
-          <textarea class="form-control"
-                    id="contactMatter"
-                    rows="1"
-                    placeholder="請輸入聯絡事項"></textarea>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-dark"
+            data-dismiss="modal"
+            (click)="cancel()"
+          >
+            取消
+          </button>
+          <button
+            type="submit"
+            class="btn btn-info"            
+            [disabled]="!addCounselForm.form.valid" #closeBtn
+          >
+            儲存
+          </button>
         </div>
-        <div class="form-group">
-          <label for="description"
-                 class="col-form-label">
-            <span class="text-samll text-danger">*</span>
-            輔導內容說明
-            <span class="text-muted">（會顯示於輔導記錄卡）</span>
-          </label>
-          <textarea class="form-control"
-                    id="description"
-                    rows="1"
-                    placeholder="請輸入輔導內容說明"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="contactMatter"
-                 class="col-form-label">
-            上傳附件
-          </label>
-          <div class="custom-file">
-            <input type="file"
-                   class="custom-file-input"
-                   id="customFile">
-            <label class="custom-file-label"
-                   for="customFile">選擇檔案</label>
-          </div>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox"
-                 class="custom-control-input"
-                 id="referral">
-          <label class="custom-control-label"
-                 for="referral">轉介輔導室</label>
-        </div>
-        <div class="form-group">
-          <label for="referralDescription"
-                 class="col-form-label">轉介說明</label>
-          <textarea class="form-control"
-                    id="referralDescription"
-                    rows="1"
-                    placeholder="請輸入轉介說明"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button"
-                class="btn btn-dark"
-                data-dismiss="modal">取消</button>
-        <button type="button"
-                class="btn btn-info">儲存</button>
-      </div>
+      </form>
     </div>
   </div>
 </div>

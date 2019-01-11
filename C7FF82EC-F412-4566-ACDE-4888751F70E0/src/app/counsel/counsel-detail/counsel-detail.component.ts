@@ -30,13 +30,14 @@ export class CounselDetailComponent implements OnInit {
       this.loadStudent();
     });
   }
-
+  
   loadStudent() {
+    this.counselStudentService.currentStudent = null;
     if (!this.counselStudentService.isLoading) {
       this.deny = false;
       if (this.counselStudentService.studentMap.has(this.studentID)) {
         this.currentStudent = this.counselStudentService.studentMap.get(this.studentID);
-
+        this.counselStudentService.currentStudent = this.currentStudent;
         if (this.counselComponent != null) {
           if (this.currentStudent.Role.indexOf('班導師') >= 0 || this.currentStudent.Role.indexOf('輔導老師') >= 0)
             this.counselComponent.setSelectItem(this.currentStudent.ClassName);

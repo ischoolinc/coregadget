@@ -22,6 +22,7 @@ import { CaseComponent } from './case/case.component';
 import { ReferralComponent } from './referral/referral.component';
 import { CounselRoutingComponent } from './counsel/counsel-routing/counsel-routing.component';
 import { DetailRoutingComponent } from './counsel/counsel-detail/detail-routing/detail-routing.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DetailRoutingComponent } from './counsel/counsel-detail/detail-routing/
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

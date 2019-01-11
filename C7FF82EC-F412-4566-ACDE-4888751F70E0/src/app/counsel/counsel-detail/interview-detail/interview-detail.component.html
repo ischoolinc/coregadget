@@ -29,6 +29,7 @@
              href="#">Html</a>
         </div>
       </div>
+      <!-- 新增-輔導 -->
       <button class="btn btn-info"
               data-toggle="modal"
               data-backdrop="static"
@@ -38,126 +39,128 @@
       </button>
     </div>
   </div>
-
-  <!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+<ng-container *ngIf="enableReferal">
+ <!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
                 當學生是認輔學生，才會顯示此 div 區塊。
             ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
-  <div class="card mb-3">
-    <div class="card-body row">
-      <div class="col-md-2 mb-3 mb-md-0">
-        <img class="w-100"
-             src="../../../assets/img/sample01.png">
-      </div>
-      <div class="col-md-10">
-        <div class="row">
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            個案編號
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            10126-0005
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            個案來源
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            導師轉介
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            個案日期
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            2018-12-01
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            班導師
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            蔡貞儀
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            學生身分
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            一般生
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            學籍資料
-          </div>
-          <div class="col-8 col-md-4 mb-3">
+            <div class="card mb-3">
+                <div class="card-body row">
+                  <div class="col-md-2 mb-3 mb-md-0">
+                    <img class="w-100"
+                         src="../../../assets/img/sample01.png">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="row">
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        個案編號
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        10126-0005
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        個案來源
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        導師轉介
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        個案日期
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        2018-12-01
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        班導師
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        蔡貞儀
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        學生身分
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        一般生
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        學籍資料
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+            
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        是否結案
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        否
+                      </div>
+                      <div class="col-4 col-md-2 mb-3 font-weight-bold">
+                        結案日期
+                      </div>
+                      <div class="col-8 col-md-4 mb-3">
+                        0000-00-00
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <div class="expansion-panel list-group-item">
+                    <a aria-controls="collapseFour"
+                       aria-expanded="false"
+                       class="expansion-panel-toggler collapsed"
+                       data-toggle="collapse"
+                       href="#collapseFour"
+                       id="headingFour">
+                      <div>
+                        <i class="material-icons">subject</i>
+                        顯示更多詳細資料
+                      </div>
+                      <div class="expansion-panel-icon ml-3 text-black-secondary">
+                        <i class="collapsed-show material-icons">keyboard_arrow_down</i>
+                        <i class="collapsed-hide material-icons">keyboard_arrow_up</i>
+                      </div>
+                    </a>
+                    <div aria-labelledby="headingFour"
+                         class="collapse"
+                         data-parent="#accordionTwo"
+                         id="collapseFour">
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">偏差行為</span>
+                        外向性攻擊行為、衝動行為、焦慮反應、適應性不良
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">問題類別</span>
+                        家庭結構問題
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">問題描述</span>
+                        案生容易與人衝突，在學校案生會去攻擊其他學生，在校外也會攻擊陌生人，案生的行為會被誤解成挑釁和攻擊，對方若在不了案生的情況下，將可能對案生發動更大的回擊。
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">特殊狀況</span>
+                        已建檔之個案
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">評估結果</span>
+                        轉介認輔教師
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">認輔老師</span>
+                        蔡貞儀
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">結案人員</span>
+            
+                      </li>
+                      <li class="list-group-item d-flex align-items-stretch">
+                        <span class="font-weight-bold text-nowrap mr-3">結案說明</span>
+            
+                      </li>
+                    </div>
+                  </div>
+                </ul>
+              </div>
+</ng-container>
 
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            是否結案
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            否
-          </div>
-          <div class="col-4 col-md-2 mb-3 font-weight-bold">
-            結案日期
-          </div>
-          <div class="col-8 col-md-4 mb-3">
-            0000-00-00
-          </div>
-        </div>
-      </div>
-    </div>
-    <ul class="list-group list-group-flush">
-      <div class="expansion-panel list-group-item">
-        <a aria-controls="collapseFour"
-           aria-expanded="false"
-           class="expansion-panel-toggler collapsed"
-           data-toggle="collapse"
-           href="#collapseFour"
-           id="headingFour">
-          <div>
-            <i class="material-icons">subject</i>
-            顯示更多詳細資料
-          </div>
-          <div class="expansion-panel-icon ml-3 text-black-secondary">
-            <i class="collapsed-show material-icons">keyboard_arrow_down</i>
-            <i class="collapsed-hide material-icons">keyboard_arrow_up</i>
-          </div>
-        </a>
-        <div aria-labelledby="headingFour"
-             class="collapse"
-             data-parent="#accordionTwo"
-             id="collapseFour">
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">偏差行為</span>
-            外向性攻擊行為、衝動行為、焦慮反應、適應性不良
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">問題類別</span>
-            家庭結構問題
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">問題描述</span>
-            案生容易與人衝突，在學校案生會去攻擊其他學生，在校外也會攻擊陌生人，案生的行為會被誤解成挑釁和攻擊，對方若在不了案生的情況下，將可能對案生發動更大的回擊。
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">特殊狀況</span>
-            已建檔之個案
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">評估結果</span>
-            轉介認輔教師
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">認輔老師</span>
-            蔡貞儀
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">結案人員</span>
-
-          </li>
-          <li class="list-group-item d-flex align-items-stretch">
-            <span class="font-weight-bold text-nowrap mr-3">結案說明</span>
-
-          </li>
-        </div>
-      </div>
-    </ul>
-  </div>
   <div class="font-weight-bold mb-2">107學年度 第1學期</div>
   <ul class="rwd-table">
     <li class="thead">
