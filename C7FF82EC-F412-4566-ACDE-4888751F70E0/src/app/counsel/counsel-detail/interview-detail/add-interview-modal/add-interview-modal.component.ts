@@ -23,8 +23,8 @@ export class AddInterviewModalComponent implements OnInit {
     if (this.counselStudentService.currentStudent) {
       this._studentName = this.counselStudentService.currentStudent.StudentName;
       this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
-      this._CounselInterview.SchoolYear = '107';
-      this._CounselInterview.Semester = '1';
+      this._CounselInterview.SchoolYear = 107;
+      this._CounselInterview.Semester = 1;
       this._CounselInterview.CounselType
       //this._CounselInterview.OccurDate
     }
@@ -43,13 +43,13 @@ export class AddInterviewModalComponent implements OnInit {
   }
   // click 儲存
   async save() {    
-      // let x = await this.counselStudentService.SetCounselInterview(this._CounselInterview);
-      // console.log(this._CounselInterview);
+      let x = await this.counselStudentService.SetCounselInterview(this._CounselInterview);
+      console.log(this._CounselInterview);
       this.closeModal();    
   }
 
   private closeModal(): void {
-    $("addInterview").modal('hide');
+    $("#addInterview").modal('hide');
     // this.closeBtn.nativeElement.click();
 }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { DsaService } from "./dsa.service";
 import { stringify } from "@angular/compiler/src/util";
+import { async } from "@angular/core/testing";
 
 @Injectable({
   providedIn: "root"
@@ -72,14 +73,12 @@ export class CounselStudentService {
     this.isLoading = false;
   }
 
-  // 新增/更新輔導資料
+  // 新增輔導資料
   async SetCounselInterview(data: CounselInterview) {
     this.isLoading = true;
 
-    if (!data.isPrivate)
-      data.isPrivate = 'true';
-    if (!data.isReferral)
-    data.isReferral = 'false';  
+    if (!data.isPrivate) data.isPrivate = "true";
+    if (!data.isReferral) data.isReferral = "false";
 
     let resp = await this.dsaService.send("SetCounselInterview", {
       Request: {
@@ -101,9 +100,43 @@ export class CounselStudentService {
         ContactItem: data.ContactItem
       }
     });
-    console.log("test");
     console.log(resp);
     this.isLoading = false;
+  }
+
+  // 取得透過學生系統編號取得學生輔導資料
+  async GetCounselInterviewByStudentID(StudentID: string) {
+    let data: CounselInterview[] = [];
+
+    let resp = await this.dsaService.send("GetStudentCounselInterview", {
+      Request: {
+        StudentID: StudentID
+      }
+    });
+
+    [].concat(resp.CounselInterview || []).forEach(counselRec => {
+      // 建立輔導資料
+      let rec: CounselInterview = new CounselInterview();
+      rec.UID = counselRec.UID;
+      rec.SchoolYear = parseInt(counselRec.SchoolYear);
+      rec.Semester = parseInt(counselRec.Semester);
+      rec.OccurDate = new Date(counselRec.OccurDate);
+      rec.ContactName = counselRec.ContactName;
+      rec.AuthorName = counselRec.AuthorName;
+      rec.CounselType = counselRec.CounselType;
+      rec.CounselTypeOther = counselRec.CounselTypeOther;
+      rec.isPrivate = counselRec.isPrivate;
+      rec.StudentID = counselRec.StudentID;
+      rec.isReferral = counselRec.isReferral;
+      rec.ReferralDesc = counselRec.ReferralDesc;
+      rec.ReferralReply = counselRec.ReferralReply;
+      rec.ReferralStatus = counselRec.ReferralStatus;
+      rec.ReferralReplyDate = counselRec.ReferralReplyDate;
+      rec.Content = counselRec.Content;
+      rec.ContactItem = counselRec.ContactItem;
+      data.push(rec);
+    });
+    return data;
   }
 }
 
@@ -131,8 +164,8 @@ export class CounselStudent {
   LastInterviewContact: string;
   LastInterviewType: string;
   LastInterviewTypeOther: string;
- // 內容
- // LastInterviewContent: string;
+  // 內容
+  // LastInterviewContent: string;
   // 聯絡事項
   LastInterviewContactItem: string;
   LastInterviewReferral: Boolean;
@@ -146,9 +179,10 @@ export class CounselStudent {
 // 輔導資料
 export class CounselInterview {
   constructor() {}
-  SchoolYear: string; //學年度
-  Semester: string; //學期
-  OccurDate: string; //訪談日期
+  UID: string;
+  SchoolYear: number; //學年度
+  Semester: number; //學期
+  OccurDate: Date; //訪談日期
   ContactName: string; //訪談對象姓名
   AuthorName: string; //訪談者姓名
   CounselType: string; //訪談方式
@@ -162,4 +196,20 @@ export class CounselInterview {
   ReferralReplyDate: string; //輔導室回覆轉介之日期
   Content: string; //內容
   ContactItem: string; //聯絡事項
+
+  // 取得是否轉介文字
+  getIsReferralString() {
+    if (this.isReferral === "t") {
+      return "是";
+    } else {
+      return "否";
+    }
+  }
+
+  
+}
+
+export class SemesterInfo {
+  SchoolYear: number;
+  Semester: number;
 }
