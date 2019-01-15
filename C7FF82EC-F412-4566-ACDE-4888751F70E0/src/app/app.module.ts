@@ -61,7 +61,8 @@ import { MatDialogModule } from '@angular/material';
   providers: [],
   bootstrap: [AppComponent],
   entryComponents: [
-    AddInterviewModalComponent
+    AddInterviewModalComponent,
+    ViewInterviewModalComponent
   ]
 })
 export class AppModule { }

@@ -23,8 +23,7 @@ export class AddInterviewModalComponent implements OnInit {
   _studentName: string;
 
   // 輔導紀錄
-  _CounselInterview: CounselInterview;
-  @ViewChild('closeBtn') closeBtn: ElementRef;
+  _CounselInterview: CounselInterview;  
 
   ngOnInit() {
     this._CounselInterview = new CounselInterview();
@@ -48,6 +47,7 @@ export class AddInterviewModalComponent implements OnInit {
   // click 取消
   cancel() {
     // console.log("Cancel");
+    this.dialogRef.close();
   }
   // click 儲存
   async save() {

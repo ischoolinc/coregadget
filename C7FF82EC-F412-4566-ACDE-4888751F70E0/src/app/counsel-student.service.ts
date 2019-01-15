@@ -118,6 +118,7 @@ export class CounselStudentService {
       // 建立輔導資料
       let rec: CounselInterview = new CounselInterview();
       rec.UID = counselRec.UID;
+      rec.StudentName = counselRec.StudentName;
       rec.SchoolYear = parseInt(counselRec.SchoolYear);
       rec.Semester = parseInt(counselRec.Semester);
       rec.OccurDate = new Date(counselRec.OccurDate);
@@ -180,6 +181,7 @@ export class CounselStudent {
 export class CounselInterview {
   constructor() {}
   UID: string;
+  StudentName: string; // 姓名
   SchoolYear: number; //學年度
   Semester: number; //學期
   OccurDate: Date; //訪談日期

@@ -1,103 +1,58 @@
-    <!-- 檢視輔導 Modal -->
-    <div class="modal fade"
-         id="viewInterview"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="viewInterviewLabel"
-         aria-hidden="true">
-        <div class="modal-dialog"
-             role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"
-                        id="viewInterviewLabel">吳明秋（2018-12-01 107學年度 第1學期）</h5>
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <dl class="row">
-                        <dt class="col-md-3">
-                            輔導方式
-                        </dt>
-                        <dd class="col-md-9">
-                            個別約談家長
-                        </dd>
-                        <dt class="col-md-3">
-                            輔導對象
-                        </dt>
-                        <dd class="col-md-9">
-                            吳明秋的爸爸
-                        </dd>
-                        <dt class="col-md-3">
-                            記錄者
-                        </dt>
-                        <dd class="col-md-9">
-                            蔡貞儀
-                        </dd>
-                        <dt class="col-md-3">
-                            聯絡事項
-                        </dt>
-                        <dd class="col-md-9">
-                            邀請參加家長座談會
-                        </dd>
-                        <dt class="col-md-3">
-                            輔導內容說明
-                        </dt>
-                        <dd class="col-md-9">
-                            輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明輔導內容說明
-                        </dd>
-                        <dt class="col-md-3">
-                            附件檔案
-                        </dt>
-                        <dd class="col-md-9">
-                            <a href="#"
-                               class="btn btn-link text-green pl-0">
-                                <i class="material-icons">attach_file</i>
-                                abcd.doc
-                            </a>
-                            <a href="#"
-                               class="btn btn-link text-green pl-0">
-                                <i class="material-icons">attach_file</i>
-                                abcd.doc
-                            </a>
-                        </dd>
-                        <dt class="col-md-3">
-                            轉介輔導室
-                        </dt>
-                        <dd class="col-md-9">
-                            否
-                        </dd>
-                        <dt class="col-md-3">
-                            轉介說明
-                        </dt>
-                        <dd class="col-md-9">
-                            無
-                        </dd>
-                    </dl>
-                </div>
-                <div class="modal-footer">
-                    <div class="dropdown">
-                        <button aria-expanded="false"
-                                aria-haspopup="true"
-                                class="btn btn-dark"
-                                data-toggle="dropdown"
-                                id="dropdownMenuButton1"
-                                type="button">
-                            <i class="material-icons">print</i>
-                        </button>
-                        <div aria-labelledby="dropdownMenuButton1"
-                             class="dropdown-menu menu">
-                            <a class="dropdown-item"
-                               href="#">Excel</a>
-                            <a class="dropdown-item"
-                               href="#">Html</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- 檢視輔導 Modal -->
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="viewInterviewLabel">
+      {{_CounselInterview.StudentName}}（{{_CounselInterview.OccurDate | date: "yyyy-MM-dd" }} {{_CounselInterview.SchoolYear}}學年度 第{{_CounselInterview.Semester}}學期） {{_editMode}}
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <dl class="row">
+      <dt class="col-md-3">輔導方式</dt>
+      <dd class="col-md-9">{{_CounselInterview.CounselType}}</dd>
+      <dt class="col-md-3">輔導對象</dt>
+      <dd class="col-md-9">{{_CounselInterview.ContactName}}</dd>
+      <dt class="col-md-3">記錄者</dt>
+      <dd class="col-md-9">{{_CounselInterview.AuthorName}}</dd>
+      <dt class="col-md-3">聯絡事項</dt>
+      <dd class="col-md-9">{{_CounselInterview.ContactItem}}</dd>
+      <dt class="col-md-3">輔導內容說明</dt>
+      <dd class="col-md-9">
+        {{_CounselInterview.Content}}
+      </dd>
+      <dt class="col-md-3">附件檔案</dt>
+      <dd class="col-md-9">
+        <!-- <a href="#" class="btn btn-link text-green pl-0">
+          <i class="material-icons">attach_file</i> abcd.doc
+        </a>
+        <a href="#" class="btn btn-link text-green pl-0">
+          <i class="material-icons">attach_file</i> abcd.doc
+        </a> -->
+      </dd>
+      <dt class="col-md-3">轉介輔導室</dt>
+      <dd class="col-md-9">{{_CounselInterview.getIsReferralString()}}</dd>
+      <dt class="col-md-3">轉介說明</dt>
+      <dd class="col-md-9">{{_CounselInterview.ReferralDesc}}</dd>
+    </dl>
+  </div>
+  <div class="modal-footer">
+    <div class="dropdown">
+      <!-- <button
+        aria-expanded="false"
+        aria-haspopup="true"
+        class="btn btn-dark"
+        data-toggle="dropdown"
+        id="dropdownMenuButton1"
+        type="button"
+      >
+        <i class="material-icons">print</i>
+      </button> -->
+      <div aria-labelledby="dropdownMenuButton1" class="dropdown-menu menu">
+        <a class="dropdown-item" href="#">Excel</a>
+        <a class="dropdown-item" href="#">Html</a>
+      </div>
     </div>
+  </div>
+</div>

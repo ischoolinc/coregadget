@@ -9,6 +9,8 @@ import {
 import { TypeModifier } from "@angular/compiler/src/output/output_ast";
 import { MatDialog } from '@angular/material';
 import { AddInterviewModalComponent } from './add-interview-modal/add-interview-modal.component';
+import {ViewInterviewModalComponent} from './view-interview-modal/view-interview-modal.component';
+
 @Component({
   selector: "app-interview-detail",
   templateUrl: "./interview-detail.component.html",
@@ -58,10 +60,29 @@ export class InterviewDetailComponent implements OnInit {
     });
   }
 
+  // 新增
   addInterview() {
     const ref = this.dialog.open(AddInterviewModalComponent, {data: 'hello args'});
     ref.afterClosed().subscribe(rsp => {
       console.log(rsp);
     });
   }
+
+  // 修改
+  editInterview(rec:CounselInterview){
+    
+    const ref = this.dialog.open(ViewInterviewModalComponent,{data:{editMode:'edit',CounselRec:rec}});
+    ref.afterClosed().subscribe(rsp => {
+      console.log(rsp);
+    });
+  }
+
+  // 檢視
+  viewInterview(rec:CounselInterview){
+    const ref = this.dialog.open(ViewInterviewModalComponent,{data:{editMode:'view',CounselRec:rec}});
+    ref.afterClosed().subscribe(rsp => {
+      console.log(rsp);
+    });
+  }
+  
 }

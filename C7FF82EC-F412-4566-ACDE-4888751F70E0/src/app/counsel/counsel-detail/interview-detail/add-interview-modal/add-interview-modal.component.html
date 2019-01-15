@@ -10,6 +10,7 @@
             class="close"
             data-dismiss="modal"
             aria-label="Close"
+            (click)="cancel()"
           >
             <span aria-hidden="true">&times;</span>
           </button>
@@ -282,7 +283,7 @@
           <button
             type="submit"
             class="btn btn-info"            
-            [disabled]="!addCounselForm.form.valid" #closeBtn
+            [disabled]="!addCounselForm.form.valid"
           >
             儲存
           </button>
