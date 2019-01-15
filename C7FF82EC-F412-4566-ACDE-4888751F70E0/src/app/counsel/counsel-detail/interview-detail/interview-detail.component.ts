@@ -7,6 +7,8 @@ import {
   CounselInterview
 } from "../../../counsel-student.service";
 import { TypeModifier } from "@angular/compiler/src/output/output_ast";
+import { MatDialog } from '@angular/material';
+import { AddInterviewModalComponent } from './add-interview-modal/add-interview-modal.component';
 @Component({
   selector: "app-interview-detail",
   templateUrl: "./interview-detail.component.html",
@@ -17,7 +19,8 @@ export class InterviewDetailComponent implements OnInit {
   _semesterInfo: SemesterInfo[] = [];
   _counselInterview: CounselInterview[] = [];
 
-  constructor(private counselStudentService: CounselStudentService) {}
+  constructor(private counselStudentService: CounselStudentService, 
+    private dialog: MatDialog) {}
 
   ngOnInit() {
     console.log(
@@ -52,6 +55,13 @@ export class InterviewDetailComponent implements OnInit {
         this._semesterInfo.push(sms);
         tmp.push(key);
       }
+    });
+  }
+
+  addInterview() {
+    const ref = this.dialog.open(AddInterviewModalComponent, {data: 'hello args'});
+    ref.afterClosed().subscribe(rsp => {
+      console.log(rsp);
     });
   }
 }
