@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 import { AppComponent } from './app.component';
 import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
 import { CounselListComponent } from './counsel/counsel-list/counsel-list.component';
@@ -23,6 +25,7 @@ import { ReferralComponent } from './referral/referral.component';
 import { CounselRoutingComponent } from './counsel/counsel-routing/counsel-routing.component';
 import { DetailRoutingComponent } from './counsel/counsel-detail/detail-routing/detail-routing.component';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -51,9 +54,14 @@ import { FormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule,
+    BrowserAnimationsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AddInterviewModalComponent
+  ]
 })
 export class AppModule { }

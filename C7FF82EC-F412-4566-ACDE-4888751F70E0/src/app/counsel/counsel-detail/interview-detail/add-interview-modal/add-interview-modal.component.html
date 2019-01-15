@@ -1,13 +1,4 @@
 <!-- 新增／修改輔導 Modal -->
-<div
-  class="modal fade"
-  id="addInterview"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="addInterviewLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form (ngSubmit)="save()" #addCounselForm="ngForm" >
         <div class="modal-header">
@@ -249,7 +240,7 @@
           <div class="form-group">
             <label for="contactMatter" class="col-form-label"> 上傳附件 </label>
             <div class="custom-file">
-              <input type="file" class="custom-file-input" id="customFile" />
+              <input type="file" class="custom-file-input" id="customFile" name="customFile"/>
               <label class="custom-file-label" for="customFile">選擇檔案</label>
             </div>
           </div>
@@ -259,6 +250,7 @@
               class="custom-control-input"
               id="referral"
               [(ngModel)]="_CounselInterview.isReferral"
+              name="isreferral"
             />
             <label class="custom-control-label" for="referral"
               >轉介輔導室</label
@@ -274,6 +266,7 @@
               rows="1"
               placeholder="請輸入轉介說明"
               [(ngModel)]="_CounselInterview.ReferralDesc"
+              name="description"
             ></textarea>
           </div>
         </div>
@@ -296,5 +289,3 @@
         </div>
       </form>
     </div>
-  </div>
-</div>

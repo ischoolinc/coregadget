@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CounselStudentService, CounselClass, CounselStudent } from "../../../counsel-student.service";
+import { MatDialog } from '@angular/material';
+import { AddInterviewModalComponent } from './add-interview-modal/add-interview-modal.component';
+
 @Component({
   selector: 'app-interview-detail',
   templateUrl: './interview-detail.component.html',
@@ -8,7 +11,8 @@ import { CounselStudentService, CounselClass, CounselStudent } from "../../../co
 export class InterviewDetailComponent implements OnInit {
   enableReferal:boolean = false;
   constructor(
-    private counselStudentService: CounselStudentService
+    private counselStudentService: CounselStudentService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -19,4 +23,10 @@ export class InterviewDetailComponent implements OnInit {
     }
   }
 
+  addInterview() {
+    const ref = this.dialog.open(AddInterviewModalComponent, {data: 'hello args'});
+    ref.afterClosed().subscribe(rsp => {
+      console.log(rsp);
+    });
+  }
 }
