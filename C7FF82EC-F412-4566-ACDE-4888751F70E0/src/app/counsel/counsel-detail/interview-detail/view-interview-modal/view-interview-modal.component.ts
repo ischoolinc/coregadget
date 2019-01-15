@@ -10,6 +10,7 @@ export class ViewInterviewModalComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  
   }
 
 }

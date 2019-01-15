@@ -159,86 +159,45 @@
               </div>
 </ng-container>
 
-  <div class="font-weight-bold mb-2">107學年度 第1學期</div>
+<ng-container *ngFor="let semInfo of _semesterInfo">
+  <div class="font-weight-bold mb-2">{{semInfo.SchoolYear}}學年度 第{{semInfo.Semester}}學期</div>
   <ul class="rwd-table">
-    <li class="thead">
-      <ol class="tr">
-        <li>輔導日期</li>
-        <li>輔導對象</li>
-        <li>輔導方式</li>
-        <li>記錄者</li>
-        <li>聯絡事項</li>
-        <li>轉介</li>
-        <li></li>
-      </ol>
-    </li>
-    <li class="tbody point">
-      <ol class="tr"
+      <li class="thead">
+        <ol class="tr">
+          <li>輔導日期</li>
+          <li>輔導對象</li>
+          <li>輔導方式</li>
+          <li>記錄者</li>
+          <li>聯絡事項</li>
+          <li>轉介</li>
+          <li></li>
+        </ol>
+      </li>
+      <li class="tbody point" *ngFor="let counselRec of _counselInterview">
+       <ng-container *ngIf="semInfo.SchoolYear === counselRec.SchoolYear && semInfo.Semester === counselRec.Semester ">
+          <ol class="tr"
           data-toggle="modal"
           data-target="#viewInterview">
-        <li data-title="輔導日期">2018-12-01</li>
+        <li data-title="輔導日期">{{counselRec.OccurDate| date:'yyyy-MM-dd'}}</li>
         <li class="text-normal"
-            data-title="輔導對象">吳明秋的爸爸</li>
+            data-title="輔導對象">{{counselRec.ContactName}}</li>
         <li class="text-normal"
-            data-title="輔導方式">電話</li>
-        <li data-title="記錄者">蔡貞儀</li>
+            data-title="輔導方式">{{counselRec.CounselType}}</li>
+        <li data-title="記錄者">{{counselRec.AuthorName}}</li>
         <li class="text-left text-normal"
-            data-title="聯絡事項">邀請參加家長座談會</li>
-        <li data-title="轉介"></li>
+            data-title="聯絡事項">{{counselRec.ContactItem}}</li>
+        <li data-title="轉介">{{counselRec.getIsReferralString()}}</li>
         <li data-title=""><button class="btn btn-light"
                   data-toggle="modal"
                   onclick="toggle(event)">修改</button></li>
-      </ol>
-      <ol class="tr"
-          data-toggle="modal"
-          data-target="#viewInterview">
-        <li data-title="輔導日期">2018-11-01</li>
-        <li class="text-normal"
-            data-title="輔導對象">吳明秋的爸爸</li>
-        <li class="text-normal"
-            data-title="輔導方式">電話</li>
-        <li data-title="記錄者">蔡貞儀</li>
-        <li class="text-left text-normal"
-            data-title="聯絡事項">邀請參加家長座談會</li>
-        <li data-title="轉介"></li>
-        <li data-title=""><button class="btn btn-light"
-                  data-toggle="modal"
-                  onclick="toggle(event)">修改</button></li>
-      </ol>
-    </li>
-  </ul>
-  <div class="font-weight-bold mb-2">106學年度 第2學期</div>
-  <ul class="rwd-table">
-    <li class="thead">
-      <ol class="tr">
-        <li>輔導日期</li>
-        <li>輔導對象</li>
-        <li>輔導方式</li>
-        <li>記錄者</li>
-        <li>聯絡事項</li>
-        <li>轉介</li>
-        <li></li>
-      </ol>
-    </li>
-    <li class="tbody point">
-      <ol class="tr"
-          data-toggle="modal"
-          data-target="#viewInterview">
-        <li data-title="輔導日期">2017-12-1</li>
-        <li class="text-normal"
-            data-title="輔導對象">吳明秋的爸爸</li>
-        <li class="text-normal"
-            data-title="輔導方式">電話</li>
-        <li data-title="記錄者">蔡貞儀</li>
-        <li class="text-left text-normal"
-            data-title="聯絡事項">邀請參加家長座談會</li>
-        <li data-title="轉介"></li>
-        <li data-title=""><button class="btn btn-light"
-                  data-toggle="modal"
-                  onclick="toggle(event)">修改</button></li>
-      </ol>
-    </li>
-  </ul>
+      </ol>        
+       </ng-container>
+        
+      </li>
+    </ul>
+</ng-container>
+  
+
 </div>
 <!-- <app-add-interview-modal></app-add-interview-modal> -->
 <app-view-interview-modal></app-view-interview-modal>

@@ -33,10 +33,10 @@ export class AddInterviewModalComponent implements OnInit {
     if (this.counselStudentService.currentStudent) {
       this._studentName = this.counselStudentService.currentStudent.StudentName;
       this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
-      this._CounselInterview.SchoolYear = '107';
-      this._CounselInterview.Semester = '1';
-
-      // this._CounselInterview.OccurDate
+      this._CounselInterview.SchoolYear = 107;
+      this._CounselInterview.Semester = 1;
+      this._CounselInterview.CounselType
+      //this._CounselInterview.OccurDate
     }
   }
 
