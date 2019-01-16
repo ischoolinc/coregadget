@@ -45,6 +45,20 @@ export class CounselListComponent implements OnInit {
         if (this.counselComponent != null) { this.counselComponent.setSelectItem("認輔學生"); }
       }
       if (this.mod === "search") {
+       
+        this.targetList = [];
+        this.counselStudentService.studentMap.forEach((value: CounselStudent,key: string)=>{
+          //console.log(value.StudentName);
+          
+          if (value.StudentName.indexOf(this.target)> -1)
+          {
+            console.log(this.target,value.StudentName);
+            this.targetList.push(value);
+          }
+        });
+
+        console.log(this.targetList);
+       
         if (this.counselComponent != null) { this.counselComponent.setSelectItem("搜尋"); }
       }
     }

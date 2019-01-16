@@ -13,6 +13,8 @@ import { timeout } from 'q';
 export class CounselComponent implements OnInit {
   private selectItem: string;
 
+  // 搜尋文字
+  searchText: string = '';
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -27,7 +29,19 @@ export class CounselComponent implements OnInit {
   ngOnInit() {
   }
 
+
+  search(){
+    console.log(this.searchText);
+    this.router.navigate(['list','search', this.searchText], {
+      relativeTo: this.activatedRoute
+    });
+  }
+
   public setSelectItem(item: string) {
+    if (item != '搜尋')
+    {
+      this.searchText = '';
+    }
     setTimeout(() => {
       this.selectItem = item;
     });

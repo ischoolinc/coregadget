@@ -11,6 +11,7 @@ export class CounselStudentService {
   public studentMap: Map<string, CounselStudent>;
   public classMap = new Map<string, CounselClass>();
   public counselClass: CounselClass[];
+  // 認輔學生
   public guidanceStudent: CounselStudent[];
   public currentStudent: CounselStudent;
   constructor(private dsaService: DsaService) {
