@@ -64,6 +64,7 @@ export class CounselDetailComponent implements OnInit {
           ){
             this.counselComponent.setSelectItem(this.currentStudent.ClassName);
             this._interviewEnable = true;
+            this._psychological_testEnable = true;
           }
             
           else this.counselComponent.setSelectItem("認輔學生");

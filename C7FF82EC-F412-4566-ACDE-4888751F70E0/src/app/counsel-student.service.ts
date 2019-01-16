@@ -80,26 +80,28 @@ export class CounselStudentService {
 
     if (!data.isPrivate) data.isPrivate = "true";
     if (!data.isReferral) data.isReferral = "false";
-
+    let req = {
+      UID:data.UID,
+      SchoolYear: data.SchoolYear,
+      Semester: data.Semester,
+      OccurDate: data.OccurDate,
+      ContactName: data.ContactName,
+      AuthorName: data.AuthorName,
+      CounselType: data.CounselType,
+      CounselTypeOther: data.CounselTypeOther,
+      isPrivate: data.isPrivate,
+      StudentID: data.StudentID,
+      isReferral: data.isReferral,
+      ReferralDesc: data.ReferralDesc,
+      ReferralReply: data.ReferralReply,
+      ReferralStatus: data.ReferralStatus,
+      ReferralReplyDate: data.ReferralReplyDate,
+      Content: data.Content,
+      ContactItem: data.ContactItem
+    };
+    console.log(req);
     let resp = await this.dsaService.send("SetCounselInterview", {
-      Request: {
-        SchoolYear: data.SchoolYear,
-        Semester: data.Semester,
-        OccurDate: data.OccurDate,
-        ContactName: data.ContactName,
-        AuthorName: data.AuthorName,
-        CounselType: data.CounselType,
-        CounselTypeOther: data.CounselTypeOther,
-        isPrivate: data.isPrivate,
-        StudentID: data.StudentID,
-        isReferral: data.isReferral,
-        ReferralDesc: data.ReferralDesc,
-        ReferralReply: data.ReferralReply,
-        ReferralStatus: data.ReferralStatus,
-        ReferralReplyDate: data.ReferralReplyDate,
-        Content: data.Content,
-        ContactItem: data.ContactItem
-      }
+      Request: req
     });
     console.log(resp);
     this.isLoading = false;

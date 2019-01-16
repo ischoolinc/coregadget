@@ -55,7 +55,7 @@
                         <li data-title="座號">{{stuRec.SeatNo}}</li>
                         <li data-title="姓名">{{stuRec.StudentName}}</li>
                         <li data-title="筆數">{{stuRec.InterviewCount}}</li>
-                        <li data-title="最後輔導日期">{{stuRec.LastInterviewDate}}</li>
+                        <li data-title="最後輔導日期">{{stuRec.LastInterviewDate | date: "yyyy-MM-dd"}}</li>
                         <li class="text-normal"
                             data-title="輔導對象">{{stuRec.LastInterviewContact}}</li>
                         <li class="text-normal"

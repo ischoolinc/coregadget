@@ -71,7 +71,7 @@ export class InterviewDetailComponent implements OnInit {
   // 修改
   editInterview(rec:CounselInterview){
     
-    const ref = this.dialog.open(ViewInterviewModalComponent,{data:{editMode:'edit',CounselRec:rec}});
+    const ref = this.dialog.open(AddInterviewModalComponent,{data:{editMode:'edit',CounselRec:rec}});
     ref.afterClosed().subscribe(rsp => {
       console.log(rsp);
     });

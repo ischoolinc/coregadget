@@ -1,9 +1,12 @@
 <!-- 新增／修改輔導 Modal -->
+<div class="modal" id="addInterview" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
+aria-hidden="true" style="display: block;">
+<div class="modal-dialog" role="document">
     <div class="modal-content">
       <form (ngSubmit)="save()" #addCounselForm="ngForm" >
         <div class="modal-header">
           <h5 class="modal-title" id="addInterviewLabel">
-            新增輔導紀錄 - {{ _studentName }}
+            {{editModeString}}輔導紀錄 - {{ _studentName }}
           </h5>
           <button
             type="button"
@@ -238,13 +241,13 @@
               <div *ngIf="description.errors.required">輔導內容說明必填</div>
             </div>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="contactMatter" class="col-form-label"> 上傳附件 </label>
             <div class="custom-file">
               <input type="file" class="custom-file-input" id="customFile" name="customFile"/>
               <label class="custom-file-label" for="customFile">選擇檔案</label>
             </div>
-          </div>
+          </div> -->
           <div class="custom-control custom-checkbox">
             <input
               type="checkbox"
@@ -290,3 +293,5 @@
         </div>
       </form>
     </div>
+  </div>
+</div>

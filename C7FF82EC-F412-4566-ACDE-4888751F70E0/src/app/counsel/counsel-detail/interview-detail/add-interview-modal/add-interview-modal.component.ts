@@ -17,8 +17,14 @@ export class AddInterviewModalComponent implements OnInit {
   ) {
     console.log(this.dialogRef);
     console.log(data);
+    if (data.CounselRec)
+    {
+      this._editMode = data.editMode;
+      this._CounselInterview = data.CounselRec as CounselInterview;
+    }
   }
-
+  _editMode: string = 'add';
+  editModeString: string = '新增';
   _fgFrom: FormGroup;
   _studentName: string;
 
@@ -26,16 +32,26 @@ export class AddInterviewModalComponent implements OnInit {
   _CounselInterview: CounselInterview;  
 
   ngOnInit() {
-    this._CounselInterview = new CounselInterview();
+
+    
+    
 
     // console.log(this.counselStudentService.currentStudent.StudentName);
     if (this.counselStudentService.currentStudent) {
-      this._studentName = this.counselStudentService.currentStudent.StudentName;
-      this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
-      this._CounselInterview.SchoolYear = 107;
-      this._CounselInterview.Semester = 1;
-      this._CounselInterview.CounselType
-      //this._CounselInterview.OccurDate
+      if (this._editMode === 'edit' && this._CounselInterview)
+      {
+        // 修改
+        this.editModeString = '修改';
+        console.log(this._CounselInterview);
+      } else
+      {
+        // 新增
+        this._CounselInterview = new CounselInterview();
+        this._studentName = this.counselStudentService.currentStudent.StudentName;
+        this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
+        this._CounselInterview.SchoolYear = 107;
+        this._CounselInterview.Semester = 1;
+      }
     }
   }
 
