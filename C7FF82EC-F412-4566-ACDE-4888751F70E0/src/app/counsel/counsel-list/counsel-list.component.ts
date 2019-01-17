@@ -13,6 +13,8 @@ export class CounselListComponent implements OnInit {
   private mod: string;
   private target: string;
   private targetList: CounselStudent[];
+  currentSchoolYear: number;
+  currentSemester: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -31,6 +33,8 @@ export class CounselListComponent implements OnInit {
 
   getList() {
     if (!this.counselStudentService.isLoading) {
+      this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
+      this.currentSemester = this.counselStudentService.currentSemester;
       this.deny = false;
       if (this.mod === "class") {
         if (this.counselStudentService.classMap.has(this.target)) {

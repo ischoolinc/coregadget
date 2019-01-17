@@ -28,30 +28,34 @@ export class AddInterviewModalComponent implements OnInit {
   _fgFrom: FormGroup;
   _studentName: string;
 
+  isReferral: boolean = false;
+
   // 輔導紀錄
   _CounselInterview: CounselInterview;  
 
   ngOnInit() {
-
-    
-    
-
     // console.log(this.counselStudentService.currentStudent.StudentName);
+    this.isReferral = false;
     if (this.counselStudentService.currentStudent) {
       if (this._editMode === 'edit' && this._CounselInterview)
       {
         // 修改
         this.editModeString = '修改';
-        console.log(this._CounselInterview);
+        if (this._CounselInterview.isReferral === 't')
+        {
+          this.isReferral = true;
+        }
+     
       } else
       {
         // 新增
         this._CounselInterview = new CounselInterview();
         this._studentName = this.counselStudentService.currentStudent.StudentName;
         this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
-        this._CounselInterview.SchoolYear = 107;
-        this._CounselInterview.Semester = 1;
+        this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
+        this._CounselInterview.Semester = this.counselStudentService.currentSemester;
       }
+      console.log(this._CounselInterview);
     }
   }
 
@@ -68,7 +72,16 @@ export class AddInterviewModalComponent implements OnInit {
   // click 儲存
   async save() {
 
+    // let x = await this.counselStudentService.SetCounselInterview(this._CounselInterview);
+    // $("addInterview").modal('hide');
+
+    // 目前開發中
     try {
+      if (this.isReferral)
+        this._CounselInterview.isReferral = 't';
+      else      
+        this._CounselInterview.isReferral = 'f';
+      
       await this.counselStudentService.SetCounselInterview(this._CounselInterview);
       this.dialogRef.close({msg: 'hello response!'});
     } catch (error) {

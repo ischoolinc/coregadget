@@ -11,6 +11,10 @@ export class CounselStudentService {
   public studentMap: Map<string, CounselStudent>;
   public classMap = new Map<string, CounselClass>();
   public counselClass: CounselClass[];
+  // 目前學年度
+  public currentSchoolYear: number;
+  // 目前學期
+  public currentSemester: number;
   // 認輔學生
   public guidanceStudent: CounselStudent[];
   public currentStudent: CounselStudent;
@@ -26,6 +30,14 @@ export class CounselStudentService {
     this.guidanceStudent = [];
 
     this.classMap = new Map<string, CounselClass>();
+
+    // 取得目前學年度學期
+    let currentSemeRsp = await this.dsaService.send("GetCurrentSemester",{});
+    [].concat(currentSemeRsp.CurrentSemester || []).forEach( sems =>{
+      this.currentSchoolYear = sems.SchoolYear;
+      this.currentSemester = sems.Semester;
+    });
+    // console.log(this.currentSchoolYear,this.currentSemester);
 
     let resp = await this.dsaService.send("GetCounselStudent", {});
 
@@ -103,7 +115,7 @@ export class CounselStudentService {
     let resp = await this.dsaService.send("SetCounselInterview", {
       Request: req
     });
-    console.log(resp);
+    // console.log(resp);
     this.isLoading = false;
   }
 
@@ -123,8 +135,10 @@ export class CounselStudentService {
       rec.UID = counselRec.UID;
       rec.StudentName = counselRec.StudentName;
       rec.SchoolYear = parseInt(counselRec.SchoolYear);
-      rec.Semester = parseInt(counselRec.Semester);
-      rec.OccurDate = new Date(counselRec.OccurDate);
+      rec.Semester = parseInt(counselRec.Semester);      
+      let dN = Number(counselRec.OccurDate);
+      let x = new Date(dN);
+      rec.OccurDate = this.parseDate(x);
       rec.ContactName = counselRec.ContactName;
       rec.AuthorName = counselRec.AuthorName;
       rec.CounselType = counselRec.CounselType;
@@ -142,6 +156,25 @@ export class CounselStudentService {
     });
     return data;
   }
+
+  parseDate(dt: Date)  
+  {
+    let y = dt.getFullYear();
+    let m = dt.getMonth() + 1 ;
+    let d = dt.getDate();
+    let mStr = ''+ m;
+    let dStr = '' + d;
+    if (m < 10)
+    {
+      mStr = '0' + m;
+    }
+    
+    if (d < 10)
+      dStr = '0' + d;
+
+    return `${y}-${mStr}-${dStr}`;
+  }
+
 }
 
 export class CounselClass {
@@ -187,7 +220,7 @@ export class CounselInterview {
   StudentName: string; // 姓名
   SchoolYear: number; //學年度
   Semester: number; //學期
-  OccurDate: Date; //訪談日期
+  OccurDate: string; //訪談日期
   ContactName: string; //訪談對象姓名
   AuthorName: string; //訪談者姓名
   CounselType: string; //訪談方式
