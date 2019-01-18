@@ -74,7 +74,7 @@
             }],
             haveNoCourse: true
         };
-        
+
         $scope.connection = gadget.getContract("ta");
         $scope.params = gadget.params;
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
@@ -353,8 +353,8 @@
                 $scope.current.Value = valueList.join();
             });
 
-            
-            
+
+
         }
 
         // 顯示編輯評分項目
@@ -396,7 +396,7 @@
                     try {
                         jsonParse = JSON.parse($scope.current.ConfigCustomAssessmentItem.JSONCode);
                     }
-                    catch(error){
+                    catch (error) {
                         alert("Syntax Error" + error);
                         return;
                     }
@@ -521,7 +521,7 @@
                 if ($scope.current.Course.Scores.Score) {
                     $scope.current.Course.Scores.Score.forEach(function (exam) {
                         data[exam.Name] = stuRec['Exam' + exam.ExamID + 'Origin'];
-                        wscols.push({wch:15});
+                        wscols.push({ wch: 15 });
                     });
                 }
                 data['學期成績'] = stuRec['Exam學期成績'];
@@ -551,6 +551,23 @@
 
         $scope.openCommentCode = function () {
             var commentCode = window.open("commentCode.html", "commentCode", "width=600,height=500");
+            $scope.connection.send({
+                service: "TeacherAccess.GetExamTextScoreMappingTable",
+                body: {
+                    Content: {}
+                },
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert("TeacherAccess.GetExamTextScoreMappingTable Error");
+                        commentCode.close();
+                    } else {
+                        if (response !== null && response.Response !== null && response.Response !== '')
+                            commentCode.setMappingTable(response.Response.TextMappingTable);
+                        else
+                            commentCode.close();
+                    }
+                }
+            });
         }
 
         $scope.calc = function () {
@@ -706,10 +723,10 @@
                             $scope.current.Value = temp;
                     }
                 }
-                else if ($scope.current.Exam.Type == 'Number' && $scope.current.Exam.SubName == '努力程度'){
+                else if ($scope.current.Exam.Type == 'Number' && $scope.current.Exam.SubName == '努力程度') {
                     var temp = Number($scope.current.Value);
                     if (!isNaN(temp)) {
-                        if (temp <= 5 && temp >= 0){ // 努力程度介於0~5
+                        if (temp <= 5 && temp >= 0) { // 努力程度介於0~5
                             flag = true;
                             $scope.current.Value = temp;
                         }
@@ -726,7 +743,7 @@
             else {
                 if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
                 if ($scope.current.Exam.Type == 'Number') {
-                    var temp = $scope.current.Value == '' ? '': Number($scope.current.Value);
+                    var temp = $scope.current.Value == '' ? '' : Number($scope.current.Value);
                     if (!isNaN(temp)
                         && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
                         && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
@@ -932,7 +949,7 @@
             // service: TeacherAccess.SetSCAttendExtensions
             var extensionsBody = {
                 Content: {
-                    SCAttendExtension:[]
+                    SCAttendExtension: []
                 }
             };
             [].concat($scope.studentList || []).forEach(function (stuRec, index) {
@@ -941,18 +958,18 @@
                     '@CourseID': $scope.current.Course.CourseID,
                     '@StudentID': stuRec.StudentID,
                     Extension: {
-                        '@Name':'GradeBook',
+                        '@Name': 'GradeBook',
                         Exam: {
                             '@Score': stuRec['_Exam平時評量'] == undefined ? '' : stuRec['_Exam平時評量'],
                             '@Degree': stuRec['_Exam平時評量_努力程度'] == undefined ? '' : stuRec['_Exam平時評量_努力程度'],
-                            Item:[]
+                            Item: []
                         }
                     }
                 };
                 [].concat($scope.gradeItemList || []).forEach(function (item) {
                     var obj = {
                         '@SubExamID': item.SubExamID,
-                        '@Score': stuRec[item.SubExamID] == undefined ? '' : stuRec[item.SubExamID] 
+                        '@Score': stuRec[item.SubExamID] == undefined ? '' : stuRec[item.SubExamID]
                     }
 
                     objs.Extension.Exam.Item.push(obj);
@@ -975,7 +992,7 @@
                                 $scope.gradeItemList.forEach(function (item) {
                                     stuRec['Origin' + item.SubExamID] = stuRec[item.SubExamID];
                                 });
-                                
+
                             });
                         });
                         alert("儲存完成。");
@@ -1437,7 +1454,7 @@
                                     $scope.OrdinarilyStartTime = Date.parse(courseRec.TemplateExtension.Extension.OrdinarilyStartTime);
                                     $scope.OrdinarilyEndTime = Date.parse(courseRec.TemplateExtension.Extension.OrdinarilyEndTime);
 
-                                    if (currDate >= $scope.OrdinarilyStartTime && currDate <= $scope.OrdinarilyEndTime){
+                                    if (currDate >= $scope.OrdinarilyStartTime && currDate <= $scope.OrdinarilyEndTime) {
                                         $scope.OrdinarilyEditable = true;
                                     }
                                     else {
@@ -1855,7 +1872,7 @@
         }
 
         $scope.calcOrdinarilyScore = function () {
-            if ($scope.OrdinarilyEditable) { 
+            if ($scope.OrdinarilyEditable) {
 
                 [].concat($scope.studentList || []).forEach(function (stuRec) {
                     stuRec['Exam平時評量'] = stuRec['_Exam平時評量'];
@@ -1906,7 +1923,7 @@
 
         $scope.checkAllTable = function (target) {
             var pass = true;
-            if (target == '成績管理') { 
+            if (target == '成績管理') {
                 [].concat($scope.examList || []).forEach(function (examRec) {
                     if (pass)
                         [].concat($scope.studentList || []).forEach(function (stuRec) {
