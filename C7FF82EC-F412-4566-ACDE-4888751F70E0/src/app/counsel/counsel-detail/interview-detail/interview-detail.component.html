@@ -24,7 +24,7 @@
         </div>
       </div>
       <!-- 新增-輔導 -->
-      <button class="btn btn-info" (click)="addInterview()">
+      <button class="btn btn-info" (click)="addInterviewModal()">
         <i class="material-icons">add</i> 新增
       </button>
     </div>
@@ -140,31 +140,27 @@
             semInfo.Semester === counselRec.Semester
           "
         >
-          <ol
-            class="tr"
-            data-toggle="modal"
-            
-          >          
-            <li data-title="輔導日期" (click)="viewInterview(counselRec)">
+          <ol class="tr" data-toggle="modal">
+            <li data-title="輔導日期" (click)="viewInterviewModal(counselRec)">
               {{ counselRec.OccurDate | date: "yyyy-MM-dd" }}
             </li>
-            <li class="text-normal" data-title="輔導對象" (click)="viewInterview(counselRec)">
+            <li class="text-normal" data-title="輔導對象" (click)="viewInterviewModal(counselRec)">
               {{ counselRec.ContactName }}
             </li>
-            <li class="text-normal" data-title="輔導方式" (click)="viewInterview(counselRec)">
+            <li class="text-normal" data-title="輔導方式" (click)="viewInterviewModal(counselRec)">
               {{ counselRec.CounselType }}
             </li>
-            <li data-title="記錄者" (click)="viewInterview(counselRec)">{{ counselRec.AuthorName }}</li>
-            <li class="text-left text-normal" data-title="聯絡事項" (click)="viewInterview(counselRec)">
+            <li data-title="記錄者" (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
+            <li class="text-left text-normal" data-title="聯絡事項">
               {{ counselRec.ContactItem }}
             </li>
-            <li data-title="轉介" (click)="viewInterview(counselRec)">{{ counselRec.getIsReferralString() }}</li>
-          
-            
+            <li data-title="轉介" (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
+
             <li data-title="">
               <button
                 class="btn btn-light"
-                (click)="editInterview(counselRec)"
+                data-toggle="modal"
+                (click)="editInterviewModal(counselRec)"
               >
                 修改
               </button>
@@ -175,5 +171,5 @@
     </ul>
   </ng-container>
 </div>
-<!-- <app-add-interview-modal></app-add-interview-modal> -->
-<!-- <app-view-interview-modal></app-view-interview-modal> -->
+<app-add-interview-modal #addInterview></app-add-interview-modal>
+<app-view-interview-modal #viewInterview></app-view-interview-modal>

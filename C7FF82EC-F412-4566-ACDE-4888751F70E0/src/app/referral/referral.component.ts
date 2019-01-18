@@ -1,5 +1,6 @@
-import { Component,Optional, OnInit } from '@angular/core';
+import { Component,Optional, OnInit, ViewChild } from '@angular/core';
 import { AppComponent } from "../app.component";
+import { GrantModalComponent } from "./grant-modal/grant-modal.component";
 
 @Component({
   selector: 'app-referral',
@@ -9,6 +10,8 @@ import { AppComponent } from "../app.component";
 export class ReferralComponent implements OnInit {
 
   _data;
+
+  @ViewChild('grant_modal') grant_modal:GrantModalComponent; 
 
   constructor(
         @Optional()

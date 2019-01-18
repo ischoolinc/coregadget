@@ -1,8 +1,21 @@
-import { Component, OnInit, Input, NgModule, ViewChild, ElementRef, Inject } from "@angular/core";
-import { CounselStudentService, CounselInterview } from "../../../../counsel-student.service";
+import {
+  Component,
+  OnInit,
+  Input,
+  NgModule,
+  ViewChild,
+  ElementRef,
+  Inject
+} from "@angular/core";
+import {
+  CounselStudentService,
+  CounselClass
+} from "../../../../counsel-student.service";
 import { FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
 import { formatPercent } from "@angular/common";
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DsaService } from "../../../../dsa.service";
+import { CounselInterview } from "../../../counsel-vo";
+// import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: "app-add-interview-modal",
@@ -12,51 +25,19 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export class AddInterviewModalComponent implements OnInit {
   constructor(
     private counselStudentService: CounselStudentService,
-    private dialogRef: MatDialogRef<AddInterviewModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    console.log(this.dialogRef);
-    console.log(data);
-    if (data.CounselRec)
-    {
-      this._editMode = data.editMode;
-      this._CounselInterview = data.CounselRec as CounselInterview;
-    }
-  }
-  _editMode: string = 'add';
-  editModeString: string = '新增';
-  _fgFrom: FormGroup;
-  _studentName: string;
+    private dsaService: DsaService
+  ) {}
 
+  _editMode: string = "add";
+  editModeString: string = "新增";
+  _studentName: string;
   isReferral: boolean = false;
 
   // 輔導紀錄
-  _CounselInterview: CounselInterview;  
+  _CounselInterview: CounselInterview;
 
   ngOnInit() {
-    // console.log(this.counselStudentService.currentStudent.StudentName);
-    this.isReferral = false;
-    if (this.counselStudentService.currentStudent) {
-      if (this._editMode === 'edit' && this._CounselInterview)
-      {
-        // 修改
-        this.editModeString = '修改';
-        if (this._CounselInterview.isReferral === 't')
-        {
-          this.isReferral = true;
-        }
-     
-      } else
-      {
-        // 新增
-        this._CounselInterview = new CounselInterview();
-        this._studentName = this.counselStudentService.currentStudent.StudentName;
-        this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
-        this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
-        this._CounselInterview.Semester = this.counselStudentService.currentSemester;
-      }
-      console.log(this._CounselInterview);
-    }
+    this.loadDefaultData();
   }
 
   // 設定訪談方式
@@ -64,29 +45,90 @@ export class AddInterviewModalComponent implements OnInit {
     this._CounselInterview.CounselType = value;
   }
 
-  // click 取消
-  cancel() {
-    // console.log("Cancel");
-    this.dialogRef.close();
+  // 載入預設資料
+  loadDefaultData() {
+    this.isReferral = false;
+    if (this.counselStudentService.currentStudent) {
+      if (this._editMode === "edit" && this._CounselInterview) {
+        // 修改
+        this.editModeString = "修改";
+        if (this._CounselInterview.isReferral === "t") {
+          this.isReferral = true;
+        }
+      } else {
+        // 新增
+        this._CounselInterview = new CounselInterview();
+        this._studentName = this.counselStudentService.currentStudent.StudentName;
+        this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
+        this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
+        this._CounselInterview.Semester = this.counselStudentService.currentSemester;
+        // 帶入日期與輸入者
+        let dt = new Date();
+        this._CounselInterview.OccurDate = this._CounselInterview.parseDate(dt);
+        // 班導師
+        if (
+          this.counselStudentService.currentStudent.Role.indexOf("班導師") >= 0
+        ) {
+          this.counselStudentService.counselClass.forEach(
+            (value: CounselClass, key: number) => {
+              if (
+                value.ClassName.indexOf(
+                  this.counselStudentService.currentStudent.ClassName
+                ) > -1
+              ) {
+                this._CounselInterview.AuthorName = value.HRTeacherName;
+              }
+            }
+          );
+        }
+      }
+      // console.log(this._CounselInterview);
+    }
   }
+
+  // click 取消
+  cancel() {}
   // click 儲存
   async save() {
-
-    // let x = await this.counselStudentService.SetCounselInterview(this._CounselInterview);
-    // $("addInterview").modal('hide');
-
-    // 目前開發中
     try {
-      if (this.isReferral)
-        this._CounselInterview.isReferral = 't';
-      else      
-        this._CounselInterview.isReferral = 'f';
+      if (this.isReferral) this._CounselInterview.isReferral = "t";
+      else this._CounselInterview.isReferral = "f";
+      this.SetCounselInterview(this._CounselInterview);
+      $("#addInterview").modal("hide");
       
-      await this.counselStudentService.SetCounselInterview(this._CounselInterview);
-      this.dialogRef.close({msg: 'hello response!'});
     } catch (error) {
       alert(error);
     }
   }
 
+  // 新增/更新輔導資料，Service 使用UID是否有值判斷新增或更新
+  async SetCounselInterview(data: CounselInterview) {
+    if (!data.isPrivate) data.isPrivate = "true";
+    if (!data.isReferral) data.isReferral = "false";
+    let req = {
+      UID: data.UID,
+      SchoolYear: data.SchoolYear,
+      Semester: data.Semester,
+      OccurDate: data.OccurDate,
+      ContactName: data.ContactName,
+      AuthorName: data.AuthorName,
+      CounselType: data.CounselType,
+      CounselTypeOther: data.CounselTypeOther,
+      isPrivate: data.isPrivate,
+      StudentID: data.StudentID,
+      isReferral: data.isReferral,
+      ReferralDesc: data.ReferralDesc,
+      ReferralReply: data.ReferralReply,
+      ReferralStatus: data.ReferralStatus,
+      ReferralReplyDate: data.ReferralReplyDate,
+      Content: data.Content,
+      ContactItem: data.ContactItem
+    };
+    console.log(req);
+
+    let resp = await this.dsaService.send("SetCounselInterview", {
+      Request: req
+    });
+    // console.log(resp);
+  }
 }

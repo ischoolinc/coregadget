@@ -59,10 +59,7 @@ import { MatDialogModule } from '@angular/material';
     BrowserAnimationsModule
   ],
   providers: [],
-  bootstrap: [AppComponent],
-  entryComponents: [
-    AddInterviewModalComponent,
-    ViewInterviewModalComponent
-  ]
+  bootstrap: [AppComponent]
+  
 })
 export class AppModule { }

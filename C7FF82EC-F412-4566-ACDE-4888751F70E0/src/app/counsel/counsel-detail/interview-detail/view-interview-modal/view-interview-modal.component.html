@@ -1,14 +1,14 @@
 <!-- 檢視輔導 Modal -->
-<div class="modal" id="viewInterview" tabindex="-1" role="dialog" aria-labelledby="viewInterviewLabel"
-aria-hidden="true" style="display: block;">
-<div class="modal-dialog">
+<div class="modal fade" id="viewInterview" tabindex="-1" role="dialog" aria-labelledby="viewInterviewLabel"
+aria-hidden="true">
+<div class="modal-dialog"  role="document">
 <div class="modal-content">
   <div class="modal-header">
     <h5 class="modal-title" id="viewInterviewLabel">
       {{_CounselInterview.StudentName}}（{{_CounselInterview.OccurDate | date: "yyyy-MM-dd" }} {{_CounselInterview.SchoolYear}}學年度 第{{_CounselInterview.Semester}}學期） 
     </h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
-      <span aria-hidden="true">&times;</span>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
