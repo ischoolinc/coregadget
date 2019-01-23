@@ -279,7 +279,7 @@
                                                 $scope.gradeItemList.forEach(function (item) {
                                                     if (stuRec[item.SubExamID]) {
                                                         tatalScore += stuRec[item.SubExamID] * item.Weight;
-                                                        n+=item.Weight;
+                                                        n += parseFloat(item.Weight);
                                                     }
                                                 });
 
@@ -815,7 +815,7 @@
                 $scope.gradeItemList.forEach(function (item) {
                     if ($scope.current.Student[item.SubExamID]) {
                         tatalScore += $scope.current.Student[item.SubExamID] * item.Weight;
-                        n+=item.Weight;
+                        n += parseFloat(item.Weight);
                     }
                 });
                 if (n > 0) {
