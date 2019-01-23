@@ -277,10 +277,10 @@
                                                 var totalWeightScore = 0;
                                                 var done = false;
                                                 $scope.gradeItemList.forEach(function (item) {
-                                                    if (("" + stuRec[item.SubExamID]) != "") {
-                                                        var score = Number(stuRec[item.SubExamID]);
+                                                    if ($scope.current.Student[item.SubExamID] || ('' + $scope.current.Student[item.SubExamID]) == '0') {
+                                                        var score = Number($scope.current.Student[item.SubExamID]);
                                                         var weight = Number(item.Weight);
-                                                        if (score != NaN && weight != NaN) {
+                                                        if (!isNaN(score) && !isNaN(weight)) {
                                                             totalWeightScore += score * weight;
                                                             totalWeight += weight;
                                                         }
@@ -819,11 +819,12 @@
                 var totalWeight = 0;
                 var totalWeightScore = 0;
                 var done = false;
+                
                 $scope.gradeItemList.forEach(function (item) {
-                    if (("" + $scope.current.Student[item.SubExamID]) != "") {
+                    if ($scope.current.Student[item.SubExamID] || ('' + $scope.current.Student[item.SubExamID]) == '0') {
                         var score = Number($scope.current.Student[item.SubExamID]);
                         var weight = Number(item.Weight);
-                        if (score != NaN && weight != NaN) {
+                        if (!isNaN(score) && !isNaN(weight)) {
                             totalWeightScore += score * weight;
                             totalWeight += weight;
                         }
