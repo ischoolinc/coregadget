@@ -151,7 +151,7 @@
               {{ counselRec.CounselType }}
             </li>
             <li data-title="記錄者" (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
-            <li class="text-left text-normal" data-title="聯絡事項">
+            <li class="text-left text-normal" data-title="聯絡事項" (click)="viewInterviewModal(counselRec)">
               {{ counselRec.ContactItem }}
             </li>
             <li data-title="轉介" (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>

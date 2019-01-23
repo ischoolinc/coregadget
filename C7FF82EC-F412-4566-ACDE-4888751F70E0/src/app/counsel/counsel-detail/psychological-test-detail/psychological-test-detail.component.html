@@ -1,25 +1,28 @@
 <!-- 學生個人 - 心理測驗 -->
-<div class="tab-pane fade-in"
-     id="listTwo">
+<div class="tab-pane fade-in" id="listTwo">
   <div class="d-md-flex align-items-center sub-title mb-3">
     <h4 class="mb-0 mr-auto">心理測驗</h4>
-    <!-- <div class="d-flex mb-3 mb-md-0">
-        <div class="dropdown">
-            <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle btn-light mr-2"
-                data-toggle="dropdown" id="dropdownMenuButton1" type="button">
-                <i class="material-icons">print</i>
-                列印
-            </button>
-            <div aria-labelledby="dropdownMenuButton1" class="dropdown-menu menu">
-                <h6 class="dropdown-header">107學年度 第1學期</h6>
-                <a class="dropdown-item" href="#">Excel</a>
-                <a class="dropdown-item" href="#">Html</a>
-                <div class="dropdown-divider"></div>
-                <h6 class="dropdown-header">106學年度 第2學期</h6>
-                <a class="dropdown-item" href="#">Excel</a>
-                <a class="dropdown-item" href="#">Html</a>
-            </div>
-        </div>
-    </div> -->
   </div>
+  <ng-container *ngFor="let qItem of _QuizDataList">
+    <div class="font-weight-bold mb-2">
+      實施日期：{{ qItem.ImplementationDate }}
+    </div>
+    <div class="font-weight-bold mb-2">
+        測驗名稱：{{ qItem.QuizName }}
+      </div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>項目名稱</li>
+          <li>測驗結果</li>
+        </ol>
+      </li>
+      <li class="tbody point" *ngFor="let item of qItem.QuizFieldList">
+        <ol class="tr" data-toggle="modal">
+          <li class="text-normal" data-title="項目名稱">{{ item.Name }}</li>
+          <li class="text-normal" data-title="測驗結果">{{ item.Value }}</li>
+        </ol>
+      </li>
+    </ul>
+  </ng-container>
 </div>
