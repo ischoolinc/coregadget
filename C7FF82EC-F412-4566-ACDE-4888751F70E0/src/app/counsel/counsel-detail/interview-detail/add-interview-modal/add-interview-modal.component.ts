@@ -69,19 +69,10 @@ export class AddInterviewModalComponent implements OnInit {
         if (
           this.counselStudentService.currentStudent.Role.indexOf("班導師") >=
             0 ||
-          this.counselStudentService.currentStudent.Role.indexOf("輔導老師") >= 0
+          this.counselStudentService.currentStudent.Role.indexOf("輔導老師") >=
+            0
         ) {
-          this.counselStudentService.counselClass.forEach(
-            (value: CounselClass, key: number) => {
-              if (
-                value.ClassName.indexOf(
-                  this.counselStudentService.currentStudent.ClassName
-                ) > -1
-              ) {
-                this._CounselInterview.AuthorName = value.HRTeacherName;
-              }
-            }
-          );
+          this._CounselInterview.AuthorName = this.counselStudentService.teacherName;
         }
       }
       // console.log(this._CounselInterview);
