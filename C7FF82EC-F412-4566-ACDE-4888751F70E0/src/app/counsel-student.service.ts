@@ -39,6 +39,7 @@ export class CounselStudentService {
     });
     // console.log(this.currentSchoolYear,this.currentSemester);
 
+    // 班導師，輔導老師
     let resp = await this.dsaService.send("GetCounselStudent", {});
 
     [].concat(resp.Student || []).forEach(stuRec => {
@@ -83,6 +84,7 @@ export class CounselStudentService {
       }
       cls.Student.push(stu);
     });
+    
     this.isLoading = false;
   }
 }

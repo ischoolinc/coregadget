@@ -67,7 +67,9 @@ export class AddInterviewModalComponent implements OnInit {
         this._CounselInterview.OccurDate = this._CounselInterview.parseDate(dt);
         // 班導師
         if (
-          this.counselStudentService.currentStudent.Role.indexOf("班導師") >= 0
+          this.counselStudentService.currentStudent.Role.indexOf("班導師") >=
+            0 ||
+          this.counselStudentService.currentStudent.Role.indexOf("輔導老師") >= 0
         ) {
           this.counselStudentService.counselClass.forEach(
             (value: CounselClass, key: number) => {
@@ -95,7 +97,6 @@ export class AddInterviewModalComponent implements OnInit {
       else this._CounselInterview.isReferral = "f";
       this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");
-      
     } catch (error) {
       alert(error);
     }

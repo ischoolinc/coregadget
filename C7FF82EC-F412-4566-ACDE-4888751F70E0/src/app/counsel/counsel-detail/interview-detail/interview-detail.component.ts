@@ -21,7 +21,7 @@ export class InterviewDetailComponent implements OnInit {
   enableReferal: boolean = false;
   _semesterInfo: SemesterInfo[] = [];
   _counselInterview: CounselInterview[] = [];
-
+isLoading = true;
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
 
@@ -35,7 +35,7 @@ export class InterviewDetailComponent implements OnInit {
       "StudentID:" + this.counselStudentService.currentStudent.StudentID
     );
     if (
-      this.counselStudentService.currentStudent.Role.indexOf("輔導老師") >= 0
+      this.counselStudentService.currentStudent.Role.indexOf("認輔老師") >= 0
     ) {
       this.enableReferal = true;
     }
@@ -45,6 +45,7 @@ export class InterviewDetailComponent implements OnInit {
 
   // 取得學生輔導資料
   async loadCounselInterview() {
+    this.isLoading = true;
     this._semesterInfo = [];
     let tmp = [];
     // 取得學生輔導資料
@@ -62,6 +63,7 @@ export class InterviewDetailComponent implements OnInit {
         tmp.push(key);
       }
     });
+    this.isLoading = false;
   }
 
   // 檢視
