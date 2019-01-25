@@ -226,19 +226,22 @@
                                                 var totalWeightScore = 0;
                                                 var done = false;
                                                 $scope.gradeItemList.forEach(function (item) {
-                                                    if ($scope.current.Student[item.SubExamID] || ('' + $scope.current.Student[item.SubExamID]) == '0') {
-                                                        var score = Number($scope.current.Student[item.SubExamID]);
+                                                    if (stuRec[item.SubExamID]){
+                                                        var score = Number(stuRec[item.SubExamID]);
                                                         var weight = Number(item.Weight);
                                                         if (!isNaN(score) && !isNaN(weight)) {
+                                                            // 處理javascript精度問題
+                                                            score = score * 100000;
+                                                            weight = weight * 100000;
                                                             totalWeightScore += score * weight;
                                                             totalWeight += weight;
                                                         }
                                                     }
                                                 });
                                                 if(totalWeight){
-                                                    stuRec['_Exam平時評量'] = (totalWeightScore / totalWeight).toFixed(2);
+                                                    stuRec['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
                                                     $scope.effortPairList.forEach(function (effortItem) {
-                                                        if (!done && stuRec['_Exam平時評量'] >= effortItem.Score) {
+                                                        if (!done && Number(stuRec['_Exam平時評量']) >= Number(effortItem.Score)) {
                                                             stuRec['_Exam平時評量_努力程度'] = effortItem.Code;
     
                                                             done = true;
@@ -774,16 +777,19 @@
                         var score = Number($scope.current.Student[item.SubExamID]);
                         var weight = Number(item.Weight);
                         if (!isNaN(score) && !isNaN(weight)) {
+                            //處理javascript精度問題
+                            score = score * 100000;
+                            weight = weight * 100000;
                             totalWeightScore += score * weight;
                             totalWeight += weight;
                         }
                     }
                 });
                 if(totalWeight){
-                    $scope.current.Student['_Exam平時評量'] = (totalWeightScore / totalWeight).toFixed(2);
+                    $scope.current.Student['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
 
                     $scope.effortPairList.forEach(function (effortItem) {
-                        if (!done && $scope.current.Student['_Exam平時評量'] >= effortItem.Score) {
+                        if (!done && Number($scope.current.Student['_Exam平時評量']) >= Number(effortItem.Score)) {
                             $scope.current.Student['_Exam平時評量_努力程度'] = effortItem.Code;
 
                             var nextStudent =
