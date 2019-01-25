@@ -1,0 +1,12 @@
+<div class="my-sure">
+  <button type="button" class="btn" (click)="clickResetAddQuit()">重設</button>
+  <button type="button"
+    class="btn btn-success"
+    style="margin-left: 5px;"
+    placement="right"
+    tooltip
+    #sendBotton="bs-tooltip"
+    [disabled]="conflictState ? 'disabled' : ''"
+    (click)="clickConfirmSave()">{{ conflictState ? '衝堂或不得重複加選' : '送出' }}
+  </button>
+</div>

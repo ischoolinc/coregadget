@@ -1,0 +1,12 @@
+<div class="my-sure" *ngIf="['0', 's4'].indexOf(currLevel) !== -1">
+  <button *ngIf="currLevel === '0'"
+    type="button"
+    class="btn btn-success"
+    (click)="clickFinalCheck()">確認最終選課結果</button>
+  <button *ngIf="currLevel === '0'"
+    style="margin-left: 5px;"
+    type="button"
+    class="btn"
+    (click)="clickPrint()">列印加退選單</button>
+  <span *ngIf="showSCReceivedMsg" class="my-received-msg">{{scReceivedMsg}}</span>
+</div>
