@@ -74,7 +74,10 @@
             }],
             haveNoCourse: true
         };
-
+        // 四捨五入
+        var rounding = function (val, precision) {
+            return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
+        }
         $scope.connection = gadget.getContract("ta");
         $scope.params = gadget.params;
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
@@ -238,8 +241,9 @@
                                                         }
                                                     }
                                                 });
-                                                if(totalWeight){
-                                                    stuRec['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
+                                                if (totalWeight) {
+                                                    stuRec['_Exam平時評量'] = rounding((totalWeightScore / totalWeight / 100000),2);
+                                                    //stuRec['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
                                                     $scope.effortPairList.forEach(function (effortItem) {
                                                         if (!done && Number(stuRec['_Exam平時評量']) >= Number(effortItem.Score)) {
                                                             stuRec['_Exam平時評量_努力程度'] = effortItem.Code;
@@ -786,8 +790,9 @@
                     }
                 });
                 if(totalWeight){
-                    $scope.current.Student['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
-
+                    // 透過round function執行四捨五入取小數第二位
+                    $scope.current.Student['_Exam平時評量'] = rounding((totalWeightScore / totalWeight / 100000), 2);
+                    //$scope.current.Student['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
                     $scope.effortPairList.forEach(function (effortItem) {
                         if (!done && Number($scope.current.Student['_Exam平時評量']) >= Number(effortItem.Score)) {
                             $scope.current.Student['_Exam平時評量_努力程度'] = effortItem.Code;
