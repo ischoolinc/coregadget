@@ -131,6 +131,7 @@ export class AppComponent implements OnInit {
           } else {
             this.currTab = 'sa02';
           }
+          this.loadState = 'finish';
         }
       } else {
         this.loadState = 'limited';
@@ -144,8 +145,6 @@ export class AppComponent implements OnInit {
       });
     } catch (error) {
       this.loadState = 'error';
-    } finally {
-      this.loadState = 'finish';
     }
   }
 
@@ -817,7 +816,8 @@ export class AppComponent implements OnInit {
 
                 this.modalRef.hide();
 
-                window.scroll(0,0);
+                //window.scroll(0,0);
+                this.viewportScroller.scrollToPosition([0, 0]);
                 this.mainMsgClass = 'alert alert-success';
                 this.mainMsgText = '儲存成功！';
                 setTimeout(() => {
@@ -1067,7 +1067,7 @@ export class AppComponent implements OnInit {
               this.isSaving = true;
               try {
                 const rsp = await this.basicSrv.setRegistrationConfirm();
-                debugger
+                //debugger
                 if (parseInt(rsp.EffectRows || 0, 10) > 0) {
                   this.scConfirmed = true;
                   this.scConfirmDate = moment(new Date()).format('YYYY/MM/DD');
@@ -1076,7 +1076,8 @@ export class AppComponent implements OnInit {
 
                   this.modalRef.hide();
 
-                  window.scroll(0,0);
+                  //window.scroll(0,0);
+                  this.viewportScroller.scrollToPosition([0, 0]);
                   this.mainMsgClass = 'alert alert-success';
                   this.mainMsgText = '儲存成功！';
                   setTimeout(() => {
