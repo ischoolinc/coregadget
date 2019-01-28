@@ -37,6 +37,7 @@ export class AddInterviewModalComponent implements OnInit {
   _CounselInterview: CounselInterview;
 
   ngOnInit() {
+    this._CounselInterview = new CounselInterview();
     this.loadDefaultData();
   }
 

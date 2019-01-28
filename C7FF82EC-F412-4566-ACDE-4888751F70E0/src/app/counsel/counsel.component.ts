@@ -11,15 +11,15 @@ import { timeout } from 'q';
   styleUrls: ['./counsel.component.css']
 })
 export class CounselComponent implements OnInit {
-  private selectItem: string;
+   public selectItem: string;
 
   // 搜尋文字
   searchText: string = '';
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private roleService: RoleService,
-    private counselStudentService: CounselStudentService,
+    public roleService: RoleService,
+    public counselStudentService: CounselStudentService,
     @Optional()
     private appComponent: AppComponent
   ) {

@@ -9,10 +9,10 @@ import { CounselComponent } from "../counsel.component";
   styleUrls: ['./counsel-list.component.css']
 })
 export class CounselListComponent implements OnInit {
-  private deny: boolean;
-  private mod: string;
-  private target: string;
-  private targetList: CounselStudent[];
+  public deny: boolean;
+  public mod: string;
+  public target: string;
+  public targetList: CounselStudent[];
   currentSchoolYear: number;
   currentSemester: number;
 

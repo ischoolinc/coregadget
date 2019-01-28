@@ -21,7 +21,8 @@ export class InterviewDetailComponent implements OnInit {
   enableReferal: boolean = false;
   _semesterInfo: SemesterInfo[] = [];
   _counselInterview: CounselInterview[] = [];
-isLoading = true;
+  _StudentID: string = "";
+  isLoading = false;
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
 
@@ -31,26 +32,32 @@ isLoading = true;
   ) {}
 
   ngOnInit() {
+    this._StudentID = "";
     console.log(
       "StudentID:" + this.counselStudentService.currentStudent.StudentID
     );
-    if (
+    if (this.counselStudentService.currentStudent.Role && 
       this.counselStudentService.currentStudent.Role.indexOf("認輔老師") >= 0
     ) {
       this.enableReferal = true;
     }
+    this._StudentID = this.counselStudentService.currentStudent.StudentID;
 
-    this.loadCounselInterview();
+    this.loadCounselInterview(
+      this.counselStudentService.currentStudent.StudentID
+    );
   }
 
   // 取得學生輔導資料
-  async loadCounselInterview() {
+  async loadCounselInterview(StudentID: string) {
+    this._counselInterview = [];
     this.isLoading = true;
+    this._StudentID = StudentID;
     this._semesterInfo = [];
     let tmp = [];
     // 取得學生輔導資料
     this._counselInterview = await this.GetCounselInterviewByStudentID(
-      this.counselStudentService.currentStudent.StudentID
+      this._StudentID
     );
 
     this._counselInterview.forEach(data => {
@@ -70,11 +77,9 @@ isLoading = true;
   viewInterviewModal(counselView: CounselInterview) {
     this._viewInterview._CounselInterview = counselView;
     $("#viewInterview").modal("show");
-    $('#viewInterview').on('hide.bs.modal', function (e) {
+    $("#viewInterview").on("hide.bs.modal", function(e) {
       // do something...
-      
-    })
-   
+    });
   }
 
   // 新增
@@ -84,10 +89,10 @@ isLoading = true;
     $("#addInterview").modal("show");
 
     // 關閉畫面
-    $('#addInterview').on('hide.bs.modal', () => {
+    $("#addInterview").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadCounselInterview();
-    });    
+      this.loadCounselInterview(this._StudentID);
+    });
   }
 
   // 修改

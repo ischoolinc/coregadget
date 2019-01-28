@@ -1,5 +1,6 @@
 export class ReferralStudent {
   UID: string;
+  StudentID: string;
   ClassName: string;
   SeatNo: string;
   Name: string;
@@ -10,6 +11,7 @@ export class ReferralStudent {
   ReferralReply: string;
   ReferralStatus: string;
   ReferralReplyDate: string;
+  ReferralReplyDesc: string;
   isDisplay: boolean = false;
 
   public parseDate(dt: Date) {

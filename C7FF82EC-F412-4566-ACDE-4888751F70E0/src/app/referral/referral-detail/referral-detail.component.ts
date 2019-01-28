@@ -10,14 +10,14 @@ import {
   CounselClass,
   CounselStudent
 } from "../../counsel-student.service";
-import { CounselComponent } from "../counsel.component";
+import { CounselComponent } from "../../counsel/counsel.component";
 
 @Component({
-  selector: "app-counsel-detail",
-  templateUrl: "./counsel-detail.component.html",
-  styleUrls: ["./counsel-detail.component.css"]
+  selector: 'app-referral-detail',
+  templateUrl: './referral-detail.component.html',
+  styleUrls: ['./referral-detail.component.css']
 })
-export class CounselDetailComponent implements OnInit {
+export class ReferralDetailComponent implements OnInit {
   deny: boolean = false;
   private studentID: string;
   private currentItem: string;
@@ -29,14 +29,11 @@ export class CounselDetailComponent implements OnInit {
   _counselEnable: boolean = false;
   // 顯示心理測驗
   _psychological_testEnable: boolean = false;
-
-  constructor(
-    private activatedRoute: ActivatedRoute,
+  constructor( private activatedRoute: ActivatedRoute,
     private router: Router,
     private counselStudentService: CounselStudentService,
     @Optional()
-    private counselComponent: CounselComponent
-  ) {}
+    private counselComponent: CounselComponent) { }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(
@@ -60,17 +57,14 @@ export class CounselDetailComponent implements OnInit {
           if (
             this.currentStudent.Role.indexOf("班導師") >= 0 ||
             this.currentStudent.Role.indexOf("輔導老師") >= 0
-          ) {
+            
+          ){
             this.counselComponent.setSelectItem(this.currentStudent.ClassName);
-          } else {
-            this.counselComponent.setSelectItem("認輔學生");
+            this._interviewEnable = true;
+            this._psychological_testEnable = true;
           }
-        }if (
-          this.currentStudent.Role.indexOf("班導師") >= 0 ||
-          this.currentStudent.Role.indexOf("輔導老師") >= 0
-        ){
-          this._interviewEnable = true;
-          this._psychological_testEnable = true;
+            
+          else this.counselComponent.setSelectItem("認輔學生");
         }
       } else {
         this.deny = true;

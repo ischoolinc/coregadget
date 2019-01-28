@@ -1,8 +1,13 @@
 import { Component, Optional, OnInit, ViewChild } from "@angular/core";
 import { AppComponent } from "../app.component";
-import { GrantModalComponent } from "./grant-modal/grant-modal.component";
-import { DsaService } from "../dsa.service";
-import { ReferralStudent } from "./referral-student";
+import { RoleService } from "../role.service";
+
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  RoutesRecognized
+} from "@angular/router";
 
 @Component({
   selector: "app-referral",
@@ -10,78 +15,28 @@ import { ReferralStudent } from "./referral-student";
   styleUrls: ["./referral.component.css"]
 })
 export class ReferralComponent implements OnInit {
-  _data;
-
-  @ViewChild("grant_modal") grant_modal: GrantModalComponent;
-
-  ReferralStudentList: ReferralStudent[];
-  isLoading: boolean = false;
-  selectStatus: string = "全部";
+  public selectItem: string;
+  public itemList: string[] = [];
+  // 搜尋文字
+  searchText: string = "";
   constructor(
-    private dsaService: DsaService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    public roleService: RoleService,
     @Optional()
     private appComponent: AppComponent
-  ) {}
+  ) {
+    if (this.appComponent) this.appComponent.currentComponent = "referral";
+  }
 
   ngOnInit() {
-    if (this.appComponent) this.appComponent.currentComponent = "referral";
-    this.loadData();
+    this.routing();
   }
 
-  setGrantModal(refStudent: ReferralStudent) {
-    this.grant_modal.referralStudent = refStudent;
-    // 處理預設值
-    if (!this.grant_modal.referralStudent.ReferralReplyDate)
-    {
-      let dt = new Date();
-      this.grant_modal.referralStudent.ReferralReplyDate = this.grant_modal.referralStudent.parseDate(dt);
-    }
-    $("#grant_modal").modal("show");
-  }
-
-  loadData() {
-    this.GetReferralStudent();
-  }
-
-  // 已處理
-  Processed(status: string) {
-    this.selectStatus = status;
-    this.ReferralStudentList.forEach(data => {
-      if (data.GetReferralStatus() === status) {
-        data.isDisplay = true;
-      } else {
-        data.isDisplay = false;
-      }
+  routing() {
+    this.router.navigate(["list", "未結案"], {
+      relativeTo: this.activatedRoute,
+      skipLocationChange: true
     });
-  }
-
-  async GetReferralStudent() {
-    this.isLoading = true;
-    let resp = await this.dsaService.send("GetReferralStudent", {
-      Request: {}
-    });
-
-    this.ReferralStudentList = [];
-    [].concat(resp.ReferralStudent || []).forEach(studRec => {
-      // 建立轉介學生資料
-      let rec: ReferralStudent = new ReferralStudent();
-      rec.UID = studRec.UID;
-      rec.isDisplay = true;
-      rec.ClassName = studRec.ClassName;
-      rec.SeatNo = studRec.SeatNo;
-      rec.Name = studRec.Name;
-      rec.Gender = studRec.Gender;
-      rec.TeacherName = studRec.TeacherName;
-      let n1 = Number(studRec.OccurDate);
-      let d1 = new Date(n1);
-      rec.OccurDate = rec.parseDate(d1);
-      rec.ReferralDesc = studRec.ReferralDesc;
-      rec.ReferralReply = studRec.ReferralReply;
-      rec.ReferralStatus = studRec.ReferralStatus;
-      rec.ReferralReplyDate = studRec.ReferralReplyDate;
-
-      this.ReferralStudentList.push(rec);
-    });
-    this.isLoading = false;
   }
 }
