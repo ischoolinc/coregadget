@@ -1,2 +1,45 @@
-<div>test</div>
-<app-counsel-detail></app-counsel-detail>
+<div *ngIf="!isLoading; else tmpLoading">
+  <div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>班級</li>
+          <li>座號</li>
+          <li>姓名</li>
+          <li>性別</li>
+          <li>班導師</li>
+          <li>轉介日期</li>
+          <li>轉介說明</li>
+          <li>授理狀況</li>
+          <li>授理日期</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr">
+          <li data-title="班級">{{ referralStudent.ClassName }}</li>
+          <li data-title="座號">{{ referralStudent.SeatNo }}</li>
+          <li data-title="姓名">{{ referralStudent.Name }}</li>
+          <li data-title="性別">{{ referralStudent.Gender }}</li>
+          <li data-title="班導師">{{ referralStudent.TeacherName }}</li>
+          <li data-title="轉介日期">{{ referralStudent.OccurDate }}</li>
+          <li class="text-left text-normal" data-title="轉介說明">
+            {{ referralStudent.ReferralDesc }}
+          </li>
+          <li data-title="授理狀況">
+            {{ referralStudent.GetReferralStatus() }}
+          </li>
+          <li data-title="授理日期">{{ referralStudent.ReferralReplyDate }}</li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+  <app-counsel-detail></app-counsel-detail>
+</div>
+<ng-template #tmpLoading class="container">
+  <div
+    class="row justify-content-center"
+    style="margin-top:250px;margin-bottom:200px;"
+  >
+    Loading...
+  </div>
+</ng-template>

@@ -20,6 +20,8 @@ export class ReferralListComponent implements OnInit {
   public mod: string;
   public itemList: string[];
   public selectItem: string;
+  // 目前選擇轉介學生
+  currentReferralStudent: ReferralStudent;
   @ViewChild("grant_modal") grant_modal: GrantModalComponent;
 
   ReferralStudentList: ReferralStudent[];
@@ -31,6 +33,7 @@ export class ReferralListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.currentReferralStudent = new ReferralStudent();
     this.itemList = [];
     this.itemList.push("未結案");
     this.itemList.push("已結案");
@@ -67,7 +70,19 @@ export class ReferralListComponent implements OnInit {
     }
   }
 
+  // 到學生輔導紀錄
+  toCounselDetail(refStudent: ReferralStudent) {
+    this.currentReferralStudent = refStudent;
+    this.router.navigate(
+      ["/referral", "detail", refStudent.StudentID, refStudent.UID],
+      {
+        relativeTo: this.activatedRoute
+      }
+    );
+  }
+
   setGrantModal(refStudent: ReferralStudent) {
+    this.currentReferralStudent = refStudent;
     this.grant_modal.referralStudent = refStudent;
     this.grant_modal.loadDefault();
     $("#grant_modal").modal("show");

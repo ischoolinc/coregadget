@@ -5,90 +5,70 @@ import {
   ParamMap,
   RoutesRecognized
 } from "@angular/router";
-import {
-  CounselStudentService,
-  CounselClass,
-  CounselStudent
-} from "../../counsel-student.service";
-import { CounselComponent } from "../../counsel/counsel.component";
+import { ReferralStudent } from "../referral-student";
+import { DsaService } from "../../dsa.service";
 
 @Component({
-  selector: 'app-referral-detail',
-  templateUrl: './referral-detail.component.html',
-  styleUrls: ['./referral-detail.component.css']
+  selector: "app-referral-detail",
+  templateUrl: "./referral-detail.component.html",
+  styleUrls: ["./referral-detail.component.css"]
 })
 export class ReferralDetailComponent implements OnInit {
-  deny: boolean = false;
-  private studentID: string;
-  private currentItem: string;
-  currentStudent: CounselStudent;
-
-  // 顯示輔導紀錄
-  _interviewEnable: boolean = false;
-  // 顯示認輔紀錄
-  _counselEnable: boolean = false;
-  // 顯示心理測驗
-  _psychological_testEnable: boolean = false;
-  constructor( private activatedRoute: ActivatedRoute,
+  referralStudent: ReferralStudent;
+  studentID: string;
+  interviewID: string;
+  isLoading: boolean = false;
+  constructor(
+    private activatedRoute: ActivatedRoute,
     private router: Router,
-    private counselStudentService: CounselStudentService,
-    @Optional()
-    private counselComponent: CounselComponent) { }
+    private dsaService: DsaService,    
+  ) {}
 
   ngOnInit() {
+    this.referralStudent = new ReferralStudent();
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.studentID = params.get("studentID");
-        this.loadStudent();
+        this.interviewID = params.get("interviewID");
       }
     );
+    this.loadReferralStudent();
   }
 
-  loadStudent() {
-    this.counselStudentService.currentStudent = null;
-    if (!this.counselStudentService.isLoading) {
-      this.deny = false;
-      if (this.counselStudentService.studentMap.has(this.studentID)) {
-        this.currentStudent = this.counselStudentService.studentMap.get(
-          this.studentID
-        );
-        this.counselStudentService.currentStudent = this.currentStudent;
-        if (this.counselComponent != null) {
-          if (
-            this.currentStudent.Role.indexOf("班導師") >= 0 ||
-            this.currentStudent.Role.indexOf("輔導老師") >= 0
-            
-          ){
-            this.counselComponent.setSelectItem(this.currentStudent.ClassName);
-            this._interviewEnable = true;
-            this._psychological_testEnable = true;
-          }
-            
-          else this.counselComponent.setSelectItem("認輔學生");
-        }
-      } else {
-        this.deny = true;
+  loadReferralStudent()
+  {
+    this.GetReferralStudentByUid();
+  }
+  
+  async GetReferralStudentByUid() {
+   this.isLoading = true;
+    let resp = await this.dsaService.send("GetReferralStudentByUid", {
+      Request: {
+        UID: this.interviewID
       }
-    } else {
-      setTimeout(this.loadStudent, 100);
-    }
-  }
-
-  routeTo(to) {
-    //讓特效跑
-    setTimeout(
-      function() {
-        this.router.navigate([].concat(to || []), {
-          relativeTo: this.activatedRoute
-        });
-      }.bind(this),
-      200
-    );
-  }
-
-  public setCurrentItem(item: string) {
-    setTimeout(() => {
-      this.currentItem = item;
     });
+    
+    [].concat(resp.ReferralStudent || []).forEach(studRec => {
+      // 建立轉介學生資料
+      let rec: ReferralStudent = new ReferralStudent();
+      rec.UID = studRec.UID;
+      rec.StudentID = studRec.StudentID;
+      rec.ClassName = studRec.ClassName;
+      rec.SeatNo = studRec.SeatNo;
+      rec.Name = studRec.Name;
+      rec.Gender = studRec.Gender;
+      rec.TeacherName = studRec.TeacherName;
+      let n1 = Number(studRec.OccurDate);
+      let d1 = new Date(n1);
+      rec.OccurDate = rec.parseDate(d1);
+      rec.ReferralDesc = studRec.ReferralDesc;
+      rec.ReferralReply = studRec.ReferralReply;
+      rec.ReferralStatus = studRec.ReferralStatus;
+      rec.ReferralReplyDate = studRec.ReferralReplyDate;
+      rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
+      this.referralStudent = rec;
+    });
+    this.isLoading = false;
   }
+  
 }

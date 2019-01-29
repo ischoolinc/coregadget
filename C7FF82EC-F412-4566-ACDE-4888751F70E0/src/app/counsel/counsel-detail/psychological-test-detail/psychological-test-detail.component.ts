@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Optional } from "@angular/core";
 import { DsaService } from "../../../dsa.service";
 import { CounselStudentService } from "../../../counsel-student.service";
 import { QuizData, QuizField } from "./quiz-data-vo";
+import { CounselDetailComponent } from "../counsel-detail.component";
 
 @Component({
   selector: "app-psychological-test-detail",
@@ -14,14 +15,15 @@ export class PsychologicalTestDetailComponent implements OnInit {
   _QuizDataList: QuizData[];
   constructor(
     private counselStudentService: CounselStudentService,
-    private dsaService: DsaService
+    private dsaService: DsaService,
+    @Optional() private counselDetailComponent: CounselDetailComponent
   ) {}
 
   ngOnInit() {
     this._QuizDataList = [];
-    if (this.counselStudentService.currentStudent.StudentID) {
+    if (this.counselDetailComponent.currentStudent.StudentID) {
       this.GetStudentQuizDataByStudentID(
-        this.counselStudentService.currentStudent.StudentID
+        this.counselDetailComponent.currentStudent.StudentID
       );
     }
   }
@@ -55,7 +57,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
           });
 
           // 將細項依 Order 順序排序
-          data1.QuizFieldList.sort(function(a, b){
+          data1.QuizFieldList.sort(function(a, b) {
             return a.Order - b.Order;
           });
           // console.log(data1.QuizFieldList);
@@ -63,7 +65,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
       });
     });
     // console.log(this._QuizDataList);
-    this.isLoading= false;
+    this.isLoading = false;
   }
 
   // 取得心理測驗答案

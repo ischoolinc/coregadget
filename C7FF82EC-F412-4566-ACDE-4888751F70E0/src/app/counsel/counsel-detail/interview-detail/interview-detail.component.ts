@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, Optional } from "@angular/core";
 import {
   CounselStudentService,
   CounselClass,
@@ -11,6 +11,7 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
 // import { MatDialog } from '@angular/material';
 import { DsaService } from "../../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
+import { CounselDetailComponent } from "../counsel-detail.component";
 
 @Component({
   selector: "app-interview-detail",
@@ -28,23 +29,24 @@ export class InterviewDetailComponent implements OnInit {
 
   constructor(
     private counselStudentService: CounselStudentService,
-    private dsaService: DsaService
+    private dsaService: DsaService,
+    @Optional()
+    private counselDetailComponent: CounselDetailComponent
   ) {}
 
   ngOnInit() {
     this._StudentID = "";
-    console.log(
-      "StudentID:" + this.counselStudentService.currentStudent.StudentID
-    );
-    if (this.counselStudentService.currentStudent.Role && 
-      this.counselStudentService.currentStudent.Role.indexOf("認輔老師") >= 0
+
+    if (
+      this.counselDetailComponent.currentStudent.Role &&
+      this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
     ) {
       this.enableReferal = true;
     }
-    this._StudentID = this.counselStudentService.currentStudent.StudentID;
+    this._StudentID = this.counselDetailComponent.currentStudent.StudentID;
 
     this.loadCounselInterview(
-      this.counselStudentService.currentStudent.StudentID
+      this.counselDetailComponent.currentStudent.StudentID
     );
   }
 

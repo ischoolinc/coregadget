@@ -48,14 +48,15 @@ export class CounselDetailComponent implements OnInit {
   }
 
   loadStudent() {
-    this.counselStudentService.currentStudent = null;
+    // this.counselStudentService.currentStudent = null;
     if (!this.counselStudentService.isLoading) {
       this.deny = false;
       if (this.counselStudentService.studentMap.has(this.studentID)) {
         this.currentStudent = this.counselStudentService.studentMap.get(
           this.studentID
         );
-        this.counselStudentService.currentStudent = this.currentStudent;
+        // this.counselStudentService.currentStudent = this.currentStudent;
+       
         if (this.counselComponent != null) {
           if (
             this.currentStudent.Role.indexOf("班導師") >= 0 ||

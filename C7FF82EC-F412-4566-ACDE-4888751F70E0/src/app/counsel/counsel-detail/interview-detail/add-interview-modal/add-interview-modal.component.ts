@@ -5,7 +5,8 @@ import {
   NgModule,
   ViewChild,
   ElementRef,
-  Inject
+  Inject,
+  Optional
 } from "@angular/core";
 import {
   CounselStudentService,
@@ -16,6 +17,7 @@ import { formatPercent } from "@angular/common";
 import { DsaService } from "../../../../dsa.service";
 import { CounselInterview } from "../../../counsel-vo";
 // import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { CounselDetailComponent } from "../../counsel-detail.component";
 
 @Component({
   selector: "app-add-interview-modal",
@@ -25,7 +27,9 @@ import { CounselInterview } from "../../../counsel-vo";
 export class AddInterviewModalComponent implements OnInit {
   constructor(
     private counselStudentService: CounselStudentService,
-    private dsaService: DsaService
+    private dsaService: DsaService,
+    @Optional()
+    private counselDetailComponent: CounselDetailComponent
   ) {}
 
   _editMode: string = "add";
@@ -49,7 +53,7 @@ export class AddInterviewModalComponent implements OnInit {
   // 載入預設資料
   loadDefaultData() {
     this.isReferral = false;
-    if (this.counselStudentService.currentStudent) {
+    if (this.counselDetailComponent.currentStudent) {
       if (this._editMode === "edit" && this._CounselInterview) {
         // 修改
         this.editModeString = "修改";
@@ -59,8 +63,8 @@ export class AddInterviewModalComponent implements OnInit {
       } else {
         // 新增
         this._CounselInterview = new CounselInterview();
-        this._studentName = this.counselStudentService.currentStudent.StudentName;
-        this._CounselInterview.StudentID = this.counselStudentService.currentStudent.StudentID;
+        this._studentName = this.counselDetailComponent.currentStudent.StudentName;
+        this._CounselInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
         this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
         this._CounselInterview.Semester = this.counselStudentService.currentSemester;
         // 帶入日期與輸入者
@@ -68,9 +72,9 @@ export class AddInterviewModalComponent implements OnInit {
         this._CounselInterview.OccurDate = this._CounselInterview.parseDate(dt);
         // 班導師
         if (
-          this.counselStudentService.currentStudent.Role.indexOf("班導師") >=
+          this.counselDetailComponent.currentStudent.Role.indexOf("班導師") >=
             0 ||
-          this.counselStudentService.currentStudent.Role.indexOf("輔導老師") >=
+          this.counselDetailComponent.currentStudent.Role.indexOf("輔導老師") >=
             0
         ) {
           this._CounselInterview.AuthorName = this.counselStudentService.teacherName;
@@ -117,7 +121,7 @@ export class AddInterviewModalComponent implements OnInit {
       Content: data.Content,
       ContactItem: data.ContactItem
     };
-    console.log(req);
+    // console.log(req);
 
     let resp = await this.dsaService.send("SetCounselInterview", {
       Request: req

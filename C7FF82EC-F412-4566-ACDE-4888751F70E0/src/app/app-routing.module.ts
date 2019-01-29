@@ -55,7 +55,7 @@ const routes: Routes = [
       { path: "", pathMatch: "full", component: ReferralComponent },
       { path: "list/:target", component: ReferralListComponent },
       {
-        path: "detail/:studentID",
+        path: "detail/:studentID/:interviewID",
         component: ReferralDetailComponent,
         children: [
           { path: "", pathMatch: "full", component: DetailRoutingComponent },

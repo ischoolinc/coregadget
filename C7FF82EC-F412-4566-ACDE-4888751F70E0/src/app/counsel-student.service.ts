@@ -18,7 +18,9 @@ export class CounselStudentService {
   public currentSemester: number;
   // 認輔學生
   public guidanceStudent: CounselStudent[];
-  public currentStudent: CounselStudent;
+ 
+  // public currentStudent: CounselStudent;
+ 
   constructor(private dsaService: DsaService) {
     this.reload();
   }
