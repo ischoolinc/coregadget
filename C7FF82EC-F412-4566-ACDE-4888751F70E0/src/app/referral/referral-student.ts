@@ -1,4 +1,5 @@
 export class ReferralStudent {
+  constructor() {}
   UID: string;
   StudentID: string;
   ClassName: string;

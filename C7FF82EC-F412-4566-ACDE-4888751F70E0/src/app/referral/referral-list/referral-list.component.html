@@ -84,7 +84,7 @@
                 data-toggle="modal"
                 data-backdrop="static"
                 data-target="#newCase"
-                disabled
+                (click)="setNewCaseMmodal(item)"
               >
                 建立個案
               </button>
@@ -106,4 +106,4 @@
 </ng-template>
 
 <app-grant-modal #grant_modal></app-grant-modal>
-<app-new-case-modal></app-new-case-modal>
+<app-new-case-modal #case_modal></app-new-case-modal>

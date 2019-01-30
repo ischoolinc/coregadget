@@ -1,6 +1,7 @@
 import { Component, Optional, OnInit, ViewChild } from "@angular/core";
 import { AppComponent } from "../../app.component";
 import { GrantModalComponent } from "../grant-modal/grant-modal.component";
+import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
 import { DsaService } from "../../dsa.service";
 import { ReferralStudent } from "../referral-student";
 import {
@@ -23,7 +24,7 @@ export class ReferralListComponent implements OnInit {
   // 目前選擇轉介學生
   currentReferralStudent: ReferralStudent;
   @ViewChild("grant_modal") grant_modal: GrantModalComponent;
-
+  @ViewChild("case_modal") case_modal: NewCaseModalComponent;
   ReferralStudentList: ReferralStudent[];
 
   constructor(
@@ -81,8 +82,18 @@ export class ReferralListComponent implements OnInit {
     );
   }
 
+  setNewCaseMmodal(refStudent: ReferralStudent) {
+    this.case_modal.loadData();
+    this.case_modal.setCaseFromReferral(refStudent);
+    $("#case_modal").modal("show");
+    // 關閉畫面
+    $("#case_modal").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadData();
+    });
+  }
+
   setGrantModal(refStudent: ReferralStudent) {
-    this.currentReferralStudent = refStudent;
     this.grant_modal.referralStudent = refStudent;
     this.grant_modal.loadDefault();
     $("#grant_modal").modal("show");

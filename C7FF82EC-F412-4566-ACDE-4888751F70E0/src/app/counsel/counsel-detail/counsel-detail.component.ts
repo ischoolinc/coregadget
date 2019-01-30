@@ -66,11 +66,25 @@ export class CounselDetailComponent implements OnInit {
           } else {
             this.counselComponent.setSelectItem("認輔學生");
           }
-        }if (
+        }
+        
+        if (
           this.currentStudent.Role.indexOf("班導師") >= 0 ||
           this.currentStudent.Role.indexOf("輔導老師") >= 0
         ){
           this._interviewEnable = true;
+        }
+        if (
+          this.currentStudent.Role.indexOf("認輔老師") >= 0 ||
+          this.currentStudent.Role.indexOf("輔導老師") >= 0
+        ){
+          this._counselEnable = true;
+        }
+        
+        if (
+          this.currentStudent.Role.indexOf("班導師") >= 0 ||
+          this.currentStudent.Role.indexOf("輔導老師") >= 0
+        ){
           this._psychological_testEnable = true;
         }
       } else {
