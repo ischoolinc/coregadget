@@ -109,6 +109,22 @@ export class DSAService {
     return rsp;
   }
 
+  /**
+   * 儲存課堂點名小幫手
+   */
+  public async setHelper(courseID: string, studentID: string){
+    await this.ready;
+
+    const req: any={
+      RefCourseID: courseID,
+      RefStudentID: studentID
+    };
+
+    const rsp = await this.contract.send('rollcall.SetHelper',req);
+
+    return rsp;
+  }
+
   public getAccessPoint() {
     return this.contract.getAccessPoint;
   }
@@ -233,7 +249,6 @@ export interface RollCallCheck {
  */
 export interface Schedule {
 
-
   Checked: string;
   ClassID: string;
   ClassName: string;
@@ -252,7 +267,6 @@ export interface PeriodConf {
   Type: string;
 
   Absence: AbsenceConf[];
-
 }
 
 export interface AbsenceConf {
@@ -264,6 +278,10 @@ export interface AbsenceConf {
 export interface CourseConf {
   CourseID: string;
   CourseName: string;
+  // 小幫手資料
+  StudentID: string;
+  StudentName: string; 
+  StudentNumber: string;
 }
 
 export interface GradeYearObj {

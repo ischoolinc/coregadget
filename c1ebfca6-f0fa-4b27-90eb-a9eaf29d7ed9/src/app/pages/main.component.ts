@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { SubstituteComponent } from './substitute.component';
+import { TeacherHelperComponent } from './teacher-helper.component';
 
 @Component({
   selector: 'gd-main',
@@ -81,5 +82,11 @@ export class MainComponent implements OnInit {
   //開啟代課清單
   async openSubstitute() {
     this.router.navigate(['../sub']);
+  }
+
+  //開啟設定小幫手畫面
+  async openTeacherHelper(course: CourseConf){
+
+    this.router.navigate(['/teacher-helper',course.CourseID,course.CourseName]);
   }
 }

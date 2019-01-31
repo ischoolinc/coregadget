@@ -1,0 +1,67 @@
+
+<div>
+
+  <nav aria-label="breadcrumb text-nowrap text-truncate">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="#"
+           [routerLink]="['/main']">課堂點名</a>
+      </li>
+      <ng-container *ngIf="!students.length > 0 else titleText">
+        <li class="breadcrumb-item active"
+            aria-current="page">loading...</li>
+      </ng-container>
+      <ng-template #titleText>
+        <li class="breadcrumb-item active"
+            aria-current="page">{{courseName}}&nbsp;&nbsp;({{today}})</li>
+        <li class="breadcrumb-item active"
+        aria-current="page">設定小幫手</li>
+      </ng-template>
+    </ol>
+  </nav>
+
+  <ng-container *ngIf="!students.length > 0 else elseTemplate">
+    <div style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
+      loading...
+    </div>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <div class="text-right">
+        <ng-container [ngTemplateOutlet]="save"></ng-container>
+    </div>
+
+    <div class="d-flex flex-wrap mt-3 mt-lg-1">
+      <div *ngFor="let student of students"
+           class="col-xs-12 col-sm-4 col-lg-3 col-xl-2 p-2">
+           <div class="card st-check w-100"
+           style="height: 22em;background-position: center;background-size: cover;"
+           [ngStyle]="{ 'background-image': 'url('+ student.PhotoUrl +')'}"
+           (click)="changeTeacherHelper(student)">
+           <div style="position:absolute;bottom:0px;width:100%;">
+            <div [ngStyle]="getTeacherHelperStyle(student)"
+                 class="w-100 ad-status text-truncate">{{getTeacherHelperText(student)}}</div>
+              <div class="card-body py-2 text-truncate w-100"
+                  style="background-color:rgba(255,255,255,0.8)">
+                <h5 class="mb-0 text-truncate">{{student.Name}}</h5>
+                <div class="text-gray text-truncate d-flex">{{student.StudentNumber}}
+                  <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
+                </div>
+              </div>
+            </div> 
+          </div>
+      </div>
+    </div>
+    <div class="text-right">
+      <ng-container [ngTemplateOutlet]="save"></ng-container>
+    </div>
+  </ng-template>
+
+  <ng-template #save>
+    <button (click)="saveTeacherHelper()"
+            type="button"
+            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
+      +')': '儲存'}}</button>
+  </ng-template>
+
+</div>
+
