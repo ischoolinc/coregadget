@@ -28,6 +28,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
 import { ReferralListComponent } from './referral/referral-list/referral-list.component';
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
+import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
+import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,7 @@ import { ReferralDetailComponent } from './referral/referral-detail/referral-det
     ReferralComponent,
     CounselRoutingComponent,
     DetailRoutingComponent,    
-    ReferralListComponent, ReferralDetailComponent
+    ReferralListComponent, ReferralDetailComponent, AddCaseInterviewModalComponent, ViewCaseInterviewModalComponent
   ],
   imports: [
     BrowserModule,

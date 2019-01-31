@@ -129,6 +129,10 @@ export class NewCaseModalComponent implements OnInit {
     let teacher = await this.dsaService.send("GetTeacher", {});
     [].concat(teacher.Teacher || []).forEach(tea => {
       this.teacherName = tea.Name;
+      if(tea.NickName != '')
+      {
+        this.teacherName = `${tea.teacherName}(${tea.NickName})`;
+      }
     });
   }
 

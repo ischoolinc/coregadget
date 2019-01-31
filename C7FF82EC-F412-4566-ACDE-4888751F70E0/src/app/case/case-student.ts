@@ -2,7 +2,7 @@ export class CaseStudent {
   constructor() {
     this.setOccurDateNow();
   }
-
+  UID: string;
   ClassName: string; // 班級
   SeatNo: string; // 座號
   Name: string; // 姓名
