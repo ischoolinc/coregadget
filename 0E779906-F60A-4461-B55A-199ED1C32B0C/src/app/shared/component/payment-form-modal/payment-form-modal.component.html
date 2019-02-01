@@ -1,0 +1,107 @@
+<div class="modal-header">
+  <h3 class="modal-title pull-left">填寫匯款通知</h3>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form class="form-horizontal">
+    <div class="control-group" [ngClass]="{'error': formErrors.inputBankCode}">
+      <label class="control-label" for="inputBankCode">
+        <span class="text-error">*</span>銀行代號
+      </label>
+      <div class="controls">
+        <select
+          id="inputBankCode"
+          name="inputBankCode"
+          [(ngModel)]="inputBankCode"
+          required>
+          <option value="">請選擇</option>
+          <option *ngFor="let item of bankList" [value]="item.code">{{item.title}}</option>
+        </select>
+        <div class="help-inline">{{formErrors.inputBankCode}}</div>
+      </div>
+    </div>
+    <div class="control-group" [ngClass]="{'error': formErrors.inputDigitsAfter5Number}">
+      <label class="control-label" for="inputDigitsAfter5Number">
+        <span class="text-error">*</span>帳號末5碼
+      </label>
+      <div class="controls">
+        <input
+          type="text"
+          id="inputDigitsAfter5Number"
+          name="inputDigitsAfter5Number"
+          [(ngModel)]="inputDigitsAfter5Number"
+          placeholder="帳號末5碼"
+          maxLength="5"
+          pattern="[0-9]{5}"
+          required="true" />
+        <div class="help-inline">{{formErrors.inputDigitsAfter5Number}}</div>
+      </div>
+    </div>
+    <div class="control-group" [ngClass]="{'error': formErrors.inputPaymentDate}">
+      <label class="control-label" for="inputPaymentDate">
+        <span class="text-error">*</span>繳款時間
+      </label>
+      <div class="controls">
+        <input
+          type="text"
+          id="inputPaymentDate"
+          name="inputPaymentDate"
+          [(ngModel)]="inputPaymentDate"
+          [placeholder]="inputPaymentDate"
+          bsDatepicker
+          [bsConfig]="bsConfig"
+          class="inputPaymentDate"
+          readonly="true"
+          required="true" />
+        <div class="help-inline">{{formErrors.inputPaymentDate}}</div>
+      </div>
+    </div>
+    <div class="control-group" [ngClass]="{'error': formErrors.inputPaymentAmount}">
+      <label class="control-label" for="inputPaymentAmount">
+        <span class="text-error">*</span>繳款金額
+      </label>
+      <div class="controls">
+        <input
+          type="number"
+          id="inputPaymentAmount"
+          name="inputPaymentAmount"
+          [(ngModel)]="inputPaymentAmount"
+          placeholder="繳款金額"
+          min="0"
+          required="true" />
+        <div class="help-inline">{{formErrors.inputPaymentAmount}}</div>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputDescription">繳款說明</label>
+      <div class="controls">
+        <textarea id="inputDescription" name="inputDescription" [(ngModel)]="inputDescription"></textarea>
+        <p>※如需收據請於繳款說明中備註。</p>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <label class="checkbox" for="needSendMail">
+          <input type="checkbox" id="needSendMail" name="needSendMail" [(ngModel)]="needSendMail" /> 寄一份副本給我
+        </label>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <div [class]="modalMsgClass">{{modalMsgText}}</div>
+  <button
+    type="button"
+    name="cancelBtn"
+    class="btn btn-outline-secondary"
+    (click)="modalRef.hide()">取消</button>
+  <button
+    type="button"
+    name="sendBtn"
+    class="btn btn-success"
+    [disabled]="sendBtnDisabled"
+    (click)="onSubmit()">{{sendBtnDisabled ? '送出中...' : '送出'}}</button>
+</div>

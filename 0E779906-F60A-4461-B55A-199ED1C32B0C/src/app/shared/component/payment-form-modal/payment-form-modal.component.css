@@ -1,0 +1,36 @@
+.modal-body {
+    max-height: 400px;
+    padding: 15px;
+    overflow-y: auto;
+    clear: both;
+    text-align: center;
+}
+
+.form-horizontal .controls {
+    text-align: left;
+}
+
+.modal-header {
+    padding: 9px 15px;
+}
+
+.modal-header .close {
+    margin-top: 4px;
+}
+
+.form-horizontal input[type="text"],
+.form-horizontal input[type="number"] {
+    height: 30px;
+    padding: 4px 6px;
+    width: 220px;
+}
+
+.form-horizontal textarea {
+    padding: 4px 6px;
+    width: 220px;
+}
+
+input.inputPaymentDate[readonly] {
+    background-color: transparent;
+    cursor: default;
+}

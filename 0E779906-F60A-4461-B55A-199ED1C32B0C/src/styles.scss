@@ -1,0 +1,11 @@
+/*
+  You can add global styles to this file, and also import other style files
+  先引用 bootstrap 3，再引用 bootstrap 2(去除 modal，因為要使用 ngx-bootstrap 搭 bootstrap 3)
+  最後再引用自訂的
+*/
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "../node_modules/bootstrap/dist/css/bootstrap-theme.min.css";
+@import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
+@import "assets/css/bootstrap.css";
+@import "assets/css/bootstrap-responsive.css";
+@import "assets/css/custom.css";

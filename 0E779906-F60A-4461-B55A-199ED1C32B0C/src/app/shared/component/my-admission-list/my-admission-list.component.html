@@ -1,0 +1,58 @@
+<div class="titleStyle" [ngStyle]="{'color': type === 'admitted' ? 'blue' : 'red'}">
+  {{type === 'admitted' ? '正取' : '備取遞補'}}
+</div>
+<div *ngIf="paymentList.length">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th *ngIf="canPayment"
+          [ngClass]="{'my-admission': type, 'my-waiting': !type}">
+          <input
+            name="checkAll"
+            type="checkbox"
+            (click)="handleAllChecked()"
+            [(ngModel)]="checkAll" />
+        </th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">課程編號</th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">課程名稱</th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">學雜費</th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">保證金</th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">已入帳</th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">繳款資訊</th>
+        <th [ngClass]="{'my-admission': type, 'my-waiting': !type}">繳款說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of paymentList">
+        <td *ngIf="canPayment">
+          <input
+            name="item.AlumniID"
+            type="checkbox"
+            (click)="handleChecked(item)"
+            [(ngModel)]="item.Checked"
+            [disabled]="(item.Cancel === 't' || item.VerifyAccounting === 't') ? 'disabled' : null" />
+        </td>
+        <td>{{item.NewSubjectCode}}</td>
+        <td>{{item.CourseName}}</td>
+        <td>{{item.TuitionFees | number}}</td>
+        <td>{{item.Margin | number}}</td>
+        <td>
+          {{item.VerifyAccounting === 'f' ? '否' : '是'}}
+          {{item.Cancel === 't' ? '(放棄)' : ''}}
+        </td>
+        <td>
+          <ul>
+            <li class="listStyle">銀行代號: {{item.BankCode || '未填寫'}}</li>
+            <li class="listStyle">帳號末5碼: {{item.DigitsAfter5Number || '未填寫'}}</li>
+            <li class="listStyle">繳款時間: {{item.PaymentDate || '未填寫'}}</li>
+            <li class="listStyle">繳款金額: {{(item.PaymentAmount | number) || '未填寫'}}</li>
+          </ul>
+        </td>
+        <td>
+          <div style="white-space: pre">{{item.Description || '未填寫'}}</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="!paymentList.length">目前無資料</div>
