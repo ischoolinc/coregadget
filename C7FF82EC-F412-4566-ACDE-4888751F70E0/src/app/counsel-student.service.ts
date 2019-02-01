@@ -18,9 +18,9 @@ export class CounselStudentService {
   public currentSemester: number;
   // 認輔學生
   public guidanceStudent: CounselStudent[];
- 
+
   // public currentStudent: CounselStudent;
- 
+
   constructor(private dsaService: DsaService) {
     this.reload();
   }
@@ -48,7 +48,7 @@ export class CounselStudentService {
       this.teacherName = tea.Name;
     });
 
-    // 班導師，輔導老師
+    // 班導師，輔導老師，會讀取目前學年度學期
     let resp = await this.dsaService.send("GetCounselStudent", {});
 
     [].concat(resp.Student || []).forEach(stuRec => {
@@ -56,6 +56,8 @@ export class CounselStudentService {
       if (!this.studentMap.has(stuRec.StudentID)) {
         this.studentMap.set(stuRec.StudentID, {
           StudentID: stuRec.StudentID,
+          SchoolYear: this.currentSchoolYear,
+          Semester: this.currentSemester,
           ClassName: stuRec.ClassName,
           SeatNo: stuRec.SeatNo,
           StudentNumber: stuRec.StudentNumber,
@@ -94,7 +96,32 @@ export class CounselStudentService {
       cls.Student.push(stu);
     });
 
+    
+
+    // 取得認輔資料 _.GetGuidanceStudent
+    let respGS = await this.dsaService.send("GetGuidanceStudent", {});
+    let gsData: CounselStudent[] = [];
+    [].concat(respGS.Student || []).forEach(stuRec => {
+      let stu: CounselStudent = new CounselStudent();
+      stu.StudentID = stuRec.StudentID;
+      stu.SchoolYear = stuRec.SchoolYear;
+      stu.Semester = stuRec.Semester;
+      stu.ClassName = stuRec.ClassName;
+      stu.SeatNo = stuRec.SeatNo;
+      stu.StudentNumber = stuRec.StudentNumber;
+      stu.StudentName = stuRec.StudentName;
+      stu.Status = stuRec.Status;
+      stu.Role = stuRec.Role;
+      stu.InterviewCount = stuRec.InterviewCount;
+      stu.LastInterviewDate = stuRec.LastInterviewDate;
+      stu.LastInterviewContact = stuRec.LastInterviewContact;
+      stu.LastInterviewType = stuRec.LastInterviewType;
+      gsData.push(stu);
+    });
+    this.guidanceStudent = gsData;
+
     this.isLoading = false;
+
   }
 }
 
@@ -110,6 +137,8 @@ export class CounselClass {
 
 export class CounselStudent {
   StudentID: string;
+  SchoolYear: number;
+  Semester: number;
   ClassName: string;
   SeatNo: string;
   StudentNumber: string;

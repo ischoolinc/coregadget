@@ -56,7 +56,7 @@ export class CounselDetailComponent implements OnInit {
           this.studentID
         );
         // this.counselStudentService.currentStudent = this.currentStudent;
-       
+
         if (this.counselComponent != null) {
           if (
             this.currentStudent.Role.indexOf("班導師") >= 0 ||
@@ -67,28 +67,46 @@ export class CounselDetailComponent implements OnInit {
             this.counselComponent.setSelectItem("認輔學生");
           }
         }
-        
+
         if (
           this.currentStudent.Role.indexOf("班導師") >= 0 ||
           this.currentStudent.Role.indexOf("輔導老師") >= 0
-        ){
+        ) {
           this._interviewEnable = true;
         }
         if (
           this.currentStudent.Role.indexOf("認輔老師") >= 0 ||
           this.currentStudent.Role.indexOf("輔導老師") >= 0
-        ){
+        ) {
           this._counselEnable = true;
         }
-        
+
         if (
           this.currentStudent.Role.indexOf("班導師") >= 0 ||
           this.currentStudent.Role.indexOf("輔導老師") >= 0
-        ){
+        ) {
           this._psychological_testEnable = true;
         }
       } else {
         this.deny = true;
+      }
+
+      // 檢查認輔學生
+      if (
+        this.counselStudentService.guidanceStudent.length &&
+        this.counselStudentService.guidanceStudent.length > 0
+      ) {
+        // 比對現在所選學生
+        this.counselStudentService.guidanceStudent.forEach(data => {
+          if (data.StudentID === this.studentID) {
+            this.currentStudent = data;
+          }
+        });
+
+        if (this.currentStudent.Role.indexOf("認輔老師") >= 0) {
+          this._counselEnable = true;
+          this.deny = false;
+        }
       }
     } else {
       setTimeout(this.loadStudent, 100);

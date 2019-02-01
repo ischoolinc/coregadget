@@ -1,55 +1,65 @@
 <div class="tab-content">
-  <app-permission-denied *ngIf="!roleService.isLoading&&!roleService.enableCase"></app-permission-denied>
+  <app-permission-denied
+    *ngIf="!roleService.isLoading && !roleService.enableCase"
+  ></app-permission-denied>
   <!-- TAB 4 個案資料 -->
-  <div *ngIf="!roleService.isLoading&&roleService.enableCase"
-       class="tab-pane fade show active">
-      <div class="d-flex">
-          <button class="btn btn-info ml-auto"
-                  data-toggle="modal"
-                  data-backdrop="static"
-                  data-target="#newCase">
-              <i class="material-icons">add</i>
-              建立新個案
-          </button>
-      </div>
-      <ul class="rwd-table">
-          <li class="thead">
-              <ol class="tr">
-                  <li>班級</li>
-                  <li>座號</li>
-                  <li>姓名</li>
-                  <li>性別</li>
-                  <li>學生身份</li>
-                  <li>個案編號</li>
-                  <li>問題類別</li>
-                  <li>認輔老師</li>
-                  <li>輔導次數</li>
-                  <li>結案</li>
-                  <li></li>
-              </ol>
+  <div
+    *ngIf="!roleService.isLoading && roleService.enableCase"
+    class="tab-pane fade show active"
+  >
+    <div class="d-flex">
+      <button
+        class="btn btn-info ml-auto"
+        data-toggle="modal"
+        data-backdrop="static"
+        data-target="#newCase"
+      >
+        <i class="material-icons">add</i> 建立新個案
+      </button>
+    </div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>學年度</li>
+          <li>學期</li>
+          <li>班級</li>
+          <li>座號</li>
+          <li>姓名</li>
+          <li>性別</li>
+          <li>學生身份</li>
+          <li>個案編號</li>
+          <li>問題類別</li>
+          <li>認輔老師</li>
+          <!-- <li>輔導次數</li> -->
+          <li>結案</li>
+          <li></li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr" *ngFor="let item of caseList">
+          <li data-title="學年度">{{ item.SchoolYear }}</li>
+          <li data-title="學期">{{ item.Semester }}</li>
+          <li data-title="班級">{{ item.ClassName }}</li>
+          <li data-title="座號">{{ item.SeatNo }}</li>
+          <li data-title="姓名">{{ item.Name }}</li>
+          <li data-title="性別">{{ item.Gender }}</li>
+          <li data-title="學生身份">{{ item.StudentIdentity }}</li>
+          <li data-title="個案編號">{{ item.CaseNo }}</li>
+          <li class="text-left text-normal" data-title="問題類別">
+            {{ item.ProblemCategory }}/li>
           </li>
-          <li class="tbody">
-              <ol class="tr">
-                  <li data-title="班級">三年一班</li>
-                  <li data-title="座號">1</li>
-                  <li data-title="姓名">吳明秋</li>
-                  <li data-title="性別">男</li>
-                  <li data-title="學生身份">一般生</li>
-                  <li data-title="個案編號">10126-0005</li>
-                  <li class="text-left text-normal"
-                      data-title="問題類別">家庭結構問題</li>
-                  <li data-title="認輔老師">蔡貞儀</li>
-                  <li data-title="輔導次數">4</li>
-                  <li data-title="結案">否</li>
-                  <li data-title="">
+          <li data-title="認輔老師">{{ item.TeacherName }}</li>
+          <!-- <li data-title="輔導次數">4</li> -->
+          <li data-title="結案">否</li>
+          <!-- <li data-title="">
                       <button class="btn btn-light"
                               data-toggle="modal"
                               data-backdrop="static"
                               data-target="#case">編輯</button>
-                  </li>
-              </ol>
-          </li>
-      </ul>
+                  </li> -->
+        </ol>
+      </li>
+    </ul>
   </div>
 </div>
 <app-new-case-modal></app-new-case-modal>

@@ -28,6 +28,12 @@ export class CounselRoutingComponent implements OnInit {
           , skipLocationChange: true
         });
       }
+      if (this.counselStudentService.guidanceStudent.length > 0) {
+        this.router.navigate(['list', 'guidance', ''], {
+          relativeTo: this.route
+          , skipLocationChange: true
+        });
+      }
     }
     else {
       setTimeout(this.routing, 100);

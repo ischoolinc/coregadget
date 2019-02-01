@@ -38,6 +38,7 @@ export class NewCaseModalComponent implements OnInit {
     this.voluntaryGuidanceTeacherList = [];
     this.selectClassNameValue = "請選擇班級";
     this.selectSeatNoValue = "請選擇座號";
+    this.selectVoluntaryGuidanceValue = "請選擇認輔老師";
     this.selectCaseSourceValue = "請選擇個案來源";
     this.canSelectCaseSourceList = [];
     this.canSelectCaseSourceList.push("導師轉介");
@@ -131,7 +132,7 @@ export class NewCaseModalComponent implements OnInit {
       this.teacherName = tea.Name;
       if(tea.NickName != '')
       {
-        this.teacherName = `${tea.teacherName}(${tea.NickName})`;
+        this.teacherName = `${tea.Name}(${tea.NickName})`;
       }
     });
   }

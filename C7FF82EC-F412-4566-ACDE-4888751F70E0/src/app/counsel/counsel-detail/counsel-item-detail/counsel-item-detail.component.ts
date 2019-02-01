@@ -68,7 +68,15 @@ export class CounselItemDetailComponent implements OnInit {
     this.isLoading = true;
     let data: CaseStudent[] = [];
 
-    let resp = await this.dsaService.send("GetStudentCase", {
+    let ServiceName: string = "GetStudentCase";
+
+    if (
+      this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
+    ) {
+      ServiceName = "GetStudentCase1";
+    }
+
+    let resp = await this.dsaService.send(ServiceName, {
       Request: {
         StudentID: this.counselDetailComponent.currentStudent.StudentID
       }
@@ -138,7 +146,7 @@ export class CounselItemDetailComponent implements OnInit {
       rec.Attachment = counselRec.Attachment;
       rec.CaseID = counselRec.CaseID;
       rec.Content = counselRec.Content;
-      rec.CaseNo = counselRec.CaseNo;     
+      rec.CaseNo = counselRec.CaseNo;
 
       data.push(rec);
     });
