@@ -1,15 +1,105 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from "@angular/core";
+import { DsaService } from "../../../dsa.service";
+import { CounselStudentService } from "../../../counsel-student.service";
+import { QuizData, QuizField } from "./quiz-data-vo";
+import { CounselDetailComponent } from "../counsel-detail.component";
 
 @Component({
-  selector: 'app-psychological-test-detail',
-  templateUrl: './psychological-test-detail.component.html',
-  styleUrls: ['./psychological-test-detail.component.css']
+  selector: "app-psychological-test-detail",
+  templateUrl: "./psychological-test-detail.component.html",
+  styleUrls: ["./psychological-test-detail.component.css"]
 })
 export class PsychologicalTestDetailComponent implements OnInit {
-
-  constructor() { }
+  // 心測資料
+  isLoading = false;
+  _QuizDataList: QuizData[];
+  constructor(
+    private counselStudentService: CounselStudentService,
+    private dsaService: DsaService,
+    @Optional() private counselDetailComponent: CounselDetailComponent
+  ) {}
 
   ngOnInit() {
+    this._QuizDataList = [];
+    if (this.counselDetailComponent.currentStudent.StudentID) {
+      this.GetStudentQuizDataByStudentID(
+        this.counselDetailComponent.currentStudent.StudentID
+      );
+    }
   }
 
+  // 取得學生心理測驗題目
+  async GetQuizDataByStudentID(StudentID: string) {
+    let resp = await this.dsaService.send("GetQuizDataByStudentID", {
+      Request: {
+        StudentID: StudentID
+      }
+    });
+
+    //console.log(resp);
+    // 解析題目
+    [].concat(resp.Quiz || []).forEach(data => {
+      this._QuizDataList.forEach(data1 => {
+        // 使用題目 uid 比對
+        if (data1.QuizUid === data.uid) {
+          // 填入題目名稱
+          data1.QuizName = data.QuizName;
+          // 細項比對填入 Order
+          data1.QuizFieldList.forEach(field => {
+            data.Field.forEach(f1 => {
+              if (f1.Name === field.Name) {
+                let or = Number(f1.Order);
+                if (or) {
+                  field.Order = f1.Order;
+                }
+              }
+            });
+          });
+
+          // 將細項依 Order 順序排序
+          data1.QuizFieldList.sort(function(a, b) {
+            return a.Order - b.Order;
+          });
+          // console.log(data1.QuizFieldList);
+        }
+      });
+    });
+    // console.log(this._QuizDataList);
+    this.isLoading = false;
+  }
+
+  // 取得心理測驗答案
+  async GetStudentQuizDataByStudentID(StudentID: string) {
+    this.isLoading = true;
+    let resp = await this.dsaService.send("GetStudentQuizDataByStudentID", {
+      Request: {
+        StudentID: StudentID
+      }
+    });
+    //console.log(resp);
+
+    [].concat(resp.Quiz || []).forEach(data => {
+      let qd: QuizData = new QuizData();
+      qd.QuizUid = data.QuizUid;
+      qd.AnsUid = data.Uid;
+      let d1 = Number(data.ImplementationDate);
+      let x1 = new Date(d1);
+      qd.ImplementationDate = qd.parseDate(x1);
+      let d2 = Number(data.AnalysisDate);
+      let x2 = new Date(d2);
+      qd.AnalysisDate = qd.parseDate(x2);
+      qd.QuizFieldList = [];
+      data.Field.forEach(field => {
+        let qf: QuizField = new QuizField();
+        qf.Name = field.Name;
+        qf.Value = field.Value;
+        qf.Order = 999; // 填入預設
+        qd.QuizFieldList.push(qf);
+      });
+      this._QuizDataList.push(qd);
+    });
+
+    // 呼叫題目
+    this.GetQuizDataByStudentID(StudentID);
+  }
 }

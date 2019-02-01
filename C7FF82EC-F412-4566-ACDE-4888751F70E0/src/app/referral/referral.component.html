@@ -1,89 +1,14 @@
 <div class="tab-content">
   <!-- TAB 3 轉介學生 -->
-  <div class="tab-pane fade show active">
-      <!-- <ng-container> -->
-      <!-- <div aria-labelledby="tabThree-tab" class="tab-pane fade" id="tabThree"> -->
-      <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle"
-                  type="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">全部</button>
-          <div class="dropdown-menu">
-              <a class="dropdown-item"
-                 href="#">未處理</a>
-              <a class="dropdown-item"
-                 href="#">已處理</a>
-          </div>
-      </div>
-      <ul class="rwd-table">
-          <li class="thead">
-              <ol class="tr">
-                  <li>班級</li>
-                  <li>座號</li>
-                  <li>姓名</li>
-                  <li>性別</li>
-                  <li>班導師</li>
-                  <li>轉介日期</li>
-                  <li>轉介說明</li>
-                  <li>授理狀況</li>
-                  <li>授理日期</li>
-                  <li></li>
-              </ol>
-          </li>
-          <li class="tbody">
-              <ol class="tr">
-                  <li data-title="班級">三年一班</li>
-                  <li data-title="座號">1</li>
-                  <li data-title="姓名">吳明秋</li>
-                  <li data-title="性別">男</li>
-                  <li data-title="班導師">蔡貞儀</li>
-                  <li data-title="轉介日期">2018-12-01</li>
-                  <li class="text-left text-normal"
-                      data-title="轉介說明">邀請參加家長座談會</li>
-                  <li data-title="授理狀況">未處理</li>
-                  <li data-title="授理日期"></li>
-                  <li data-title="">
-                      <button class="btn btn-light"
-                              (click)="showModalTest('test1')"
-                              data-toggle="modal"
-                              data-backdrop="static"
-                              data-target="#grant">編輯授理狀況</button>
-                      <button class="btn btn-light"
-                              data-toggle="modal"
-                              data-backdrop="static"
-                              data-target="#newCase"
-                              disabled>建立個案</button>
-                  </li>
-              </ol>
-              <ol class="tr">
-                  <li data-title="班級">三年六班</li>
-                  <li data-title="座號">36</li>
-                  <li data-title="姓名">巫左光</li>
-                  <li data-title="性別">男</li>
-                  <li data-title="班導師">蔡貞儀</li>
-                  <li data-title="轉介日期">2018-12-01</li>
-                  <li class="text-left text-normal"
-                      data-title="轉介說明">邀請參加家長座談會</li>
-                  <li data-title="授理狀況">已處理</li>
-                  <li data-title="授理日期">2018-12-09</li>
-                  <li data-title="">
-                      <button class="btn btn-light"
-                              (click)="showModalTest('test2')"
-                              data-toggle="modal"
-                              data-backdrop="static"
-                              data-target="#grant">編輯授理狀況</button>
-                      <button class="btn btn-light"
-                              data-toggle="modal"
-                              data-backdrop="static"
-                              data-target="#newCase">建立個案</button>
-                  </li>
-              </ol>
-          </li>
-      </ul>
-      <!-- </div> -->
-      <!-- </ng-container> -->
-  </div>
+  <!-- list-->
+  <router-outlet></router-outlet>
 </div>
-<app-grant-modal #grant_modal [test]="_data"></app-grant-modal>
-<app-new-case-modal></app-new-case-modal>
+
+<ng-template #tmpLoading class="container">
+  <div
+    class="row justify-content-center"
+    style="margin-top:250px;margin-bottom:200px;"
+  >
+    Loading...
+  </div>
+</ng-template>

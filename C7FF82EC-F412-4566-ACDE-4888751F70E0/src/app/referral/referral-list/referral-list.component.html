@@ -1,0 +1,109 @@
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-pane fade show active">
+    <div class="dropdown">
+      <button
+        class="btn btn-light dropdown-toggle"
+        type="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        {{ selectItem }}
+      </button>
+      <div class="dropdown-menu">
+        <a
+          class="dropdown-item"
+          *ngFor="let item of itemList"
+          [ngClass]="{ active: selectItem === item }"
+          (click)="setSelectItem(item)"
+          >{{ item }}</a
+        >
+      </div>
+    </div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>班級</li>
+          <li>座號</li>
+          <li>姓名</li>
+          <li>性別</li>
+          <li>班導師</li>
+          <li>轉介日期</li>
+          <li>轉介說明</li>
+          <li>授理狀況</li>
+          <li>授理日期</li>
+          <li></li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr" *ngFor="let item of ReferralStudentList">
+          <ng-container *ngIf="item.isDisplay">
+            <li data-title="班級" (click)="toCounselDetail(item)">
+              {{ item.ClassName }}
+            </li>
+            <li data-title="座號" (click)="toCounselDetail(item)">
+              {{ item.SeatNo }}
+            </li>
+            <li data-title="姓名" (click)="toCounselDetail(item)">
+              {{ item.Name }}
+            </li>
+            <li data-title="性別" (click)="toCounselDetail(item)">
+              {{ item.Gender }}
+            </li>
+            <li data-title="班導師" (click)="toCounselDetail(item)">
+              {{ item.TeacherName }}
+            </li>
+            <li data-title="轉介日期" (click)="toCounselDetail(item)">
+              {{ item.OccurDate }}
+            </li>
+            <li
+              class="text-left text-normal"
+              data-title="轉介說明"
+              (click)="toCounselDetail(item)"
+            >
+              {{ item.ReferralDesc }}
+            </li>
+            <li data-title="授理狀況" (click)="toCounselDetail(item)">
+              {{ item.GetReferralStatus() }}
+            </li>
+            <li data-title="授理日期" (click)="toCounselDetail(item)">
+              {{ item.ReferralReplyDate }}
+            </li>
+            <li data-title="">
+              <button
+                class="btn btn-light"
+                (click)="setGrantModal(item)"
+                data-toggle="modal"
+                data-backdrop="static"
+                data-target="#grant"
+              >
+                編輯授理狀況
+              </button>
+              <button
+                class="btn btn-light"
+                data-toggle="modal"
+                data-backdrop="static"
+                data-target="#newCase"
+                (click)="setNewCaseMmodal(item)"
+              >
+                建立個案
+              </button>
+            </li>
+          </ng-container>
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tmpLoading class="container">
+  <div
+    class="row justify-content-center"
+    style="margin-top:250px;margin-bottom:200px;"
+  >
+    Loading...
+  </div>
+</ng-template>
+
+<app-grant-modal #grant_modal></app-grant-modal>
+<app-new-case-modal #case_modal></app-new-case-modal>

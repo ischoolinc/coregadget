@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h3 class="modal-title pull-left">{{title}}</h3>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body" [ngClass]="{'danger': bodyClass === 'danger'}" [innerHTML]="content | safeHtml">
+</div>
+<div class="modal-footer">
+  <div class="text-danger">{{errorMsg}}</div>
+  <button *ngIf="cancelBtnEnabled"
+    type="button"
+    class="btn btn-outline-secondary"
+    (click)="clickCancel()">{{cancelBtnTitle}}</button>
+  <button *ngIf="okBtnEnabled"
+    type="button"
+    class="btn btn-success"
+    [disabled]="okBtnDisabled"
+    (click)="clickOk()">{{okBtnTitle}}</button>
+</div>

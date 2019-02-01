@@ -21,6 +21,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { SubstituteComponent } from './pages/substitute.component';
 import { CourseSelcComponent } from './pages/course-selc.component';
+import { TeacherHelperComponent } from './pages/teacher-helper.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +31,8 @@ import { CourseSelcComponent } from './pages/course-selc.component';
     DebugComponent,
     WaitingComponent,
     SubstituteComponent,
-    CourseSelcComponent
+    CourseSelcComponent,
+    TeacherHelperComponent
   ],
   imports: [
     BrowserModule,

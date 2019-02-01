@@ -1,26 +1,42 @@
-import { Component,Optional, OnInit, ViewChild } from '@angular/core';
+import { Component, Optional, OnInit, ViewChild } from "@angular/core";
 import { AppComponent } from "../app.component";
-import { GrantModalComponent } from "./grant-modal/grant-modal.component";
+import { RoleService } from "../role.service";
+
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  RoutesRecognized
+} from "@angular/router";
 
 @Component({
-  selector: 'app-referral',
-  templateUrl: './referral.component.html',
-  styleUrls: ['./referral.component.css']
+  selector: "app-referral",
+  templateUrl: "./referral.component.html",
+  styleUrls: ["./referral.component.css"]
 })
 export class ReferralComponent implements OnInit {
-
-  _data;
-
-  @ViewChild('grant_modal') grant_modal:GrantModalComponent; 
-
+  public selectItem: string;
+  public itemList: string[] = [];
+  // 搜尋文字
+  searchText: string = "";
   constructor(
-        @Optional()
-    private appComponent: AppComponent) { }
-
-  ngOnInit() {
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    public roleService: RoleService,
+    @Optional()
+    private appComponent: AppComponent
+  ) {
     if (this.appComponent) this.appComponent.currentComponent = "referral";
   }
-  showModalTest(data){
-    this._data=data;
+
+  ngOnInit() {
+    this.routing();
+  }
+
+  routing() {
+    this.router.navigate(["list", "未結案"], {
+      relativeTo: this.activatedRoute,
+      skipLocationChange: true
+    });
   }
 }

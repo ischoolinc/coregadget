@@ -1,103 +1,126 @@
-<div class="modal fade"
-     id="grant"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="grantLabel"
-     aria-hidden="true">
-    <div class="modal-dialog"
-         role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"
-                    id="grantLabel">編輯授理狀況{{masterName}}</h5>
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row bg-light border p-3">
-                    <div class="col-md-2 mb-3 font-weight-bold">班級座號</div>
-                    <div class="col-md-4 mb-3">三年一班 1號</div>
-                    <div class="col-md-2 mb-3 font-weight-bold">姓名性別</div>
-                    <div class="col-md-4 mb-3">吳明秋(男)</div>
-                    <div class="col-md-2 mb-3 font-weight-bold">班導師</div>
-                    <div class="col-md-4 mb-3">蔡貞儀</div>
-                    <div class="col-md-2 mb-3 font-weight-bold">轉介日期</div>
-                    <div class="col-md-4 mb-3">2018-12-01</div>
-                    <div class="col-md-2 font-weight-bold">轉介說明</div>
-                    <div class="col-md-10">邀請參加家長座談會</div>
-                </div>
-                <div class="form-group">
-                    <label for="contactMatter"
-                           class="col-form-label">
-                        <span class="text-samll text-danger">*</span>
-                        輔導室接受情形
-                    </label>
-                    <textarea class="form-control"
-                              id="contactMatter"
-                              rows="1"
-                              placeholder="請輸入輔導室接受情形"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="semester"
-                           class="col-form-label">
-                        <span class="text-samll text-danger">*</span>
-                        授理狀況
-                    </label>
-                    <div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio"
-                                   id="r1"
-                                   name="grantradio"
-                                   class="custom-control-input"
-                                   checked>
-                            <label class="custom-control-label"
-                                   for="r1">未處理</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio"
-                                   id="r2"
-                                   name="grantradio"
-                                   class="custom-control-input">
-                            <label class="custom-control-label"
-                                   for="r2">已處理</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="interviewDate"
-                           class="col-form-label">
-                        <span class="text-samll text-danger">*</span>
-                        授理日期
-                    </label>
-                    <input type="text"
-                           class="form-control"
-                           id="interviewDate"
-                           placeholder="請輸入授理日期"
-                           value="0000-00-00">
-                </div>
-                <div class="form-group">
-                    <label for="contactMatter"
-                           class="col-form-label">
-                        <span class="text-samll text-danger">*</span>
-                        授理說明
-                    </label>
-                    <textarea class="form-control"
-                              id="contactMatter"
-                              rows="1"
-                              placeholder="請輸入授理說明"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-dark"
-                        data-dismiss="modal">取消</button>
-                <button type="button"
-                        class="btn btn-info">儲存</button>
-            </div>
+<div
+  class="modal fade"
+  id="grant_modal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="grantLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="grantLabel">編輯授理狀況</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row bg-light border p-3">
+          <div class="col-md-2 mb-3 font-weight-bold">班級座號</div>
+          <div class="col-md-4 mb-3">
+            {{ referralStudent.ClassName }} {{ referralStudent.SeatNo }}號
+          </div>
+          <div class="col-md-2 mb-3 font-weight-bold">姓名性別</div>
+          <div class="col-md-4 mb-3">
+            {{ referralStudent.Name }}({{ referralStudent.Gender }})
+          </div>
+          <div class="col-md-2 mb-3 font-weight-bold">班導師</div>
+          <div class="col-md-4 mb-3">{{ referralStudent.TeacherName }}</div>
+          <div class="col-md-2 mb-3 font-weight-bold">轉介日期</div>
+          <div class="col-md-4 mb-3">{{ referralStudent.OccurDate }}</div>
+          <div class="col-md-2 font-weight-bold">轉介說明</div>
+          <div class="col-md-10">{{ referralStudent.ReferralDesc }}</div>
         </div>
+        <div class="form-group">
+          <label for="contactMatter" class="col-form-label">
+            <span class="text-samll text-danger">*</span> 輔導室接受情形
+          </label>
+          <textarea
+            class="form-control"
+            id="contactMatter"
+            rows="1"
+            placeholder="請輸入輔導室接受情形"
+            [(ngModel)]="referralStudent.ReferralReply"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="semester" class="col-form-label">
+            <span class="text-samll text-danger">*</span> 授理狀況
+          </label>
+          <div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="r1"
+                name="grantradio"
+                class="custom-control-input"
+                (click)="select('未處理')"
+                [checked]="check1"
+              />
+              <label class="custom-control-label" for="r1">未處理</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="r2"
+                name="grantradio"
+                class="custom-control-input"
+                (click)="select('處理中')"
+                [checked]="check2"
+              />
+              <label class="custom-control-label" for="r2">處理中</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="r3"
+                name="grantradio"
+                class="custom-control-input"
+                (click)="select('已處理')"
+                [checked]="check3"
+              />
+              <label class="custom-control-label" for="r3">已處理</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="interviewDate" class="col-form-label">
+            <span class="text-samll text-danger">*</span> 授理日期
+          </label>
+          <input
+            type="date"
+            class="form-control"
+            id="interviewDate"
+            placeholder="請輸入授理日期"
+            [(ngModel)]="referralStudent.ReferralReplyDate"
+          />
+        </div>
+        <div class="form-group">
+          <label for="contactMatter" class="col-form-label">
+            <span class="text-samll text-danger">*</span> 授理說明
+          </label>
+          <textarea
+            class="form-control"
+            id="contactMatter"
+            rows="1"
+            placeholder="請輸入授理說明"
+            [(ngModel)]="referralStudent.ReferralReplyDesc"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">
+          取消
+        </button>
+        <button type="button" class="btn btn-info" (click)="save()">
+          儲存
+        </button>
+      </div>
     </div>
+  </div>
 </div>

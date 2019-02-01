@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, Optional } from "@angular/core";
 import {
   CounselStudentService,
   CounselClass,
@@ -11,6 +11,7 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
 // import { MatDialog } from '@angular/material';
 import { DsaService } from "../../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
+import { CounselDetailComponent } from "../counsel-detail.component";
 
 @Component({
   selector: "app-interview-detail",
@@ -21,35 +22,44 @@ export class InterviewDetailComponent implements OnInit {
   enableReferal: boolean = false;
   _semesterInfo: SemesterInfo[] = [];
   _counselInterview: CounselInterview[] = [];
-
+  _StudentID: string = "";
+  isLoading = false;
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
 
   constructor(
     private counselStudentService: CounselStudentService,
-    private dsaService: DsaService
+    private dsaService: DsaService,
+    @Optional()
+    private counselDetailComponent: CounselDetailComponent
   ) {}
 
   ngOnInit() {
-    console.log(
-      "StudentID:" + this.counselStudentService.currentStudent.StudentID
-    );
+    this._StudentID = "";
+
     if (
-      this.counselStudentService.currentStudent.Role.indexOf("輔導老師") >= 0
+      this.counselDetailComponent.currentStudent.Role &&
+      this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
     ) {
       this.enableReferal = true;
     }
+    this._StudentID = this.counselDetailComponent.currentStudent.StudentID;
 
-    this.loadCounselInterview();
+    this.loadCounselInterview(
+      this.counselDetailComponent.currentStudent.StudentID
+    );
   }
 
   // 取得學生輔導資料
-  async loadCounselInterview() {
+  async loadCounselInterview(StudentID: string) {
+    this._counselInterview = [];
+    this.isLoading = true;
+    this._StudentID = StudentID;
     this._semesterInfo = [];
     let tmp = [];
     // 取得學生輔導資料
     this._counselInterview = await this.GetCounselInterviewByStudentID(
-      this.counselStudentService.currentStudent.StudentID
+      this._StudentID
     );
 
     this._counselInterview.forEach(data => {
@@ -62,17 +72,16 @@ export class InterviewDetailComponent implements OnInit {
         tmp.push(key);
       }
     });
+    this.isLoading = false;
   }
 
   // 檢視
   viewInterviewModal(counselView: CounselInterview) {
     this._viewInterview._CounselInterview = counselView;
     $("#viewInterview").modal("show");
-    $('#viewInterview').on('hide.bs.modal', function (e) {
+    $("#viewInterview").on("hide.bs.modal", function(e) {
       // do something...
-      
-    })
-   
+    });
   }
 
   // 新增
@@ -82,10 +91,10 @@ export class InterviewDetailComponent implements OnInit {
     $("#addInterview").modal("show");
 
     // 關閉畫面
-    $('#addInterview').on('hide.bs.modal', () => {
+    $("#addInterview").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadCounselInterview();
-    });    
+      this.loadCounselInterview(this._StudentID);
+    });
   }
 
   // 修改

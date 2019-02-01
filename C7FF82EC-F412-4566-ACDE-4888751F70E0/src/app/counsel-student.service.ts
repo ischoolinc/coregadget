@@ -11,13 +11,16 @@ export class CounselStudentService {
   public studentMap: Map<string, CounselStudent>;
   public classMap = new Map<string, CounselClass>();
   public counselClass: CounselClass[];
+  public teacherName: string;
   // 目前學年度
   public currentSchoolYear: number;
   // 目前學期
   public currentSemester: number;
   // 認輔學生
   public guidanceStudent: CounselStudent[];
-  public currentStudent: CounselStudent;
+ 
+  // public currentStudent: CounselStudent;
+ 
   constructor(private dsaService: DsaService) {
     this.reload();
   }
@@ -39,6 +42,13 @@ export class CounselStudentService {
     });
     // console.log(this.currentSchoolYear,this.currentSemester);
 
+    // 取得登入教師名稱
+    let teacher = await this.dsaService.send("GetTeacher", {});
+    [].concat(teacher.Teacher || []).forEach(tea => {
+      this.teacherName = tea.Name;
+    });
+
+    // 班導師，輔導老師
     let resp = await this.dsaService.send("GetCounselStudent", {});
 
     [].concat(resp.Student || []).forEach(stuRec => {
@@ -83,6 +93,7 @@ export class CounselStudentService {
       }
       cls.Student.push(stu);
     });
+
     this.isLoading = false;
   }
 }
@@ -113,7 +124,7 @@ export class CounselStudent {
   LastInterviewTypeOther: string;
   // 內容
   // LastInterviewContent: string;
-  // 聯絡事項  
+  // 聯絡事項
   LastInterviewContactItem: string;
   LastInterviewReferral: Boolean;
 

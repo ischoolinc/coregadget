@@ -18,10 +18,10 @@ import { CounselComponent } from "../counsel.component";
   styleUrls: ["./counsel-detail.component.css"]
 })
 export class CounselDetailComponent implements OnInit {
-  private deny: boolean;
+  deny: boolean = false;
   private studentID: string;
   private currentItem: string;
-  private currentStudent: CounselStudent;
+  currentStudent: CounselStudent;
 
   // 顯示輔導紀錄
   _interviewEnable: boolean = false;
@@ -48,26 +48,44 @@ export class CounselDetailComponent implements OnInit {
   }
 
   loadStudent() {
-    this.counselStudentService.currentStudent = null;
+    // this.counselStudentService.currentStudent = null;
     if (!this.counselStudentService.isLoading) {
       this.deny = false;
       if (this.counselStudentService.studentMap.has(this.studentID)) {
         this.currentStudent = this.counselStudentService.studentMap.get(
           this.studentID
         );
-        this.counselStudentService.currentStudent = this.currentStudent;
+        // this.counselStudentService.currentStudent = this.currentStudent;
+       
         if (this.counselComponent != null) {
           if (
             this.currentStudent.Role.indexOf("班導師") >= 0 ||
             this.currentStudent.Role.indexOf("輔導老師") >= 0
-            
-          ){
+          ) {
             this.counselComponent.setSelectItem(this.currentStudent.ClassName);
-            this._interviewEnable = true;
-            this._psychological_testEnable = true;
+          } else {
+            this.counselComponent.setSelectItem("認輔學生");
           }
-            
-          else this.counselComponent.setSelectItem("認輔學生");
+        }
+        
+        if (
+          this.currentStudent.Role.indexOf("班導師") >= 0 ||
+          this.currentStudent.Role.indexOf("輔導老師") >= 0
+        ){
+          this._interviewEnable = true;
+        }
+        if (
+          this.currentStudent.Role.indexOf("認輔老師") >= 0 ||
+          this.currentStudent.Role.indexOf("輔導老師") >= 0
+        ){
+          this._counselEnable = true;
+        }
+        
+        if (
+          this.currentStudent.Role.indexOf("班導師") >= 0 ||
+          this.currentStudent.Role.indexOf("輔導老師") >= 0
+        ){
+          this._psychological_testEnable = true;
         }
       } else {
         this.deny = true;

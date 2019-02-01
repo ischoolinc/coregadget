@@ -26,6 +26,10 @@ import { CounselRoutingComponent } from './counsel/counsel-routing/counsel-routi
 import { DetailRoutingComponent } from './counsel/counsel-detail/detail-routing/detail-routing.component';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
+import { ReferralListComponent } from './referral/referral-list/referral-list.component';
+import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
+import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
+import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +53,8 @@ import { MatDialogModule } from '@angular/material';
     CaseComponent,
     ReferralComponent,
     CounselRoutingComponent,
-    DetailRoutingComponent
+    DetailRoutingComponent,    
+    ReferralListComponent, ReferralDetailComponent, AddCaseInterviewModalComponent, ViewCaseInterviewModalComponent
   ],
   imports: [
     BrowserModule,
