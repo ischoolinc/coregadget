@@ -61,6 +61,11 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview.caselInterview = counselView;
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
+     // 關閉畫面
+     $("#addCaseInterview").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadData();
+    });
   }
 
   // 取得學生個案
