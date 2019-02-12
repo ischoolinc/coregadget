@@ -68,6 +68,7 @@ export class CounselListComponent implements OnInit {
       if (this.mod === "guidance") {
         let tmp = [];
         this.counselStudentService.guidanceStudent.forEach(data => {
+          
           let key = `${data.SchoolYear}_${data.Semester}`;
           if (!tmp.includes(key)) {
             let sms: SemesterInfo = new SemesterInfo();

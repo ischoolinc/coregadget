@@ -46,6 +46,9 @@ export class CounselStudentService {
     let teacher = await this.dsaService.send("GetTeacher", {});
     [].concat(teacher.Teacher || []).forEach(tea => {
       this.teacherName = tea.Name;
+      if (tea.NickName != "") {
+        this.teacherName = `${tea.Name}(${tea.NickName})`;
+      }      
     });
 
     // 班導師，輔導老師，會讀取目前學年度學期
@@ -62,7 +65,8 @@ export class CounselStudentService {
           SeatNo: stuRec.SeatNo,
           StudentNumber: stuRec.StudentNumber,
           StudentName: stuRec.StudentName,
-          Status: stuRec.Status,
+          Gender: stuRec.Gender,
+          Status: stuRec.Status,          
           Role: [],
           InterviewCount: parseInt(stuRec.InterviewCount),
           LastInterviewDate: stuRec.LastInterviewDate,
@@ -96,8 +100,6 @@ export class CounselStudentService {
       cls.Student.push(stu);
     });
 
-    
-
     // 取得認輔資料 _.GetGuidanceStudent
     let respGS = await this.dsaService.send("GetGuidanceStudent", {});
     let gsData: CounselStudent[] = [];
@@ -116,12 +118,12 @@ export class CounselStudentService {
       stu.LastInterviewDate = stuRec.LastInterviewDate;
       stu.LastInterviewContact = stuRec.LastInterviewContact;
       stu.LastInterviewType = stuRec.LastInterviewType;
+
       gsData.push(stu);
     });
     this.guidanceStudent = gsData;
 
     this.isLoading = false;
-
   }
 }
 
@@ -141,12 +143,13 @@ export class CounselStudent {
   Semester: number;
   ClassName: string;
   SeatNo: string;
+  Gender: string;
   StudentNumber: string;
   StudentName: string;
   Status: string;
   Role: string[];
 
-  InterviewCount: Number;
+  InterviewCount: number;
   LastInterviewDate: string;
   LastInterviewContact: string;
   LastInterviewType: string;
@@ -155,7 +158,7 @@ export class CounselStudent {
   // LastInterviewContent: string;
   // 聯絡事項
   LastInterviewContactItem: string;
-  LastInterviewReferral: Boolean;
+  LastInterviewReferral: boolean;
 
   // lastCaseInterviewDate: string;
   // lastCaseInterviewContact: string;

@@ -21,7 +21,7 @@
            [attr.data-toggle]="roleService.enableCounselStatistics?'tab':null"
            (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
            [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">
-          輔導統計</a>
+          輔導統計(待開發)</a>
       </li>
       <li class="nav-item">
         <a class="nav-link"
@@ -37,14 +37,14 @@
            [attr.data-toggle]="roleService.enableCase?'tab':null"
            (click)="!roleService.enableCase || routeTo('/case')"
            [ngClass]="{'active': currentComponent == 'case', 'disabled': !roleService.enableCase}">
-          個案資料</a>
+          個案資料(開發中)</a>
       </li>
       <li class="nav-item">
         <a class="nav-link"
            [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
            (click)="!roleService.enableInterviewStatistics || routeTo('/interview_statistics')"
            [ngClass]="{'active': currentComponent == 'interview_statistics', 'disabled': !roleService.enableInterviewStatistics}">
-          輔導填寫狀況</a>
+          輔導填寫狀況(待開發)</a>
       </li>
     </ul>
     <router-outlet></router-outlet>

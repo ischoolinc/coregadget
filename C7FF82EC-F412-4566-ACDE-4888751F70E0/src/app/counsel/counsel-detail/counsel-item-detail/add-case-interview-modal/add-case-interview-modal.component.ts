@@ -69,6 +69,10 @@ export class AddCaseInterviewModalComponent implements OnInit {
       let teacher = await this.dsaService.send("GetTeacher", {});
       [].concat(teacher.Teacher || []).forEach(tea => {
         this.caselInterview.AuthorName = tea.Name;
+
+        if (tea.NickName != "") {
+          this.caselInterview.AuthorName = `${tea.Name}(${tea.NickName})`;
+        }
       });
 
       // console.log(this._CounselInterview);

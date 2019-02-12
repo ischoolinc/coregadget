@@ -13,6 +13,7 @@
         data-toggle="modal"
         data-backdrop="static"
         data-target="#newCase"
+        (click)="setNewCaseMmodal()"
       >
         <i class="material-icons">add</i> 建立新個案
       </button>
@@ -30,9 +31,9 @@
           <li>個案編號</li>
           <li>問題類別</li>
           <li>認輔老師</li>
-          <!-- <li>輔導次數</li> -->
+          <li>輔導次數</li>
           <li>結案</li>
-          <li></li>
+          <!-- <li></li> -->
         </ol>
       </li>
       <li class="tbody">
@@ -46,10 +47,10 @@
           <li data-title="學生身份">{{ item.StudentIdentity }}</li>
           <li data-title="個案編號">{{ item.CaseNo }}</li>
           <li class="text-left text-normal" data-title="問題類別">
-            {{ item.ProblemCategory }}/li>
+            {{ item.ProblemCategory }}
           </li>
           <li data-title="認輔老師">{{ item.TeacherName }}</li>
-          <!-- <li data-title="輔導次數">4</li> -->
+          <li data-title="輔導次數">{{ item.CaseCount}}</li>
           <li data-title="結案">否</li>
           <!-- <li data-title="">
                       <button class="btn btn-light"
@@ -62,4 +63,4 @@
     </ul>
   </div>
 </div>
-<app-new-case-modal></app-new-case-modal>
+<app-new-case-modal #case_modal></app-new-case-modal>

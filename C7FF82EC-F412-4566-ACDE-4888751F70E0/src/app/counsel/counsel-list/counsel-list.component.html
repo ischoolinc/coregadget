@@ -9,30 +9,6 @@
             3.尚未在 input 內輸入搜尋條件
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
     <div *ngIf="mod === 'class' || mod == 'search'" class="class-page">
-      <!-- <div class="d-md-flex align-items-center pt-3">
-            <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle"
-                        type="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">107學年度 第1學期</button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item"
-                       href="#">107學年度 第1學期</a>
-                    <a class="dropdown-item"
-                       href="#">106學年度 第2學期</a>
-                    <a class="dropdown-item"
-                       href="#">106學年度 第1學期</a>
-                </div>
-            </div>
-            <div class="custom-control custom-checkbox mt-3 mt-md-0 mb-0 ml-auto">
-                <input type="checkbox"
-                       class="custom-control-input"
-                       id="customCheck1">
-                <label class="custom-control-label"
-                       for="customCheck1">只顯示末完成之學生</label>
-            </div>
-        </div> -->
       <ul class="rwd-table">
         <li class="thead">
           <div class="font-weight-bold mb-2">
@@ -116,7 +92,11 @@
             </ol>
           </li>
           <li class="tbody">
-            <ol class="tr" *ngFor="let item of targetList" [routerLink]="['/counsel', 'detail', item.StudentID]">
+            <ol
+              class="tr"
+              *ngFor="let item of targetList"
+              [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']"
+            >
               <ng-container
                 *ngIf="
                   item.SchoolYear === sems.SchoolYear &&

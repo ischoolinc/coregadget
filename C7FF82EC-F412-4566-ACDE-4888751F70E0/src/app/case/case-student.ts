@@ -1,5 +1,6 @@
 export class CaseStudent {
   constructor() {
+    this.CaseSource = '';
     this.setOccurDateNow();
   }
   UID: string;
@@ -8,8 +9,8 @@ export class CaseStudent {
   Name: string; // 姓名
   Gender: string; // 性別
   TeacherName: string; // 班導師
-  SchoolYear: string; // 學年度
-  Semester: string; // 學期
+  SchoolYear: number; // 學年度
+  Semester: number; // 學期
   OccurDate: string; // 建立個案日期
   CaseNo: string; // 個案編號
   StudentIdentity: string; // 學生身份
@@ -28,6 +29,7 @@ export class CaseStudent {
   CloseDescription: string; // 結案說明
   StudentID: string; // 學生系統編號
   CaseSource: string; // 個案來源
+  CaseCount: string; // 個案輔導次數
 
   // 設定個案日期為現在
   public setOccurDateNow() {
@@ -61,9 +63,3 @@ export class VoluntaryGuidanceTeacher {
   StLoginName: string;
 }
 
-// 所選班級
-export class ClassInfo {
-  constructor() {}
-  ID: string;
-  Name: string;
-}

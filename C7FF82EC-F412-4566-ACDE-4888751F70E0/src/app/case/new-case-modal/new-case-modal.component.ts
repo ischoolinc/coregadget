@@ -1,11 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  CaseStudent,
-  VoluntaryGuidanceTeacher,
-  ClassInfo
-} from "../case-student";
+import { CaseStudent, VoluntaryGuidanceTeacher } from "../case-student";
 import { DsaService } from "../../dsa.service";
 import { ReferralStudent } from "../../referral/referral-student";
+import {
+  CounselStudentService,
+  CounselClass,
+  CounselStudent,
+  SemesterInfo
+} from "../../counsel-student.service";
 
 @Component({
   selector: "app-new-case-modal",
@@ -13,7 +15,10 @@ import { ReferralStudent } from "../../referral/referral-student";
   styleUrls: ["./new-case-modal.component.css"]
 })
 export class NewCaseModalComponent implements OnInit {
-  constructor(private dsaService: DsaService) {}
+  constructor(
+    private dsaService: DsaService,
+    private counselStudentService: CounselStudentService
+  ) {}
   public caseStudent: CaseStudent;
   selectVoluntaryGuidanceTeacher: VoluntaryGuidanceTeacher;
   // 認輔老師
@@ -24,12 +29,13 @@ export class NewCaseModalComponent implements OnInit {
   selectSeatNoValue: string;
   teacherName: string;
   selectCaseSourceValue: string;
-  canSelectClassList: ClassInfo[];
-  canSelectNoList: string[];
+  canSelectClassList: CounselClass[];
+  canSelectNoList: CounselStudent[];
   canSelectCaseSourceList: string[];
   voluntaryGuidanceTeacherList: VoluntaryGuidanceTeacher[];
-  currentSchoolYear: string;
-  currentSemester: string;
+  currentSchoolYear: number;
+  currentSemester: number;
+
   ngOnInit() {
     this.loadData();
   }
@@ -56,13 +62,35 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   // 設定班級名稱
-  setClassName(item: ClassInfo) {
-    this.selectClassNameValue = item.Name;
+  setClassName(item: CounselClass) {
+    this.selectClassNameValue = item.ClassName;
+    // 請除可選學生號碼
+    this.canSelectNoList = [];
+    this.caseStudent = new CaseStudent();
+    this.selectSeatNoValue = '請選擇座號';
+    if (this.counselStudentService.classMap.has(item.ClassID)) {
+      this.canSelectNoList = this.counselStudentService.classMap.get(
+        item.ClassID
+      ).Student;
+    }
   }
 
   //設定座號
-  setSeatNo(item: string) {
-    this.selectSeatNoValue = item;
+  setSeatNo(item: CounselStudent) {
+    this.selectSeatNoValue = item.SeatNo;
+    this.caseStudent = new CaseStudent();
+    this.caseStudent.Name = item.StudentName;
+    this.caseStudent.SeatNo = item.SeatNo;
+    this.caseStudent.Gender = item.Gender;
+    this.caseStudent.StudentID = item.StudentID;
+    this.caseStudent.StudentIdentity = item.Status;
+    this.counselStudentService.counselClass.forEach(clas =>{
+      if (clas.ClassName === item.ClassName)
+      {
+        this.caseStudent.TeacherName = clas.HRTeacherName;  
+      }
+    });
+      
   }
 
   setCaseFromReferral(refData: ReferralStudent) {
@@ -120,19 +148,31 @@ export class NewCaseModalComponent implements OnInit {
   // 取得預設資料
   async GetDefault() {
     // 取得目前學年度學期
-    let currentSemeRsp = await this.dsaService.send("GetCurrentSemester", {});
-    [].concat(currentSemeRsp.CurrentSemester || []).forEach(sems => {
-      this.currentSchoolYear = sems.SchoolYear;
-      this.currentSemester = sems.Semester;
-    });
+    this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
+    this.currentSemester = this.counselStudentService.currentSemester;
+    this.counselStudentService.teacherName;
+    // // 取得目前學年度學期
+    // let currentSemeRsp = await this.dsaService.send("GetCurrentSemester", {});
+    // [].concat(currentSemeRsp.CurrentSemester || []).forEach(sems => {
+    //   this.currentSchoolYear = sems.SchoolYear;
+    //   this.currentSemester = sems.Semester;
+    // });
 
     // 取得登入教師名稱
-    let teacher = await this.dsaService.send("GetTeacher", {});
-    [].concat(teacher.Teacher || []).forEach(tea => {
-      this.teacherName = tea.Name;
-      if(tea.NickName != '')
-      {
-        this.teacherName = `${tea.Name}(${tea.NickName})`;
+    // let teacher = await this.dsaService.send("GetTeacher", {});
+    // [].concat(teacher.Teacher || []).forEach(tea => {
+    //   this.teacherName = tea.Name;
+    //   if (tea.NickName != "") {
+    //     this.teacherName = `${tea.Name}(${tea.NickName})`;
+    //   }
+    // });
+    this.teacherName = this.counselStudentService.teacherName;
+
+    // 取得輔導班級
+    this.canSelectClassList = [];
+    this.counselStudentService.counselClass.forEach(data => {
+      if (data.Role.indexOf("輔導老師") > -1) {
+        this.canSelectClassList.push(data);
       }
     });
   }
@@ -141,20 +181,22 @@ export class NewCaseModalComponent implements OnInit {
   async SetCase(data: CaseStudent) {
     data.SchoolYear = this.currentSchoolYear;
     data.Semester = this.currentSemester;
-    
-// 開發中先填入預設
-data.StudentIdentity = '';
-data.PossibleSpecialCategory = '';
-data.SpecialLevel = '';
-data.SpecialCategory = '';
-data.HasDisabledBook = 'false';
-data.DeviantBehavior = '';
-data.ProblemCategory = '';
-data.ProbleDescription = '';
-data.SpecialSituation = '';
-data.EvaluationResult = '';
-data.CloseDescription = '';
 
+    // 開發中先填入預設
+    if (!data.StudentIdentity)
+    {
+      data.StudentIdentity = '一般生';
+    }
+    data.PossibleSpecialCategory = "";
+    data.SpecialLevel = "";
+    data.SpecialCategory = "";
+    data.HasDisabledBook = "false";
+    data.DeviantBehavior = "";
+    data.ProblemCategory = "";
+    data.ProbleDescription = "";
+    data.SpecialSituation = "";
+    data.EvaluationResult = "";
+    data.CloseDescription = "";
 
     let req = {
       SchoolYear: data.SchoolYear,
@@ -174,7 +216,7 @@ data.CloseDescription = '';
       CloseDescription: data.CloseDescription,
       StudentID: data.StudentID,
       CaseSource: data.CaseSource,
-      VGTeacherID:this.selectVoluntaryGuidanceTeacher.UID
+      VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID
     };
 
     console.log(req);
