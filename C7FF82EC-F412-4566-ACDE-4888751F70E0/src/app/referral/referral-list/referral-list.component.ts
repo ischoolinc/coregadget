@@ -106,6 +106,7 @@ export class ReferralListComponent implements OnInit {
 
   loadData() {
     this.GetReferralStudent();
+    
   }
 
   async GetReferralStudent() {
@@ -145,6 +146,7 @@ export class ReferralListComponent implements OnInit {
       this.ReferralStudentList.push(rec);
     });
 
+    this.setSelectItem('未結案');
     this.isLoading = false;
   }
 }

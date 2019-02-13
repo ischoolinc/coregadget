@@ -1,7 +1,7 @@
 import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { RoleService } from "../role.service";
 import { AppComponent } from "../app.component";
-import { CaseStudent } from "./case-student";
+import { CaseStudent,VoluntaryGuidanceTeacher } from "./case-student";
 import { DsaService } from "../dsa.service";
 import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.component";
 @Component({
@@ -12,6 +12,9 @@ import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.com
 export class CaseComponent implements OnInit {
   // 個案資料
   caseList: CaseStudent[];
+
+  // 個案認輔老師
+  caseTeacherList: VoluntaryGuidanceTeacher[];
   isLoading = false;
   constructor(
     public roleService: RoleService,
@@ -24,8 +27,29 @@ export class CaseComponent implements OnInit {
 
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
 
-  setNewCaseMmodal() {
-  
+  // 新增
+  setNewCaseModal() {
+    this.case_modal.caseStudent = new CaseStudent();
+    this.case_modal.selectClassNameValue = '請選擇班級';
+    this.case_modal.selectSeatNoValue = '請選擇座號';
+    this.case_modal.selectCaseSourceValue = '請選擇個案來源';    
+    this.case_modal.selectVoluntaryGuidanceValue = '請選擇認輔老師';    
+    $("#case_modal").modal("show");
+    // 關閉畫面
+    $("#case_modal").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadData();
+    });
+  }
+
+  // 編輯
+  setEditCaseModal(item: CaseStudent) {
+    this.case_modal.caseStudent = item;
+    this.case_modal.selectClassNameValue = item.ClassName;
+    this.case_modal.selectSeatNoValue = item.SeatNo;
+    this.case_modal.selectCaseSourceValue = item.CaseSource;
+    this.case_modal.teacherName = item.TeacherName;
+    this.case_modal.selectVoluntaryGuidanceValue = item.GuidanceTeacher.GetTeacherName();
     $("#case_modal").modal("show");
     // 關閉畫面
     $("#case_modal").on("hide.bs.modal", () => {
@@ -40,7 +64,9 @@ export class CaseComponent implements OnInit {
 
   loadData() {
     this.caseList = [];
-    this.GetCase();
+    this.caseTeacherList = [];
+    this.GetCaseVGTeacher();
+    this.GetCase();    
   }
 
   // 取得個案
@@ -87,6 +113,12 @@ export class CaseComponent implements OnInit {
       rec.StudentID = caseRec.StudentID;
       rec.CaseSource = caseRec.CaseSource;
       rec.CaseCount = caseRec.CaseCount;
+      this.caseTeacherList.forEach(case_data =>{
+        if (rec.UID === case_data.CaseID)
+        {
+          rec.GuidanceTeacher = case_data;
+        }
+      });
 
       rec.TeacherName = caseRec.TeacherName;
       if (caseRec.TeacherNickName != "") {
@@ -95,5 +127,25 @@ export class CaseComponent implements OnInit {
       data.push(rec);
     });
     this.caseList = data;
+  }
+
+  // 取得個案認輔老師
+  async GetCaseVGTeacher(){
+    let data: VoluntaryGuidanceTeacher[] = [];
+
+    let resp = await this.dsaService.send("GetCaseVGTeacher", {
+      Request: {}
+    });
+
+    [].concat(resp.Case || []).forEach(caseRec => {
+      // 建立認輔資料
+      let rec: VoluntaryGuidanceTeacher = new VoluntaryGuidanceTeacher();
+      rec.CaseID = caseRec.CaseID;
+      rec.TeacherID = caseRec.TeacherID;
+      rec.NickName = caseRec.NickName;
+      rec.Name = caseRec.TeacherName;
+      data.push(rec);
+    });
+    this.caseTeacherList = data;
   }
 }

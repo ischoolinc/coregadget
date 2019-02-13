@@ -13,7 +13,7 @@
         data-toggle="modal"
         data-backdrop="static"
         data-target="#newCase"
-        (click)="setNewCaseMmodal()"
+        (click)="setNewCaseModal()"
       >
         <i class="material-icons">add</i> 建立新個案
       </button>
@@ -33,7 +33,7 @@
           <li>認輔老師</li>
           <li>輔導次數</li>
           <li>結案</li>
-          <!-- <li></li> -->
+          <li></li>
         </ol>
       </li>
       <li class="tbody">
@@ -49,15 +49,20 @@
           <li class="text-left text-normal" data-title="問題類別">
             {{ item.ProblemCategory }}
           </li>
-          <li data-title="認輔老師">{{ item.TeacherName }}</li>
-          <li data-title="輔導次數">{{ item.CaseCount}}</li>
+          <li data-title="認輔老師">{{ item.GuidanceTeacher.GetTeacherName()}}</li>
+          <li data-title="輔導次數">{{ item.CaseCount }}</li>
           <li data-title="結案">否</li>
-          <!-- <li data-title="">
-                      <button class="btn btn-light"
-                              data-toggle="modal"
-                              data-backdrop="static"
-                              data-target="#case">編輯</button>
-                  </li> -->
+          <li data-title="">
+            <button
+              class="btn btn-light"
+              data-toggle="modal"
+              data-backdrop="static"
+              data-target="#newCase"
+              (click)="setEditCaseModal(item)"
+            >
+              編輯
+            </button>
+          </li>
         </ol>
       </li>
     </ul>

@@ -1,7 +1,8 @@
 export class CaseStudent {
   constructor() {
-    this.CaseSource = '';
+    this.CaseSource = "";
     this.setOccurDateNow();
+    this.GuidanceTeacher = new VoluntaryGuidanceTeacher();
   }
   UID: string;
   ClassName: string; // 班級
@@ -30,7 +31,9 @@ export class CaseStudent {
   StudentID: string; // 學生系統編號
   CaseSource: string; // 個案來源
   CaseCount: string; // 個案輔導次數
-
+  PhotoUrl: string;
+  GuidanceTeacher: VoluntaryGuidanceTeacher;
+  ß;
   // 設定個案日期為現在
   public setOccurDateNow() {
     let dt = new Date();
@@ -56,10 +59,20 @@ export class CaseStudent {
 // 認輔老師
 export class VoluntaryGuidanceTeacher {
   constructor() {}
+  CaseID: string;
   UID: string;
   TeacherID: string;
   Name: string;
   NickName: string;
   StLoginName: string;
-}
+  GetTeacherName(): string {
+    let name = "";
 
+    if (this.Name) name = this.Name;
+
+    if (this.NickName && this.NickName != "") {
+      name = `${this.Name}(${this.NickName})`;
+    }
+    return name;
+  }
+}

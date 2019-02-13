@@ -19,7 +19,9 @@ export class NewCaseModalComponent implements OnInit {
     private dsaService: DsaService,
     private counselStudentService: CounselStudentService
   ) {}
+  
   public caseStudent: CaseStudent;
+
   selectVoluntaryGuidanceTeacher: VoluntaryGuidanceTeacher;
   // 認輔老師
   selectVoluntaryGuidanceValue: string = "請選擇認輔老師";
@@ -67,7 +69,7 @@ export class NewCaseModalComponent implements OnInit {
     // 請除可選學生號碼
     this.canSelectNoList = [];
     this.caseStudent = new CaseStudent();
-    this.selectSeatNoValue = '請選擇座號';
+    this.selectSeatNoValue = "請選擇座號";
     if (this.counselStudentService.classMap.has(item.ClassID)) {
       this.canSelectNoList = this.counselStudentService.classMap.get(
         item.ClassID
@@ -84,13 +86,11 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.Gender = item.Gender;
     this.caseStudent.StudentID = item.StudentID;
     this.caseStudent.StudentIdentity = item.Status;
-    this.counselStudentService.counselClass.forEach(clas =>{
-      if (clas.ClassName === item.ClassName)
-      {
-        this.caseStudent.TeacherName = clas.HRTeacherName;  
+    this.counselStudentService.counselClass.forEach(clas => {
+      if (clas.ClassName === item.ClassName) {
+        this.caseStudent.TeacherName = clas.HRTeacherName;
       }
     });
-      
   }
 
   setCaseFromReferral(refData: ReferralStudent) {
@@ -141,6 +141,7 @@ export class NewCaseModalComponent implements OnInit {
       rec.Name = teacherRec.Name;
       rec.NickName = teacherRec.NickName;
       rec.StLoginName = teacherRec.StLoginName;
+     
       this.voluntaryGuidanceTeacherList.push(rec);
     });
   }
@@ -183,9 +184,8 @@ export class NewCaseModalComponent implements OnInit {
     data.Semester = this.currentSemester;
 
     // 開發中先填入預設
-    if (!data.StudentIdentity)
-    {
-      data.StudentIdentity = '一般生';
+    if (!data.StudentIdentity) {
+      data.StudentIdentity = "一般生";
     }
     data.PossibleSpecialCategory = "";
     data.SpecialLevel = "";
