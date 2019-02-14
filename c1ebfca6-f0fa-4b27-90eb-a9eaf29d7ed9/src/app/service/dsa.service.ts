@@ -52,13 +52,14 @@ export class DSAService {
    * @param id 編號。
    * @param date 日期。
    */
-  public async getStudents(type, id, date) {
+  public async getStudents(type, id, date, period) {
     await this.ready;
 
     const req: any = {
       Request: {
         Type: type,
         OccurDate: date,
+        Period: period
       }
     }
 

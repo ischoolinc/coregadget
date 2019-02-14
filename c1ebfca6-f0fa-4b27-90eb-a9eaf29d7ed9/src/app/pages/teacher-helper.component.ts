@@ -15,6 +15,7 @@ export class TeacherHelperComponent implements OnInit {
   today: string;
   courseName: string;
   courseID: string;
+  period: string;
   teacherHelper:TeacherHelper = {} as TeacherHelper;
   students: Student[];
 
@@ -34,6 +35,7 @@ export class TeacherHelperComponent implements OnInit {
       
       this.courseName = pm.get('name'); // course name
       this.courseID = pm.get('id'); // course id
+      this.period = pm.get('period');
       
       try {
         // 學生清單（含點名資料）。 
@@ -47,7 +49,7 @@ export class TeacherHelperComponent implements OnInit {
   public async reloadTeacherHelper(){
     this.students = [];
     // 取得學生清單
-    const _students = await this.dsa.getStudents('Course', this.courseID, this.today);
+    const _students = await this.dsa.getStudents('Course', this.courseID, this.today, this.period);
     // 取得學生照片URL
     const c = await this.gadget.getContract("1campus.mobile.v2.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
@@ -111,8 +113,6 @@ export class TeacherHelperComponent implements OnInit {
   }
 
 }
-
-
 
 export interface TeacherHelper{
   StudentID:string;

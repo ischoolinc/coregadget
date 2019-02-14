@@ -19,6 +19,8 @@ export class StudentPickComponent implements OnInit {
 
   periodConf: PeriodConf; // 節次設定，決定有哪些缺曠可以點。
 
+  period: string;
+
   selectedAbsence: string; // 已選擇的缺曠類別。
 
   groupInfo: { type: GroupType, id: string, name: string } // 課程或班級。
@@ -48,13 +50,13 @@ export class StudentPickComponent implements OnInit {
     this.route.paramMap.subscribe(async pm => {
       this.groupInfo.type = pm.get('type') as GroupType; // course or class
       this.groupInfo.id = pm.get('id'); // course id
-      const period = pm.get('period'); // period name
+      this.period = pm.get('period'); // period name
       this.groupInfo.name = pm.get('name');
 
       console.log(pm.get('name'));
 
       // 可點節次。
-      this.periodConf = this.config.getPeriod(period);
+      this.periodConf = this.config.getPeriod(this.period);
       this.periodConf.Absence = [].concat(this.periodConf.Absence || []);
 
       try {
@@ -73,7 +75,7 @@ export class StudentPickComponent implements OnInit {
 
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
-    const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today);
+    const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
     this.studentChecks = [];
 
     const c = await this.gadget.getContract("1campus.mobile.v2.teacher");
