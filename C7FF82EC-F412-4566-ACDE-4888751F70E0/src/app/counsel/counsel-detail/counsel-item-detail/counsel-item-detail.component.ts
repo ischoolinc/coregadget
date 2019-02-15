@@ -113,7 +113,9 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CloseDescription = caseRec.CloseDescription;
       rec.StudentID = caseRec.StudentID;
       rec.CaseSource = caseRec.CaseSource;
-
+      rec.PhotoUrl = `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${
+        rec.StudentID
+      }`;
       rec.TeacherName = caseRec.TeacherName;
       if (caseRec.TeacherNickName != "") {
         rec.TeacherName = `${rec.TeacherName}(${caseRec.TeacherNickName})`;

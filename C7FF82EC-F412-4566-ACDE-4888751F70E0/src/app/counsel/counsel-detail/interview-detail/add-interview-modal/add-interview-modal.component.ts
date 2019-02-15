@@ -12,7 +12,6 @@ import {
   CounselStudentService,
   CounselClass
 } from "../../../../counsel-student.service";
-import { FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
 import { formatPercent } from "@angular/common";
 import { DsaService } from "../../../../dsa.service";
 import { CounselInterview } from "../../../counsel-vo";
@@ -34,35 +33,29 @@ export class AddInterviewModalComponent implements OnInit {
 
   _editMode: string = "add";
   editModeString: string = "新增";
-  _studentName: string;
-  isReferral: boolean = false;
-
+  _studentName: string;    
   // 輔導紀錄
   _CounselInterview: CounselInterview;
 
   ngOnInit() {
     this._CounselInterview = new CounselInterview();
-    this.loadDefaultData();
+    this.loadDefaultData();    
   }
 
-  // 設定訪談方式
-  setCounselType(value: string) {
-    this._CounselInterview.CounselType = value;
-  }
+
 
   // 載入預設資料
   loadDefaultData() {
-    this.isReferral = false;
     if (this.counselDetailComponent.currentStudent) {
       if (this._editMode === "edit" && this._CounselInterview) {
         // 修改
         this.editModeString = "修改";
         if (this._CounselInterview.isReferral === "t") {
-          this.isReferral = true;
+          this._CounselInterview.isReferralValue = true;
         }
       } else {
         // 新增
-        this._CounselInterview = new CounselInterview();
+        this._CounselInterview = new CounselInterview();        
         this._studentName = this.counselDetailComponent.currentStudent.StudentName;
         this._CounselInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
         this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
@@ -81,15 +74,19 @@ export class AddInterviewModalComponent implements OnInit {
         }
       }
       // console.log(this._CounselInterview);
+      // 檢查是否有值
+      this._CounselInterview.checkValue();
     }
   }
 
   // click 取消
-  cancel() {}
+  cancel() {
+    $("#addInterview").modal("hide");
+  }
   // click 儲存
   async save() {
     try {
-      if (this.isReferral) this._CounselInterview.isReferral = "t";
+      if (this._CounselInterview.isReferralValue) this._CounselInterview.isReferral = "t";
       else this._CounselInterview.isReferral = "f";
       this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");

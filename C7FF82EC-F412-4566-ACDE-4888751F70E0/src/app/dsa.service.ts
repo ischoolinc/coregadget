@@ -1,29 +1,41 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class DsaService {
-
   private connection: any;
-  constructor(private zone: NgZone) {
-  }
+  AccessPoint: string;
+  SessionID: any;
 
-  private async getContract(contractName: string = "1campus.counsel"): Promise<any> {
+  constructor(private zone: NgZone) {}
+
+  private async getContract(
+    contractName: string = "1campus.counsel"
+  ): Promise<any> {
     if (!this.connection) {
       const contract = gadget.getContract(contractName);
-      this.connection = await (new Promise<any>((r, j) => {
+      this.connection = await new Promise<any>((r, j) => {
         contract.ready(() => {
           r(contract);
         });
-        contract.loginFailed((err) => {
+        contract.loginFailed(err => {
           j(err);
         });
-      }));
+      });
     }
     return this.connection;
   }
-  
+
+  public async getSessionIDAndAccessPoint() {
+    const c = await this.getContract("1campus.counsel");
+    const session = await this.send("DS.Base.Connect", {
+      RequestSessionID: ""
+    });
+    this.SessionID = session.SessionID;
+    this.AccessPoint = c.getAccessPoint();
+  }
+
   public async send(serviceName: string, body: any = {}): Promise<any> {
     let conn = await this.getContract();
     return new Promise<any>((r, j) => {

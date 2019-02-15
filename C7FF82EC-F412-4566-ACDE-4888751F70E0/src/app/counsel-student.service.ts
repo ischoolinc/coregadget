@@ -12,6 +12,7 @@ export class CounselStudentService {
   public classMap = new Map<string, CounselClass>();
   public counselClass: CounselClass[];
   public teacherName: string;
+  
   // 目前學年度
   public currentSchoolYear: number;
   // 目前學期
@@ -48,8 +49,12 @@ export class CounselStudentService {
       this.teacherName = tea.Name;
       if (tea.NickName != "") {
         this.teacherName = `${tea.Name}(${tea.NickName})`;
-      }      
+      }
     });
+
+    this.dsaService.getSessionIDAndAccessPoint();
+    
+    
 
     // 班導師，輔導老師，會讀取目前學年度學期
     let resp = await this.dsaService.send("GetCounselStudent", {});
@@ -66,7 +71,7 @@ export class CounselStudentService {
           StudentNumber: stuRec.StudentNumber,
           StudentName: stuRec.StudentName,
           Gender: stuRec.Gender,
-          Status: stuRec.Status,          
+          Status: stuRec.Status,
           Role: [],
           InterviewCount: parseInt(stuRec.InterviewCount),
           LastInterviewDate: stuRec.LastInterviewDate,
@@ -74,7 +79,9 @@ export class CounselStudentService {
           LastInterviewType: stuRec.LastInterviewType,
           LastInterviewTypeOther: stuRec.LastInterviewTypeOther,
           LastInterviewContactItem: stuRec.LastInterviewContactItem,
-          LastInterviewReferral: stuRec.LastInterviewReferral
+          LastInterviewReferral: stuRec.LastInterviewReferral,
+          PhotoUrl: `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${            stuRec.StudentID
+          }`
         } as CounselStudent);
       }
       let stu = this.studentMap.get(stuRec.StudentID);
@@ -118,7 +125,9 @@ export class CounselStudentService {
       stu.LastInterviewDate = stuRec.LastInterviewDate;
       stu.LastInterviewContact = stuRec.LastInterviewContact;
       stu.LastInterviewType = stuRec.LastInterviewType;
-
+      stu.PhotoUrl = `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${
+        stuRec.StudentID
+      }`;
       gsData.push(stu);
     });
     this.guidanceStudent = gsData;
@@ -159,7 +168,7 @@ export class CounselStudent {
   // 聯絡事項
   LastInterviewContactItem: string;
   LastInterviewReferral: boolean;
-
+  PhotoUrl: string;
   // lastCaseInterviewDate: string;
   // lastCaseInterviewContact: string;
   // lastCaseInterviewType: string;

@@ -1,3 +1,5 @@
+import { Content } from "@angular/compiler/src/render3/r3_ast";
+
 // 輔導資料
 export class CounselInterview {
   constructor() {}
@@ -19,6 +21,92 @@ export class CounselInterview {
   ReferralReplyDate: string; //輔導室回覆轉介之日期
   Content: string; //內容
   ContactItem: string; //聯絡事項
+  isReferralValue: boolean = false;
+  isSchoolYearHasValue: boolean = false;
+  isSemesterHasValue: boolean = false;
+  isOccurDateHasValue: boolean = false;
+  isCounselTypeHasValue: boolean = false;
+  isContactNameHasValue: boolean = false;
+  isContactItemHasValue: boolean = false;
+  isContentHasValue: boolean = false;
+  isCounselTypeOtherDisable: boolean = true;
+  selectCounselType: string = "請選擇輔導方式";
+  isSaveDisable: boolean = true;
+
+  // 檢查是否有值
+  checkValue() {
+    if (this.SchoolYear) {
+      this.isSchoolYearHasValue = true;
+    } else {
+      this.isSchoolYearHasValue = false;
+    }
+
+    if (this.Semester) {
+      this.isSemesterHasValue = true;
+    } else {
+      this.isSemesterHasValue = false;
+    }
+
+    if (this.OccurDate) {
+      this.isOccurDateHasValue = true;
+    } else {
+      this.isOccurDateHasValue = false;
+    }
+
+    if (this.CounselType) {
+      this.isCounselTypeHasValue = true;
+    } else {
+      this.isCounselTypeHasValue = false;
+    }
+
+    if (this.ContactName) {
+      this.isContactNameHasValue = true;
+    } else {
+      this.isContactNameHasValue = false;
+    }
+
+    if (this.ContactItem) {
+      this.isContactItemHasValue = true;
+    } else {
+      this.isContactItemHasValue = false;
+    }
+
+    if (this.Content) {
+      this.isContentHasValue = true;
+    } else {
+      this.isContentHasValue = false;
+    }
+
+    if (
+      this.isSchoolYearHasValue &&
+      this.isSemesterHasValue &&
+      this.isOccurDateHasValue &&
+      this.isCounselTypeHasValue &&
+      this.isContactNameHasValue &&
+      this.isContactItemHasValue &&
+      this.isContentHasValue
+    ) {
+      this.isSaveDisable = false;
+    } else {
+      this.isSaveDisable = true;
+    }
+  }
+
+  // 設定訪談方式
+  setCounselType(value: string) {
+    this.CounselType = value;
+    this.selectCounselType = value;
+    if (value === "其他") {
+      this.isCounselTypeOtherDisable = false;
+    } else {
+      this.isCounselTypeOtherDisable = true;
+    }
+    if (this.CounselType) {
+      this.isCounselTypeHasValue = true;
+    } else {
+      this.isCounselTypeHasValue = false;
+    }
+  }
 
   // 取得是否轉介文字
   getIsReferralString() {
