@@ -128,6 +128,7 @@
         // 取得平時評量項目、設定欄位清單、設定平時評量匯入項目
         $scope.getGradeItem = function () {
             $scope.importGradeItemList = [];
+            $scope.gradeItemList = null;
 
             $scope.connection.send({
                 service: "TeacherAccess.GetCourseExtensions",
@@ -144,9 +145,10 @@
                         alert("TeacherAccess.GetCourseExtensions Error");
                     } else {
                         $scope.$apply(function () {
-                            if (response !== null && response.Response !== null && response.Response !== '') {
+                            if (response !== null && response.Response !== null && response.Response !== '' && response.Response.CourseExtension.Extension.GradeItem) {
 
-                                $scope.gradeItemList = [].concat(response.Response.CourseExtension.Extension.GradeItem.Item);
+                                $scope.gradeItemList = [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []);
+
                                 $scope.gradeItemList.forEach(function (item) {
                                     // examList 物件結構
                                     item.Type = 'Number';
@@ -377,7 +379,14 @@
                     $scope.current.ConfigCustomAssessmentItem.Mode = "Editor";
                 }
             };
-            $scope.gradeItemList.forEach(function (item) {
+            // 如果沒有評分項目的話，初始化。
+            var item = {
+                Index: '1',
+                Name: '成績_1',
+                SubExamID: '成績_1',
+                Weight: '1'
+            };
+            [].concat($scope.gradeItemList || item).forEach(function (item) {
                 $scope.current.ConfigCustomAssessmentItem.Item.push(angular.copy(item));
             });
             $('#editScoreItemModal').modal('show');
