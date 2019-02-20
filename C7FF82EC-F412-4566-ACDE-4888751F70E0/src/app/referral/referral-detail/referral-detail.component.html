@@ -12,6 +12,7 @@
           <li>轉介說明</li>
           <li>授理狀況</li>
           <li>授理日期</li>
+          <li></li>
         </ol>
       </li>
       <li class="tbody">
@@ -26,9 +27,30 @@
             {{ referralStudent.ReferralDesc }}
           </li>
           <li data-title="授理狀況">
-            {{ referralStudent.GetReferralStatus() }}
+            {{ referralStudent.ReferralStatus }}
           </li>
           <li data-title="授理日期">{{ referralStudent.ReferralReplyDate }}</li>
+          <li data-title="">
+            <button
+              class="btn btn-light"
+              (click)="setGrantModal(referralStudent)"
+              data-toggle="modal"
+              data-backdrop="static"
+              data-target="#grant"
+            >
+              編輯授理狀況
+            </button>
+            <button
+              class="btn btn-light"
+              data-toggle="modal"
+              data-backdrop="static"
+              data-target="#newCase"
+              (click)="setNewCaseMmodal(referralStudent)"
+              [disabled]="referralStudent.isAddCaseButtonDisable"
+            >
+              建立個案
+            </button>
+          </li>
         </ol>
       </li>
     </ul>
@@ -43,3 +65,6 @@
     Loading...
   </div>
 </ng-template>
+
+<app-grant-modal #grant_modal></app-grant-modal>
+<app-new-case-modal #case_modal></app-new-case-modal>

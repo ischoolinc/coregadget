@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from "@angular/core";
+import { Component, OnInit, Optional,ViewChild } from "@angular/core";
 import {
   ActivatedRoute,
   Router,
@@ -7,7 +7,8 @@ import {
 } from "@angular/router";
 import { ReferralStudent } from "../referral-student";
 import { DsaService } from "../../dsa.service";
-
+import { GrantModalComponent } from "../grant-modal/grant-modal.component";
+import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
 @Component({
   selector: "app-referral-detail",
   templateUrl: "./referral-detail.component.html",
@@ -18,6 +19,8 @@ export class ReferralDetailComponent implements OnInit {
   studentID: string;
   interviewID: string;
   isLoading: boolean = false;
+  @ViewChild("grant_modal") grant_modal: GrantModalComponent;
+  @ViewChild("case_modal") case_modal: NewCaseModalComponent;
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -40,6 +43,29 @@ export class ReferralDetailComponent implements OnInit {
     this.GetReferralStudentByUid();
   }
   
+  setNewCaseMmodal(refStudent: ReferralStudent) {
+    this.case_modal.loadData();
+    this.case_modal.setCaseFromReferral(refStudent);
+    $("#newCase").modal("show");
+    // 關閉畫面
+    $("#newCase").on("hide.bs.modal", () => {
+      // 重整資料
+      // this.loadData();
+    });
+  }
+
+  setGrantModal(refStudent: ReferralStudent) {
+    this.grant_modal.referralStudent = refStudent;
+    this.grant_modal.referralStudent.loadDefault();
+    this.grant_modal.referralStudent.checkValue();
+    $("#grant_modal").modal("show");
+    // 關閉畫面
+    $("#grant_modal").on("hide.bs.modal", () => {
+      // 重整資料
+      // this.loadData();
+    });
+  }
+
   async GetReferralStudentByUid() {
    this.isLoading = true;
     let resp = await this.dsaService.send("GetReferralStudentByUid", {
@@ -66,6 +92,8 @@ export class ReferralDetailComponent implements OnInit {
       rec.ReferralStatus = studRec.ReferralStatus;
       rec.ReferralReplyDate = studRec.ReferralReplyDate;
       rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
+      rec.RefCaseID = studRec.CaseID;
+      rec.checkValue();
       this.referralStudent = rec;
     });
     this.isLoading = false;

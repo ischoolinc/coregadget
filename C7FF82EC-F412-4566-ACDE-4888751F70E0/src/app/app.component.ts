@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   constructor(
     private activeRoute: ActivatedRoute
     , private router: Router
-    , private roleService: RoleService
+    ,public roleService: RoleService
   ) {
   }
 

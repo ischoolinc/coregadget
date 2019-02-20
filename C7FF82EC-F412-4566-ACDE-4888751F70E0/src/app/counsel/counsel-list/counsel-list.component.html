@@ -107,7 +107,7 @@
                 <li data-title="座號">{{ item.SeatNo }}</li>
                 <li data-title="姓名">{{ item.StudentName }}</li>
                 <li data-title="筆數">{{ item.InterviewCount }}</li>
-                <li data-title="最後輔導日期">{{ item.LastInterviewDate }}</li>
+                <li data-title="最後輔導日期">{{ item.LastInterviewDate | date: "yyyy-MM-dd" }}</li>
                 <li class="text-normal" data-title="輔導對象">
                   {{ item.LastInterviewContact }}
                 </li>

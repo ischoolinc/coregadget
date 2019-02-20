@@ -88,7 +88,7 @@ export class AddInterviewModalComponent implements OnInit {
     try {
       if (this._CounselInterview.isReferralValue) this._CounselInterview.isReferral = "t";
       else this._CounselInterview.isReferral = "f";
-      this.SetCounselInterview(this._CounselInterview);
+      await this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");
     } catch (error) {
       alert(error);

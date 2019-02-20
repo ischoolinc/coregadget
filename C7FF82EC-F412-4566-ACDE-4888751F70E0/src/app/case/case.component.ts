@@ -1,7 +1,7 @@
 import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { RoleService } from "../role.service";
 import { AppComponent } from "../app.component";
-import { CaseStudent,VoluntaryGuidanceTeacher } from "./case-student";
+import { CaseStudent, VoluntaryGuidanceTeacher } from "./case-student";
 import { DsaService } from "../dsa.service";
 import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.component";
 @Component({
@@ -29,14 +29,15 @@ export class CaseComponent implements OnInit {
 
   // 新增
   setNewCaseModal() {
+    this.case_modal.isAddMode = true;
     this.case_modal.caseStudent = new CaseStudent();
-    this.case_modal.selectClassNameValue = '請選擇班級';
-    this.case_modal.selectSeatNoValue = '請選擇座號';
-    this.case_modal.selectCaseSourceValue = '請選擇個案來源';    
-    this.case_modal.selectVoluntaryGuidanceValue = '請選擇認輔老師';    
-    $("#case_modal").modal("show");
+    this.case_modal.selectClassNameValue = "請選擇班級";
+    this.case_modal.selectSeatNoValue = "請選擇座號";
+    this.case_modal.selectCaseSourceValue = "請選擇個案來源";
+    this.case_modal.selectVoluntaryGuidanceValue = "請選擇認輔老師";
+    $("#newCase").modal("show");
     // 關閉畫面
-    $("#case_modal").on("hide.bs.modal", () => {
+    $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
     });
@@ -44,15 +45,19 @@ export class CaseComponent implements OnInit {
 
   // 編輯
   setEditCaseModal(item: CaseStudent) {
+    this.case_modal.isAddMode = false;
+    this.case_modal.isCanSetClass = false;
     this.case_modal.caseStudent = item;
     this.case_modal.selectClassNameValue = item.ClassName;
     this.case_modal.selectSeatNoValue = item.SeatNo;
     this.case_modal.selectCaseSourceValue = item.CaseSource;
-    this.case_modal.teacherName = item.TeacherName;
+    //this.case_modal.teacherName = item.TeacherName;
     this.case_modal.selectVoluntaryGuidanceValue = item.GuidanceTeacher.GetTeacherName();
-    $("#case_modal").modal("show");
+    this.case_modal.caseStudent.checkValue();
+    item.checkValue();
+    $("#newCase").modal("show");
     // 關閉畫面
-    $("#case_modal").on("hide.bs.modal", () => {
+    $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
     });
@@ -63,15 +68,15 @@ export class CaseComponent implements OnInit {
   }
 
   loadData() {
+    this.isLoading = true;
     this.caseList = [];
     this.caseTeacherList = [];
     this.GetCaseVGTeacher();
-    this.GetCase();    
+    this.GetCase();
   }
 
   // 取得個案
   async GetCase() {
-    this.isLoading = true;
     let data: CaseStudent[] = [];
 
     let resp = await this.dsaService.send("GetCase", {
@@ -113,9 +118,13 @@ export class CaseComponent implements OnInit {
       rec.StudentID = caseRec.StudentID;
       rec.CaseSource = caseRec.CaseSource;
       rec.CaseCount = caseRec.CaseCount;
-      this.caseTeacherList.forEach(case_data =>{
-        if (rec.UID === case_data.CaseID)
-        {
+      rec.PhotoUrl = `${
+        this.dsaService.AccessPoint
+      }/GetStudentPhoto?stt=Session&sessionid=${
+        this.dsaService.SessionID
+      }&parser=spliter&content=StudentID:${rec.StudentID}`;
+      this.caseTeacherList.forEach(case_data => {
+        if (rec.UID === case_data.CaseID) {
           rec.GuidanceTeacher = case_data;
         }
       });
@@ -127,10 +136,11 @@ export class CaseComponent implements OnInit {
       data.push(rec);
     });
     this.caseList = data;
+    this.isLoading = false;
   }
 
   // 取得個案認輔老師
-  async GetCaseVGTeacher(){
+  async GetCaseVGTeacher() {
     let data: VoluntaryGuidanceTeacher[] = [];
 
     let resp = await this.dsaService.send("GetCaseVGTeacher", {

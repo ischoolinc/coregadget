@@ -100,6 +100,7 @@ export class CounselInterview {
       this.isCounselTypeOtherDisable = false;
     } else {
       this.isCounselTypeOtherDisable = true;
+      this.CounselTypeOther = '';
     }
     if (this.CounselType) {
       this.isCounselTypeHasValue = true;
