@@ -90,6 +90,7 @@ export class ReferralListComponent implements OnInit {
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#newCase").off("hide.bs.modal");
     });
   }
 
@@ -102,6 +103,7 @@ export class ReferralListComponent implements OnInit {
     $("#grant_modal").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#grant_modal").off("hide.bs.modal");
     });
   }
 

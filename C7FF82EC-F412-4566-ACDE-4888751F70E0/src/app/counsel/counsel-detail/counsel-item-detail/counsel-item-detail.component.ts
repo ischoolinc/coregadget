@@ -60,6 +60,7 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addCaseInterview").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#addCaseInterview").off("hide.bs.modal");
     });
   }
 
@@ -73,6 +74,7 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addCaseInterview").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#addCaseInterview").off("hide.bs.modal");
     });
   }
 
@@ -127,9 +129,9 @@ export class CounselItemDetailComponent implements OnInit {
         this.dsaService.SessionID
       }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.TeacherName = caseRec.TeacherName;
-      if (caseRec.TeacherNickName != "") {
-        rec.TeacherName = `${rec.TeacherName}(${caseRec.TeacherNickName})`;
-      }
+      // if (caseRec.TeacherNickName != "") {
+      //   rec.TeacherName = `${rec.TeacherName}(${caseRec.TeacherNickName})`;
+      // }
       data.push(rec);
     });
     this.caseList = data;

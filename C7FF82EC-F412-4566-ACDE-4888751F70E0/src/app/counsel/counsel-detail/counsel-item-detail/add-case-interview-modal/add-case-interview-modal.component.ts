@@ -67,9 +67,9 @@ export class AddCaseInterviewModalComponent implements OnInit {
       [].concat(teacher.Teacher || []).forEach(tea => {
         this.caseInterview.AuthorName = tea.Name;
 
-        if (tea.NickName != "") {
-          this.caseInterview.AuthorName = `${tea.Name}(${tea.NickName})`;
-        }
+        // if (tea.NickName != "") {
+        //   this.caseInterview.AuthorName = `${tea.Name}(${tea.NickName})`;
+        // }
       });
       this.caseInterview.checkValue();
     }

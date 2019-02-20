@@ -40,6 +40,7 @@ export class CaseComponent implements OnInit {
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#newCase").off("hide.bs.modal");
     });
   }
 
@@ -60,6 +61,7 @@ export class CaseComponent implements OnInit {
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#newCase").off("hide.bs.modal");
     });
   }
 

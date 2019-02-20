@@ -70,7 +70,7 @@ export class AddInterviewModalComponent implements OnInit {
           this.counselDetailComponent.currentStudent.Role.indexOf("輔導老師") >=
             0
         ) {
-          this._CounselInterview.AuthorName = this.counselStudentService.teacherName;
+          this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
         }
       }
       // console.log(this._CounselInterview);

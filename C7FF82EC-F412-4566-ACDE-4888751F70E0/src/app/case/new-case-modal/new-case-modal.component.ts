@@ -198,7 +198,7 @@ export class NewCaseModalComponent implements OnInit {
     //     this.teacherName = `${tea.Name}(${tea.NickName})`;
     //   }
     // });
-    this.teacherName = this.counselStudentService.teacherName;
+    this.teacherName = this.counselStudentService.teacherInfo.Name;
 
     // 取得輔導班級
     this.canSelectClassList = [];
