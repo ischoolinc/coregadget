@@ -55,7 +55,7 @@ export class CounselDetailComponent implements OnInit {
         this.currentStudent = this.counselStudentService.studentMap.get(
           this.studentID
         );
-        // this.counselStudentService.currentStudent = this.currentStudent;
+         
 
         if (this.counselComponent != null) {
           if (

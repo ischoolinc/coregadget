@@ -23,6 +23,26 @@ export class RoleService {
   public get enableCounselStatistics() {
     return this._enableCounselStatistics;
   }
+
+  // 設定轉介資料是否可以使用
+  public set SetEnableReferral(value: boolean) {
+    this._enableReferral = value;
+  }
+
+  // 設定個案資料是否可以使用
+  public set SetEnableCase(value: boolean) {
+    this._enableCase = value;
+  }
+  // 設定輔導填寫狀況是否可以使用
+  public set SetEnableInterviewStatistics(value: boolean) {
+    this._enableInterviewStatistics = value;
+  }
+
+  // 設定輔導統計是否可以使用
+  public set SetEnableCounselStatistics(value: boolean) {
+    this._enableCounselStatistics = value;
+  }
+
   public get enableReferral() {
     return this._enableReferral;
   }
@@ -63,7 +83,8 @@ export class RoleService {
       this._role.indexOf("班導師") >= 0 ||
       this._role.indexOf("輔導老師") >= 0
     ) {
-      this._enableCounselStatistics = true;
+      // 目前還不能先關閉
+      // this._enableCounselStatistics = true;
     }
     if (
       this._role.indexOf("管理者") >= 0 ||
@@ -82,7 +103,8 @@ export class RoleService {
       this._role.indexOf("輔導老師") >= 0 ||
       this._role.indexOf("認輔老師") >= 0
     ) {
-      this._enableInterviewStatistics = true;
+      // 目前還不能先關閉
+      // this._enableInterviewStatistics = true;
     }
     this._isLoading = false;
   }
