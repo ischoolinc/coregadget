@@ -25,21 +25,21 @@ export class RoleService {
   }
 
   // 設定轉介資料是否可以使用
-  public set SetEnableReferral(value: boolean) {
+  public SetEnableReferral(value: boolean) {
     this._enableReferral = value;
   }
 
   // 設定個案資料是否可以使用
-  public set SetEnableCase(value: boolean) {
+  public SetEnableCase(value: boolean) {
     this._enableCase = value;
   }
   // 設定輔導填寫狀況是否可以使用
-  public set SetEnableInterviewStatistics(value: boolean) {
+  public SetEnableInterviewStatistics(value: boolean) {
     this._enableInterviewStatistics = value;
   }
 
   // 設定輔導統計是否可以使用
-  public set SetEnableCounselStatistics(value: boolean) {
+  public SetEnableCounselStatistics(value: boolean) {
     this._enableCounselStatistics = value;
   }
 

@@ -56,8 +56,7 @@ export class InterviewDetailComponent implements OnInit {
     this.isLoading = true;
     this._StudentID = StudentID;
     this._semesterInfo = [];
-    let tmp = [];
-    console.log(StudentID);
+    let tmp = [];    
     // 取得學生輔導資料
     let dataList = await this.GetCounselInterviewByStudentID(
       this.counselDetailComponent.currentStudent.StudentID
