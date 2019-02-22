@@ -156,8 +156,8 @@
                                     // examList 物件結構
                                     item.Type = 'Number';
                                     item.Range = {
-                                        Max: 100,
-                                        Min: 0
+                                        Max: '',
+                                        Min: ''
                                     };
                                     item.Permission = 'Editor';
                                     item.Lock = !$scope.OrdinarilyEditable;
@@ -320,9 +320,7 @@
             });
         }
 
-        /*
-            顯示編輯評分項目
-        */
+        // 顯示編輯評分項目
         $scope.showCustomAssessmentConfig = function () {
             $scope.current.ConfigCustomAssessmentItem = {
                 Item: []
@@ -397,10 +395,9 @@
             $('#editScoreItemModal').modal('show');
         }
 
-        /*  儲存評分項目
-            1. 平時評量成績重新計算
-            2. 儲存平時評量成績
-        */
+        // 儲存評分項目
+        // 1.平時評量成績重新計算
+        // 2.儲存平時評量成績
         $scope.saveCustomAssessmentConfig = function () {
             
             var body = {
@@ -419,7 +416,11 @@
 
             var namePass = true;
             var weightPass = true;
+            var examNameList = [];
+            var dataRepeat = false;
+            var repeatExamName = '';
             $scope.current.ConfigCustomAssessmentItem.Item.forEach(function (item) {
+
                 var pass = true;
                 if (!item.Name) {
                     namePass = false;
@@ -430,7 +431,14 @@
                     pass = false;
                 }
 
-                if (pass) {
+                if (pass && !dataRepeat) {
+
+                    if(examNameList.indexOf(item.Name) > -1){
+                        dataRepeat = true;
+                        repeatExamName = item.Name;
+                    }
+                    examNameList.push(item.Name);
+
                     body.Content.CourseExtension.Extension.GradeItem.Item.push({
                         '@SubExamID': item.SubExamID == "" ? item.Name : item.SubExamID,
                         '@Name': item.Name,
@@ -439,7 +447,7 @@
                     });
                 }
             });
-            if (namePass && weightPass) {
+            if (namePass && weightPass && !dataRepeat) {
                 $scope.connection.send({
                     service: "TeacherAccess.SetCourseExtensions",
                     autoRetry: true,
@@ -461,16 +469,17 @@
             else {
                 var errMsg = "";
                 if (!namePass)
-                    errMsg += (errMsg ? "\n" : "") + "Name is required.";
+                    errMsg += (errMsg ? "\n" : "") + "評分名稱不可空白。";
                 if (!weightPass)
-                    errMsg += (errMsg ? "\n" : "") + "Weight is required and must be number.";
+                    errMsg += (errMsg ? "\n" : "") + "權重不可空白且必須為數值。";
+                if(dataRepeat){
+                    errMsg += (errMsg ? "\n" : "") + "評分項目名稱：「"+repeatExamName+"」重複! 資料無法儲存。";
+                }
                 alert(errMsg);
             }
         }
 
-        /*
-            重新計算平時評量成績
-        */
+        // 重新計算平時評量成績
         $scope.calcExtensionScore = function () {
             // 重新計算每位學生的平時評量成績
             $scope.studentList.forEach(function (student) {
@@ -511,52 +520,59 @@
 
         // 匯出Excel
         $scope.exportExcel = function () {
-            var wb = XLSX.utils.book_new();
-            wb.Props = {
-                Title: '成績單',
-                Subject: '',
-                Author: 'ischool',
-            };
-            wb.SheetNames.push('成績單');
+            // 檢查資料是否更動
+            var data_changed = !$scope.checkAllTable($scope.current.model);
+            if (data_changed) { 
+                alert("資料尚未儲存，無法匯出報表。");
+            }
+            else{
+                var wb = XLSX.utils.book_new();
+                wb.Props = {
+                    Title: '成績單',
+                    Subject: '',
+                    Author: 'ischool',
+                };
+                wb.SheetNames.push('成績單');
 
-            // 資料整理
-            var ws_data = [];
-            // 自訂欄寬
-            var wscols = [
-                { wch: 10 },
-                { wch: 8 },
-                { wch: 15 },
-                { wch: 15 },
-                { wch: 15 },
-                { wch: 15 }
-            ];
-            $scope.studentList.forEach(function (stuRec) {
-                var data = {
-                    班級: stuRec.ClassName,
-                    座號: stuRec.SeatNo,
-                    姓名: stuRec.StudentName
-                }
-                if ($scope.current.Course.Scores.Score) {
-                    $scope.current.Course.Scores.Score.forEach(function (exam) {
-                        data[exam.Name] = stuRec['Exam' + exam.ExamID + 'Origin'];
-                        wscols.push({ wch: 15 });
-                    });
-                }
-                data['學期成績'] = stuRec['Exam學期成績'];
-                data['平時評量'] = stuRec['Exam平時評量'];
-                data['文字評量'] = stuRec['Exam文字評量'];
+                // 資料整理
+                var ws_data = [];
+                // 自訂欄寬
+                var wscols = [
+                    { wch: 10 },
+                    { wch: 8 },
+                    { wch: 15 },
+                    { wch: 15 },
+                    { wch: 15 },
+                    { wch: 15 }
+                ];
+                $scope.studentList.forEach(function (stuRec) {
+                    var data = {
+                        班級: stuRec.ClassName,
+                        座號: stuRec.SeatNo,
+                        姓名: stuRec.StudentName
+                    }
+                    if ($scope.current.Course.Scores.Score) {
+                        $scope.current.Course.Scores.Score.forEach(function (exam) {
+                            data[exam.Name] = stuRec['Exam' + exam.ExamID + 'Origin'];
+                            wscols.push({ wch: 15 });
+                        });
+                    }
+                    data['學期成績'] = stuRec['Exam學期成績'];
+                    data['平時評量'] = stuRec['Exam平時評量'];
+                    data['文字評量'] = stuRec['Exam文字評量'];
 
-                ws_data.push(data);
-            });
+                    ws_data.push(data);
+                });
 
-            var ws = XLSX.utils.json_to_sheet(ws_data);
+                var ws = XLSX.utils.json_to_sheet(ws_data);
 
-            ws['!cols'] = wscols;
+                ws['!cols'] = wscols;
 
-            wb.Sheets[wb.SheetNames[0]] = ws;
-            // export the workbook as xlsx binary
-            var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-            saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xlsx');
+                wb.Sheets[wb.SheetNames[0]] = ws;
+                // export the workbook as xlsx binary
+                var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+                saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xlsx');
+            }
         }
 
         // convert the binary data into octet
@@ -1638,7 +1654,7 @@
 
             //2017/8/2 穎驊新增  平時評量
             var usualScore = {
-                ExamID: '平時評量', Name: '平時評量', Type: 'Number', Permission: 'Editor', Lock: course.TemplateExtension == "" ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)) //  平時評量的 輸入開放與否，依照系統 評量設定的 開放時間為基準。
+                ExamID: '平時評量', Name: '平時評量', Type: 'Number', Permission: 'Read', Lock: course.TemplateExtension == "" ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)) //  平時評量的 輸入開放與否，依照系統 評量設定的 開放時間為基準。
             };
 
             //2017/8/2 穎驊新增  平時評量_努力程度 子成績項目
@@ -1647,7 +1663,7 @@
                 Name: '平時評量_努力程度',
                 SubName: '努力程度',
                 Type: 'Number',
-                Permission: 'Editor',
+                Permission: 'Read',
                 Lock: course.TemplateExtension == "" ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)),
                 Group: usualScore,
                 SubVisible: false,
