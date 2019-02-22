@@ -13,7 +13,6 @@ import {
 } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
-import { ThrowStmt } from "@angular/compiler";
 
 @Component({
   selector: "app-counsel-list",
@@ -44,7 +43,7 @@ export class CounselListComponent implements OnInit {
       (params: ParamMap): void => {
         this.mod = params.get("mod");
         this.target = params.get("target");
-       
+
         this._semesterInfo = [];
         this.getList();
       }
@@ -99,12 +98,11 @@ export class CounselListComponent implements OnInit {
       }
       if (this.mod === "guidance") {
         if (this.counselComponent != null) {
-          if (this.counselStudentService.selectTarget == '')
-          {
+          if (this.target === "g") {
             this.counselComponent.setSelectItem("認輔學生");
-          }          
+          }
         }
-        let tmp = [];       
+        let tmp = [];
         this.counselStudentService.guidanceStudent.forEach(data => {
           let key = `${data.SchoolYear}_${data.Semester}`;
           if (!tmp.includes(key)) {
@@ -116,7 +114,6 @@ export class CounselListComponent implements OnInit {
           }
         });
         this.targetList = this.counselStudentService.guidanceStudent;
-        
       }
 
       if (this.mod === "search") {

@@ -11,7 +11,7 @@ export class DsaService {
   constructor(private zone: NgZone) {}
 
   private async getContract(
-    contractName: string = "1campus.counsel.teacher"
+    contractName: string = "1campus.counsel"
   ): Promise<any> {
     if (!this.connection) {
       const contract = gadget.getContract(contractName);
@@ -28,7 +28,7 @@ export class DsaService {
   }
 
   public async getSessionIDAndAccessPoint() {
-    const c = await this.getContract("1campus.counsel.teacher");
+    const c = await this.getContract("1campus.counsel");
     const session = await this.send("DS.Base.Connect", {
       RequestSessionID: ""
     });

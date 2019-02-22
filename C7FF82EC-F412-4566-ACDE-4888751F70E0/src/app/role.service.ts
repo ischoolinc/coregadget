@@ -83,8 +83,7 @@ export class RoleService {
       this._role.indexOf("班導師") >= 0 ||
       this._role.indexOf("輔導老師") >= 0
     ) {
-      // 目前還不能先關閉
-      // this._enableCounselStatistics = true;
+      this._enableCounselStatistics = true;
     }
     if (
       this._role.indexOf("管理者") >= 0 ||
@@ -103,8 +102,7 @@ export class RoleService {
       this._role.indexOf("輔導老師") >= 0 ||
       this._role.indexOf("認輔老師") >= 0
     ) {
-      // 目前還不能先關閉
-      // this._enableInterviewStatistics = true;
+      this._enableInterviewStatistics = true;
     }
     this._isLoading = false;
   }
