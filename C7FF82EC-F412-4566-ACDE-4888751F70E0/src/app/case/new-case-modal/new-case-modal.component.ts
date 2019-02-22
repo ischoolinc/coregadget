@@ -19,7 +19,9 @@ export class NewCaseModalComponent implements OnInit {
     private dsaService: DsaService,
     private counselStudentService: CounselStudentService
   ) {}
-  
+
+  isAddMode: boolean = true;
+  isCanSetClass: boolean = false;
   public caseStudent: CaseStudent;
 
   selectVoluntaryGuidanceTeacher: VoluntaryGuidanceTeacher;
@@ -57,10 +59,22 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent = new CaseStudent();
 
     this.GetVoluntaryGuidanceTeacher();
+
+    // 檢查狀態
+    if (this.isAddMode) {
+      if (!this.caseStudent.RefCounselInterviewID) {
+        this.isCanSetClass = true;
+      } else {
+        this.isCanSetClass = false;
+      }
+    } else {
+    }
   }
 
   setCaseSource(item: string) {
     this.selectCaseSourceValue = item;
+    this.caseStudent.CaseSource = item;
+    this.caseStudent.checkValue();
   }
 
   // 設定班級名稱
@@ -70,6 +84,8 @@ export class NewCaseModalComponent implements OnInit {
     this.canSelectNoList = [];
     this.caseStudent = new CaseStudent();
     this.selectSeatNoValue = "請選擇座號";
+    this.selectVoluntaryGuidanceValue = "請選擇認輔老師";
+    this.selectVoluntaryGuidanceTeacher = null;
     if (this.counselStudentService.classMap.has(item.ClassID)) {
       this.canSelectNoList = this.counselStudentService.classMap.get(
         item.ClassID
@@ -82,6 +98,7 @@ export class NewCaseModalComponent implements OnInit {
     this.selectSeatNoValue = item.SeatNo;
     this.caseStudent = new CaseStudent();
     this.caseStudent.Name = item.StudentName;
+    this.caseStudent.PhotoUrl = item.PhotoUrl;
     this.caseStudent.SeatNo = item.SeatNo;
     this.caseStudent.Gender = item.Gender;
     this.caseStudent.StudentID = item.StudentID;
@@ -93,6 +110,7 @@ export class NewCaseModalComponent implements OnInit {
     });
   }
 
+  // 來至轉介建立個案功能
   setCaseFromReferral(refData: ReferralStudent) {
     this.caseStudent = new CaseStudent();
     this.caseStudent.ClassName = refData.ClassName;
@@ -101,22 +119,34 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.Gender = refData.Gender;
     this.caseStudent.StudentID = refData.StudentID;
     this.caseStudent.TeacherName = refData.TeacherName;
+    this.caseStudent.RefCounselInterviewID = refData.UID;
+    this.caseStudent.PhotoUrl = refData.PhotoUrl;
     this.selectClassNameValue = this.caseStudent.ClassName;
     this.selectSeatNoValue = this.caseStudent.SeatNo;
+    this.isAddMode = false;
+    this.isCanSetClass = false;
   }
 
-  save() {
-    // console.log($("#result1:checked").val());
-    // let x = $("#result2:checked").val();
-    // console.log("test");
-    try {
-      this.caseStudent.CaseSource = this.selectCaseSourceValue;
-      console.log(this.caseStudent);
-      // 新增個案
-      this.SetCase(this.caseStudent);
-      $("#newCase").modal("hide");
-    } catch (error) {
-      alert(error);
+  async save() {
+    this.caseStudent.CaseSource = this.selectCaseSourceValue;
+    // 新增
+    if (!this.caseStudent.UID) {
+      try {
+        // 新增個案
+        await this.SetCase(this.caseStudent);
+       $("#newCase").modal("hide");
+      } catch (error) {
+        alert(error);
+      }
+    } else {
+      // 更新
+      try {
+        // 新增個案
+        await this.UpdateCase(this.caseStudent);
+        $("#newCase").modal("hide");
+      } catch (error) {
+        alert(error);
+      }
     }
   }
 
@@ -126,6 +156,8 @@ export class NewCaseModalComponent implements OnInit {
   setVoluntaryGuidanceTeacher(item: VoluntaryGuidanceTeacher) {
     this.selectVoluntaryGuidanceTeacher = item;
     this.selectVoluntaryGuidanceValue = item.Name;
+    this.caseStudent.GuidanceTeacher = item;
+    this.caseStudent.checkValue();
   }
 
   // 取得當學年度學期認輔老師
@@ -141,7 +173,7 @@ export class NewCaseModalComponent implements OnInit {
       rec.Name = teacherRec.Name;
       rec.NickName = teacherRec.NickName;
       rec.StLoginName = teacherRec.StLoginName;
-     
+
       this.voluntaryGuidanceTeacherList.push(rec);
     });
   }
@@ -151,7 +183,6 @@ export class NewCaseModalComponent implements OnInit {
     // 取得目前學年度學期
     this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
     this.currentSemester = this.counselStudentService.currentSemester;
-    this.counselStudentService.teacherName;
     // // 取得目前學年度學期
     // let currentSemeRsp = await this.dsaService.send("GetCurrentSemester", {});
     // [].concat(currentSemeRsp.CurrentSemester || []).forEach(sems => {
@@ -167,7 +198,7 @@ export class NewCaseModalComponent implements OnInit {
     //     this.teacherName = `${tea.Name}(${tea.NickName})`;
     //   }
     // });
-    this.teacherName = this.counselStudentService.teacherName;
+    this.teacherName = this.counselStudentService.teacherInfo.Name;
 
     // 取得輔導班級
     this.canSelectClassList = [];
@@ -198,6 +229,11 @@ export class NewCaseModalComponent implements OnInit {
     data.EvaluationResult = "";
     data.CloseDescription = "";
 
+    // 當沒有輔導 uid 寫入 null
+    if (!data.RefCounselInterviewID) {
+      data.RefCounselInterviewID = "null";
+    }
+
     let req = {
       SchoolYear: data.SchoolYear,
       Semester: data.Semester,
@@ -216,7 +252,8 @@ export class NewCaseModalComponent implements OnInit {
       CloseDescription: data.CloseDescription,
       StudentID: data.StudentID,
       CaseSource: data.CaseSource,
-      VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID
+      VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID,
+      RefCounselInterviewID: data.RefCounselInterviewID
     };
 
     console.log(req);
@@ -225,5 +262,30 @@ export class NewCaseModalComponent implements OnInit {
       Request: req
     });
     console.log(resp);
+  }
+
+  // 更新個案
+  async UpdateCase(data: CaseStudent) {
+    if (data.UID) {
+      data.SchoolYear = this.currentSchoolYear;
+      data.Semester = this.currentSemester;
+      let req = {
+        CaseID: data.UID,
+        SchoolYear: data.SchoolYear,
+        Semester: data.Semester,
+        OccurDate: data.OccurDate,
+        CaseNo: data.CaseNo,
+        StudentID: data.StudentID,
+        CaseSource: data.CaseSource,
+        VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID
+      };
+
+      console.log(req);
+
+      let resp = await this.dsaService.send("UpdateCase", {
+        Request: req
+      });
+      console.log(resp);
+    }
   }
 }

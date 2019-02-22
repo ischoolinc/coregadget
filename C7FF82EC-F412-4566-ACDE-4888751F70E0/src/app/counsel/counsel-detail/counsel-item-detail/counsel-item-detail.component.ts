@@ -3,7 +3,7 @@ import { CaseStudent } from "../../../case/case-student";
 import { DsaService } from "../../../dsa.service";
 import { CounselDetailComponent } from "../counsel-detail.component";
 import {
-  CaselInterview,
+  CaseInterview,
   SemesterInfo
 } from "../counsel-item-detail/case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
@@ -14,7 +14,7 @@ import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-c
 })
 export class CounselItemDetailComponent implements OnInit {
   _semesterInfo: SemesterInfo[] = [];
-  caselInterview: CaselInterview[] = [];
+  caseInterview: CaseInterview[] = [];
   _StudentID: string = "";
   isLoading = false;
   // 個案資料
@@ -41,9 +41,18 @@ export class CounselItemDetailComponent implements OnInit {
   }
 
   // 新增
-  addInterviewModal() {
+  addInterviewModal(item: CaseStudent) {
     this._addInterview._editMode = "add";
-    this._addInterview.caseList = this.caseList;
+    let CaseInterviewAdd: CaseInterview = new CaseInterview();
+    CaseInterviewAdd.CaseID = item.UID;
+    CaseInterviewAdd.CaseNo = item.CaseNo;
+    CaseInterviewAdd.SchoolYear = item.SchoolYear;
+    CaseInterviewAdd.Semester = item.Semester;
+    CaseInterviewAdd.StudentID = item.StudentID;
+
+    this._addInterview.caseInterview = CaseInterviewAdd;
+    this._addInterview.caseInterview.checkValue();
+
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
 
@@ -51,20 +60,21 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addCaseInterview").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#addCaseInterview").off("hide.bs.modal");
     });
   }
 
   // 修改
-  editInterviewModal(counselView: CaselInterview) {
+  editInterviewModal(counselView: CaseInterview) {
     this._addInterview._editMode = "edit";
-    this._addInterview.caseList = [];
-    this._addInterview.caselInterview = counselView;
+    this._addInterview.caseInterview = counselView;
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
-     // 關閉畫面
-     $("#addCaseInterview").on("hide.bs.modal", () => {
+    // 關閉畫面
+    $("#addCaseInterview").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#addCaseInterview").off("hide.bs.modal");
     });
   }
 
@@ -113,20 +123,22 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CloseDescription = caseRec.CloseDescription;
       rec.StudentID = caseRec.StudentID;
       rec.CaseSource = caseRec.CaseSource;
-      rec.PhotoUrl = `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${
-        rec.StudentID
-      }`;
+      rec.PhotoUrl = `${
+        this.dsaService.AccessPoint
+      }/GetStudentPhoto?stt=Session&sessionid=${
+        this.dsaService.SessionID
+      }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.TeacherName = caseRec.TeacherName;
-      if (caseRec.TeacherNickName != "") {
-        rec.TeacherName = `${rec.TeacherName}(${caseRec.TeacherNickName})`;
-      }
+      // if (caseRec.TeacherNickName != "") {
+      //   rec.TeacherName = `${rec.TeacherName}(${caseRec.TeacherNickName})`;
+      // }
       data.push(rec);
     });
     this.caseList = data;
   }
 
   async GetCaseInterviewByStudentID(StudentID: string) {
-    let data: CaselInterview[] = [];
+    let data: CaseInterview[] = [];
 
     let resp = await this.dsaService.send("GetStudentCaseInterview", {
       Request: {
@@ -136,7 +148,7 @@ export class CounselItemDetailComponent implements OnInit {
 
     [].concat(resp.CaseInterview || []).forEach(counselRec => {
       // 建立認輔資料
-      let rec: CaselInterview = new CaselInterview();
+      let rec: CaseInterview = new CaseInterview();
       rec.UID = counselRec.UID;
       rec.StudentName = counselRec.StudentName;
       rec.SchoolYear = parseInt(counselRec.SchoolYear);
@@ -157,10 +169,10 @@ export class CounselItemDetailComponent implements OnInit {
 
       data.push(rec);
     });
-    this.caselInterview = data;
+    this.caseInterview = data;
     let tmp = [];
     this._semesterInfo = [];
-    this.caselInterview.forEach(data => {
+    this.caseInterview.forEach(data => {
       let key = `${data.SchoolYear}_${data.Semester}`;
       if (!tmp.includes(key)) {
         let sms: SemesterInfo = new SemesterInfo();

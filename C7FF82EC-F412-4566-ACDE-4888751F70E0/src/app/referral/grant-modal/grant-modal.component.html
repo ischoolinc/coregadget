@@ -38,7 +38,7 @@
         </div>
         <div class="form-group">
           <label for="contactMatter" class="col-form-label">
-            <span class="text-samll text-danger">*</span> 輔導室接受情形
+            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralReplyHasValue">*</span> 輔導室接受情形
           </label>
           <textarea
             class="form-control"
@@ -46,11 +46,12 @@
             rows="1"
             placeholder="請輸入輔導室接受情形"
             [(ngModel)]="referralStudent.ReferralReply"
+            (keyup)="referralStudent.checkValue()"
           ></textarea>
         </div>
         <div class="form-group">
           <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger">*</span> 授理狀況
+            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralStatusHasValue" >*</span> 授理狀況
           </label>
           <div>
             <div class="custom-control custom-radio custom-control-inline">
@@ -59,8 +60,8 @@
                 id="r1"
                 name="grantradio"
                 class="custom-control-input"
-                (click)="select('未處理')"
-                [checked]="check1"
+                (click)="referralStudent.setProcessSatus('未處理')"
+                [checked]="referralStudent.isUnPrecessed"
               />
               <label class="custom-control-label" for="r1">未處理</label>
             </div>
@@ -70,8 +71,8 @@
                 id="r2"
                 name="grantradio"
                 class="custom-control-input"
-                (click)="select('處理中')"
-                [checked]="check2"
+                (click)="referralStudent.setProcessSatus('處理中')"
+                [checked]="referralStudent.isProcessing"
               />
               <label class="custom-control-label" for="r2">處理中</label>
             </div>
@@ -81,8 +82,8 @@
                 id="r3"
                 name="grantradio"
                 class="custom-control-input"
-                (click)="select('已處理')"
-                [checked]="check3"
+                (click)="referralStudent.setProcessSatus('已處理')"
+                [checked]="referralStudent.isProcessed"
               />
               <label class="custom-control-label" for="r3">已處理</label>
             </div>
@@ -90,7 +91,7 @@
         </div>
         <div class="form-group">
           <label for="interviewDate" class="col-form-label">
-            <span class="text-samll text-danger">*</span> 授理日期
+            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralReplyDateHasValue">*</span> 授理日期
           </label>
           <input
             type="date"
@@ -98,11 +99,12 @@
             id="interviewDate"
             placeholder="請輸入授理日期"
             [(ngModel)]="referralStudent.ReferralReplyDate"
+            (keyup)="referralStudent.checkValue()"
           />
         </div>
         <div class="form-group">
           <label for="contactMatter" class="col-form-label">
-            <span class="text-samll text-danger">*</span> 授理說明
+            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralReplyDescHasValue">*</span> 授理說明
           </label>
           <textarea
             class="form-control"
@@ -110,6 +112,7 @@
             rows="1"
             placeholder="請輸入授理說明"
             [(ngModel)]="referralStudent.ReferralReplyDesc"
+            (keyup)="referralStudent.checkValue()"
           ></textarea>
         </div>
       </div>
@@ -117,7 +120,7 @@
         <button type="button" class="btn btn-dark" data-dismiss="modal">
           取消
         </button>
-        <button type="button" class="btn btn-info" (click)="save()">
+        <button type="button" class="btn btn-info" (click)="save()" [disabled]="referralStudent.isSaveButtonDisable">
           儲存
         </button>
       </div>

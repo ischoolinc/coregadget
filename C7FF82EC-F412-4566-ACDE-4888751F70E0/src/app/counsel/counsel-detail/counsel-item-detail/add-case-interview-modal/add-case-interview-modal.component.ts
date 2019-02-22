@@ -15,7 +15,7 @@ import {
 import { FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
 import { formatPercent } from "@angular/common";
 import { DsaService } from "../../../../dsa.service";
-import { CaselInterview } from "../case-interview-vo";
+import { CaseInterview } from "../case-interview-vo";
 
 // import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CounselDetailComponent } from "../../counsel-detail.component";
@@ -35,58 +35,44 @@ export class AddCaseInterviewModalComponent implements OnInit {
     @Optional()
     private counselStudentService: CounselStudentService
   ) {}
-  caselInterview: CaselInterview;
-  caseList: CaseStudent[];
+  caseInterview: CaseInterview;
   _editMode: string = "add";
   editModeString: string = "新增";
   _studentName: string;
 
   ngOnInit() {
-    this.caselInterview = new CaselInterview();
-
-    this.caseList = [];
+    this.caseInterview = new CaseInterview();
   }
 
   // 載入預設資料
   async loadDefaultData() {
     if (this.counselDetailComponent.currentStudent) {
-      if (this._editMode === "edit" && this.caselInterview) {
+      if (this._editMode === "edit" && this.caseInterview) {
         // 修改
         this.editModeString = "修改";
+        this.caseInterview.setCounselType(this.caseInterview.CounselType);
       } else {
         // 新增
-        this.caselInterview = new CaselInterview();
         this._studentName = this.counselDetailComponent.currentStudent.StudentName;
-        this.caselInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
-        this.caselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
-        this.caselInterview.Semester = this.counselStudentService.currentSemester;
+        this.caseInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
+        this.caseInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
+        this.caseInterview.Semester = this.counselStudentService.currentSemester;
         // 帶入日期與輸入者
         let dt = new Date();
-        this.caselInterview.OccurDate = this.caselInterview.parseDate(dt);
+        this.caseInterview.OccurDate = this.caseInterview.parseDate(dt);
       }
 
       // 取得登入教師名稱
       let teacher = await this.dsaService.send("GetTeacher", {});
       [].concat(teacher.Teacher || []).forEach(tea => {
-        this.caselInterview.AuthorName = tea.Name;
+        this.caseInterview.AuthorName = tea.Name;
 
-        if (tea.NickName != "") {
-          this.caselInterview.AuthorName = `${tea.Name}(${tea.NickName})`;
-        }
+        // if (tea.NickName != "") {
+        //   this.caseInterview.AuthorName = `${tea.Name}(${tea.NickName})`;
+        // }
       });
-
-      // console.log(this._CounselInterview);
+      this.caseInterview.checkValue();
     }
-  }
-
-  setCaseNo(value: CaseStudent) {
-    this.caselInterview.CaseID = value.UID;
-    this.caselInterview.CaseNo = value.CaseNo;
-  }
-
-  // 設定訪談方式
-  setCounselType(value: string) {
-    this.caselInterview.CounselType = value;
   }
 
   // click 取消
@@ -94,7 +80,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
   // click 儲存
   async save() {
     try {
-      await this.SetCaseInterview(this.caselInterview);
+      await this.SetCaseInterview(this.caseInterview);
       $("#addCaseInterview").modal("hide");
     } catch (error) {
       alert(error);
@@ -102,9 +88,11 @@ export class AddCaseInterviewModalComponent implements OnInit {
   }
 
   // 新增/更新認輔資料，Service 使用UID是否有值判斷新增或更新
-  async SetCaseInterview(data: CaselInterview) {
+  async SetCaseInterview(data: CaseInterview) {
     if (!data.isPrivate) data.isPrivate = "true";
-    data.CounselTypeOther = "";
+    if (!data.CounselTypeOther) {
+      data.CounselTypeOther = "";
+    }
     let req = {
       UID: data.UID,
       SchoolYear: data.SchoolYear,
@@ -120,7 +108,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       Content: data.Content,
       CaseID: data.CaseID
     };
-    console.log(req);
+    // console.log(req);
 
     let resp = await this.dsaService.send("SetCaseInterview", {
       Request: req

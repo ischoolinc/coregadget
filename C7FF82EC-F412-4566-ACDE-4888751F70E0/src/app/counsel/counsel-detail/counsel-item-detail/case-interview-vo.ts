@@ -1,5 +1,5 @@
 // 認輔資料
-export class CaselInterview {
+export class CaseInterview {
   constructor() {}
   UID: string;
   StudentName: string; // 姓名
@@ -16,6 +16,84 @@ export class CaselInterview {
   Content: string; // 內容
   CaseID: string; // 個案uid
   CaseNo: string; //個案編號
+  isSchoolYearHasValue: boolean = false;
+  isSemesterHasValue: boolean = false;
+  isOccurDateHasValue: boolean = false;
+  isCounselTypeHasValue: boolean = false;
+  isContactNameHasValue: boolean = false;
+  isContentHasValue: boolean = false;
+  isCounselTypeOtherDisable: boolean = true;
+  selectCounselType: string = "請選擇訪談方式";
+  isSaveDisable: boolean = true;
+
+  // 檢查是否有值
+  checkValue() {
+    if (this.SchoolYear) {
+      this.isSchoolYearHasValue = true;
+    } else {
+      this.isSchoolYearHasValue = false;
+    }
+
+    if (this.Semester) {
+      this.isSemesterHasValue = true;
+    } else {
+      this.isSemesterHasValue = false;
+    }
+
+    if (this.OccurDate) {
+      this.isOccurDateHasValue = true;
+    } else {
+      this.isOccurDateHasValue = false;
+    }
+
+    if (this.CounselType) {
+      this.isCounselTypeHasValue = true;
+    } else {
+      this.isCounselTypeHasValue = false;
+    }
+
+    if (this.ContactName) {
+      this.isContactNameHasValue = true;
+    } else {
+      this.isContactNameHasValue = false;
+    }   
+
+    if (this.Content) {
+      this.isContentHasValue = true;
+    } else {
+      this.isContentHasValue = false;
+    }
+
+    if (
+      this.isSchoolYearHasValue &&
+      this.isSemesterHasValue &&
+      this.isOccurDateHasValue &&
+      this.isCounselTypeHasValue &&
+      this.isContactNameHasValue &&      
+      this.isContentHasValue
+    ) {
+      this.isSaveDisable = false;
+    } else {
+      this.isSaveDisable = true;
+    }
+  }
+
+   // 設定訪談方式
+   setCounselType(value: string) {
+    this.CounselType = value;
+    this.selectCounselType = value;
+    if (value === "其他") {
+      this.isCounselTypeOtherDisable = false;
+    } else {
+      this.isCounselTypeOtherDisable = true;
+      this.CounselTypeOther = '';
+    }
+    if (this.CounselType) {
+      this.isCounselTypeHasValue = true;
+    } else {
+      this.isCounselTypeHasValue = false;
+    }
+  }
 
   public parseDate(dt: Date) {
     let y = dt.getFullYear();

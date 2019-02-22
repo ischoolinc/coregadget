@@ -19,6 +19,7 @@ export class CounselInterview {
   ReferralReply: string; //輔導室針對轉介之回覆
   ReferralStatus: string; //輔導室回覆轉介接收狀態
   ReferralReplyDate: string; //輔導室回覆轉介之日期
+  RefTeacherID: string; 
   Content: string; //內容
   ContactItem: string; //聯絡事項
   isReferralValue: boolean = false;
@@ -32,6 +33,7 @@ export class CounselInterview {
   isCounselTypeOtherDisable: boolean = true;
   selectCounselType: string = "請選擇輔導方式";
   isSaveDisable: boolean = true;
+  isEditDisable: boolean = true;
 
   // 檢查是否有值
   checkValue() {
@@ -100,6 +102,7 @@ export class CounselInterview {
       this.isCounselTypeOtherDisable = false;
     } else {
       this.isCounselTypeOtherDisable = true;
+      this.CounselTypeOther = '';
     }
     if (this.CounselType) {
       this.isCounselTypeHasValue = true;
@@ -108,12 +111,12 @@ export class CounselInterview {
     }
   }
 
-  // 取得是否轉介文字
+  // 取得是否轉介，如果有轉介回傳狀態
   getIsReferralString() {
     if (this.isReferral === "t") {
-      return "是";
+      return this.ReferralStatus;
     } else {
-      return "否";
+      return "";
     }
   }
   public parseDate(dt: Date) {

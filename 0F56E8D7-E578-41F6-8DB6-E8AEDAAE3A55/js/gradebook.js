@@ -128,6 +128,7 @@
         // 取得平時評量項目、設定欄位清單、設定平時評量匯入項目
         $scope.getGradeItem = function () {
             $scope.importGradeItemList = [];
+            $scope.gradeItemList = null;
 
             $scope.connection.send({
                 service: "TeacherAccess.GetCourseExtensions",
@@ -144,9 +145,13 @@
                         alert("TeacherAccess.GetCourseExtensions Error");
                     } else {
                         $scope.$apply(function () {
-                            if (response !== null && response.Response !== null && response.Response !== '') {
+                            if (response !== null && response.Response !== null && response.Response !== '' && response.Response.CourseExtension.Extension.GradeItem) {
 
-                                $scope.gradeItemList = [].concat(response.Response.CourseExtension.Extension.GradeItem.Item);
+                                $scope.gradeItemList = [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []);
+
+                                // 在修改評分項目後會重新getGradeItem這時候在重新計算平時評量成績
+                                $scope.calcExtensionScore();
+
                                 $scope.gradeItemList.forEach(function (item) {
                                     // examList 物件結構
                                     item.Type = 'Number';
@@ -315,7 +320,9 @@
             });
         }
 
-        // 顯示編輯評分項目
+        /*
+            顯示編輯評分項目
+        */
         $scope.showCustomAssessmentConfig = function () {
             $scope.current.ConfigCustomAssessmentItem = {
                 Item: []
@@ -377,14 +384,25 @@
                     $scope.current.ConfigCustomAssessmentItem.Mode = "Editor";
                 }
             };
-            $scope.gradeItemList.forEach(function (item) {
+            // 如果沒有評分項目的話，初始化。
+            var item = {
+                Index: '1',
+                Name: '成績_1',
+                SubExamID: '成績_1',
+                Weight: '1'
+            };
+            [].concat($scope.gradeItemList || item).forEach(function (item) {
                 $scope.current.ConfigCustomAssessmentItem.Item.push(angular.copy(item));
             });
             $('#editScoreItemModal').modal('show');
         }
 
-        // 儲存評分項目
+        /*  儲存評分項目
+            1. 平時評量成績重新計算
+            2. 儲存平時評量成績
+        */
         $scope.saveCustomAssessmentConfig = function () {
+            
             var body = {
                 Content: {
                     CourseExtension: {
@@ -448,6 +466,47 @@
                     errMsg += (errMsg ? "\n" : "") + "Weight is required and must be number.";
                 alert(errMsg);
             }
+        }
+
+        /*
+            重新計算平時評量成績
+        */
+        $scope.calcExtensionScore = function () {
+            // 重新計算每位學生的平時評量成績
+            $scope.studentList.forEach(function (student) {
+                var totalWeight = 0;
+                var totalWeightScore = 0;
+                var done = false;
+                // 計算平時評量成績
+                $scope.gradeItemList.forEach(function (item) {
+                    if (student[item.SubExamID] || ('' + student[item.SubExamID]) == '0') {
+                        var score = Number(student[item.SubExamID]);
+                        var weight = Number(item.Weight);
+                        if (!isNaN(score) && !isNaN(weight)) {
+                            //處理javascript精度問題
+                            score = score * 100000;
+                            weight = weight * 100000;
+                            totalWeightScore += score * weight;
+                            totalWeight += weight;
+                        }
+                    }
+                });
+
+                if (totalWeight) {
+                    // 透過round function執行四捨五入取小數第二位
+                    student['_Exam平時評量'] = rounding((totalWeightScore / totalWeight / 100000), 2);
+                    //$scope.current.Student['_Exam平時評量'] = (totalWeightScore / totalWeight / 100000).toFixed(2);
+                    $scope.effortPairList.forEach(function (effortItem) {
+                        if (!done && Number(student['_Exam平時評量']) >= Number(effortItem.Score)) {
+                            student['_Exam平時評量_努力程度'] = effortItem.Code;
+
+                            done = true;
+                        }
+                    });
+                }
+
+            });
+
         }
 
         // 匯出Excel
@@ -1889,7 +1948,7 @@
                                                         studentMapping[item.StudentID]["_Exam平時評量_努力程度"] = item.Extension.Exam.Degree;
 
                                                         if (item.Extension.Exam.Item) {
-                                                            item.Extension.Exam.Item.forEach(function (data, index) {
+                                                            [].concat(item.Extension.Exam.Item || []).forEach(function (data, index) {
                                                                 studentMapping[item.StudentID][data.SubExamID] = data.Score;
                                                                 // 紀錄原始成績
                                                                 studentMapping[item.StudentID]['Origin' + data.SubExamID] = data.Score;

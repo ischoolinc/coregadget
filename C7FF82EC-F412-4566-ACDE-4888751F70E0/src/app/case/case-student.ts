@@ -3,6 +3,7 @@ export class CaseStudent {
     this.CaseSource = "";
     this.setOccurDateNow();
     this.GuidanceTeacher = new VoluntaryGuidanceTeacher();
+    this.isGuidanceTeacherHasValue = false;
   }
   UID: string;
   ClassName: string; // 班級
@@ -33,11 +34,66 @@ export class CaseStudent {
   CaseCount: string; // 個案輔導次數
   PhotoUrl: string;
   GuidanceTeacher: VoluntaryGuidanceTeacher;
-  ß;
+
+  isOccurDateHasValue: boolean = false;
+  isCaseNoHasValue: boolean = false;
+  isGuidanceTeacherHasValue: boolean = false;
+  isCaseSourceHasValue: boolean = false;
+  isSaveButtonDisable: boolean = true;
+  isAddButtonDisable: boolean = true;
+
+  // 當透過轉介建立才會在值，儲存輔導紀錄 uid
+  RefCounselInterviewID: string = "";
+
   // 設定個案日期為現在
   public setOccurDateNow() {
     let dt = new Date();
     this.OccurDate = this.parseDate(dt);
+    this.isOccurDateHasValue = true;
+  }
+
+  checkValue() {
+    if (this.OccurDate) {
+      this.isOccurDateHasValue = true;
+    } else {
+      this.isOccurDateHasValue = false;
+    }
+
+    if (this.CaseNo) {
+      this.isCaseNoHasValue = true;
+    } else {
+      this.isCaseNoHasValue = false;
+    }
+
+    if (this.CaseSource) {
+      this.isCaseSourceHasValue = true;
+    } else {
+      this.isCaseSourceHasValue = false;
+    }
+
+    if (this.GuidanceTeacher && this.GuidanceTeacher.UID) {
+      this.isGuidanceTeacherHasValue = true;
+    } else {
+      this.isGuidanceTeacherHasValue = false;
+    }
+
+    if (
+      this.isOccurDateHasValue &&
+      this.isCaseNoHasValue &&
+      this.isGuidanceTeacherHasValue &&
+      this.isCaseSourceHasValue && 
+      this.StudentID
+    ) {
+      this.isSaveButtonDisable = false;
+    } else {
+      this.isSaveButtonDisable = true;
+    }
+
+    if (this.RefCounselInterviewID) {
+      this.isAddButtonDisable = true;
+    } else {
+      this.isAddButtonDisable = false;
+    }
   }
 
   public parseDate(dt: Date) {

@@ -12,6 +12,7 @@ import {
   SemesterInfo
 } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
+import { AppComponent } from "../../app.component";
 
 @Component({
   selector: "app-counsel-list",
@@ -32,7 +33,9 @@ export class CounselListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private counselStudentService: CounselStudentService,
     @Optional()
-    private counselComponent: CounselComponent
+    private counselComponent: CounselComponent,
+    @Optional()
+    private appComponent: AppComponent
   ) {}
 
   ngOnInit() {
@@ -40,6 +43,7 @@ export class CounselListComponent implements OnInit {
       (params: ParamMap): void => {
         this.mod = params.get("mod");
         this.target = params.get("target");
+
         this._semesterInfo = [];
         this.getList();
       }
@@ -51,6 +55,12 @@ export class CounselListComponent implements OnInit {
       this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
       this.currentSemester = this.counselStudentService.currentSemester;
       this.deny = false;
+      // 如果是班導認輔老師轉介個案都無法使用
+      if (this.appComponent.roleService) {
+        this.appComponent.roleService.SetEnableReferral(false);
+        this.appComponent.roleService.SetEnableCase(false);
+      }
+
       if (this.mod === "class") {
         if (this.counselStudentService.classMap.has(this.target)) {
           this.targetList = this.counselStudentService.classMap.get(
@@ -60,15 +70,40 @@ export class CounselListComponent implements OnInit {
             this.counselComponent.setSelectItem(
               this.counselStudentService.classMap.get(this.target).ClassName
             );
+            this.counselStudentService.selectTarget = this.target;
+
+            // 細項檢查權限
+            if (this.counselStudentService.classMap.get(this.target).Role) {
+              if (
+                this.counselStudentService.classMap.get(this.target).Role[0] ===
+                "班導師"
+              ) {
+                // 使用轉介,個案
+                this.appComponent.roleService.SetEnableCase(false);
+                this.appComponent.roleService.SetEnableReferral(false);
+              }
+              if (
+                this.counselStudentService.classMap.get(this.target).Role[0] ===
+                "輔導老師"
+              ) {
+                // 使用轉介,個案
+                this.appComponent.roleService.SetEnableCase(true);
+                this.appComponent.roleService.SetEnableReferral(true);
+              }
+            }
           }
         } else {
           this.deny = true;
         }
       }
       if (this.mod === "guidance") {
+        if (this.counselComponent != null) {
+          if (this.target === "g") {
+            this.counselComponent.setSelectItem("認輔學生");
+          }
+        }
         let tmp = [];
         this.counselStudentService.guidanceStudent.forEach(data => {
-          
           let key = `${data.SchoolYear}_${data.Semester}`;
           if (!tmp.includes(key)) {
             let sms: SemesterInfo = new SemesterInfo();
@@ -79,10 +114,8 @@ export class CounselListComponent implements OnInit {
           }
         });
         this.targetList = this.counselStudentService.guidanceStudent;
-        if (this.counselComponent != null) {
-          this.counselComponent.setSelectItem("認輔學生");
-        }
       }
+
       if (this.mod === "search") {
         this.targetList = [];
         this.counselStudentService.studentMap.forEach(
@@ -95,8 +128,6 @@ export class CounselListComponent implements OnInit {
             }
           }
         );
-
-        console.log(this.targetList);
 
         if (this.counselComponent != null) {
           this.counselComponent.setSelectItem("搜尋");

@@ -70,7 +70,7 @@ export class AddInterviewModalComponent implements OnInit {
           this.counselDetailComponent.currentStudent.Role.indexOf("輔導老師") >=
             0
         ) {
-          this._CounselInterview.AuthorName = this.counselStudentService.teacherName;
+          this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
         }
       }
       // console.log(this._CounselInterview);
@@ -88,7 +88,7 @@ export class AddInterviewModalComponent implements OnInit {
     try {
       if (this._CounselInterview.isReferralValue) this._CounselInterview.isReferral = "t";
       else this._CounselInterview.isReferral = "f";
-      this.SetCounselInterview(this._CounselInterview);
+      await this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");
     } catch (error) {
       alert(error);

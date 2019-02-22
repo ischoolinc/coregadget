@@ -43,7 +43,7 @@
           <li>輔導方式</li>
           <li>記錄者</li>
           <li>聯絡事項</li>
-          <li>轉介</li>
+          <li>轉介狀況</li>
           <li></li>
         </ol>
       </li>
@@ -65,16 +65,17 @@
               {{ counselRec.CounselType }}
             </li>
             <li data-title="記錄者" (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
-            <li class="text-left text-normal" data-title="聯絡事項">
+            <li class="text-left text-normal" data-title="聯絡事項" (click)="viewInterviewModal(counselRec)">
               {{ counselRec.ContactItem }}
             </li>
-            <li data-title="轉介" (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
+            <li data-title="轉介狀況" (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
 
             <li data-title="">
               <button
                 class="btn btn-light"
                 data-toggle="modal"
                 (click)="editInterviewModal(counselRec)"
+                [disabled]="counselRec.isEditDisable"
               >
                 修改
               </button>

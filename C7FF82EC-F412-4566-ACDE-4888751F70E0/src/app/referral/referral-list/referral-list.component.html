@@ -64,7 +64,7 @@
               {{ item.ReferralDesc }}
             </li>
             <li data-title="授理狀況" (click)="toCounselDetail(item)">
-              {{ item.GetReferralStatus() }}
+              {{ item.ReferralStatus }}
             </li>
             <li data-title="授理日期" (click)="toCounselDetail(item)">
               {{ item.ReferralReplyDate }}
@@ -85,6 +85,7 @@
                 data-backdrop="static"
                 data-target="#newCase"
                 (click)="setNewCaseMmodal(item)"
+                [disabled]="item.isAddCaseButtonDisable"
               >
                 建立個案
               </button>

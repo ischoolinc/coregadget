@@ -52,7 +52,7 @@ export class ReferralListComponent implements OnInit {
     this.selectItem = item;
     if (this.selectItem === "已結案") {
       this.ReferralStudentList.forEach(data => {
-        if (data.GetReferralStatus() === "已處理") {
+        if (data.ReferralStatus === "已處理") {
           data.isDisplay = true;
         } else {
           data.isDisplay = false;
@@ -62,7 +62,7 @@ export class ReferralListComponent implements OnInit {
 
     if (this.selectItem === "未結案") {
       this.ReferralStudentList.forEach(data => {
-        if (data.GetReferralStatus() !== "已處理") {
+        if (data.ReferralStatus !== "已處理") {
           data.isDisplay = true;
         } else {
           data.isDisplay = false;
@@ -85,28 +85,30 @@ export class ReferralListComponent implements OnInit {
   setNewCaseMmodal(refStudent: ReferralStudent) {
     this.case_modal.loadData();
     this.case_modal.setCaseFromReferral(refStudent);
-    $("#case_modal").modal("show");
+    $("#newCase").modal("show");
     // 關閉畫面
-    $("#case_modal").on("hide.bs.modal", () => {
+    $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#newCase").off("hide.bs.modal");
     });
   }
 
   setGrantModal(refStudent: ReferralStudent) {
     this.grant_modal.referralStudent = refStudent;
-    this.grant_modal.loadDefault();
+    this.grant_modal.referralStudent.loadDefault();
+    this.grant_modal.referralStudent.checkValue();
     $("#grant_modal").modal("show");
     // 關閉畫面
     $("#grant_modal").on("hide.bs.modal", () => {
       // 重整資料
       this.loadData();
+      $("#grant_modal").off("hide.bs.modal");
     });
   }
 
   loadData() {
     this.GetReferralStudent();
-    
   }
 
   async GetReferralStudent() {
@@ -134,6 +136,12 @@ export class ReferralListComponent implements OnInit {
       rec.ReferralStatus = studRec.ReferralStatus;
       rec.ReferralReplyDate = studRec.ReferralReplyDate;
       rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
+      rec.RefCaseID = studRec.CaseID;
+      rec.PhotoUrl =`${
+        this.dsaService.AccessPoint
+      }/GetStudentPhoto?stt=Session&sessionid=${
+        this.dsaService.SessionID
+      }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.isDisplay = false;
       if (this.selectItem === "已結案") {
         if (rec.ReferralStatus === "已處理") {
@@ -142,11 +150,11 @@ export class ReferralListComponent implements OnInit {
       } else {
         rec.isDisplay = true;
       }
-
+      rec.checkValue();
       this.ReferralStudentList.push(rec);
     });
 
-    this.setSelectItem('未結案');
+    this.setSelectItem("未結案");
     this.isLoading = false;
   }
 }

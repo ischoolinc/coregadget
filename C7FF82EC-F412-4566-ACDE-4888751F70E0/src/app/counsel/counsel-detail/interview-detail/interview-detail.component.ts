@@ -56,13 +56,13 @@ export class InterviewDetailComponent implements OnInit {
     this.isLoading = true;
     this._StudentID = StudentID;
     this._semesterInfo = [];
-    let tmp = [];
+    let tmp = [];    
     // 取得學生輔導資料
-    this._counselInterview = await this.GetCounselInterviewByStudentID(
-      this._StudentID
+    let dataList = await this.GetCounselInterviewByStudentID(
+      this.counselDetailComponent.currentStudent.StudentID
     );
 
-    this._counselInterview.forEach(data => {
+    dataList.forEach(data => {
       let key = `${data.SchoolYear}_${data.Semester}`;
       if (!tmp.includes(key)) {
         let sms: SemesterInfo = new SemesterInfo();
@@ -72,6 +72,7 @@ export class InterviewDetailComponent implements OnInit {
         tmp.push(key);
       }
     });
+    this._counselInterview = dataList;
     this.isLoading = false;
   }
 
@@ -94,6 +95,7 @@ export class InterviewDetailComponent implements OnInit {
     $("#addInterview").on("hide.bs.modal", () => {
       // 重整資料
       this.loadCounselInterview(this._StudentID);
+      $("#addInterview").off("hide.bs.modal");
     });
   }
 
@@ -101,8 +103,16 @@ export class InterviewDetailComponent implements OnInit {
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
     this._addInterview._CounselInterview = counselView;
+    this._addInterview._CounselInterview.selectCounselType =
+      counselView.CounselType;
     this._addInterview.loadDefaultData();
     $("#addInterview").modal("show");
+    // 關閉畫面
+    $("#addInterview").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadCounselInterview(this._StudentID);
+      $("#addInterview").off("hide.bs.modal");
+    });
   }
 
   // 取得透過學生系統編號取得學生輔導資料
@@ -138,6 +148,14 @@ export class InterviewDetailComponent implements OnInit {
       rec.ReferralReplyDate = counselRec.ReferralReplyDate;
       rec.Content = counselRec.Content;
       rec.ContactItem = counselRec.ContactItem;
+      rec.RefTeacherID = counselRec.RefTeacherID;
+      // 判斷是否是自己新增才可以修改
+      if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
+        rec.isEditDisable = false;
+      } else {
+        rec.isEditDisable = true;
+      }
+
       data.push(rec);
     });
     return data;
