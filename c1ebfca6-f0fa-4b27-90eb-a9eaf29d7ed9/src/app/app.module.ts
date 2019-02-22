@@ -13,7 +13,7 @@ import { MainComponent } from './pages/main.component';
 import { PeriodChooserComponent } from './modal/period-chooser.component';
 import { StudentPickComponent } from './pages/student-pick.component';
 import { DebugComponent } from './modal/debug.component';
-import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
 import { WaitingComponent } from './modal/waiting.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
@@ -42,7 +42,7 @@ import { TeacherHelperComponent } from './pages/teacher-helper.component';
     MatTabsModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatIconModule
+    MatIconModule,
   ],
   providers: [GadgetService, DSAService, ConfigService, AlertService],
   bootstrap: [AppComponent],

@@ -63,7 +63,8 @@ export class StudentPickComponent implements OnInit {
         // 學生清單（含點名資料）。 
         await this.reloadStudentAttendances();
       } catch (error) {
-        this.alert.json(error.message);
+        this.alert.json('ServiceError:rollcall.GetStudents');
+        console.log(error);
       }
 
       // 當有假別預設選第1個
@@ -80,7 +81,6 @@ export class StudentPickComponent implements OnInit {
 
     const c = await this.gadget.getContract("1campus.mobile.v2.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
-    console.log(session.SessionID);
 
     for (const stu of students) {
 
@@ -89,7 +89,6 @@ export class StudentPickComponent implements OnInit {
       const status = this.getSelectedAttendance(stu);
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
 
-      // console.log(stu.PhotoUrl);
     }
     this.calcSummaryText();
 

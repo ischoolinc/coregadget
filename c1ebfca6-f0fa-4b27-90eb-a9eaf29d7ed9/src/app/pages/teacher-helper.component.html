@@ -7,7 +7,7 @@
         <a href="#"
            [routerLink]="['/main']">課堂點名</a>
       </li>
-      <ng-container *ngIf="!students.length > 0 else titleText">
+      <ng-container *ngIf="!(students.length > 0) else titleText">
         <li class="breadcrumb-item active"
             aria-current="page">loading...</li>
       </ng-container>
@@ -20,7 +20,7 @@
     </ol>
   </nav>
 
-  <ng-container *ngIf="!students.length > 0 else elseTemplate">
+  <ng-container *ngIf="!(students.length > 0) else elseTemplate">
     <div style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
       loading...
     </div>
