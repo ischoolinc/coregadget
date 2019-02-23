@@ -36,7 +36,7 @@ export class GrantModalComponent implements OnInit {
       ReferralReplyDate: data.ReferralReplyDate,
       ReferralReplyDesc: data.ReferralReplyDesc
     };
-    console.log(req);
+    // console.log(req);
 
     let resp = await this.dsaService.send("SetReferralStudent", {
       Request: req

@@ -1,31 +1,48 @@
-<div *ngIf="!roleService.isLoading&&!counselStudentService.isLoading; else tmpLoading"
-     class="tab-content">
-    <app-permission-denied *ngIf="!roleService.enableCounsel"></app-permission-denied>
-    <!-- TAB 1 輔導學生 -->
-    <div *ngIf="roleService.enableCounsel"
-         class="tab-pane fade show active">
-        <div class="input-group my-3">
-            <div *ngIf="counselStudentService.counselClass"
-                 class="input-group-prepend">
-                <button class="btn btn-light dropdown-toggle"
-                        type="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">{{selectItem||'請選擇'}}</button>
-                <div class="dropdown-menu">
-                    <a *ngFor="let classRec of counselStudentService.counselClass"
-                       [routerLink]="['list', 'class', classRec.ClassID]"
-                       [ngClass]="{active: selectItem===classRec.ClassName}"
-                       class="dropdown-item">
-                        {{classRec.ClassName}}
-                    </a>
-                    <a class="dropdown-item"
-                       *ngIf="roleService.role.indexOf('認輔老師') >= 0"
-                       [routerLink]="['list', 'guidance','g']"
-                       [ngClass]="{active: selectItem==='認輔學生'}">
-                        認輔學生
-                    </a>
-                    <!-- <a *ngFor="let classRec of counselStudentService.counselClass"
+<div
+  *ngIf="
+    !roleService.isLoading && !counselStudentService.isLoading;
+    else tmpLoading
+  "
+  class="tab-content"
+>
+  <app-permission-denied
+    *ngIf="!roleService.enableCounsel"
+  ></app-permission-denied>
+  <!-- TAB 1 輔導學生 -->
+  <div *ngIf="roleService.enableCounsel" class="tab-pane fade show active">
+    <div class="input-group my-3">
+      <div
+        *ngIf="counselStudentService.counselClass"
+        class="input-group-prepend"
+      >
+        <button
+          class="btn btn-light dropdown-toggle"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ selectItem || "請選擇" }}
+        </button>
+        <div class="dropdown-menu scrollable-menu">
+          <a
+            class="dropdown-item"
+            *ngIf="roleService.role.indexOf('認輔老師') >= 0"
+            [routerLink]="['list', 'guidance', 'g']"
+            [ngClass]="{ active: selectItem === '認輔學生' }"
+          >
+            認輔學生
+          </a>
+          <a
+            *ngFor="let classRec of counselStudentService.counselClass"
+            [routerLink]="['list', 'class', classRec.ClassID]"
+            [ngClass]="{ active: selectItem === classRec.ClassName }"
+            class="dropdown-item"
+          >
+            {{ classRec.ClassName }}
+          </a>
+
+          <!-- <a *ngFor="let classRec of counselStudentService.counselClass"
                        class="dropdown-item"
                        [routerLink]="['list', 'class', classRec.id]"
                        [ngClass]="{active: selectItem===classRec.className}">
@@ -37,9 +54,9 @@
                        [ngClass]="{active: selectItem==='認輔學生'}">
                         認輔學生
                     </a> -->
-                </div>
-            </div>
-            <!-- <div class="dropdown">
+        </div>
+      </div>
+      <!-- <div class="dropdown">
                 <button class="btn btn-light dropdown-toggle mr-3"
                         type="button"
                         data-toggle="dropdown"
@@ -69,22 +86,23 @@
                        href="#">一年三班</a>
                 </div>
             </div> -->
-            <!-- 說明 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+      <!-- 說明 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
               使用 autocomplete 模式呈現全班名單。
               https://material.angularjs.org/latest/demo/autocomplete
           ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
-        <!-- 搜尋功能未完整先註解 -->
-          <!-- <input type="text"
+      <!-- 搜尋功能未完整先註解 -->
+      <!-- <input type="text"
                    class="form-control"
                    placeholder="搜尋" (keydown.enter)="search()" [(ngModel)]="searchText"> -->
-        </div>
-        <router-outlet></router-outlet>
     </div>
+    <router-outlet></router-outlet>
+  </div>
 </div>
-<ng-template #tmpLoading
-             class="container">
-    <div class="row justify-content-center"
-         style="margin-top:250px;margin-bottom:200px;">
-        Loading...
-    </div>
+<ng-template #tmpLoading class="container">
+  <div
+    class="row justify-content-center"
+    style="margin-top:250px;margin-bottom:200px;"
+  >
+    Loading...
+  </div>
 </ng-template>

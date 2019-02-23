@@ -53,6 +53,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
         this.caseInterview.setCounselType(this.caseInterview.CounselType);
       } else {
         // 新增
+        this.editModeString = "新增";
         this._studentName = this.counselDetailComponent.currentStudent.StudentName;
         this.caseInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
         this.caseInterview.SchoolYear = this.counselStudentService.currentSchoolYear;

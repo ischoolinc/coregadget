@@ -9,6 +9,10 @@
             3.尚未在 input 內輸入搜尋條件
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
     <div *ngIf="mod === 'class' || mod == 'search'" class="class-page">
+      <ng-container *ngIf="targetList.length === 0">
+        <div class="row justify-content-center">沒有學生資料。</div>
+      </ng-container>
+
       <ul class="rwd-table">
         <li class="thead">
           <div class="font-weight-bold mb-2">
@@ -72,6 +76,9 @@
                            for="customCheck1">只顯示末完成之學生</label>
                 </div>
             </div> -->
+      <ng-container *ngIf="_semesterInfo.length === 0">
+        <div class="row justify-content-center">沒有學生資料。</div>
+      </ng-container>
 
       <ng-container *ngFor="let sems of _semesterInfo">
         <div class="font-weight-bold">
@@ -107,7 +114,9 @@
                 <li data-title="座號">{{ item.SeatNo }}</li>
                 <li data-title="姓名">{{ item.StudentName }}</li>
                 <li data-title="筆數">{{ item.InterviewCount }}</li>
-                <li data-title="最後輔導日期">{{ item.LastInterviewDate | date: "yyyy-MM-dd" }}</li>
+                <li data-title="最後輔導日期">
+                  {{ item.LastInterviewDate | date: "yyyy-MM-dd" }}
+                </li>
                 <li class="text-normal" data-title="輔導對象">
                   {{ item.LastInterviewContact }}
                 </li>

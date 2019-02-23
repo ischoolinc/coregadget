@@ -10,7 +10,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="newCaseLabel">建立新個案輔導資料</h5>
+        <h5 class="modal-title" id="newCaseLabel">{{editModeString}}個案輔導資料</h5>
         <button
           type="button"
           class="close"
@@ -33,7 +33,7 @@
               >
                 {{ selectClassNameValue }}
               </button>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu scrollable-menu">
                 <a
                   class="dropdown-item"
                   (click)="setClassName(item)"
@@ -52,7 +52,7 @@
               >
                 {{ selectSeatNoValue }}
               </button>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu scrollable-menu">
                 <a
                   class="dropdown-item"
                   (click)="setSeatNo(item)"

@@ -12,38 +12,40 @@
       <div class="card mb-3">
         <div class="card-body row">
           <div class="col-md-2 mb-3 mb-md-0">
-            <img class="w-100" src={{item.PhotoUrl}} />
+            <img class="w-100" src="{{ item.PhotoUrl }}" />
           </div>
           <div class="col-md-10">
             <div class="row">
-                <!-- <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
+              <!-- <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
                 <div class="col-8 col-md-4 mb-3"></div>
                 <div class="col-11 col-md-2 mb-3 font-weight-bold"></div>
                 <div class="col-1 col-md-4 mb-3">  </div>   -->
-               
+
+              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
+              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold">
+              </div>
+              <div class="col-8 col-md-4 mb-3"><button
+                class="btn btn-info"
+                data-toggle="modal"
+                data-backdrop="static"
+                (click)="addInterviewModal(item)"
+              >
+                <i class="material-icons">add</i> 新增
+              </button></div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案編號</div>
               <div class="col-8 col-md-4 mb-3">{{ item.CaseNo }}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案來源</div>
-              <div class="col-8 col-md-4 mb-3">{{ item.CaseSource }} </div>              
+              <div class="col-8 col-md-4 mb-3">{{ item.CaseSource }}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案日期</div>
-              <div class="col-8 col-md-4 mb-3">{{ item.OccurDate  | date: "yyyy-MM-dd"}}</div>
+              <div class="col-8 col-md-4 mb-3">
+                {{ item.OccurDate | date: "yyyy-MM-dd" }}
+              </div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">班導師</div>
               <div class="col-8 col-md-4 mb-3">{{ item.TeacherName }}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">學生身分</div>
               <div class="col-8 col-md-4 mb-3">{{ item.StudentIdentity }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">
-                <button
-                  class="btn btn-info"
-                  data-toggle="modal"
-                  data-backdrop="static"
-                  (click)="addInterviewModal(item)"
-                >
-                  <i class="material-icons">add</i> 新增
-                </button>
-              </div>             
-              <div class="col-8 col-md-4 mb-3">
-                
-              </div>
+
               <div class="col-4 col-md-2 mb-3 font-weight-bold">是否結案</div>
               <div class="col-8 col-md-4 mb-3">否</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">結案日期</div>

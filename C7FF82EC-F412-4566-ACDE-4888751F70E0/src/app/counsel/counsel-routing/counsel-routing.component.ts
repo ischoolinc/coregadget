@@ -25,25 +25,23 @@ export class CounselRoutingComponent implements OnInit {
   routing() {
     let classID = "";
     if (!this.counselStudentService.isLoading) {
-      if (this.counselStudentService.counselClass.length > 0) {
-       
-        if (!this.counselStudentService.selectTarget) {
-          classID = this.counselStudentService.counselClass[0].ClassID;
-        } else {
-          classID = this.counselStudentService.selectTarget;
-        }
-        this.router.navigate(["list", "class", classID], {
+      if (!this.counselStudentService.selectTarget && this.counselStudentService.guidanceStudent.length > 0) {
+        this.router.navigate(["list", "guidance", "g"], {
           relativeTo: this.route,
           skipLocationChange: true
         });
-      }
-      if (this.counselStudentService.guidanceStudent.length > 0) {
-        if (!classID){
-          this.router.navigate(["list", "guidance", ""], {
+      } else {
+        if (this.counselStudentService.counselClass.length > 0) {
+          if (!this.counselStudentService.selectTarget) {
+            classID = this.counselStudentService.counselClass[0].ClassID;
+          } else {
+            classID = this.counselStudentService.selectTarget;
+          }
+          this.router.navigate(["list", "class", classID], {
             relativeTo: this.route,
             skipLocationChange: true
           });
-        }    
+        }
       }
     } else {
       setTimeout(this.routing, 100);

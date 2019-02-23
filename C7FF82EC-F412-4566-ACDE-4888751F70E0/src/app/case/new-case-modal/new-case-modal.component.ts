@@ -22,6 +22,7 @@ export class NewCaseModalComponent implements OnInit {
 
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
+  editModeString: string = '新增';
   public caseStudent: CaseStudent;
 
   selectVoluntaryGuidanceTeacher: VoluntaryGuidanceTeacher;
@@ -41,7 +42,7 @@ export class NewCaseModalComponent implements OnInit {
   currentSemester: number;
 
   ngOnInit() {
-    this.loadData();
+    this.loadData();   
   }
 
   loadData() {
@@ -61,13 +62,14 @@ export class NewCaseModalComponent implements OnInit {
     this.GetVoluntaryGuidanceTeacher();
 
     // 檢查狀態
-    if (this.isAddMode) {
+    if (this.isAddMode) {      
       if (!this.caseStudent.RefCounselInterviewID) {
         this.isCanSetClass = true;
       } else {
         this.isCanSetClass = false;
       }
     } else {
+      
     }
   }
 
@@ -79,6 +81,7 @@ export class NewCaseModalComponent implements OnInit {
 
   // 設定班級名稱
   setClassName(item: CounselClass) {
+    $("#newCase").modal("handleUpdate");
     this.selectClassNameValue = item.ClassName;
     // 請除可選學生號碼
     this.canSelectNoList = [];
@@ -95,6 +98,7 @@ export class NewCaseModalComponent implements OnInit {
 
   //設定座號
   setSeatNo(item: CounselStudent) {
+    
     this.selectSeatNoValue = item.SeatNo;
     this.caseStudent = new CaseStudent();
     this.caseStudent.Name = item.StudentName;
@@ -112,7 +116,7 @@ export class NewCaseModalComponent implements OnInit {
 
   // 來至轉介建立個案功能
   setCaseFromReferral(refData: ReferralStudent) {
-    this.caseStudent = new CaseStudent();
+    this.caseStudent = new CaseStudent();    
     this.caseStudent.ClassName = refData.ClassName;
     this.caseStudent.Name = refData.Name;
     this.caseStudent.SeatNo = refData.SeatNo;
@@ -124,6 +128,7 @@ export class NewCaseModalComponent implements OnInit {
     this.selectClassNameValue = this.caseStudent.ClassName;
     this.selectSeatNoValue = this.caseStudent.SeatNo;
     this.isAddMode = false;
+    this.editModeString = "新增";
     this.isCanSetClass = false;
   }
 

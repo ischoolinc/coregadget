@@ -30,14 +30,19 @@ export class CaseComponent implements OnInit {
   // 新增
   setNewCaseModal() {
     this.case_modal.isAddMode = true;
+    this.case_modal.editModeString = "新增";
     this.case_modal.caseStudent = new CaseStudent();
     this.case_modal.selectClassNameValue = "請選擇班級";
     this.case_modal.selectSeatNoValue = "請選擇座號";
     this.case_modal.selectCaseSourceValue = "請選擇個案來源";
     this.case_modal.selectVoluntaryGuidanceValue = "請選擇認輔老師";
-    $("#newCase").modal("show");
+    this.case_modal.GetDefault();
+    this.case_modal.isCanSetClass = true;
+    
+    $("#newCase").modal("show");   
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
+   
       // 重整資料
       this.loadData();
       $("#newCase").off("hide.bs.modal");
@@ -47,6 +52,7 @@ export class CaseComponent implements OnInit {
   // 編輯
   setEditCaseModal(item: CaseStudent) {
     this.case_modal.isAddMode = false;
+    this.case_modal.editModeString = "修改";
     this.case_modal.isCanSetClass = false;
     this.case_modal.caseStudent = item;
     this.case_modal.selectClassNameValue = item.ClassName;
