@@ -57,6 +57,12 @@ export class ReferralDetailComponent implements OnInit {
   setGrantModal(refStudent: ReferralStudent) {
     this.grant_modal.referralStudent = refStudent;
     this.grant_modal.referralStudent.loadDefault();
+    
+    if (this.grant_modal.referralStudent.ReferralStatus == "") {
+      this.grant_modal.referralStudent.ReferralStatus = "未處理";
+      this.grant_modal.referralStudent.isUnPrecessed = true;
+      this.grant_modal.referralStudent.isReferralStatusHasValue = true;
+    }
     this.grant_modal.referralStudent.checkValue();
     $("#grant_modal").modal("show");
     // 關閉畫面

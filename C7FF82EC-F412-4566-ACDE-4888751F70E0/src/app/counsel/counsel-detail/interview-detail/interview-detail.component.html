@@ -30,7 +30,9 @@
       </button>
     </div>
   </div> 
-
+  <ng-container *ngIf="_semesterInfo.length === 0">
+    <div class="row justify-content-center">沒有資料。</div>
+  </ng-container>
   <ng-container *ngFor="let semInfo of _semesterInfo">
     <div class="font-weight-bold mb-2">
       {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期

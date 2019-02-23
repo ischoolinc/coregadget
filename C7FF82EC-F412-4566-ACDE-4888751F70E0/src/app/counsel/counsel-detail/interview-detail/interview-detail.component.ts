@@ -36,7 +36,7 @@ export class InterviewDetailComponent implements OnInit {
 
   ngOnInit() {
     this._StudentID = "";
-
+    this.counselDetailComponent.setCurrentItem('interview');
     if (
       this.counselDetailComponent.currentStudent.Role &&
       this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0

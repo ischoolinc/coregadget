@@ -10,16 +10,16 @@
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
     <div *ngIf="mod === 'class' || mod == 'search'" class="class-page">
       <ng-container *ngIf="targetList.length === 0">
-        <div class="row justify-content-center">沒有學生資料。</div>
+        <div class="row justify-content-center">沒有資料。</div>
       </ng-container>
 
-      <ul class="rwd-table">
-        <li class="thead">
-          <div class="font-weight-bold mb-2">
-            目前{{ currentSchoolYear }}學年度第{{ currentSemester }}學期
-          </div>
+      <div class="font-weight-bold mb-2">
+          目前{{ currentSchoolYear }}學年度第{{ currentSemester }}學期
+        </div>
+      <ul class="rwd-table">        
+        <li class="thead">          
           <ol class="tr">
-            <li>座號</li>
+            <li style="width: 20px">座號</li>
             <li>姓名</li>
             <li>筆數</li>
             <li>最後輔導日期</li>
@@ -38,7 +38,7 @@
           >
             <li data-title="座號">{{ stuRec.SeatNo }}</li>
             <li data-title="姓名">{{ stuRec.StudentName }}</li>
-            <li data-title="筆數">{{ stuRec.InterviewCount }}</li>
+            <li data-title="筆數" style="width: 30px">{{ stuRec.InterviewCount }}</li>
             <li data-title="最後輔導日期">
               {{ stuRec.LastInterviewDate | date: "yyyy-MM-dd" }}
             </li>
@@ -77,7 +77,7 @@
                 </div>
             </div> -->
       <ng-container *ngIf="_semesterInfo.length === 0">
-        <div class="row justify-content-center">沒有學生資料。</div>
+        <div class="row justify-content-center">沒有資料。</div>
       </ng-container>
 
       <ng-container *ngFor="let sems of _semesterInfo">

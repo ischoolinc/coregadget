@@ -29,6 +29,7 @@ export class CounselItemDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.counselDetailComponent.setCurrentItem('counsel');
     this.caseList = [];
     this._StudentID = "";
     this._StudentID = this.counselDetailComponent.currentStudent.StudentID;

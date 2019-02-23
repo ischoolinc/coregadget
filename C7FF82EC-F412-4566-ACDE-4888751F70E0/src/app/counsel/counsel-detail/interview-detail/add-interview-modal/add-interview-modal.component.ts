@@ -33,16 +33,14 @@ export class AddInterviewModalComponent implements OnInit {
 
   _editMode: string = "add";
   editModeString: string = "新增";
-  _studentName: string;    
+  _studentName: string;
   // 輔導紀錄
   _CounselInterview: CounselInterview;
 
   ngOnInit() {
     this._CounselInterview = new CounselInterview();
-    this.loadDefaultData();    
+    this.loadDefaultData();
   }
-
-
 
   // 載入預設資料
   loadDefaultData() {
@@ -55,7 +53,7 @@ export class AddInterviewModalComponent implements OnInit {
         }
       } else {
         // 新增
-        this._CounselInterview = new CounselInterview();        
+        this._CounselInterview = new CounselInterview();
         this._studentName = this.counselDetailComponent.currentStudent.StudentName;
         this._CounselInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
         this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
@@ -86,7 +84,8 @@ export class AddInterviewModalComponent implements OnInit {
   // click 儲存
   async save() {
     try {
-      if (this._CounselInterview.isReferralValue) this._CounselInterview.isReferral = "t";
+      if (this._CounselInterview.isReferralValue)
+        this._CounselInterview.isReferral = "t";
       else this._CounselInterview.isReferral = "f";
       await this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");
@@ -99,6 +98,9 @@ export class AddInterviewModalComponent implements OnInit {
   async SetCounselInterview(data: CounselInterview) {
     if (!data.isPrivate) data.isPrivate = "true";
     if (!data.isReferral) data.isReferral = "false";
+    if (data.isReferral == "t") {
+      data.ReferralStatus = "未處理";
+    }
     let req = {
       UID: data.UID,
       SchoolYear: data.SchoolYear,

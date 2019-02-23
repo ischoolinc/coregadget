@@ -91,6 +91,7 @@ export class ReferralStudent {
     } else {
       this.isSaveButtonDisable = true;
     }
+  
   }
 
   setProcessSatus(value: string) {

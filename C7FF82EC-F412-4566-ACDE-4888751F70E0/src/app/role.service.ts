@@ -8,11 +8,11 @@ export class RoleService {
   private _role: string[];
 
   private _isLoading: boolean;
-  private _enableCounsel: boolean;
-  private _enableCounselStatistics: boolean;
-  private _enableReferral: boolean;
-  private _enableCase: boolean;
-  private _enableInterviewStatistics: boolean;
+  private _enableCounsel: boolean = false;
+  private _enableCounselStatistics: boolean = false;
+  private _enableReferral: boolean = false;
+  private _enableCase: boolean = false;
+  private _enableInterviewStatistics: boolean = false;
 
   public get isLoading() {
     return this._isLoading;
@@ -26,21 +26,29 @@ export class RoleService {
 
   // 設定轉介資料是否可以使用
   public SetEnableReferral(value: boolean) {
-    this._enableReferral = value;
+    setTimeout(() => {
+      this._enableReferral = value;
+    });
   }
 
   // 設定個案資料是否可以使用
   public SetEnableCase(value: boolean) {
-    this._enableCase = value;
+    setTimeout(() => {
+      this._enableCase = value;
+    });
   }
   // 設定輔導填寫狀況是否可以使用
   public SetEnableInterviewStatistics(value: boolean) {
-    this._enableInterviewStatistics = value;
+    setTimeout(() => {
+      this._enableInterviewStatistics = value;
+    });
   }
 
   // 設定輔導統計是否可以使用
   public SetEnableCounselStatistics(value: boolean) {
-    this._enableCounselStatistics = value;
+    setTimeout(() => {
+      this._enableCounselStatistics = value;
+    });
   }
 
   public get enableReferral() {

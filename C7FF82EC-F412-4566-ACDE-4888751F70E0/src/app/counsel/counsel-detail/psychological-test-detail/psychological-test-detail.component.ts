@@ -20,6 +20,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.counselDetailComponent.setCurrentItem('psychological_test');
     this._QuizDataList = [];
     if (this.counselDetailComponent.currentStudent.StudentID) {
       this.GetStudentQuizDataByStudentID(

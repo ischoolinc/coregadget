@@ -27,7 +27,7 @@ export class CounselComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.searchText);
+    // console.log(this.searchText);
   }
 
 
