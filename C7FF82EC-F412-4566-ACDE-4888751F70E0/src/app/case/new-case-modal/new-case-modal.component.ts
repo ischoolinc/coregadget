@@ -22,7 +22,7 @@ export class NewCaseModalComponent implements OnInit {
 
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
-  editModeString: string = '新增';
+  editModeString: string = "新增";
   public caseStudent: CaseStudent;
 
   selectVoluntaryGuidanceTeacher: VoluntaryGuidanceTeacher;
@@ -42,7 +42,7 @@ export class NewCaseModalComponent implements OnInit {
   currentSemester: number;
 
   ngOnInit() {
-    this.loadData();   
+    this.loadData();
   }
 
   loadData() {
@@ -53,7 +53,7 @@ export class NewCaseModalComponent implements OnInit {
     this.selectCaseSourceValue = "請選擇個案來源";
     this.canSelectCaseSourceList = [];
     this.canSelectCaseSourceList.push("導師轉介");
-    this.canSelectCaseSourceList.push("路邊捕獲");
+    // this.canSelectCaseSourceList.push("路邊捕獲");
 
     this.GetDefault();
 
@@ -62,14 +62,13 @@ export class NewCaseModalComponent implements OnInit {
     this.GetVoluntaryGuidanceTeacher();
 
     // 檢查狀態
-    if (this.isAddMode) {      
+    if (this.isAddMode) {
       if (!this.caseStudent.RefCounselInterviewID) {
         this.isCanSetClass = true;
       } else {
         this.isCanSetClass = false;
       }
     } else {
-      
     }
   }
 
@@ -98,7 +97,6 @@ export class NewCaseModalComponent implements OnInit {
 
   //設定座號
   setSeatNo(item: CounselStudent) {
-    
     this.selectSeatNoValue = item.SeatNo;
     this.caseStudent = new CaseStudent();
     this.caseStudent.Name = item.StudentName;
@@ -114,9 +112,23 @@ export class NewCaseModalComponent implements OnInit {
     });
   }
 
+  // 設定是否結案
+  setIsClose(value: string) {
+    this.caseStudent.IsClosed = value;
+
+    if (value === "t") {
+      // 設定結案日期
+      this.caseStudent.setCloseDateNow();
+    } else {
+      // 清除結案日期
+      this.caseStudent.CloseDate = "";
+    }
+    this.caseStudent.checkValue();
+  }
+
   // 來至轉介建立個案功能
   setCaseFromReferral(refData: ReferralStudent) {
-    this.caseStudent = new CaseStudent();    
+    this.caseStudent = new CaseStudent();
     this.caseStudent.ClassName = refData.ClassName;
     this.caseStudent.Name = refData.Name;
     this.caseStudent.SeatNo = refData.SeatNo;
@@ -127,6 +139,7 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.PhotoUrl = refData.PhotoUrl;
     this.selectClassNameValue = this.caseStudent.ClassName;
     this.selectSeatNoValue = this.caseStudent.SeatNo;
+    this.caseStudent.setIsCloseNo();
     this.isAddMode = false;
     this.editModeString = "新增";
     this.isCanSetClass = false;
@@ -139,7 +152,7 @@ export class NewCaseModalComponent implements OnInit {
       try {
         // 新增個案
         await this.SetCase(this.caseStudent);
-       $("#newCase").modal("hide");
+        $("#newCase").modal("hide");
       } catch (error) {
         alert(error);
       }
@@ -188,14 +201,17 @@ export class NewCaseModalComponent implements OnInit {
     // 取得目前學年度學期
     this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
     this.currentSemester = this.counselStudentService.currentSemester;
-    // // 取得目前學年度學期
-    // let currentSemeRsp = await this.dsaService.send("GetCurrentSemester", {});
-    // [].concat(currentSemeRsp.CurrentSemester || []).forEach(sems => {
-    //   this.currentSchoolYear = sems.SchoolYear;
-    //   this.currentSemester = sems.Semester;
-    // });
+    // 取得目前學年度學期
 
-    // 取得登入教師名稱
+    if (!this.counselStudentService.currentSchoolYear) {
+      let currentSemeRsp = await this.dsaService.send("GetCurrentSemester", {});
+      [].concat(currentSemeRsp.CurrentSemester || []).forEach(sems => {
+        this.currentSchoolYear = sems.SchoolYear;
+        this.currentSemester = sems.Semester;
+      });
+    }
+
+   // 取得登入教師名稱
     // let teacher = await this.dsaService.send("GetTeacher", {});
     // [].concat(teacher.Teacher || []).forEach(tea => {
     //   this.teacherName = tea.Name;
@@ -203,7 +219,7 @@ export class NewCaseModalComponent implements OnInit {
     //     this.teacherName = `${tea.Name}(${tea.NickName})`;
     //   }
     // });
-    this.teacherName = this.counselStudentService.teacherInfo.Name;
+    // this.teacherName = this.counselStudentService.teacherInfo.Name;
 
     // 取得輔導班級
     this.canSelectClassList = [];
@@ -239,6 +255,10 @@ export class NewCaseModalComponent implements OnInit {
       data.RefCounselInterviewID = "null";
     }
 
+    if (data.CloseDate == "") {
+      data.CloseDate = "null";
+    }
+
     let req = {
       SchoolYear: data.SchoolYear,
       Semester: data.Semester,
@@ -258,7 +278,9 @@ export class NewCaseModalComponent implements OnInit {
       StudentID: data.StudentID,
       CaseSource: data.CaseSource,
       VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID,
-      RefCounselInterviewID: data.RefCounselInterviewID
+      RefCounselInterviewID: data.RefCounselInterviewID,
+      IsClosed: data.IsClosed,
+      CloseDate: data.CloseDate
     };
 
     console.log(req);
@@ -271,6 +293,13 @@ export class NewCaseModalComponent implements OnInit {
 
   // 更新個案
   async UpdateCase(data: CaseStudent) {
+    if (!data.IsClosed) {
+      data.IsClosed = "f";
+    }
+    if (data.CloseDate == "") {
+      data.CloseDate = "null";
+    }
+
     if (data.UID) {
       data.SchoolYear = this.currentSchoolYear;
       data.Semester = this.currentSemester;
@@ -282,7 +311,9 @@ export class NewCaseModalComponent implements OnInit {
         CaseNo: data.CaseNo,
         StudentID: data.StudentID,
         CaseSource: data.CaseSource,
-        VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID
+        VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID,
+        IsClosed: data.IsClosed,
+        CloseDate: data.CloseDate
       };
 
       console.log(req);

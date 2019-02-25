@@ -106,7 +106,7 @@ export class CounselItemDetailComponent implements OnInit {
       rec.Semester = caseRec.Semester;
       let x = Number(caseRec.OccurDate);
       let dt = new Date(x);
-      rec.OccurDate = rec.parseDate(dt);
+      rec.OccurDate = rec.parseDate(dt,'-');
       rec.CaseNo = caseRec.CaseNo;
       rec.StudentIdentity = caseRec.StudentIdentity;
       rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;

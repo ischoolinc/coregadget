@@ -36,13 +36,14 @@ export class CaseComponent implements OnInit {
     this.case_modal.selectSeatNoValue = "請選擇座號";
     this.case_modal.selectCaseSourceValue = "請選擇個案來源";
     this.case_modal.selectVoluntaryGuidanceValue = "請選擇認輔老師";
+    this.case_modal.teacherName = "";
     this.case_modal.GetDefault();
     this.case_modal.isCanSetClass = true;
-    
-    $("#newCase").modal("show");   
+    this.case_modal.caseStudent.setIsCloseNo();
+
+    $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
-   
       // 重整資料
       this.loadData();
       $("#newCase").off("hide.bs.modal");
@@ -58,8 +59,17 @@ export class CaseComponent implements OnInit {
     this.case_modal.selectClassNameValue = item.ClassName;
     this.case_modal.selectSeatNoValue = item.SeatNo;
     this.case_modal.selectCaseSourceValue = item.CaseSource;
-    //this.case_modal.teacherName = item.TeacherName;
+    this.case_modal.teacherName = item.GuidanceTeacher.GetTeacherName();
     this.case_modal.selectVoluntaryGuidanceValue = item.GuidanceTeacher.GetTeacherName();
+    this.case_modal.selectVoluntaryGuidanceTeacher = item.GuidanceTeacher;
+    this.case_modal.caseStudent.isCloseYes = false;
+    this.case_modal.caseStudent.isCloseNo = true;
+
+    if (this.case_modal.caseStudent.IsClosed === "t") {
+      this.case_modal.caseStudent.isCloseYes = true;
+      this.case_modal.caseStudent.isCloseNo = false;
+    }
+
     this.case_modal.caseStudent.checkValue();
     item.checkValue();
     $("#newCase").modal("show");
@@ -107,7 +117,7 @@ export class CaseComponent implements OnInit {
       }
       let x = Number(caseRec.OccurDate);
       let dt = new Date(x);
-      rec.OccurDate = rec.parseDate(dt);
+      rec.OccurDate = rec.parseDate(dt,'-');
       rec.CaseNo = caseRec.CaseNo;
       rec.StudentIdentity = caseRec.StudentIdentity;
       rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
@@ -158,6 +168,7 @@ export class CaseComponent implements OnInit {
     [].concat(resp.Case || []).forEach(caseRec => {
       // 建立認輔資料
       let rec: VoluntaryGuidanceTeacher = new VoluntaryGuidanceTeacher();
+      rec.UID = caseRec.UID;
       rec.CaseID = caseRec.CaseID;
       rec.TeacherID = caseRec.TeacherID;
       rec.NickName = caseRec.NickName;

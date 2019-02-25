@@ -13,7 +13,7 @@ import {
 } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
-
+import { GlobalService} from "../../global.service";
 @Component({
   selector: "app-counsel-list",
   templateUrl: "./counsel-list.component.html",
@@ -32,6 +32,7 @@ export class CounselListComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private counselStudentService: CounselStudentService,
+    private globalService: GlobalService,
     @Optional()
     private counselComponent: CounselComponent,
     @Optional()
@@ -70,7 +71,7 @@ export class CounselListComponent implements OnInit {
             this.counselComponent.setSelectItem(
               this.counselStudentService.classMap.get(this.target).ClassName
             );
-            this.counselStudentService.selectTarget = this.target;
+            this.globalService.selectTarget = this.target;
 
             // 細項檢查權限
             if (this.counselStudentService.classMap.get(this.target).Role) {

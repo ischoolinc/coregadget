@@ -10,7 +10,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="newCaseLabel">{{editModeString}}個案輔導資料</h5>
+        <h5 class="modal-title" id="newCaseLabel">
+          {{ editModeString }}個案輔導資料
+        </h5>
         <button
           type="button"
           class="close"
@@ -186,18 +188,68 @@
             </div>
           </div>
         </div>
-
-        <div class="form-group col-md-4">
-          <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger"></span> 結案人員
-          </label>
-          <input
-            type="text"
-            class="form-control"
-            id="semester"
-            [readOnly]="true"
-            [(ngModel)]="teacherName"
-          />
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="schoolYear" class="col-form-label">
+              <span class="text-samll text-danger">*</span>
+              是否結案
+            </label>
+            <div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id="closingCaseYes"
+                  name="closingCase"
+                  class="custom-control-input"
+                  [checked]="caseStudent.isCloseYes"
+                  (click)="setIsClose('t')"
+                />
+                <label class="custom-control-label" for="closingCaseYes"
+                  >是</label
+                >
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id="closingCaseNo"
+                  name="closingCase"
+                  class="custom-control-input"
+                  [checked]="caseStudent.isCloseNo"
+                  (click)="setIsClose('f')"
+                />
+                <label class="custom-control-label" for="closingCaseNo"
+                  >否</label
+                >
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="semester" class="col-form-label">
+              <span class="text-samll text-danger"></span>
+              結案日期
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="semester"
+              placeholder=""
+              [readOnly]="true"
+              [(ngModel)]="caseStudent.CloseDate"
+              (keyup)="caseStudent.checkValue()"
+            />
+          </div>
+          <div class="form-group col-md-4">
+            <label for="semester" class="col-form-label">
+              <span class="text-samll text-danger"></span> 結案人員
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="semester"
+              [readOnly]="true"
+              [(ngModel)]="teacherName"
+            />
+          </div>
         </div>
       </div>
       <div class="modal-footer">

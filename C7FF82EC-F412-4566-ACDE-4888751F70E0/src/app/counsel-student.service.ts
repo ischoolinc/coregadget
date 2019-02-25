@@ -12,8 +12,7 @@ export class CounselStudentService {
   public classMap = new Map<string, CounselClass>();
   public counselClass: CounselClass[];
   public teacherInfo: TeacherInfo = new TeacherInfo();
-  public selectItemText: string;
-  public selectTarget: string;
+
 
   // 目前學年度
   public currentSchoolYear: number;

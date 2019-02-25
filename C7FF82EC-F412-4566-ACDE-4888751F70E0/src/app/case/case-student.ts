@@ -42,14 +42,38 @@ export class CaseStudent {
   isSaveButtonDisable: boolean = true;
   isAddButtonDisable: boolean = true;
 
+  isCloseYes: boolean = false;
+  isCloseNo: boolean = false;
+  isCloseDateHasValue = false;
+
   // 當透過轉介建立才會在值，儲存輔導紀錄 uid
   RefCounselInterviewID: string = "";
 
   // 設定個案日期為現在
   public setOccurDateNow() {
     let dt = new Date();
-    this.OccurDate = this.parseDate(dt);
+    this.OccurDate = this.parseDate(dt, "-");
     this.isOccurDateHasValue = true;
+  }
+
+  public setCloseDateNow() {
+    let dt = new Date();
+    this.CloseDate = this.parseDate(dt, "/");
+  }
+
+  public setIsCloseNo() {
+    this.IsClosed = "f";
+    this.isCloseYes = false;
+    this.isCloseNo = true;
+  }
+
+  // 取得是否結案文字
+  public GetClosedString() {
+    if (this.IsClosed && this.IsClosed === "t") {
+      return "是";
+    } else {
+      return "否";
+    }
   }
 
   checkValue() {
@@ -71,17 +95,25 @@ export class CaseStudent {
       this.isCaseSourceHasValue = false;
     }
 
-    if (this.GuidanceTeacher && this.GuidanceTeacher.UID) {
+    if (this.GuidanceTeacher && this.GuidanceTeacher.TeacherID) {
       this.isGuidanceTeacherHasValue = true;
     } else {
       this.isGuidanceTeacherHasValue = false;
+    }
+
+    if (this.IsClosed && this.IsClosed === "t") {
+      this.isCloseYes = true;
+      this.isCloseNo = false;
+    } else {
+      this.isCloseYes = false;
+      this.isCloseNo = true;
     }
 
     if (
       this.isOccurDateHasValue &&
       this.isCaseNoHasValue &&
       this.isGuidanceTeacherHasValue &&
-      this.isCaseSourceHasValue && 
+      this.isCaseSourceHasValue &&
       this.StudentID
     ) {
       this.isSaveButtonDisable = false;
@@ -96,7 +128,7 @@ export class CaseStudent {
     }
   }
 
-  public parseDate(dt: Date) {
+  public parseDate(dt: Date, str: string) {
     let y = dt.getFullYear();
     let m = dt.getMonth() + 1;
     let d = dt.getDate();
@@ -108,7 +140,7 @@ export class CaseStudent {
 
     if (d < 10) dStr = "0" + d;
 
-    return `${y}-${mStr}-${dStr}`;
+    return `${y}${str}${mStr}${str}${dStr}`;
   }
 }
 

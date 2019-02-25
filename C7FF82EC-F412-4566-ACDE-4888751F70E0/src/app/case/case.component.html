@@ -54,7 +54,7 @@
               {{ item.GuidanceTeacher.GetTeacherName() }}
             </li>
             <li data-title="輔導次數">{{ item.CaseCount }}</li>
-            <li data-title="結案">否</li>
+            <li data-title="結案">{{item.GetClosedString()}}</li>
             <li data-title="">
               <button
                 class="btn btn-light"
