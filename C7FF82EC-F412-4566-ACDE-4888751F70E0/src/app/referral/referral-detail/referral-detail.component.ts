@@ -9,6 +9,7 @@ import { ReferralStudent } from "../referral-student";
 import { DsaService } from "../../dsa.service";
 import { GrantModalComponent } from "../grant-modal/grant-modal.component";
 import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
+
 @Component({
   selector: "app-referral-detail",
   templateUrl: "./referral-detail.component.html",
@@ -24,7 +25,8 @@ export class ReferralDetailComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private dsaService: DsaService,    
+    private dsaService: DsaService,
+  
   ) {}
 
   ngOnInit() {
@@ -42,7 +44,7 @@ export class ReferralDetailComponent implements OnInit {
   {
     this.GetReferralStudentByUid();
   }
-  
+
   setNewCaseMmodal(refStudent: ReferralStudent) {
     this.case_modal.loadData();
     this.case_modal.setCaseFromReferral(refStudent);

@@ -6,5 +6,6 @@ import { Injectable } from '@angular/core';
 export class GlobalService {
   public selectItemText: string;
   public selectTarget: string;
+
   constructor() { }
 }

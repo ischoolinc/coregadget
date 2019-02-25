@@ -12,6 +12,7 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
 import { DsaService } from "../../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
 import { CounselDetailComponent } from "../counsel-detail.component";
+import { ReferralDetailComponent } from "../../../referral/referral-detail/referral-detail.component";
 
 @Component({
   selector: "app-interview-detail",
@@ -31,12 +32,14 @@ export class InterviewDetailComponent implements OnInit {
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     @Optional()
-    private counselDetailComponent: CounselDetailComponent
+    private counselDetailComponent: CounselDetailComponent,
+    @Optional()
+    private referralDetailComponent: ReferralDetailComponent
   ) {}
 
   ngOnInit() {
     this._StudentID = "";
-    this.counselDetailComponent.setCurrentItem('interview');
+    this.counselDetailComponent.setCurrentItem("interview");
     if (
       this.counselDetailComponent.currentStudent.Role &&
       this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
@@ -56,11 +59,23 @@ export class InterviewDetailComponent implements OnInit {
     this.isLoading = true;
     this._StudentID = StudentID;
     this._semesterInfo = [];
-    let tmp = [];    
+    let tmp = [];
     // 取得學生輔導資料
     let dataList = await this.GetCounselInterviewByStudentID(
       this.counselDetailComponent.currentStudent.StudentID
     );
+
+    if (this.referralDetailComponent && this.referralDetailComponent.interviewID) {
+      console.log(this.referralDetailComponent.interviewID);
+      let dataListRef = [];
+
+      dataList.forEach(dd => {
+        if (dd.UID === this.referralDetailComponent.interviewID) {
+          dataListRef.push(dd);
+        }
+      });
+      dataList = dataListRef;
+    }
 
     dataList.forEach(data => {
       let key = `${data.SchoolYear}_${data.Semester}`;
@@ -72,6 +87,7 @@ export class InterviewDetailComponent implements OnInit {
         tmp.push(key);
       }
     });
+
     this._counselInterview = dataList;
     this.isLoading = false;
   }
