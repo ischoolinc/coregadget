@@ -31,7 +31,7 @@ export class CounselInterview {
   isContactItemHasValue: boolean = false;
   isContentHasValue: boolean = false;
   isCounselTypeOtherDisable: boolean = true;
-  selectCounselType: string = "請選擇輔導方式";
+  selectCounselType: string = "請選擇方式";
   isSaveDisable: boolean = true;
   isEditDisable: boolean = true;
 

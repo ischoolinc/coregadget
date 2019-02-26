@@ -56,11 +56,11 @@ export class CounselListComponent implements OnInit {
       this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
       this.currentSemester = this.counselStudentService.currentSemester;
       this.deny = false;
-      // 如果是班導認輔老師轉介個案都無法使用
-      if (this.appComponent.roleService) {
-        this.appComponent.roleService.SetEnableReferral(false);
-        this.appComponent.roleService.SetEnableCase(false);
-      }
+      // // 如果是班導認輔老師轉介個案都無法使用
+      // if (this.appComponent.roleService) {
+      //   this.appComponent.roleService.SetEnableReferral(false);
+      //   this.appComponent.roleService.SetEnableCase(false);
+      // }
 
       if (this.mod === "class") {
         if (this.counselStudentService.classMap.has(this.target)) {
@@ -73,25 +73,25 @@ export class CounselListComponent implements OnInit {
             );
             this.globalService.selectTarget = this.target;
 
-            // 細項檢查權限
-            if (this.counselStudentService.classMap.get(this.target).Role) {
-              if (
-                this.counselStudentService.classMap.get(this.target).Role[0] ===
-                "班導師"
-              ) {
-                // 使用轉介,個案
-                this.appComponent.roleService.SetEnableCase(false);
-                this.appComponent.roleService.SetEnableReferral(false);
-              }
-              if (
-                this.counselStudentService.classMap.get(this.target).Role[0] ===
-                "輔導老師"
-              ) {
-                // 使用轉介,個案
-                this.appComponent.roleService.SetEnableCase(true);
-                this.appComponent.roleService.SetEnableReferral(true);
-              }
-            }
+            // // 細項檢查權限
+            // if (this.counselStudentService.classMap.get(this.target).Role) {
+            //   if (
+            //     this.counselStudentService.classMap.get(this.target).Role[0] ===
+            //     "班導師"
+            //   ) {
+            //     // 使用轉介,個案
+            //     this.appComponent.roleService.SetEnableCase(false);
+            //     this.appComponent.roleService.SetEnableReferral(false);
+            //   }
+            //   if (
+            //     this.counselStudentService.classMap.get(this.target).Role[0] ===
+            //     "輔導老師"
+            //   ) {
+            //     // 使用轉介,個案
+            //     this.appComponent.roleService.SetEnableCase(true);
+            //     this.appComponent.roleService.SetEnableReferral(true);
+            //   }
+            // }
           }
         } else {
           this.deny = true;

@@ -70,13 +70,13 @@
                 *ngIf="!_CounselInterview.isOccurDateHasValue"
                 >*</span
               >
-              輔導日期
+              日期
             </label>
             <input
               type="date"
               class="form-control"
               id="interviewDate"
-              placeholder="請輸入輔導日期"
+              placeholder="請輸入日期"
               [(ngModel)]="_CounselInterview.OccurDate"
               (keyup)="_CounselInterview.checkValue()"
             />
@@ -84,7 +84,7 @@
         </div>
         <div class="form-group">
           <label class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!_CounselInterview.isCounselTypeHasValue">*</span> 輔導方式
+            <span class="text-samll text-danger" *ngIf="!_CounselInterview.isCounselTypeHasValue">*</span> 方式
           </label>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -142,13 +142,13 @@
                 *ngIf="!_CounselInterview.isContactNameHasValue"
                 >*</span
               >
-              輔導對象
+              對象
             </label>
             <input
               type="text"
               class="form-control"
               id="interviewee"
-              placeholder="請輸入輔導對象"
+              placeholder="請輸入對象"
               [(ngModel)]="_CounselInterview.ContactName"
               (keyup)="_CounselInterview.checkValue()"
             />

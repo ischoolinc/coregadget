@@ -95,9 +95,11 @@ export class InterviewDetailComponent implements OnInit {
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
       // 重整資料
+      this.counselStudentService.reload();
       this.loadCounselInterview(this._StudentID);
       $("#addInterview").off("hide.bs.modal");
     });
+   
   }
 
   // 修改
@@ -111,6 +113,7 @@ export class InterviewDetailComponent implements OnInit {
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
       // 重整資料
+      this.counselStudentService.reload();
       this.loadCounselInterview(this._StudentID);
       $("#addInterview").off("hide.bs.modal");
     });
