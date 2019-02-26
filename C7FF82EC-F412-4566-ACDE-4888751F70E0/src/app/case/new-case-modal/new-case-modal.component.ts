@@ -211,7 +211,7 @@ export class NewCaseModalComponent implements OnInit {
       });
     }
 
-   // 取得登入教師名稱
+    // 取得登入教師名稱
     // let teacher = await this.dsaService.send("GetTeacher", {});
     // [].concat(teacher.Teacher || []).forEach(tea => {
     //   this.teacherName = tea.Name;
@@ -256,7 +256,7 @@ export class NewCaseModalComponent implements OnInit {
     }
 
     if (data.CloseDate == "") {
-      data.CloseDate = "null";
+      data.CloseDate = "";
     }
 
     let req = {
@@ -296,9 +296,6 @@ export class NewCaseModalComponent implements OnInit {
     if (!data.IsClosed) {
       data.IsClosed = "f";
     }
-    if (data.CloseDate == "") {
-      data.CloseDate = "null";
-    }
 
     if (data.UID) {
       data.SchoolYear = this.currentSchoolYear;
@@ -313,7 +310,8 @@ export class NewCaseModalComponent implements OnInit {
         CaseSource: data.CaseSource,
         VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID,
         IsClosed: data.IsClosed,
-        CloseDate: data.CloseDate
+        CloseDate: data.CloseDate,
+        CloseDescription: data.CloseDescription
       };
 
       console.log(req);

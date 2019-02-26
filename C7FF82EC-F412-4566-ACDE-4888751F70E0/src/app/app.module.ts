@@ -30,6 +30,7 @@ import { ReferralListComponent } from './referral/referral-list/referral-list.co
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
 import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
 import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
+import { ViewInterviewComponent } from './referral/view-interview/view-interview.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,7 @@ import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counse
     ReferralComponent,
     CounselRoutingComponent,
     DetailRoutingComponent,    
-    ReferralListComponent, ReferralDetailComponent, AddCaseInterviewModalComponent, ViewCaseInterviewModalComponent
+    ReferralListComponent, ReferralDetailComponent, AddCaseInterviewModalComponent, ViewCaseInterviewModalComponent, ViewInterviewComponent
   ],
   imports: [
     BrowserModule,

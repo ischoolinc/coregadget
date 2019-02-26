@@ -17,19 +17,37 @@
       </li>
       <li class="tbody">
         <ol class="tr">
-          <li data-title="班級">{{ referralStudent.ClassName }}</li>
-          <li data-title="座號">{{ referralStudent.SeatNo }}</li>
-          <li data-title="姓名">{{ referralStudent.Name }}</li>
-          <li data-title="性別">{{ referralStudent.Gender }}</li>
-          <li data-title="班導師">{{ referralStudent.TeacherName }}</li>
-          <li data-title="轉介日期">{{ referralStudent.OccurDate }}</li>
-          <li class="text-left text-normal" data-title="轉介說明">
+          <li data-title="班級" (click)="viewInterviewModal()">
+            {{ referralStudent.ClassName }}
+          </li>
+          <li data-title="座號" (click)="viewInterviewModal()">
+            {{ referralStudent.SeatNo }}
+          </li>
+          <li data-title="姓名" (click)="viewInterviewModal()">
+            {{ referralStudent.Name }}
+          </li>
+          <li data-title="性別" (click)="viewInterviewModal()">
+            {{ referralStudent.Gender }}
+          </li>
+          <li data-title="班導師" (click)="viewInterviewModal()">
+            {{ referralStudent.TeacherName }}
+          </li>
+          <li data-title="轉介日期" (click)="viewInterviewModal()">
+            {{ referralStudent.OccurDate }}
+          </li>
+          <li
+            class="text-left text-normal"
+            data-title="轉介說明"
+            (click)="viewInterviewModal()"
+          >
             {{ referralStudent.ReferralDesc }}
           </li>
-          <li data-title="授理狀況">
+          <li data-title="授理狀況" (click)="viewInterviewModal()">
             {{ referralStudent.ReferralStatus }}
           </li>
-          <li data-title="授理日期">{{ referralStudent.ReferralReplyDate }}</li>
+          <li data-title="授理日期" (click)="viewInterviewModal()">
+            {{ referralStudent.ReferralReplyDate }}
+          </li>
           <li data-title="">
             <button
               class="btn btn-light"
@@ -68,3 +86,4 @@
 
 <app-grant-modal #grant_modal></app-grant-modal>
 <app-new-case-modal #case_modal></app-new-case-modal>
+<app-view-interview #viewInterview></app-view-interview>
