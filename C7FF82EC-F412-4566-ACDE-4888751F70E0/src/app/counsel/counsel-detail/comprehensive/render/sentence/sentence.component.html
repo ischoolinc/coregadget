@@ -1,0 +1,31 @@
+<form [formGroup]="_tokenGroup" class="flex_layout">
+  <!-- (r:{{_required}})(v:{{_tokenGroup.valid}}) -->
+  <ng-container *ngFor="let token of _getTokenControls(); let i=index">
+
+    <div [formGroup]="token" class="align_center"
+         [ngStyle]="_getGroupStyle(token.value)"
+         >
+
+      <!-- 如果是常值就直接顯示。 -->
+      <div *ngIf="token.value.type === 'literally'">{{token.value.text}}</div>
+
+      <!-- 如果是 Keyword 就產生一個 Input。 -->
+      <ng-container *ngIf="token.value.type === 'keyword'">
+
+        <input *ngIf="token.value.size >= 0"
+               type="text"
+               formControlName="value" (blur)="_touched()"
+               [ngStyle]="_getControlStyle(token.value)">
+
+        <textarea *ngIf="token.value.size < 0"
+                  rows="6"
+                  formControlName="value" (blur)="_touched()"
+                  [ngStyle]="_getControlStyle(token.value)"></textarea>
+
+      </ng-container>
+
+    </div>
+
+  </ng-container>
+
+</form>

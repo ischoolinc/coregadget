@@ -56,6 +56,15 @@
                        data-toggle="list">
                         學期成績
                     </a> -->
+          <a
+            href="javascript:;"
+            class="list-group-item list-group-item-action d-flex"
+            (click)="routeTo('comprehensive')"
+            data-toggle="list"
+            [ngClass]="{ 'active show': currentItem == 'comprehensive' }"
+          >
+            綜合紀錄表
+          </a>
         </div>
       </div>
       <div class="col-md-9">

@@ -1,0 +1,113 @@
+<form [formGroup]="_questionGroup" class="question_container">
+  <ng-container formArrayName="questions">
+
+    <ng-container *ngIf="_isSingleTextAreaOption(); else normalContent">
+      <ng-container *ngFor="let question of _getQuestionsControl()">
+        <ng-container [formGroup]="question">
+          <ng-container formArrayName="Options">
+            <ng-container *ngFor="let option of _getOptionsControl(question)">
+              <!-- textarea -->
+              <ng-container *ngIf="question.value.Type === '填答'"
+                   class="mb-3"
+                   [formGroup]="option">
+                <app-sentence [text]="_opt(option).OptionText"
+                              formControlName="AnswerMatrix"
+                              appAnswerValueSync
+                              completeRequired="true"></app-sentence>
+              </ng-container>
+              <pre *ngIf="debug"
+                   class="debug_info">{{option.value | json}}</pre>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #normalContent>
+
+      <div *ngFor="let question of _getQuestionsControl()"
+           class="question" [ngClass]="{'question_debug': debug}">
+
+        <div *ngIf="debug" class="debug_info">
+          <div>require:{{question.value.Require}}</div>
+          <div>require link:{{question.value.RequireLink}}</div>
+          <div>valid status: {{question.valid}}</div>
+          <div>disabled status: {{question.disabled}}</div>
+        </div>
+
+        <div class="mb-3 mr-2" *ngIf="question.value.Text">{{question.value.Text}}
+        </div>
+
+        <ng-container [formGroup]="question" appRadioGroup>
+          <ng-container formArrayName="Options">
+
+            <div *ngFor="let option of _getOptionsControl(question)">
+              <ng-container [formGroup]="option">
+
+                <!-- radio -->
+                <ng-container *ngIf="question.value.Type === '單選'"
+                              [formGroup]="option">
+                  <div
+                       class="custom-control custom-radio custom-control-inline mb-3">
+                    <input type="radio" [attr.id]="_opt(option).OptionCode"
+                           value="true"
+                           [attr.name]="_quest(question).QuestionCode"
+                           appRadio="AnswerChecked"
+                           [optionCode]="_opt(option).OptionCode"
+                           appAutoCheck
+                           class="custom-control-input"
+                           [disabled]="_disabled">
+                    <label class="custom-control-label"
+                           [attr.for]="_opt(option).OptionCode">
+                      <app-sentence [text]="_opt(option).OptionText"
+                                    formControlName="AnswerMatrix"
+                                    appAnswerValueSync
+                                    completeRequired="true"></app-sentence>
+                    </label>
+                  </div>
+                </ng-container>
+
+                <!-- checkbox -->
+                <ng-container *ngIf="question.value.Type === '複選'"
+                              [formGroup]="option">
+                  <div
+                       class="custom-control custom-checkbox custom-control-inline mb-3">
+                    <input type="checkbox" class="custom-control-input"
+                           [attr.id]="_opt(option).OptionCode"
+                           appAutoCheck
+                           formControlName="AnswerChecked">
+                    <label class="custom-control-label"
+                           [attr.for]="_opt(option).OptionCode">
+                      <app-sentence [text]="_opt(option).OptionText"
+                                    formControlName="AnswerMatrix"
+                                    appAnswerValueSync
+                                    completeRequired="true"></app-sentence>
+                    </label>
+                  </div>
+                </ng-container>
+
+                <!-- text input -->
+                <div *ngIf="question.value.Type === '填答'"
+                     class="mb-3"
+                     [formGroup]="option">
+                  <app-sentence [text]="_opt(option).OptionText"
+                                formControlName="AnswerMatrix"
+                                appAnswerValueSync
+                                completeRequired="true"></app-sentence>
+                </div>
+
+                <pre *ngIf="debug"
+                     class="debug_info">{{option.value | json}}</pre>
+              </ng-container>
+
+            </div>
+
+          </ng-container>
+        </ng-container>
+      </div>
+
+    </ng-template>
+
+  </ng-container>
+
+</form>

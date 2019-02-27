@@ -42,7 +42,8 @@ const routes: Routes = [
           },
           { path: "absent", component: AbsentDetailComponent },
           { path: "exam_score", component: ExamScoreDetailComponent },
-          { path: "semester_score", component: SemesterScoreDetailComponent }
+          { path: "semester_score", component: SemesterScoreDetailComponent },
+          { path: "comprehensive", loadChildren: './counsel/counsel-detail/comprehensive/comprehensive.module#ComprehensiveModule' }
         ]
       }
     ]
