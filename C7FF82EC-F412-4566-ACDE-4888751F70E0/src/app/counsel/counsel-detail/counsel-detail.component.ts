@@ -33,7 +33,7 @@ export class CounselDetailComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private counselStudentService: CounselStudentService,
+    public counselStudentService: CounselStudentService,
     @Optional()
     private counselComponent: CounselComponent
   ) {}

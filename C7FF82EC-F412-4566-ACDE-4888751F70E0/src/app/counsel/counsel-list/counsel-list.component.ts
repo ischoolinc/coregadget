@@ -31,7 +31,7 @@ export class CounselListComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private counselStudentService: CounselStudentService,
+    public counselStudentService: CounselStudentService,
     private globalService: GlobalService,
     @Optional()
     private counselComponent: CounselComponent,
