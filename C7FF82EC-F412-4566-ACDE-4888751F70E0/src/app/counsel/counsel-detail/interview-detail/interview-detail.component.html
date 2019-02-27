@@ -1,11 +1,12 @@
 <div *ngIf="!isLoading; else tmpLoading">
-<!-- 學生個人 - 輔導紀錄 -->
-<div class="tab-pane fade-in" id="listOne">
-  <div class="d-md-flex align-items-center sub-title mb-3">
-    <h4 class="mb-0 mr-auto">輔導紀錄</h4>
-    <div class="d-flex mb-3 mb-md-0">
-      <div class="dropdown">
-        <!-- <button aria-expanded="false"
+  <!-- 學生個人 - 輔導紀錄 -->
+  <div class="tab-pane fade-in"
+       id="listOne">
+    <div class="d-md-flex align-items-center sub-title mb-3">
+      <h4 class="mb-0 mr-auto">輔導紀錄</h4>
+      <div class="d-flex mb-3 mb-md-0">
+        <div class="dropdown">
+          <!-- <button aria-expanded="false"
                 aria-haspopup="true"
                 class="btn dropdown-toggle btn-light mr-2"
                 data-toggle="dropdown"
@@ -14,89 +15,110 @@
           <i class="material-icons">print</i>
           列印
         </button> -->
-        <div aria-labelledby="dropdownMenuButton1" class="dropdown-menu menu">
-          <h6 class="dropdown-header">107學年度 第1學期</h6>
-          <a class="dropdown-item" href="#">Excel</a>
-          <a class="dropdown-item" href="#">Html</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">106學年度 第2學期</h6>
-          <a class="dropdown-item" href="#">Excel</a>
-          <a class="dropdown-item" href="#">Html</a>
+          <div aria-labelledby="dropdownMenuButton1"
+               class="dropdown-menu menu">
+            <h6 class="dropdown-header">107學年度 第1學期</h6>
+            <a class="dropdown-item"
+               href="#">Excel</a>
+            <a class="dropdown-item"
+               href="#">Html</a>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">106學年度 第2學期</h6>
+            <a class="dropdown-item"
+               href="#">Excel</a>
+            <a class="dropdown-item"
+               href="#">Html</a>
+          </div>
         </div>
+        <!-- 新增-輔導 -->
+        <button class="btn btn-info"
+                (click)="addInterviewModal()">
+          <i class="material-icons">add</i> 新增
+        </button>
       </div>
-      <!-- 新增-輔導 -->
-      <button class="btn btn-info" (click)="addInterviewModal()">
-        <i class="material-icons">add</i> 新增
-      </button>
     </div>
-  </div> 
-  <ng-container *ngIf="_semesterInfo.length === 0">
-    <div class="row justify-content-center">沒有資料。</div>
-  </ng-container>
-  <ng-container *ngFor="let semInfo of _semesterInfo">
-    <div class="font-weight-bold mb-2">
-      {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
-    </div>
-    <ul class="rwd-table">
-      <li class="thead">
-        <ol class="tr">
-          <li>日期</li>
-          <li>對象</li>
-          <li>方式</li>
-          <li>記錄者</li>
-          <li>聯絡事項</li>
-          <li>轉介狀況</li>
-          <li></li>
-        </ol>
-      </li>
-      <li class="tbody point" *ngFor="let counselRec of _counselInterview">
-        <ng-container
-          *ngIf="
+    <ng-container *ngIf="_semesterInfo.length === 0">
+      <div class="row justify-content-center">沒有資料。</div>
+    </ng-container>
+    <ng-container *ngFor="let semInfo of _semesterInfo">
+      <div class="font-weight-bold mb-2">
+        {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
+      </div>
+      <ul class="rwd-table">
+        <li class="thead">
+          <ol class="tr">
+            <li style="width:10%">日期</li>
+            <li style="width:10%">對象</li>
+            <li style="width:10%">方式</li>
+            <li style="width:10%">記錄者</li>
+            <li style="width:40%">聯絡事項及內容</li>
+            <!-- <li style="width:40%">內容</li> -->
+            <li style="width:10%">轉介狀況</li>
+            <li style="width:10%"></li>
+          </ol>
+        </li>
+        <li class="tbody point"
+            *ngFor="let counselRec of _counselInterview">
+          <ng-container *ngIf="
             semInfo.SchoolYear === counselRec.SchoolYear &&
             semInfo.Semester === counselRec.Semester
-          "
-        >
-          <ol class="tr" data-toggle="modal">
-            <li data-title="日期" (click)="viewInterviewModal(counselRec)">
-              {{ counselRec.OccurDate | date: "yyyy-MM-dd" }}
-            </li>
-            <li class="text-normal" data-title="對象" (click)="viewInterviewModal(counselRec)">
-              {{ counselRec.ContactName }}
-            </li>
-            <li class="text-normal" data-title="方式" (click)="viewInterviewModal(counselRec)">
-              {{ counselRec.CounselType }}
-            </li>
-            <li data-title="記錄者" (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
-            <li class="text-left text-normal" data-title="聯絡事項" (click)="viewInterviewModal(counselRec)">
-              {{ counselRec.ContactItem }}
-            </li>
-            <li data-title="轉介狀況" (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
+          ">
+            <ol class="tr"
+                data-toggle="modal">
+              <li data-title="日期"
+                  (click)="viewInterviewModal(counselRec)">
+                {{ counselRec.OccurDate | date: "yyyy-MM-dd" }}
+              </li>
+              <li class="text-normal"
+                  data-title="對象"
+                  (click)="viewInterviewModal(counselRec)">
+                {{ counselRec.ContactName }}
+              </li>
+              <li class="text-normal"
+                  data-title="方式"
+                  (click)="viewInterviewModal(counselRec)">
+                {{ counselRec.CounselType }}
+              </li>
+              <li data-title="記錄者"
+                  (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
+              <li class="text-left text-normal"
+                  data-title="聯絡事項及內容"
+                  (click)="viewInterviewModal(counselRec)">
+                <div *ngIf="counselRec.ContactItem">
+                  <div>聯絡事項：</div>
+                  <p class="ml-3">{{ counselRec.ContactItem }}</p>
+                </div>
+                <div *ngIf="counselRec.Content">
+                  <div>內容：</div>
+                  <p class="ml-3">{{ counselRec.Content }}</p>
+                </div>
+              </li>
+              <li data-title="轉介狀況"
+                  (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
 
-            <li data-title="">
-              <button
-                class="btn btn-light"
-                data-toggle="modal"
-                (click)="editInterviewModal(counselRec)"
-                [disabled]="counselRec.isEditDisable"
-              >
-                修改
-              </button>
-            </li>
-          </ol>
-        </ng-container>
-      </li>
-    </ul>
-  </ng-container>
-</div>
+              <li data-title="">
+                <button class="btn btn-light"
+                        data-toggle="modal"
+                        (click)="editInterviewModal(counselRec)"
+                        [disabled]="counselRec.isEditDisable">
+                  修改
+                </button>
+              </li>
+            </ol>
+          </ng-container>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
 </div>
 
 
 <ng-template #tmpLoading
              class="container">
-    <div class="row justify-content-center"
-         style="margin-top:250px;margin-bottom:200px;">
-        Loading...
-    </div>
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
 </ng-template>
 
 <app-add-interview-modal #addInterview></app-add-interview-modal>

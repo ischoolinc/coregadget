@@ -8,48 +8,74 @@
             2.「某年某班」
             3.尚未在 input 內輸入搜尋條件
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
-    <div *ngIf="mod === 'class' || mod == 'search'" class="class-page">
+    <div *ngIf="mod === 'class' || mod == 'search'"
+         class="class-page">
       <ng-container *ngIf="targetList.length === 0">
         <div class="row justify-content-center">沒有資料。</div>
       </ng-container>
 
       <div class="font-weight-bold mb-2">
-          目前{{ currentSchoolYear }}學年度第{{ currentSemester }}學期
-        </div>
-      <ul class="rwd-table">        
-        <li class="thead">          
+        目前{{ currentSchoolYear }}學年度第{{ currentSemester }}學期
+      </div>
+      <ul class="rwd-table">
+        <li class="thead">
           <ol class="tr">
-            <li style="width: 20px">座號</li>
-            <li>姓名</li>
-            <li>筆數</li>
-            <li>最後日期</li>
-            <li>對象</li>
-            <li>方式</li>
-            <li>聯絡事項</li>
-            <li>轉介</li>
+            <li style="width: 70px">座號</li>
+            <li style="width: 120px">姓名</li>
+            <li style="width: 70px">筆數</li>
+            <li style="width: 100px">最後日期</li>
+            <li style="width: 120px">對象</li>
+            <li style="width: 120px">方式</li>
+            <li>聯絡事項/內容</li>
+            <li style="width: 100px">轉介</li>
           </ol>
         </li>
         <li class="tbody">
-          <ol
-            *ngFor="let stuRec of targetList"
-            class="tr"
-            [routerLink]="['/counsel', 'detail', stuRec.StudentID]"
-            routerLink="/counsel/detail/123"
-          >
-            <li data-title="座號">{{ stuRec.SeatNo }}</li>
-            <li data-title="姓名">{{ stuRec.StudentName }}</li>
-            <li data-title="筆數" style="width: 30px">{{ stuRec.InterviewCount }}</li>
+          <ol *ngFor="let stuRec of targetList"
+              class="tr"
+              [routerLink]="['/counsel', 'detail', stuRec.StudentID]"
+              routerLink="/counsel/detail/123">
+            <li data-title="座號">
+              {{ stuRec.SeatNo }}
+            </li>
+            <li data-title="姓名"
+                title="{{stuRec.StudentName}}">
+              <div style="width:100%;position: relative;">
+                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                  {{ stuRec.StudentName }}
+                </div>
+              </div>
+            </li>
+            <li data-title="筆數">
+              {{ stuRec.InterviewCount=='0'?'--':stuRec.InterviewCount }}
+            </li>
             <li data-title="最後日期">
-              {{ stuRec.LastInterviewDate | date: "yyyy-MM-dd" }}
+              {{ stuRec.LastInterviewDate }}
             </li>
-            <li class="text-normal" data-title="對象">
-              {{ stuRec.LastInterviewContact }}
+            <li data-title="對象"
+                title="{{stuRec.LastInterviewContact}}">
+              <div style="width:100%;position: relative;">
+                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                  {{ stuRec.LastInterviewContact }}
+                </div>
+              </div>
             </li>
-            <li class="text-normal" data-title="方式">
-              {{ stuRec.LastInterviewType }}{{ stuRec.LastInterviewTypeOther }}
+            <li data-title="方式"
+                title="{{stuRec.LastInterviewType+stuRec.LastInterviewTypeOther}}">
+              <div style="width:100%;position: relative;">
+                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                  {{ stuRec.LastInterviewType }}{{ stuRec.LastInterviewTypeOther }}
+                </div>
+              </div>
             </li>
-            <li class="text-left text-normal" data-title="聯絡事項">
-              {{ stuRec.LastInterviewContactItem }}
+            <li data-title="聯絡事項/內容"
+                title="{{(stuRec.LastInterviewContactItem?'聯絡事項:\n  '+stuRec.LastInterviewContactItem:'')+(stuRec.LastInterviewContactItem&&stuRec.LastInterviewContent?'\n':'')+(stuRec.LastInterviewContent?'內容:\n  '+stuRec.LastInterviewContent:'')}}">
+              <div style="width:100%;position: relative;">
+                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                     class="text-left">
+                  {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }}
+                </div>
+              </div>
             </li>
             <li data-title="轉介">
               {{ stuRec.LastInterviewReferral ? "是" : "" }}
@@ -99,17 +125,13 @@
             </ol>
           </li>
           <li class="tbody">
-            <ol
-              class="tr"
-              *ngFor="let item of targetList"
-              [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']"
-            >
-              <ng-container
-                *ngIf="
+            <ol class="tr"
+                *ngFor="let item of targetList"
+                [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']">
+              <ng-container *ngIf="
                   item.SchoolYear === sems.SchoolYear &&
                   item.Semester === sems.Semester
-                "
-              >
+                ">
                 <li data-title="班級">{{ item.ClassName }}</li>
                 <li data-title="座號">{{ item.SeatNo }}</li>
                 <li data-title="姓名">{{ item.StudentName }}</li>
@@ -117,10 +139,12 @@
                 <li data-title="最後日期">
                   {{ item.LastInterviewDate | date: "yyyy-MM-dd" }}
                 </li>
-                <li class="text-normal" data-title="對象">
+                <li class="text-normal"
+                    data-title="對象">
                   {{ item.LastInterviewContact }}
                 </li>
-                <li class="text-normal" data-title="方式">
+                <li class="text-normal"
+                    data-title="方式">
                   {{ item.LastInterviewType }}
                 </li>
                 <!-- <li class="text-left text-normal"
@@ -134,11 +158,10 @@
     </div>
   </div>
 </div>
-<ng-template #tmpLoading class="container">
-  <div
-    class="row justify-content-center"
-    style="margin-top:250px;margin-bottom:200px;"
-  >
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>

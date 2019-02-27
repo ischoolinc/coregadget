@@ -24,33 +24,6 @@ export class RoleService {
     return this._enableCounselStatistics;
   }
 
-  // 設定轉介資料是否可以使用
-  public SetEnableReferral(value: boolean) {
-    setTimeout(() => {
-      this._enableReferral = value;
-    });
-  }
-
-  // 設定個案資料是否可以使用
-  public SetEnableCase(value: boolean) {
-    setTimeout(() => {
-      this._enableCase = value;
-    });
-  }
-  // 設定輔導填寫狀況是否可以使用
-  public SetEnableInterviewStatistics(value: boolean) {
-    setTimeout(() => {
-      this._enableInterviewStatistics = value;
-    });
-  }
-
-  // 設定輔導統計是否可以使用
-  public SetEnableCounselStatistics(value: boolean) {
-    setTimeout(() => {
-      this._enableCounselStatistics = value;
-    });
-  }
-
   public get enableReferral() {
     return this._enableReferral;
   }
