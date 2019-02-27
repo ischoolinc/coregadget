@@ -89,6 +89,7 @@ export class CounselStudentService {
             LastInterviewContent: stuRec.LastInterviewContent,
             LastInterviewContactItem: stuRec.LastInterviewContactItem,
             LastInterviewReferral: stuRec.LastInterviewReferral,
+            ReferralStatus: stuRec.ReferralStatus,
             PhotoUrl: `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${stuRec.StudentID}`
           } as CounselStudent);
       }
@@ -183,6 +184,7 @@ export class CounselStudent {
   // 聯絡事項
   LastInterviewContactItem: string;
   LastInterviewReferral: boolean;
+  ReferralStatus:string;
   PhotoUrl: string;
   // lastCaseInterviewDate: string;
   // lastCaseInterviewContact: string;

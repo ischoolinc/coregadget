@@ -9,66 +9,67 @@
           {{ currentStudent.StudentName }}
         </h4>
         <div class="list-group nav-list">
-          <a
-            href="#listOne"
-            class="list-group-item list-group-item-action d-flex"
-            (click)="routeTo('interview')"
-            data-toggle="list"
-            *ngIf="_interviewEnable"
-            [ngClass]="{ 'active show': currentItem == 'interview' }"
-          >
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex"
+             (click)="!_interviewEnable||routeTo('interview')"
+             data-toggle="list"
+             ___ngIf="_interviewEnable"
+             [ngClass]="{ 'active show': currentItem == 'interview', 'disabled': !_interviewEnable }">
             輔導紀錄
           </a>
-          <a
-            href="#listOne"
-            class="list-group-item list-group-item-action d-flex"
-            (click)="routeTo('counsel')"
-            data-toggle="list"
-            *ngIf="_counselEnable"
-            [ngClass]="{ 'active show': currentItem == 'counsel' }"
-          >
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex"
+             (click)="!_counselEnable||routeTo('counsel')"
+             data-toggle="list"
+             ___ngIf="_counselEnable"
+             [ngClass]="{ 'active show': currentItem == 'counsel', 'disabled': !_counselEnable }">
             認輔紀錄
           </a>
-          <a
-            href="#listTwo"
-            class="list-group-item list-group-item-action d-flex"
-            (click)="routeTo('psychological_test')"
-            data-toggle="list"
-            *ngIf="_psychological_testEnable"
-            [ngClass]="{ 'active show': currentItem == 'psychological_test' }"
-          >
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex disabled"
+             data-toggle="list">
+            綜合紀錄表
+          </a>
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex"
+             (click)="!_psychological_testEnable||routeTo('psychological_test')"
+             data-toggle="list"
+             ___ngIf="_psychological_testEnable"
+             [ngClass]="{ 'active show': currentItem == 'psychological_test', 'disabled': !_psychological_testEnable }">
             心理測驗
           </a>
-          <!-- <a href="#listThree"
-                       class="list-group-item list-group-item-action d-flex"
-                       (click)="routeTo('absent')"
-                       data-toggle="list">
-                        缺曠獎懲
-                    </a>
-                    <a href="#listFour"
-                       class="list-group-item list-group-item-action d-flex"
-                       (click)="routeTo('exam_score')"
-                       data-toggle="list">
-                        評量成績
-                    </a>
-                    <a class="list-group-item list-group-item-action d-flex"
-                       (click)="routeTo('semester_score')"
-                       data-toggle="list">
-                        學期成績
-                    </a> -->
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex disabled"
+             __click="routeTo('absent')"
+             data-toggle="list">
+            缺曠獎懲
+          </a>
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex disabled"
+             __click="routeTo('exam_score')"
+             data-toggle="list">
+            評量成績
+          </a>
+          <a href="javascript:void(0);"
+             class="list-group-item list-group-item-action d-flex disabled"
+             __click="routeTo('semester_score')"
+             data-toggle="list">
+            學期成績
+          </a>
         </div>
       </div>
       <div class="col-md-9">
-        <div class="tab-content"><router-outlet></router-outlet></div>
+        <div class="tab-content">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<ng-template #tmpLoading class="container">
-  <div
-    class="row justify-content-center"
-    style="margin-top:250px;margin-bottom:200px;"
-  >
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>

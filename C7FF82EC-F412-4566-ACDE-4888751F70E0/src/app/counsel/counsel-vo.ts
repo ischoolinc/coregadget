@@ -2,7 +2,7 @@ import { Content } from "@angular/compiler/src/render3/r3_ast";
 
 // 輔導資料
 export class CounselInterview {
-  constructor() {}
+  constructor() { }
   UID: string;
   StudentName: string; // 姓名
   SchoolYear: number; //學年度
@@ -19,7 +19,7 @@ export class CounselInterview {
   ReferralReply: string; //輔導室針對轉介之回覆
   ReferralStatus: string; //輔導室回覆轉介接收狀態
   ReferralReplyDate: string; //輔導室回覆轉介之日期
-  RefTeacherID: string; 
+  RefTeacherID: string;
   Content: string; //內容
   ContactItem: string; //聯絡事項
   isReferralValue: boolean = false;
@@ -67,15 +67,11 @@ export class CounselInterview {
       this.isContactNameHasValue = false;
     }
 
-    if (this.ContactItem) {
+    if (this.ContactItem || this.Content) {
       this.isContactItemHasValue = true;
-    } else {
-      this.isContactItemHasValue = false;
-    }
-
-    if (this.Content) {
       this.isContentHasValue = true;
     } else {
+      this.isContactItemHasValue = false;
       this.isContentHasValue = false;
     }
 
@@ -85,8 +81,10 @@ export class CounselInterview {
       this.isOccurDateHasValue &&
       this.isCounselTypeHasValue &&
       this.isContactNameHasValue &&
-      this.isContactItemHasValue &&
-      this.isContentHasValue
+      (
+        this.isContactItemHasValue ||
+        this.isContentHasValue
+      )
     ) {
       this.isSaveDisable = false;
     } else {

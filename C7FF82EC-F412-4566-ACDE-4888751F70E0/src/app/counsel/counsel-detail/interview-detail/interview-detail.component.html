@@ -67,7 +67,7 @@
                 data-toggle="modal">
               <li data-title="日期"
                   (click)="viewInterviewModal(counselRec)">
-                {{ counselRec.OccurDate | date: "yyyy-MM-dd" }}
+                {{ counselRec.OccurDate | date: "yyyy/MM/dd" }}
               </li>
               <li class="text-normal"
                   data-title="對象"
@@ -84,14 +84,16 @@
               <li class="text-left text-normal"
                   data-title="聯絡事項及內容"
                   (click)="viewInterviewModal(counselRec)">
-                <div *ngIf="counselRec.ContactItem">
-                  <div>聯絡事項：</div>
-                  <p class="ml-3">{{ counselRec.ContactItem }}</p>
-                </div>
-                <div *ngIf="counselRec.Content">
-                  <div>內容：</div>
-                  <p class="ml-3">{{ counselRec.Content }}</p>
-                </div>
+                <p *ngIf="counselRec.ContactItem"
+                   style="white-space: pre-wrap;word-break: break-all;">
+                  <strong>聯絡事項：</strong>
+                  <span>{{ counselRec.ContactItem }}</span>
+                </p>
+                <p *ngIf="counselRec.Content"
+                   style="white-space: pre-wrap;word-break: break-all;">
+                   <strong>內容：</strong>
+                  <span>{{ counselRec.Content }}</span>
+                </p>
               </li>
               <li data-title="轉介狀況"
                   (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>

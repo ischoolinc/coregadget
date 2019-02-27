@@ -35,7 +35,7 @@ export class ReferralDetailComponent implements OnInit {
     private router: Router,
     private dsaService: DsaService,
     private counselStudentService: CounselStudentService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.referralStudent = new ReferralStudent();
@@ -66,9 +66,9 @@ export class ReferralDetailComponent implements OnInit {
   viewInterviewModal() {
     if (this.counselInterview) {
       this._viewInterview._CounselInterview = this.counselInterview;
-    // this._viewInterview._CounselInterview.SchoolYear = 107;
+      // this._viewInterview._CounselInterview.SchoolYear = 107;
       $("#viewInterview1").modal("show");
-      $("#viewInterview1").on("hide.bs.modal", function(e) {
+      $("#viewInterview1").on("hide.bs.modal", function (e) {
         // do something...
       });
     }

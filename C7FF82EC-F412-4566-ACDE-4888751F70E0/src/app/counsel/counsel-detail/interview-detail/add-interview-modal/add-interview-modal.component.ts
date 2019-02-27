@@ -29,7 +29,7 @@ export class AddInterviewModalComponent implements OnInit {
     private dsaService: DsaService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
-  ) {}
+  ) { }
 
   _editMode: string = "add";
   editModeString: string = "新增";
@@ -64,9 +64,9 @@ export class AddInterviewModalComponent implements OnInit {
         // 班導師
         if (
           this.counselDetailComponent.currentStudent.Role.indexOf("班導師") >=
-            0 ||
+          0 ||
           this.counselDetailComponent.currentStudent.Role.indexOf("輔導老師") >=
-            0
+          0
         ) {
           this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
         }
