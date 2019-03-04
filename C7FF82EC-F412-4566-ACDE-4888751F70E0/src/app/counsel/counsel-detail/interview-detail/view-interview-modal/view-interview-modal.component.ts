@@ -11,7 +11,7 @@ import { CounselInterview } from "../../../counsel-vo";
 export class ViewInterviewModalComponent implements OnInit {
 
   _CounselInterview: CounselInterview;
-
+  _id = "viewInterview";
   constructor(private counselStudentService: CounselStudentService) {}
 
   ngOnInit() {

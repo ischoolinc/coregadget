@@ -9,7 +9,7 @@ import { ReferralStudent } from "../referral-student";
 import { DsaService } from "../../dsa.service";
 import { GrantModalComponent } from "../grant-modal/grant-modal.component";
 import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
-import { ViewInterviewComponent } from "../view-interview/view-interview.component"
+import { ViewInterviewModalComponent } from "../../counsel/counsel-detail/interview-detail/view-interview-modal/view-interview-modal.component";
 import {
   CounselStudentService,
   CounselClass
@@ -29,7 +29,7 @@ export class ReferralDetailComponent implements OnInit {
   counselInterview: CounselInterview;
   @ViewChild("grant_modal") grant_modal: GrantModalComponent;
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
-  @ViewChild("viewInterview") _viewInterview: ViewInterviewComponent;
+  @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -66,8 +66,10 @@ export class ReferralDetailComponent implements OnInit {
   viewInterviewModal() {
     if (this.counselInterview) {
       this._viewInterview._CounselInterview = this.counselInterview;
+      this._viewInterview._id = "viewInterview1";
       // this._viewInterview._CounselInterview.SchoolYear = 107;
       $("#viewInterview1").modal("show");
+      
       $("#viewInterview1").on("hide.bs.modal", function (e) {
         // do something...
       });

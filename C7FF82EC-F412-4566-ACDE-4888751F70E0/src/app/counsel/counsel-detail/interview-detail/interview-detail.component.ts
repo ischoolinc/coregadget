@@ -11,6 +11,7 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
 // import { MatDialog } from '@angular/material';
 import { DsaService } from "../../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
+
 import { CounselDetailComponent } from "../counsel-detail.component";
 
 @Component({
@@ -31,7 +32,7 @@ export class InterviewDetailComponent implements OnInit {
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     @Optional()
-    private counselDetailComponent: CounselDetailComponent    
+    private counselDetailComponent: CounselDetailComponent
   ) {}
 
   ngOnInit() {
@@ -60,7 +61,7 @@ export class InterviewDetailComponent implements OnInit {
     // 取得學生輔導資料
     let dataList = await this.GetCounselInterviewByStudentID(
       this.counselDetailComponent.currentStudent.StudentID
-    );    
+    );
 
     dataList.forEach(data => {
       let key = `${data.SchoolYear}_${data.Semester}`;
@@ -80,6 +81,7 @@ export class InterviewDetailComponent implements OnInit {
   // 檢視
   viewInterviewModal(counselView: CounselInterview) {
     this._viewInterview._CounselInterview = counselView;
+    this._viewInterview._id = "viewInterview";
     $("#viewInterview").modal("show");
     $("#viewInterview").on("hide.bs.modal", function(e) {
       // do something...
@@ -99,7 +101,6 @@ export class InterviewDetailComponent implements OnInit {
       this.loadCounselInterview(this._StudentID);
       $("#addInterview").off("hide.bs.modal");
     });
-   
   }
 
   // 修改
