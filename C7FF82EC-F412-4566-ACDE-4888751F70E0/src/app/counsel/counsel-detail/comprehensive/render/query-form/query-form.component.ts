@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Question, Option } from './model';
 import { FormBuilder, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -12,7 +12,8 @@ import { SentenceService } from '../dissector.service';
   selector: '[app-query-form]',
   templateUrl: './query-form.component.html',
   styleUrls: ['./query-form.component.css'],
-  exportAs: 'appQueryForm'
+  exportAs: 'appQueryForm',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
 
@@ -24,10 +25,14 @@ export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
 
   _required = true;
 
+  _question_call_count = 0;
+  _option_call_count = 0;
+
   constructor(
     private fb: FormBuilder,
     private coorniator: OptionCheckCoordinatorService,
-    private dissector: SentenceService
+    private dissector: SentenceService,
+    private change: ChangeDetectorRef
   ) { }
 
   @Input() dataSource: Question[];
@@ -54,35 +59,34 @@ export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
 
   /** 將所有值還原到剛開始「未修改(不一定是空值)」的狀態。 */
   public resetValues() {
-    if (this._questionGroup.disabled) {
-      // 主要是因為 auth-check directive 會衝突。
-      // 在 disabled 狀態 reset 會造成，enabled 時將全部 option 進行 check。
-      throw new Error(`disabled 狀態無法 resetValues。`);
-    }
-
     this._initQuestionGroup(true);
+    this.change.markForCheck();
   }
 
   /** 是否為單題目單選項的 TextArea Query。 */
   _isSingleTextAreaOption() {
+
     if (!this.dataSource) { return false; }
 
     if (this.dataSource.length > 1) { return false; }
-    if (this.dataSource[0].Options.length > 1) { return false; }
+    if (this.dataSource[0].Option.length > 1) { return false; }
     if (this.dataSource[0].Text) { return false; }
 
-    const sentence = this.dissector.create(this.dataSource[0].Options[0].OptionText);
+    const sentence = this.dissector.create(this.dataSource[0].Option[0].OptionText);
 
     return sentence.containsTextArea;
   }
 
   _getQuestionsControl() {
+    this._question_call_count++;
     const ctl = this._questionGroup.get("questions") as FormArray;
     return (ctl || { controls: [] }).controls as FormGroup[];
   }
 
   _getOptionsControl(q: FormGroup) {
-    const ctl = q.get("Options") as FormArray;
+    this._option_call_count++;
+
+    const ctl = q.get("Option") as FormArray;
     return (ctl || { controls: [] }).controls;
   }
 
@@ -101,10 +105,11 @@ export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
 
   _setDisabledState(isDisabled: boolean) {
     if (isDisabled) {
-      this._questionGroup.disable();
+      this._questionGroup.disable({ emitEvent: false });
     } else {
-      this._questionGroup.enable();
+      this._questionGroup.enable({ emitEvent: false });
     }
+    this.change.markForCheck();
   }
 
   /** 依 dataSource 最新狀態產生畫面。 */
@@ -120,7 +125,7 @@ export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
     if (!data) { data = []; }
 
     const questionArray = data.map(quest => {
-      const optionArray = quest.Options.map(opt => {
+      const optionArray = quest.Option.map(opt => {
         return this.fb.group({
           ...opt,
           "AnswerMatrix": new FormControl(opt.AnswerMatrix),
@@ -128,7 +133,7 @@ export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
       });
       return this.fb.group({
         ...quest,
-        "Options": new FormArray(optionArray)
+        "Option": new FormArray(optionArray)
       });
     });
     this._questionGroup.setControl("questions", new FormArray(questionArray));
@@ -150,13 +155,14 @@ export class QueryFormComponent implements OnInit, OnDestroy, OnChanges {
         this.dataSourceChange.emit(this.dataSource);
       }
     });
+
     this._valueChangesRegistered = true;
   }
 
   _applyOptionsState() {
     const optionHierarchy = this.dataSource
       .filter(v => v.Type === "單選" || v.Type === "複選")
-      .map(v => v.Options);
+      .map(v => v.Option);
 
       // TODO: 之後需要考慮如果此 component 消滅時是否需要清除相關資料。
     this.coorniator.setStates(flatten(optionHierarchy));

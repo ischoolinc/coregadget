@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { SentenceDissector, TokenData } from './sentence-dissector';
+import { SentenceDissector, TokenData, KeywordPattern } from './sentence-dissector';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SentenceService {
+
+  private _pattern: RegExp = new RegExp(KeywordPattern, 'i');
 
   constructor() { }
 
@@ -26,5 +28,10 @@ export class SentenceService {
   public join(tokens: TokenData[]) {
     const words = tokens.map(v => v.type === 'literally' ? v.text : v.value);
     return words.join('');
+  }
+
+  /** 測試是否文字中包含了可以產生 input 的 keyword(執行 1000 次約 2 ~ 3 亳秒)。 */
+  public test(sentence: string) {
+    return this._pattern.test(sentence);
   }
 }

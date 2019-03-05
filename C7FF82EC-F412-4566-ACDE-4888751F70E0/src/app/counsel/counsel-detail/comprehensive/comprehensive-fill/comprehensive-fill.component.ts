@@ -16,8 +16,7 @@ export class ComprehensiveFillComponent implements OnInit {
   isSaving = false;
   studentId: string;
   fillInSectionId: string;
-  // fulldata = [];
-  fulldata: QSubject[] = alldata;
+  fulldata: QSubject[] = [];
 
   constructor(private route: ActivatedRoute,
     private comprehensiveSrv: ComprehensiveService) { }
@@ -33,17 +32,26 @@ export class ComprehensiveFillComponent implements OnInit {
 
   async getLastFillInSection() {
     try {
-      // const rsp = await this.comprehensiveSrv.getFillInSection(this.studentId);
-      // this.fillInSectionId = rsp[0] && rsp[0].FillInSectionID;
-      // if (this.fillInSectionId) {
-      //   const fulldata = await this.comprehensiveSrv.getFillInData(this.studentId, this.fillInSectionId);
-        for (const subject of this.fulldata) {
+        for (const subject of alldata) {
           for (const group of subject.QuestionGroup) {
             for (const query of group.QuestionQuery) {
               query.QuestionTextControls = new FormControl(query.QuestionText);
             }
           }
         }
+        this.fulldata = alldata;
+
+      // const rsp = await this.comprehensiveSrv.getFillInSection(this.studentId);
+      // this.fillInSectionId = rsp[0] && rsp[0].FillInSectionID;
+      // if (this.fillInSectionId) {
+      //   const fulldata = await this.comprehensiveSrv.getFillInData(this.studentId, this.fillInSectionId);
+      //   for (const subject of fulldata) {
+      //     for (const group of subject.QuestionGroup) {
+      //       for (const query of group.QuestionQuery) {
+      //         query.QuestionTextControls = new FormControl(query.QuestionText);
+      //       }
+      //     }
+      //   }
       //   this.fulldata = fulldata;
       // }
     } catch (error) {
@@ -62,11 +70,10 @@ export class ComprehensiveFillComponent implements OnInit {
       for (const subject of this.fulldata) {
         for (const group of subject.QuestionGroup) {
           for (const query of group.QuestionQuery) {
-            console.log(query.QuestionTextControls);
+            console.log(query.QuestionTextControls.value);
           }
         }
       }
-      console.log('還沒寫');
       this.isSaving = false;
     } catch (error) {
       console.log('error');

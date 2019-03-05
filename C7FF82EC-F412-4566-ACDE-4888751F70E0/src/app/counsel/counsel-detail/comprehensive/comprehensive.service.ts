@@ -34,8 +34,8 @@ export class ComprehensiveService {
           qQuery.QuestionText = [].concat(qQuery.QuestionText || []);
           qQuery.QuestionText.map(qText => {
             qText.Require = JSON.parse('' + qText.Require) || false;
-            qText.Options = [].concat(qText.Options || []);
-            qText.Options.map(qOption => {
+            qText.Option = [].concat(qText.Option || []);
+            qText.Option.map(qOption => {
               qOption.AnswerChecked = JSON.parse('' + qOption.AnswerChecked) || false;
               qOption.AnswerMatrix = [].concat(JSON.parse('' + qOption.AnswerMatrix) || []);
               qOption.AnswerComplete = JSON.parse('' + qOption.AnswerComplete) || false;
@@ -44,6 +44,7 @@ export class ComprehensiveService {
         });
       });
     });
+    // console.log(res);
     return res;
   }
 }

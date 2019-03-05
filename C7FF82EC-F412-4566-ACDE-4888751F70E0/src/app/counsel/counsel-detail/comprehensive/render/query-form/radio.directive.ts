@@ -31,7 +31,7 @@ export class RadioDirective implements OnInit, OnDestroy {
 
   @HostListener('click') click() {
     const question = this.options.formGroup;
-    const options = question.get("Options") as FormArray;
+    const options = question.get("Option") as FormArray;
 
     // 以下程式需要達到的效果是只更新 AnswerChecked。
     // 並且只引發一次 Question 層級的 valueChanges 事件。

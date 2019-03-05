@@ -1,31 +1,36 @@
-<form [formGroup]="_tokenGroup" class="flex_layout">
-  <!-- (r:{{_required}})(v:{{_tokenGroup.valid}}) -->
-  <ng-container *ngFor="let token of _getTokenControls(); let i=index">
+<!-- {{_call_count}} -->
+<ng-container *ngIf="_is_plain_text; else sentence">
+    <div>{{text}}</div>
+</ng-container>
 
-    <div [formGroup]="token" class="align_center"
-         [ngStyle]="_getGroupStyle(token.value)"
-         >
+<ng-template #sentence>
+  <form [formGroup]="_tokenGroup" class="flex_layout">
+    <!-- (r:{{_required}})(v:{{_tokenGroup.valid}}) -->
+    <ng-container *ngFor="let token of _getTokenControls(); let i=index">
 
-      <!-- 如果是常值就直接顯示。 -->
-      <div *ngIf="token.value.type === 'literally'">{{token.value.text}}</div>
+      <div [formGroup]="token" class="align_center"
+           [ngStyle]="_getGroupStyle(token.value)">
 
-      <!-- 如果是 Keyword 就產生一個 Input。 -->
-      <ng-container *ngIf="token.value.type === 'keyword'">
+        <!-- 如果是常值就直接顯示。 -->
+        <div *ngIf="token.value.type === 'literally'">{{token.value.text}}</div>
 
-        <input *ngIf="token.value.size >= 0"
-               type="text"
-               formControlName="value" (blur)="_touched()"
-               [ngStyle]="_getControlStyle(token.value)">
+        <!-- 如果是 Keyword 就產生一個 Input。 -->
+        <ng-container *ngIf="token.value.type === 'keyword'">
 
-        <textarea *ngIf="token.value.size < 0"
-                  rows="6"
-                  formControlName="value" (blur)="_touched()"
-                  [ngStyle]="_getControlStyle(token.value)"></textarea>
+          <input *ngIf="token.value.size >= 0"
+                 type="text"
+                 formControlName="value" (blur)="_touched()"
+                 [ngStyle]="_getControlStyle(token.value)"
+                 class="sentence-input">
 
-      </ng-container>
+          <textarea *ngIf="token.value.size < 0"
+                    rows="6"
+                    formControlName="value" (blur)="_touched()"
+                    [ngStyle]="_getControlStyle(token.value)"
+                    class="sentence-textarea"></textarea>
 
-    </div>
-
-  </ng-container>
-
-</form>
+        </ng-container>
+      </div>
+    </ng-container>
+  </form>
+</ng-template>

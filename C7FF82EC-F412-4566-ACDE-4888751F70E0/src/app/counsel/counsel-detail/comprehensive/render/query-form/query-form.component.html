@@ -1,16 +1,19 @@
+<!-- q:{{_question_call_count}}, o: {{_option_call_count}} -->
+
 <form [formGroup]="_questionGroup" class="question_container">
   <ng-container formArrayName="questions">
 
     <ng-container *ngIf="_isSingleTextAreaOption(); else normalContent">
       <ng-container *ngFor="let question of _getQuestionsControl()">
         <ng-container [formGroup]="question">
-          <ng-container formArrayName="Options">
+          <ng-container formArrayName="Option">
             <ng-container *ngFor="let option of _getOptionsControl(question)">
               <!-- textarea -->
               <ng-container *ngIf="question.value.Type === '填答'"
                    class="mb-3"
                    [formGroup]="option">
                 <app-sentence [text]="_opt(option).OptionText"
+                              class="full_width"
                               formControlName="AnswerMatrix"
                               appAnswerValueSync
                               completeRequired="true"></app-sentence>
@@ -39,7 +42,7 @@
         </div>
 
         <ng-container [formGroup]="question" appRadioGroup>
-          <ng-container formArrayName="Options">
+          <ng-container formArrayName="Option">
 
             <div *ngFor="let option of _getOptionsControl(question)">
               <ng-container [formGroup]="option">
@@ -61,7 +64,7 @@
                            [attr.for]="_opt(option).OptionCode">
                       <app-sentence [text]="_opt(option).OptionText"
                                     formControlName="AnswerMatrix"
-                                    appAnswerValueSync
+                                    appAnswerResultSync
                                     completeRequired="true"></app-sentence>
                     </label>
                   </div>
@@ -80,7 +83,7 @@
                            [attr.for]="_opt(option).OptionCode">
                       <app-sentence [text]="_opt(option).OptionText"
                                     formControlName="AnswerMatrix"
-                                    appAnswerValueSync
+                                    appAnswerResultSync
                                     completeRequired="true"></app-sentence>
                     </label>
                   </div>
@@ -92,7 +95,7 @@
                      [formGroup]="option">
                   <app-sentence [text]="_opt(option).OptionText"
                                 formControlName="AnswerMatrix"
-                                appAnswerValueSync
+                                appAnswerResultSync
                                 completeRequired="true"></app-sentence>
                 </div>
 

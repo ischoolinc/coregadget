@@ -11,6 +11,7 @@ export interface FillInSection {
 export interface QSubject {
   Subject: string;
   QuestionGroup: QGroup[];
+  [x: string]: any;
 }
 
 export interface QGroup {
@@ -30,7 +31,7 @@ export interface QQuestion {
   Require: boolean;
   RequireLink: string;
   Text: string;
-  Options: QOption[];
+  Option: QOption[];
 }
 
 export interface QOption {

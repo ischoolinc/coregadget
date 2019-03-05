@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { SentenceService } from '../dissector.service';
 import { TokenData, SentenceDissector } from '../sentence-dissector';
 import { FormBuilder, FormArray, Validators, } from '@angular/forms';
@@ -24,7 +24,8 @@ example:
 @Component({
   selector: 'app-sentence',
   templateUrl: './sentence.component.html',
-  styleUrls: ['./sentence.component.css']
+  styleUrls: ['./sentence.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SentenceComponent implements OnInit, OnDestroy, OnChanges {
 
@@ -33,14 +34,13 @@ export class SentenceComponent implements OnInit, OnDestroy, OnChanges {
 
   _tokenGroup = this.fb.group({inputs: new FormArray([])});
   _required = false; // 是否所有欄位都是必填狀態。
-
-  // private _text: string; // 飛水：天使（%TEXT3%）、聖天馬（%TEXT1%）、吸血蝙蝠（%RTEXT2%）、龍蝦巨獸（%TEXT%）
-  // private _matrix: string[]; // ['', '雪莉、安潔莉娜', '', '露娜', '', '索妮亞', '', '安潔莉娜']
+  _is_plain_text = false;
 
   public _disabled = false; // 是否停用所有 input。
   private _dissector: SentenceDissector;
   private _ui_dirty = false; // 代表畫面需要更新。
-  // private _tokens: TokenData[] = [];
+
+  _call_count = 0;
 
   constructor(
     private srv: SentenceService, // 用於解析 text 用的服務。
@@ -127,6 +127,7 @@ export class SentenceComponent implements OnInit, OnDestroy, OnChanges {
    * 取得 matrix 裡面每一元素所代表的相關資訊。
    */
   _getTokenControls() {
+    this._call_count++;
     const arr = this._tokenGroup.get("inputs") as FormArray;
     return (arr || { controls: [] }).controls;
   }
@@ -187,6 +188,7 @@ export class SentenceComponent implements OnInit, OnDestroy, OnChanges {
         if (!currentValue) {
           this._dissector = null;
         } else {
+          if (this._testPlainText(currentValue)) { return; }
           this._dissector = this.srv.create(currentValue);
         }
         this.setUIDirty();
@@ -208,7 +210,19 @@ export class SentenceComponent implements OnInit, OnDestroy, OnChanges {
     this.applyChanges();
   }
 
+  public _testPlainText(currentValue: string) {
+    if (!this.srv.test(currentValue)) {
+      this._is_plain_text = true;
+      return true;
+    } else {
+      this._is_plain_text = false;
+      return false;
+    }
+  }
+
   applyChanges() {
+
+    if (this._is_plain_text) { return; }
 
     if (this._ui_dirty && this._dissector && this.matrix) {
       const tokens = this._dissector.applyMatrix(this.matrix);

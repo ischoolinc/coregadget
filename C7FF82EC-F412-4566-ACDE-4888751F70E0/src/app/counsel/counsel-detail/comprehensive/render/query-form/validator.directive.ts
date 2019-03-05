@@ -35,6 +35,7 @@ export class QueryFormValidatorDirective implements OnInit, OnDestroy, Validator
     });
 
     // TODO: 需要解決 valueChange 之後 question 結構變更問題。
+    // 如果需要的話。
     this.component._questionGroup.valueChanges.pipe(
       take(1)
     ).subscribe( ({questions}) => {
@@ -143,8 +144,8 @@ export class QueryFormValidatorDirective implements OnInit, OnDestroy, Validator
   }
 
   private getOptionsControl(qg: FormGroup) {
-    // Options 是一個 FormArray，他的 controls 屬性才是 FormGroup[]。
-    return (qg.get("Options") as FormArray).controls as FormGroup[];
+    // Option 是一個 FormArray，他的 controls 屬性才是 FormGroup[]。
+    return (qg.get("Option") as FormArray).controls as FormGroup[];
   }
 
   registerOnValidatorChange?(fn: () => void): void {

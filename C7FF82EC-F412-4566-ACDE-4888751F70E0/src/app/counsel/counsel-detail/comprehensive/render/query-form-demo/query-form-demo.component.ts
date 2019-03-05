@@ -37,7 +37,12 @@ export class QueryFormDemoComponent implements OnInit {
 
   @ViewChildren('query') query: QueryList<QueryFormComponent>;
 
+  _new_value = {};
+
   ngOnInit() {
+    this.dataControl[0].valueChanges.subscribe(v => {
+      this._new_value = v;
+    });
   }
 
   toggleDisabled() {
@@ -68,7 +73,7 @@ const demo1 = [
     "Require": false,
     "RequireLink": "10000038",
     "Text": "",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 3,
         "OptionCode": "10000004",
@@ -107,7 +112,7 @@ const demo2 = [
     "Require": false,
     "RequireLink": "10000013",
     "Text": "領有身心障礙手冊",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 36,
         "OptionCode": "10000037",
@@ -134,7 +139,7 @@ const demo2 = [
     "Require": true,
     "RequireLink": "",
     "Text": "身心障礙等級",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 38,
         "OptionCode": "10000039",
@@ -152,7 +157,7 @@ const demo2 = [
     "Require": false,
     "RequireLink": "10000058",
     "Text": "鑑定日期",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 39,
         "OptionCode": "10000040",
@@ -170,7 +175,7 @@ const demo2 = [
     "Require": false,
     "RequireLink": "",
     "Text": "鑑定文號",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 40,
         "OptionCode": "10000041",
@@ -188,7 +193,7 @@ const demo2 = [
     "Require": false,
     "RequireLink": "",
     "Text": "身心障礙類別",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 41,
         "OptionCode": "10000042",
@@ -209,7 +214,7 @@ const demo3 = [
     "Require": true,
     "RequireLink": "",
     "Text": "原住民血統",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 56,
         "OptionCode": "10000057",
@@ -236,7 +241,7 @@ const demo3 = [
     "Require": true,
     "RequireLink": "",
     "Text": "原住民親屬稱謂",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 58,
         "OptionCode": "10000059",
@@ -263,7 +268,7 @@ const demo3 = [
     "Require": false,
     "RequireLink": "",
     "Text": "原住民族別",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 60,
         "OptionCode": "10000061",
@@ -284,7 +289,7 @@ const demo4 = [
     "Require": true,
     "RequireLink": "",
     "Text": "",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 12,
         "OptionCode": "10000013",
@@ -467,7 +472,7 @@ const demo5 = [
     "Require": false,
     "RequireLink": "",
     "Text": "",
-    "Options": [
+    "Option": [
       {
         "AnswerID": 41.1,
         "OptionCode": "10000042.1",

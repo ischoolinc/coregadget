@@ -1,9 +1,8 @@
 import { Directive, forwardRef, OnInit, OnDestroy } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { QueryFormComponent } from './query-form.component';
-import { AutoCheckDirective } from './auto-check.directive';
 
 export const QUERY_FORM_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -14,7 +13,7 @@ export const QUERY_FORM_VALUE_ACCESSOR: any = {
 @Directive({
   // tslint:disable-next-line:directive-selector
   selector: '[app-query-form][ngModel],[app-query-form][formControl],[app-query-form][formControlName]',
-  providers: [QUERY_FORM_VALUE_ACCESSOR]
+  providers: [QUERY_FORM_VALUE_ACCESSOR],
 })
 export class QueryFormValueAccessorDirective implements OnInit, OnDestroy, ControlValueAccessor {
 
@@ -31,6 +30,11 @@ export class QueryFormValueAccessorDirective implements OnInit, OnDestroy, Contr
   }
 
   ngOnInit(): void {
+    this.component.dataSourceChange.pipe(
+      takeUntil(this._bag)
+    ).subscribe(v => {
+      this._onChange(v);
+    });
   }
 
   ngOnDestroy(): void {

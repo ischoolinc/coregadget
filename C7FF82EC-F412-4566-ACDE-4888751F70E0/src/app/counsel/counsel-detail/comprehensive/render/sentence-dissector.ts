@@ -1,5 +1,5 @@
 
-const KeywordPattern = '\%([r]?)(text(area)?)([0-9]{1,2})?\%';
+export const KeywordPattern = '\%([r]?)(text(area)?)([0-9]{1,2})?\%';
 
 // text 折解器。
 export class SentenceDissector {

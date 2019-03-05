@@ -11,7 +11,7 @@ export interface Question {
    */
   RequireLink: string;
   Text: string;
-  Options: Option[];
+  Option: Option[];
 }
 
 /** QueryFormComponent 內部使用。 */
