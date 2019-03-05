@@ -51,11 +51,11 @@ export class TeacherHelperComponent implements OnInit {
     // 取得學生清單
     const _students = await this.dsa.getStudents('Course', this.courseID, this.today, this.period);
     // 取得學生照片URL
-    const c = await this.gadget.getContract("1campus.mobile.v2.teacher");
+    const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
     for (const stu of _students) {
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
       this.students.push(stu);
     }
     // 取得課程助手

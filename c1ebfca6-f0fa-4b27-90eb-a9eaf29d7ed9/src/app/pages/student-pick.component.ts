@@ -63,7 +63,7 @@ export class StudentPickComponent implements OnInit {
         // 學生清單（含點名資料）。 
         await this.reloadStudentAttendances();
       } catch (error) {
-        this.alert.json('ServiceError:rollcall.GetStudents');
+        this.alert.json('ServiceError:_.GetStudents');
         console.log(error);
       }
 
@@ -79,13 +79,13 @@ export class StudentPickComponent implements OnInit {
     const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
     this.studentChecks = [];
 
-    const c = await this.gadget.getContract("1campus.mobile.v2.teacher");
+    const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
 
     for (const stu of students) {
 
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
       const status = this.getSelectedAttendance(stu);
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
 

@@ -17,22 +17,11 @@ export class DSAService {
 
   private async initContract() {
     try {
-      this.contract = await this.gadget.getContract('1campus.mobile.v2.teacher');
+      this.contract = await this.gadget.getContract('campus.rollcall.teacher');
     } catch (error) {
       console.log(error);
       throw error;
     }
-  }
-
-  /**
-   * 取得老師班級課程清單
-   */
-  public async getCCItems() {
-    await this.ready; //等待 contract 準備完成。
-
-    const rsp = await this.contract.send('GetCCItems');
-
-    return (rsp && rsp.Items.Item as RollCallRecord[]) || [];
   }
 
   /**
@@ -41,7 +30,7 @@ export class DSAService {
   public async getGetConfig() {
     await this.ready;
 
-    const rsp = await this.contract.send('rollcall.GetConfig');
+    const rsp = await this.contract.send('_.GetConfig');
 
     return rsp && rsp.Config;
   }
@@ -66,7 +55,7 @@ export class DSAService {
     if (type === "Course") req.Request.CourseID = id;
     if (type === "Class") req.Request.ClassID = id;
 
-    const rsp = await this.contract.send('rollcall.GetStudents', req);
+    const rsp = await this.contract.send('_.GetStudents', req);
     console.log(rsp);
     // return ((rsp && rsp.Students && rsp.Students.Student) || []) as Student[];
     return [].concat((rsp && rsp.Students && rsp.Students.Student) || []).map(function (item) { return item as Student; });
@@ -79,7 +68,7 @@ export class DSAService {
   public async getSuggestRollCall(date: string) {
     await this.ready;
 
-    const rsp = await this.contract.send('rollcall.SuggestRollCall', {
+    const rsp = await this.contract.send('_.SuggestRollCall', {
       Request: {
         OccurDate: date
       }
@@ -105,7 +94,7 @@ export class DSAService {
       req.ClassID = id;
     }
 
-    const rsp = await this.contract.send('rollcall.SetRollCall', req);
+    const rsp = await this.contract.send('_.SetRollCall', req);
 
     return rsp;
   }
@@ -121,7 +110,7 @@ export class DSAService {
       RefStudentID: studentID
     };
 
-    const rsp = await this.contract.send('rollcall.SetHelper',req);
+    const rsp = await this.contract.send('_.SetHelper',req);
 
     return rsp;
   }
@@ -144,7 +133,7 @@ export class DSAService {
   public async getSchedule(date: string) {
     await this.ready;
 
-    const rsp = await this.contract.send('rollcall.GetSchedule', {
+    const rsp = await this.contract.send('_.GetSchedule', {
       Request: {
         OccurDate: date
       }
@@ -163,7 +152,7 @@ export class DSAService {
 
   public async getAllCourse() {
     await this.ready;
-    const rsp = await this.contract.send('rollcall.GetAllCourse');
+    const rsp = await this.contract.send('_.GetAllCourse');
     const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeYearObj[];
 
     gradeYears.forEach(v => {
@@ -215,7 +204,6 @@ export interface Student {
   Photo: string;
   ClassName: string;
   Attendance: AttendanceItem;
-
   PhotoUrl: string; //2018/10/24 new
 }
 
@@ -227,7 +215,6 @@ export interface AttendanceItem {
  * 代表某一節次的缺曠狀態。
  */
 export interface PeriodStatus {
-
   /** '@text' 取得節次名稱。 */
   [x: string]: string;
 
@@ -249,7 +236,6 @@ export interface RollCallCheck {
  * 並且組織出可點名缺曠別
  */
 export interface Schedule {
-
   Checked: string;
   ClassID: string;
   ClassName: string;
@@ -257,7 +243,6 @@ export interface Schedule {
   CourseName: string;
   Period: string;
   StudentCount: string;
-
 }
 
 export interface PeriodConf {
@@ -266,7 +251,6 @@ export interface PeriodConf {
   Name: string;
   StartTime: string;
   Type: string;
-
   Absence: AbsenceConf[];
 }
 
@@ -288,7 +272,6 @@ export interface CourseConf {
 export interface GradeYearObj {
   GradeYear: string;
   Class: ClassObj[];
-
 }
 
 export interface ClassObj {
@@ -296,6 +279,7 @@ export interface ClassObj {
   ClassName: string;
   Course: CourseObj[];
 }
+
 export interface CourseObj {
   CourseID: string;
   CourseName: string;
