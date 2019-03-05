@@ -65,7 +65,6 @@ export class CounselStudentService {
 
     // 班導師，輔導老師，會讀取目前學年度學期
     let resp = await this.dsaService.send("GetCounselStudent", {});
-
     [].concat(resp.Student || []).forEach(stuRec => {
       //建立學生
       if (!this.studentMap.has(stuRec.StudentID)) {
@@ -98,7 +97,7 @@ export class CounselStudentService {
         stu.Role.push(stuRec.Role);
       }
       //填入認輔名單
-      if (stu.Role.indexOf("認輔老師") > 0)
+      if (stu.Role.indexOf("認輔老師") > -1)
         this.guidanceStudent.push(stu);
       //建立班級
       if (stuRec.ClassID) {
