@@ -1,0 +1,80 @@
+<!-- 學生個人 - 綜合紀錄表 -->
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-pane fade-in" id="listTwo">
+    <div class="d-md-flex align-items-center sub-title mb-3">
+      <h4 class="mb-0 mr-auto">綜合紀錄表</h4>
+    </div>
+
+    <ng-container *ngIf="fulldata.length === 0">
+      <div class="row justify-content-center">沒有資料。</div>
+    </ng-container>
+
+    <div *ngIf="fulldata.length" class="card my-3 sticky-top">
+      <div class="card-body d-flex align-items-center">
+        <button class="btn btn-info ml-auto" (click)="save()">
+          <i class="material-icons">save_alt</i>
+          儲存
+        </button>
+      </div>
+    </div>
+
+    <!-- <ng-container *ngFor="let subject of fulldata">
+      <div class="font-weight-bold mb-2">{{subject.Subject}}</div>
+      <ng-container *ngFor="let group of subject.QuestionGroup">
+        <h3 class="py-3 flex-fill bg-cyan text-center mr-2">{{group.Group}}</h3>
+        <div class="mb-2" style="border: 1px solid #dddddd; padding: 1.25rem 1.5rem;">
+          <div class="form-group" *ngFor="let query of group.QuestionQuery">
+            <label for="contactMatter" class="col-form-label">
+              <span *ngIf="query.QuestionText.length === 1 && query.QuestionText[0].Require" class="text-samll text-danger">*</span>
+              {{query.Query}}
+            </label>
+            <div app-query-form [formControl]="query.QuestionTextControls" class="query" [debug]="false">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container> -->
+
+    <ng-container *ngFor="let subject of fulldata">
+      <ul class="list-group my-3" *ngFor="let group of subject.QuestionGroup">
+        <h3 [id]="group.Group" class="py-3 flex-fill bg-cyan text-center">{{subject.Subject}} / {{group.Group}}</h3>
+        <li class="list-group-item" *ngFor="let query of group.QuestionQuery">
+          <div class="row">
+            <div class="col-sm-2 font-weight-bold">
+              <span *ngIf="query.QuestionText.length === 1 && query.QuestionText[0].Require" class="text-samll text-danger">*</span>
+              {{query.Query}}
+            </div>
+            <div class="col-sm-10">
+              <div app-query-form [formControl]="query.QuestionTextControls" class="col-sm-10 query" [debug]="false">
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- <ng-container *ngFor="let subject of fulldata">
+      <div class="font-weight-bold mb-2">{{subject.Subject}}</div>
+      <ul class="list-group my-3" *ngFor="let group of subject.QuestionGroup">
+        <li class="list-group-item list-group-item-info">{{group.Group}}</li>
+        <li class="list-group-item" *ngFor="let query of group.QuestionQuery">
+          <div class="row">
+            <div class="col-sm-2 font-weight-bold">
+              {{query.Query}}
+            </div>
+            <div class="col-sm-10">
+              <div app-query-form [formControl]="query.QuestionTextControls" class="col-sm-10 query" [debug]="false">
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </ng-container> -->
+  </div>
+</div>
+
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
