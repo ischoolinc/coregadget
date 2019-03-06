@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DsaService } from '../../../dsa.service';
 import { QSubject, FillInSection } from './core';
+import { QOption } from './core/data_model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,15 @@ export class ComprehensiveService {
         });
       });
     });
-    // console.log(res);
     return res;
+  }
+
+  /**儲存填寫資料 */
+  setFillInData(options: QOption[]) {
+    return this.dsaService.send("SetFillInData", {
+      Request: {
+        Option: options
+      }
+    });
   }
 }

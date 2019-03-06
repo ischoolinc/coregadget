@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ComprehensiveService } from '../comprehensive.service';
 import { FormControl } from '@angular/forms';
 // import alldata from './../example0';
-import { QQuery, QSubject } from '../core/data_model';
+import { QQuery, QSubject, QOption } from '../core/data_model';
 
 @Component({
   selector: 'app-comprehensive-fill',
@@ -49,6 +49,9 @@ export class ComprehensiveFillComponent implements OnInit {
           for (const group of subject.QuestionGroup) {
             for (const query of group.QuestionQuery) {
               query.QuestionTextControls = new FormControl(query.QuestionText);
+              (query.QuestionTextControls as FormControl).statusChanges.subscribe(() => {
+                // console.log(query.QuestionTextControls.errors);
+              });
             }
           }
         }
@@ -66,17 +69,32 @@ export class ComprehensiveFillComponent implements OnInit {
       if (this.isSaving) { return; }
 
       this.isSaving = true;
-      const data = [];
+      const options = [];
       for (const subject of this.fulldata) {
         for (const group of subject.QuestionGroup) {
           for (const query of group.QuestionQuery) {
-            console.log(query.QuestionTextControls.value);
+            query.QuestionTextControls.value.forEach(item => {
+              item.Option.forEach((data: any) => {
+                options.push({
+                  AnswerChecked: data.AnswerChecked,
+                  AnswerComplete: data.AnswerComplete,
+                  AnswerID: data.AnswerID,
+                  AnswerMatrix: JSON.stringify(data.AnswerMatrix),
+                  AnswerValue: data.AnswerValue,
+                  OptionCode: data.OptionCode,
+                  OptionText: data.OptionText,
+                });
+              });
+            });
           }
         }
       }
+      console.log(options);
+      const rsp = await this.comprehensiveSrv.setFillInData(options);
+      // console.log(rsp);
       this.isSaving = false;
     } catch (error) {
-      console.log('error');
+      console.log(error);
     }
   }
 }

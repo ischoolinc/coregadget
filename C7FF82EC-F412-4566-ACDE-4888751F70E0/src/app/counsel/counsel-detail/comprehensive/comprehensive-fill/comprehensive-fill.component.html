@@ -11,9 +11,10 @@
 
     <div *ngIf="fulldata.length" class="card my-3 sticky-top">
       <div class="card-body d-flex align-items-center">
-        <button class="btn btn-info ml-auto" (click)="save()">
+        <button class="btn btn-info ml-auto" (click)="save()" [disabled]="isSaving">
           <i class="material-icons">save_alt</i>
-          儲存
+          <span [hidden]="isSaving">儲存</span>
+          <span [hidden]="!isSaving">儲存中...</span>
         </button>
       </div>
     </div>

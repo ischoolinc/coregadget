@@ -30,6 +30,7 @@ import { ReferralListComponent } from './referral/referral-list/referral-list.co
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
 import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
 import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
+import { RenderModule } from './render';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,7 @@ import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counse
     CaseComponent,
     ReferralComponent,
     CounselRoutingComponent,
-    DetailRoutingComponent,    
+    DetailRoutingComponent,
     ReferralListComponent, ReferralDetailComponent, AddCaseInterviewModalComponent, ViewCaseInterviewModalComponent
   ],
   imports: [
@@ -61,10 +62,11 @@ import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counse
     AppRoutingModule,
     FormsModule,
     MatDialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    RenderModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
-  
+
 })
 export class AppModule { }
