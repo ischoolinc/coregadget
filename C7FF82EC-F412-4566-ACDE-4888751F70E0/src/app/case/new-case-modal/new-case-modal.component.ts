@@ -2,12 +2,14 @@ import { Component, OnInit } from "@angular/core";
 import { CaseStudent, VoluntaryGuidanceTeacher } from "../case-student";
 import { DsaService } from "../../dsa.service";
 import { ReferralStudent } from "../../referral/referral-student";
+import { FormControl } from "@angular/forms";
 import {
   CounselStudentService,
   CounselClass,
   CounselStudent,
   SemesterInfo
 } from "../../counsel-student.service";
+import { QOption } from "../case-question-data-modal";
 
 @Component({
   selector: "app-new-case-modal",
@@ -57,7 +59,7 @@ export class NewCaseModalComponent implements OnInit {
 
     this.GetDefault();
 
-    this.caseStudent = new CaseStudent();
+    if (!this.caseStudent) this.caseStudent = new CaseStudent();
 
     this.GetVoluntaryGuidanceTeacher();
 
@@ -65,6 +67,7 @@ export class NewCaseModalComponent implements OnInit {
     if (this.isAddMode) {
       if (!this.caseStudent.RefCounselInterviewID) {
         this.isCanSetClass = true;
+        // this.caseStudent.useQuestionOptionTemplate();
       } else {
         this.isCanSetClass = false;
       }
@@ -84,7 +87,7 @@ export class NewCaseModalComponent implements OnInit {
     this.selectClassNameValue = item.ClassName;
     // 請除可選學生號碼
     this.canSelectNoList = [];
-    this.caseStudent = new CaseStudent();
+
     this.selectSeatNoValue = "請選擇座號";
     this.selectVoluntaryGuidanceValue = "請選擇認輔老師";
     this.selectVoluntaryGuidanceTeacher = null;
@@ -98,7 +101,7 @@ export class NewCaseModalComponent implements OnInit {
   //設定座號
   setSeatNo(item: CounselStudent) {
     this.selectSeatNoValue = item.SeatNo;
-    this.caseStudent = new CaseStudent();
+    // this.caseStudent = new CaseStudent();
     this.caseStudent.Name = item.StudentName;
     this.caseStudent.PhotoUrl = item.PhotoUrl;
     this.caseStudent.SeatNo = item.SeatNo;
@@ -137,6 +140,8 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.TeacherName = refData.TeacherName;
     this.caseStudent.RefCounselInterviewID = refData.UID;
     this.caseStudent.PhotoUrl = refData.PhotoUrl;
+    // 使用預設問題樣板
+    this.caseStudent.useQuestionOptionTemplate();
     this.selectClassNameValue = this.caseStudent.ClassName;
     this.selectSeatNoValue = this.caseStudent.SeatNo;
     this.caseStudent.setIsCloseNo();
@@ -230,6 +235,17 @@ export class NewCaseModalComponent implements OnInit {
     });
   }
 
+  parseCaseOptions(data: QOption[]) {
+    for (let da of data) {
+      if (da.answer_martix.length > 0) {
+        da.answer_value = da.answer_martix.join("");
+      } else {
+        da.answer_value = da.answer_text;
+      }
+    }
+    return data;
+  }
+
   // 新增個案
   async SetCase(data: CaseStudent) {
     data.SchoolYear = this.currentSchoolYear;
@@ -243,11 +259,17 @@ export class NewCaseModalComponent implements OnInit {
     data.SpecialLevel = "";
     data.SpecialCategory = "";
     data.HasDisabledBook = "false";
-    data.DeviantBehavior = "";
-    data.ProblemCategory = "";
-    data.ProbleDescription = "";
-    data.SpecialSituation = "";
-    data.EvaluationResult = "";
+
+    data.deviant_behavior = this.parseCaseOptions(data.deviant_behavior);
+    data.problem_category = this.parseCaseOptions(data.problem_category);
+    data.proble_description = this.parseCaseOptions(data.proble_description);
+    data.special_situation = this.parseCaseOptions(data.special_situation);
+    data.evaluation_result = this.parseCaseOptions(data.evaluation_result);
+    data.DeviantBehavior = JSON.stringify(data.deviant_behavior);
+    data.ProblemCategory = JSON.stringify(data.problem_category);
+    data.ProbleDescription = JSON.stringify(data.proble_description);
+    data.SpecialSituation = JSON.stringify(data.special_situation);
+    data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.CloseDescription = "";
 
     // 當沒有輔導 uid 寫入 null
@@ -296,6 +318,11 @@ export class NewCaseModalComponent implements OnInit {
     if (!data.IsClosed) {
       data.IsClosed = "f";
     }
+    data.DeviantBehavior = JSON.stringify(data.deviant_behavior);
+    data.ProblemCategory = JSON.stringify(data.problem_category);
+    data.ProbleDescription = JSON.stringify(data.proble_description);
+    data.SpecialSituation = JSON.stringify(data.special_situation);
+    data.EvaluationResult = JSON.stringify(data.evaluation_result);
 
     if (data.UID) {
       data.SchoolYear = this.currentSchoolYear;
@@ -311,7 +338,12 @@ export class NewCaseModalComponent implements OnInit {
         VGTeacherID: this.selectVoluntaryGuidanceTeacher.UID,
         IsClosed: data.IsClosed,
         CloseDate: data.CloseDate,
-        CloseDescription: data.CloseDescription
+        CloseDescription: data.CloseDescription,
+        DeviantBehavior: data.DeviantBehavior,
+        ProblemCategory: data.ProblemCategory,
+        ProbleDescription: data.ProbleDescription,
+        SpecialSituation: data.SpecialSituation,
+        EvaluationResult: data.EvaluationResult
       };
 
       console.log(req);

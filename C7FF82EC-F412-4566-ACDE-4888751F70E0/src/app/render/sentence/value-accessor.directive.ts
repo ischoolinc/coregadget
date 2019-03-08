@@ -1,4 +1,4 @@
-import { Directive, forwardRef, OnInit, OnDestroy } from '@angular/core';
+import { Directive, forwardRef, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { SentenceComponent } from './sentence.component';
 import { takeUntil } from 'rxjs/operators';
@@ -23,7 +23,8 @@ export class SentenceValueAccessorDirective implements OnInit, OnDestroy, Contro
   private _onTouched: any;
 
   constructor(
-    private component: SentenceComponent
+    private component: SentenceComponent,
+    private change: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +61,7 @@ export class SentenceValueAccessorDirective implements OnInit, OnDestroy, Contro
       this.component.applyChanges();
     }
 
+    this.change.markForCheck();
   }
 
   registerOnChange(fn: any): void {
