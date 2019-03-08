@@ -7,7 +7,13 @@
 </head>
 
 <body>
-    <p style="position: absolute;text-align: center;left:0px;right:0px;top:45%;">loading...</p>
+    <p id="loading"
+       style="position: absolute;text-align: center;left:0px;right:0px;top:45%;">loading...</p>
+    <p id="signOut"
+       style="display: none;position: absolute;text-align: center;left:0px;right:0px;top:45%;">
+        <a>SignOut</a> 
+    </p>
+
     <script src="assets/js/gadget.js"></script>
     <!-- <script src="assets/js/xmlWriter.js"></script>
     <script src="assets/js/parseXml.js"></script>
@@ -35,6 +41,10 @@
             AccessToken: vars["access_token"]
         });
         connection.OnLoginError(function (err) {
+            $("#loading").hide();
+            $("#signOut").show();
+            var next = "https://auth.ischool.com.tw/logout.php?next=" + encodeURIComponent(vars["source"] + "?dsns=" + vars["dsns"] + "&sessionID=" + connection.getToken().SessionID + "#" + vars["route"]);
+            $("#signOut a").attr("href", next);
             alert("Login Failed：\n" + err.XMLHttpRequest.responseText);
         });
         connection.ready(function () {
