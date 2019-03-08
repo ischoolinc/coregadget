@@ -39,14 +39,19 @@ export class ListComponent implements OnInit {
 
   // 修改 comment
   async editComment(data) {
-    const result = await this.dialogService.confirmCancel("Edit " + data.CreateDate2 + " " + data.Name, "Comment", data.Comment);
+    const result = await this.dialogService.editDialog("Edit " + data.CreateDate2 + " " + data.Name, "Comment", data.Comment, data.Detention=='true');
     if (result.confirm) {
       try {
         const rsp = await this.contract.send("behavior.EditBehaviorData", {
           Request: {
             BehaviorData: {
-              Field: { Comment: result.reason },
-              Condition: { Uid: data.BehaviorUID }
+              Field: {
+                Comment: result.comment,
+                Detention: result.detention
+              },
+              Condition: {
+                Uid: data.BehaviorUID
+              }
             }
           }
         });
@@ -56,7 +61,6 @@ export class ListComponent implements OnInit {
       } finally {
       }
     }
-    // console.log(data);
   }
 
   // 刪除資料

@@ -4,17 +4,19 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GadgetService } from './gadget.service';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { MatDialogModule, MatFormFieldModule,MatInputModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { ConfirmDialogComponent } from './behavior/confirm-dialog.component';
 import { ConfirmCancelComponent } from './behavior/confirm-cancel.component';
 import { FormsModule } from '@angular/forms';
+import { EditDialogComponent } from './behavior/edit-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfirmDialogComponent,
-    ConfirmCancelComponent
+    ConfirmCancelComponent,
+    EditDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,8 @@ import { FormsModule } from '@angular/forms';
   bootstrap: [AppComponent],
   entryComponents: [
     ConfirmDialogComponent,
-    ConfirmCancelComponent
+    ConfirmCancelComponent,
+    EditDialogComponent
   ]
 })
 export class AppModule { }

@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="input-group mb-3 col-md-8 col-lg-6">
+        <div class="input-group mb-3 col-md-6 col-lg-6">
             <div class="input-group-prepend">
                 <button class="btn btn-outline-primary dropdown-toggle"
                         type="button"
@@ -50,7 +50,17 @@
                    [(ngModel)]="addText"
                    (change)="commentChange()">
         </div>
-        <div class="col-md-12 col-lg-3">
+        <div class="input-group col-md-2 col-lg-1">
+            <div class="form-group form-check">
+                <input id="detention"
+                       type="checkbox"
+                       class="form-check-input"
+                       [(ngModel)]="currentDetention">
+                <label class="form-check-label"
+                       for="detention">Detention</label>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-2">
             <button class="ml-auto btn btn-info btn-block"
                     disabled={{checkButtonEnable}}
                     [routerLink]="['../list']"
