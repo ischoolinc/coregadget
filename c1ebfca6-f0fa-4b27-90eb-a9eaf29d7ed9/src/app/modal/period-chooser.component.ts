@@ -46,10 +46,15 @@ export class PeriodChooserComponent implements OnInit {
 
   // 該節是否可以點名。
   allow_choose(period: PeriodConf) {
-    if (period.Absence) {
-      return period.Absence.length <= 0
-    } else {
-      return 0;
+    if(period.Actor == '班導師'){
+      return true;
+    }
+    else{
+      if (period.Absence) {
+        return period.Absence.length <= 0
+      } else {
+        return 0;
+      }
     }
   }
 }

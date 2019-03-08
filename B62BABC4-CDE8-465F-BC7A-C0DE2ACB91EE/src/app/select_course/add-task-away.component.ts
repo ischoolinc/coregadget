@@ -66,9 +66,9 @@ export class AddTaskAwayComponent implements OnInit {
     try {
       this.saving = true;
 
-      let rsp = await this.contract.send('LeaveTakeAway', { SubjectType: this.subjectType, SubjectID: subject.SubjectID });
+      let rsp = await this.contract.send('LeaveTakeAway', { SubjectID: subject.SubjectID });
       console.log(rsp);
-      if (rsp.message != "") {
+      if (rsp.message != "" && rsp) {
         alert(rsp.message);
       }
     } catch (err) {

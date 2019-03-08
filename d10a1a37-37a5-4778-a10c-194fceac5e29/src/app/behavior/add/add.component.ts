@@ -20,6 +20,7 @@ export class AddComponent implements OnInit {
   loading: boolean;
   error: any;
   currentDateString: string;
+  currentDetention: boolean;
   courseID: string;
   courseName: string;
   checkCount: Number;
@@ -61,6 +62,7 @@ export class AddComponent implements OnInit {
       this.checkCount = 0;
       this.loading = true;
       this.currentDateString = moment().format("YYYY-MM-DD");
+      this.currentDetention = false;
 
       if (this.behaviorDataService.addDate !== "") {
         this.currentDateString = this.behaviorDataService.addDate;
@@ -204,6 +206,7 @@ export class AddComponent implements OnInit {
                 Comment: this.addText,
                 CreateDate: this.currentDateString,
                 CourseID: this.courseID,
+                Detention: this.currentDetention ? "true" : "false",
                 StudentID: data.ID
               }
             }

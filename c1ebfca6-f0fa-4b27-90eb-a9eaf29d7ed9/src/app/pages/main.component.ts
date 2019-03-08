@@ -45,7 +45,7 @@ export class MainComponent implements OnInit {
       //等待是否完成設定值的下載
       await this.config.ready;
 
-      this.today = this.dsa.getToday();
+      this.today = await this.dsa.getToday();
       this.conf = await this.dsa.getSchedule(this.today);
 
     } catch (error) {

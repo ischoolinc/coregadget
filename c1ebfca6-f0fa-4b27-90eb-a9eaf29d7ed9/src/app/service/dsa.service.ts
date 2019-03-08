@@ -8,8 +8,8 @@ import * as Moment from 'moment';
 export class DSAService {
 
   private ready: Promise<void>;
-
   private contract: Contract;
+  private basicContract: Contract
 
   constructor(private gadget: GadgetService) {
     this.ready = this.initContract();
@@ -18,6 +18,7 @@ export class DSAService {
   private async initContract() {
     try {
       this.contract = await this.gadget.getContract('campus.rollcall.teacher');
+      this.basicContract = await this.gadget.getContract('basic.public');
     } catch (error) {
       console.log(error);
       throw error;
@@ -126,8 +127,13 @@ export class DSAService {
   /**
    * 取得今日日期。
    */
-  public getToday() {
-    return Moment().format('YYYY/MM/DD');
+  public async getToday() {
+    // return Moment().format('YYYY/MM/DD');
+    await this.ready;
+    let rsp = await this.basicContract.send('beta.GetNow',{
+      Pattern:'yyyy/MM/dd'
+    });
+    return rsp.DateTime;
   }
 
   public async getSchedule(date: string) {

@@ -26,13 +26,11 @@ export class SubstituteComponent implements OnInit {
     private router: Router,
     private cache: DataCacheService) {
 
-    this.today = dsa.getToday();
-
   }
 
   async ngOnInit() {
     this.Init();
-
+    this.today = await this.dsa.getToday();
   }
 
   async Init() {

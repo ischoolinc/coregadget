@@ -44,6 +44,16 @@
                 class="list-group-item text-gray">
                 未設定
             </li>
+            <li class="list-group-item list-group-item-light font-weight-bold">跨課程時段</li>
+            <li *ngIf="data.subject.CrossType1 || data.CrossType2"
+                class="list-group-item">
+                <pre class="my-0"
+                        style="font-size: 100%">{{data.subject.CrossType1}} {{data.subject.CrossType2}}</pre>
+            </li>
+            <li *ngIf="!data.subject.CrossType1 && !data.CrossType2"
+                class="list-group-item text-gray">
+                未設定
+            </li>
             <li class="list-group-item list-group-item-light font-weight-bold">備註</li>
             <li *ngIf="data.subject.Memo"
                 class="list-group-item">
@@ -58,20 +68,26 @@
                 <div class="mr-auto">
                     <span class="badge badge-primary">科目級別：{{data.subject.Level}}</span>
                     <span class="badge badge-secondary">學分數：{{data.subject.Credit}}</span>
-                    <span *ngIf="this.data.countMode=='志願序'"
+                    <span *ngIf="this.data.countMode=='志願序' && !!!data.subject.BlockReason && data.subject.TimeSelect != 't' "
                           class="badge badge-light my-2 my-md-0 mr-md-3">
                         <span>第一志願 / 名額：</span>
                         <span>{{data.subject.FirstWishCount}} / {{data.subject.Limit}}</span>
                     </span>
-                    <span *ngIf="this.data.countMode=='先搶先贏'"
+                    <span *ngIf="this.data.countMode=='先搶先贏' && !!!data.subject.BlockReason && data.subject.TimeSelect !='t' "
                           class="badge badge-light my-2 my-md-0 mr-md-3">
                         <span>已選 / 名額：</span>
                         <span>{{data.subject.AttendCount}} / {{data.subject.Limit}}</span>
                     </span>
+                    <span *ngIf="data.subject.BlockReason || data.subject.TimeSelect"
+                          class="badge badge-light my-2 my-md-0 mr-md-3">
+                        <code *ngIf="data.subject.BlockReason">{{data.subject.BlockReason}}</code>
+                        <code *ngIf="data.subject.BlockReason && data.subject.TimeSelect =='t' ">、</code>
+                        <code *ngIf="data.subject.TimeSelect =='t' ">課程時段衝堂</code>
+                    </span>
                 </div>
                 <button *ngIf="buttonText"
                         class="btn btn-info"
-                        [disabled]="data.subject.BlockReason?'disabled':null"
+                        [disabled]="data.subject.BlockReason || (data.subject.TimeSelect =='t') ?'disabled':null"
                         (click)="join()">{{buttonText}}</button>
             </li>
         </ul>

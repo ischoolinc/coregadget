@@ -94,11 +94,13 @@
                            style="color: darkgreen">check_circle_outline</i>
                     </div>
                     <div>
-                        <span *ngIf="subject.BlockReason"
+                        <span *ngIf="subject.BlockReason || subject.TimeSelect == 't' "
                               class="badge badge-light mt-2 mt-md-0 mr-md-3">
-                            <span>{{subject.BlockReason}}</span>
+                            <code>{{subject.BlockReason}}</code>
+                            <code *ngIf="subject.BlockReason && subject.TimeSelect =='t' ">、</code>
+                            <code *ngIf="subject.TimeSelect == 't'">課程時段衝堂</code>
                         </span>
-                        <span *ngIf="!!!subject.BlockReason"
+                        <span *ngIf="!!!subject.BlockReason && subject.TimeSelect != 't' "
                               class="badge badge-light mt-2 mt-md-0 mr-md-3"
                               [matTooltip]="Tooltip">
                             <span>第一志願 / 名額：</span>
@@ -108,7 +110,7 @@
                 </div>
                 <button (click)="joinCourse(subject)"
                         [matTooltip]="subject.SubjectName+getLevel(subject)"
-                        [disabled]="subject.BlockReason?'disabled':null"
+                        [disabled]="subject.BlockReason || (subject.TimeSelect =='t') ? 'disabled':null"
                         class="btn btn-info">加入志願</button>
             </li>
         </ul>

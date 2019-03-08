@@ -70,11 +70,13 @@
                            title="已加選"
                            style="color:darkgreen">done</i>
                     </div>
-                    <span *ngIf="subject.BlockReason"
+                    <span *ngIf="subject.BlockReason || subject.TimeSelect =='t' "
                           class="badge badge-light mt-2 mt-md-0 mr-md-3">
-                        <span>{{subject.BlockReason}}</span>
+                        <code *ngIf="subject.BlockReason">{{subject.BlockReason}}</code>
+                        <code *ngIf="subject.BlockReason && subject.TimeSelect =='t' ">、</code>
+                        <code *ngIf="subject.TimeSelect == 't'">課程時段衝堂</code>
                     </span>
-                    <span *ngIf="!!!subject.BlockReason"
+                    <span *ngIf="!!!subject.BlockReason && subject.TimeSelect !='t' "
                           class="badge badge-light my-2 my-md-0 mr-md-3">
                         <span>已選 / 名額：</span>
                         <span>{{subject.AttendCount}} / {{subject.Limit}}</span>
@@ -82,7 +84,7 @@
                 </div>
                 <button (click)="joinCourse(subject)"
                         class="btn btn-info"
-                        [disabled]="subject.BlockReason?'disabled':null"
+                        [disabled]="subject.BlockReason || (subject.TimeSelect =='t') ?'disabled':null"
                         [matTooltip]="subject.SubjectName+getLevel(subject)">選課</button>
             </li>
         </ul>

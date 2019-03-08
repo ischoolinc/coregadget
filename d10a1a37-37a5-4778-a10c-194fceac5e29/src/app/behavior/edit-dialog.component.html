@@ -1,0 +1,28 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">{{data.title}}</h5>
+  </div>
+  <div class="modal-body">
+    <p>{{data.body}}</p>
+    <mat-form-field style="width: 100%;">
+      <input matInput
+             [(ngModel)]="comment">
+    </mat-form-field>
+    <div class="form-group form-check">
+      <input id="detention"
+             type="checkbox"
+             class="form-check-input"
+             [(ngModel)]="detention">
+      <label class="form-check-label"
+             for="detention">Detention</label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-secondary"
+            (click)="onNoClick()">Cancel</button>
+    <button type="button"
+            class="btn btn-primary"
+            (click)="onYesClick()">OK</button>
+  </div>
+</div>

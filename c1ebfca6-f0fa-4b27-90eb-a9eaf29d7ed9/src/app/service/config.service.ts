@@ -91,6 +91,8 @@ export interface PeriodConf {
 
   Sort: string;
 
+  Actor: string;
+
   /** 集會、一般... */
   Type: string;
 

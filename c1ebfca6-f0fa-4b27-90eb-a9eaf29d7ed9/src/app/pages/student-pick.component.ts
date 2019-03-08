@@ -38,13 +38,12 @@ export class StudentPickComponent implements OnInit {
     private router: Router,
     private gadget: GadgetService
   ) {
-    this.today = dsa.getToday();
   }
 
   async ngOnInit() {
+    this.today = await this.dsa.getToday();
 
     this.groupInfo = { type: '', id: '', name: '' };
-
     await this.config.ready;
 
     this.route.paramMap.subscribe(async pm => {
