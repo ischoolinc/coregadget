@@ -26,11 +26,11 @@ export class TeacherHelperComponent implements OnInit {
     private alert: AlertService,
     private router: Router,
   ) {
-    this.today = dsa.getToday();
   }
 
   async ngOnInit() {
 
+    this.today = await this.dsa.getToday();
     this.route.paramMap.subscribe(async pm => {
       
       this.courseName = pm.get('name'); // course name

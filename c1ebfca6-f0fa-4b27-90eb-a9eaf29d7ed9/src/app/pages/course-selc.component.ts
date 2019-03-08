@@ -21,16 +21,15 @@ export class CourseSelcComponent implements OnInit {
     private route: ActivatedRoute,
     private cache: DataCacheService,
     private dialog: MatDialog) {
-    this.today = dsa.getToday();
 
     //所選的班級
     console.log(cache.selectedClass);
-
     this.jClass = cache.selectedClass;
     this.className = this.jClass.ClassName;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.today = await this.dsa.getToday();
   }
 
   //開啟節次點名介面
