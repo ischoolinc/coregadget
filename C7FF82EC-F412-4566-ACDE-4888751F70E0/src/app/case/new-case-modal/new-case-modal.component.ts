@@ -11,6 +11,7 @@ import {
 } from "../../counsel-student.service";
 import { QOption } from "../case-question-data-modal";
 
+
 @Component({
   selector: "app-new-case-modal",
   templateUrl: "./new-case-modal.component.html",
@@ -55,7 +56,11 @@ export class NewCaseModalComponent implements OnInit {
     this.selectCaseSourceValue = "請選擇個案來源";
     this.canSelectCaseSourceList = [];
     this.canSelectCaseSourceList.push("導師轉介");
-    // this.canSelectCaseSourceList.push("路邊捕獲");
+    this.canSelectCaseSourceList.push("主動求助");
+    this.canSelectCaseSourceList.push("親友代為求助");
+    this.canSelectCaseSourceList.push("輔導教師主動發現");
+    this.canSelectCaseSourceList.push("其他處室轉介");
+    this.canSelectCaseSourceList.push("其他");
 
     this.GetDefault();
 
@@ -148,6 +153,19 @@ export class NewCaseModalComponent implements OnInit {
     this.isAddMode = false;
     this.editModeString = "新增";
     this.isCanSetClass = false;
+  }
+
+  checkChange(qq, item:CaseStudent){
+    // console.log(qq);
+
+    if (qq.value == "")
+    {
+      item.isProbleDescriptionHasValue = false;
+    }else
+    {
+      item.isProbleDescriptionHasValue = true;
+    }
+    item.checkValue();
   }
 
   async save() {

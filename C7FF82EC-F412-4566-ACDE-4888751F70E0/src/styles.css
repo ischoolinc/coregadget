@@ -4,3 +4,7 @@
 .mat-dialog-container {
     padding: unset !important;
 }
+
+.custom-control {
+    margin-top: 0.75rem;
+}

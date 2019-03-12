@@ -8,16 +8,6 @@ export class QOption {
   answer_checked: boolean;
 
   public setAnswerCheck() {
-    this.answer_checked = !this.answer_checked;
-
-    // if (this.answer_checked) {
-    //   if (this.answer_martix.length > 0) {
-    //     this.answer_value = this.answer_martix.join("");
-    //   } else {
-    //     this.answer_value = this.answer_text;
-    //   }
-    // } else {
-    //   this.answer_value = "";
-    // }
+    this.answer_checked = !this.answer_checked;   
   }
 }

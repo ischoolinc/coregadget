@@ -55,6 +55,11 @@ export class CaseStudent {
   isCloseNo: boolean = false;
   isCloseDateHasValue = false;
 
+  isDeviantBehaviorHasValue: boolean = false;
+  isProblemCategoryHasValue: boolean = false;
+  isProbleDescriptionHasValue: boolean = false;
+  isEvaluationResultHasValue: boolean = false;
+
   // 當透過轉介建立才會在值，儲存輔導紀錄 uid
   RefCounselInterviewID: string = "";
 
@@ -189,10 +194,21 @@ export class CaseStudent {
       this.loadProblemCategoryTemplate();
     }
 
+    this.isProbleDescriptionHasValue = false;
     if (this.ProbleDescription) {
       this.proble_description = this.parseQuestioOptionToArray(
         this.ProbleDescription
       );
+      // 檢查是否有輸入文字
+      for(const cc of this.proble_description)
+      {
+        // 有值
+        if (cc.answer_value.length > 0)
+        {
+          this.isProbleDescriptionHasValue = true;
+        }
+      }
+
     } else {
       this.loadProbleDescriptionTemplate();
     }
@@ -327,11 +343,40 @@ export class CaseStudent {
       this.isCloseNo = true;
     }
 
+    // 檢查是否有勾選
+    this.isDeviantBehaviorHasValue = false;
+    this.isProblemCategoryHasValue = false;
+    this.isEvaluationResultHasValue = false;
+
+    // 偏差行為
+    for (const cc of this.deviant_behavior) {
+      if (cc.answer_checked) {
+        this.isDeviantBehaviorHasValue = true;
+      }
+    }
+
+    // 	問題類別
+    for (const cc of this.problem_category) {
+      if (cc.answer_checked) {
+        this.isProblemCategoryHasValue = true;
+      }
+    }
+    //	評估結果
+    for (const cc of this.evaluation_result) {
+      if (cc.answer_checked) {
+        this.isEvaluationResultHasValue = true;
+      }
+    }
+
     if (
       this.isOccurDateHasValue &&
       this.isCaseNoHasValue &&
       this.isGuidanceTeacherHasValue &&
       this.isCaseSourceHasValue &&
+      this.isDeviantBehaviorHasValue &&
+      this.isProblemCategoryHasValue &&
+      this.isProbleDescriptionHasValue &&
+      this.isEvaluationResultHasValue &&
       this.StudentID
     ) {
       this.isSaveButtonDisable = false;

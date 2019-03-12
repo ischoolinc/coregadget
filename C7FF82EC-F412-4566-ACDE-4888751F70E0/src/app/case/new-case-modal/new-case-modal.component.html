@@ -160,7 +160,11 @@
         </div>
         <div class="form-group">
           <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger">*</span>
+            <span
+              class="text-samll text-danger"
+              *ngIf="!caseStudent.isDeviantBehaviorHasValue"
+              >*</span
+            >
             偏差行為
           </label>
           <div class="d-flex flex-wrap">
@@ -174,20 +178,24 @@
                 [id]="item.answer_code"
                 [checked]="item.answer_checked"
                 (click)="item.setAnswerCheck()"
-                                                 
+                (change)="checkChange(item,caseStudent)"
               />
               <label class="custom-control-label" [for]="item.answer_code">
                 <app-sentence
                   [text]="item.answer_text"
                   [(ngModel)]="item.answer_martix"
                 ></app-sentence>
-              </label>             
+              </label>
             </div>
           </div>
         </div>
         <div class="form-group">
           <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger">*</span>
+            <span
+              class="text-samll text-danger"
+              *ngIf="!caseStudent.isProblemCategoryHasValue"
+              >*</span
+            >
             問題類別
           </label>
           <div class="d-flex flex-wrap">
@@ -201,21 +209,25 @@
                 [id]="item.answer_code"
                 [checked]="item.answer_checked"
                 (click)="item.setAnswerCheck()"
-                                                 
+                (change)="checkChange(item,caseStudent)"
               />
               <label class="custom-control-label" [for]="item.answer_code">
-                <app-sentence                  
+                <app-sentence
                   [text]="item.answer_text"
                   [(ngModel)]="item.answer_martix"
                 ></app-sentence>
-              </label>             
+              </label>
             </div>
           </div>
         </div>
 
         <div class="form-group">
           <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger">*</span>
+            <span
+              class="text-samll text-danger"
+              *ngIf="!caseStudent.isProbleDescriptionHasValue"
+              >*</span
+            >
             問題描述
           </label>
           <div class="d-flex flex-wrap">
@@ -227,6 +239,8 @@
                 <app-sentence
                   [text]="item.answer_text"
                   [(ngModel)]="item.answer_martix"
+                  (matrixChange)="checkChange(sss,caseStudent)"
+                  #sss
                 ></app-sentence>
               </label>             
             </div>
@@ -235,7 +249,7 @@
 
         <div class="form-group">
           <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger">*</span>
+            <span class="text-samll text-danger"></span>
             特殊狀況
           </label>
           <div class="d-flex flex-wrap">
@@ -249,21 +263,24 @@
                 [id]="item.answer_code"
                 [checked]="item.answer_checked"
                 (click)="item.setAnswerCheck()"
-                                                 
               />
               <label class="custom-control-label" [for]="item.answer_code">
-                <app-sentence                 
+                <app-sentence
                   [text]="item.answer_text"
                   [(ngModel)]="item.answer_martix"
                 ></app-sentence>
-              </label>             
+              </label>
             </div>
           </div>
         </div>
 
         <div class="form-group">
           <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger">*</span>
+            <span
+              class="text-samll text-danger"
+              *ngIf="!caseStudent.isEvaluationResultHasValue"
+              >*</span
+            >
             評估結果
           </label>
           <div class="d-flex flex-wrap">
@@ -276,15 +293,15 @@
                 class="custom-control-input"
                 [id]="item.answer_code"
                 [checked]="item.answer_checked"
-                (click)="item.setAnswerCheck()"
-                                                 
+                (change)="checkChange(item,caseStudent)"
+                (click)="item.setAnswerCheck()"               
               />
               <label class="custom-control-label" [for]="item.answer_code">
-                <app-sentence                  
+                <app-sentence
                   [text]="item.answer_text"
                   [(ngModel)]="item.answer_martix"
                 ></app-sentence>
-              </label>             
+              </label>
             </div>
           </div>
         </div>
@@ -322,7 +339,7 @@
         <div class="form-row">
           <div class="form-group col-md-4">
             <label for="schoolYear" class="col-form-label">
-              <span class="text-samll text-danger">*</span>
+              <span class="text-samll text-danger"></span>
               是否結案
             </label>
             <div>
@@ -391,7 +408,7 @@
             class="form-control"
             id="contactMatter"
             rows="3"
-            placeholder="請輸入 400 字以內結案說明"
+            placeholder="請輸入 400 字以內結案說明"
             [(ngModel)]="caseStudent.CloseDescription"
           ></textarea>
         </div>
