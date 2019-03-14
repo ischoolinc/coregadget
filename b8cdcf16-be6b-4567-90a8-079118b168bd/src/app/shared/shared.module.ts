@@ -12,6 +12,7 @@ import { SimpleModalComponent } from './component/simple-modal/simple-modal.comp
 import { AddQuitButtonsComponent } from './component/add-quit-buttons/add-quit-buttons.component';
 import { FinialButtonsComponent } from './component/finial-buttons/finial-buttons.component';
 import { CourseTypeFormatPipe } from './pipes/course-type.pipe';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { CourseTypeFormatPipe } from './pipes/course-type.pipe';
     ModalModule.forRoot(),
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
   ],
   declarations: [
     MapsToArrayPipe,
@@ -47,6 +49,7 @@ import { CourseTypeFormatPipe } from './pipes/course-type.pipe';
     TooltipModule,
     ModalModule,
     AccordionModule,
+    PopoverModule,
   ],
   entryComponents: [
     SimpleModalComponent,

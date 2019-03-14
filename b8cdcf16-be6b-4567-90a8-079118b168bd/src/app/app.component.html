@@ -16,6 +16,7 @@
           <li [ngClass]="{'active': currTab === 'sa04'}"><a href="javascript:;" (click)="toggleTab('sa04')">選課注意事項</a></li>
           <li [ngClass]="{'active': currTab === 'sa05'}"><a href="javascript:;" (click)="toggleTab('sa05')">選課問答集</a></li>
           <li><a [href]="webUrl" target="_blank">課程計劃</a></li>
+          <li [ngClass]="{'active': currTab === 'sa07'}"><a href="javascript:;" (click)="toggleTab('sa07')">點數選課規則</a></li>
         </ul>
       </h1>
       <div class="tab-content">
@@ -137,7 +138,10 @@
               <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    <th colspan="9" class="my-table-head1">第一階段<span style="color: blue">已選課程</span></th>
+                    <th colspan="10" class="my-table-head1">第一階段
+                      <span style="color: blue">已選課程</span>
+                      <span style="float: right">可用點數：{{currentPoints}} / {{orignPoints}}</span>
+                    </th>
                   </tr>
                   <tr>
                     <th style="font-size: 3">退選</th>
@@ -149,6 +153,7 @@
                     <th>人數上限</th>
                     <th>教室</th>
                     <th>上課時間</th>
+                    <th>選課人數</th>
                   </tr>
                 </thead>
                 <tbody *ngFor="let item of currAttends" data-type="quit">
@@ -164,6 +169,7 @@
                     <td>{{item.ClassName}}</td>
                     <td>
                       <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -172,21 +178,23 @@
                     <td>{{item.Capacity}}</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
+                    <td>{{item.StudentCount}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '1'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="8">{{item.Memo}}</td>
+                    <td colspan="3">投入點數：{{item.StudentSetPoints}} 點</td>
+                    <td colspan="7">{{item.Memo}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="getLevelItems('1') === 0">
                   <tr>
-                    <td colspan="9">目前無資料</td>
+                    <td colspan="10">目前無資料</td>
                 </tbody>
               </table>
               <!-- 第二階段已加選清單 -->
               <table class="table table-bordered table-striped" *ngIf="currLevel == '2'">
                 <thead>
                   <tr>
-                    <th colspan="9" class="my-table-head1">第二階段<span style="color: blue">已選課程</span></th>
+                    <th colspan="10" class="my-table-head1">第二階段<span style="color: blue">已選課程</span></th>
                   </tr>
                   <tr>
                     <th style="font-size: 3">退選</th>
@@ -198,6 +206,7 @@
                     <th>人數上限</th>
                     <th>教室</th>
                     <th>上課時間</th>
+                    <th>選課人數</th>
                   </tr>
                 </thead>
                 <tbody *ngFor="let item of currAttends" data-type="quit" id="choose02">
@@ -213,6 +222,7 @@
                     <td>{{item.ClassName}}</td>
                     <td>
                       <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -221,21 +231,24 @@
                     <td>{{item.Capacity}}</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
+                    <td>{{item.StudentCount}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '2'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="8">{{item.Memo}}</td>
+                    <td colspan="3">投入點數：{{item.StudentSetPoints}} 點</td>
+                    <td colspan="7">{{item.Memo}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="getLevelItems('2') === 0">
                   <tr>
-                    <td colspan="9">目前無資料</td>
+                    <td colspan="10">目前無資料</td>
+                  </tr>
                 </tbody>
               </table>
               <!-- 可選課清單 -->
               <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    <th colspan="9" class="my-table-head2"><span style="color: red">可選課程</span>清單</th>
+                    <th colspan="10" class="my-table-head2"><span style="color: red">可選課程</span>清單</th>
                   </tr>
                   <tr>
                     <th style="font-size: 3">加選</th>
@@ -247,6 +260,7 @@
                     <th>人數上限</th>
                     <th>教室</th>
                     <th>上課時間</th>
+                    <th>選課人數</th>
                   </tr>
                 </thead>
                 <tbody *ngFor="let item of canChooseCourses" data-type="add">
@@ -254,14 +268,15 @@
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
                       <input type="checkbox"
                         [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
-                        [(ngModel)]="item.WillAdd" [value]="item.CourseID"
-                        (click)="clickCourseCheckbox(item, 'WillAdd')"
+                        [(ngModel)]="item.WillAdd" #cn="ngModel"
+                        (click)="clickCourseCheckbox(item, 'WillAdd',cn)"
                         style="width: 20px; height: 20px;">
                     </td>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
                       <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -270,14 +285,49 @@
                     <td>{{item.Capacity}}</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
+                    <td>{{item.StudentCount}}</td>
                   </tr>
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="8">{{item.Memo}}</td>
+                    <td colspan="3" class="d-flex flex-row">
+                        <input type="number" 
+                          #points
+                          *ngIf="item.NeedPoints == 't' " 
+                          [ngClass]="{'error':item.IsError}"
+                          class="points"
+                          (change)="checkPoints(points.value,item)"
+                          placeholder="投入點數">
+                          
+                        <ng-template #popTemplate>
+                          <p>第一名  {{item.Ranks[0]}} 點</p>
+                          <p>第二名  {{item.Ranks[1]}} 點</p>
+                          <p>第三名  {{item.Ranks[2]}} 點</p>
+                          <p>第四名  {{item.Ranks[3]}} 點</p>
+                          <p>第五名  {{item.Ranks[4]}} 點</p>
+                        </ng-template>
+                        <button 
+                          *ngIf="item.NeedPoints == 't'"
+                          type="button" class="btn btn-light"
+                          [popover]="popTemplate"
+                          popoverTitle="點數投入排行"
+                          placement="auto"
+                          triggers="focus">
+                          查看排行
+                        </button>
+                        <p *ngIf="item.NeedPoints" style="margin-top:5px;margin-bottom: 5px;">
+                          點數上限：{{item.MaxPoints}}
+                          點數下限：{{item.MinPoints}}
+                        </p>
+                        <div *ngIf="item.IsError" style="color: red">
+                          {{item.ErrorMsg}}
+                        </div>
+                    </td>
+                    <td colspan="7">{{item.Memo}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="canChooseCourses.length === 0">
                   <tr>
-                    <td colspan="9">目前無資料</td>
+                    <td colspan="10">目前無資料</td>
+                  </tr>
                 </tbody>
               </table>
 
@@ -452,6 +502,11 @@
                 (onPrintDocument)="confirmPrintDocument()"
               ></app-finial-buttons>
 
+            </div>
+          </div>
+          <div [ngClass]="{'active': currTab === 'sa07', 'fade': currTab !== 'sa07'}" class="tab-pane">
+            <div class="alert alert-info">
+              <div style="color:black; background-color:white;" [innerHTML]="configuration.button_mod_communicate_point_selection_rules | safeHtml"></div>
             </div>
           </div>
         </ng-container>

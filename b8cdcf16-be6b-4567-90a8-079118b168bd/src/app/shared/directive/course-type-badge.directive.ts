@@ -25,6 +25,9 @@ export class CourseTypeBadgeDirective {
       case '選修':
         className = 'my-label-info';
         break;
+      case 't':
+        className = 'my-lable-light';
+        break;
     }
 
     if (className) { this.el.nativeElement.classList.add(className); }

@@ -63,6 +63,17 @@ export class BasicService {
   }
 
   /**
+   * 取得學生點數
+   */
+  async getPoints(){
+    await this.getCourseContract();
+
+    const rsp = await this._courseContract.send('_.GetPoints',{});
+
+    return rsp.Total || '';
+  }
+
+  /**
    *退選訊息、Mail樣版
    */
   async getSConfiguration() {
@@ -81,7 +92,8 @@ export class BasicService {
             'cs_content2_template',
             'email_content1_template_subject',
             'email_content2_template_subject',
-            'retreat_notices_word'
+            'retreat_notices_word',
+            'button_mod_communicate_point_selection_rules'
           ]
         }
       }
@@ -257,12 +269,12 @@ export class BasicService {
   /**
    *加選課程
    */
-  async addCSAttend(courseIDs) {
+  async addCSAttend(course: any) {
     await this.getCourseContract();
 
     const rsp = await this._courseContract.send('_.AddCSAttend', {
       Request: {
-        Course: courseIDs || [],
+        Course: course || []
       }
     });
   }
@@ -270,16 +282,15 @@ export class BasicService {
   /**
    *新增加退選課程Log
    */
-  async addCSAttendLog(courseIDs) {
+  async addCSAttendLog(course: any) {
     await this.getCourseContract();
 
     const rsp = await this._courseContract.send('_.AddCSAttendLog', {
       Request: {
-        Course: courseIDs || [],
+        Course: course || []
       }
     });
   }
-
 
   /**
    *退選課程
@@ -293,7 +304,6 @@ export class BasicService {
       }
     });
   }
-
 
   /**
    *寄送電子郵件
@@ -309,7 +319,6 @@ export class BasicService {
       }
     });
   }
-
 
   /**
    *新增 Log
@@ -334,5 +343,36 @@ export class BasicService {
         }
       }
     });
+  }
+
+  /**
+   * 新增點數消耗歷程
+   * Course{ 
+   *  Type: 'consume' or 'refund' 點數消耗類型
+   *  Points: 課程投點點數
+   *  CourseName: 課程名稱
+   * }
+   */
+  async addPointsLog(course: any){
+    await this.getCourseContract();
+
+    const rsp = await this._courseContract.send('_.AddPointsLog',{
+      Request:{
+        Course: course
+      }
+    });
+  }
+
+  /**
+   * 此service主要是用來：
+   * 1.取得該梯次課程投點點數排行
+   * 2.取得課程已選人數
+   */
+  async getCourseInfo(){
+    await this.getCourseContract();
+
+    const rsp = await this._courseContract.send('_.GetCourseInfo');
+
+    return rsp && rsp.Course || [];
   }
 }

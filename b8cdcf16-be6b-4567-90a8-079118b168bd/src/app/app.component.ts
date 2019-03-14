@@ -6,6 +6,9 @@ import { BasicService } from './service';
 import { SemesterFormatPipe, CourseTypeFormatPipe, SimpleModalComponent } from './shared';
 import { ConflictCourse, Course, OpeningInfo, Student, Configuration } from './data';
 import { GadgetService } from './gadget.service';
+import { isNgTemplate } from '@angular/compiler';
+import { createPureExpression } from '@angular/core/src/view/pure_expression';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +29,8 @@ export class AppComponent implements OnInit {
   currTab = '';
   currSchoolYear: string;
   currSemester: string;
+  orignPoints: number;
+  currentPoints: number;
 
   /**目前階段 */
   currLevel: '1' | '2' | '0' | 's1' | 's2' | 's3' | 's4' | 's5';
@@ -46,6 +51,9 @@ export class AppComponent implements OnInit {
 
   /**課程總表 */
   allCourse: Map<string, Course> = new Map();
+
+  /**課程點數設定 */
+  allCourseConfig: Map<string, any> = new Map();
 
   /**退選訊息、Mail樣版 */
   configuration: Configuration = {
@@ -120,7 +128,9 @@ export class AppComponent implements OnInit {
             this.getWebUrl(),
             this.getFAQ(),
             this.getConfiguration(),
-            this.getAllCourse()
+            this.getAllCourse(),
+            this.getPoints(),
+            //this.getCourseInfo()
           ];
           await Promise.all(reqlist);
 
@@ -336,6 +346,7 @@ export class AppComponent implements OnInit {
         this.getRegistrationConfirm();
       } else if (this.currLevel === '1' || this.currLevel === '2') {
         this.getConflictCourse();
+        this.getCourseInfo();
         this.getCanChooseCourse();
         this.getAttend();
         this.getSCAttend();
@@ -353,6 +364,50 @@ export class AppComponent implements OnInit {
     }
   }
 
+  /**取得學生點數 */
+  async getPoints(){
+    try{
+      let points = await this.basicSrv.getPoints()
+      this.orignPoints = (points == '') ? 0 : Number(points);
+      this.currentPoints = (points == '') ? 0 : Number(points);
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  /**
+   * 取得該梯次課程投點點數排行
+   * 取得課程已選人數
+   */
+  async getCourseInfo(){
+    try{
+      const rsp: any[] = await this.basicSrv.getCourseInfo();
+
+      rsp.forEach((item) =>{
+        if(this.allCourse.has(item.CourseID)){
+          const course:Course = this.allCourse.get(item.CourseID);
+          course.Ranks = [];
+          course.StudentCount = item.Count;
+          // 整理點數排行資料
+          // 1. 如果service有取得點數資料記錄點數資料，沒有的話紀錄 0
+          for(let i = 1; i <= 5; i++){
+            [].concat(item.Ranks || []).forEach((data) => {
+              if(i == data.Rank){
+                course.Ranks.push(data.Points);
+              }
+              else{
+                course.Ranks.push('0');
+              }
+            });
+          }
+          // this.allCourse.set(item.CourseID,course);
+        }
+      });
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   /**取得已選課程，調整課程的退選狀態、衝突課程、選課來自哪個階段 */
   async getAttend() {
     this.currAttends = [];
@@ -366,6 +421,8 @@ export class AppComponent implements OnInit {
           course.WillQuit = false;
           course.HaveConflict = [];
           course.ChooseItem = item.Item;
+          // 學生選課投點點數
+          course.StudentSetPoints = item.Points;
           this.currAttends.push(course);
         }
       }
@@ -397,7 +454,27 @@ export class AppComponent implements OnInit {
    *    state = false。比對預選、已選課程中，所有 WillQuit = false 的所有突衝課程，將其視為不衝突；
    *    state = false。比對可加選課程中，所有 WillAdd = true 的所有突衝課程，將其視為不衝突
   */
-  clickCourseCheckbox(course: Course, keyName: string) {
+  clickCourseCheckbox(course: Course, keyName: string, model: NgModel) {
+    
+    if(course.IsError){
+      model.control.patchValue(false);
+      return;
+    }// 如果課程為投點課程必須輸入投點點數
+    else if(course.NeedPoints && !course.StudentSetPoints && course.StudentSetPoints != 0){
+      course.IsError = true;
+      course.ErrorMsg = '請輸入投點點數';
+      //course.WillAdd = false;
+      model.control.patchValue(false);
+      return;
+    }
+    else{
+      course.IsError = false;
+      course.ErrorMsg = '';
+      //course.WillAdd = true;
+      model.control.patchValue(true);
+    }
+    
+    
     course[keyName] = !course[keyName];
     const checked = course[keyName];
     let status = false;
@@ -744,7 +821,12 @@ export class AppComponent implements OnInit {
               this.isSaving = true;
               try {
                 await this.basicSrv.delSCAttendExt([course.CourseID]);
-                await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}`);
+                if(course.StudentSetPoints){
+                  await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}`);
+                }
+                else{
+                  await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}，退回投點點數：${course.StudentSetPoints}`);
+                }
 
                 // 重新載入
                 this.getSCAttend();
@@ -991,27 +1073,34 @@ export class AppComponent implements OnInit {
           return { CourseID: item.CourseID };
         })),
         this.basicSrv.addCSAttendLog(quitList.map((item: Course) => {
-          return { CourseID: item.CourseID, Action: 'delete', ActionBy: 'student' };
+          return { CourseID: item.CourseID, Action: 'delete', ActionBy: 'student', Points: item.StudentSetPoints ? null : item.StudentSetPoints};
+        })),
+        this.basicSrv.addPointsLog(quitList.map((item: Course) => {
+          return { Type: 'refund', Points: item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints};
         })),
         this.basicSrv.addLog(
           '退選',
           '退選課程',
-          quitList.map((item: Course) => `學生「${this.student.StudentName}」退選課程：${item.CourseName}`).join(',')
+          quitList.map((item: Course) => `學生「${this.student.StudentName}」退選課程：${item.CourseName}，退回投點點數：${item.StudentSetPoints}`).join(',')
         )
       ]);
     }
     if (addList.length) {
       reqList.push([
-        this.basicSrv.addCSAttend(addList.map((item:Course) => {
-          return { CourseID: item.CourseID };
+        this.basicSrv.addCSAttend(
+          addList.map((item:Course) => {
+            return { CourseID: item.CourseID, Points: item.StudentSetPoints };
         })),
         this.basicSrv.addCSAttendLog(addList.map((item: Course) => {
-          return { CourseID: item.CourseID, Action: 'insert', ActionBy: 'student' };
+          return { CourseID: item.CourseID, Action: 'insert', ActionBy: 'student', Points: item.StudentSetPoints ? item.StudentSetPoints : null};
+        })),
+        this.basicSrv.addPointsLog(addList.map((item: Course) => {
+          return { Type: 'consume', Points: (item.StudentSetPoints == undefined) ? '' : item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints};
         })),
         this.basicSrv.addLog(
           '加選',
           '加選課程',
-          addList.map((item: Course) => `學生「${this.student.StudentName}」加選課程：${item.CourseName}`).join(','))
+          addList.map((item: Course) => `學生「${this.student.StudentName}」加選課程：${item.CourseName}，投點點數：${item.StudentSetPoints}`).join(','))
       ]);
     }
     await Promise.all(reqList.reduce((acc, val) => acc.concat(val), []));
@@ -1026,7 +1115,10 @@ export class AppComponent implements OnInit {
     // 3、寄送郵件通知
     await this.sendMail(addListBackup, quitListBackup);
 
-    // 4、重新取得可選課程
+    // 4、重新取得課程已選人數、投點點數排名
+    this.getCourseInfo();
+
+    // 5、重新取得可選課程
     await this.getCanChooseCourse();
   }
 
@@ -1220,6 +1312,55 @@ export class AppComponent implements OnInit {
       return `與「${title.join(', ')}」衝堂或不得重複加選`;
     } else {
       return '';
+    }
+  }
+
+  /**
+   * 投入點數 
+   * 0. 空字串忽略不做判斷
+   * 1. 判斷使用者輸入是否為正整數
+   * 2. 判斷投點點數是否大於剩餘點數
+   * 3. 判斷投點點數是否超過點數選課最大最小值
+   * */
+  checkPoints(points: string, course: Course){
+    const _points = points == '' ? null : Number(points);
+    const maxPoint = Number(course.MaxPoints);
+    const minPoint = Number(course.MinPoints);
+    // 正整數 正則表達式
+    const rgexp = new RegExp("^[0-9]*[1-9][0-9]*$");
+    if(_points == null){
+      course.IsError = false;
+      course.ErrorMsg = "";
+      course.StudentSetPoints = null;
+      return;
+    }
+    if(!rgexp.test(points) && _points && points != "0"){
+      course.IsError = true;
+      course.ErrorMsg = "請輸入正整數！";
+      return;
+    }
+    else if(_points > this.currentPoints){
+      course.IsError = true;
+      course.ErrorMsg = "點數不足！";
+      return;
+    }
+    else if(_points < minPoint || _points > maxPoint){
+      course.IsError = true;
+      course.ErrorMsg = "投點點數不可超過課程點數限制！";
+      return;
+    }
+    else{
+      course.IsError = false;
+      course.ErrorMsg = "";
+      // 計算點數現況
+      if(course.StudentSetPoints == null){
+        course.StudentSetPoints = _points;
+        this.currentPoints += -_points; 
+      }
+      else{
+        this.currentPoints += course.StudentSetPoints - _points; 
+      }
+      return;
     }
   }
 }

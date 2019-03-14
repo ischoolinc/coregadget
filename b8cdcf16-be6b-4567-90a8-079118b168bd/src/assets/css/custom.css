@@ -202,6 +202,10 @@ table.table-bordered tbody tr td li {
   background-color: #804688;
 }
 
+.my-lable-light{
+  background-color: #FFC300;
+}
+
 .footer {
   border-top: 1px solid #ccc;
   padding-top: 4px;
@@ -286,4 +290,15 @@ table.table-bordered tbody tr td li {
   background-image: none;
 }
 
-
+/*投入點數*/
+input.points{
+  width: 120px;
+  height: 30px;
+  margin: 0px;
+  margin-right: 10px;
+}
+/*錯誤的點數*/
+input.error{
+  border-color: red;
+  color: red;
+}
