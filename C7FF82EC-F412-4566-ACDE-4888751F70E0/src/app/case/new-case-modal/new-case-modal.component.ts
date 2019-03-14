@@ -11,7 +11,6 @@ import {
 } from "../../counsel-student.service";
 import { QOption } from "../case-question-data-modal";
 
-
 @Component({
   selector: "app-new-case-modal",
   templateUrl: "./new-case-modal.component.html",
@@ -153,22 +152,57 @@ export class NewCaseModalComponent implements OnInit {
     this.isAddMode = false;
     this.editModeString = "新增";
     this.isCanSetClass = false;
+    this.setCaseSource('導師轉介');
   }
 
-  checkChange(qq, item:CaseStudent){
+  checkChange(qq, item: CaseStudent) {
     // console.log(qq);
 
-    if (qq.value == "")
-    {
+    if (qq.value == "") {
       item.isProbleDescriptionHasValue = false;
-    }else
-    {
+    } else {
       item.isProbleDescriptionHasValue = true;
     }
     item.checkValue();
   }
 
+  // 檢查個案資料是否重複
+  async checkCaseNoPass() {
+    let value = true;
+
+    let req = {
+      CaseNo: this.caseStudent.CaseNo
+    };
+
+    let resp = await this.dsaService.send("CheckCaseNo", {
+      Request: req
+    });
+
+    [].concat(resp.CaseNo || []).forEach(Rec => {
+      let caseNo = this.caseStudent.CaseNo.toUpperCase();
+
+      // 檢查是否有 uid，
+      if (this.caseStudent.UID) {
+        // 更新資料 ，當 case no 相同，uid 不同表示有重複
+        if (this.caseStudent.UID !== Rec.UID) {
+          value = false;
+        }
+      } else {        
+          value = false;       
+      }
+    });
+
+    return value;
+  }
+
   async save() {
+    let chk = await this.checkCaseNoPass();
+
+    if (!chk) {
+      alert("個案編號重複。");
+      return;
+    }
+
     this.caseStudent.CaseSource = this.selectCaseSourceValue;
     // 新增
     if (!this.caseStudent.UID) {
@@ -295,8 +329,11 @@ export class NewCaseModalComponent implements OnInit {
       data.RefCounselInterviewID = "null";
     }
 
-    if (data.CloseDate == "") {
-      data.CloseDate = "";
+    if (data.CloseDate) {
+      if (data.CloseDate == "") {
+        data.CloseDate = "";
+      }
+      data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
     }
 
     let req = {
@@ -341,7 +378,7 @@ export class NewCaseModalComponent implements OnInit {
     data.ProbleDescription = JSON.stringify(data.proble_description);
     data.SpecialSituation = JSON.stringify(data.special_situation);
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
-
+    data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
     if (data.UID) {
       data.SchoolYear = this.currentSchoolYear;
       data.Semester = this.currentSemester;
