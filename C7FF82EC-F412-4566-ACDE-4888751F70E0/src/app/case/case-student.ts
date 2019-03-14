@@ -24,7 +24,7 @@ export class CaseStudent {
   SpecialCategory: string; // 特殊生類別
   HasDisabledBook: string; // 是否領有身心障礙手冊
   DeviantBehavior: string; // 偏差行為
-  ProblemCategory: string; // 問題類別
+  ProblemCategory: string; // 個案類別
   ProbleDescription: string; // 問題描述
   SpecialSituation: string; // 特殊狀況
   EvaluationResult: string; // 評估結果
@@ -39,7 +39,7 @@ export class CaseStudent {
   GuidanceTeacher: VoluntaryGuidanceTeacher;
 
   deviant_behavior: QOption[]; // 偏差行為
-  problem_category: QOption[]; // 	問題類別
+  problem_category: QOption[]; // 	個案類別
   proble_description: QOption[]; //	問題描述
   special_situation: QOption[]; //	特殊狀況
   evaluation_result: QOption[]; //	評估結果
@@ -93,7 +93,7 @@ export class CaseStudent {
 
   public loadProblemCategoryTemplate() {
     let num: number = 1;
-    this.problem_category = []; // 	問題類別
+    this.problem_category = []; // 	個案類別
     let problem_categoryT = this.caseQuestionTemplate.getProblemCategory();
 
     for (let item of problem_categoryT) {
@@ -241,7 +241,7 @@ export class CaseStudent {
     return value.join(",");
   }
 
-  // 讀取 問題類別 有勾選值
+  // 讀取 個案類別 有勾選值
   public getProblemCategoryCheckedValue() {
     let value = [];
     for (const item of this.problem_category) {
@@ -355,7 +355,7 @@ export class CaseStudent {
       }
     }
 
-    // 	問題類別
+    // 	個案類別
     for (const cc of this.problem_category) {
       if (cc.answer_checked) {
         this.isProblemCategoryHasValue = true;
