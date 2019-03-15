@@ -17,6 +17,8 @@ import {
   styleUrls: ["./referral-list.component.css"]
 })
 export class ReferralListComponent implements OnInit {
+  // 2019-03-15 和佳樺討論後，將未結案、已結案 改回原來三項：未處理、處理中、已處理
+
   isLoading: boolean = false;
   public mod: string;
   public itemList: string[];
@@ -36,8 +38,11 @@ export class ReferralListComponent implements OnInit {
   ngOnInit() {
     this.currentReferralStudent = new ReferralStudent();
     this.itemList = [];
-    this.itemList.push("未結案");
-    this.itemList.push("已結案");
+    // this.itemList.push("未結案");
+    // this.itemList.push("已結案");
+    this.itemList.push("未處理");
+    this.itemList.push("處理中");
+    this.itemList.push("已處理");
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.mod = params.get("mod");
@@ -50,25 +55,33 @@ export class ReferralListComponent implements OnInit {
 
   setSelectItem(item: string) {
     this.selectItem = item;
-    if (this.selectItem === "已結案") {
-      this.ReferralStudentList.forEach(data => {
-        if (data.ReferralStatus === "已處理") {
-          data.isDisplay = true;
-        } else {
-          data.isDisplay = false;
-        }
-      });
-    }
+    this.ReferralStudentList.forEach(data => {
+      if (data.ReferralStatus === item) {
+        data.isDisplay = true;
+      } else {
+        data.isDisplay = false;
+      }
+    });
 
-    if (this.selectItem === "未結案") {
-      this.ReferralStudentList.forEach(data => {
-        if (data.ReferralStatus !== "已處理") {
-          data.isDisplay = true;
-        } else {
-          data.isDisplay = false;
-        }
-      });
-    }
+    // if (this.selectItem === "已結案") {
+    //   this.ReferralStudentList.forEach(data => {
+    //     if (data.ReferralStatus === "已處理") {
+    //       data.isDisplay = true;
+    //     } else {
+    //       data.isDisplay = false;
+    //     }
+    //   });
+    // }
+
+    // if (this.selectItem === "未結案") {
+    //   this.ReferralStudentList.forEach(data => {
+    //     if (data.ReferralStatus !== "已處理") {
+    //       data.isDisplay = true;
+    //     } else {
+    //       data.isDisplay = false;
+    //     }
+    //   });
+    // }
   }
 
   // 到學生輔導紀錄
@@ -98,7 +111,7 @@ export class ReferralListComponent implements OnInit {
     this.grant_modal.referralStudent = refStudent;
 
     this.grant_modal.referralStudent.loadDefault();
-    
+
     if (this.grant_modal.referralStudent.ReferralStatus == "") {
       this.grant_modal.referralStudent.ReferralStatus = "未處理";
       this.grant_modal.referralStudent.isUnPrecessed = true;
@@ -150,18 +163,27 @@ export class ReferralListComponent implements OnInit {
         this.dsaService.SessionID
       }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.isDisplay = false;
-      if (this.selectItem === "已結案") {
-        if (rec.ReferralStatus === "已處理") {
-          rec.isDisplay = true;
-        }
-      } else {
+
+      
+      // if (this.selectItem === "已結案") {
+      //   if (rec.ReferralStatus === "已處理") {
+      //     rec.isDisplay = true;
+      //   }
+      // } else {
+      //   rec.isDisplay = true;
+      // }
+
+      if (this.selectItem === rec.ReferralStatus)
+      {
         rec.isDisplay = true;
       }
+
       rec.checkValue();
       this.ReferralStudentList.push(rec);
     });
 
-    this.setSelectItem("未結案");
+    // this.setSelectItem("未結案");
+    this.setSelectItem("未處理");
     this.isLoading = false;
   }
 }

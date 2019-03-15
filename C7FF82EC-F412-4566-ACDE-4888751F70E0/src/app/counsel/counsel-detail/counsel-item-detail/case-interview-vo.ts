@@ -23,7 +23,7 @@ export class CaseInterview {
   isContactNameHasValue: boolean = false;
   isContentHasValue: boolean = false;
   isCounselTypeOtherDisable: boolean = true;
-  selectCounselType: string = "請選擇訪談方式";
+  selectCounselType: string = "請選擇方式";
   isSaveDisable: boolean = true;
 
   // 檢查是否有值
@@ -78,7 +78,7 @@ export class CaseInterview {
     }
   }
 
-   // 設定訪談方式
+   // 設定方式
    setCounselType(value: string) {
     this.CounselType = value;
     this.selectCounselType = value;

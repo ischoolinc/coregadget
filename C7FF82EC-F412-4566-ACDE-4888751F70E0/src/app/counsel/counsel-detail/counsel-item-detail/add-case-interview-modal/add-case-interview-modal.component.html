@@ -94,7 +94,7 @@
               *ngIf="!caseInterview.isCounselTypeHasValue"
               >*</span
             >
-            訪談方式
+            方式
           </label>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -110,8 +110,8 @@
               <div class="dropdown-menu">
                 <a
                   class="dropdown-item"
-                  (click)="caseInterview.setCounselType('個人')"
-                  >個人</a
+                  (click)="caseInterview.setCounselType('面談')"
+                  >面談</a
                 >
                 <a
                   class="dropdown-item"
@@ -152,13 +152,13 @@
                 *ngIf="!caseInterview.isContactNameHasValue"
                 >*</span
               >
-              訪談對象
+              對象
             </label>
             <input
               type="text"
               class="form-control"
               id="interviewee"
-              placeholder="請輸入訪談對象"
+              placeholder="請輸入對象"
               [(ngModel)]="caseInterview.ContactName"
               (keyup)="caseInterview.checkValue()"
             />
@@ -171,14 +171,14 @@
               *ngIf="!caseInterview.isContentHasValue"
               >*</span
             >
-            訪談內容說明
+            內容說明
             <span class="text-muted"></span>
           </label>
           <textarea
             class="form-control"
             id="description"
             rows="3"
-            placeholder="請輸入訪談內容說明"
+            placeholder="請輸入內容說明"
             [(ngModel)]="caseInterview.Content"
             (keyup)="caseInterview.checkValue()"
           ></textarea>

@@ -1,6 +1,13 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { ReferralStudent } from "../referral-student";
 import { DsaService } from "../../dsa.service";
+import {
+  CounselStudentService,
+  CounselClass,
+  CounselStudent
+} from "../../counsel-student.service";
+
+
 @Component({
   selector: "app-grant-modal",
   templateUrl: "./grant-modal.component.html",
@@ -11,7 +18,8 @@ export class GrantModalComponent implements OnInit {
 
   referralStudent: ReferralStudent;
 
-  constructor(private dsaService: DsaService) {}
+  constructor(private dsaService: DsaService,
+    public counselStudentService: CounselStudentService) {}
 
   ngOnInit() {
     this.referralStudent = new ReferralStudent();
@@ -29,6 +37,24 @@ export class GrantModalComponent implements OnInit {
   }
 
   async SetReferralStudent(data: ReferralStudent) {
+    
+    // 處理當設定狀態後同步到輔導學生主畫面
+    this.counselStudentService.guidanceStudent.forEach(rstud =>{
+      if (rstud.StudentID === data.StudentID)
+      {
+        rstud.ReferralStatus = data.ReferralStatus;
+      }
+    });
+
+    this.counselStudentService.studentMap.forEach(
+      (value: CounselStudent, key: string) => {
+        if (value.StudentID === data.StudentID)
+        {
+          value.ReferralStatus = data.ReferralStatus;
+        }        
+      }
+    );
+
     let req = {
       UID: data.UID,
       ReferralReply: data.ReferralReply,
