@@ -15,6 +15,7 @@ export class CourseTypeFormatPipe implements PipeTransform {
       case '核心選修': return '核選';
       case '分組必修': return '組必';
       case '選修': return '選修';
+      case 't': return '點';
       default: return text;
     }
   }
