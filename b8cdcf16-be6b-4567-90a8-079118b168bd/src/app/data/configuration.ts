@@ -30,4 +30,7 @@ export class Configuration {
 
   /**第二階段選課結果email通知(Email標題) */
   email_content2_template_subject: string;
+
+  /**點數選課規則說明文字 */
+  button_mod_communicate_point_selection_rules: string;
 };

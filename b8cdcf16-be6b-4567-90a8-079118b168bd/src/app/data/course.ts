@@ -15,14 +15,14 @@ export class Course {
   TeacherURLName: string;
 
   /**是否需點數選課 */
-  NeedPoints: boolean;
+  NeedPoints: string;
   MaxPoints: string;
   MinPoints: string;
 
   /**學生投入的點數 */
   StudentSetPoints: number;
   /**投點點數有誤 */
-  IsError: boolean;
+  PointIsError: boolean;
   ErrorMsg: string;
 
   /**要退選 */
@@ -43,5 +43,5 @@ export class Course {
   StudentCount: string;
 
   /**投點點數排行 */
-  Ranks: string[];
+  Ranks: any;
 }

@@ -180,9 +180,12 @@
                     <td>{{item.CourseTimeInfo}}</td>
                     <td>{{item.StudentCount}}</td>
                   </tr>
-                  <tr *ngIf="item.ChooseItem == '1'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3">投入點數：{{item.StudentSetPoints}} 點</td>
                     <td colspan="7">{{item.Memo}}</td>
+                  </tr>
+                  <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints != 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    <td colspan="10">{{item.Memo}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="getLevelItems('1') === 0">
@@ -233,9 +236,12 @@
                     <td>{{item.CourseTimeInfo}}</td>
                     <td>{{item.StudentCount}}</td>
                   </tr>
-                  <tr *ngIf="item.ChooseItem == '2'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3">投入點數：{{item.StudentSetPoints}} 點</td>
                     <td colspan="7">{{item.Memo}}</td>
+                  </tr>
+                  <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints != 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    <td colspan="10">{{item.Memo}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="getLevelItems('2') === 0">
@@ -292,17 +298,20 @@
                         <input type="number" 
                           #points
                           *ngIf="item.NeedPoints == 't' " 
-                          [ngClass]="{'error':item.IsError}"
+                          [ngClass]="{'error':item.PointIsError}"
                           class="points"
                           (change)="checkPoints(points.value,item)"
                           placeholder="投入點數">
                           
                         <ng-template #popTemplate>
-                          <p>第一名  {{item.Ranks[0]}} 點</p>
-                          <p>第二名  {{item.Ranks[1]}} 點</p>
-                          <p>第三名  {{item.Ranks[2]}} 點</p>
-                          <p>第四名  {{item.Ranks[3]}} 點</p>
-                          <p>第五名  {{item.Ranks[4]}} 點</p>
+                          <p *ngFor="let i of ['1','2','3','4','5']">
+                            第{{i}}名 {{item.Ranks[i] || '0'}} 點
+                          </p>
+                          <!-- <p>第一名  {{item.Ranks['0']}} 點</p>
+                          <p>第二名  {{item.Ranks['1']}} 點</p>
+                          <p>第三名  {{item.Ranks['2']}} 點</p>
+                          <p>第四名  {{item.Ranks['3']}} 點</p>
+                          <p>第五名  {{item.Ranks['4']}} 點</p> -->
                         </ng-template>
                         <button 
                           *ngIf="item.NeedPoints == 't'"
@@ -317,7 +326,7 @@
                           點數上限：{{item.MaxPoints}}
                           點數下限：{{item.MinPoints}}
                         </p>
-                        <div *ngIf="item.IsError" style="color: red">
+                        <div *ngIf="item.PointIsError" style="color: red">
                           {{item.ErrorMsg}}
                         </div>
                     </td>

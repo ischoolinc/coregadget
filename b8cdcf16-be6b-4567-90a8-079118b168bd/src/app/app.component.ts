@@ -67,6 +67,7 @@ export class AppComponent implements OnInit {
     email_content1_template_subject: '',
     email_content2_template_subject: '',
     retreat_notices_word: '',
+    button_mod_communicate_point_selection_rules: ''
   };
 
   /**學生基本資料 */
@@ -386,20 +387,17 @@ export class AppComponent implements OnInit {
       rsp.forEach((item) =>{
         if(this.allCourse.has(item.CourseID)){
           const course:Course = this.allCourse.get(item.CourseID);
-          course.Ranks = [];
+          course.Ranks = {};
           course.StudentCount = item.Count;
+
+          
           // 整理點數排行資料
           // 1. 如果service有取得點數資料記錄點數資料，沒有的話紀錄 0
-          for(let i = 1; i <= 5; i++){
+  
             [].concat(item.Ranks || []).forEach((data) => {
-              if(i == data.Rank){
-                course.Ranks.push(data.Points);
-              }
-              else{
-                course.Ranks.push('0');
-              }
+                course.Ranks[data.Rank] = data.Points ;
             });
-          }
+          
           // this.allCourse.set(item.CourseID,course);
         }
       });
@@ -450,86 +448,86 @@ export class AppComponent implements OnInit {
    *  勾選(要加選) =>
    *    state = true。比對預選、已選課程中，所有 WillQuit = false 的所有突衝課程，將其視為衝突；
    *    state = true。比對可加選課程中，所有 WillAdd = true 的所有突衝課程，將其視為衝突
+   *    state = true。如果是點數選課課程，判斷是否頭點
    *   取消勾選(取消加選) =>
    *    state = false。比對預選、已選課程中，所有 WillQuit = false 的所有突衝課程，將其視為不衝突；
    *    state = false。比對可加選課程中，所有 WillAdd = true 的所有突衝課程，將其視為不衝突
   */
   clickCourseCheckbox(course: Course, keyName: string, model: NgModel) {
-    
-    if(course.IsError){
+
+    // 如果投點點數有誤
+    if(course.PointIsError){
       model.control.patchValue(false);
       return;
     }// 如果課程為投點課程必須輸入投點點數
-    else if(course.NeedPoints && !course.StudentSetPoints && course.StudentSetPoints != 0){
-      course.IsError = true;
+    else if(course.NeedPoints == 't' && !course.StudentSetPoints && course.StudentSetPoints != 0){
+      course.PointIsError = true;
       course.ErrorMsg = '請輸入投點點數';
-      //course.WillAdd = false;
       model.control.patchValue(false);
       return;
     }
     else{
-      course.IsError = false;
+      course.PointIsError = false;
       course.ErrorMsg = '';
-      //course.WillAdd = true;
-      model.control.patchValue(true);
-    }
-    
-    
-    course[keyName] = !course[keyName];
-    const checked = course[keyName];
-    let status = false;
-    if (keyName === 'WillQuit') { status = !checked; }
-    if (keyName === 'WillAdd') { status = checked; }
+      // model.control.patchValue(true);
 
-    if (this.conflictCourseMap.has(course.CourseID)) {
-      // 取得本課程的衝突清單
-      const conflictIds = this.conflictCourseMap.get(course.CourseID).conflictCourseIds;
+      // 衝堂判斷
+      course[keyName] = !course[keyName];
+      const checked = course[keyName];
+      let status = false;
+      if (keyName === 'WillQuit') { status = !checked; }
+      if (keyName === 'WillAdd') { status = checked; }
 
-      for (const courseId of conflictIds) {
-        // 與已預選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
-        for (const item of this.scAttends) {
-          if (item.CourseID === courseId && !item.WillQuit) {
-            if (status) {
-              course.HaveConflict.push(item.CourseID);
-              item.HaveConflict.push(course.CourseID);
-            } else {
-              item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
+      if (this.conflictCourseMap.has(course.CourseID)) {
+        // 取得本課程的衝突清單
+        const conflictIds = this.conflictCourseMap.get(course.CourseID).conflictCourseIds;
+
+        for (const courseId of conflictIds) {
+          // 與已預選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
+          for (const item of this.scAttends) {
+            if (item.CourseID === courseId && !item.WillQuit) {
+              if (status) {
+                course.HaveConflict.push(item.CourseID);
+                item.HaveConflict.push(course.CourseID);
+              } else {
+                item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
+              }
             }
           }
-        }
 
-        // 與已選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
-        for (const item of this.currAttends) {
-          if (item.CourseID === courseId && !item.WillQuit) {
-            if (status) {
-              course.HaveConflict.push(item.CourseID);
-              item.HaveConflict.push(course.CourseID);
-            } else {
-              item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
+          // 與已選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
+          for (const item of this.currAttends) {
+            if (item.CourseID === courseId && !item.WillQuit) {
+              if (status) {
+                course.HaveConflict.push(item.CourseID);
+                item.HaveConflict.push(course.CourseID);
+              } else {
+                item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
+              }
             }
           }
-        }
 
-        // 與加選課程比較，將其衝突清單異動，之後要用 tooltip 顯示
-        for (const item of this.canChooseCourses) {
-          if (item.CourseID === courseId && item.WillAdd) {
-            if (status) {
-              course.HaveConflict.push(item.CourseID);
-              item.HaveConflict.push(course.CourseID);
-            } else {
-              item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
+          // 與加選課程比較，將其衝突清單異動，之後要用 tooltip 顯示
+          for (const item of this.canChooseCourses) {
+            if (item.CourseID === courseId && item.WillAdd) {
+              if (status) {
+                course.HaveConflict.push(item.CourseID);
+                item.HaveConflict.push(course.CourseID);
+              } else {
+                item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
+              }
             }
           }
         }
       }
+
+      // 幫自己清除衝堂
+      // 如果為「已選 + 勾選退選 => 退選」，將全部的衝突資料移除
+      // 如果為「加選 + 取消勾選 => 不加選」，將全部的衝突資料移除
+      if (!status) course.HaveConflict = [];
+
+      this.checkAddQuitBtn();
     }
-
-    // 幫自己清除衝堂
-    // 如果為「已選 + 勾選退選 => 退選」，將全部的衝突資料移除
-    // 如果為「加選 + 取消勾選 => 不加選」，將全部的衝突資料移除
-    if (!status) course.HaveConflict = [];
-
-    this.checkAddQuitBtn();
   }
 
   /**退選課程的勾選 及 取消勾選 */
@@ -946,7 +944,28 @@ export class AppComponent implements OnInit {
         txt.push('<tr><td colspan="8">無課程</td>');
       } else {
         for (const item of courses) {
-          txt.push(`
+          if(item.NeedPoints == 't'){
+            txt.push(`
+            <tr>
+              <td>${item.NewSubjectCode || ''}</td>
+              <td>${item.ClassName || ''}</td>
+              <td>
+                <span>${this.courseTypeFormatPipe.transform(item.CourseType)}</span>
+                <span>${item.CourseName || ''}</span>
+              </td>
+              <td>${item.TeacherURLName || ''}</td>
+              <td>${item.Credit || ''}</td>
+              <td>${item.Capacity || ''}</td>
+              <td>${item.Classroom || ''}</td>
+              <td>${item.CourseTimeInfo || ''}</td>
+            </tr>
+            <tr>
+              <td colspan="3">投入點數：${item.StudentSetPoints || ''}點</td>
+              <td colspan="5">${item.Memo || ''}</td>
+            </tr>
+          `);
+          }else{
+            txt.push(`
             <tr>
               <td>${item.NewSubjectCode || ''}</td>
               <td>${item.ClassName || ''}</td>
@@ -964,6 +983,7 @@ export class AppComponent implements OnInit {
               <td colspan="8">${item.Memo || ''}</td>
             </tr>
           `);
+          }
         }
       }
       return (`
@@ -1120,6 +1140,9 @@ export class AppComponent implements OnInit {
 
     // 5、重新取得可選課程
     await this.getCanChooseCourse();
+
+    // 6、重新取得學生點數
+    await this.getPoints();
   }
 
   /**詢問是否確認最終選課結果 */
@@ -1329,28 +1352,28 @@ export class AppComponent implements OnInit {
     // 正整數 正則表達式
     const rgexp = new RegExp("^[0-9]*[1-9][0-9]*$");
     if(_points == null){
-      course.IsError = false;
+      course.PointIsError = false;
       course.ErrorMsg = "";
       course.StudentSetPoints = null;
       return;
     }
     if(!rgexp.test(points) && _points && points != "0"){
-      course.IsError = true;
+      course.PointIsError = true;
       course.ErrorMsg = "請輸入正整數！";
       return;
     }
     else if(_points > this.currentPoints){
-      course.IsError = true;
+      course.PointIsError = true;
       course.ErrorMsg = "點數不足！";
       return;
     }
     else if(_points < minPoint || _points > maxPoint){
-      course.IsError = true;
+      course.PointIsError = true;
       course.ErrorMsg = "投點點數不可超過課程點數限制！";
       return;
     }
     else{
-      course.IsError = false;
+      course.PointIsError = false;
       course.ErrorMsg = "";
       // 計算點數現況
       if(course.StudentSetPoints == null){
