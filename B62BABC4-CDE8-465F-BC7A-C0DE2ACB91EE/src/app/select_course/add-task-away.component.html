@@ -24,7 +24,7 @@
                 <li class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-2 point">
                     <div (click)="showDialog(currentStatus.Attend, '')"
                          style="flex: 1"
-                         class="d-flex flex-md-row justify-content-md-between">
+                         class="d-flex flex-md-row">
                         <!-- 指定選課才有這 icon -->
                         <i *ngIf="currentStatus.Attend.Lock=='true'"
                            class="material-icons mr-2"
@@ -35,7 +35,7 @@
                     </div>
                     <div class="text-right">
                         <button class="btn btn-danger"
-                                [disabled]="currentStatus.Attend.Lock=='true'?'disabled':null"
+                                [disabled]="currentStatus.Attend.Lock=='true' ? true : false"
                                 (click)="leaveCourse(currentStatus.Attend)">
                             退選
                         </button>
@@ -62,7 +62,7 @@
                      class="d-flex flex-md-row justify-content-md-between py-3"
                      (click)="showDialog(subject, '先搶先贏')">
                     <div class="mr-auto">
-                        <span>{{subject.SubjectName}}{{getLevel(subject)}}</span>
+                        <span style="margin-right: 10px">{{subject.SubjectName}}{{getLevel(subject)}}</span>
                         <i *ngIf="subject.SubjectID == currentStatus.Attend.SubjectID"
                            class="material-icons mr-2"
                            data-toggle="tooltip"
@@ -74,7 +74,7 @@
                           class="badge badge-light mt-2 mt-md-0 mr-md-3">
                         <code *ngIf="subject.BlockReason">{{subject.BlockReason}}</code>
                         <code *ngIf="subject.BlockReason && subject.TimeSelect =='t' ">、</code>
-                        <code *ngIf="subject.TimeSelect == 't'">課程時段衝堂</code>
+                        <code *ngIf="subject.TimeSelect == 't'">該課程時段已選修課程</code>
                     </span>
                     <span *ngIf="!!!subject.BlockReason && subject.TimeSelect !='t' "
                           class="badge badge-light my-2 my-md-0 mr-md-3">

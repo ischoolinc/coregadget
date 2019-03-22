@@ -2,11 +2,11 @@
 import { GadgetService, Contract } from '../gadget.service';
 import { Utils } from '../util';
 import * as moment from 'moment';
-import { subjectInfo } from './subjectInfo';
-import { courseInfo } from './courseInfo';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { AddDialogComponent } from './add-dialog.component';
+import { Subject } from '../data/subject';
+import { Attend } from '../data/attend';
 
 
 @Component({
@@ -20,24 +20,25 @@ export class AddTaskAwayComponent implements OnInit {
   saving: boolean = false;
   subjectType: string;
   currentStatus: any;
-
-  constructor(private route: ActivatedRoute, private gadget: GadgetService, private router: Router, private dialog: MatDialog) { }
   // 取得 contract 連線。
   contract: Contract;
 
+  constructor(private route: ActivatedRoute, private gadget: GadgetService, private router: Router, private dialog: MatDialog) { }
+  
   async ngOnInit() {
     this.contract = await this.gadget.getContract('ischool.course_selection');
     this.subjectType = this.route.snapshot.paramMap.get("subjectType");
     this.getData();
   }
 
+  /**取得該課程類別選課資料 */
   async getData() {
     try {
       this.loading = true;
       this.currentStatus = await this.contract.send('GetSubjectList', { SubjectType: this.subjectType });
 
-      // this.currentStatus.Attend = [].concat(this.currentStatus.Attend || []);
-      this.currentStatus.Subject = [].concat(this.currentStatus.Subject || []);
+      // this.currentStatus.Attend = this.currentStatus.Attend || {};
+      this.currentStatus.Subject = [].concat(this.currentStatus.Subject || []) as Subject[];
 
     } catch (err) {
       // console.log(err);
@@ -47,22 +48,23 @@ export class AddTaskAwayComponent implements OnInit {
     }
   }
 
-  joinCourse(subject) {
+  /**選課按鈕 */
+  joinCourse(subject: Subject) {
     if (this.saving)
       return;
 
     this.setData({ ...subject });
-
   }
 
-  leaveCourse(subject){
+  /**退選按鈕 */
+  leaveCourse(subject: Attend){
     if (this.saving)
       return;
 
     this.removeData({ ...subject });
   }
 
-  async removeData(subject) {
+  async removeData(subject: Attend) {
     try {
       this.saving = true;
 
@@ -82,7 +84,7 @@ export class AddTaskAwayComponent implements OnInit {
     }
   }
   
-  async setData(subject) {
+  async setData(subject: Subject) {
     try {
       this.saving = true;
 
@@ -102,7 +104,8 @@ export class AddTaskAwayComponent implements OnInit {
     }
   }
 
-  showDialog(subject, mode) {
+  /**顯示科目資訊 */
+  showDialog(subject: Subject, mode: string) {
     // console.log(JSON.stringify(subject));
     const dig = this.dialog.open(AddDialogComponent, {
       data: { subject: subject, mode: mode , countMode:'先搶先贏'}
@@ -115,7 +118,9 @@ export class AddTaskAwayComponent implements OnInit {
       }
     });
   }
-  getLevel(subject) {
+
+  /**取得科目級別 */
+  getLevel(subject: Subject) {
     switch (subject.Level) {
       case "":
         return "";

@@ -1,7 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { GadgetService, Contract } from '../gadget.service';
-import { Utils } from '../util';
-import { subjectInfo } from './subjectInfo';
 import { ActivatedRoute, Router } from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';

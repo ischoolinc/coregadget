@@ -98,7 +98,7 @@
                               class="badge badge-light mt-2 mt-md-0 mr-md-3">
                             <code>{{subject.BlockReason}}</code>
                             <code *ngIf="subject.BlockReason && subject.TimeSelect =='t' ">、</code>
-                            <code *ngIf="subject.TimeSelect == 't'">課程時段衝堂</code>
+                            <code *ngIf="subject.TimeSelect == 't'">該課程時段已選修課程</code>
                         </span>
                         <span *ngIf="!!!subject.BlockReason && subject.TimeSelect != 't' "
                               class="badge badge-light mt-2 mt-md-0 mr-md-3"

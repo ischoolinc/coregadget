@@ -1,12 +1,11 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { GadgetService, Contract } from '../gadget.service';
 import { Utils } from '../util';
-import { subjectInfo } from './subjectInfo';
-import { courseInfo } from './courseInfo';
+import { Subject } from '../data/subject';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { AddDialogComponent } from './add-dialog.component';
-import { Subject } from 'rxjs';
+import { Wish } from '../data/wish';
 
 @Component({
   selector: 'app-add-wish',
@@ -28,13 +27,15 @@ export class AddWishComponent implements OnInit {
     this.subjectType = this.route.snapshot.paramMap.get("subjectType");
     this.getData();
   }
+
   async getData() {
     try {
       this.loading = true;
       this.currentStatus = await this.contract.send('GetSubjectList', { SubjectType: this.subjectType });
-
-      this.currentStatus.Wish = [].concat(this.currentStatus.Wish || []);
-      this.currentStatus.Subject = [].concat(this.currentStatus.Subject || []);
+      // 志願序清單
+      this.currentStatus.Wish = [].concat(this.currentStatus.Wish || []) as Wish[];
+      // 該課程時段(類別)的所有課程
+      this.currentStatus.Subject = [].concat(this.currentStatus.Subject || []) as Subject[];
     } catch (err) {
       console.log(err);
       alert("GetSubjectList error:\n" + JSON.stringify(err));
@@ -53,9 +54,9 @@ export class AddWishComponent implements OnInit {
     } finally {
       var self = this;
       this.saving = false;
-      self.currentStatus.Subject.forEach(function (subject) {
+      self.currentStatus.Subject.forEach(function (subject: Subject) {
         subject.WishOrder = "";
-        self.currentStatus.Wish.forEach(function (wish) {
+        self.currentStatus.Wish.forEach(function (wish: Wish) {
           if (subject.SubjectID == wish.SubjectID) {
             subject.WishOrder = wish.WishOrder;
           }
@@ -64,14 +65,15 @@ export class AddWishComponent implements OnInit {
       this.getData();
     }
   }
-  removeItem(subject) {
+
+  removeItem(subject: Wish) {
     if (this.saving)
       return;
 
     var index = this.currentStatus.Wish.indexOf(subject);
     if (index >= 0) {
       this.currentStatus.Wish.splice(index, 1);
-      this.currentStatus.Wish.forEach(function (wish, order) {
+      this.currentStatus.Wish.forEach(function (wish: Wish, order) {
         wish.WishOrder = order + 1;
       });
 
@@ -79,33 +81,34 @@ export class AddWishComponent implements OnInit {
     }
   }
 
-  moveDown(subject) {
+  moveDown(subject: Wish) {
     if (this.saving)
       return;
     subject.WishOrder += 1.5;
-    this.currentStatus.Wish.sort(function (a, b) {
+    this.currentStatus.Wish.sort(function (a: Wish, b: Wish) {
       return a.WishOrder - b.WishOrder;
     });
-    this.currentStatus.Wish.forEach(function (wish, order) {
+    this.currentStatus.Wish.forEach(function (wish: Wish, order: number) {
       wish.WishOrder = order + 1;
     });
     this.setData();
   }
 
-  moveUp(subject) {
+  moveUp(subject: Wish) {
     if (this.saving)
       return;
     subject.WishOrder -= 1.5;
-    this.currentStatus.Wish.sort(function (a, b) {
+    this.currentStatus.Wish.sort(function (a: Wish , b: Wish) {
       return a.WishOrder - b.WishOrder;
     });
-    this.currentStatus.Wish.forEach(function (wish, order) {
+    this.currentStatus.Wish.forEach(function (wish: Wish, order: number) {
       wish.WishOrder = order + 1;
     });
     this.setData();
   }
 
-  joinCourse(subject) {
+  /**加入志願按鈕 */
+  joinCourse(subject: Subject) {
     if (this.saving)
       return;
     var index = -1;
@@ -115,14 +118,15 @@ export class AddWishComponent implements OnInit {
     });
     if (index < 0 && this.currentStatus.Wish.length < 5) {
       this.currentStatus.Wish.push({ ...subject });
-      this.currentStatus.Wish.forEach(function (wish, order) {
+      this.currentStatus.Wish.forEach(function (wish: Wish, order: number) {
         wish.WishOrder = order + 1;
       });
       this.setData();
     }
   }
 
-  showDialog(subject, mode) {
+  /**顯示選課科目資料 */
+  showDialog(subject: Subject, mode: string) {
     // console.log(JSON.stringify(subject));
     const dig = this.dialog.open(AddDialogComponent, {
       data: { subject: subject, mode: mode, countMode: '志願序' }
@@ -135,7 +139,9 @@ export class AddWishComponent implements OnInit {
       }
     });
   }
-  getLevel(subject) {
+
+  /**取得科目級別 */
+  getLevel(subject: Subject) {
     switch (subject.Level) {
       case "":
         return "";
