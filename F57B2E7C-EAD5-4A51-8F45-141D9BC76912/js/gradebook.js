@@ -123,9 +123,34 @@
                                 $scope.courseList = [].concat(response.Course || []);
                                 $scope.courseList.forEach(function (courseRec) {
                                     courseRec.Term = [].concat(courseRec.Term || []);
+                                   
+                                    // 先計算 比例， 依照 2019寒假優化內容， assessment 的比例 直接對照 Term
+                                    //courseRec.Term.forEach(function (termRec) {
+                                    //    var totalWeight = 0;
+                                    //    termRec.Subject = [].concat(termRec.Subject || []);
+                                    //    termRec.Subject.forEach(function (subjRec) {
+                                    //        subjRec.Assessment = [].concat(subjRec.Assessment || []);
+                                    //        subjRec.Assessment.forEach(function (assessmentRec) {
+                                    //            var weight = Number(assessmentRec.Weight);
+                                    //            if (weight)
+                                    //                totalWeight += weight;
+                                    //        });                                                                                        
+                                    //    });
+                                    //    termRec.Subject.forEach(function (subjRec) {                                            
+                                    //        subjRec.Assessment.forEach(function (assessmentRec) {
+                                    //            var weight = Number(assessmentRec.Weight);
+                                    //            if (weight || weight == 0) {
+                                    //                assessmentRec.Percentage = Math.round(10000 * weight / (totalWeight || 1)) / 100;
+                                    //            }
+                                    //        });
+                                    //    });
+                                    //});
+
                                     courseRec.Term.forEach(function (termRec) {
                                         termRec.InputStartTimeDate = new Date(parseInt(termRec.InputStartTimeTick));
                                         termRec.InputEndTimeDate = new Date(parseInt(termRec.InputEndTimeTick));
+                                        termRec.CustomInputStartTimeDate = new Date(parseInt(termRec.CustomInputStartTimeTick));
+                                        termRec.CustomInputEndTimeDate = new Date(parseInt(termRec.CustomInputEndTimeTick));
                                         if (new Date() < termRec.InputStartTimeDate)
                                             termRec.InputSession = "before";
                                         else if (new Date() <= termRec.InputEndTimeDate)
@@ -133,16 +158,28 @@
                                         else if (termRec.InputEndTimeDate < new Date())
                                             termRec.InputSession = "after";
 
+                                        if (termRec.CustomInputEndTimeDate >= new Date() && termRec.CustomInputStartTimeDate <= new Date()) {
+                                            termRec.AllowCustomAssessmentInput = "true";
+                                        }
+                                        else
+                                        {
+                                            termRec.AllowCustomAssessmentInput = "false";
+                                        }
                                         termRec.Subject = [].concat(termRec.Subject || []);
-                                        termRec.Subject.forEach(function (subjRec) {
+                                        termRec.Subject.forEach(function (subjRec) {   
                                             var totalWeight = 0;
                                             subjRec.Assessment = [].concat(subjRec.Assessment || []);
                                             subjRec.Assessment.forEach(function (assessmentRec) {
                                                 var weight = Number(assessmentRec.Weight);
                                                 if (weight)
                                                     totalWeight += weight;
-                                            });
+                                            }); 
+
                                             subjRec.Assessment.forEach(function (assessmentRec) {
+                                                var weight = Number(assessmentRec.Weight);
+                                                if (weight || weight == 0) {
+                                                    assessmentRec.Percentage = Math.round(10000 * weight / (totalWeight || 1)) / 100;
+                                                }
                                                 if (assessmentRec.TeacherSequence == courseRec.MySequence) {
                                                     //繳交時間優先導進來
                                                     if (termRec.InputSession == "input" && (!jumpTerm || jumpTerm.InputSession !== "input")) {
@@ -162,11 +199,7 @@
                                                         jumpAssessment = assessmentRec;
                                                     }
                                                 }
-                                                var weight = Number(assessmentRec.Weight);
-                                                if (weight || weight == 0) {
-                                                    assessmentRec.Percentage = Math.round(10000 * weight / (totalWeight || 1)) / 100;
-                                                }
-
+                                               
                                                 assessmentRec.TermName = termRec.Name;
                                                 assessmentRec.SubjectName = subjRec.Name;
                                                 assessmentRec.AssessmentName = assessmentRec.Name;
@@ -253,12 +286,32 @@
                                 $scope.$apply(function () {
                                     response.Student = [].concat(response.Student || []);
                                     response.Student.forEach(function (stuRec, index) {
+                                        stuRec["ref_sc_attend_id"] = stuRec.RefScAttendID; 
                                         stuRec.index = index;
                                         stuRec.AssessmentScore = [].concat(stuRec.AssessmentScore || []);
                                         stuRec.AssessmentScore.forEach(function (assessmentRec) {
                                             var key = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName + "^_^" + assessmentRec.AssessmentName + "^_^" + assessmentRec.CustomAssessmentName;
+                                            var totalratiokey = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName;
                                             stuRec["Val_" + key] = assessmentRec.Value;
-                                            stuRec["Origin_" + key] = assessmentRec.Value;
+                                            stuRec["Origin_" + key] = assessmentRec.Value;    
+                                            var ratio = Number(assessmentRec.Ratio); // 缺考成績 後端補輸入指定比例
+                                            if (ratio) {
+                                                if (stuRec["TotalRatio_" + totalratiokey]) {
+                                                    stuRec["TotalRatio_" + totalratiokey] += ratio;
+                                                }
+                                                else
+                                                {
+                                                    stuRec["TotalRatio_" + totalratiokey] = ratio;
+                                                }                                                
+                                            }                                            
+                                        });
+                                        stuRec.AssessmentScore.forEach(function (assessmentRec) {
+                                            var key = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName + "^_^" + assessmentRec.AssessmentName + "^_^" + assessmentRec.CustomAssessmentName;                                                                                         
+                                            var totalratiokey = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName ;
+                                            var ratio = Number(assessmentRec.Ratio); // 缺考成績 後端補輸入指定比例
+                                            if (ratio) {
+                                                stuRec["Ratio_" + key] = Math.round(10000 * ratio / (stuRec["TotalRatio_" + totalratiokey] || 1)) / 100;
+                                            }
                                         });
                                     });
                                     $scope.studentList = response.Student;
@@ -416,6 +469,7 @@
                                         , Type: "Program"
                                         , IsPreview: true
                                         , Editable: false
+                                        , IsCustomAssessmentAutoCal: true
                                         , Percentage: 0
                                         , Calc: function () {
                                             [].concat($scope.studentList || []).forEach(function (stuRec) {
@@ -453,7 +507,7 @@
                                     assessment.CustomAssessmen.forEach(function (assessmentRec) {
                                         assessmentRec.Name = assessmentRec.CustomAssessmentName;
                                         assessmentRec.Key = assessmentRec.TermName + "^_^" + assessmentRec.SubjectName + "^_^" + assessmentRec.AssessmentName + "^_^" + assessmentRec.CustomAssessmentName;
-                                        if (assessmentRec.Type != "Program")
+                                        if (assessmentRec.Type != "Program" && $scope.current.Term.CustomInputEndTimeDate >= new Date() && $scope.current.Term.CustomInputStartTimeDate <= new Date())
                                             assessmentRec.Editable = true;
                                         var weight = Number(assessmentRec.Weight);
                                         if (weight || weight == 0) {
@@ -675,7 +729,7 @@
                                     && (!$scope.current.AssessmentItem.Range || (!$scope.current.AssessmentItem.Range.Max && $scope.current.AssessmentItem.Range.Max !== 0) || temp <= $scope.current.AssessmentItem.Range.Max)
                                     && (!$scope.current.AssessmentItem.Range || (!$scope.current.AssessmentItem.Range.Min && $scope.current.AssessmentItem.Range.Min !== 0) || temp >= $scope.current.AssessmentItem.Range.Min)) {
                                     flag = true;
-                                    var round = Math.pow(10, $scope.params.DefaultRound);
+                                    var round = Math.pow(10, $scope.current.Course.Round || $scope.params.DefaultRound);
                                     temp = Math.round(temp * round) / round;
                                 }
                                 // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
@@ -808,7 +862,7 @@
                         && (!$scope.current.AssessmentItem.Range || (!$scope.current.AssessmentItem.Range.Max && $scope.current.AssessmentItem.Range.Max !== 0) || temp <= $scope.current.AssessmentItem.Range.Max)
                         && (!$scope.current.AssessmentItem.Range || (!$scope.current.AssessmentItem.Range.Min && $scope.current.AssessmentItem.Range.Min !== 0) || temp >= $scope.current.AssessmentItem.Range.Min)) {
                         flag = true;
-                        var round = Math.pow(10, $scope.params.DefaultRound);
+                        var round = Math.pow(10, $scope.current.Course.Round || $scope.params.DefaultRound);
                         temp = Math.round(temp * round) / round;
                     }
                     if ($scope.current.Value == "")
@@ -877,6 +931,20 @@
                                 , AssessmentName: assessmentItem.AssessmentName
                                 , CustomAssessmentName: assessmentItem.CustomAssessmentName
                                 , Value: stuRec["Val_" + assessmentItem.Key]
+                                , RefScAttendID: stuRec["ref_sc_attend_id"]
+                            });
+                        });
+                    }
+                    // 每次自訂項目成績結算完 自動上傳自訂義成績結算
+                    if (assessmentItem.IsCustomAssessmentAutoCal) {
+                        $scope.studentList.forEach(function (stuRec) {
+                            body.AssessmentScore.push({
+                                StudentID: stuRec.StudentID
+                                , TermName: assessmentItem.TermName
+                                , SubjectName: assessmentItem.SubjectName
+                                , AssessmentName: assessmentItem.AssessmentName                                
+                                , Value: stuRec["Val_" + assessmentItem.Key]
+                                , RefScAttendID: stuRec["ref_sc_attend_id"]
                             });
                         });
                     }
