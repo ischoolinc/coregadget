@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html ng-app="openIDLog">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<script src="js/xmlWriter.js"></script>
+    <script src="js/parseXml.js"></script>
+    <script src="js/xml2json.js"></script>
+    <script src="js/dsutil.js"></script>
+    <script src="js/dsnsLookup.js"></script>-->
+
+    <script src="js/gadget.js"></script>
+    <script>
+        init({
+            application: "j.kh.edu.tw",            
+            paramValues: {                                
+            },
+            oAuth: {
+                clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+                clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',                
+                //account: '',
+                //password: window.prompt('password:')
+            }
+        });
+    </script>
+
+    <title>openIDLog</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/base.css" rel="stylesheet" />
+
+    <style>
+        .dropdown-header {
+            padding: 3px 10px;
+            font-size: 14px;
+        }
+
+        .importStudentPreview {
+            padding: 5px 10px;
+            border-radius: .25em;
+            border: solid 1px lightgray;
+            margin: 3px 0px;
+        }
+
+            .importStudentPreview .studentInfo {
+            }
+
+        .my-page {
+            max-width: initial;
+        }
+
+        body {
+            max-width: 1280px;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        tr .visible-tr-hover {
+            display: none;
+        }
+
+        tr:hover .visible-tr-hover {
+            display: inherit;
+        }
+    </style>
+</head>
+
+
+<body ng-controller="MainCtrl">
+    <div ng-if="!Loaded"
+         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
+    <table class="table table-bordered table-striped"
+           style="width:260px;">        
+        <thead>
+            <tr>
+                <th>school_name</th>
+                <th>school_id</th>
+                <th>student_number</th>
+                <th>class_name</th>
+                <th>student_birthday</th>
+                <th>class_class_no</th>
+                <th>student_id</th>
+                <th>class_display_order</th>
+                <th>school_dsns</th>
+                <th>student_gender</th>
+                <th>class_grade_year</th>
+                <th>student_id_number</th>
+                <th>student_name</th>
+                <th>student_ref_class_id</th>
+                <th>student_seat_no</th>
+                <th>student_status_code</th>
+                <th>student_id_number_sha256</th>
+                <th>student_gender_base64</th>
+                <th>student_name_base64</th>
+                <th>sync_trigger_action</th>
+                <th>sync_trigger_time</th>
+                <th>sync_excute_time</th>
+                <th>sync_action1</th>
+                <th>sync_action2</th>
+                <th>sync_action3</th>
+                <th>sync_action_result1</th>
+                <th>sync_action_result2</th>
+                <th>sync_action_result3</th>
+                <th>student_reversion_id</th>
+            </tr>
+        </thead>        
+        <tbody>
+            <tr ng-repeat="OpenIDLogRec in OpenIDLogList"  class="text-left">
+                <td>{{OpenIDLogRec.school_name}}</td>
+                <td>{{OpenIDLogRec.school_id}}</td>
+                <td>{{OpenIDLogRec.student_number}}</td>
+                <td>{{OpenIDLogRec.class_name}}</td>
+                <td>{{OpenIDLogRec.student_birthday}}</td>
+                <td>{{OpenIDLogRec.class_class_no}}</td>
+                <td>{{OpenIDLogRec.student_id}}</td>
+                <td>{{OpenIDLogRec.class_display_order}}</td>
+                <td>{{OpenIDLogRec.school_dsns}}</td>
+                <td>{{OpenIDLogRec.student_gender}}</td>
+                <td>{{OpenIDLogRec.class_grade_year}}</td>
+                <td>{{OpenIDLogRec.student_id_number}}</td>
+                <td>{{OpenIDLogRec.student_name}}</td>
+                <td>{{OpenIDLogRec.student_ref_class_id}}</td>
+                <td>{{OpenIDLogRec.student_seat_no}}</td>
+                <td>{{OpenIDLogRec.student_status_code}}</td>
+                <td>{{OpenIDLogRec.student_id_number_sha256}}</td>
+                <td>{{OpenIDLogRec.student_gender_base64}}</td>
+                <td>{{OpenIDLogRec.student_name_base64}}</td>
+                <td>{{OpenIDLogRec.sync_trigger_action}}</td>
+                <td>{{OpenIDLogRec.sync_trigger_time}}</td>
+                <td>{{OpenIDLogRec.sync_excute_time}}</td>
+                <td>{{OpenIDLogRec.sync_action1}}</td>
+                <td>{{OpenIDLogRec.sync_action2}}</td>
+                <td>{{OpenIDLogRec.sync_action3}}</td>
+                <td>{{OpenIDLogRec.sync_action_result1}}</td>
+                <td>{{OpenIDLogRec.sync_action_result2}}</td>
+                <td>{{OpenIDLogRec.sync_action_result3}}</td>
+                <td>{{OpenIDLogRec.student_reversion_id}}</td>
+
+            </tr >
+        </tbody>
+    </table>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script>
+        var newEditor = $("#gadget .hidden-xs").find("div").eq(0).clone();
+        newEditor.css({ position: "", float: "", width: "" }).addClass('visible-xs');
+        newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+        //newEditor.find("table").eq(0).find("tbody").eq(0).prepend(newEditor.find("table").eq(0).find("tbody").eq(0).find("tr").eq(1));
+        $("#gadget").append(newEditor);
+    </script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/sortable.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/xml2json.js"></script>
+    <script src="js/angular-strap.min.js"></script>
+    <script src="js/angular-strap.tpl.min.js"></script>
+
+    <script src="js/openIDLog.js"></script>
+</body>
+
+</html>
