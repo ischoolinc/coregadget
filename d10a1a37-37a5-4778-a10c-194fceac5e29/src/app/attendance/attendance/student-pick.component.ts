@@ -34,7 +34,8 @@ export class StudentPickComponent implements OnInit {
     private alert: AlertService,
     private config: ConfigService,
     private change: ChangeDetectorRef,
-    private router: Router,
+    private router: Router
+ 
   ) {
     this.today = dsa.getToday();
   }
@@ -70,8 +71,6 @@ export class StudentPickComponent implements OnInit {
           }
         }
       }
-
-
 
       try {
         // 學生清單（含點名資料）。 

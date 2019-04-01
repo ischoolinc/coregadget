@@ -74,4 +74,8 @@ export class MainComponent implements OnInit {
     });
   }
 
+  async openSubtitute()
+  {
+      this.router.navigate(['sub']);
+    }
 }

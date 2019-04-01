@@ -4,6 +4,7 @@ import { ConfigService, PeriodConf } from './../service/config.service';
 import { DSAService, RollCallRecord } from './../service/dsa.service';
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CourseSelcComponent } from '../substitute/course-selc.component';
 
 @Component({
   selector: 'gd-period-chooser',
@@ -25,8 +26,8 @@ export class PeriodChooserComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: {course: RollCallRecord}
   ) {
 
-    this.title = data.course.Name;
-
+    this.title = data.course.Name ?data.course.Name:data.course.CourseName;
+   
     dialogRef.updateSize('650px');
   }
 
@@ -37,7 +38,7 @@ export class PeriodChooserComponent implements OnInit {
   }
 
   gotoPick(period) {
-    this.router.navigate(['/attendance/pick','Course', this.data.course.UID, period.Name], {
+    this.router.navigate(['/attendance/pick','Course', this.data.course.UID?this.data.course.UID:this.data.course.CourseID, period.Name], {
     // this.router.navigate(['/attendance/main'], {
       queryParams: { DisplayName: this.title },
       relativeTo: this.route
