@@ -14,8 +14,8 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            //application: "1admin_debug5",
-            application: "test.p.kcbs.hc.edu.tw",
+            application: "1admin_debug5",
+            //application: "test.p.kcbs.hc.edu.tw",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
                 //"第一次期中考Round": "1",
@@ -27,7 +27,8 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'bubu@debug.ischool.com.tw',
+                //account: 'bubu@debug.ischool.com.tw',
+                account: 'yinghua.lin@ischool.com.tw',
                 password: window.prompt('password:')
             }
         });
@@ -100,6 +101,7 @@
                         <li class="dropdown-header">Config</li>
                         <li>
                             <a ng-click="showCustomAssessmentConfig()"
+                               ng-class="{'disabled': current.Term.AllowCustomAssessmentInput!= 'true'}"
                                href="javascript:void(0)">
                                 <i class="fa fa-cog"></i>
                                 Edit Assessment Item
@@ -110,6 +112,7 @@
                         <li ng-repeat="assessmentRec in AssessmentItem"
                             ng-if="assessmentRec.Type == 'Score'">
                             <a ng-click="showImport(assessmentRec)"
+                               ng-class="{'disabled': current.Term.AllowCustomAssessmentInput!= 'true'}"
                                href="javascript:void(0)">
                                 {{assessmentRec.Name}}
                             </a>
@@ -203,12 +206,12 @@
             </div>
             <div class="btn-group">
                 <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    {{current.AssessmentMode == "ReportCard"?"Submit":current.Assessment.Name}}
+                    {{current.AssessmentMode == "ReportCard"?"Report Card":current.Assessment.Name}}
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <li ng-class="{active:current.AssessmentMode == 'ReportCard'}">
-                        <a href="javascript:void(0)" ng-click="checkChange()?setAssessment('ReportCard'):null">Submit</a>
+                        <a href="javascript:void(0)" ng-click="checkChange()?setAssessment('ReportCard'):null">Report Card</a>
                     </li>
                     <li ng-if="(current.Subject.Assessment).length> 0" class="divider"></li>
                     <li ng-repeat="assessment in current.Subject.Assessment"
@@ -422,6 +425,14 @@
                         <div ng-if="current.AssessmentMode == 'CustomAssessment'">
                             <strong>{{current.AssessmentItem.Name}}</strong>
                             <div>
+                                <strong>Input start time：</strong>
+                                <sapn>{{current.Term.CustomInputStartTime}}</sapn>
+                            </div>
+                            <div>
+                                <strong>Input  end  time：</strong>
+                                <sapn>{{current.Term.CustomInputEndTime}}</sapn>
+                            </div>
+                            <div>
                                 <strong>Date：</strong>
                                 <sapn>{{current.AssessmentItem.Date}}</sapn>
                             </div>
@@ -462,7 +473,8 @@
                                     {{assessmentRec.Name}}
                                 </small>
                                 <a ng-if="current.AssessmentMode == 'CustomAssessment' && ( ( $index == AssessmentItem.length - 1 && assessmentRec.Name ) || ( $index > 0 && !assessmentRec.Name && AssessmentItem[$index - 1].Name ) )"
-                                   ng-click="showCustomAssessmentConfig()"
+                                   ng-class="{'disabled': current.Term.AllowCustomAssessmentInput!= 'true'}"
+                                   ng-click="showCustomAssessmentConfig()"                                   
                                    title="Edit Assessment Item"
                                    style="position: absolute;z-index: 1;top: 0px;right: 0px;"
                                    class="btn btn-link btn-xs"
@@ -476,16 +488,16 @@
                                 class="text-center"
                                 style="padding: 1px;position: relative;">
                                 <small ng-if="assessmentRec.Percentage">{{assessmentRec.Percentage}}%</small>
-                                <small ng-if="assessmentRec.Percentage&&assessmentRec.AllowCustomAssessment === 'true'">
+                                <!--<small ng-if="assessmentRec.Percentage&&assessmentRec.AllowCustomAssessment === 'true'">
                                     <a ng-class="{'disabled': assessmentRec.AllowCustomAssessment !== 'true' || assessmentRec.TeacherSequence != current.Course.MySequence || assessmentRec.Editable != true}"
-                                       ng-click="calcCustomAssessment(assessmentRec)" 
+                                       ng-click="calcCustomAssessment(assessmentRec)"
                                        title="Calculate"
                                        style="position: absolute;z-index: 1;top: 0px;right: 0px;"
                                        class="btn btn-link btn-xs"
                                        href="javascript:void(0)">
                                         <i class="fa fa-calculator text-muted"></i>
                                     </a>
-                                </small>
+                                </small>-->
                                 <small ng-if="assessmentRec.Percentage==0&&!assessmentRec.IsPreview">--</small>
                                 <small ng-if="assessmentRec.Percentage==undefined&&!assessmentRec.IsPreview">&nbsp;</small>
                                 <small ng-if="!assessmentRec.Percentage&&assessmentRec.IsPreview"
@@ -524,6 +536,7 @@
                                 <span>
                                     {{stuRec['Val_'+assessmentRec.Key]}}
                                 </span>
+                                <small ng-if="stuRec['Ratio_'+assessmentRec.Key]" class="text-muted" style="position:absolute;bottom:2px;right:2px;">{{stuRec['Ratio_'+assessmentRec.Key]}} %</small>
                             </td>
                         </tr>
                     </tbody>
