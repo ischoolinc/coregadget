@@ -1,13 +1,27 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script>
+    <!-- <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script>
     <script>
         init({
             application: "http://dev.ischool.com.tw:8080/cs4/tp.ntu.emba.dev",
             paramValues: {}
         });
 		//請用特殊包裝
+    </script> -->
+    <script src="js/gadget.js"></script>
+    <script>
+        init({
+            application: "test.emba.ntu.edu.tw",
+            oAuth: {
+            clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+            clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+            account: '',
+            password: ''
+            },
+            paramValues: {
+            }
+        });
     </script>
     <meta content='text/html;charset=utf-8' />
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
@@ -131,7 +145,26 @@
                 }
             }
         });
-	</script>
+    </script>
+    <!--積點活動用：新生登入可取得點數-->
+    <script>
+        gadget.getContract("emba.student").send({
+            service: "accumulation.accumulate",
+            body: {
+                code: 'tw.com.ischool.freshman.login'
+            },
+            result: function(response, error, http) {
+
+                if (response.tasks && response.tasks.task ) {
+                    var task = response.tasks.task;
+                    $('#myModal').find('.modal-title').text(`積點活動：${task.description}`);
+                    $('#myModal').find('.modal-body').text(`恭喜獲得 ${task.point} 點`);
+                    $('#myModal').modal('show');
+                    // alert(`積點活動：${task.description}\n恭喜獲得：${task.point}`);
+                }
+            }     
+        });
+    </script>
     <script src="js/default.js"></script>
 </head>
 <body>
@@ -192,6 +225,16 @@
                     Copyright © National Taiwan University All Rights Reserved
                 </font>
             </p>
+        </div>
+    </div>
+    <div class="modal" id="myModal" >
+        <div class="modal-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+            <h4 class="modal-title"></h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+            <button style="background-position: 0" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">關閉</button>
         </div>
     </div>
 </body>
