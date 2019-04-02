@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ApplicationRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ApplicationRef, Input } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import * as moment from 'moment';
 import { BsModalService, ModalOptions, BsModalRef } from 'ngx-bootstrap/modal';
@@ -390,15 +390,10 @@ export class AppComponent implements OnInit {
           course.Ranks = {};
           course.StudentCount = item.Count;
 
-          
           // 整理點數排行資料
-          // 1. 如果service有取得點數資料記錄點數資料，沒有的話紀錄 0
-  
-            [].concat(item.Ranks || []).forEach((data) => {
-                course.Ranks[data.Rank] = data.Points ;
-            });
-          
-          // this.allCourse.set(item.CourseID,course);
+          [].concat(item.Ranks || []).forEach((data) => {
+              course.Ranks[data.Rank] = data.Points ;
+          });
         }
       });
     }catch(error){
@@ -413,6 +408,10 @@ export class AppComponent implements OnInit {
     try {
       const rsp = await this.basicSrv.getCSAttend(this.currSchoolYear, this.currSemester);
 
+      // 清空學生投點資料
+      for(const key of this.allCourse.keys()){
+        this.allCourse.get(key).StudentSetPoints = null;
+      }
       for (const item of rsp) {
         if (this.allCourse.has(item.CourseID)) {
           const course = this.allCourse.get(item.CourseID);
@@ -453,24 +452,25 @@ export class AppComponent implements OnInit {
    *    state = false。比對預選、已選課程中，所有 WillQuit = false 的所有突衝課程，將其視為不衝突；
    *    state = false。比對可加選課程中，所有 WillAdd = true 的所有突衝課程，將其視為不衝突
   */
-  clickCourseCheckbox(course: Course, keyName: string, model: NgModel) {
+  clickCourseCheckbox(course: Course, keyName: string, checkBox: any) {
 
     // 如果投點點數有誤
     if(course.PointIsError){
-      model.control.patchValue(false);
+      checkBox.checked = false;
+      course.WillAdd = false;
       return;
     }// 如果課程為投點課程必須輸入投點點數
     else if(course.NeedPoints == 't' && !course.StudentSetPoints && course.StudentSetPoints != 0){
       course.PointIsError = true;
       course.ErrorMsg = '請輸入投點點數';
-      model.control.patchValue(false);
+      checkBox.checked = false;
+      course.WillAdd = false;
       return;
     }
     else{
       course.PointIsError = false;
       course.ErrorMsg = '';
-      // model.control.patchValue(true);
-
+      
       // 衝堂判斷
       course[keyName] = !course[keyName];
       const checked = course[keyName];
@@ -525,6 +525,9 @@ export class AppComponent implements OnInit {
       // 如果為「已選 + 勾選退選 => 退選」，將全部的衝突資料移除
       // 如果為「加選 + 取消勾選 => 不加選」，將全部的衝突資料移除
       if (!status) course.HaveConflict = [];
+
+      // 計算點數現況
+      this.calcCurrentPoint();
 
       this.checkAddQuitBtn();
     }
@@ -864,17 +867,43 @@ export class AppComponent implements OnInit {
     const addList = this.getAddList();
 
     if ((quitList.length + addList.length) > 0) {
+      // 資料整理
+      // -- 退選課程
       const quitCourseNames = quitList.map(item => item.CourseName);
+      const quitPointCourse = quitList.filter(item => item.NeedPoints == "t");
+      const quitCourseDetail = quitPointCourse.map(item => `${item.CourseName} (${item.StudentSetPoints}點)`);
+      // -- 加選課程
       const addCourseNames = addList.map(item => item.CourseName);
+      const addPointCourse = addList.filter(item => item.NeedPoints == "t");
+      const addCourseDetail = addPointCourse.map(item => `${item.CourseName} (${item.StudentSetPoints}點)`);
+      // 點數加總
+      let quitPointTotal = 0;
+      let addPointTotal = 0;
+      quitList.forEach((item) =>{
+        if(item.NeedPoints == "t"){
+          quitPointTotal += Number(item.StudentSetPoints); 
+        }
+      });
+      addList.forEach((item) =>{
+        if(item.NeedPoints == "t"){
+          addPointTotal += Number(item.StudentSetPoints);
+        }
+      });
       const modalContent = `
         <div>
           ${(this.currLevel === '1') ? this.configuration.cs_cancel1_content_template : ''}
           ${(this.currLevel === '2') ? this.configuration.cs_cancel2_content_template : ''}
           <p>
-            <span style="font-size: large;color: red;">退出課程</span>：${quitCourseNames.join(', ') || '無'}
+            <span style="font-size: large;color: red;">退出課程</span>：${quitCourseNames.join(' , ') || '無'}
           </p>
           <p>
-            <span style="font-size: large;color: red;">加選課程</span>：${addCourseNames.join(', ') || '無'}
+            <span style="font-size: large;color: red;">點數退還 ( 共 ${quitPointTotal} 點 ) </span>: ${quitCourseDetail.join(' , ') || '無'}
+          </p>
+          <p>
+            <span style="font-size: large;color: red;">加選課程</span>：${addCourseNames.join(' , ') || '無'}
+          </p>
+          <p>
+            <span style="font-size: large;color: red;">投入點數 ( 共 ${addPointTotal} 點 ) </span>: ${addCourseDetail.join(' , ') || '無'}
           </p>
         </div>
       `;
@@ -1355,6 +1384,7 @@ export class AppComponent implements OnInit {
       course.PointIsError = false;
       course.ErrorMsg = "";
       course.StudentSetPoints = null;
+      
       return;
     }
     if(!rgexp.test(points) && _points && points != "0"){
@@ -1375,18 +1405,22 @@ export class AppComponent implements OnInit {
     else{
       course.PointIsError = false;
       course.ErrorMsg = "";
-      // 計算點數現況
-      if(course.StudentSetPoints == null){
-        course.StudentSetPoints = _points;
-        this.currentPoints += -_points; 
-      }
-      else{
-        this.currentPoints += course.StudentSetPoints - _points; 
-      }
+      course.StudentSetPoints = _points;
+
       return;
     }
   }
+
+  // 計算點數現況
+  calcCurrentPoint(){
+    let spendPoints = 0;      
+        this.canChooseCourses.filter((course) => course.NeedPoints == "t" && course.WillAdd).forEach((item) => {
+          spendPoints += Number(item.StudentSetPoints);
+        });
+        this.currentPoints = this.orignPoints - spendPoints;
+  }
 }
+
 
 /**列印加退選單分頁內容 */
 export class PrintPage {

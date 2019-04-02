@@ -24,13 +24,14 @@ import { PeriodChooserComponent } from './modal/period-chooser.component';
   declarations: [
     AppComponent,
     MainComponent,
+
     StudentPickComponent,
     DebugComponent,
     WaitingComponent,
-    PeriodChooserComponent,
+    //PeriodChooserComponent,
   ],
   entryComponents: [
-    PeriodChooserComponent,
+    //PeriodChooserComponent,
     DebugComponent,
     WaitingComponent
   ]

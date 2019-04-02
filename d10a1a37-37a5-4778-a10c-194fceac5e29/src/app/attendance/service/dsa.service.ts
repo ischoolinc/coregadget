@@ -16,7 +16,8 @@ export class DSAService {
 
   private async initContract() {
     try {
-      this.contract = await this.gadget.getContract('kcis');
+     
+     this.contract = await this.gadget.getContract('kcis');
     } catch (error) {
       console.log(error);
       throw error;
@@ -170,6 +171,30 @@ export class DSAService {
   public getToday() {
     return Moment().format('YYYY/MM/DD');
   }
+
+  //取得所有課程
+  public async getAllCourse()
+  {
+    await this.ready;
+    const rsp = await this.contract.send('attendance.GetAllCourses');
+    console.log("Hello");
+    console.log(rsp);
+    console.log("Hello" +111);
+    const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeYearObj[];
+
+    gradeYears.forEach(v => {
+
+      v.Class = [].concat(v.Class || []) as ClassObj[];
+
+      v.Class.forEach(v => {
+        v.Course = [].concat(v.Course || []) as CourseObj[];
+      });
+
+ });
+ return gradeYears;
+  }
+
+
 }
 
 export type GroupType = '' | 'Course' | 'Class'
@@ -178,10 +203,15 @@ export type GroupType = '' | 'Course' | 'Class'
  */
 export interface RollCallRecord {
 
+
   UID: string;
 
   Name: string;
+  
+  CourseName:string;
 
+  CourseID:string;
+  
   Type: GroupType;
 
   Students: string;
@@ -195,6 +225,18 @@ export interface Config {
 
   Absences: any;
 }
+
+//課程config 
+
+export interface CourseConf {
+  
+  CourseID: string;
+  
+  CourseName: string;
+
+}
+
+
 
 export interface SuggestRecord {
 
@@ -257,4 +299,23 @@ export interface RollCallCheck {
 
   /** 缺曠類別。 */
   Absence: string;
+}
+
+//代課使用
+export interface GradeYearObj {
+  GradeYear: string;
+  Class: ClassObj[];
+}
+export interface ClassObj {
+  ClassID: string;
+  ClassName: string;
+  Course: CourseObj[];
+}
+export interface CourseObj {
+  CourseID: string;
+  CourseName: string;
+  Credit: string;
+  Subject: string;
+  TeacherID: string;
+  TeacherName: string;
 }
