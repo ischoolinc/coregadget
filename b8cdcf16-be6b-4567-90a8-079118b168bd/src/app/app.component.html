@@ -140,7 +140,7 @@
                   <tr>
                     <th colspan="10" class="my-table-head1">第一階段
                       <span style="color: blue">已選課程</span>
-                      <span style="float: right">可用點數：{{currentPoints}} / {{orignPoints}}</span>
+                      <span style="float: right; font-size: larger;">可用點數：{{currentPoints}} / {{orignPoints}}</span>
                     </th>
                   </tr>
                   <tr>
@@ -181,7 +181,23 @@
                     <td>{{item.StudentCount}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="3">投入點數：{{item.StudentSetPoints}} 點</td>
+                    <td colspan="3">投入點數：{{item.StudentSetPoints}} 點
+                      <ng-template #popTemplate>
+                        <p *ngFor="let i of ['1','2','3','4','5']">
+                          第{{i}}名 {{item.Ranks[i] || '0'}} 點
+                        </p>
+                      </ng-template>
+                      <button 
+                        *ngIf="item.NeedPoints == 't'"
+                        type="button" class="btn btn-light"
+                        style="margin-left: 10px;"
+                        [popover]="popTemplate"
+                        popoverTitle="點數投入排行"
+                        placement="auto"
+                        triggers="focus">
+                        查看排行
+                      </button>
+                    </td>
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints != 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
@@ -237,7 +253,23 @@
                     <td>{{item.StudentCount}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="3">投入點數：{{item.StudentSetPoints}} 點</td>
+                    <td colspan="3">投入點數：{{item.StudentSetPoints}} 點
+                      <ng-template #popTemplate>
+                        <p *ngFor="let i of ['1','2','3','4','5']">
+                          第{{i}}名 {{item.Ranks[i] || '0'}} 點
+                        </p>
+                      </ng-template>
+                      <button 
+                        *ngIf="item.NeedPoints == 't'"
+                        type="button" class="btn btn-light"
+                        style="margin-left: 10px;"
+                        [popover]="popTemplate"
+                        popoverTitle="點數投入排行"
+                        placement="auto"
+                        triggers="focus">
+                        查看排行
+                      </button>
+                    </td>
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints != 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
@@ -273,9 +305,10 @@
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
                       <input type="checkbox"
+                        #ck
                         [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
-                        [(ngModel)]="item.WillAdd" #cn="ngModel"
-                        (click)="clickCourseCheckbox(item, 'WillAdd',cn)"
+                        [checked]="item.WillAdd"
+                        (click)="clickCourseCheckbox(item, 'WillAdd', ck)"
                         style="width: 20px; height: 20px;">
                     </td>
                     <td>{{item.NewSubjectCode}}</td>
@@ -296,22 +329,18 @@
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3" class="d-flex flex-row">
                         <input type="number" 
-                          #points
+                          #inputBox
                           *ngIf="item.NeedPoints == 't' " 
                           [ngClass]="{'error':item.PointIsError}"
+                          [disabled]="item.WillAdd"
                           class="points"
-                          (change)="checkPoints(points.value,item)"
+                          (change)="checkPoints(inputBox.value,item)"
                           placeholder="投入點數">
                           
                         <ng-template #popTemplate>
                           <p *ngFor="let i of ['1','2','3','4','5']">
                             第{{i}}名 {{item.Ranks[i] || '0'}} 點
                           </p>
-                          <!-- <p>第一名  {{item.Ranks['0']}} 點</p>
-                          <p>第二名  {{item.Ranks['1']}} 點</p>
-                          <p>第三名  {{item.Ranks['2']}} 點</p>
-                          <p>第四名  {{item.Ranks['3']}} 點</p>
-                          <p>第五名  {{item.Ranks['4']}} 點</p> -->
                         </ng-template>
                         <button 
                           *ngIf="item.NeedPoints == 't'"
@@ -373,6 +402,7 @@
                     <td>{{item.ClassName}}</td>
                     <td>
                       <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -522,7 +552,6 @@
       </div>
     </div>
   </div>
-
 
   <div #print_course_content class="my-print-page hide">
     <ng-container *ngFor="let page of printPages;let idx = index;">
