@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   /**節次 */
   periods: Period[] = new Array<Period>();
   periodMap: Map<string, Period> = new Map<string, Period>();
+  periodPermissionMap: Map<string, Period> = new Map<string, Period>();
   students: Student[] = new Array<Student>();
   classSubject$: rx.Subject<Class> = new rx.Subject();
   /**今天該班點名狀態 */
@@ -72,8 +73,24 @@ export class AppComponent implements OnInit {
         this.allAbsences = x;
         this.periods = y;
         y.forEach((p) => {
-          this.periodMap.set(p.name, p);
+          p.permission ="一般";
+          if (config.periodPermissionMap.size) {            
+            config.periodPermissionMap.forEach((item,key) => {
+              if(key === p.name)
+              {
+                p.permission =config.periodPermissionMap.get(key);
+              }              
+            });
+            this.periodMap.set(p.name, p);
+          }
+          else
+          {
+            this.periodMap.set(p.name, p);
+          }          
         });
+
+        this.periods = this.periods.filter(period => period.permission !== "隱藏");
+
         this.classes = z;
       })
       .subscribe(() => {
@@ -161,7 +178,10 @@ export class AppComponent implements OnInit {
   setAllStudentsAbs(period: Period) {
     if (period && this.currAbs) {
       this.students.forEach((stu) => {
-        stu.setAbsence(period.name, this.currAbs.name);
+        if(period.permission ==="一般")
+        {
+          stu.setAbsence(period.name, this.currAbs.name);
+        }        
       });
     }
   }
@@ -170,7 +190,10 @@ export class AppComponent implements OnInit {
   setStudentAllPeriodAbs(stu) {
     if (stu && this.currAbs) {
       this.periods.forEach((period: Period) => {
-        stu.setAbsence(period.name, this.currAbs.name);
+        if(period.permission ==="一般")
+        {
+          stu.setAbsence(period.name, this.currAbs.name);
+        }        
       });
     }
   }
@@ -181,13 +204,22 @@ export class AppComponent implements OnInit {
       if (stu.leaveList.has(period.name)) {
         // 與上次相同即清除
         if (stu.leaveList.get(period.name).absName == this.currAbs.name) {
-          stu.setAbsence(period.name, this.clearAbs.name);
+          if(period.permission ==="一般" ||period.permission ==="手動")
+          {
+            stu.setAbsence(period.name, this.clearAbs.name);
+          }          
         }
         else {
-          stu.setAbsence(period.name, this.currAbs.name);
+          if(period.permission ==="一般" ||period.permission ==="手動")
+          {
+            stu.setAbsence(period.name, this.currAbs.name);
+          }          
         }
       } else {
-        stu.setAbsence(period.name, this.currAbs.name);
+        if(period.permission ==="一般" ||period.permission ==="手動")
+        {
+          stu.setAbsence(period.name, this.currAbs.name);
+        }        
       }
     }
   }

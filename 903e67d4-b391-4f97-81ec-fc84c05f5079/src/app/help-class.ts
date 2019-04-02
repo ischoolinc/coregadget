@@ -42,10 +42,11 @@ export class Absence {
 
 /**節次 */
 export class Period {
-  constructor(public name: string, public sort: number, public type: string) {
+  constructor(public name: string, public sort: number, public type: string,public permission: string) {
     this.name = name;
     this.sort = sort;
     this.type = type;
+    this.permission = permission;
   }
 }
 
@@ -61,5 +62,6 @@ export class Leave {
 /**班導師點名設定 */
 export interface Config {
   absenceNames: string[];
+  periodPermissionMap : Map<string, string>;
   crossDate: boolean;
 }
