@@ -368,9 +368,9 @@ export class AppComponent implements OnInit {
   /**取得學生點數 */
   async getPoints(){
     try{
-      let points = await this.basicSrv.getPoints()
-      this.orignPoints = (points == '') ? 0 : Number(points);
-      this.currentPoints = (points == '') ? 0 : Number(points);
+      let result = await this.basicSrv.getPoints()
+      this.orignPoints = (result.Total == '') ? 0 : Number(result.Total);
+      this.currentPoints = (result.Total == '') ? 0 : Number(result.Total);
     }catch(error){
       console.log(error);
     }

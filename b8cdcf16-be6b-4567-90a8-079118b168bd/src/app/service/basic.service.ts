@@ -70,7 +70,7 @@ export class BasicService {
 
     const rsp = await this._courseContract.send('_.GetPoints',{});
 
-    return rsp.Total || '';
+    return rsp.Result || {};
   }
 
   /**
