@@ -39,8 +39,17 @@ export class Course {
 
   Time: string;
 
-  /**選課人數 */
-  StudentCount: string;
+  /**第一階段選課人數 */
+  Item1StudentCount: string;
+
+  /**第二階段選課人數 */
+  Item2StudentCount: string;
+
+  /**總選課人數 */
+  TotalStudentCount: string;
+
+  /**剩餘名額 */
+  RemainderCapacity: string;
 
   /**投點點數排行 */
   Ranks: any;

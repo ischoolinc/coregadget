@@ -347,6 +347,7 @@ export class BasicService {
 
   /**
    * 新增點數消耗歷程
+   * PlatForm: 平台類型
    * Course{ 
    *  Type: 'consume' or 'refund' 點數消耗類型
    *  Points: 課程投點點數
@@ -358,6 +359,7 @@ export class BasicService {
 
     const rsp = await this._courseContract.send('_.AddPointsLog',{
       Request:{
+        PlatForm: 'web',
         Course: course
       }
     });

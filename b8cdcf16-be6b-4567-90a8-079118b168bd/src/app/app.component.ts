@@ -388,8 +388,13 @@ export class AppComponent implements OnInit {
         if(this.allCourse.has(item.CourseID)){
           const course:Course = this.allCourse.get(item.CourseID);
           course.Ranks = {};
-          course.StudentCount = item.Count;
-
+          course.Item1StudentCount = item.Item1Count;
+          course.Item2StudentCount = item.Item2Count;
+          /**剩餘名額：顯示在第二階段人數上限
+           * 剩餘名額 = 人數上限 - 第一階段選課人數
+           */
+          course.RemainderCapacity = course.Capacity ? '' + (Number(course.Capacity) - Number(item.Item1Count || '0')) : course.Capacity;
+          course.TotalStudentCount = '' + (Number(item.Item1Count || '0') + Number(item.Item2Count));
           // 整理點數排行資料
           [].concat(item.Ranks || []).forEach((data) => {
               course.Ranks[data.Rank] = data.Points ;
@@ -1397,9 +1402,14 @@ export class AppComponent implements OnInit {
       course.ErrorMsg = "點數不足！";
       return;
     }
-    else if(_points < minPoint || _points > maxPoint){
+    else if(_points > maxPoint){
       course.PointIsError = true;
       course.ErrorMsg = "投點點數不可超過課程點數限制！";
+      return;
+    }
+    else if(_points < minPoint){
+      course.PointIsError = true;
+      course.ErrorMsg = "投點點數不可低於課程點數限制！";
       return;
     }
     else{
@@ -1420,7 +1430,6 @@ export class AppComponent implements OnInit {
         this.currentPoints = this.orignPoints - spendPoints;
   }
 }
-
 
 /**列印加退選單分頁內容 */
 export class PrintPage {
