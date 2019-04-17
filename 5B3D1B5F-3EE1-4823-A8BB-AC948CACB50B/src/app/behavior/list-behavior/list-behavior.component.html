@@ -1,0 +1,62 @@
+<!-- 單一課程列表 -->
+<div id="behavior-list" style="font-family: Microsoft JhengHei">
+    <nav aria-label="breadcrumb text-nowrap text-truncate">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <span class="point"
+                      [routerLink]="['/']">主頁</span></li>
+            <!-- <li class="breadcrumb-item">
+                <span class="point"
+                      [routerLink]="['/behavior']">Behavior</span></li> -->
+            <li class="breadcrumb-item active"
+                aria-current="page"><span >{{className?className+"班":"我的紀錄"}}</span></li>
+            <button class="ml-auto btn btn-dark"
+                    [routerLink]="['/template']">事由樣板</button>
+        </ol>
+    </nav>
+    <ul class="list-group mb-3">
+        <li class="list-group-item active d-flex align-items-center py-2">
+                {{className?className+"班":"我的紀錄"}}
+            <button *ngIf="classID != null" class="ml-auto btn btn-info"
+                    [routerLink]="['/behavior/add', classID, className]"><i
+                   class="material-icons mr-1">add</i>新增</button>
+            <button *ngIf="classID == null" class="ml-auto btn btn-info"
+                   [routerLink]="['/behavior/add']"><i
+                  class="material-icons mr-1">add</i>新增</button>
+        </li>
+        <li class="list-group-item"
+            *ngFor="let data of behaviorDataList">
+            <div class="row">
+                <div class="col-md-3 col-lg-2 text-nowrap">
+                    <span class="pr-2">{{data.CreateDate2}}</span>
+                    <span class="">
+                        <span>{{data.Name}}</span>
+                    </span>
+                    <span *ngIf="!classID" class="pl-2" >
+                            <span>{{data.ClassName}}班</span>
+                    </span>
+                </div>
+                <div class="col-md-9 col-lg-10">
+                    <span *ngIf="data.Detention=='true'"
+                          class="badge badge-danger mr-1">Detention</span>
+                    <span>{{data.Comment}}</span>
+                    <div class="float-right">
+                        <span class="">
+                           
+                        </span>
+                        <a  *ngIf="data.IfEdit=='true'" class="h6 text-info point"
+                           (click)="editComment(data)">
+                            <i class="material-icons mr-1">edit</i>
+                        </a>
+
+                        <a  *ngIf="data.IfEdit=='true'"class="h6 text-danger point"
+                           (click)="delete(data)">
+                            <i class="material-icons mr-1">delete</i>
+                        </a>
+                        <span>{{data.Teacher}}</span>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

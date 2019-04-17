@@ -1,0 +1,60 @@
+<div id="behavior"
+     page>
+   
+    <ul class="list-group mb-3 point">
+        <li class="list-group-item active d-flex align-items-center py-2 ">
+            {{cls.className }}班 
+            <button class="ml-auto btn btn-info"
+                    [routerLink]="['/behavior/add', cls.classID, cls.className]">
+                <i class="material-icons mr-1">add</i>新增</button>
+        </li>
+        <div          
+            [routerLink]="['/behavior/list/', cls.classID, cls.className]">
+            <li class="list-group-item "
+                *ngFor="let rec of BehaviorRecords">
+                <div class="row">
+                    <div class="col-md-4 col-lg-3 text-nowrap">
+                        <span class="pr-3">{{rec.CreateDate2}}</span>
+                        <span class="">{{rec.Name}}</span>
+                    </div>
+                    <div class="col-md-8 col-lg-9">
+                        <span *ngIf="rec.Detention=='true'"
+                              class="badge badge-danger mr-1">Detention</span>
+                        <span >{{rec.Comment}}</span>
+                    </div>
+                </div>
+            </li>
+        </div>
+
+        <ng-template #NoData>
+            <li class="list-group-item "> 
+                <div class="row">
+                    <div class="col-md-4 col-lg-3 text-nowrap">
+                        <span class="pr-3">沒有資料</span>
+                        <span class=""></span>
+                    </div>
+                    <div class="col-md-8 col-lg-9"></div>
+                </div>
+            </li>
+            <li class="list-group-item ">
+                <div class="row">
+                    <div class="col-md-4 col-lg-3 text-nowrap">
+                        <span class="pr-3"></span>
+                        <span class=""></span>
+                    </div>
+                    <div class="col-md-8 col-lg-9"></div>
+                </div>
+            </li>
+            <li class="list-group-item ">
+                <div class="row">
+                    <div class="col-md-4 col-lg-3 text-nowrap">
+                        <span class="pr-3"></span>
+                        <span class=""></span>
+                    </div>
+                    <div class="col-md-8 col-lg-9"></div>
+                </div>
+            </li>
+        </ng-template>
+    </ul>
+
+</div>

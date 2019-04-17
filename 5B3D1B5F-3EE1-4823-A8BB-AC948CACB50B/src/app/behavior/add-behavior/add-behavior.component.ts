@@ -1,0 +1,243 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ClassInfo, StudInfo } from 'src/app/models/vo';
+import { DialogService } from "../dialog-service.service";
+import { GadgetService, Contract } from "src/app/gadget.service";
+import { Utils } from 'src/app/util';
+import * as moment from 'moment';
+import { BehaviorDataService } from '../behavior-data.service';
+
+@Component({
+  selector: 'app-add-behavior',
+  templateUrl: './add-behavior.component.html',
+  styles: []
+})
+export class AddBehaviorComponent implements OnInit {
+
+  currentClassID: string;    // 目前被選取的班級代碼
+  currentClassName: string;
+  selectedStuds: StudInfo[];  //目前被選取的學生清單
+  classes: any; //下拉式方塊所需要的所有班級
+  selectedClass: any;
+
+  contract: Contract;
+  commentTemplateInfo: any;
+  commentTemplateList: any; 
+  studentDataList: any;
+  loading: boolean;
+  isDetention: boolean;
+  checkCount: number;
+  checkButtonEnable: string = "disabled";
+  currentDateString: string;
+  addText: string;
+  studentDataListSelect: any;
+  private currentDetention: boolean;
+  selectedText: any = [];
+  selectedStudents: any;   //已選取的學生
+  currentDate: string = moment().format("YYYY-MM-DD");
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private gadget: GadgetService,
+    private behaviorDataService: BehaviorDataService,
+  ) { }
+
+  async ngOnInit() {
+
+    this.selectedStudents = [];
+
+    this.contract = await this.gadget.getContract("kcis");
+    this.currentDateString = moment().format("YYYY-MM-DD");//取得日期字串
+
+    //1. 取得目前的班級 :若不是蟲導師班開啟此畫面 是不會有班級編號和名稱
+    this.currentClassID = this.route.snapshot.paramMap.get('classID');
+    this.currentClassName = this.route.snapshot.paramMap.get('className');
+
+    //2. 取得所有班級清單，填入下拉式方塊
+    this.classes = [];
+    this.getAllCalss();
+
+    //3. 取得目前班級的學生清單
+    if (this.currentClassID) {
+      this.getClassStudents(this.currentClassID);
+    }
+
+    //4.取得評語樣板
+    this.getCommentTemplate();
+  }
+  //取得評語樣板
+  async getCommentTemplate() {
+    try {
+      this.loading = true;
+
+      this.commentTemplateList = (await this.contract.send('behavior.GetCommentTemplate')).Response.CommentTemplate || [];
+
+    } catch (err) {
+      console.log(err);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  //取得日期
+  async currentDateChange(value) {
+    this.behaviorDataService.addDate = value;
+  }
+
+  //取得All班級
+  async getAllCalss() {
+
+    const rspAllCourse = await this.contract.send("behaviorForAll.GetAllClass")
+    this.classes = Utils.array(rspAllCourse, "Response/Class");
+    if (this.currentClassID) {
+      this.selectedClass = this.classes.find(cls => cls.ID == this.currentClassID);
+    }
+
+  }
+
+  //取得班級的學生清單
+  async getClassStudents(classSelected: string) {
+
+    this.checkButtonEnable = "";
+    this.checkCount = 0;
+    this.loading = true;
+    this.currentDetention = false;
+
+    //如果日期不為空
+    if (this.behaviorDataService.addDate !== "") {
+      this.currentDateString = this.behaviorDataService.addDate;
+    }
+    //如果事由不為空
+    if (this.behaviorDataService.addComment !== "") {
+      this.addText = this.behaviorDataService.addComment;
+    }
+
+    //取的學生資料   
+    const rspStudentByClass = await this.contract.send("behaviorForAll.GetStudentsByClassID", {
+      Request: {
+        ClassID: classSelected
+      }
+
+    })
+    const studentDataInfo = Utils.array(rspStudentByClass, "Response/Student");
+
+    this.studentDataList = [];
+    //讀取學生的資料
+    for (const data of studentDataInfo) {
+      //如果被選學生數量大於0 
+      if (this.selectedStudents.length > 0) {
+        for (const selectdata of this.selectedStudents) {
+          //如果 被選學生的ID=  該班學生的ID,就設為已被選取，以顯示這班被選取狀況。
+          if (selectdata.ID === data.ID) {
+            data.checked = true;
+          }
+        }
+      } else {
+        data.checked = false;
+      }
+      data.PhotoUrl = `${this.contract.getAccessPoint}/behavior.GetStudentPhoto?stt=Session&sessionid=${this.contract.getSessionID}&parser=spliter&content=StudentID:${data.ID}`;
+      this.studentDataList.push(data);
+    }
+  }
+
+  //選擇班級變換後
+  onClassSelected() {
+    this.getClassStudents(this.selectedClass.ID);
+  }
+
+  async selectItem(data: any) {
+
+    this.addText = data.Comment;
+  }
+
+  //點學生照片
+  clickPicture(student: any) {
+
+    //選取 
+    const targetStud = this.selectedStudents.find(item => { return item.ID === student.ID });
+    // 如果此學生存在 已被選取的學生清單
+
+    if (targetStud) {
+      //取消選取
+      student.checked = false;
+      this.selectedStudents.splice(this.selectedStudents.findIndex(item => item.ID === student.ID), 1);
+    }
+    else {
+      //設定為已選取
+      student.checked = true;
+      this.selectedStudents.push(student);
+    }
+
+  }
+
+  async save(comment: any) {
+
+    this.checkButtonEnable = "disabled";
+    try {
+
+      this.loading = true;
+      let rsp: any;
+      let checkCanSend: Boolean = true;
+      let checkCanSendError: String = "";
+
+      if (!this.currentDateString) {
+        checkCanSend = false;
+        checkCanSendError = "請輸入日期";
+      }
+
+      if (!this.addText) {
+        checkCanSend = false;
+        checkCanSendError += "請輸入內容";
+      }
+
+      if (this.selectedStudents.length === 0) {
+        checkCanSend = false;
+        checkCanSendError += "請選取學生";
+      }
+      if (checkCanSend === true) {
+
+        // 多筆傳送
+        let items: any;
+        items = [];
+        for (const data of this.selectedStudents) {
+          if (data.checked === true) {
+            let item = {
+              Field: {
+                Comment: this.addText,
+                CreateDate: this.currentDateString,
+                CourseID: null,
+                Detention: this.currentDetention ? "true" : "false",
+                StudentID: data.ID
+              }
+            }
+            items.push(item);
+          }
+        }
+
+        let reqStr = JSON.stringify(items);
+        rsp = (await this.contract.send('behaviorForAll.AddBehaviorData', { Request: { BehaviorData: items } }));
+
+        alert('已儲存！');
+
+        // 清空暫存值
+        this.behaviorDataService.addDate = "";
+        this.behaviorDataService.addComment = "";
+        this.behaviorDataService.addCheckStudentList = [];
+        // 回到 list
+        this.router.navigate(['../../../list'], {
+          relativeTo: this.route
+        }
+        );
+      } else {
+        alert(checkCanSendError);
+        this.checkButtonEnable = "";
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+}
