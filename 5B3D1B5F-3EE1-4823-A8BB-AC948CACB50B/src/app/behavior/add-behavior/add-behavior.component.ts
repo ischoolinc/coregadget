@@ -22,7 +22,7 @@ export class AddBehaviorComponent implements OnInit {
 
   contract: Contract;
   commentTemplateInfo: any;
-  commentTemplateList: any; 
+  commentTemplateList: any;
   studentDataList: any;
   loading: boolean;
   isDetention: boolean;
@@ -31,7 +31,7 @@ export class AddBehaviorComponent implements OnInit {
   currentDateString: string;
   addText: string;
   studentDataListSelect: any;
-  private currentDetention: boolean;
+  currentDetention: boolean;
   selectedText: any = [];
   selectedStudents: any;   //已選取的學生
   currentDate: string = moment().format("YYYY-MM-DD");
@@ -225,10 +225,19 @@ export class AddBehaviorComponent implements OnInit {
         this.behaviorDataService.addComment = "";
         this.behaviorDataService.addCheckStudentList = [];
         // 回到 list
-        this.router.navigate(['../../../list'], {
-          relativeTo: this.route
+     
+        if (!this.currentClassID) {
+          this.router.navigate(['../list'], {
+            relativeTo: this.route
+          }
+          );
+
+        } else {
+          this.router.navigate(['../../../list'], {
+            relativeTo: this.route
+          }
+          );
         }
-        );
       } else {
         alert(checkCanSendError);
         this.checkButtonEnable = "";
