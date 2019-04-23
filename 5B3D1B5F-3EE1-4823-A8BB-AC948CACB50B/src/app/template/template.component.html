@@ -1,46 +1,45 @@
 <div id="behavior-comment">
-  <nav aria-label="breadcrumb text-nowrap text-truncate">
-      <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-              <span class="point"
-                    [routerLink]="['/']">主頁</span></li>
-          <!-- <li class="breadcrumb-item">
+    <nav aria-label="breadcrumb text-nowrap text-truncate">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <span class="point"
+                      [routerLink]="['/']">主頁</span></li>
+            <!-- <li class="breadcrumb-item">
               <span class="point"
                     [routerLink]="['/behavior']">Behavior</span></li> -->
-          <li class="breadcrumb-item active"
-              aria-current="page">事由樣板</li>
-      </ol>
-  </nav>
-  <div class="input-group mb-3">
-    <!-- 點到此頁，請預設此 input 是 focus 狀態 -->
-    <input type="text"
-           class="form-control"
-           placeholder="新增樣板"
-           [(ngModel)]="addText">
-    <div class="input-group-append">
-        <button class="btn btn-outline-primary"
-                type="button"
-                (click)="add()">新增</button>
+            <li class="breadcrumb-item active"
+                aria-current="page">事由樣板</li>
+        </ol>
+    </nav>
+    <div class="input-group mb-3">
+        <!-- 點到此頁，請預設此 input 是 focus 狀態 -->
+        <input type="text"
+               class="form-control"
+               placeholder="新增樣板"
+               [(ngModel)]="addText">
+        <div class="input-group-append">
+            <button class="btn btn-outline-primary"
+                    type="button"
+                    (click)="add()">新增</button>
+        </div>
     </div>
-</div>
-<h3 class="my-3">您的樣板：</h3>
-<div class="t-list d-md-flex justify-content-between flex-wrap">
-    <div class="alert alert-danger alert-dismissible fade show"
-         *ngFor="let comment of userDefineTemplate">
-        {{comment.Comment}}
-        <button type="button"
-                class="close"
-                (click)="delete(comment)">
-            <span aria-hidden="true">&times;</span>
-        </button>
+    <h3 class="my-3">您的樣板：</h3>
+    <div class="t-list d-md-flex justify-content-between flex-wrap">
+        <div class="alert alert-danger alert-dismissible fade show"
+             *ngFor="let comment of userDefineTemplate">
+            {{comment.Comment}}
+            <button type="button"
+                    class="close"
+                    (click)="delete(comment)">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
     </div>
-</div>
-<h3 class="my-3">預設樣板</h3>
-<div class="t-list d-md-flex justify-content-between flex-wrap">
-    <div class="alert alert-light"
-         *ngFor="let comment of defaultTemplate">
-        {{comment.Comment}}
+    <h3 class="my-3">預設樣板</h3>
+    <div class="t-list d-md-flex justify-content-between flex-wrap">
+        <div class="alert alert-light"
+             *ngFor="let comment of defaultTemplate">
+            {{comment.Comment}}
+        </div>
     </div>
- 
-</div>
 </div>

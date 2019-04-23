@@ -5,11 +5,16 @@
   <div class="modal-body">
     <p>{{data.body}}</p>
     <mat-form-field style="width: 100%;">
-      <input matInput [(ngModel)]="reason">
+      <input matInput
+             [(ngModel)]="reason">
     </mat-form-field>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="onNoClick()">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="onYesClick()">OK</button>
+    <button type="button"
+            class="btn btn-secondary"
+            (click)="onNoClick()">Cancel</button>
+    <button type="button"
+            class="btn btn-primary"
+            (click)="onYesClick()">OK</button>
   </div>
 </div>

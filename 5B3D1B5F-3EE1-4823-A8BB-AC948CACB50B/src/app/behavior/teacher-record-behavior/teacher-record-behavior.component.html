@@ -1,6 +1,6 @@
 <div id="behavior"
      page>
-   
+
     <ul class="list-group mb-3 point">
         <li class="list-group-item active d-flex align-items-center py-2 ">
             我的紀錄
@@ -8,21 +8,23 @@
                     [routerLink]="['/behavior/add']">
                 <i class="material-icons mr-1">add</i>新增</button>
         </li>
-        <div *ngIf="behaviorRecords;else NoData"   [routerLink]="['/behavior/list/']">
+        <div *ngIf="behaviorRecords;else NoData"
+             [routerLink]="['/behavior/list/']">
             <li class="list-group-item "
-                *ngFor="let item of behaviorRecords | slice:0:8"  >
-               
+                *ngFor="let item of behaviorRecords | slice:0:8">
+
                 <div class="row">
                     <div class="col-md-4 col-lg-3 text-nowrap">
                         <span class="pr-3">{{item.CreateDate2}}</span>
                         <span class="">{{item.Name}} </span>
-                        <span class="" style="margin-left: 15px">{{item.ClassName}}班 </span>
+                        <span class=""
+                              style="margin-left: 15px">{{item.ClassName}}班 </span>
                     </div>
-                  
+
                     <div class="col-md-8 col-lg-9">
                         <span *ngIf="item.Detention=='true'"
                               class="badge badge-danger mr-1">Detention</span>
-                        <span >{{item.Comment}}</span>
+                        <span>{{item.Comment}}</span>
                     </div>
                 </div>
             </li>
