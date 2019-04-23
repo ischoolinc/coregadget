@@ -171,7 +171,7 @@ export class AddBehaviorComponent implements OnInit {
 
   }
 
-  async save(comment: any) {
+  async save() {
 
     this.checkButtonEnable = "disabled";
     try {

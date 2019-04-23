@@ -11,11 +11,11 @@ import { Utils } from "src/app/util";
 })
 export class ListBehaviorComponent implements OnInit {
 
-  private classID: any;
-  private className;
-  private contract: Contract;
-  private behaviorDataList: any;
-  private listMyRecord: any;
+  classID: any;
+  className;
+  behaviorDataList: any;
+  listMyRecord: any;
+  contract: Contract;
 
   constructor(
     private route: ActivatedRoute,

@@ -8,7 +8,7 @@ import { Utils } from 'src/app/util';
 })
 export class TeacherRecordBehaviorComponent implements OnInit {
 
-  private behaviorRecords: any;
+  behaviorRecords: any;
   private contract: any;
 
   constructor(private gadget: GadgetService) { }
