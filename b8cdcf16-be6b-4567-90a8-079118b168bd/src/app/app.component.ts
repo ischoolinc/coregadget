@@ -1409,7 +1409,7 @@ export class AppComponent implements OnInit {
     }
     else if(_points < minPoint){
       course.PointIsError = true;
-      course.ErrorMsg = "投點點數不可低於課程點數限制！";
+      course.ErrorMsg = "投點點數不可\"低於\"課程點數限制！";
       return;
     }
     else{

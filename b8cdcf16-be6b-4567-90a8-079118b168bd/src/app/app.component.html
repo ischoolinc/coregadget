@@ -250,7 +250,7 @@
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
-                    <td>{{item.Capacity}} (剩餘{{item.RemainderCapacity}}人)</td>
+                    <td>{{item.Capacity}} (剩餘{{item.RemainderCapacity}}名額)</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
                     <td>{{item.Item2StudentCount}}</td>
@@ -325,10 +325,12 @@
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
-                    <td>{{item.Capacity}}</td>
+                    <td *ngIf="currLevel === '2'">{{item.Capacity}} (剩餘{{item.RemainderCapacity}}名額)</td>
+                    <td *ngIf="currLevel !== '2'">{{item.Capacity}}</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
-                    <td>{{item.TotalStudentCount}}</td>
+                    <td *ngIf="currLevel === '1'">{{item.Item1StudentCount}}</td>
+                    <td *ngIf="currLevel === '2'">{{item.Item2StudentCount}}</td>
                   </tr>
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3" class="d-flex flex-row">
