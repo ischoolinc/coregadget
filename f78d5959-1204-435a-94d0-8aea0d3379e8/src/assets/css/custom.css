@@ -3,7 +3,7 @@ body {
   font-family: "微軟正黑體","Helvetica Neue", Helvetica, Arial, sans-serif;
   max-width: 1024px;
   margin: 0 auto;
-  background: url(images/page-bg.gif);
+  background: url(/assets/css/images/page-bg.gif);
 }
 
 input,
@@ -38,7 +38,7 @@ table.table-bordered {
 }
 
 table.table-bordered thead th {
-  background: #dddde1 url(images/thbg.png) 0 0 repeat-x;
+  background: #dddde1 url(/assets/css/images/thbg.png) 0 0 repeat-x;
   border-bottom: 1px solid #ACACAC;
 }
 

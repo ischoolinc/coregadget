@@ -4,15 +4,15 @@
   <div class="container">
     <div class="row" style="margin-top: 20px;">
       <div class="col col-md-3 mr-auto my-card alert alert-info">
-        <div class="my-card-point">{{point.Success}}</div>
+        <div class="my-card-point">{{point.Success || 0}}</div>
         <div class="my-card-text">已取得點數</div>
       </div>
       <div class="col col-md-3 mr-auto my-card alert alert-danger">
-        <div class="my-card-point">{{point.Consume}}</div>
+        <div class="my-card-point">{{point.Consume || 0}}</div>
         <div class="my-card-text">已使用點數</div>
       </div>
       <div class="col col-md-5 my-card alert alert-success">
-        <div class="my-card-point">{{point.Total}}</div>
+        <div class="my-card-point">{{point.Total || 0}}</div>
         <div class="my-card-text">可用點數</div>
       </div>
     </div>
