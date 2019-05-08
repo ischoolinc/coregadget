@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-6 col-sm-1 border-right px-0 pb-2">
                     <h5 class="border-bottom py-2 mb-2 bg-light">人次</h5>
-                    {{(item.coordinate.split(',').length + (item.seat_no.split(',').length))}}
+                    {{(item.coordinate ? item.coordinate.split(',').length : 0) + (item.seat_no ? item.seat_no.split(',').length : 0)}}
                 </div>
                 <div class="col-6 col-sm-1 border-right px-0 pb-2">
                     <h5 class="border-bottom py-2 mb-2 bg-light">時段</h5>

@@ -1,19 +1,19 @@
 <div class="container-fluid cbs d-flex justify-content-between flex-column">
     <nav>
-        <div class="nav nav-tabs mb-3" role="tablist">
-            <a class="nav-item nav-link active" id="score_sheet_tab" data-toggle="tab" href="#score_sheet" role="tab" aria-controls="score_sheet" aria-selected="true">日評分</a>
-            <a class="nav-item nav-link" id="weekly_rank_tab" data-toggle="tab" href="#weekly_rank" role="tab" aria-controls="weekly_rank" aria-selected="false">週排名</a>
+        <div class="nav nav-tabs mb-3">
+            <a href="javascript:;" class="nav-item nav-link" [ngClass]="{'active': currTab=='score_sheet'}" (click)="currTab='score_sheet'">日評分</a>
+            <a href="javascript:;" class="nav-item nav-link" [ngClass]="{'active': currTab=='weekly_rank'}" (click)="currTab='weekly_rank'">週排名</a>
         </div>
     </nav>
 
     <div class="tab-content">
         <!-- 班級日評分 -->
-        <div class="tab-pane fade show active" id="score_sheet" aria-labelledby="score_sheet_tab">
+        <div class="tab-pane fade" [ngClass]="{'show active': currTab == 'score_sheet'}">
             <app-score-sheet></app-score-sheet>
         </div>
 
         <!-- 班級週排名 -->
-        <div class="tab-pane fade" id="weekly_rank" aria-labelledby="weekly_rank_tab">
+        <div class="tab-pane fade" [ngClass]="{'show active': currTab == 'weekly_rank'}">
             <app-weekly-rank></app-weekly-rank>
         </div>
     </div>
