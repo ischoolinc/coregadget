@@ -13,6 +13,7 @@
                     'btn-light': item.week_number !== currWeekNumber.week_number
                 }">{{item.week_number}}</button>
         </div>
+        <div *ngIf="!weekNumbers.length">無可選週次！</div>
     </div>
 
     <div *ngFor="let grade of weekRank">
