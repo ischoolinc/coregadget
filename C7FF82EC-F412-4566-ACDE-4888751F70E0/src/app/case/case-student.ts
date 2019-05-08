@@ -200,11 +200,9 @@ export class CaseStudent {
         this.ProbleDescription
       );
       // 檢查是否有輸入文字
-      for(const cc of this.proble_description)
-      {
+      for (const cc of this.proble_description) {
         // 有值
-        if (cc.answer_value.length > 0)
-        {
+        if (cc.answer_value.length > 0) {
           this.isProbleDescriptionHasValue = true;
         }
       }
@@ -409,7 +407,7 @@ export class CaseStudent {
 
 // 認輔老師
 export class VoluntaryGuidanceTeacher {
-  constructor() {}
+  constructor() { }
   CaseID: string;
   UID: string;
   TeacherID: string;
@@ -426,4 +424,19 @@ export class VoluntaryGuidanceTeacher {
     }
     return name;
   }
+}
+
+// 當月個案
+export class CaseMonthlyStatistics {
+  constructor() { }
+  CaseNo: string;
+  OccurDate: string;
+  ProblemCategory: string;
+  StudentID: string;
+  TeacherName: string;
+  GradeYear: string;
+  StudentGender: string;
+  Status: string; // 新或舊
+  Count: number;
+  ProblemCategoryValue:any[] = [];
 }

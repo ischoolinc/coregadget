@@ -87,7 +87,6 @@ export class RoleService {
     }
 
     // 未開發功能不能用
-    this._enableCounselStatistics = false;
     this._enableInterviewStatistics = false;
 
     this._isLoading = false;
