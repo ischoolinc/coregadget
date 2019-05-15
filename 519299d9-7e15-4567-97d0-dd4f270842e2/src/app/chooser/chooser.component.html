@@ -1,0 +1,49 @@
+<h5 mat-dialog-title>選擇學生 (已選擇 {{selectionCount}} 人)
+  <!-- <button type="button" class="close" data-dismiss="modal"
+          aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button> -->
+</h5>
+
+<mat-dialog-content>
+  <h5 *ngIf="loading; else content">loading...</h5>
+  <ng-template #content>
+    <div *ngFor="let class of classes">
+      <div style="display: flex;">
+        <h5 class="mt-2">{{class.className}}
+          <div class="mt-2">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input"
+                     [attr.id]="'cls_check_' + class.classId"
+                     [(ngModel)]="class.checked"
+                     (ngModelChange)="toggleAll(class)">
+
+              <label class="custom-control-label"
+                     [attr.for]="'cls_check_' + class.classId">
+                     全選「{{class.className}}」所有學生 (共 {{class.students.length}} 人)</label>
+            </div>
+          </div>
+        </h5>
+      </div>
+      <div class="student-container">
+        <div class="mb-2" *ngFor="let stud of class.students">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"
+                   [attr.id]="'stud_check_' + stud.StudentID"
+                   [(ngModel)]="stud.checked"
+                   (ngModelChange)="reflectClassSelection(class)">
+            <label class="custom-control-label"
+                   [attr.for]="'stud_check_' + stud.StudentID"
+                   >{{stud.StudentName}}（{{stud.StudentNumber}}）</label>
+                   <!-- {{stud | json}} -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>取消</button>
+  <button mat-button color="primary" (click)="confirm()">確定</button>
+</mat-dialog-actions>

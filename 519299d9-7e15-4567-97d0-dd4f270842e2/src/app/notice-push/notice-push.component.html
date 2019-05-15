@@ -1,0 +1,53 @@
+<div class="form-group">
+  <label class="col-form-label">收件者</label>
+  <button mat-icon-button color="primary" (click)="chooser()">
+    <mat-icon>add_circle_outline</mat-icon>
+  </button>
+  <mat-chip-list class="typography-body-1">
+
+    <code *ngIf="receivers.length <= 0; else receiverList"
+          class="mr-2 py-2 px-3 mb-2">還沒選擇任何件者。</code>
+
+    <ng-template #receiverList>
+      <app-receiver-list [(ngModel)]="receivers"></app-receiver-list>
+    </ng-template>
+  </mat-chip-list>
+</div>
+
+<div class="form-group">
+  <label class="col-form-label">傳送給</label>
+  <div class="row">
+    <div class="col-sm-2 mb-2">
+      <div class="custom-control custom-radio">
+        <input type="radio" class="custom-control-input" id="customCheck1"
+               name="receiverType" [(ngModel)]="receiverType" value="學生與家長">
+        <label class="custom-control-label" for="customCheck1">學生與家長</label>
+      </div>
+    </div>
+    <div class="col-sm-2 mb-2">
+      <div class="custom-control custom-radio">
+        <input type="radio" class="custom-control-input" id="customCheck2"
+               name="receiverType" [(ngModel)]="receiverType" value="只有學生">
+        <label class="custom-control-label" for="customCheck2">只有學生</label>
+      </div>
+    </div>
+    <div class="col-sm-2 mb-2">
+      <div class="custom-control custom-radio">
+        <input type="radio" class="custom-control-input" id="customCheck3"
+               name="receiverType" [(ngModel)]="receiverType" value="只有家長">
+        <label class="custom-control-label" for="customCheck3">只有家長</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<mat-form-field class="form-group textfield-box">
+  <input matInput placeholder="簡訊標題" required [(ngModel)]="smstitle">
+</mat-form-field>
+
+<app-redactor [(ngModel)]="smscontent" #editor="ngModel" required></app-redactor>
+
+<div class="text-center text-md-right pt-3">
+  <button mat-flat-button (click)="sendSelf()">測試傳送給自已</button>
+  <button mat-flat-button color="primary" (click)="sendMessage()">送出</button>
+</div>
