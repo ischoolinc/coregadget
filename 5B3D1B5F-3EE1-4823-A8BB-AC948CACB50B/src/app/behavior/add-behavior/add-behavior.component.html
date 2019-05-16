@@ -12,7 +12,7 @@
     </ol>
   </nav>
   <div class="row">
-    <div class="col-md-4 col-lg-3">
+    <div class="col-md-4 col-lg-2">
       <div class="form-group row">
         <label for="dateLabel"
                class="col-2 col-form-label">日期</label>
@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <div class="input-group mb-3 col-md-6 col-lg-6">
+    <div class="input-group mb-3 col-md-6 col-lg-6"> 
       <div class="input-group-prepend">
         <button class="btn btn-outline-primary dropdown-toggle"
                 type="button"
@@ -47,8 +47,9 @@
              placeholder="事由.."
              [(ngModel)]="addText">
     </div>
-    <div class="input-group col-md-2 col-lg-1">
-      <div class="form-group form-check">
+
+    <div class="input-group col-md-12 col-lg-1">
+      <div class="form-group form-check" style="margin-left: 5px">
         <input id="detention"
                type="checkbox"
                class="form-check-input"
@@ -56,6 +57,17 @@
         <label class="form-check-label"
                for="detention">Detention</label>
       </div>
+    </div>
+      
+    <div class="input-group col-md-12 col-lg-1" >
+      <div class="form-group form-check" style="margin-left: 5px">
+          <input id="goodBehavior"
+                 type="checkbox"
+                 class="form-check-input"
+                 [(ngModel)]="currentGoodBehavior">
+          <label class="form-check-label"
+                 for="goodBehavior">Good</label>
+        </div>        
     </div>
     <div class="col-md-12 col-lg-2">
       <button class="ml-auto btn btn-info btn-block"

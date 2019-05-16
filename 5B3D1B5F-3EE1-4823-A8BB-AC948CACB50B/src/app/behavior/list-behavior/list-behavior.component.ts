@@ -64,7 +64,7 @@ export class ListBehaviorComponent implements OnInit {
 
   // 修改 comment
   async editComment(data) {
-    const result = await this.dialogService.editDialog("編輯  " + data.CreateDate2 + " " + data.Name, "事由:", data.Comment, data.Detention == 'true');
+    const result = await this.dialogService.editDialog("編輯  " + data.CreateDate2 + " " + data.Name, "事由:", data.Comment, data.Detention == 'true', data.GoodBehavior =='true');
     if (result.confirm) {
       try {
         const rsp = await this.contract.send("behaviorForAll.EditBehaviorData", {
@@ -72,7 +72,8 @@ export class ListBehaviorComponent implements OnInit {
             BehaviorData: {
               Field: {
                 Comment: result.comment,
-                Detention: result.detention
+                Detention: result.detention,
+                IsGoodBehavior: result.goodBehavior,
               },
               Condition: {
                 Uid: data.BehaviorUID
@@ -82,14 +83,11 @@ export class ListBehaviorComponent implements OnInit {
         });
 
         if (this.classID) {
-
           this.getClassBehaviorRecordsByClass();
-
         }
         else {
           this.getBehaviorRecordsFromMe();
         }
-
       } catch (error) {
         alert(error);
       } finally {

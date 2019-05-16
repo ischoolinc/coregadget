@@ -39,27 +39,27 @@
                         <span>{{data.ClassName}}班</span>
                     </span>
                 </div>
-                <div class="col-md-9 col-lg-10">
+                <div class="col-md-8 col-lg-9">
                     <span *ngIf="data.Detention=='true'"
                           class="badge badge-danger mr-1">Detention</span>
+                    <span *ngIf="data.GoodBehavior=='true'"
+                          class="badge badge-success mr-1">Good</span>
                     <span>{{data.Comment}}</span>
-                    <div class="float-right">
-                        <span class="">
-
-                        </span>
-                        <a *ngIf="data.IfEdit=='true'"
-                           class="h6 text-info point"
-                           (click)="editComment(data)">
+            
+                </div>
+                <div class="col-md-1 col-lg-1">
+                  
+                        <span>登錄：{{data.Teacher}}</span>
+                            <a *ngIf="data.IfEdit=='true'"
+                            class="h6 text-info point"
+                            (click)="editComment(data)">
                             <i class="material-icons mr-1">edit</i>
-                        </a>
-
-                        <a *ngIf="data.IfEdit=='true'"
-                           class="h6 text-danger point"
-                           (click)="delete(data)">
-                            <i class="material-icons mr-1">delete</i>
-                        </a>
-                        <span>登錄教師：{{data.Teacher}}</span>
-                    </div>
+                            </a>
+                            <a *ngIf="data.IfEdit=='true'"
+                                class="h6 text-danger point"
+                                (click)="delete(data)">
+                                <i class="material-icons mr-1">delete</i>
+                            </a>
                 </div>
             </div>
         </li>
