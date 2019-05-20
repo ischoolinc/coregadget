@@ -22,7 +22,8 @@ export class TeacherRecordBehaviorComponent implements OnInit {
 
       const rsp = await this.contract.send("behaviorForAll.GetBehaviorRecordByTeacher");
       this.behaviorRecords = Utils.array(rsp, "Response/BehaviorData");
-
+      
+      console.log(this.behaviorRecords)
     }
     catch (err) { console.log(err) }
     finally { }

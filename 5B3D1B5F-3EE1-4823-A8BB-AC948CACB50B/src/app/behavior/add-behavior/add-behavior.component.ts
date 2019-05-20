@@ -26,12 +26,14 @@ export class AddBehaviorComponent implements OnInit {
   studentDataList: any;
   loading: boolean;
   isDetention: boolean;
+  isGoodBehavior :boolean;
   checkCount: number;
   checkButtonEnable: string = "disabled";
   currentDateString: string;
   addText: string;
   studentDataListSelect: any;
   currentDetention: boolean;
+  currentGoodBehavior : boolean ;
   selectedText: any = [];
   selectedStudents: any;   //已選取的學生
   currentDate: string = moment().format("YYYY-MM-DD");
@@ -103,6 +105,8 @@ export class AddBehaviorComponent implements OnInit {
     this.checkCount = 0;
     this.loading = true;
     this.currentDetention = false;
+    this.currentGoodBehavior = false;
+
 
     //如果日期不為空
     if (this.behaviorDataService.addDate !== "") {
@@ -183,18 +187,25 @@ export class AddBehaviorComponent implements OnInit {
 
       if (!this.currentDateString) {
         checkCanSend = false;
-        checkCanSendError = "請輸入日期";
+        checkCanSendError = "請輸入日期 \n";
       }
 
       if (!this.addText) {
         checkCanSend = false;
-        checkCanSendError += "請輸入內容";
+        checkCanSendError += "請輸入事由內容 \n";
       }
 
       if (this.selectedStudents.length === 0) {
         checkCanSend = false;
-        checkCanSendError += "請選取學生";
+        checkCanSendError += "請選取學生 \n";
       }
+      if (this.currentGoodBehavior === true && this.currentDetention === true) {
+        checkCanSend = false;
+        checkCanSendError += "Good 和 Detention 不可同時勾選 \n";
+      }
+
+
+
       if (checkCanSend === true) {
 
         // 多筆傳送
@@ -208,6 +219,7 @@ export class AddBehaviorComponent implements OnInit {
                 CreateDate: this.currentDateString,
                 CourseID: null,
                 Detention: this.currentDetention ? "true" : "false",
+                IsGoodBehavior: this.currentGoodBehavior ? "true" : "false",
                 StudentID: data.ID
               }
             }

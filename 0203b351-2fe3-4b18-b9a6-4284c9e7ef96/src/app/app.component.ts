@@ -13,6 +13,8 @@ export class AppComponent implements OnInit {
 
   loading: boolean;
 
+  currTab = 'score_sheet';
+
   constructor(
     private basicSrv: BasicService) {
       // @ts-ignore

@@ -20,7 +20,7 @@ export class NewCaseModalComponent implements OnInit {
   constructor(
     private dsaService: DsaService,
     private counselStudentService: CounselStudentService
-  ) {}
+  ) { }
 
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
@@ -187,8 +187,8 @@ export class NewCaseModalComponent implements OnInit {
         if (this.caseStudent.UID !== Rec.UID) {
           value = false;
         }
-      } else {        
-          value = false;       
+      } else {
+        value = false;
       }
     });
 
@@ -329,12 +329,12 @@ export class NewCaseModalComponent implements OnInit {
       data.RefCounselInterviewID = "null";
     }
 
-    if (data.CloseDate) {
-      if (data.CloseDate == "") {
-        data.CloseDate = "";
-      }
+    if (!data.CloseDate) {
+      data.CloseDate = "";
+    } else {
       data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
     }
+
 
     let req = {
       SchoolYear: data.SchoolYear,

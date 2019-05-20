@@ -1,0 +1,7 @@
+<mat-dialog-content>
+  <h5 class="mt-2">{{record.className}}</h5>
+  <mat-chip *ngFor="let stud of record.students"
+            class="mr-2 py-2 px-3 mb-2">
+    {{stud.StudentName}} ({{stud.StudentNumber}})
+  </mat-chip>
+</mat-dialog-content>

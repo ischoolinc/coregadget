@@ -24,6 +24,8 @@
                     <div class="col-md-8 col-lg-9">
                         <span *ngIf="item.Detention=='true'"
                               class="badge badge-danger mr-1">Detention</span>
+                        <span *ngIf="item.GoodBehavior=='true'"
+                              class="badge badge-success mr-1">Good</span>
                         <span>{{item.Comment}}</span>
                     </div>
                 </div>

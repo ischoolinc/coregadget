@@ -1,0 +1,6 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column" [appNavigationItem]="{title: '智慧簡訊', link: ['/'], parent: null}">
+    <app-header></app-header>
+    <router-outlet (activate)="setNavigation($event)"></router-outlet>
+    <app-footer class="mt-auto"></app-footer>
+</div>
+<pre>{{rsp | json}}</pre>

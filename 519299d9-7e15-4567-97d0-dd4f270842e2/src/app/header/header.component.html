@@ -1,0 +1,12 @@
+<nav aria-label="breadcrumb text-nowrap text-truncate">
+  <ol class="breadcrumb">
+    <ng-container *ngFor="let item of navigations; let idx = index">
+      <li class="breadcrumb-item active" aria-current="page" *ngIf="idx < navigations.length - 1; else leaf">
+        <a href="#" [routerLink]="item.link">{{item.title}}</a>
+      </li>
+      <ng-template #leaf>
+        <li class="breadcrumb-item active" aria-current="page">{{item.title}}</li>
+      </ng-template>
+    </ng-container>
+  </ol>
+</nav>

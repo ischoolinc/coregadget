@@ -1,0 +1,43 @@
+<!-- <pre>{{visits | json}}</pre>
+<pre>{{students | json}}</pre> -->
+<div class="row">
+  <div class="col-md-4 chart p-3">
+    <canvas #chart width="100%" height="100%"></canvas>
+  </div>
+  <div class="col-md-8">
+    <div *ngIf="loading; else studentList">loading...</div>
+    <ng-template #studentList>
+      <!-- <button class="btn btn-dark float-right mb-3">匯出 Excel</button> -->
+      <ul class="rwd-table">
+        <li class="thead">
+          <ol class="tr">
+            <li>班級</li>
+            <li>座號</li>
+            <li>學號</li>
+            <li>姓名</li>
+            <li matTooltip="「長家」或「學生」讀取皆會標示為讀取。">讀取</li>
+            <li>學生安裝</li>
+            <li>家長安裝</li>
+          </ol>
+        </li>
+        <li class="tbody">
+          <ol class="tr" *ngFor="let stud of students">
+            <li data-title="班級">{{stud.ClassName}}</li>
+            <li data-title="座號">{{stud.SeatNo}}</li>
+            <li data-title="學號">{{stud.StudentNumber}}</li>
+            <li data-title="姓名">{{stud.StudentName}}</li>
+            <li data-title="讀取">
+              <mat-icon *ngIf="stud.Read === 'true'">check</mat-icon>
+            </li>
+            <li data-title="學生安裝">
+              <mat-icon *ngIf="stud.StudentInstall">check</mat-icon>
+            </li>
+            <li data-title="家長安裝">
+              <mat-icon *ngIf="stud.ParentInstall">check</mat-icon>
+            </li>
+          </ol>
+        </li>
+      </ul>
+    </ng-template>
+  </div>
+</div>

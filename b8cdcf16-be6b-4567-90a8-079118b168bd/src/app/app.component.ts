@@ -1148,7 +1148,8 @@ export class AppComponent implements OnInit {
         this.basicSrv.addCSAttendLog(addList.map((item: Course) => {
           return { CourseID: item.CourseID, Action: 'insert', ActionBy: 'student', Points: item.StudentSetPoints ? item.StudentSetPoints : null};
         })),
-        this.basicSrv.addPointsLog(addList.map((item: Course) => {
+        // 篩選需要點數選課的資料 寫入點數歷程
+        this.basicSrv.addPointsLog(addList.filter((data: Course) => data.NeedPoints === 't').map((item: Course) => {
           return { Type: 'consume', Points: (item.StudentSetPoints == undefined) ? '' : item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints};
         })),
         this.basicSrv.addLog(
@@ -1409,7 +1410,7 @@ export class AppComponent implements OnInit {
     }
     else if(_points < minPoint){
       course.PointIsError = true;
-      course.ErrorMsg = "投點點數不可低於課程點數限制！";
+      course.ErrorMsg = "投點點數不可\"低於\"課程點數限制！";
       return;
     }
     else{
