@@ -8,64 +8,74 @@ export class SchoolService {
 
   private schoolMap = new Map<string, SchoolInfo>([
     ['h.karlschool.org', { // 卡爾高中
-      title: 'Karl International Experimental Education Institution (SH)',
-      iconUrl: 'assets/img/karl_logo.png',
-      gadgets: ['gradebook', 'attendence']
+      title: 'Karl International Experimental Education Institution (SH)'
+      , iconUrl: 'assets/img/karl_logo.png'
+      , gadgets: ['gradebook', 'attendence']
     }],
     ['j.karlschool.org', { // 卡爾國中
-      title: 'Karl International Experimental Education Institution (JH)',
-      iconUrl: 'assets/img/karl_logo.png',
-      gadgets: ['gradebook', 'attendence']
+      title: 'Karl International Experimental Education Institution (JH)'
+      , iconUrl: 'assets/img/karl_logo.png'
+      , gadgets: ['gradebook', 'attendence']
     }],
-
     ['p.lk.kcis.ntpc.edu.tw', { //康橋國際學校 林口校區 國小
-      title: 'Kang Chiao International School(Linkou G1-6)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Linkou G1-6)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['j.lk.kcis.ntpc.edu.tw', { //康橋國際學校 林口校區 國中
-      title: 'Kang Chiao International School(Linkou G7-9)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Linkou G7-9)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['h.lk.kcis.ntpc.edu.tw', { //康橋國際學校 林口校區 高中
-      title: 'Kang Chiao International School(Linkou G10-12)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Linkou G10-12)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['p.kcbs.ntpc.edu.tw', { //康橋國際學校 青山校區
-      title: 'Kang Chiao International School(Qingshan)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Qingshan)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['j.kcbs.ntpc.edu.tw', { //康橋國際學校 秀岡校區 國中
-      title: 'Kang Chiao International School(Xiugang G7-9)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Xiugang G7-9)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['h.kcbs.ntpc.edu.tw', { //康橋國際學校 秀岡校區 高中
-      title: 'Kang Chiao International School(Xiugang G10-12)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Xiugang G10-12)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['p.kcbs.hc.edu.tw', { //康橋國際學校 新竹校區 國小
-      title: 'Kang Chiao International School(Hsinchu G1-6)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Hsinchu G1-6)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
     ['j.kcbs.hc.edu.tw', { //康橋國際學校 新竹校區 國中
-      title: 'Kang Chiao International School(Hsinchu G7-9)',
-      iconUrl: 'assets/img/logo.png',
-      // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+      title: 'Kang Chiao International School(Hsinchu G7-9)'
+      , iconUrl: 'assets/img/logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
-
     ['test.p.kcbs.hc.edu.tw', { //康橋國小測試
-      title: 'Kang Chiao International School(測試機)',
-      iconUrl: 'assets/img/dev_logo.png',
+      title: 'Kang Chiao International School(測試機)'
+      , iconUrl: 'assets/img/dev_logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
-    ['', { // DSNS 都找不到，會顯示這個。
-      title: 'Kang Chiao International School(開發)',
-      iconUrl: 'assets/img/dev_logo.png',
+    ['j.nehs.tc.edu.tw', { //中科實中國中部 j.nehs.tc.edu.tw 名稱：IBSC Middle
+      title: 'IBSC Middle'
+      , iconUrl: ''
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['h.nehs.tc.edu.tw', { //中科實中高中部 h.nehs.tc.edu.tw 名稱：IBSC High  
+      title: 'IBSC High'
+      , iconUrl: ''
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['h.fiec.com.tw', { //遠見 h.fiec.com.tw 名稱：Foresight International Education Center
+      title: 'Foresight International Education Center'
+      , iconUrl: ''
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }]
   ]);
 
@@ -77,7 +87,10 @@ export class SchoolService {
     if (this.schoolMap.has(this.gadget.application)) {
       return this.schoolMap.get(this.gadget.application);
     } else {
-      return this.schoolMap.get('');
+      return { // DSNS 都找不到，會顯示這個。
+        title: '未設定'
+        , iconUrl: ''
+      }
     }
   }
 }
