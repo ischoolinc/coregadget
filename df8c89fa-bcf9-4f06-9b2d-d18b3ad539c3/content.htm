@@ -213,11 +213,9 @@
              class="hidden-xs"
              style="margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
-                <div data-offset-top="145"
-                     bs-affix>
+                <div data-offset-top="145" bs-affix>
                     <!-- 成績輸入 -->
-                    <table class="table table-bordered table-striped"
-                           style="width:260px;">
+                    <table class="table table-bordered table-striped" style="width:260px;">
                         <thead>
                             <tr>
                                 <th colspan="2">成績輸入</th>
@@ -234,8 +232,7 @@
                                             {{current.SelectMode=='No.'?"座號搜尋":"切換學生"}}
                                             <span class="caret"></span>
                                         </a>
-                                        <ul class="dropdown-menu"
-                                            style="width:100%;">
+                                        <ul class="dropdown-menu" style="width:100%;">
                                             <li ng-class="{active:current.SelectMode=='No.'}">
                                                 <a href="javascript:;"
                                                    ng-click="changeSelectMode('No.')">座號搜尋</a>
@@ -247,8 +244,7 @@
                                         </ul>
                                     </div>
                                 </td>
-                                <td class="text-center"
-                                    style="padding:0px;">
+                                <td class="text-center" style="padding:0px;">
                                     <div ng-if="current.SelectMode=='No.'"
                                          class="input-group">
                                         <input ng-model="current.SelectSeatNo"
@@ -269,14 +265,11 @@
 
                                     <div ng-if="current.SelectMode=='Seq.'"
                                          class="btn-group btn-group-sm">
-                                        <a class="btn btn-default"
-                                           ng-click="goPrev()">
+                                        <a class="btn btn-default" ng-click="goPrev()">
                                             &nbsp;&nbsp;&nbsp; << &nbsp;&nbsp;&nbsp;
-                                               </a>
-                                               <a
-                                               class="btn btn-default"
-                                               ng-click="goNext()">
-                                                &nbsp;&nbsp;&nbsp; >> &nbsp;&nbsp;&nbsp;
+                                        </a>
+                                        <a class="btn btn-default" ng-click="goNext()">
+                                            &nbsp;&nbsp;&nbsp; >> &nbsp;&nbsp;&nbsp;
                                         </a>
                                     </div>
                                 </td>
@@ -429,7 +422,8 @@
                         </tbody>
                     </table>
                     <!--文字評量代碼表-->
-                    <table class="table table-bordered table-striped" style="width:260px;">
+                    <table class="table table-bordered table-striped" style="width:260px;" 
+                            ng-if="current.mode == modeList[0]">
                         <thead>
                             <tr>
                                 <th class="text-center"
@@ -522,7 +516,7 @@
                             <th colspan="4"
                                 class="text-center"></th>
                             <th colspan="{{current.gradeItemList.length -1}}"
-                                class="text-center">小考項目</th>
+                                class="text-center">評分項目</th>
                         </tr>
                         <tr>
                             <th class="text-center">
@@ -534,9 +528,6 @@
                             <th class="text-center">
                                 姓名
                             </th>
-                            <!-- <th class="text-center">
-                                平時評量
-                            </th> -->
                             <th ng-repeat="item in current.gradeItemList"
                                 class="text-center">{{item.Name}}</th>
                         </tr>
@@ -546,7 +537,6 @@
                             <td>{{student.ClassName}}</td>
                             <td>{{student.SeatNumber}}</td>
                             <td>{{student.StudentName}}</td>
-                            <!-- <td ng-click="setCurrent(student, '平時評量', true, true)">{{student['AssignmentResult_' + current.template.ExamID]}}</td> -->
                             <td ng-repeat="item in current.gradeItemList"
                                 class="text-center"
                                 style="position:relative"
@@ -560,21 +550,6 @@
                                     {{student[item.ExamID]}}
                                 </span>
                             </td>
-                            <!-- <td ng-repeat="item in current.gradeItemList"
-                                class="text-center"
-                                style="position:relative;"
-                                ng-click="setCurrent(student, item, true, true)">
-                                <div ng-if="!checkCellValue(student, item.ExamID)"
-                                     ng-attr-title="資料已修改，尚未儲存! {{ student[item.ExamID]
-                                                        ? '原值為：'+ student['item.ExamID]
-                                                        :''}}"
-                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
-                                </div>
-                                <span ng-class="{'text-danger':student[item.ExamID] < 60}"
-                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
-                                      {{student[item.ExamID]}}
-                                </span>
-                            </td> -->
                         </tr>
                     </tbody>
                 </table>

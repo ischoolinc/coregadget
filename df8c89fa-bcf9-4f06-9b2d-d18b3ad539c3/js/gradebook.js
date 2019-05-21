@@ -328,7 +328,7 @@
                              *  平時比例：(100 - 定期比例)%
                             */
                             var ScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage)/100 || 0;
-                            // 評量比例
+                            // 評量比重
                             var p = Number(template.Percentage) || 0;
                             // 定期評量成績
                             var score = stu['Score_' + template.ExamID];
@@ -412,12 +412,17 @@
                                     Index: item.Index || '',
                                     Type: 'Number',
                                     Permission: 'Editor',
-                                    Lock:  $scope.templateList.filter(temp => temp.ExamID === item.ExamID)[0].Lock  // 取得此定期評量是否在成績輸入時間內
+                                    /**
+                                     * Lock條件
+                                     * 1. 平時評量是否在成績輸入時間內
+                                     * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
+                                     */
+                                    Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${item.ExamID}`)[0].Lock
                                 };
                                 
                                 $scope.gradeItemList.push(gradeItem);
                             });
-                            // 個定期評量的平時評量整理
+                            // 各定期評量的平時評量整理
                             [].concat($scope.templateList || []).forEach(template => {
                                 var quizResult = { 
                                     TemplateID: template.ExamID,
@@ -425,7 +430,8 @@
                                     Name: '平時評量',
                                     Type: 'Number',
                                     Permission: 'Program',
-                                    Lock: true
+                                    // 取得平時評量是否在成績輸入時間內，並且啟用
+                                    Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
                                 };
                                 $scope.gradeItemList.splice(0, 0, quizResult);
                             });
@@ -1057,11 +1063,19 @@
                             });
                         });
 
-                        // 定期評量帶入平時評量成績
-                        $scope.studentList.forEach(student => {
-                            student['AssignmentScore_' + $scope.current.template.ExamID] =  student['QuizResult_' + $scope.current.template.ExamID];
-                        });
-                        $scope.saveAll();
+                        /**
+                         * 將平時評量分數結算至定期評量
+                         * 條件：
+                         * 1. 成績輸入時間內
+                         * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
+                         */
+                        {
+                            $scope.studentList.forEach(student => {
+                                student['AssignmentScore_' + $scope.current.template.ExamID] =  student['QuizResult_' + $scope.current.template.ExamID];
+                            });
+                            $scope.saveAll();
+                        }
+                        
 
                         // 資料Reload
                         //$scope.dataReload();
@@ -1499,7 +1513,6 @@
                 alert(errMsg);
             }
         }
-
 
         // 篩選試別
         $scope.filterPermission = function (examItem) {
