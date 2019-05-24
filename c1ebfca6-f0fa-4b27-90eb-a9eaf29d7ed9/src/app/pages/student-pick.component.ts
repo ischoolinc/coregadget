@@ -29,6 +29,12 @@ export class StudentPickComponent implements OnInit {
 
   checkSummary: string; // 目前點名狀態統計。
 
+  absenceRates :any;
+  teacherSetting: any;
+  settingList: any;
+  objectKeys =  Object.keys;
+  showPhoto :boolean;
+
   constructor(
     private dsa: DSAService,
     private route: ActivatedRoute,
@@ -42,7 +48,14 @@ export class StudentPickComponent implements OnInit {
 
   async ngOnInit() {
     this.today = await this.dsa.getToday();
-
+ 
+    //setting 
+    const SettingJSON = await this.dsa.getTeacherSetting();
+    this.teacherSetting = JSON.parse(SettingJSON);
+    this.settingList = this.objectKeys(this.teacherSetting);
+  
+    this.showPhoto =this.teacherSetting['use_photo'];
+  
     this.groupInfo = { type: '', id: '', name: '' };
     await this.config.ready;
 
@@ -53,6 +66,10 @@ export class StudentPickComponent implements OnInit {
       this.groupInfo.name = pm.get('name');
 
       console.log(pm.get('name'));
+
+      //載入出席率
+      await this.loadAbsencreRate();
+
 
       // 可點節次。
       this.periodConf = this.config.getPeriod(this.period);
@@ -75,6 +92,7 @@ export class StudentPickComponent implements OnInit {
 
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
+
     const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
     this.studentChecks = [];
 
@@ -86,9 +104,14 @@ export class StudentPickComponent implements OnInit {
       // 取得學生照片 url
       stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
       const status = this.getSelectedAttendance(stu);
-      this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
 
+      // 加入出席率
+        stu.AbsenceRate =this.absenceRates[stu.ID];
+    
+      this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
     }
+ 
+    
     this.calcSummaryText();
 
     if (msg) this.alert.snack(msg);
@@ -198,4 +221,17 @@ export class StudentPickComponent implements OnInit {
     console.log(abbr);
     this.selectedAbsence = abbr.Name;
   }
+
+
+  //取得學生出席率 
+  async loadAbsencreRate()
+  {
+   // if(){
+    //  if(this.groupInfo.type=='Course')
+    this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
+   
+    console.log('',this.absenceRates);
+    console.log("課程ID",this.groupInfo.id);
+  }
+
 }

@@ -8,6 +8,7 @@ export class StudentCheck {
     private _stu: Student;
     private _status: PeriodStatus;
     private _isDirty: boolean;
+    private _absenceRate :Number;
   
     /**
      * 
@@ -74,5 +75,10 @@ export class StudentCheck {
           Absence: ''
         }
       }
+    }
+
+    public setAttenddacneRate( ansenceRate:number) 
+    {
+        this._absenceRate = ansenceRate;
     }
   }

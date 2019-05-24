@@ -4,13 +4,15 @@
             <li class="breadcrumb-item active d-flex" aria-current="page" style="width: 100%">
                 <div>課堂點名（{{today}})</div>
                 <div style="flex: 1"></div>
-                <button (click)=openSubstitute() type="button" class="btn btn-lg btn-info">代課課程</button>
+                <a routerLink="/setting" class="btn btn-sm btn-default">設定</a>
+                <!-- <button (click)=openSubstitute() type="button" class="btn btn-lg btn-info">代課課程</button> -->
             </li>
         </ol>
     </nav>
 
-    <ul class="list-group mb-3 point" *ngIf="!loading;else Loading">
-        <li *ngIf="conf?.Schedule && conf?.Schedule.length" class="list-group-item active d-flex align-items-center py-2 ">
+    <ul class="list-group mb-3" *ngIf="!loading;else Loading">
+        <li *ngIf="conf?.Schedule && conf?.Schedule.length"
+            class="list-group-item active d-flex align-items-center py-2 ">
 
             <div class="col-9 text-nowrap">
                 <span class="pr-3">今日點名</span>
@@ -19,7 +21,7 @@
             <div class="col-1 text-center">已點名</div>
             <div class="col-1 text-center">學生點名</div>
         </li>
-        <li class="list-group-item " *ngFor="let suggest of conf.Schedule" (click)="openSchedule(suggest)">
+        <li class="list-group-item point" *ngFor="let suggest of conf.Schedule" (click)="openSchedule(suggest)">
             <div class="row">
                 <div class="col-9 text-nowrap">
                     <span class="pr-3">{{suggest.ClassName?suggest.ClassName:suggest.CourseName}}</span>
@@ -51,19 +53,23 @@
                 </div>
             </div>
         </li>
-        <li *ngIf="conf?.CourseConf && conf?.CourseConf.length" class="list-group-item active d-flex align-items-center py-2 ">
+        <li *ngIf="conf?.CourseConf && conf?.CourseConf.length"
+            class="list-group-item active d-flex align-items-center py-2 ">
             <div>課程</div>
+
+            <button (click)=openSubstitute() type="button" style="float:right"
+                class="btn btn-sm btn-info ml-auto">代課點名</button>
+
         </li>
-        <li class="list-group-item " *ngFor="let course of conf.CourseConf">
+        <li class="list-group-item point" *ngFor="let course of conf.CourseConf" (click)="openPicker(course)">
             <div class="d-flex justify-content-between align-items-center row">
-                <div class="col-11 text-nowrap" (click)="openPicker(course)">
+                <div class="col-11 text-nowrap">
                     <span class="pr-3">{{course.CourseName}}</span>
-                    <code *ngIf="course.StudentName != ''" class="mr-1">
+                </div>
+                <div class="col-1 text-nowrap">
+                    <code *ngIf="course.StudentName != ''" class="mr-1" style="float:right">
                         小幫手：&emsp;{{course.StudentName}}({{course.StudentNumber}})
                     </code>
-                </div>
-                <div class="d-flex justify-content-center col-1 text-nowrap">
-                    <button type="button" class="btn  btn-info btn-sm" (click)="openTeacherHelper(course)">設定小幫手</button>
                 </div>
             </div>
         </li>

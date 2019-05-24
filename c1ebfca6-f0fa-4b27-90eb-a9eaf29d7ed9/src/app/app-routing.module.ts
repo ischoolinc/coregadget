@@ -5,14 +5,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { SubstituteComponent } from './pages/substitute.component';
 import { CourseSelcComponent } from './pages/course-selc.component';
 import { TeacherHelperComponent } from './pages/teacher-helper.component';
-
+import { SettingComponent } from "./pages/setting.component";
 const routes: Routes = [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
     { path: 'main', component: MainComponent },
     { path: 'pick/:type/:id/:period/:name', component: StudentPickComponent },
     { path: 'sub', component: SubstituteComponent },
     { path: 'course', component: CourseSelcComponent },
-    { path: 'teacher-helper/:id/:name', component: TeacherHelperComponent}
+    { path: 'teacher-helper/:id/:name', component: TeacherHelperComponent},
+    { path: 'setting', component: SettingComponent }
 
 ];
 

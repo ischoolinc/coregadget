@@ -1,25 +1,20 @@
-
-<div>
+<div id="attendence-page" page>
 
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#"
-           [routerLink]="['/main']">課堂點名</a>
+        <a routerLink="/setting">課堂點名</a>
       </li>
       <ng-container *ngIf="!(students.length > 0) else titleText">
-        <li class="breadcrumb-item active"
-            aria-current="page">loading...</li>
+        <li class="breadcrumb-item active" aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active"
-            aria-current="page">{{courseName}}&nbsp;&nbsp;({{today}})</li>
-        <li class="breadcrumb-item active"
-        aria-current="page">設定小幫手</li>
+        <li class="breadcrumb-item active" aria-current="page">{{courseName}}&nbsp;&nbsp;({{today}})</li>
+        <li class="breadcrumb-item active" aria-current="page">設定小幫手</li>
       </ng-template>
     </ol>
   </nav>
-
+  <!--  -->
   <ng-container *ngIf="!(students.length > 0) else elseTemplate">
     <div style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
       loading...
@@ -27,41 +22,94 @@
   </ng-container>
   <ng-template #elseTemplate>
     <div class="text-right">
-        <ng-container [ngTemplateOutlet]="save"></ng-container>
+      <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
 
-    <div class="d-flex flex-wrap mt-3 mt-lg-1">
-      <div *ngFor="let student of students"
-           class="col-xs-12 col-sm-4 col-lg-3 col-xl-2 p-2">
-           <div class="card st-check w-100"
-           style="height: 22em;background-position: center;background-size: cover;"
-           [ngStyle]="{ 'background-image': 'url('+ student.PhotoUrl +')'}"
-           (click)="changeTeacherHelper(student)">
-           <div style="position:absolute;bottom:0px;width:100%;">
-            <div [ngStyle]="getTeacherHelperStyle(student)"
-                 class="w-100 ad-status text-truncate">{{getTeacherHelperText(student)}}</div>
-              <div class="card-body py-2 text-truncate w-100"
-                  style="background-color:rgba(255,255,255,0.8)">
-                <h5 class="mb-0 text-truncate">{{student.Name}}</h5>
-                <div class="text-gray text-truncate d-flex">{{student.StudentNumber}}
-                  <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
-                </div>
+
+    <!--新樣板 -->
+    <!-- 學生資料(no photo)-->
+
+
+    <div class="row mt-3 mt-lg-1" *ngIf="!showPhoto">
+      <div class=" col-12 col-sm-6 col-lg-4" style="margin-bottom: 0.75rem;" *ngFor="let student of students">
+        <div class="card">
+          <div (click)="changeTeacherHelper(student)" class="point row pr-2">
+            <div class="col-9 card-body p-2 text-truncate ">
+              <div class="text-gray text-truncate d-flex">
+                <strong class="mb-0 text-truncate">{{student.Name}}</strong>
               </div>
-            </div> 
+              <div class="text-gray text-truncate d-flex">
+                <span>{{student.StudentNumber}}</span>
+                <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
+              </div>
+            </div>
+            <div class="col-3 ad-status text-truncate py-2 my-auto" [ngStyle]="getTeacherHelperStyle(student)">
+              {{getTeacherHelperText(student)}}</div>
           </div>
+        </div>
       </div>
     </div>
+
+
+    <!-- 學生資料 (with photo)-->
+
+    <div class="st-list d-flex flex-wrap mt-3 mt-lg-1" *ngIf="showPhoto">
+      <div class="card st-check" style="height:320px" *ngFor="let student of students">
+        <label (click)="changeTeacherHelper(student)" class="point">
+          <div style="height: 259px;width: 100%;">
+            <div style="height:100%;width:100%;background-position: center center;background-size: cover;"
+              [style.background-image]="'url(' + student.PhotoUrl + ')'"></div>
+          </div>
+          <div style="position:absolute;bottom:0px;width:100%;">
+            <div [ngStyle]="getTeacherHelperStyle(student)" class="w-100 ad-status text-truncate">
+              {{getTeacherHelperText(student)}}</div>
+            <div class="card-body py-2 text-truncate w-100">
+              <div class="text-gray text-truncate d-flex">
+                <strong class="mb-0 text-truncate">{{student.Name}}</strong>
+
+              </div>
+              <div class="text-gray text-truncate d-flex">
+                <span>{{student.StudentNumber}}</span>
+                <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
+              </div>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+    <!-- 新樣版  end-->
+
+
+    <!-- 原本樣板 -->
+
+    <!-- <div class="d-flex flex-wrap mt-3 mt-lg-1">
+      <div *ngFor="let student of students" class="col-xs-12 col-sm-4 col-lg-3 col-xl-2 p-2">
+        <div class="card st-check w-100" style="height: 22em;background-position: center;background-size: cover;"
+          [ngStyle]="{ 'background-image': 'url('+ student.PhotoUrl +')'}" (click)="changeTeacherHelper(student)">
+          <div style="position:absolute;bottom:0px;width:100%;">
+            <div [ngStyle]="getTeacherHelperStyle(student)" class="w-100 ad-status text-truncate">
+              {{getTeacherHelperText(student)}}</div>
+            <div class="card-body py-2 text-truncate w-100" style="background-color:rgba(255,255,255,0.8)">
+              <h5 class="mb-0 text-truncate">{{student.Name}}</h5>
+              <div class="text-gray text-truncate d-flex">{{student.StudentNumber}}
+                <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!--原本樣板 -->
+
     <div class="text-right">
       <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
   </ng-template>
 
   <ng-template #save>
-    <button (click)="saveTeacherHelper()"
-            type="button"
-            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
+    <button (click)="saveTeacherHelper()" type="button" class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
       +')': '儲存'}}</button>
   </ng-template>
 
 </div>
-

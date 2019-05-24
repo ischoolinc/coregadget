@@ -43,7 +43,7 @@ export class MainComponent implements OnInit {
     try {
 
       //等待是否完成設定值的下載
-      await this.config.ready;
+        this.config.ready;
 
       this.today = await this.dsa.getToday();
       this.conf = await this.dsa.getSchedule(this.today);
@@ -61,7 +61,7 @@ export class MainComponent implements OnInit {
     // await this.alert.json(suggest)
     //   .afterClosed()
     //   .toPromise();
-    console.log(schedule);
+    //console.log(schedule);
 
     const md1 = schedule.ClassID ? 'Class' : 'Course';
     const md2 = schedule.ClassID ? schedule.ClassID : schedule.CourseID;

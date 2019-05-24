@@ -22,6 +22,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { SubstituteComponent } from './pages/substitute.component';
 import { CourseSelcComponent } from './pages/course-selc.component';
 import { TeacherHelperComponent } from './pages/teacher-helper.component';
+import { SettingComponent } from './pages/setting.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import {MatRadioModule} from '@angular/material/radio';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +37,9 @@ import { TeacherHelperComponent } from './pages/teacher-helper.component';
     WaitingComponent,
     SubstituteComponent,
     CourseSelcComponent,
-    TeacherHelperComponent
+    TeacherHelperComponent,
+    SettingComponent,
+   
   ],
   imports: [
     BrowserModule,
@@ -43,6 +50,9 @@ import { TeacherHelperComponent } from './pages/teacher-helper.component';
     MatProgressSpinnerModule,
     MatTableModule,
     MatIconModule,
+    MatCheckboxModule,
+    FormsModule,
+    MatRadioModule
   ],
   providers: [GadgetService, DSAService, ConfigService, AlertService],
   bootstrap: [AppComponent],

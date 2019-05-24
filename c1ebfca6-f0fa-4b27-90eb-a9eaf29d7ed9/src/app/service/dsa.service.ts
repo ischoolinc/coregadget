@@ -2,7 +2,6 @@ import { Contract } from './gadget.service';
 import { Injectable } from '@angular/core';
 import { GadgetService } from './gadget.service';
 
-import * as Moment from 'moment';
 
 @Injectable()
 export class DSAService {
@@ -57,8 +56,7 @@ export class DSAService {
     if (type === "Class") req.Request.ClassID = id;
 
     const rsp = await this.contract.send('_.GetStudents', req);
-    console.log(rsp);
-    // return ((rsp && rsp.Students && rsp.Students.Student) || []) as Student[];
+    
     return [].concat((rsp && rsp.Students && rsp.Students.Student) || []).map(function (item) { return item as Student; });
   }
 
@@ -103,15 +101,15 @@ export class DSAService {
   /**
    * 儲存課堂點名小幫手
    */
-  public async setHelper(courseID: string, studentID: string){
+  public async setHelper(courseID: string, studentID: string) {
     await this.ready;
 
-    const req: any={
+    const req: any = {
       RefCourseID: courseID,
       RefStudentID: studentID
     };
 
-    const rsp = await this.contract.send('_.SetHelper',req);
+    const rsp = await this.contract.send('_.SetHelper', req);
 
     return rsp;
   }
@@ -128,10 +126,10 @@ export class DSAService {
    * 取得今日日期。
    */
   public async getToday() {
-    // return Moment().format('YYYY/MM/DD');
+    
     await this.ready;
-    let rsp = await this.basicContract.send('beta.GetNow',{
-      Pattern:'yyyy/MM/dd'
+    let rsp = await this.basicContract.send('beta.GetNow', {
+      Pattern: 'yyyy/MM/dd'
     });
     return rsp.DateTime;
   }
@@ -160,7 +158,7 @@ export class DSAService {
     await this.ready;
     const rsp = await this.contract.send('_.GetAllCourse');
     const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeYearObj[];
-
+ 
     gradeYears.forEach(v => {
 
       v.Class = [].concat(v.Class || []) as ClassObj[];
@@ -172,6 +170,50 @@ export class DSAService {
     });
 
     return gradeYears;
+  }
+
+  //取得設定
+  public async getTeacherSetting() {
+
+    await this.ready;
+    const rsp = await this.contract.send('_.GetTeacherSetting');
+
+
+    if (rsp.Content === "{}") {
+      const defaultSetting = '{"use_photo":true}'; //若老師初次設定檔案 
+      return defaultSetting;
+    }
+
+    const teacherSetting = rsp.Content
+    return teacherSetting;
+  }
+
+  //取得出席率
+  public async getAbsenceRate(courseId: string) {
+    await this.ready;
+    const rsp = await this.contract.send('_.GetAttendanceRate', {
+      Request: {
+        CourseId: courseId
+      }
+    });
+    //取得學生出席率
+    const studentsAbsenceRate = rsp.Student;
+    const absenceRateObj = {}
+    //轉成 JSON 格式 
+    if (studentsAbsenceRate) {
+      for (var i = 0; i < studentsAbsenceRate.length; i++) {
+        absenceRateObj[studentsAbsenceRate[i].StudentID] = studentsAbsenceRate[i].AbsenceRate;
+      }
+      return absenceRateObj;
+    }
+  }
+
+  public async SetTeacherSetting(settingJson: JSON) {
+    this.contract.send('_.SetTeacherSetting', {
+      Request: {
+        Content: JSON.stringify(settingJson)
+      }
+    })
   }
 }
 
@@ -211,6 +253,7 @@ export interface Student {
   ClassName: string;
   Attendance: AttendanceItem;
   PhotoUrl: string; //2018/10/24 new
+  AbsenceRate: number;  //Jean 20190522 增加 出席率
 }
 
 export interface AttendanceItem {
@@ -271,7 +314,7 @@ export interface CourseConf {
   CourseName: string;
   // 小幫手資料
   StudentID: string;
-  StudentName: string; 
+  StudentName: string;
   StudentNumber: string;
 }
 

@@ -8,7 +8,7 @@ import { Console } from '@angular/core/src/console';
 @Component({
   selector: 'gd-teacher-helper',
   templateUrl: './teacher-helper.component.html',
-  styles: []
+  styleUrls: ['../common.css']
 })
 export class TeacherHelperComponent implements OnInit {
 
@@ -16,8 +16,12 @@ export class TeacherHelperComponent implements OnInit {
   courseName: string;
   courseID: string;
   period: string;
-  teacherHelper:TeacherHelper = {} as TeacherHelper;
+  teacherHelper: TeacherHelper = {} as TeacherHelper;
   students: Student[];
+  showPhoto: boolean;
+  teacherSetting: any;
+  settingList: any;
+  objectKeys = Object.keys;
 
   constructor(
     private dsa: DSAService,
@@ -30,13 +34,20 @@ export class TeacherHelperComponent implements OnInit {
 
   async ngOnInit() {
 
+
+    // 取得 setting  (是否取得照片)
+    const SettingJSON = await this.dsa.getTeacherSetting();
+    this.teacherSetting = JSON.parse(SettingJSON);
+    this.settingList = this.objectKeys(this.teacherSetting);
+    this.showPhoto = this.teacherSetting['use_photo'];
+
     this.today = await this.dsa.getToday();
     this.route.paramMap.subscribe(async pm => {
-      
+
       this.courseName = pm.get('name'); // course name
       this.courseID = pm.get('id'); // course id
       this.period = pm.get('period');
-      
+
       try {
         // 學生清單（含點名資料）。 
         await this.reloadTeacherHelper();
@@ -46,7 +57,7 @@ export class TeacherHelperComponent implements OnInit {
     });
   }
 
-  public async reloadTeacherHelper(){
+  public async reloadTeacherHelper() {
     this.students = [];
     // 取得學生清單
     const _students = await this.dsa.getStudents('Course', this.courseID, this.today, this.period);
@@ -60,15 +71,15 @@ export class TeacherHelperComponent implements OnInit {
     }
     // 取得課程助手
     const courseRecord = await this.dsa.getSchedule(this.today);
-    courseRecord.CourseConf.forEach((course)=>{
+    courseRecord.CourseConf.forEach((course) => {
       console.log(this.courseID);
-      if(course.CourseID == this.courseID){
+      if (course.CourseID == this.courseID) {
         this.teacherHelper.StudentID = course.StudentID;
         this.teacherHelper.StudentName = course.StudentName;
         this.teacherHelper.StudentNumber = course.StudentNumber;
       }
     });
-    
+
   }
 
   getTeacherHelperText(stu: Student) {
@@ -81,7 +92,7 @@ export class TeacherHelperComponent implements OnInit {
     let fgColor = 'rgba(0,0,0,0.5)';
 
     if (stu.ID == this.teacherHelper.StudentID) {
-      bgColor='#259B24';
+      bgColor = '#259B24';
       fgColor = 'white';
     }
 
@@ -91,20 +102,20 @@ export class TeacherHelperComponent implements OnInit {
     }
   }
 
-  changeTeacherHelper(stu: Student){
+  changeTeacherHelper(stu: Student) {
     this.teacherHelper.StudentID = stu.ID;
     this.teacherHelper.StudentName = stu.Name;
     this.teacherHelper.StudentNumber = stu.StudentNumber;
   }
 
-  async saveTeacherHelper(){
+  async saveTeacherHelper() {
 
     const dialog = this.alert.waiting("儲存中...");
 
     try {
-      await this.dsa.setHelper(this.courseID,this.teacherHelper.StudentID);
-      
-      this.router.navigate(['/main']);
+      await this.dsa.setHelper(this.courseID, this.teacherHelper.StudentID);
+
+      this.router.navigate(['/setting']);
     } catch (error) {
       this.alert.json(error);
     } finally {
@@ -114,8 +125,8 @@ export class TeacherHelperComponent implements OnInit {
 
 }
 
-export interface TeacherHelper{
-  StudentID:string;
-  StudentName:string;
-  StudentNumber:string;
+export interface TeacherHelper {
+  StudentID: string;
+  StudentName: string;
+  StudentNumber: string;
 }
