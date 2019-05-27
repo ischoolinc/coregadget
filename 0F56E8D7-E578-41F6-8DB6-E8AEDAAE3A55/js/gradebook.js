@@ -1276,21 +1276,25 @@
             if ($scope.current.mode == $scope.modeList[0]) {
 
                 $scope.current.Student[$scope.current.Exam.ExamID] = $scope.current.Value;
-                $scope.current.Student[$scope.current.Exam.ExamID + '_努力程度'] = '';
 
-                var done = false;
-                // 努力程度轉換
-                if ('' + $scope.current.Value) {
-                    $scope.effortPairList.forEach(function (effortItem) {
-                        if (!done && $scope.current.Value >= effortItem.Score) {
-                            $scope.current.Student[$scope.current.Exam.ExamID + '_努力程度'] = effortItem.Code;
-    
-                            done = true;
-                        }
-                    });
+                if ($scope.current.Exam.Name != '文字評量') {
+                    $scope.current.Student[$scope.current.Exam.ExamID + '_努力程度'] = '';
+
+                    var done = false;
+                    // 努力程度轉換
+                    if ('' + $scope.current.Value) {
+                        $scope.effortPairList.forEach(function (effortItem) {
+                            if (!done && $scope.current.Value >= effortItem.Score) {
+                                $scope.current.Student[$scope.current.Exam.ExamID + '_努力程度'] = effortItem.Code;
+        
+                                done = true;
+                            }
+                        });
+                    }
+                    // 學期成績試算
+                    $scope.calc();
                 }
-                // 學期成績試算
-                $scope.calc();
+                
             } 
             // 平時評量
             else { 
@@ -1614,29 +1618,55 @@
 
         /**開啟文字代碼表畫面 */
         $scope.openCommentCode = function () {
-            var commentCode = window.open("commentCode.html", "commentCode", "width=600,height=500");
 
-            // commentCode.setMappingTable($scope.examTextList);
-
-            $scope.connection.send({
-                service: "TeacherAccess.GetExamTextScoreMappingTable",
-                body: {
-                    Content: {}
-                },
-                result: function (response, error, http) {
-                    if (error !== null) {
-                        alert("TeacherAccess.GetExamTextScoreMappingTable Error");
-                        commentCode.close();
-                    } else {
-                        if (response !== null && response.Response !== null && response.Response !== ''){
-                            commentCode.setMappingTable(response.Response.TextMappingTable);
-                        }   
-                        else {
-                            commentCode.close();
-                        }
-                    }
-                }
+            [].concat($scope.examTextList || []).forEach(function(ext) {
+                ext.Selected = false;
             });
+            
+            $('#textCodeModal').modal('show');
+            // var commentCode = window.open("commentCode.html", "commentCode", "width=600,height=500");
+
+            // // commentCode.setMappingTable($scope.examTextList);
+
+            // $scope.connection.send({
+            //     service: "TeacherAccess.GetExamTextScoreMappingTable",
+            //     body: {
+            //         Content: {}
+            //     },
+            //     result: function (response, error, http) {
+            //         if (error !== null) {
+            //             alert("TeacherAccess.GetExamTextScoreMappingTable Error");
+            //             commentCode.close();
+            //         } else {
+            //             if (response !== null && response.Response !== null && response.Response !== ''){
+            //                 commentCode.setMappingTable(response.Response.TextMappingTable);
+            //             }   
+            //             else {
+            //                 commentCode.close();
+            //             }
+            //         }
+            //     }
+            // });
+        }
+
+        /**
+         * 選擇文字代碼
+         * 1. 代碼轉換
+        */
+        $scope.selectCode = function (ext) {
+            
+            ext.Selected = true;
+            if ($scope.current.Value) {
+                $scope.current.Value += `,${ext.Code}`;
+            } else {
+                $scope.current.Value = ext.Code;
+            }
+            
+            $scope.textChangeEvent();
+            $scope.current.Student[$scope.current.Exam.ExamID] = $scope.current.Value;
+
+            // $scope.enterGrade();
+            //$scope.current.Value
         }
  
         /**試別篩選 */
