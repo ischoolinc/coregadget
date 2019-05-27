@@ -50,7 +50,7 @@
         "upload-label": "Drop files here or click to upload",
         "upload-change-label": "Drop a new image to change",
         "accessibility-help-label": "Rich text editor",
-        "caption": "Caption",
+        "caption": "圖片說明",
         "bulletslist": "Bullets",
         "numberslist": "Numbers",
         "image-position": "Position",

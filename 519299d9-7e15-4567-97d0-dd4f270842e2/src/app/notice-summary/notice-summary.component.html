@@ -1,5 +1,15 @@
-<!-- <pre>{{visits | json}}</pre>
-<pre>{{students | json}}</pre> -->
+<div class="card mb-2">
+  <div class="card-body">
+    <h5>{{notice?.Title}}</h5>
+    <p class="card-text" [innerHTML]="notice?.rawMessage"></p>
+    <div class="card-subtitle mt-2 d-sm-flex align-items-center">
+      <div class="mb-2 mb-sm-0">
+        <span class="badge badge-light">{{notice?.PostTime}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-md-4 chart p-3">
     <canvas #chart width="100%" height="100%"></canvas>
@@ -7,6 +17,7 @@
   <div class="col-md-8">
     <div *ngIf="loading; else studentList">loading...</div>
     <ng-template #studentList>
+
       <!-- <button class="btn btn-dark float-right mb-3">匯出 Excel</button> -->
       <ul class="rwd-table">
         <li class="thead">
@@ -21,7 +32,10 @@
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr" *ngFor="let stud of students">
+          <ol class="tr"
+              *ngFor="let stud of students"
+              (click)="showReadHistory(stud)">
+
             <li data-title="班級">{{stud.ClassName}}</li>
             <li data-title="座號">{{stud.SeatNo}}</li>
             <li data-title="學號">{{stud.StudentNumber}}</li>

@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatChipsModule,
     MatInputModule,
     MatFormFieldModule,
-    MatTooltipModule
+    MatTooltipModule,
   ]
 })
 export class MaterialModule { }

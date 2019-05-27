@@ -7,6 +7,7 @@ import { SelectionResult } from '../chooser/selection-result';
 import { TeacherService } from '../teacher.service';
 import { flatten } from 'lodash';
 import { Router } from '@angular/router';
+import { Util } from '../util';
 
 @Component({
   selector: 'app-notice-push',
@@ -83,7 +84,8 @@ export class NoticePushComponent implements OnInit, NavigationItem {
       return;
     }
 
-    if (!this.smscontent) {
+    const txt = Util.trimHtml(this.smscontent);
+    if (!(txt || '').trim()) {
       this.snackbar.open('請輸入「簡訊內容」。', null, { duration: 5000 });
       return;
     }

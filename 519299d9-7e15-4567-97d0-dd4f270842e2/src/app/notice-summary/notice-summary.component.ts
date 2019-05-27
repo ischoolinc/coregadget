@@ -3,13 +3,16 @@ import { NavigationItem } from '../header/header.service';
 import { NavigationItemDirective } from '../header/navigation-item.directive';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { TeacherService, NoticeReadStatusRecord, InstallStatusInfo } from '../teacher.service';
+import { TeacherService, NoticeReadStatusRecord, InstallStatusInfo, NoticeSummaryRecord } from '../teacher.service';
 import { Chart } from 'chart.js';
+import { MatDialog } from '@angular/material';
+import { NoticeDetailComponent } from './notice-detail/notice-detail.component';
+import { NoticesCacheService } from '../notice-main/notices-cache.service';
 
 @Component({
   selector: 'app-notice-summary',
   templateUrl: './notice-summary.component.html',
-  styleUrls: ['./notice-summary.component.scss']
+  styleUrls: ['./notice-summary.component.scss'],
 })
 export class NoticeSummaryComponent implements OnInit, NavigationItem {
 
@@ -23,10 +26,16 @@ export class NoticeSummaryComponent implements OnInit, NavigationItem {
 
   visits: InstallStatusInfo;
 
+  notice: NoticeSummaryRecord;
+
+  noticeId: string;
+
   constructor(
-    private nav: NavigationItemDirective,
+    nav: NavigationItemDirective,
+    private dialog: MatDialog,
     private route: ActivatedRoute,
-    private teacher: TeacherService
+    private teacher: TeacherService,
+    private nc: NoticesCacheService
   ) {
     this.parent = nav.appNavigationItem;
   }
@@ -36,9 +45,13 @@ export class NoticeSummaryComponent implements OnInit, NavigationItem {
   drawchart: Chart;
 
   ngOnInit() {
+
     this.route.paramMap.pipe(
       map(v => v.get("id"))
     ).subscribe(async id => {
+      this.noticeId = id;
+      this.notice = await this.nc.getNotice(id); // 從快取取得完整資料。
+
       const studs = await this.teacher.getReadStatus(id).toPromise();
       this.visits = await this.teacher.getInstalledStatus(studs.map(v => v.StudentID)).toPromise();
 
@@ -68,6 +81,15 @@ export class NoticeSummaryComponent implements OnInit, NavigationItem {
       this.loading = false;
     });
 
+  }
+
+  showReadHistory(stud: NoticeReadStatusRecord) {
+    const { StudentID: studentId } = stud;
+
+    this.dialog.open(NoticeDetailComponent, {
+      data: { studentId, noticeId: this.noticeId },
+      width: '400px'
+    });
   }
 
   private createChart(readCount: number, unreadCount: number) {

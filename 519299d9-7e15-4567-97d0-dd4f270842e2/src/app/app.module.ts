@@ -18,6 +18,7 @@ import { RedactorComponent } from './redactor/redactor.component';
 import { RedactorValueAccessorDirective } from './redactor/value-accessor.directive';
 import { ReceiverListComponent } from './notice-push/receiver-list/receiver-list.component';
 import { ValueAccessorDirective } from './notice-push/receiver-list/value-accessor.directive';
+import { NoticeDetailComponent } from './notice-summary/notice-detail/notice-detail.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ValueAccessorDirective } from './notice-push/receiver-list/value-access
     RedactorValueAccessorDirective,
     ReceiverListComponent,
     ValueAccessorDirective,
+    NoticeDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +48,8 @@ import { ValueAccessorDirective } from './notice-push/receiver-list/value-access
   bootstrap: [AppComponent],
   entryComponents: [
     ChooserComponent,
-    SelectedDetailComponent
+    SelectedDetailComponent,
+    NoticeDetailComponent
   ]
 })
 export class AppModule { }

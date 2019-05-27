@@ -3,6 +3,8 @@ import { NavigationItemDirective } from '../header/navigation-item.directive';
 import { NavigationItem } from '../header/header.service';
 import { TeacherService, NoticeSummaryRecord } from '../teacher.service';
 import * as moment from 'moment';
+import { Util } from '../util';
+import { NoticesCacheService } from './notices-cache.service';
 
 @Component({
   selector: 'app-notice-main',
@@ -17,26 +19,15 @@ export class NoticeMainComponent implements OnInit, NavigationItem {
 
   constructor(
     private nav: NavigationItemDirective,
-    private teacher: TeacherService
+    private teacher: TeacherService,
+    private nc: NoticesCacheService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loading = true;
-    this.teacher.getNotices().pipe(
-    ).subscribe(notices => {
-
-      this.notices = notices
-        .sort((x, y) => +y.PostTime - +x.PostTime)
-        .map<NoticeSummaryRecord>(notice => {
-          return {
-            ...notice,
-            Message: this.generateHtmlPreview(notice.Message),
-            PostTime: this.formatDate(notice.PostTime)
-          };
-        });
-
-      this.loading = false;
-    });
+    await this.nc.cacheNotices();
+    this.notices = this.nc.notices;
+    this.loading = false;
   }
 
   private formatDate(timeMillisecond: string): any {
@@ -45,9 +36,7 @@ export class NoticeMainComponent implements OnInit, NavigationItem {
 
   private generateHtmlPreview(htmlStr: string) {
     const maxLen = 120;
-    const div = document.createElement("div");
-    div.innerHTML = htmlStr;
-    const previewText =  div.textContent || div.innerText || "";
+    const previewText =  Util.trimHtml(htmlStr);
 
     if (previewText.length > maxLen) {
       return `${previewText.substr(0, 120)}...`;

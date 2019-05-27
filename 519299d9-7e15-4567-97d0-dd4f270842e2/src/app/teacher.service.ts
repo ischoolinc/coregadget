@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DSAService, Contract } from './dsa.service';
 import { Observable } from 'rxjs';
 import { concatMap, map, shareReplay } from 'rxjs/operators';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -109,6 +110,20 @@ export class TeacherService {
       })),
       map(rsp => {
         return [].concat(!!rsp && rsp.Student || []) as NoticeReadStatusRecord[];
+      })
+    );
+  }
+
+  public getReadHistories(noticeId: string, studentId: string) {
+    return this.contract.pipe(
+      concatMap((conn) => conn.send<any>('notice.GetReadHistory', {
+        Request: {
+          NoticeID: noticeId,
+          StudentID: studentId
+        }
+      })),
+      map(rsp => {
+        return [].concat(!!rsp && rsp.Log || []) as ReadLogRecord[];
       })
     );
   }
@@ -283,6 +298,7 @@ export interface NoticeSummaryRecord {
   PostTime: any;
   Readed: string;
   Unread: string;
+  rawMessage: SafeHtml;
 }
 
 export interface NoticeReadStatusRecord {
@@ -315,6 +331,14 @@ export interface VisitStatus {
   FirstVisit: string;
   LastVisit: string;
 }
+
+export interface ReadLogRecord {
+  Time: string;
+  Account: string;
+  Relationship: string;
+  [x: string]: any;
+}
+
   // public getMyInfo() {
   //   return this.contract.pipe(
   //     concatMap((conn) => conn.send<MyInfoResponse>('GetMyInfo')),
