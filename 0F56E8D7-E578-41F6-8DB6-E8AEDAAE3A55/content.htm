@@ -661,7 +661,7 @@
                     <h4>{{current.Course.CourseName}}</h4>
                 </div>
                 <div class="modal-body">
-                    <table ng-if="current.gradeItemConfig.Mode == 'Editor'"
+                    <table ng-if="gradeItemConfig.Mode == 'Editor'"
                            class="table table-bordered table-striped table-hover text-center"
                            style="table-layout:fixed;">
                         <thead>
@@ -672,7 +672,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="item in current.ConfigCustomAssessmentItem.Item">
+                            <tr ng-repeat="item in gradeItemConfig.Item">
                                 <td class="text-center"
                                     style="position:relative; padding:0px">
                                     <div style="white-space: nowrap;overflow: hidden;">
@@ -694,7 +694,7 @@
                                 <td style="padding:0px">
                                     <div style="white-space: nowrap;overflow: hidden;">
                                         <a style="height:100%;width: 100%"
-                                           ng-click="current.ConfigCustomAssessmentItem.DeleteItem(item)"
+                                           ng-click="gradeItemConfig.DeleteItem(item)"
                                            class="btn btn-default">
                                             <i class="fa fa-minus-square"></i>
                                             刪除
@@ -707,7 +707,7 @@
                                     colspan="3">
                                     <div style="white-space: nowrap;overflow: hidden;">
                                         <a style="height:100%;width: 100%"
-                                           ng-click="current.ConfigCustomAssessmentItem.AddItem()"
+                                           ng-click="gradeItemConfig.AddItem()"
                                            class="btn btn-default">
                                             <i class="fa fa-plus-square"></i>
                                             加入項目
@@ -717,22 +717,22 @@
                             </tr>
                         </tbody>
                     </table>
-                    <textarea ng-if="current.ConfigCustomAssessmentItem.Mode=='JSON'"
-                              ng-model="current.ConfigCustomAssessmentItem.JSONCode"
+                    <textarea ng-if="gradeItemConfig.Mode=='JSON'"
+                              ng-model="gradeItemConfig.JSONCode"
                               style="min-height: 360px;resize: vertical;word-wrap: normal;white-space: nowrap;"
                               type="text"
                               class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid">
                     </textarea>
                 </div>
                 <div class="modal-footer">
-                    <a ng-if="current.ConfigCustomAssessmentItem.Mode=='Editor'"
-                       ng-click="current.ConfigCustomAssessmentItem.JSONMode()"
+                    <a ng-if="gradeItemConfig.Mode=='Editor'"
+                       ng-click="gradeItemConfig.JSONMode()"
                        class="btn btn-link pull-left ng-scope"
                        ng-class="{'btn-danger':!checkAllTable()}">
                         JSON Editor
                     </a>
-                    <a ng-if="current.ConfigCustomAssessmentItem.Mode=='JSON'"
-                       ng-click="current.ConfigCustomAssessmentItem.CommitJSON()"
+                    <a ng-if="gradeItemConfig.Mode=='JSON'"
+                       ng-click="gradeItemConfig.CommitJSON()"
                        class="btn btn-link pull-left ng-scope"
                        ng-class="{'btn-danger':!checkAllTable()}">
                         Parse JSON
