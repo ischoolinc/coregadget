@@ -205,10 +205,13 @@
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
 
-                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item);
+                            // 介面顯示用
+                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item || []);
+                            // 代碼替換用
+                            $scope.textCodeList = [].concat(response.Response.TextMappingTable.Item || []);
 
                             // 資料排序
-                            $scope.examTextList.sort(function (a, b) {
+                            $scope.textCodeList.sort(function (a, b) {
                                 return a.Code.length < b.Code.length ? 1 : -1;
                             });
                         }
@@ -1250,12 +1253,12 @@
             var valueList = [];
 
             codeList.forEach(function (code) {
-                var result = $.map($scope.examTextList, function (item, index) {
+                var result = $.map($scope.textCodeList, function (item, index) {
                     return item.Code;
                 }).indexOf(code);
 
                 if (result > -1) {
-                    valueList.push($scope.examTextList[result].Content);
+                    valueList.push($scope.textCodeList[result].Content);
                     //$scope.current.Value = $scope.examTextList[result].Content;
                 }
                 else {
@@ -1622,7 +1625,7 @@
             [].concat($scope.examTextList || []).forEach(function(ext) {
                 ext.Selected = false;
             });
-            
+
             $('#textCodeModal').modal('show');
             // var commentCode = window.open("commentCode.html", "commentCode", "width=600,height=500");
 
@@ -1664,9 +1667,6 @@
             
             $scope.textChangeEvent();
             $scope.current.Student[$scope.current.Exam.ExamID] = $scope.current.Value;
-
-            // $scope.enterGrade();
-            //$scope.current.Value
         }
  
         /**試別篩選 */
