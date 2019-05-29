@@ -484,8 +484,8 @@
                                 // 取得課程學生以及學生成績資料
                                 //$scope.scoreDataReload();
                                 // 設定目前模式
-                                $scope.setCurrentMode($scope.current.mode);
                             }
+                            $scope.setCurrentMode($scope.current.mode);
                         });
                     }
                 }
