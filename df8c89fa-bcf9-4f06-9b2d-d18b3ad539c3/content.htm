@@ -79,30 +79,34 @@
 
 <body ng-controller="MainCtrl">
     <div id="mainMsg"></div>
-    <div ng-if="!(current && studentList && examList || haveNoCourse) "
-         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
-    <div ng-if="(haveNoCourse)"
+
+    <!-- <div ng-if="!(current && studentList && examList || haveNoCourse) "
+         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div> -->
+
+    <div ng-if="errMsg !== ''"
+         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">{{errMsg}}</div>
+    <div ng-if="haveNoCourse"
          style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有設定任何課程，請洽教務處行政人員</div>
-    <div id="gadget"
-         class="my-page"
-         ng-if="current && studentList && examList">
+
+    <div id="gadget" class="my-page" >
         <h1 class="hidden-xs">{{current.mode}}</h1>
+         <!--按鈕列-->
         <div>
-            <!--課程按鈕-->
-            <div class="btn-group">
+           <!--課程按鈕-->
+            <div ng-if="!haveNoCourse" class="btn-group">
                 <a href=""
-                   class="btn btn-default dropdown-toggle"
-                   data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span></a>
+                class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li ng-repeat="course in courseList"
                         ng-class="{active:course==current.Course}">
                         <a href="javascript:;"
-                           ng-click="setCurrentCourse(course)">{{course.CourseName}}</a>
+                        ng-click="setCurrentCourse(course)">{{course.CourseName}}</a>
                     </li>
                 </ul>
             </div>
             <!--定期評量按鈕-->
-            <div class="btn-group">
+            <div ng-if="examList.length > 0 && studentList.length > 0" class="btn-group">
                 <a class="btn btn-default dropdown-toggle"
                     data-toggle="dropdown">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -114,7 +118,7 @@
                 </ul>
             </div>
             <!--成績管理、平時評量(模式切換)-->
-            <div class="btn-group">
+            <div ng-if="examList.length > 0 && studentList.length > 0" class="btn-group">
                 <a class="btn btn-default dropdown-toggle"
                    data-toggle="dropdown">{{current.mode}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -125,17 +129,15 @@
                     </li>
                 </ul>
             </div>
-            <!--成績管理模式:功能按鈕-->
-            <div ng-if="current.mode == modeList[0]"
-                 class="btn btn-default">
+            <!--成績管理模式: 匯出報表-->
+            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn btn-default">
                 <i class="far fa-file-excel"
                    ng-click="exportGradeBook()">
                     匯出報表
                 </i>
             </div>
-            <!-- ng-init="getProcess()" -->
-            <div ng-if="current.mode == modeList[0]"
-                 class="btn-group pull-right">
+            <!-- 成績管理模式： 批次、儲存 -->
+            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn-group pull-right">
                 <div class="btn-group" ng-if="importExamList">
                     <a href=""
                        class="btn btn-default dropdown-toggle"
@@ -173,9 +175,8 @@
                     儲存
                 </a>
             </div>
-            <!--平時評量模式:功能按鈕-->
-            <div ng-if="current.mode == modeList[1]"
-                 class="btn-group pull-right">
+            <!--平時評量模式: 批次、儲存-->
+            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[1]" class="btn-group pull-right">
                 <a class="btn btn-default"
                    ng-click="showGradeItemConfig()">
                     <i class="fa fa-edit">
@@ -183,10 +184,8 @@
                     </i>
                 </a>
                 <div class="btn-group">
-                    <a class="btn btn-default dropdown-toggle"
-                       data-toggle="dropdown">
-                        <i class="fa fa-cog"
-                           aria-hidden="true"></i>
+                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-cog" aria-hidden="true"></i>
                         <span>批次</span>
                         <span class="caret"></span>
                     </a>
@@ -209,9 +208,8 @@
                 </a>
             </div>
         </div>
-        <div ng-if="studentList"
-             class="hidden-xs"
-             style="margin-top:10px;">
+        <!--資料表-->
+        <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
                 <div data-offset-top="145" bs-affix>
                     <!-- 成績輸入 -->
@@ -438,7 +436,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="text in examTextList">
+                            <tr ng-repeat="text in examCodeList">
                                 <td class="text-center"
                                     style="padding:0px;">{{text.Catalog}} </td>
                                 <td class="text-center"
