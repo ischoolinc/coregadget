@@ -1,0 +1,83 @@
+import { Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ConfigService, PeriodConf } from './../service/config.service';
+import { DSAService, RollCallRecord, CourseConf } from './../service/dsa.service';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+@Component({
+  selector: 'gd-period-chooser',
+  templateUrl: './period-chooser.component.html',
+  styleUrls: ['../common.css'],
+  encapsulation: ViewEncapsulation.None
+})
+export class PeriodChooserComponent implements OnInit {
+
+  title;
+
+  today: string;
+
+  isRollCallPeriods: any[];
+
+  periods: PeriodConf[];
+
+  constructor(
+    private router: Router,
+    private config: ConfigService,
+    private dsa: DSAService,
+    public dialogRef: MatDialogRef<PeriodChooserComponent>,
+    @Inject(MAT_DIALOG_DATA) private data: { course: CourseConf }
+  ) {
+    this.title = data.course.CourseName;
+    dialogRef.updateSize('650px');
+  }
+
+  async ngOnInit() {
+    this.today = await this.dsa.getToday();
+    // 取得老師已點過名的節次
+    this.isRollCallPeriods = await this.dsa.isTeacherRollCall(this.data.course.CourseID,this.today);
+
+    await this.config.ready;
+    this.periods = this.config.getPeriods();
+
+    this.periods.map((period)=>{
+      period.IsRollCall = false;
+
+      this.isRollCallPeriods.map((item)=>{
+        if(period.Name == item.period){
+          period.IsRollCall = true;
+        }
+      });
+    });
+
+  }
+
+  gotoPick(period) {
+    //Type 傳入是課程還是班級
+    //CourseName
+    //PeriodName
+    this.router.navigate(['../pick', "Course",
+      this.data.course.CourseID, period.Name,
+      this.data.course.CourseName]);
+    this.dialogRef.close();
+  }
+
+  // 該節是否可以點名。
+  allow_choose(period: PeriodConf) {
+    if(period.IsRollCall){
+      return true;
+    }
+    else if(period.Actor == '班導師'){
+      return true;
+    }
+    else{
+      if (period.Absence) {
+        return period.Absence.length <= 0;
+      } 
+      else{
+        return 0;
+      }
+    }
+    
+  }
+}
