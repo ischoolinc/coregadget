@@ -29,11 +29,11 @@ export class StudentPickComponent implements OnInit {
 
   checkSummary: string; // 目前點名狀態統計。
 
-  absenceRates :any;
+  absenceRates: any;
   teacherSetting: any;
   settingList: any;
-  objectKeys =  Object.keys;
-  showPhoto :boolean;
+  objectKeys = Object.keys;
+  showPhoto: boolean;
 
   constructor(
     private dsa: DSAService,
@@ -48,14 +48,14 @@ export class StudentPickComponent implements OnInit {
 
   async ngOnInit() {
     this.today = await this.dsa.getToday();
- 
+
     //setting 
     const SettingJSON = await this.dsa.getTeacherSetting();
     this.teacherSetting = JSON.parse(SettingJSON);
     this.settingList = this.objectKeys(this.teacherSetting);
-  
-    this.showPhoto =this.teacherSetting['use_photo'];
-  
+
+    this.showPhoto = this.teacherSetting['use_photo'];
+
     this.groupInfo = { type: '', id: '', name: '' };
     await this.config.ready;
 
@@ -106,12 +106,12 @@ export class StudentPickComponent implements OnInit {
       const status = this.getSelectedAttendance(stu);
 
       // 加入出席率
-        stu.AbsenceRate =this.absenceRates[stu.ID];
-    
+      stu.AbsenceRate = this.absenceRates[stu.ID];
+
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
     }
- 
-    
+
+
     this.calcSummaryText();
 
     if (msg) this.alert.snack(msg);
@@ -184,6 +184,19 @@ export class StudentPickComponent implements OnInit {
     }
   }
 
+  getAbsenceRateStyle(rate) {
+    //rgba(0, 0, 0, 0.54) !important
+    var seed = 100 - Math.sqrt(100 - (rate || 0)) * 17;
+    if (seed < 0) seed = 0;
+
+    var r = 255 - 255 * seed / 100;
+    var a = 1 - 0.54 * seed / 100;
+    return {
+      "color": "rgba(" + r + ", 0, 0, " + a + ")",
+      "font-weight": (rate > 70 ? "" : "bold")
+    }
+  }
+
   /**
    * 取得學生在目前節次的缺曠狀態。
    * @param stu 學生資料。
@@ -224,14 +237,12 @@ export class StudentPickComponent implements OnInit {
 
 
   //取得學生出席率 
-  async loadAbsencreRate()
-  {
-   // if(){
+  async loadAbsencreRate() {
+    // if(){
     //  if(this.groupInfo.type=='Course')
     this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
-   
-    console.log('',this.absenceRates);
-    console.log("課程ID",this.groupInfo.id);
-  }
 
+    console.log('', this.absenceRates);
+    console.log("課程ID", this.groupInfo.id);
+  }
 }

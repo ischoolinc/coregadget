@@ -2,44 +2,58 @@
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a [routerLink]="['']">課堂點名（{{today}}）</a>
+        <a [routerLink]="['/main']">課堂點名</a>
       </li>
       <ng-container *ngIf="loading; else titleText">
-        <li class="breadcrumb-item active" aria-current="sub">loading...</li>
+        <li class="breadcrumb-item active"
+            aria-current="sub">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active" aria-current="sub">設定</li>
+        <li class="breadcrumb-item active"
+            aria-current="sub">設定</li>
       </ng-template>
     </ol>
   </nav>
 
 
   <div style="width:100%">
-    <ul class="list-group mb-3" *ngIf="!loading;else Loading">
-      <li *ngIf="true" class="list-group-item active d-flex align-items-center py-2 ">
-     
+    <ul class="list-group mb-3"
+        *ngIf="!loading;else Loading">
+      <li *ngIf="true"
+          class="list-group-item active d-flex align-items-center py-2 ">
+
 
         <div>點名設定</div>
 
-        <button (click)="saveSetting()" type="button" class="btn btn-sm btn-info" style="float:right"
-          class="btn btn-sm btn-info ml-auto">儲存
+        <button (click)="saveSetting()"
+                type="button"
+                class="btn btn-sm btn-info"
+                style="float:right"
+                class="btn btn-sm btn-info ml-auto">儲存
         </button>
-     
+
       </li>
-      <li class="list-group-item " *ngFor="let key of settingList">
+      <li class="list-group-item "
+          *ngFor="let key of settingList">
         <div class="row">
           <div class="col-8 col-sm-9 col-md-10 col-lg-11 text-nowrap">
-            <div style="display :inline"> 是否顯示照片:</div>
+            <div style="display :inline"> 是否顯示照片</div>
           </div>
 
-          <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-center text-nowrap">
+          <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-right text-nowrap">
             <label class="point">
-              <input type="radio" name="radio" value="" [checked]="teacherSetting[key] === false"
-                (change)="settingChange(key,false)"> 否
+              <input type="radio"
+                     name="radio"
+                     value=""
+                     [checked]="teacherSetting[key] === false"
+                     (change)="settingChange(key,false)"> 否
             </label>
             <label class="ml-3 point">
-              <input type="radio" name="radio" value="" [checked]="teacherSetting[key] === true"
-                (change)="settingChange(key,true)"> 是
+              <input type="radio"
+                     name="radio"
+                     value=""
+                     [checked]="teacherSetting[key] === true"
+                     (change)="settingChange(key,true)"> 是
             </label>
           </div>
         </div>
@@ -48,13 +62,17 @@
       <li class="list-group-item active d-flex align-items-center py-2 ">
         <div>點名小幫手</div>
       </li>
-      <li class="list-group-item point" *ngFor="let course of courses" (click)="openTeacherHelper(course)">
+      <li class="list-group-item point"
+          *ngFor="let course of courses"
+          (click)="openTeacherHelper(course)">
         <div class="d-flex justify-content-between align-items-center row">
           <div class="col-8 col-sm-9 col-md-10 col-lg-11 text-nowrap">
             <span class="pr-3">{{course.CourseName}}</span>
           </div>
-          <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-center text-nowrap">
-            <code *ngIf="true" class="mr-1" style="float:right">
+          <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-right text-nowrap">
+            <code *ngIf="true"
+                  class="mr-1"
+                  style="float:right">
                   小幫手：&emsp;{{course.StudentName}}({{course.StudentNumber}})
               </code>
           </div>
