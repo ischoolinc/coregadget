@@ -202,10 +202,20 @@ export class StudentPickComponent implements OnInit {
    * @param stu 學生資料。
    */
   private getSelectedAttendance(stu: Student) {
-    if (!stu.Attendance) return;
-    const period = this.periodConf.Name;
-    const dateAtts = [].concat(stu.Attendance.Period) as PeriodStatus[];
-    return dateAtts.find(v => v['@text'] === period);
+    var abs = (stu.Absence.AbsenceName || stu.Absence.RollCallChecked == 'true') ? stu.Absence.AbsenceName : stu.Absence.HelperRollCall;
+    if (abs) {
+      return {
+        '@text': this.periodConf.Name,
+        AbsenceType: abs
+      } as PeriodStatus;
+    }
+    else {
+      return null;
+    }
+    // if (!stu.Attendance) return;
+    // const period = this.periodConf.Name;
+    // const dateAtts = [].concat(stu.Attendance.Period) as PeriodStatus[];
+    // return dateAtts.find(v => v['@text'] === period);
   }
 
   async saveRollCall() {

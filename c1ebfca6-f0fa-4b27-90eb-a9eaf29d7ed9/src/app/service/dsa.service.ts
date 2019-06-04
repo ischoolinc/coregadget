@@ -56,24 +56,8 @@ export class DSAService {
     if (type === "Class") req.Request.ClassID = id;
 
     const rsp = await this.contract.send('GetStudent', req);
-    
+
     return [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; });
-  }
-
-  /**
-   * 取得建議點名清單。
-   * @param date 日期。
-   */
-  public async getSuggestRollCall(date: string) {
-    await this.ready;
-
-    const rsp = await this.contract.send('SuggestRollCall', {
-      Request: {
-        OccurDate: date
-      }
-    });
-
-    return [].concat((rsp && rsp.list) || []) as SuggestRecord[];
   }
 
   /**
@@ -126,7 +110,7 @@ export class DSAService {
    * 取得今日日期。
    */
   public async getToday() {
-    
+
     await this.ready;
     let rsp = await this.basicContract.send('beta.GetNow', {
       Pattern: 'yyyy/MM/dd'
@@ -158,7 +142,7 @@ export class DSAService {
     await this.ready;
     const rsp = await this.contract.send('GetAllCourse');
     const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeYearObj[];
- 
+
     gradeYears.forEach(v => {
 
       v.Class = [].concat(v.Class || []) as ClassObj[];
@@ -208,7 +192,7 @@ export class DSAService {
     }
   }
 
-  public async SetTeacherSetting(settingJson: JSON) {
+  public async setTeacherSetting(settingJson: JSON) {
     this.contract.send('SetTeacherSetting', {
       Request: {
         Content: JSON.stringify(settingJson)
@@ -237,23 +221,29 @@ export interface Config {
   Absences: any;
 }
 
-export interface SuggestRecord {
-  Checked: string;
-  CourseID: string;
-  CourseName: string;
-  Period: string;
-}
-
 export interface Student {
   StudentID: string;
   Name: string;
   SeatNo: string;
   StudentNumber: string;
-  Photo: string;
   ClassName: string;
-  Attendance: AttendanceItem;
+  // Attendance: AttendanceItem;
   PhotoUrl: string; //2018/10/24 new
   AbsenceRate: number;  //Jean 20190522 增加 出席率
+  Absence: Absence;
+  PrevAbsence: PrevAbsence;
+}
+
+export interface Absence {
+  AbsenceName:string;
+  HelperRollCall: string;
+  RollCall: string;
+  RollCallChecked: string;
+}
+
+export interface PrevAbsence {
+  Period: string;
+  AbsenceName: string;
 }
 
 export interface AttendanceItem {
