@@ -41,7 +41,7 @@ export class DSAService {
    * @param id 編號。
    * @param date 日期。
    */
-  public async getStudents(type, id, date, period) {
+  public async getStudent(type, id, date, period) {
     await this.ready;
 
     const req: any = {
@@ -55,9 +55,9 @@ export class DSAService {
     if (type === "Course") req.Request.CourseID = id;
     if (type === "Class") req.Request.ClassID = id;
 
-    const rsp = await this.contract.send('GetStudents', req);
+    const rsp = await this.contract.send('GetStudent', req);
     
-    return [].concat((rsp && rsp.Students && rsp.Students.Student) || []).map(function (item) { return item as Student; });
+    return [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; });
   }
 
   /**
@@ -245,7 +245,7 @@ export interface SuggestRecord {
 }
 
 export interface Student {
-  ID: string;
+  StudentID: string;
   Name: string;
   SeatNo: string;
   StudentNumber: string;

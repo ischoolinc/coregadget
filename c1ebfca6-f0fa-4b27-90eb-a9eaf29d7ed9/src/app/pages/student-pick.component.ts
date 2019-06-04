@@ -93,7 +93,7 @@ export class StudentPickComponent implements OnInit {
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
 
-    const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
+    const students = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
     this.studentChecks = [];
 
     const c = await this.gadget.getContract("campus.rollcall.teacher");
@@ -102,11 +102,11 @@ export class StudentPickComponent implements OnInit {
     for (const stu of students) {
 
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.StudentID}`;
       const status = this.getSelectedAttendance(stu);
 
       // 加入出席率
-      stu.AbsenceRate = this.absenceRates[stu.ID];
+      stu.AbsenceRate = this.absenceRates[stu.StudentID];
 
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
     }
