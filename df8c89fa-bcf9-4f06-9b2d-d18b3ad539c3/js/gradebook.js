@@ -218,6 +218,18 @@
                                         }
                                     });
 
+                                    // 課程資料排序 sort by name
+                                    $scope.courseList.sort(function(a, b){
+                                        if (a.CourseName < b.CourseName) {
+                                            return -1;
+                                        }
+                                        if (a.CourseName > b.CourseName) {
+                                            return 1;
+                                        }
+
+                                        return 0;
+                                    });
+                                    
                                     $scope.haveNoCourse = false;
 
                                     // 設定目前課程
@@ -259,117 +271,121 @@
              * templateList、examList
              */
             {
-                [].concat(course.Scores.Score || []).forEach(function (template, index) {
-                    template.Type = 'Number';
-                    template.Permission = "Editor";
-                    // 判斷此定期評量是否在成績輸入時間內
-                    template.Lock = !(new Date(template.InputStartTime) < new Date() && new Date() < new Date(template.InputEndTime));
-                    
-                    // 定期評量
-                    var score = {
-                        TemplateID: template.ExamID, // 定期評量ID
-                        ExamID: 'Score_' + template.ExamID,
-                        Name: '定期評量',
-                        Type: 'Number',
-                        Permission: 'Editor',
-                        Lock: template.Extension.Extension.UseScore !== '是' || template.Lock,
-                    };
-                    // 平時評量
-                    var assignmentScore = {
-                        TemplateID: template.ExamID, // 定期評量ID
-                        ExamID: 'AssignmentScore_' + template.ExamID,
-                        Name: '平時評量',
-                        Type: 'Number',
-                        Permission: 'Read', // 平時評量分數 調整為小考成績結算後帶入分數
-                        Lock: template.Extension.Extension.UseAssignmentScore !== '是' || template.Lock,
-                    };
-                    // 文字評量
-                    var text = {
-                        TemplateID: template.ExamID, // 定期評量ID
-                        ExamID: 'Text_' + template.ExamID,
-                        Name: '文字評量',
-                        Type: 'Text',
-                        Permission: 'Editor',
-                        Lock: template.Extension.Extension.UseText !== '是' || template.Lock,
-                    };
-    
-                    $scope.templateList.push(template);
-                    $scope.examList.push(score, assignmentScore, text);
-                });
-
-                // 設定目前定期評量
-                $scope.current.template = $scope.templateList[0];
-    
-                // 學期成績
-                var finalScore = { 
-                    ExamID: '學期成績',
-                    Name: '學期成績',
-                    Type: 'Number',
-                    Permission: 'Editor',
-                    Lock: true
-                    };
-                // 學期成績試算
-                var finalScorePreview = {
-                    ExamID: '學期成績_試算',
-                    Name: '學期成績_試算',
-                    SubName: '試算',
-                    Type: 'Program',
-                    Permission: 'Editor',
-                    Lock: false,
-                    /**學期成績試算 */
-                    Fn: function (stu) {
-                        // 評量成績加總   
-                        var total = 0; 
-                        // 評量權重加總
-                        var base = 0; 
-                        var seed = 10000;
-                        [].concat(course.Scores.Score || []).forEach(function (template, index) {
-                            /** 定期比例 
-                             *  平時比例：(100 - 定期比例)%
-                            */
-                            var ScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage)/100 || 0;
-                            // 評量比重
-                            var p = Number(template.Percentage) || 0;
-                            // 定期評量成績
-                            var score = stu['Score_' + template.ExamID];
-                            // 平時評量成績
-                            var assignmentScore = stu['AssignmentScore_' + template.ExamID];
-
-                            // 是否採計定期評量成績、平時評量成績
-                            if ((score != '缺' && (score || score == '0')) 
-                                && (assignmentScore != '缺' && (assignmentScore || assignmentScore == '0'))) {
-    
-                                var tpScore = score * ScorePercentage + assignmentScore * (1 - ScorePercentage);
-                                total +=  seed * p *tpScore;
-                                base += p;
-                            }
-                            else if((score != '缺' && (score || score == '0')) 
-                                && !(assignmentScore != '缺' && (assignmentScore || assignmentScore == '0'))) {
-    
-                                var tpScore = score * 1;
-                                total +=  seed * p *tpScore;
-                                base += p;
-                            }
-                            else if(!(score != '缺' && (score || score == '0')) 
-                                && (assignmentScore != '缺' && (assignmentScore || assignmentScore == '0'))) {
-    
-                                var tpScore = assignmentScore * 1;
-                                total +=  seed * p *tpScore;
-                                base += p;
-                            }
-                        });
+                // 課程是否指定平分樣版
+                if (course.Scores.Score) {
+                    [].concat(course.Scores.Score || []).forEach(function (template, index) {
+                        template.Type = 'Number';
+                        template.Permission = "Editor";
+                        // 判斷此定期評量是否在成績輸入時間內
+                        template.Lock = !(new Date(template.InputStartTime) < new Date() && new Date() < new Date(template.InputEndTime));
                         
-                        if (base) {
-                            var round = Math.pow(10, $scope.params[finalScorePreview.Name + 'Round'] || $scope.params.DefaultRound);
-                            stu[finalScorePreview.ExamID] = Math.round((Math.floor(total / base) / seed) * round) / round;
-                        }
-                        else {
-                            stu[finalScorePreview.ExamID] = "";
-                        }
-                    }
-                };
+                        // 定期評量
+                        var score = {
+                            TemplateID: template.ExamID, // 定期評量ID
+                            ExamID: 'Score_' + template.ExamID,
+                            Name: '定期評量',
+                            Type: 'Number',
+                            Permission: 'Editor',
+                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock,
+                        };
+                        // 平時評量
+                        var assignmentScore = {
+                            TemplateID: template.ExamID, // 定期評量ID
+                            ExamID: 'AssignmentScore_' + template.ExamID,
+                            Name: '平時評量',
+                            Type: 'Number',
+                            Permission: 'Read', // 平時評量分數 調整為小考成績結算後帶入分數
+                            Lock: template.Extension.Extension.UseAssignmentScore !== '是' || template.Lock,
+                        };
+                        // 文字評量
+                        var text = {
+                            TemplateID: template.ExamID, // 定期評量ID
+                            ExamID: 'Text_' + template.ExamID,
+                            Name: '文字評量',
+                            Type: 'Text',
+                            Permission: 'Editor',
+                            Lock: template.Extension.Extension.UseText !== '是' || template.Lock,
+                        };
+        
+                        $scope.templateList.push(template);
+                        $scope.examList.push(score, assignmentScore, text);
+                    });
     
-                $scope.examList.splice(0, 0, finalScore, finalScorePreview);
+                    // 設定目前定期評量
+                    $scope.current.template = $scope.templateList[0];
+        
+                    // 學期成績
+                    var finalScore = { 
+                        ExamID: '學期成績',
+                        Name: '學期成績',
+                        Type: 'Number',
+                        Permission: 'Editor',
+                        Lock: true
+                        };
+                    // 學期成績試算
+                    var finalScorePreview = {
+                        ExamID: '學期成績_試算',
+                        Name: '學期成績_試算',
+                        SubName: '試算',
+                        Type: 'Program',
+                        Permission: 'Editor',
+                        Lock: false,
+                        /**學期成績試算 */
+                        Fn: function (stu) {
+                            // 評量成績加總   
+                            var total = 0; 
+                            // 評量權重加總
+                            var base = 0; 
+                            var seed = 10000;
+                            [].concat(course.Scores.Score || []).forEach(function (template, index) {
+                                /** 定期比例 
+                                 *  平時比例：(100 - 定期比例)%
+                                */
+                                var ScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage)/100 || 0;
+                                // 評量比重
+                                var p = Number(template.Percentage) || 0;
+                                // 定期評量成績
+                                var score = stu['Score_' + template.ExamID];
+                                // 平時評量成績
+                                var assignmentScore = stu['AssignmentScore_' + template.ExamID];
+    
+                                // 是否採計定期評量成績、平時評量成績
+                                if ((score != '缺' && (score || score == '0')) 
+                                    && (assignmentScore != '缺' && (assignmentScore || assignmentScore == '0'))) {
+        
+                                    var tpScore = score * ScorePercentage + assignmentScore * (1 - ScorePercentage);
+                                    total +=  seed * p *tpScore;
+                                    base += p;
+                                }
+                                else if((score != '缺' && (score || score == '0')) 
+                                    && !(assignmentScore != '缺' && (assignmentScore || assignmentScore == '0'))) {
+        
+                                    var tpScore = score * 1;
+                                    total +=  seed * p *tpScore;
+                                    base += p;
+                                }
+                                else if(!(score != '缺' && (score || score == '0')) 
+                                    && (assignmentScore != '缺' && (assignmentScore || assignmentScore == '0'))) {
+        
+                                    var tpScore = assignmentScore * 1;
+                                    total +=  seed * p *tpScore;
+                                    base += p;
+                                }
+                            });
+                            
+                            if (base) {
+                                var round = Math.pow(10, $scope.params[finalScorePreview.Name + 'Round'] || $scope.params.DefaultRound);
+                                stu[finalScorePreview.ExamID] = Math.round((Math.floor(total / base) / seed) * round) / round;
+                            }
+                            else {
+                                stu[finalScorePreview.ExamID] = "";
+                            }
+                        }
+                    };
+        
+                    $scope.examList.splice(0, 0, finalScore, finalScorePreview);
+                }
+                
             }
 
             /**取得小考資料 */
@@ -398,44 +414,46 @@
                     if (error !== null) {
                         alert("TeacherAccess.GetCourseExtensions Error");
                     } else {
-                        
-                        $scope.$apply(function () {
-                            // 小考試別整理
-                            [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
-
-                                var gradeItem = {
-                                    TemplateID: item.ExamID, // 定期評量ID
-                                    ExamID: 'Quiz_' + item.SubExamID,
-                                    SubExamID: item.SubExamID,
-                                    Name: item.Name,
-                                    Weight: item.Weight,
-                                    Index: item.Index || '',
-                                    Type: 'Number',
-                                    Permission: 'Editor',
-                                    /**
-                                     * Lock條件
-                                     * 1. 平時評量是否在成績輸入時間內
-                                     * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
-                                     */
-                                    Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${item.ExamID}`)[0].Lock
-                                };
-                                
-                                $scope.gradeItemList.push(gradeItem);
+                        // 課程是否有設定小考試別
+                        if (response.Response.CourseExtension.Extension.GradeItem) {
+                            $scope.$apply(function () {
+                                // 小考試別整理
+                                [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
+    
+                                    var gradeItem = {
+                                        TemplateID: item.ExamID, // 定期評量ID
+                                        ExamID: 'Quiz_' + item.SubExamID,
+                                        SubExamID: item.SubExamID,
+                                        Name: item.Name,
+                                        Weight: item.Weight,
+                                        Index: item.Index || '',
+                                        Type: 'Number',
+                                        Permission: 'Editor',
+                                        /**
+                                         * Lock條件
+                                         * 1. 平時評量是否在成績輸入時間內
+                                         * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
+                                         */
+                                        Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${item.ExamID}`)[0].Lock
+                                    };
+                                    
+                                    $scope.gradeItemList.push(gradeItem);
+                                });
+                                // 各定期評量的平時評量整理
+                                [].concat($scope.templateList || []).forEach(template => {
+                                    var quizResult = { 
+                                        TemplateID: template.ExamID,
+                                        ExamID: 'QuizResult_' + template.ExamID,
+                                        Name: '平時評量',
+                                        Type: 'Number',
+                                        Permission: 'Program',
+                                        // 取得平時評量是否在成績輸入時間內，並且啟用
+                                        Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
+                                    };
+                                    $scope.gradeItemList.splice(0, 0, quizResult);
+                                });
                             });
-                            // 各定期評量的平時評量整理
-                            [].concat($scope.templateList || []).forEach(template => {
-                                var quizResult = { 
-                                    TemplateID: template.ExamID,
-                                    ExamID: 'QuizResult_' + template.ExamID,
-                                    Name: '平時評量',
-                                    Type: 'Number',
-                                    Permission: 'Program',
-                                    // 取得平時評量是否在成績輸入時間內，並且啟用
-                                    Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
-                                };
-                                $scope.gradeItemList.splice(0, 0, quizResult);
-                            });
-                        });
+                        }
                     }
 
                     // 設定目前定期評量
@@ -627,6 +645,16 @@
                             }
                         });
 
+                        // 檢查是否有修課學生以及課程設定評分樣板
+                        {
+                            $scope.errMsg = '';
+                            if (!$scope.examList || $scope.examList.length == 0) {
+                                $scope.errMsg += '此課程尚未設定評分樣板';
+                            }
+                            if (!$scope.studentList || $scope.studentList.length == 0) {
+                                $scope.errMsg += ' 此課程無修課學生';
+                            }
+                        }
                     }
                 }
             });
@@ -729,12 +757,15 @@
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
 
+                            // 資料替換用
                             $scope.examTextList = [].concat(response.Response.TextMappingTable.Item);
+                            // 資料顯示用
+                            $scope.examCodeList = [].concat(response.Response.TextMappingTable.Item);
 
-                            // 資料排序
-                            // $scope.examTextList.sort(function (a, b) {
-                            //     return a.Code.length < b.Code.length ? 1 : -1;
-                            // });
+                            // 代碼排序 長度大到小
+                            $scope.examTextList.sort(function (a, b) {
+                                return a.Code.length < b.Code.length ? 1 : -1;
+                            });
                         }
                     });
                 }
@@ -763,11 +794,13 @@
                         var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
                         temp = Math.round(temp * round) / round;
                     }
-                    if ($scope.current.Value == "缺")
+                    if ($scope.current.Value == "缺") {
                         flag = true;
+                    }
                     if (flag) {
-                        if ($scope.current.Value != "" && $scope.current.Value != "缺")
+                        if ($scope.current.Value != "" && $scope.current.Value != "缺"){
                             $scope.current.Value = temp;
+                        }
                     }
                 }
                 else {
@@ -837,8 +870,8 @@
             }
             else { // 平時評量
                 
-                var totalWeight = 0;
-                var totalWeightScore = 0;
+                // var totalWeight = 0;
+                // var totalWeightScore = 0;
                 
                 // 計算平時評量
                 $scope.calcQuizResult($scope.current.Student);
