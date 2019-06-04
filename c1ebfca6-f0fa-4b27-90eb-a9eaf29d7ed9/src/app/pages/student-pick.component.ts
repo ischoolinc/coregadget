@@ -79,7 +79,7 @@ export class StudentPickComponent implements OnInit {
         // 學生清單（含點名資料）。 
         await this.reloadStudentAttendances();
       } catch (error) {
-        this.alert.json('ServiceError:_.GetStudents');
+        this.alert.json('ServiceError:GetStudents');
         console.log(error);
       }
 
@@ -102,7 +102,7 @@ export class StudentPickComponent implements OnInit {
     for (const stu of students) {
 
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
       const status = this.getSelectedAttendance(stu);
 
       // 加入出席率

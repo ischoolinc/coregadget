@@ -30,7 +30,7 @@ export class DSAService {
   public async getGetConfig() {
     await this.ready;
 
-    const rsp = await this.contract.send('_.GetConfig');
+    const rsp = await this.contract.send('GetConfig');
 
     return rsp && rsp.Config;
   }
@@ -55,7 +55,7 @@ export class DSAService {
     if (type === "Course") req.Request.CourseID = id;
     if (type === "Class") req.Request.ClassID = id;
 
-    const rsp = await this.contract.send('_.GetStudents', req);
+    const rsp = await this.contract.send('GetStudents', req);
     
     return [].concat((rsp && rsp.Students && rsp.Students.Student) || []).map(function (item) { return item as Student; });
   }
@@ -67,7 +67,7 @@ export class DSAService {
   public async getSuggestRollCall(date: string) {
     await this.ready;
 
-    const rsp = await this.contract.send('_.SuggestRollCall', {
+    const rsp = await this.contract.send('SuggestRollCall', {
       Request: {
         OccurDate: date
       }
@@ -93,7 +93,7 @@ export class DSAService {
       req.ClassID = id;
     }
 
-    const rsp = await this.contract.send('_.SetRollCall', req);
+    const rsp = await this.contract.send('SetRollCall', req);
 
     return rsp;
   }
@@ -109,7 +109,7 @@ export class DSAService {
       RefStudentID: studentID
     };
 
-    const rsp = await this.contract.send('_.SetHelper', req);
+    const rsp = await this.contract.send('SetHelper', req);
 
     return rsp;
   }
@@ -137,7 +137,7 @@ export class DSAService {
   public async getSchedule(date: string) {
     await this.ready;
 
-    const rsp = await this.contract.send('_.GetSchedule', {
+    const rsp = await this.contract.send('GetSchedule', {
       Request: {
         OccurDate: date
       }
@@ -156,7 +156,7 @@ export class DSAService {
 
   public async getAllCourse() {
     await this.ready;
-    const rsp = await this.contract.send('_.GetAllCourse');
+    const rsp = await this.contract.send('GetAllCourse');
     const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeYearObj[];
  
     gradeYears.forEach(v => {
@@ -176,7 +176,7 @@ export class DSAService {
   public async getTeacherSetting() {
 
     await this.ready;
-    const rsp = await this.contract.send('_.GetTeacherSetting');
+    const rsp = await this.contract.send('GetTeacherSetting');
 
 
     if (rsp.Content === "{}") {
@@ -191,7 +191,7 @@ export class DSAService {
   //取得出席率
   public async getAbsenceRate(courseId: string) {
     await this.ready;
-    const rsp = await this.contract.send('_.GetAttendanceRate', {
+    const rsp = await this.contract.send('GetAttendanceRate', {
       Request: {
         CourseId: courseId
       }
@@ -209,7 +209,7 @@ export class DSAService {
   }
 
   public async SetTeacherSetting(settingJson: JSON) {
-    this.contract.send('_.SetTeacherSetting', {
+    this.contract.send('SetTeacherSetting', {
       Request: {
         Content: JSON.stringify(settingJson)
       }

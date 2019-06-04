@@ -66,7 +66,7 @@ export class TeacherHelperComponent implements OnInit {
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
     for (const stu of _students) {
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
       this.students.push(stu);
     }
     // 取得課程助手
