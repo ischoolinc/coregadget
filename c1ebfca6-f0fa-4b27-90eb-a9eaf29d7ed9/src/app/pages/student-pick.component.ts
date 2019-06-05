@@ -79,7 +79,7 @@ export class StudentPickComponent implements OnInit {
         // 學生清單（含點名資料）。 
         await this.reloadStudentAttendances();
       } catch (error) {
-        this.alert.json('ServiceError:_.GetStudents');
+        this.alert.json('ServiceError:GetStudents');
         console.log(error);
       }
 
@@ -93,7 +93,7 @@ export class StudentPickComponent implements OnInit {
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
 
-    const students = await this.dsa.getStudents(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
+    const students = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
     this.studentChecks = [];
 
     const c = await this.gadget.getContract("campus.rollcall.teacher");
@@ -102,11 +102,11 @@ export class StudentPickComponent implements OnInit {
     for (const stu of students) {
 
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.StudentID}`;
       const status = this.getSelectedAttendance(stu);
 
       // 加入出席率
-      stu.AbsenceRate = this.absenceRates[stu.ID];
+      stu.AbsenceRate = this.absenceRates[stu.StudentID];
 
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
     }
@@ -202,10 +202,20 @@ export class StudentPickComponent implements OnInit {
    * @param stu 學生資料。
    */
   private getSelectedAttendance(stu: Student) {
-    if (!stu.Attendance) return;
-    const period = this.periodConf.Name;
-    const dateAtts = [].concat(stu.Attendance.Period) as PeriodStatus[];
-    return dateAtts.find(v => v['@text'] === period);
+    var abs = (stu.Absence.AbsenceName || stu.Absence.RollCallChecked == 'true') ? stu.Absence.AbsenceName : stu.Absence.HelperRollCall;
+    if (abs) {
+      return {
+        '@text': this.periodConf.Name,
+        AbsenceType: abs
+      } as PeriodStatus;
+    }
+    else {
+      return null;
+    }
+    // if (!stu.Attendance) return;
+    // const period = this.periodConf.Name;
+    // const dateAtts = [].concat(stu.Attendance.Period) as PeriodStatus[];
+    // return dateAtts.find(v => v['@text'] === period);
   }
 
   async saveRollCall() {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DSAService, RollCallRecord, SuggestRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
+import { DSAService, RollCallRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConfigService } from '../service/config.service';
 import { AlertService } from '../service/alert.service';
@@ -68,7 +68,7 @@ export class SettingComponent implements OnInit {
 
     const dialog = this.alert.waiting("儲存中...");
     try {
-      await this.dsa.SetTeacherSetting(this.teacherSetting);
+      await this.dsa.setTeacherSetting(this.teacherSetting);
       this.alert.snack("儲存成功");
     } catch (error) {
       this.alert.json(error);

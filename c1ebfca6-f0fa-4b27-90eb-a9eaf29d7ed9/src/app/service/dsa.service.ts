@@ -30,7 +30,7 @@ export class DSAService {
   public async getGetConfig() {
     await this.ready;
 
-    const rsp = await this.contract.send('_.GetConfig');
+    const rsp = await this.contract.send('GetConfig');
 
     return rsp && rsp.Config;
   }
@@ -41,7 +41,7 @@ export class DSAService {
    * @param id 編號。
    * @param date 日期。
    */
-  public async getStudents(type, id, date, period) {
+  public async getStudent(type, id, date, period) {
     await this.ready;
 
     const req: any = {
@@ -55,25 +55,9 @@ export class DSAService {
     if (type === "Course") req.Request.CourseID = id;
     if (type === "Class") req.Request.ClassID = id;
 
-    const rsp = await this.contract.send('_.GetStudents', req);
-    
-    return [].concat((rsp && rsp.Students && rsp.Students.Student) || []).map(function (item) { return item as Student; });
-  }
+    const rsp = await this.contract.send('GetStudent', req);
 
-  /**
-   * 取得建議點名清單。
-   * @param date 日期。
-   */
-  public async getSuggestRollCall(date: string) {
-    await this.ready;
-
-    const rsp = await this.contract.send('_.SuggestRollCall', {
-      Request: {
-        OccurDate: date
-      }
-    });
-
-    return [].concat((rsp && rsp.list) || []) as SuggestRecord[];
+    return [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; });
   }
 
   /**
@@ -93,7 +77,7 @@ export class DSAService {
       req.ClassID = id;
     }
 
-    const rsp = await this.contract.send('_.SetRollCall', req);
+    const rsp = await this.contract.send('SetRollCall', req);
 
     return rsp;
   }
@@ -109,7 +93,7 @@ export class DSAService {
       RefStudentID: studentID
     };
 
-    const rsp = await this.contract.send('_.SetHelper', req);
+    const rsp = await this.contract.send('SetHelper', req);
 
     return rsp;
   }
@@ -126,7 +110,7 @@ export class DSAService {
    * 取得今日日期。
    */
   public async getToday() {
-    
+
     await this.ready;
     let rsp = await this.basicContract.send('beta.GetNow', {
       Pattern: 'yyyy/MM/dd'
@@ -137,7 +121,7 @@ export class DSAService {
   public async getSchedule(date: string) {
     await this.ready;
 
-    const rsp = await this.contract.send('_.GetSchedule', {
+    const rsp = await this.contract.send('GetSchedule', {
       Request: {
         OccurDate: date
       }
@@ -156,9 +140,9 @@ export class DSAService {
 
   public async getAllCourse() {
     await this.ready;
-    const rsp = await this.contract.send('_.GetAllCourse');
+    const rsp = await this.contract.send('GetAllCourse');
     const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeYearObj[];
- 
+
     gradeYears.forEach(v => {
 
       v.Class = [].concat(v.Class || []) as ClassObj[];
@@ -176,7 +160,7 @@ export class DSAService {
   public async getTeacherSetting() {
 
     await this.ready;
-    const rsp = await this.contract.send('_.GetTeacherSetting');
+    const rsp = await this.contract.send('GetTeacherSetting');
 
 
     if (rsp.Content === "{}") {
@@ -191,7 +175,7 @@ export class DSAService {
   //取得出席率
   public async getAbsenceRate(courseId: string) {
     await this.ready;
-    const rsp = await this.contract.send('_.GetAttendanceRate', {
+    const rsp = await this.contract.send('GetAttendanceRate', {
       Request: {
         CourseId: courseId
       }
@@ -208,8 +192,8 @@ export class DSAService {
     }
   }
 
-  public async SetTeacherSetting(settingJson: JSON) {
-    this.contract.send('_.SetTeacherSetting', {
+  public async setTeacherSetting(settingJson: JSON) {
+    this.contract.send('SetTeacherSetting', {
       Request: {
         Content: JSON.stringify(settingJson)
       }
@@ -237,23 +221,29 @@ export interface Config {
   Absences: any;
 }
 
-export interface SuggestRecord {
-  Checked: string;
-  CourseID: string;
-  CourseName: string;
-  Period: string;
-}
-
 export interface Student {
-  ID: string;
+  StudentID: string;
   Name: string;
   SeatNo: string;
   StudentNumber: string;
-  Photo: string;
   ClassName: string;
-  Attendance: AttendanceItem;
+  // Attendance: AttendanceItem;
   PhotoUrl: string; //2018/10/24 new
   AbsenceRate: number;  //Jean 20190522 增加 出席率
+  Absence: Absence;
+  PrevAbsence: PrevAbsence;
+}
+
+export interface Absence {
+  AbsenceName:string;
+  HelperRollCall: string;
+  RollCall: string;
+  RollCallChecked: string;
+}
+
+export interface PrevAbsence {
+  Period: string;
+  AbsenceName: string;
 }
 
 export interface AttendanceItem {

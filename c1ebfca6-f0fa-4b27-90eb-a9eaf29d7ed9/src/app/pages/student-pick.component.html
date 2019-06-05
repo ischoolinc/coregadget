@@ -103,7 +103,8 @@
               <div class="text-gray text-truncate d-flex">
                 <strong class="mb-0 text-truncate">{{student.data?.Name}}</strong>
                 <div class="ml-auto"
-                     *ngIf="student.data?.AbsenceRate">
+                     *ngIf="student.data?.AbsenceRate"
+                     [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
                   {{student.data?.AbsenceRate}} <span>%</span>
                 </div>
               </div>

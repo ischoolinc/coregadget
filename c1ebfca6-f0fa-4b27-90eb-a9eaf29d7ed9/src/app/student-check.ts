@@ -66,12 +66,12 @@ export class StudentCheck {
     public getCheckData(): RollCallCheck {
       if(this._status) {
         return {
-          ID: this._stu.ID,
+          ID: this._stu.StudentID,
           Absence: this._status.AbsenceType
         }
       } else {
         return {
-          ID: this._stu.ID,
+          ID: this._stu.StudentID,
           Absence: ''
         }
       }
