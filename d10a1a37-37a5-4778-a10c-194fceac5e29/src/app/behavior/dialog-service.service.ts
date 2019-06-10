@@ -66,7 +66,7 @@ export class DialogService {
    * @param title 標題
    * @param body 內容
    */
-  public async editDialog(title: string, body: string, comment: string, detention: boolean, width: string = '450px'): Promise<EditDialogResult> {
+  public async editDialog(title: string, body: string, comment: string, detention: boolean, isGoodBehavior : boolean ,width: string = '450px'): Promise<EditDialogResult> {
 
     return new Promise<EditDialogResult>((r, j) => {
       const dialogRef = this.dialog.open(EditDialogComponent, {
@@ -75,7 +75,8 @@ export class DialogService {
           title: title,
           body: body,
           comment: comment,
-          detention: detention
+          detention: detention,
+          isGoodBehavior : isGoodBehavior,
         }
       });
 
@@ -86,6 +87,7 @@ export class DialogService {
           r({
             comment: comment,
             detention: false,
+            isGoodBehavior: false,
             confirm: false,
           })
         }
@@ -98,6 +100,7 @@ export class DialogService {
 export interface EditDialogResult {
   comment: string;
   detention: boolean;
+  isGoodBehavior :boolean;
   confirm: boolean;
 }
 

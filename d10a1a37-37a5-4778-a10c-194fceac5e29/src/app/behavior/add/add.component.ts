@@ -21,6 +21,7 @@ export class AddComponent implements OnInit {
   error: any;
   currentDateString: string;
   currentDetention: boolean;
+  currentGood: boolean;
   courseID: string;
   courseName: string;
   checkCount: Number;
@@ -63,6 +64,8 @@ export class AddComponent implements OnInit {
       this.loading = true;
       this.currentDateString = moment().format("YYYY-MM-DD");
       this.currentDetention = false;
+      this.currentGood = false;
+
 
       if (this.behaviorDataService.addDate !== "") {
         this.currentDateString = this.behaviorDataService.addDate;
@@ -79,7 +82,7 @@ export class AddComponent implements OnInit {
       })
 
       this.studentDataInfo = Utils.array(rsp, "Response/Student");
-
+      console.log("look if hava Good",this.studentDataInfo )
       this.studentDataList = [];
       for (const data of this.studentDataInfo) {
         data.checked = false;
@@ -163,18 +166,25 @@ export class AddComponent implements OnInit {
 
       if (!this.currentDateString) {
         checkCanSend = false;
-        checkCanSendError = "Please select the date.";
+        checkCanSendError = "Please select the date. \n";
       }
 
       if (!this.addText) {
         checkCanSend = false;
-        checkCanSendError += "Please enter comment.";
+        checkCanSendError += "Please enter comment. \n";
       }
 
       if (this.checkCount === 0) {
         checkCanSend = false;
-        checkCanSendError += "No students selected.";
+        checkCanSendError += "No students selected. \n";
       }
+
+      if (this.currentDetention && this.currentGood) {
+        checkCanSend = false;
+        checkCanSendError += "Good and Detention can't be selected in the same time . \n";
+      }
+
+
 
       if (checkCanSend === true) {
         // // 先用單筆，
@@ -207,6 +217,7 @@ export class AddComponent implements OnInit {
                 CreateDate: this.currentDateString,
                 CourseID: this.courseID,
                 Detention: this.currentDetention ? "true" : "false",
+                IsGoodBehavior : this.currentGood ? "true" : "false",
                 StudentID: data.ID
               }
             }

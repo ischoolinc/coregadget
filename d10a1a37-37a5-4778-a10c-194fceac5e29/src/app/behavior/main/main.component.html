@@ -32,6 +32,8 @@
                     <div class="col-md-8 col-lg-9">
                         <span *ngIf="cdata.Detention=='true'"
                               class="badge badge-danger mr-1">Detention</span>
+                              <span *ngIf="cdata.IsGoodBehavior=='true'"
+                              class="badge badge-success mr-1">Good</span>
                         <span >{{cdata.Comment}}</span>
                     </div>
                 </div>
