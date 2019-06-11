@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ComprehensiveService } from '../comprehensive.service';
 import { FormControl } from '@angular/forms';
 // import alldata from './../example0';
 import { QQuery, QSubject, QOption } from '../core/data_model';
+import { CounselDetailComponent } from "../../counsel-detail.component";
 
 @Component({
   selector: 'app-comprehensive-fill',
@@ -19,9 +20,13 @@ export class ComprehensiveFillComponent implements OnInit {
   fulldata: QSubject[] = [];
 
   constructor(private route: ActivatedRoute,
-    private comprehensiveSrv: ComprehensiveService) { }
+    private comprehensiveSrv: ComprehensiveService,
+    @Optional()
+    private counselDetailComponent: CounselDetailComponent
+  ) { }
 
   ngOnInit() {
+    this.counselDetailComponent.setCurrentItem("comprehensive");
     this.route.parent.parent.paramMap.subscribe((params: ParamMap): void => {
       this.studentId = params.get('studentID');
       if (this.studentId) {
