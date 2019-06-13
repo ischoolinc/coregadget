@@ -136,12 +136,8 @@ export class AppService {
               periods.forEach((p) => {
 
                 const isLock = (aryAbsence.indexOf(p.AbsenceType) !== -1) ? false : true;
-                if(p['@text'] && p['@text'] !="undefined")
-                {
-                  leaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType, isLock));
-                  orileaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType, isLock));
-                }
-                
+                leaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType, isLock));
+                orileaves.set(p['@text'], new Leave(p['@text'], p.AbsenceType, isLock));
               });
             }
             students.push(new Student(item.StudentId, item.StudentName, item.SeatNo, leaves, orileaves));

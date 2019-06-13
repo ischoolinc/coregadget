@@ -19,8 +19,7 @@ export class AppComponent implements OnInit {
   clearAbs: Absence = new Absence(null, null);
   /**節次 */
   periods: Period[] = new Array<Period>();
-  // periodMap: Map<string, Period> = new Map<string, Period>();
-  periodMap: Map<string, Period> = new Map();
+  periodMap: Map<string, Period> = new Map<string, Period>();
   periodPermissionMap: Map<string, Period> = new Map<string, Period>();
   students: Student[] = new Array<Student>();
   classSubject$: rx.Subject<Class> = new rx.Subject();
@@ -231,10 +230,9 @@ export class AppComponent implements OnInit {
 
     this.students.forEach((s) => {
       let tmpDetail: string = '';
-      s.leaveList.forEach((value, key) => {       
+      s.leaveList.forEach((value, key) => {
         let periodName = s.leaveList.get(key).periodName;
         let periodType = this.periodMap.get(periodName).type;
-        // let periodType = this.periodMap.get(periodName) ? this.periodMap.get(periodName).type : '';
         let absName = s.leaveList.get(key).absName;
         tmpDetail += `<Period AbsenceType="${absName}" AttendanceType="${periodType}">${periodName}</Period>`;
       });
