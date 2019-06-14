@@ -75,6 +75,110 @@
             }]
         };
 
+        // 模式清單
+        $scope.modeList = ['成績管理', '平時評量'];
+
+        /**
+        * 模式切換
+        */
+        $scope.setCurrentMode = function (_mode) {
+            var execute = false;
+            // 檢查資料是否更動
+            var data_changed = !$scope.checkAllTable($scope.current.mode);
+            if (data_changed) {
+                if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
+                    return;
+                }
+                else {
+                    execute = true;
+                }
+            } else {
+                execute = true;
+            }
+            if (execute) {
+                $scope.current.mode = _mode;
+
+                // 目前選擇的試別清空
+                $scope.current.Exam = null;
+                // 資料Reload (會自動帶入目前第一個開放的試別)
+                $scope.setCurrentCourse($scope.courseList[0]);
+                //$scope.scoreDataReload();
+                //// 設定批次項目
+                //$scope.setBatchItem();
+                //// 設定目前學生與目前試別
+                //$scope.setupCurrent();
+            }
+        }
+
+        // 2019/06/14 穎驊 優化高中成績Web輸入， 自羿均改的優化國中Web 輸入 功能移植過來 Excel 輸出
+        // 資料結構 小差別 高中版: stuRec['Exam' + exam.ExamID]、 國中版 有底線 stuRec['Exam_' + exam.ExamID];
+        /**
+        * 匯出成績單
+        */
+        $scope.exportExcel = function () {
+            // 檢查資料是否更動
+            var data_changed = !$scope.checkAllTable($scope.current.mode);
+            if (data_changed) {
+                alert("資料尚未儲存，無法匯出報表。");
+            }
+            else {
+                var wb = XLSX.utils.book_new();
+                wb.Props = {
+                    Title: '成績單',
+                    Subject: '',
+                    Author: 'ischool',
+                };
+                wb.SheetNames.push('成績單');
+
+                // 資料整理
+                var ws_data = [];
+                // 自訂欄寬
+                var wscols = [
+                    { wch: 10 },
+                    { wch: 8 },
+                    { wch: 15 },
+                    { wch: 15 },
+                    { wch: 15 },
+                    { wch: 15 }
+                ];
+                $scope.studentList.forEach(function (stuRec) {
+                    var data = {
+                        班級: stuRec.ClassName,
+                        座號: stuRec.SeatNo,
+                        姓名: stuRec.StudentName
+                    }
+                    data['學期成績'] = stuRec['Exam學期成績'];
+                    if ($scope.current.Course.Scores.Score) {
+                        $scope.current.Course.Scores.Score.forEach(function (exam) {
+                            data[exam.Name] = stuRec['Exam' + exam.ExamID];
+                            wscols.push({ wch: 15 });
+                        });
+                    }
+                 
+                    ws_data.push(data);
+                });
+
+                var ws = XLSX.utils.json_to_sheet(ws_data);
+
+                ws['!cols'] = wscols;
+
+                wb.Sheets[wb.SheetNames[0]] = ws;
+                // export the workbook as xlsx binary
+                var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+                saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xlsx');
+            }
+        }
+
+        /**
+         * convert the binary data into octet
+         */
+        var s2ab = function (s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+
         $scope.params = gadget.params;
 
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
@@ -421,6 +525,9 @@
             Course: null
         };
 
+        // 設定目前資料顯示模式：成績管理 or 平時評量
+        $scope.current.mode = $scope.modeList[0];
+
         $scope.connection = gadget.getContract("ta");
 
         $scope.connection.send({
@@ -450,13 +557,22 @@
                                 alert("TeacherAccess.GetMyCourses Error");
                             } else {
                                 $scope.$apply(function () {
-                                    $scope.courseList = [];
 
+                                    $scope.courseList = [];
+                                    $scope.HasNoCourse = false;
+                                        
                                     [].concat(response.Courses.Course || []).forEach(function (courseRec, index) {
                                         if (courseRec.SchoolYear == schoolYear && courseRec.Semester == semester) {
                                             $scope.courseList.push(courseRec);
                                         }
                                     });
+
+                                    if ($scope.courseList.length == 0)
+                                    {
+                                        // 本學期沒有任何課程
+                                        $scope.HasNoCourse = true;
+                                    }
+
                                     $scope.setCurrentCourse($scope.courseList[0]);
                                 });
                             }
@@ -587,6 +703,9 @@
             $scope.current.ExamOrder = [];
             $scope.current.Course = course;
             $scope.examList = [];
+            $scope.gradeItemList = [];
+
+            //$scope.gradeItemList = [{ Name: "Q1" }, { Name: "Q2" }, { Name: "Q3" }];
 
             [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
                 examRec.Type = 'Number';
