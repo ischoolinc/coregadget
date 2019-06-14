@@ -18,6 +18,10 @@ import { CounselRoutingComponent } from "./counsel/counsel-routing/counsel-routi
 import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/detail-routing.component";
 import { ReferralListComponent } from "./referral/referral-list/referral-list.component";
 import { ReferralDetailComponent } from "./referral/referral-detail/referral-detail.component";
+import { ComprehensiveComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
+import { ComprehensiveRoutingComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-routing.component";
+import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component";
+import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component';
 // import { CaseRoleGuard, CounselRoleGuard, CounselStatisticsRoleGuard, ReferralRoleGuard, InterviewStatisticsRoleGuard } from "./role.guard";
 
 const routes: Routes = [
@@ -43,7 +47,16 @@ const routes: Routes = [
           { path: "absent", component: AbsentDetailComponent },
           { path: "exam_score", component: ExamScoreDetailComponent },
           { path: "semester_score", component: SemesterScoreDetailComponent },
-          { path: "comprehensive", loadChildren: './counsel/counsel-detail/comprehensive/comprehensive.module#ComprehensiveModule' }
+          {
+            path: "comprehensive",
+            component: ComprehensiveComponent,
+            children: [
+              { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
+              { path: "view/:sectionID", component:ComprehensiveViewComponent },
+              { path: "edit/:sectionID", component:ComprehensiveEditComponent }
+            ]
+          },
+          { path: "comprehensive-test", loadChildren: './counsel/counsel-detail/comprehensive/comprehensive.module#ComprehensiveModule' }
         ]
       }
     ]
@@ -81,4 +94,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
