@@ -171,7 +171,7 @@
                         ng-class="{'active':exam == current.Exam}"
                         ng-if="exam.Permission == 'Editor'  && exam.Type !== 'Program' && exam.Name !== '學期成績'">
                         <a href="javascript:;"
-                           ng-click="setCurrentMode(exam)">{{exam.Name}}</a>
+                           ng-click="setCurrent(current.Student, exam, true, true)">{{exam.Name}}</a>
                     </li>
                 </ul>
             </div>
@@ -450,7 +450,7 @@
                                 rowspan="2">
                                 學生
                             </th>
-                            <th ng-repeat="item in gradeItemList "
+                            <th ng-repeat="item in current.gradeItemList "
                                 class="text-center"
                                 style="padding: 8px 2px;">
                                 <span>{{item.Name}}</span>                                
@@ -494,6 +494,7 @@
         </div>
     </div>
 
+    <!--匯入畫面-->
     <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importModal">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -608,6 +609,104 @@
                     <button type="button" class="btn btn-primary btn-sm" ng-if="!importProcess.ParseValues" ng-click="importProcess.Parse()">解析</button>
                     <button type="button" class="btn btn-default btn-sm" ng-if="importProcess.ParseValues" ng-click="importProcess.Clear()">返回</button>
                     <button type="button" class="btn btn-primary btn-sm" ng-if="importProcess.ParseValues" ng-click="importProcess.Import()" ng-class="{disabled:importProcess.HasError}">匯入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--編輯評分項目-->
+    <div id="editScoreItemModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="editScoreItem">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1>平時評量設定</h1>
+                    <h4>{{current.Course.CourseName}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table ng-if="gradeItemConfig.Mode == 'Editor'"
+                           class="table table-bordered table-striped table-hover text-center"
+                           style="table-layout:fixed;">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="padding: 8px 2px;">評分名稱</th>
+                                <th class="text-center" style="padding: 8px 2px;">權重</th>
+                                <th class="text-center" style="padding: 8px 2px;">刪除</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in gradeItemConfig.Item | filter: filterGradeItem"">
+                                <td class="text-center"
+                                    style="position:relative; padding:0px">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <input ng-model="item.Name"
+                                               type="text"
+                                               class="form-control pg-grade-textbox ng-pristine ng-valid"
+                                               select-on-click="">
+                                    </div>
+                                </td>
+                                <td class="text-center"
+                                    style="position:relative; padding:0px">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <input ng-model="item.Weight"
+                                               type="text"
+                                               class="form-control pg-grade-textbox ng-pristine ng-valid"
+                                               select-on-click="">
+                                    </div>
+                                </td>
+                                <td style="padding:0px">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <a style="height:100%;width: 100%"
+                                           ng-click="gradeItemConfig.DeleteItem(item)"
+                                           class="btn btn-default">
+                                            <i class="fa fa-minus-square"></i>
+                                            刪除
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0px"
+                                    colspan="3">
+                                    <div style="white-space: nowrap;overflow: hidden;">
+                                        <a style="height:100%;width: 100%"
+                                           ng-click="gradeItemConfig.AddItem()"
+                                           class="btn btn-default">
+                                            <i class="fa fa-plus-square"></i>
+                                            加入項目
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <textarea ng-if="gradeItemConfig.Mode=='JSON'"
+                              ng-model="gradeItemConfig.JSONCode"
+                              style="min-height: 360px;resize: vertical;word-wrap: normal;white-space: nowrap;"
+                              type="text"
+                              class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid">
+                    </textarea>
+                </div>
+                <div class="modal-footer">
+                    <a ng-if="gradeItemConfig.Mode=='Editor'"
+                       ng-click="gradeItemConfig.JSONMode()"
+                       class="btn btn-link pull-left ng-scope"
+                       ng-class="{'btn-danger':!checkAllTable()}">
+                        JSON Editor
+                    </a>
+                    <a ng-if="gradeItemConfig.Mode=='JSON'"
+                       ng-click="gradeItemConfig.CommitJSON()"
+                       class="btn btn-link pull-left ng-scope"
+                       ng-class="{'btn-danger':!checkAllTable()}">
+                        Parse JSON
+                    </a>
+                    <a ng-click="saveGradeItemConfig()"
+                       class="btn btn-default ng-scope"
+                       ng-class="{'btn-danger':!checkAllTable()}">
+                        <i class="fa fa-floppy-o"></i>
+                        儲存
+                    </a>
                 </div>
             </div>
         </div>
