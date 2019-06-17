@@ -29,7 +29,7 @@
 
     <title>GradeBook</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
     <link href="css/base.css" rel="stylesheet" />
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
@@ -80,15 +80,7 @@
     <div ng-if="HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有設定任何課程，請洽教務處行政人員。</div>
     <div id="gadget" class="my-page" ng-if="current && studentList && examList">
         <h1 class="hidden-xs">成績管理</h1>
-        <div>
-            <!--平時評量: 編輯評分項目-->
-            <div class="btn-group pull-right" ng-if="current.mode == modeList[1]">
-                <a class="btn btn-default" ng-click="showGradeItemConfig()">
-                    <i class="fa fa-edit">
-                        編輯評分項目
-                    </i>
-                </a>
-            </div>
+        <div>           
             <div class="btn-group pull-right"
                  ng-init="getProcess()">
                 <div class="btn-group"
@@ -129,6 +121,14 @@
                     編輯欄位
                 </a>
             </div>
+            <!--平時評量: 編輯評分項目-->
+            <div class="btn-group pull-right" ng-if="current.mode == modeList[1]">
+                <a class="btn btn-default" ng-click="showGradeItemConfig()">
+                    <i class="fa fa-edit">
+                        編輯評分項目
+                    </i>
+                </a>
+            </div>
             <div class="btn-group">
                 <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span> </a>
                 <ul class="dropdown-menu">
@@ -158,7 +158,7 @@
             </div>
             <!--成績管理：帶入平時成績 (只有在 mode『成績管理』可以匯出)-->
             <div class="btn btn-default" ng-if="current.mode == modeList[0]">
-                <i class="far fa-file-excel" ng-click="importAssessmentScore()">
+                <i class="fas fa-file-import" ng-click="importAssessmentScore()">
                     帶入平時成績
                 </i>
             </div>
@@ -467,26 +467,19 @@
                                       style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
                                 <span>{{stuRec.StudentName}}</span>
                             </td>
-                            <!--<td ng-repeat="exam in examList | filter: filterPermission"
+                            <td ng-repeat="item in current.gradeItemList"
                                 class="text-center"
-                                style="position:relative;"
-                                ng-click="setCurrent(stuRec, exam, true, true)">
-                                <div ng-if="!checkOneCell(stuRec, 'Exam'+exam.ExamID)"
-                                     ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
+                                style="position:relative"
+                                ng-click="setCurrent(stuRec, item, true, true)">
+                                <!--小紅點識別資料是否變更未儲存-->
+                                <div ng-if="!checkOneCell(stuRec, item.ExamID, true, true)"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <h6 ng-if="exam.Group" style="margin:0px;display:inline-block;">
-                                    <small>
-                                        <span>
-                                            {{stuRec['Exam'+exam.ExamID]}}
-                                        </span>
-                                    </small>
-                                </h6>
-                                <span ng-if="!exam.Group"
-                                      ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < 60}">
-                                    {{stuRec['Exam'+exam.ExamID]}}
+                                <span ng-class="{'text-danger':stuRec[item.ExamID] < 60}"
+                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
+                                    {{stuRec[item.ExamID]}}
                                 </span>
-                            </td>-->
+                            </td>
                         </tr>
                     </tbody>
                 </table>
