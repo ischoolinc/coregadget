@@ -4,6 +4,9 @@
        id="listTwo">
 
     <div class="float-right d-flex mb-3 mb-md-0 sticky-top">
+      <ng-container *ngTemplateOutlet="plugin"></ng-container>
+    </div>
+    <div class="float-right d-flex mb-3 mb-md-0">
       <div *ngIf="fillInSection.length>0"
            class="dropdown ml-1">
         <button class="btn btn-light dropdown-toggle"
@@ -18,20 +21,6 @@
              class="dropdown-item">{{section.SchoolYear}}學年度&nbsp;第{{section.Semester}}學期</a>
         </div>
       </div>
-      <button *ngIf="mode=='view'"
-              class="btn btn-info ml-1"
-              [routerLink]="['edit', currentFillInSection.FillInSectionID]">
-        <i class="material-icons">edit</i>
-        <span>編輯</span>
-      </button>
-      <button *ngIf="mode=='edit'"
-              class="btn btn-info ml-1"
-              (click)="save()"
-              [disabled]="isSaving">
-        <i class="material-icons">save_alt</i>
-        <span [hidden]="isSaving">儲存</span>
-        <span [hidden]="!isSaving">儲存中...</span>
-      </button>
     </div>
     <div class="d-md-flex align-items-center sub-title mb-3 ">
       <h4 class="mb-0 mr-auto">綜合紀錄表</h4>
@@ -53,30 +42,5 @@
   <div class="row justify-content-center"
        style="margin-top:250px;margin-bottom:200px;">
     Loading...
-  </div>
-</ng-template>
-
-
-<ng-template #old>
-
-  <!-- 學生個人 - 綜合紀錄表 -->
-  <div *ngIf="!isLoading; else tmpLoading">
-    <div class="tab-pane fade-in"
-         id="listTwo">
-      <div class="d-md-flex align-items-center sub-title mb-3 sticky-top"
-           style="background: white">
-        <h4 class="mb-0 mr-auto">綜合紀錄表</h4>
-        <!-- <div *ngIf="fulldata.length"
-              class="d-flex mb-3 mb-md-0">
-            <button class="btn btn-info"
-                    (click)="save()"
-                    [disabled]="isSaving">
-              <i class="material-icons">save_alt</i>
-              <span [hidden]="isSaving">儲存</span>
-              <span [hidden]="!isSaving">儲存中...</span>
-            </button>
-          </div> -->
-      </div>
-    </div>
   </div>
 </ng-template>

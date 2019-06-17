@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from '@angular/core';
+import { Component, OnInit, Optional, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ComprehensiveService } from './comprehensive.service';
 import { CounselDetailComponent } from "../counsel-detail.component";
@@ -14,10 +14,11 @@ export class ComprehensiveComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   studentID: string;
-  mode: string;
 
   fillInSection: any[];
   currentFillInSection: any;
+
+  plugin: TemplateRef<any>;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -47,8 +48,7 @@ export class ComprehensiveComponent implements OnInit {
     }
   }
 
-  setCurrentFillInSection(sectionID: string, mode: string) {
-    this.mode = mode;
+  setCurrentFillInSection(sectionID: string) {
     this.fillInSection.forEach((section) => {
       if (section.FillInSectionID == sectionID) {
         this.currentFillInSection = section;

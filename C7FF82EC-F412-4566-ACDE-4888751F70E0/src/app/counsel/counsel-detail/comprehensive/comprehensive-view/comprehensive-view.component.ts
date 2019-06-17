@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from "@angular/core";
+import { Component, OnInit, Optional, TemplateRef, ViewChild } from "@angular/core";
 import {
   ActivatedRoute,
   Router,
@@ -23,6 +23,10 @@ export class ComprehensiveViewComponent implements OnInit {
   fillInSectionId: string;
   fillInData: any[] = [];
 
+
+  @ViewChild("plugin")
+  pluginEle: TemplateRef<any>;
+  
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -37,7 +41,8 @@ export class ComprehensiveViewComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.fillInSectionId = params.get("sectionID");
-        this.comprehensiveComponent.setCurrentFillInSection(this.fillInSectionId, "view");
+        this.comprehensiveComponent.setCurrentFillInSection(this.fillInSectionId);
+        this.comprehensiveComponent.plugin = this.pluginEle;
         this.getFillInData();
       }
     );
@@ -75,7 +80,7 @@ export class ComprehensiveViewComponent implements OnInit {
                   option.AnswerChecked = (option.AnswerChecked == "true");
                   option.AnswerMatrix = [].concat(JSON.parse('' + option.AnswerMatrix) || []);
                   option.AnswerComplete = (option.AnswerComplete == "true");
-                  if (option.AnswerChecked) {
+                  if (option.AnswerChecked && option.AnswerComplete) {
                     text.HasValue = true;
                     checkedOption.push(option);
                   }

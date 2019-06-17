@@ -12,7 +12,7 @@
           <ng-container *ngFor="let query of group.QuestionQuery">
             <tr>
               <td class="text-left pl-4"
-                  style="width: 150px"
+                  style="width: 180px"
                   scope="col">
                 {{query.Query}}
               </td>
@@ -38,54 +38,7 @@
           </ng-container>
         </ng-container>
       </table>
-      <!-- <div class="card-body">
-        <h4 class="">{{subject.Subject}}</h4>
-        <ng-container *ngFor="let group of subject.QuestionGroup">
-          <div class="ml-3">
-            <div class="mb-2">{{group.Group}}</div>
-            <ng-container *ngFor="let query of group.QuestionQuery">
-              <div class="ml-3 mb-2">
-                <small>
-                  <span>{{query.Query}}</span>
-
-                  <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
-                    <span *ngIf="questionTextIndex > 0">&nbsp;;&nbsp;</span>
-                    <span *ngIf="questionText.Text">{{questionText.Text}}&nbsp;:&nbsp;</span>
-                    <span *ngIf="!questionText.HasValue"
-                          class="text-muted">未填寫</span>
-                    <ng-container *ngFor="let option of questionText.Option">
-                      <span *ngIf="option.AnswerChecked">{{option.AnswerValue}}</span>
-                    </ng-container>
-                  </ng-container>
-                </small>
-              </div>
-            </ng-container>
-          </div>
-        </ng-container>
-      </div> -->
     </div>
-
-    <!-- 
-    <div *ngFor="let group of subject.QuestionGroup"
-         class="form-group ml-3">
-      <h5>{{subject.Subject}} / {{group.Group}}</h5>
-      <ng-container *ngFor="let query of group.QuestionQuery">
-        <div class="row ml-3">
-          <div>
-            <span>{{query.Query}}</span>
-            <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
-              <span *ngIf="questionTextIndex>0"
-                    class="mr-2">;</span>
-              <span>{{questionText.Text}}：</span>
-              <ng-container *ngFor="let option of questionText.Option">
-                <span *ngIf="option.AnswerChecked">{{option.AnswerValue}}</span>
-              </ng-container>
-            </ng-container>
-            <pre>{{query | json}}</pre>
-          </div>
-        </div>
-      </ng-container>
-    </div> -->
   </ng-container>
 </div>
 
@@ -95,4 +48,14 @@
        style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
+</ng-template>
+
+<ng-template #plugin>
+  <ng-container *ngIf="!isLoading">
+    <button class="btn btn-info ml-1"
+            [routerLink]="['../../edit', fillInSectionId]">
+      <i class="material-icons">edit</i>
+      <span>編輯</span>
+    </button>
+  </ng-container>
 </ng-template>
