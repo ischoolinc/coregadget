@@ -42,13 +42,13 @@
                                  (click)="option.change()" />
                           <label class="custom-control-label"
                                  for="{{option.AnswerID}}">
-                            <ng-container *ngIf="false; else partLayout"></ng-container>
+                            <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                           </label>
                         </div>
                       </ng-container>
                       <ng-container *ngIf="questionText.Type=='單選'">
                         <div class="custom-control custom-radio custom-control-inline m-1"
-                        [ngClass]="{'mr-3': optionIndex+1 < questionText.Option.length}">
+                             [ngClass]="{'mr-3': optionIndex+1 < questionText.Option.length}">
                           <input type="radio"
                                  class="custom-control-input"
                                  [attr.name]="subject.Subject+'_'+group.Group+'_'+query.Query+'_'+questionText.Text"
@@ -57,16 +57,16 @@
                                  (click)="option.change()" />
                           <label class="custom-control-label"
                                  for="{{option.AnswerID}}">
-                            <ng-container *ngIf="false; else partLayout"></ng-container>
+                            <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                           </label></div>
                       </ng-container>
                       <ng-container *ngIf="questionText.Type=='填答'">
                         <div class="custom-control-inline m-0 mr-1">
-                          <ng-container *ngIf="false; else partLayout"></ng-container>
+                          <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                         </div>
                       </ng-container>
 
-                      <ng-template #partLayout>
+                      <ng-template #optionLayout>
                         <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
                           <ng-container *ngIf="keySize[optionPart];else normalPart">
                             <input type="text"
