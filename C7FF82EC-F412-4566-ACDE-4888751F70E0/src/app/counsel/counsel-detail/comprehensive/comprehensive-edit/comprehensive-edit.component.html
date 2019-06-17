@@ -58,12 +58,17 @@
                           <label class="custom-control-label"
                                  for="{{option.AnswerID}}">
                             <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
-                          </label></div>
+                          </label>
+                        </div>
                       </ng-container>
                       <ng-container *ngIf="questionText.Type=='填答'">
                         <div class="custom-control-inline m-0 mr-1"
-                             [ngClass]="{'w-100': option.IsTextArea}">
-                          <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
+                             [ngClass]="{'w-100': option.IsTextArea }">
+                          <label class="custom-control-label"
+                                 [ngClass]="{'w-100 d-flex flex-wrap': option.IsTextArea }"
+                                 style="padding-top: 3px;">
+                            <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
+                          </label>
                         </div>
                       </ng-container>
 
@@ -71,7 +76,8 @@
                         <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
                           <ng-container *ngIf="keySize[optionPart];else normalPart">
                             <ng-container *ngIf="optionPart=='%TEXTAREA%';else textPart">
-                              <textarea class="form-control mx-0"
+                              <textarea class="sentence-input mx-0"
+                                        autosize="autosize"
                                         [ngStyle]="{'width': keySize[optionPart]}"
                                         [(ngModel)]="option.AnswerMatrix[partIndex]"></textarea>
                             </ng-container>
@@ -83,7 +89,7 @@
                             </ng-template>
                           </ng-container>
                           <ng-template #normalPart>
-                            <span>{{optionPart}}</span>
+                            <span [ngStyle]="{'padding-top': option.IsTextArea?'1px':''}">{{optionPart}}</span>
                           </ng-template>
                         </ng-container>
                       </ng-template>

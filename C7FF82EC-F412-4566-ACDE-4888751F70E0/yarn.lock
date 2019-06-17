@@ -4122,6 +4122,12 @@ neo-async@^2.5.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.0.tgz#b9d15e4d71c6762908654b5183ed38b753340835"
 
+ngx-textarea-autosize@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/ngx-textarea-autosize/-/ngx-textarea-autosize-2.0.3.tgz#00e5cd61f01410fdc22c5539ae721982fd568089"
+  dependencies:
+    tslib "^1.9.0"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

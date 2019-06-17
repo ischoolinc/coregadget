@@ -8,7 +8,6 @@ import {
 import { DsaService } from 'src/app/dsa.service';
 import { ComprehensiveComponent } from '../comprehensive.component';
 
-
 @Component({
   selector: 'app-comprehensive-edit',
   templateUrl: './comprehensive-edit.component.html',

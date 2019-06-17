@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 
 import { AppComponent } from './app.component';
 import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
@@ -75,6 +76,7 @@ import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensi
     MatDialogModule,
     BrowserAnimationsModule,
     RenderModule,
+    TextareaAutosizeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
