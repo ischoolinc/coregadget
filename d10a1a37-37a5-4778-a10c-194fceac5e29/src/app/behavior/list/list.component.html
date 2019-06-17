@@ -33,6 +33,8 @@
                 <div class="col-md-9 col-lg-10">
                     <span *ngIf="data.Detention=='true'"
                           class="badge badge-danger mr-1">Detention</span>
+                    <span *ngIf="data.IsGoodBehavior=='true'"
+                          class="badge badge-success mr-1">Good</span>
                     <span>{{data.Comment}}</span>
                     <div class="float-right">
                         <a class="h6 text-info point"
