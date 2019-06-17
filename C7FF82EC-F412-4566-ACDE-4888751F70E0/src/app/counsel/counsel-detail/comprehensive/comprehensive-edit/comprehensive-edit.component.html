@@ -61,7 +61,8 @@
                           </label></div>
                       </ng-container>
                       <ng-container *ngIf="questionText.Type=='填答'">
-                        <div class="custom-control-inline m-0 mr-1">
+                        <div class="custom-control-inline m-0 mr-1"
+                             [ngClass]="{'w-100': option.IsTextArea}">
                           <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                         </div>
                       </ng-container>
@@ -69,10 +70,17 @@
                       <ng-template #optionLayout>
                         <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
                           <ng-container *ngIf="keySize[optionPart];else normalPart">
-                            <input type="text"
-                                   class="sentence-input mx-0"
-                                   [ngStyle]="{'width': keySize[optionPart]}"
-                                   [(ngModel)]="option.AnswerMatrix[partIndex]" />
+                            <ng-container *ngIf="optionPart=='%TEXTAREA%';else textPart">
+                              <textarea class="form-control mx-0"
+                                        [ngStyle]="{'width': keySize[optionPart]}"
+                                        [(ngModel)]="option.AnswerMatrix[partIndex]"></textarea>
+                            </ng-container>
+                            <ng-template #textPart>
+                              <input type="text"
+                                     class="sentence-input mx-0"
+                                     [ngStyle]="{'width': keySize[optionPart]}"
+                                     [(ngModel)]="option.AnswerMatrix[partIndex]" />
+                            </ng-template>
                           </ng-container>
                           <ng-template #normalPart>
                             <span>{{optionPart}}</span>

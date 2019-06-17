@@ -82,6 +82,7 @@ export class ComprehensiveEditComponent implements OnInit {
                   option.AnswerChecked = (option.AnswerChecked == "true");
                   option.AnswerMatrix = [].concat(JSON.parse('' + option.AnswerMatrix) || []);
                   option.AnswerComplete = (option.AnswerComplete == "true");
+                  option.IsTextArea = false;
 
                   option.change = function () {
                     switch (text.Type) {
@@ -127,6 +128,7 @@ export class ComprehensiveEditComponent implements OnInit {
                         }
                       }
                       if (index + 1 != list.length) {
+                        if (key == "%TEXTAREA%") { option.IsTextArea = true; }
                         option.Template.push(key);
                       }
                     });
