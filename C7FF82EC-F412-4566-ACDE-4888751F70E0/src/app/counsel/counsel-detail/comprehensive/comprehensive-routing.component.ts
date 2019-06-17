@@ -1,7 +1,5 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComprehensiveService } from './comprehensive.service';
-import { CounselDetailComponent } from "../counsel-detail.component";
 import { ComprehensiveComponent } from "../comprehensive/comprehensive.component";
 
 @Component({

@@ -1,6 +1,5 @@
 import { Component, OnInit, Optional, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComprehensiveService } from './comprehensive.service';
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { DsaService } from '../../../dsa.service';
 
@@ -23,7 +22,6 @@ export class ComprehensiveComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private comprehensiveSrv: ComprehensiveService,
     private dsaService: DsaService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent

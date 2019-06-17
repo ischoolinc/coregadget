@@ -55,8 +55,7 @@ const routes: Routes = [
               { path: "view/:sectionID", component:ComprehensiveViewComponent },
               { path: "edit/:sectionID", component:ComprehensiveEditComponent }
             ]
-          },
-          { path: "comprehensive-test", loadChildren: './counsel/counsel-detail/comprehensive/comprehensive.module#ComprehensiveModule' }
+          }
         ]
       }
     ]
