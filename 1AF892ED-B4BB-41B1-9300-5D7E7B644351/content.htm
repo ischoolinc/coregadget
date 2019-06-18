@@ -165,13 +165,12 @@
             <!--目前試別 (只有在mode『平時評量』會顯示，用來輸入各個評量子項目成績用)-->
             <div class="btn-group" ng-if="current.mode == modeList[1]">
                 <a class="btn btn-default dropdown-toggle"
-                   data-toggle="dropdown">{{current.Exam.Name}}&nbsp;<span class="caret"></span></a>
+                   data-toggle="dropdown">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li ng-repeat="exam in examList"
-                        ng-class="{'active':exam == current.Exam}"
-                        ng-if="exam.Permission == 'Editor'  && exam.Type !== 'Program' && exam.Name !== '學期成績'">
+                    <li ng-repeat="template in templateList"
+                        ng-class="{active: template == current.template}">
                         <a href="javascript:;"
-                           ng-click="setCurrent(current.Student, exam, true, true)">{{exam.Name}}</a>
+                           ng-click="setCurrentTemplate(template)">{{template.Name}}</a>
                     </li>
                 </ul>
             </div>
@@ -268,7 +267,7 @@
                                         {{current.Exam?current.Exam.Name:'請選擇'}}
                                         <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu" style="width:100%;">
+                                    <ul ng-if="current.mode == modeList[0]" class="dropdown-menu" style="width:100%; ">
                                         <li ng-repeat="examItem in examList | filter: filterPermission" ng-class="{active:examItem==current.Exam}">
                                             <a href="javascript:;" ng-click="setCurrent(current.Student, examItem, false, true)">
                                                 <i ng-if="examItem.Lock"
