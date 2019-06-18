@@ -20,13 +20,16 @@ export class ComprehensiveViewComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   studentID: string;
-  fillInSectionId: string;
+  // fillInSectionId: string;
+  schoolYear: string;
+  semester: string;
+  fillInSection: any[] = [];
   fillInData: any[] = [];
 
 
   @ViewChild("plugin")
   pluginEle: TemplateRef<any>;
-  
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -40,8 +43,10 @@ export class ComprehensiveViewComponent implements OnInit {
     this.studentID = this.comprehensiveComponent.studentID;
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
-        this.fillInSectionId = params.get("sectionID");
-        this.comprehensiveComponent.setCurrentFillInSection(this.fillInSectionId);
+        this.schoolYear = params.get("schoolYear");
+        this.semester = params.get("semester");
+        // this.comprehensiveComponent.setCurrentFillInSection(this.fillInSectionId);
+        this.comprehensiveComponent.setCurrentSemester(this.schoolYear, this.semester);
         this.comprehensiveComponent.plugin = this.pluginEle;
         this.getFillInData();
       }
@@ -50,16 +55,20 @@ export class ComprehensiveViewComponent implements OnInit {
 
   async getFillInData() {
     this.isLoading = true;
+    this.fillInSection = [];
     this.fillInData = [];
     try {
-      if (this.fillInSectionId) {
+      if (this.schoolYear&&this.semester) {
 
         var fillInData = await this.dsaService.send("GetFillInData", {
           Request: {
             StudentID: this.studentID,
-            FillInSectionID: this.fillInSectionId,
+            // FillInSectionID: this.fillInSectionId,
+            SchoolYear: this.schoolYear,
+            Semester: this.semester
           }
         });
+        this.fillInSection = [].concat(fillInData.Section || []);
         fillInData.QuestionSubject = [].concat(fillInData.QuestionSubject || []);
         fillInData.QuestionSubject.forEach((subject) => {
           subject.QuestionGroup = [].concat(subject.QuestionGroup || []);

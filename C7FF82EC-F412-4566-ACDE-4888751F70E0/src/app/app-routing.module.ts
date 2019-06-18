@@ -52,7 +52,7 @@ const routes: Routes = [
             component: ComprehensiveComponent,
             children: [
               { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
-              { path: "view/:sectionID", component:ComprehensiveViewComponent },
+              { path: "view/:schoolYear/:semester", component:ComprehensiveViewComponent },
               { path: "edit/:sectionID", component:ComprehensiveEditComponent }
             ]
           }

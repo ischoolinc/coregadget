@@ -14,8 +14,8 @@ export class ComprehensiveComponent implements OnInit {
   isSaving = false;
   studentID: string;
 
-  fillInSection: any[];
-  currentFillInSection: any;
+  fillInSemester: any[];
+  currentFillInSemester: any;
 
   plugin: TemplateRef<any>;
 
@@ -32,13 +32,13 @@ export class ComprehensiveComponent implements OnInit {
     this.studentID = this.counselDetailComponent.currentStudent.StudentID;
 
     this.isLoading = true;
-    this.fillInSection = [];
-    this.currentFillInSection = {};
+    this.fillInSemester = [];
+    this.currentFillInSemester = {};
     try {
-      const rsp = await this.dsaService.send("GetFillInSection", {
+      const rsp = await this.dsaService.send("GetFillInSemester", {
         StudentID: this.studentID
       });
-      this.fillInSection = [].concat(rsp.FillInSection || []);
+      this.fillInSemester = [].concat(rsp.FillInSemester || []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -46,11 +46,19 @@ export class ComprehensiveComponent implements OnInit {
     }
   }
 
-  setCurrentFillInSection(sectionID: string) {
-    this.fillInSection.forEach((section) => {
-      if (section.FillInSectionID == sectionID) {
-        this.currentFillInSection = section;
+  setCurrentSemester(schoolYear: string, semester: string) {
+    this.currentFillInSemester = null;
+    this.fillInSemester.forEach(sem => {
+      if (sem.SchoolYear == schoolYear && sem.Semester == semester) {
+        this.currentFillInSemester = sem;
       }
     });
   }
+  // setCurrentFillInSection(sectionID: string) {
+  //   this.fillInSection.forEach((section) => {
+  //     if (section.FillInSectionID == sectionID) {
+  //       this.currentFillInSection = section;
+  //     }
+  //   });
+  // }
 }

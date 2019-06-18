@@ -52,10 +52,30 @@
 
 <ng-template #plugin>
   <ng-container *ngIf="!isLoading">
-    <button class="btn btn-info ml-1"
-            [routerLink]="['../../edit', fillInSectionId]">
-      <i class="material-icons">edit</i>
-      <span>編輯</span>
-    </button>
+    <ng-container *ngIf="fillInSection.length == 1">
+      <button class="btn btn-info ml-1"
+              [routerLink]="['../../../edit', fillInSection[0].FillInSectionID]">
+        <i class="material-icons">edit</i>
+        <span>編輯</span>
+        <span>{{fillInSection[0].Name}}</span>
+      </button>
+    </ng-container>
+    <ng-container *ngIf="fillInSection.length > 1">
+      <div class="dropdown ml-1">
+        <button class="btn btn-info dropdown-toggle"
+                type="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+          <i class="material-icons">edit</i>
+          <span>編輯</span>
+        </button>
+        <div class="dropdown-menu">
+          <a *ngFor="let section of fillInSection"
+             [routerLink]="['../../../edit', section.FillInSectionID]"
+             class="dropdown-item">{{section.Name}}</a>
+        </div>
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
