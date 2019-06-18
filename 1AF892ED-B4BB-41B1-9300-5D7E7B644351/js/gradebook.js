@@ -120,7 +120,7 @@
 
         /**
         * 模式切換
-        */
+        */// 成績管理模式、平時評量模式
         $scope.setCurrentMode = function (_mode) {
             var execute = false;
             // 檢查資料是否更動
@@ -137,6 +137,12 @@
             }
             if (execute) {
                 $scope.current.mode = _mode;
+
+                // 假如切回去 成績管理模式 ， 把目前的 template 設回空，讓下次切換時，在下面重抓
+                if ($scope.current.mode == $scope.modeList[0]) {
+
+                    $scope.current.template = null;
+                }
 
                                
                 // 資料Reload (會自動帶入目前第一個開放的試別)
@@ -1421,7 +1427,7 @@
                                                             var rawStudentRec = angular.copy(studentRec);
                                                             for (var key in rawStudentRec) {
                                                                 if (!key.match(/Origin^/gi))
-                                                                    studentRec['Origin_' + key] = rawStudentRec[key];
+                                                                    studentRec[key + 'Origin'] = rawStudentRec[key];
                                                             }
                                                         });
                                                         $scope.setupCurrent();
@@ -1440,7 +1446,9 @@
                     if($scope.current.template) {
                         $scope.setCurrentTemplate($scope.current.template);
                     } else{
-                        $scope.setCurrentTemplate($scope.templateList[0]);
+                        //var template = $scope.templateList.filter(template => template.ExamID == $scope.current.Exam.ExamID)[0];
+
+                        //$scope.setCurrentTemplate(template);
                     }
                 }
             });
@@ -1478,6 +1486,7 @@
             return pass;
         }
 
+        // 註記 高中版的  'Origin' 是加在 key 值後， 新竹國中版是 studentRec['Origin_' + examID])
         $scope.checkOneCell = function (studentRec, examKey) {
             var pass = true;
             pass = (studentRec[examKey] == studentRec[examKey + 'Origin']) || (studentRec[examKey + 'Origin'] === undefined) || (examKey == "Exam學期成績_試算");
