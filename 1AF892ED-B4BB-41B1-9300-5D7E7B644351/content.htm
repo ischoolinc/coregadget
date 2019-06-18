@@ -182,7 +182,14 @@
             </div>
             <!--成績管理：帶入平時成績 (只有在 mode『成績管理』可以匯出)-->
             <div class="btn btn-default" ng-if="current.mode == modeList[0]">
-                <i class="fas fa-file-import" ng-click="importAssessmentScore()">
+                <i ng-if="current.Exam && current.Exam.Lock"
+                   style="min-width: 14px; color:gray"
+                   class="fa fa-lock"                   
+                   ng-click="importAssessmentScore()">
+                    帶入平時成績</i>
+                <i ng-if="current.Exam && !current.Exam.Lock"
+                   class="fas fa-file-import" 
+                   ng-click="importAssessmentScore()">
                     帶入平時成績
                 </i>
             </div>

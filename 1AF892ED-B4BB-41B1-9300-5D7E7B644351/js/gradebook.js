@@ -346,7 +346,7 @@
         // 2019/06/14 穎驊 優化高中成績Web輸入， 自羿均改的優化國中Web 輸入 功能移植過來 Excel 輸出
         // 資料結構 小差別 高中版: stuRec['Exam' + exam.ExamID]、 國中版 有底線 stuRec['Exam_' + exam.ExamID];
         /**
-        * 匯出成績單
+        * 匯出excel
         */
         $scope.exportExcel = function () {
             // 檢查資料是否更動
@@ -411,6 +411,20 @@
             for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
             return buf;
         }
+
+        // 2019/06/14 穎驊 優化高中成績Web輸入， 將小考成績 轉換為本次的評量成績，
+        //輸入規則為， 在一次的評量輸入截止前，都可以編輯該評量的所有小考項目， 在評量輸入的期間 可以進行結算
+        /**
+        * 匯出成績單
+        */
+        $scope.importAssessmentScore = function ()
+        {
+            // 將入目標exam 的 分數 通通換成之前試算出來儲存的
+            $scope.studentList.forEach(function (stuRec) {
+                stuRec["Exam" + $scope.current.Exam.ExamID] = stuRec['QuizResult_' + $scope.current.Exam.ExamID]
+            });
+        }
+
 
         $scope.params = gadget.params;
 
