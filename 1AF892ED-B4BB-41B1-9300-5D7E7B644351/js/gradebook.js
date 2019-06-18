@@ -1097,7 +1097,7 @@
                             Fn: function () {
                                 delete importProcess.ParseString;
                                 delete importProcess.ParseValues;
-                                $scope.importTarget = importProcess;
+                                $scope.importProcess = importProcess;
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
