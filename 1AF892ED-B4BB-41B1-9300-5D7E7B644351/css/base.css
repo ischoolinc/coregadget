@@ -9,6 +9,13 @@
   background: #fdfdfd;
 }*/
 
+.boy{
+    color:black;
+}
+.girl {
+    color: #D6905A;
+}
+
 .navbar {
   border: 1px dashed transparent;
 }
@@ -55,9 +62,9 @@ hr {
 
 /* 固定寬度 */
 body {
-  max-width: 1024px;
-  margin: 0 auto;
-  background:url(images/page-bg.gif);
+    /*max-width: 1024px;*/
+    margin: 20px auto;
+    background: url(images/page-bg.gif);
 }
 /* 基礎框架 */
 .container-fluid {
@@ -303,7 +310,7 @@ body {
 }
 
 .my-page {
-  max-width:1000px;
+  max-width:1280px;
   margin:20px auto;
   background:#fff;
   padding:10px;
@@ -364,4 +371,9 @@ body {
 table thead th {
   background: #eee;
   border-bottom: 1px solid #ACACAC;
+}
+
+li .active {
+    color: #08c;
+    background: #f3f5f7;
 }

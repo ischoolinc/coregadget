@@ -1,0 +1,144 @@
+<!-- 學生個人 - 綜合紀錄表 -->
+<div *ngIf="!isLoading; else tmpLoading">
+  <ng-container *ngFor="let subject of questionSubject">
+    <div class="card mb-2">
+      <h4 class="m-2">{{subject.Subject}}</h4>
+      <table class="table table-sm table-bordered">
+        <ng-container *ngFor="let group of subject.QuestionGroup">
+          <tr>
+            <th colspan="2"
+                class=" text-left">{{group.Group}}</th>
+          </tr>
+          <ng-container *ngFor="let query of group.QuestionQuery">
+            <tr>
+              <td class="text-left pl-4 pr-1"
+                  style="width: 150px"
+                  scope="col">
+                <div class="form-group mb-0">
+                  <label class="custom-control-label mt-1 position-relative">
+                    <strong class="text-danger position-absolute"
+                          style="margin-left: -7px;margin-top: -7px;"
+                          *ngIf="query.ShowMark">*</strong>
+                    <span>{{query.Query}}</span></label>
+                </div>
+              </td>
+              <td class="text-left"
+                  scope="col">
+                <div class="form-group mb-0">
+                  <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
+                    <label *ngIf="questionTextIndex > 0"
+                           class="custom-control-label mx-1">;</label>
+                    <label class="custom-control-label position-relative"
+                           *ngIf="questionText.Text">
+                      <strong class="text-danger position-absolute"
+                            style="margin-left: -7px;margin-top: -7px;"
+                            *ngIf="questionText.ShowMark">*</strong>
+                      <span>{{questionText.Text}}</span>
+                      <span class="mx-1">:</span>
+                    </label>
+                    <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
+                      <!-- <span *ngIf="optionIndex > 0">、</span> -->
+                      <!-- <span style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span> -->
+                      <ng-container *ngIf="questionText.Type=='複選'">
+                        <div class="custom-control custom-checkbox custom-control-inline m-1"
+                             [ngClass]="{'mr-3': optionIndex+1 < questionText.Option.length}">
+                          <input type="checkbox"
+                                 class="custom-control-input"
+                                 [attr.id]="option.AnswerID"
+                                 [checked]="option.AnswerChecked"
+                                 (click)="option.change()" />
+                          <label class="custom-control-label"
+                                 for="{{option.AnswerID}}">
+                            <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
+                          </label>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="questionText.Type=='單選'">
+                        <div class="custom-control custom-radio custom-control-inline m-1"
+                             [ngClass]="{'mr-3': optionIndex+1 < questionText.Option.length}">
+                          <input type="radio"
+                                 class="custom-control-input"
+                                 [attr.name]="subject.Subject+'_'+group.Group+'_'+query.Query+'_'+questionText.Text"
+                                 [attr.id]="option.AnswerID"
+                                 [checked]="option.AnswerChecked"
+                                 (click)="option.change()" />
+                          <label class="custom-control-label"
+                                 for="{{option.AnswerID}}">
+                            <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
+                          </label>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="questionText.Type=='填答'">
+                        <div class="custom-control-inline m-0 mr-1"
+                             [ngClass]="{'w-100': option.IsTextArea }">
+                          <label class="custom-control-label"
+                                 [ngClass]="{'w-100 d-flex flex-wrap': option.IsTextArea }"
+                                 style="padding-top: 3px;">
+                            <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
+                          </label>
+                        </div>
+                      </ng-container>
+
+                      <ng-template #optionLayout>
+                        <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
+                          <ng-container *ngIf="optionKey[optionPart];else normalPart">
+                            <ng-container *ngIf="optionPart=='%TEXTAREA%';else textPart">
+                              <textarea class="sentence-input mx-0"
+                                        autosize="autosize"
+                                        [ngStyle]="optionKey[optionPart].style"
+                                        [(ngModel)]="option.AnswerMatrix[partIndex]"
+                                        (ngModelChange)="refreshMark()"></textarea>
+                            </ng-container>
+                            <ng-template #textPart>
+                              <input type="text"
+                                     class="sentence-input mx-0"
+                                     [ngStyle]="optionKey[optionPart].style"
+                                     [(ngModel)]="option.AnswerMatrix[partIndex]"
+                                     (ngModelChange)="refreshMark()" />
+                            </ng-template>
+                          </ng-container>
+                          <ng-template #normalPart>
+                            <span [ngStyle]="{'padding-top': option.IsTextArea?'1px':''}">{{optionPart}}</span>
+                          </ng-template>
+                        </ng-container>
+                      </ng-template>
+
+                    </ng-container>
+                  </ng-container>
+                </div>
+                <!-- <pre>{{query | json}}</pre> -->
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </table>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<ng-template #plugin>
+  <ng-container *ngIf="!isLoading">
+    <button *ngIf="requireList.length"
+            class="btn btn-danger ml-1"
+            (click)="showRequireList()">
+      <span>尚有</span>
+      <span class="mx-1">{{requireList.length}}</span>
+      <span>個項目未填寫</span>
+    </button>
+    <button class="btn btn-info ml-1"
+            (click)="save()"
+            [disabled]="isSaving">
+      <i class="material-icons">save_alt</i>
+      <span *ngIf="!isSaving">儲存</span>
+      <span *ngIf="isSaving">儲存中...</span>
+    </button>
+  </ng-container>
+</ng-template>
