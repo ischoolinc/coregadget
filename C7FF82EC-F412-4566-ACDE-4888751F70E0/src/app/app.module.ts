@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 
 import { AppComponent } from './app.component';
 import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
@@ -30,7 +31,11 @@ import { ReferralListComponent } from './referral/referral-list/referral-list.co
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
 import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
 import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
+import { ComprehensiveComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
 import { RenderModule } from './render';
+import { ComprehensiveRoutingComponent } from './counsel/counsel-detail/comprehensive/comprehensive-routing.component';
+import { ComprehensiveViewComponent } from './counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component';
+import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component";
 
 @NgModule({
   declarations: [
@@ -55,7 +60,14 @@ import { RenderModule } from './render';
     ReferralComponent,
     CounselRoutingComponent,
     DetailRoutingComponent,
-    ReferralListComponent, ReferralDetailComponent, AddCaseInterviewModalComponent, ViewCaseInterviewModalComponent
+    ReferralListComponent, 
+    ReferralDetailComponent, 
+    AddCaseInterviewModalComponent, 
+    ViewCaseInterviewModalComponent,
+    ComprehensiveComponent,
+    ComprehensiveRoutingComponent,
+    ComprehensiveViewComponent,
+    ComprehensiveEditComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +76,7 @@ import { RenderModule } from './render';
     MatDialogModule,
     BrowserAnimationsModule,
     RenderModule,
+    TextareaAutosizeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

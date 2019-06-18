@@ -1,0 +1,101 @@
+import { Component, OnInit, Optional, TemplateRef, ViewChild } from "@angular/core";
+import {
+  ActivatedRoute,
+  Router,
+  ParamMap,
+  RoutesRecognized
+} from "@angular/router";
+import { DsaService } from 'src/app/dsa.service';
+import { ComprehensiveComponent } from '../comprehensive.component';
+
+
+
+@Component({
+  selector: 'app-comprehensive-view',
+  templateUrl: './comprehensive-view.component.html',
+  styleUrls: ['./comprehensive-view.component.css']
+})
+export class ComprehensiveViewComponent implements OnInit {
+
+  isLoading = true;
+  isSaving = false;
+  studentID: string;
+  fillInSectionId: string;
+  fillInData: any[] = [];
+
+
+  @ViewChild("plugin")
+  pluginEle: TemplateRef<any>;
+  
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
+    private dsaService: DsaService,
+    @Optional()
+    private comprehensiveComponent: ComprehensiveComponent
+  ) { }
+
+  ngOnInit() {
+    this.studentID = this.comprehensiveComponent.studentID;
+    this.activatedRoute.paramMap.subscribe(
+      (params: ParamMap): void => {
+        this.fillInSectionId = params.get("sectionID");
+        this.comprehensiveComponent.setCurrentFillInSection(this.fillInSectionId);
+        this.comprehensiveComponent.plugin = this.pluginEle;
+        this.getFillInData();
+      }
+    );
+  }
+
+  async getFillInData() {
+    this.isLoading = true;
+    this.fillInData = [];
+    try {
+      if (this.fillInSectionId) {
+
+        var fillInData = await this.dsaService.send("GetFillInData", {
+          Request: {
+            StudentID: this.studentID,
+            FillInSectionID: this.fillInSectionId,
+          }
+        });
+        fillInData.QuestionSubject = [].concat(fillInData.QuestionSubject || []);
+        fillInData.QuestionSubject.forEach((subject) => {
+          subject.QuestionGroup = [].concat(subject.QuestionGroup || []);
+          subject.QuestionGroup.forEach(group => {
+            group.QuestionQuery = [].concat(group.QuestionQuery || []);
+            group.QuestionQuery.forEach(query => {
+              query.HasText = false;
+              query.QuestionText = [].concat(query.QuestionText || []);
+              query.QuestionText.forEach(text => {
+                if (text.Text) {
+                  query.HasText = true;
+                }
+                text.Require = (text.Require == "true");
+                text.HasValue = false;
+                var checkedOption = [];
+                text.Option = [].concat(text.Option || []);
+                text.Option.forEach(option => {
+                  option.AnswerChecked = (option.AnswerChecked == "true");
+                  option.AnswerMatrix = [].concat(JSON.parse('' + option.AnswerMatrix) || []);
+                  option.AnswerComplete = (option.AnswerComplete == "true");
+                  if (option.AnswerChecked && option.AnswerComplete) {
+                    text.HasValue = true;
+                    checkedOption.push(option);
+                  }
+                });
+                text.Option = checkedOption;
+              });
+            });
+          });
+        });
+        this.fillInData = fillInData.QuestionSubject;
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+}
