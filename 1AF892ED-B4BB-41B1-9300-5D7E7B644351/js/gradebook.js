@@ -145,11 +145,11 @@
                 }
 
                                
-                // 資料Reload (會自動帶入目前第一個開放的試別)
-                $scope.setCurrentCourse($scope.courseList[0]);
+                // 資料Reload (模式切換，依然是目前的課程，會自動帶入目前第一個開放的試別)
+                $scope.setCurrentCourse($scope.current.Course);
 
                 // 設定目前定期評量 
-                if (!$scope.current.template)
+                if (!$scope.current.template && $scope.current.Exam)
                 {
                     var template = $scope.templateList.filter(template => template.ExamID == $scope.current.Exam.ExamID)[0];
 
@@ -1684,7 +1684,10 @@
 
         // 篩選評分項目 - 編輯評分項目
         $scope.filterGradeItem = function (item) {
-            return $scope.current.template.ExamID == item.RefExamID
+            if ($scope.current.template)
+            {
+                return $scope.current.template.ExamID == item.RefExamID
+            }            
         }
 
         /**
