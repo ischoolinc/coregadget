@@ -1,6 +1,8 @@
 import { QOption } from "./case-question-data-modal";
 import { CaseQuestionTemplate } from "./case-question-template";
 import { QuizData } from "../counsel/counsel-detail/psychological-test-detail/quiz-data-vo";
+import { stream } from 'xlsx/types';
+import { stringify } from '@angular/compiler/src/util';
 export class CaseStudent {
   constructor() {
     this.CaseSource = "";
@@ -437,6 +439,54 @@ export class CaseMonthlyStatistics {
   GradeYear: string;
   StudentGender: string;
   Status: string; // 新或舊
-  Count: number;
-  ProblemCategoryValue:any[] = [];
+  Count: number = 0;
+  ProblemCategoryValue: any[] = [];
+  OtherCount: number = 0; // 其他服務
+  OtherDetailCount: CaseMonthlyItemCount[] = [];
+
+  // 取得單項其他數量
+  GetOtherDetailCount(name: string) {
+    let value = 0;
+    this.OtherDetailCount.forEach(item => {
+      if (item.ItemName === name) {
+        value = item.Count;
+      }
+    });
+
+    return value;
+  }
+
+  AddOtherDetailCount(name: string) {   
+    let addValue: boolean = true;
+    this.OtherDetailCount.forEach(item => {
+      if (item.ItemName === name) {
+        item.Count = item.Count + 1;
+        addValue = false;
+      }
+    });
+    if (addValue) {
+      let item: CaseMonthlyItemCount = new CaseMonthlyItemCount();
+      item.ItemName = name;
+      item.Count = 1;
+      this.OtherDetailCount.push(item);
+    }
+  }
+
+  // 計算其他總數
+  SumOtherDetailCount() {
+    let value = 0;
+
+    this.OtherDetailCount.forEach(item => {
+      value = value + item.Count;
+    });
+    return value;
+  }
+}
+
+export class CaseMonthlyItemCount {
+  constructor() {
+  }
+
+  ItemName: string;
+  Count: number = 0;
 }
