@@ -36,6 +36,10 @@ import { RenderModule } from './render';
 import { ComprehensiveRoutingComponent } from './counsel/counsel-detail/comprehensive/comprehensive-routing.component';
 import { ComprehensiveViewComponent } from './counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component';
 import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component";
+import { AdminComponent } from './admin/admin.component';
+import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counsel-teacher-role.component';
+import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
+import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +71,11 @@ import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensi
     ComprehensiveComponent,
     ComprehensiveRoutingComponent,
     ComprehensiveViewComponent,
-    ComprehensiveEditComponent
+    ComprehensiveEditComponent,
+    AdminComponent,
+    CounselTeacherRoleComponent,
+    AdminRoutingComponent,
+    CounselClassComponent
   ],
   imports: [
     BrowserModule,

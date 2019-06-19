@@ -13,6 +13,7 @@ export class RoleService {
   private _enableReferral: boolean = false;
   private _enableCase: boolean = false;
   private _enableInterviewStatistics: boolean = false;
+  private _enableAdmin: boolean = false;
 
   public get isLoading() {
     return this._isLoading;
@@ -32,6 +33,9 @@ export class RoleService {
   }
   public get enableInterviewStatistics() {
     return this._enableInterviewStatistics;
+  }
+  public get enableAdmin() {
+    return this._enableAdmin;
   }
   public get role() {
     return this._role;
@@ -84,6 +88,13 @@ export class RoleService {
       this._role.indexOf("認輔老師") >= 0
     ) {
       this._enableInterviewStatistics = true;
+    }
+
+    if (
+      this._role.indexOf("管理者") >= 0 ||
+      this._role.indexOf("輔導老師") >= 0
+    ) {
+      this._enableAdmin = true;
     }
 
     // 未開發功能不能用
