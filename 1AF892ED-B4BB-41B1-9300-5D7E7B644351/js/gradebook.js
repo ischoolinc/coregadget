@@ -291,11 +291,12 @@
 
                 if (pass && !dataRepeat) {
 
-                    if (examNameList.indexOf(item.Name) > -1) {
+                    // 再一個試別 Exam 下 小考試別不能重覆
+                    if (examNameList.indexOf(item.RefExamID + '_' + item.Name) > -1) {
                         dataRepeat = true;
                         repeatExamName = item.Name;
                     }
-                    examNameList.push(item.Name);
+                    examNameList.push(item.RefExamID + '_' + item.Name);
 
                     body.Content.CourseExtension.Extension.GradeItem.Item.push({
                         '@ExamID': item.RefExamID,
@@ -320,9 +321,7 @@
                                 // 資料Reload
 
                                 $scope.setCurrentMode($scope.current.mode);
-
-                                //$scope.getGradeItemList();
-                                //$scope.setAssessment("CustomAssessment", $scope.current.Assessment);
+                                
                             });
                         }
                     }
@@ -811,6 +810,9 @@
                             });
                         });
 
+                        // 下列 是只有新竹國中有的邏輯， 每次輸完小考成績 自動 結算回 評量成績， 高中評量成績輸入不需要這個情境
+                        // 高中的情境為， 在該次的評量輸入期間之內， 使用者自己點選 結算功能， 將 評量之下 的]小考結算成績帶入
+                        // 當然使用者也可以自行輸入 每一次評量成績的結果。
                         ///**
                         // * 將平時評量分數結算至定期評量
                         // * 條件：
@@ -1343,8 +1345,7 @@
                                             Weight: item.Weight,
                                             Type: 'Number',
                                             Permission: 'Editor',
-                                            //  小考輸入開放與否，與平時評量相同
-                                            //Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime))
+                                            //  小考輸入開放與否，在該次評量 結束前都可以
                                             Lock : !(new Date() < new Date(template.InputEndTime))
                                             //Lock: false
                                         };
