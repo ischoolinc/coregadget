@@ -1,7 +1,5 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComprehensiveService } from './comprehensive.service';
-import { CounselDetailComponent } from "../counsel-detail.component";
 import { ComprehensiveComponent } from "../comprehensive/comprehensive.component";
 
 @Component({
@@ -19,7 +17,7 @@ export class ComprehensiveRoutingComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.router.navigate(["view", this.comprehensiveComponent.fillInSection[0].FillInSectionID], {
+    this.router.navigate(["view", this.comprehensiveComponent.fillInSemester[0].SchoolYear, this.comprehensiveComponent.fillInSemester[0].Semester], {
       relativeTo: this.route,
       skipLocationChange: true
     });

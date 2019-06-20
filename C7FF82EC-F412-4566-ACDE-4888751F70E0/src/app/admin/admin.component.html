@@ -1,0 +1,41 @@
+<div *ngIf="!isLoading; else tmpLoading">
+  <app-permission-denied *ngIf="deny"></app-permission-denied>
+  <div *ngIf="!deny">
+    <div class="row mt-3">
+      <div class="col-md-3">
+        <div class="sticky-top mb-3">
+          <h4 class="mt-1 mb-3">
+          </h4>
+          <div class="list-group nav-list">
+            <a href="javascript:void(0);"
+               class="list-group-item list-group-item-action d-flex"
+               data-toggle="list"
+               [ngClass]="{ 'active show': currentItem == 'counsel_teacher_role' }"
+               (click)="routeTo('counsel_teacher_role')">
+              教師輔導身分
+            </a>
+            <a href="javascript:void(0);"
+               class="list-group-item list-group-item-action d-flex"
+               data-toggle="list"
+               [ngClass]="{ 'active show': currentItem == 'counsel_class' }"
+               (click)="routeTo('counsel_class')">
+              負責輔導班級
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="tab-content">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

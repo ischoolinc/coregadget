@@ -19,6 +19,7 @@ export class ComprehensiveEditComponent implements OnInit {
   isSaving = false;
   studentID: string;
   fillInSectionId: string;
+  fillInSection: any;
   questionSubject: any[] = [];
   requireList: any[];
   optionCodeMapping: any = {};
@@ -51,7 +52,6 @@ export class ComprehensiveEditComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.fillInSectionId = params.get("sectionID");
-        this.comprehensiveComponent.setCurrentFillInSection(this.fillInSectionId);
         this.comprehensiveComponent.plugin = this.pluginEle;
         this.getFillInData();
       }
@@ -71,6 +71,11 @@ export class ComprehensiveEditComponent implements OnInit {
             FillInSectionID: this.fillInSectionId,
           }
         });
+        fillInData.Section = [].concat(fillInData.Section || []);
+        if (fillInData.Section.length) {
+          this.fillInSection = fillInData.Section[0];
+          this.comprehensiveComponent.setCurrentSemester(this.fillInSection.SchoolYear, this.fillInSection.Semester);
+        }
 
         fillInData.QuestionSubject = [].concat(fillInData.QuestionSubject || []);
         fillInData.QuestionSubject.forEach((subject) => {
@@ -276,7 +281,7 @@ export class ComprehensiveEditComponent implements OnInit {
         }
       });
       // console.log(rsp);
-      this.router.navigate(["../../view", this.fillInSectionId], {
+      this.router.navigate(["../../view", this.fillInSection.SchoolYear, this.fillInSection.Semester], {
         relativeTo: this.route,
       });
     } catch (error) {
