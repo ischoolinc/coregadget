@@ -1,0 +1,9 @@
+<nav aria-label="breadcrumb text-nowrap text-truncate" style="font-family: Microsoft JhengHei">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"> <span class="point"> <strong>行為表現紀錄</strong></span></li>
+  </ol>
+</nav>
+<div *ngFor="let child of ChildrenInfo">
+
+  <app-child-behavior [child]="child"></app-child-behavior>
+</div>
