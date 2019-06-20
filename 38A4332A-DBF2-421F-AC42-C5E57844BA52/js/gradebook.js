@@ -380,24 +380,36 @@
         $scope.connection = gadget.getContract("makeUp.HS");
 
         $scope.connection.send({
-            service: "_.GetMyCourses",            
-            body: {
-                Content: {
-                    Field: { All: '' },
-                    Order: { CourseName: '' }
-                }
+            service: "_.GetMyMakeUpBatch",            
+            body: {               
+
             },
             result: function (response, error, http) {
 
                 if (error) {
-                    alert("_.GetMyCourses Error");
+                    alert("_.GetMyMakeUpBatch Error");
                 } else {
                     $scope.$apply(function () {
-                        $scope.batchList = [];
 
-                        [].concat(response.Batch || []).forEach(function (batchRec, index) {
-                            $scope.batchList.push(batchRec);                            
+                        $scope.batchList = [];
+                        $scope.groupList = [];
+
+                        [].concat(response.BatchList || []).forEach(function (batchRec, index) {
+
+                            var repeatBatchRec = $scope.batchList.filter(_batchRec => _batchRec.BatchID == batchRec.BatchID);
+
+                            // 一個 補考梯次 加入一次即可
+                            if (repeatBatchRec.length == 0)
+                            {
+                                $scope.batchList.push(batchRec);                            
+                            }                            
                         });
+
+                        [].concat(response.GroupList || []).forEach(function (groupRec, index) {
+                            $scope.groupList.push(groupRec);
+                        });
+
+
                         $scope.setCurrentBatch($scope.batchList[0]);
                     });
                 }
@@ -415,193 +427,106 @@
                 }
             }
 
-            $scope.current.Student = null;
-            $scope.studentList = null;
+                        
+            //$scope.current.Student = null;
+            //$scope.studentList = null;
 
             $scope.current.Batch = batch;
 
+            $scope.current.currentGroupList = [];
+
+            // 篩選出 目前補考梯次的 補考群組
+            var currentGroupList = $scope.groupList.filter(group => group.RefBatchID == $scope.current.Batch.BatchID);
+
+            $scope.current.currentGroupList = currentGroupList;
+
+            $scope.setCurrentGroup($scope.current.currentGroupList[0])
 
             $scope.examList = [];
 
-            [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
-                examRec.Type = 'Number';
-                examRec.Permission = "Editor";
-                examRec.Lock = !(new Date(examRec.InputStartTime) < new Date() && new Date() < new Date(examRec.InputEndTime));
-                $scope.examList.push(examRec);
-                $scope.current.VisibleExam.push(examRec.Name);
-                $scope.current.ExamOrder.push(examRec.Name);
-            });
-            var finalScore = { ExamID: '學期成績', Name: '學期成績', Type: 'Number', Permission: 'Editor', Lock: !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date() && new Date() < new Date(course.InputEndTime)) };
-            var finalScorePreview = {
-                ExamID: '學期成績_試算',
-                Name: '學期成績_試算',
-                SubName: '試算',
-                Type: 'Program',
-                Permission: 'Editor',
-                Lock: false,
-                Group: finalScore,
-                Fn: function (stu) {
-                    var total = 0, base = 0, seed = 10000;
-                    [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
-                        var p = Number(examRec.Percentage) || 0;
-                        var s = stu["Exam" + examRec.ExamID];
-                        if (stu["Exam" + examRec.ExamID] != "缺")
-                            if (stu["Exam" + examRec.ExamID] || stu["Exam" + examRec.ExamID] == "0") {
-                                total += seed * p * Number(stu["Exam" + examRec.ExamID]);
-                                base += p;
-                            }
-                    });
-                    if (base) {
-                        var round = Math.pow(10, $scope.params[finalScorePreview.Name + 'Round'] || $scope.params.DefaultRound);
-                        stu["Exam" + finalScorePreview.ExamID] = Math.round((Math.floor(total / base) / seed) * round) / round;
-                    }
-                    else {
-                        stu["Exam" + finalScorePreview.ExamID] = "";
-                    }
+                        
+            
+        }
+
+
+        $scope.setCurrentGroup = function (group) {
+
+            if ($scope.studentList) {
+                var data_changed = !$scope.checkAllTable();
+                if (data_changed) {
+                    if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動"))
+                        return;
                 }
-            };
+            }
 
-            finalScore.SubExamList = [finalScorePreview];
+            //$scope.current.Student = null;
+            //$scope.studentList = null;
 
-            $scope.examList.splice(0, 0, finalScore, finalScorePreview);
-            $scope.current.VisibleExam.push('學期成績', '學期成績_試算');
-            $scope.current.ExamOrder.push('學期成績', '學期成績_試算');
+            $scope.current.Group = group;
 
-
+            // 抓 補考群組學生(包含補考資料)
             $scope.connection.send({
-                service: "TeacherAccess.GetCourseStudents",
+                service: "GetMakeUpStudentRecord",
                 autoRetry: true,
-                body: {
-                    Content: {
-                        Field: { All: '' },
-                        Condition: { CourseID: course.CourseID },
-                        Order: { SeatNumber: '' }
-                    }
-                },
+                body: { GroupID: $scope.current.Group.GroupID },
                 result: function (response, error, http) {
                     if (error) {
-                        alert("TeacherAccess.GetCourseStudents Error");
+                        alert("GetMakeUpStudentRecord Error");
                     } else {
                         var studentMapping = {};
                         $scope.$apply(function () {
                             $scope.studentList = [];
-                            [].concat(response.Students.Student || []).forEach(function (studentRec, index) {
+                            [].concat(response.MakeUpDataList || []).forEach(function (MakeUpData, index) {
 
-                                // 座號
-                                studentRec.SeatNo = studentRec.SeatNumber;
+                                //var _MakeUpData;
 
-                                //2017/6/15 穎驊新增，因應 [A09][06] 子成績輸入-顯示成績身分 項目 ，加入顯示身分類別 ，以利老師在輸入成績時作為判別資訊。
-                                if (studentRec.Tags) {
-                                    [].concat(studentRec.Tags.Tag || []).forEach(function (tag) {
+                                //_MakeUpData.MakeUpDataID = MakeUpData.MakeUpDataID;
 
-                                        if (tag.Name.includes("成績身分")) {
-                                            studentRec.StudentScoreTag = tag.Name;
-                                        }
-                                    });
-                                }
+                                //_MakeUpData.RefStudentID = MakeUpData.RefStudentID;
 
-                                studentRec.index = index;
-                                $scope.examList.forEach(function (examRec) {
-                                    studentRec["Exam" + examRec.ExamID] = '';
-                                });
-                                $scope.studentList.push(studentRec);
-                                studentMapping[studentRec.StudentID] = studentRec;
+                                //_MakeUpData.StudentName = MakeUpData.StudentName;
+
+                                //_MakeUpData.Department = MakeUpData.Department;
+
+                                //_MakeUpData.ClassName = MakeUpData.ClassName;
+
+                                //_MakeUpData.SeatNo = MakeUpData.SeatNo;
+
+                                //_MakeUpData.StudentNumber = MakeUpData.StudentNumber;
+
+                                //_MakeUpData.Subject = MakeUpData.Subject;
+
+                                //_MakeUpData.Level = MakeUpData.Level;
+
+                                //_MakeUpData.Credit = MakeUpData.Credit;
+
+                                //_MakeUpData.C_is_required_by = MakeUpData.C_is_required_by;
+
+                                //_MakeUpData.C_is_required = MakeUpData.C_is_required;
+
+                                //_MakeUpData.C_is_required = MakeUpData.C_is_required;
+
+                                //_MakeUpData.Score = MakeUpData.Score;
+
+                                //_MakeUpData.MakeUpScore = MakeUpData.MakeUpScore;
+
+                                //_MakeUpData.PassStandard = MakeUpData.PassStandard;
+
+                                //_MakeUpData.MakeUpStandard = MakeUpData.MakeUpStandard;
+
+                                //_MakeUpData.DecimalNumber = MakeUpData.DecimalNumber;                                                                
+                                //$scope.examList.forEach(function (examRec) {
+                                //    studentRec["Exam" + examRec.ExamID] = '';
+                                //});
+
+                                $scope.studentList.push(MakeUpData);
+                                studentMapping[MakeUpData.RefStudentID] = MakeUpData;
                             });
-                        });
-                        var getCourseExamScoreFinish = false;
-                        var getCourseSemesterScore = false;
-
-                        //抓定期評量成績
-                        $scope.connection.send({
-                            service: "TeacherAccess.GetCourseExamScore",
-                            autoRetry: true,
-                            body: {
-                                Content: {
-                                    Field: { All: '' },
-                                    Condition: { CourseID: course.CourseID },
-                                    Order: { SeatNumber: '' }
-                                }
-                            },
-                            result: function (response, error, http) {
-                                if (error) {
-                                    alert("TeacherAccess.GetCourseExamScore Error");
-                                } else {
-                                    $scope.$apply(function () {
-                                        [].concat(response.Scores.Item || []).forEach(function (examScoreRec, index) {
-                                            studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID] = examScoreRec.Score;
-
-                                            $scope.examList.forEach(function (examRec) {
-                                                if (examRec.ExamID == examScoreRec.ExamID) {
-                                                    [].concat(examRec.SubExamList || []).forEach(function (subExamRec) {
-                                                        if (subExamRec.ExtName && examScoreRec.Extension && examScoreRec.Extension.Extension && examScoreRec.Extension.Extension[subExamRec.ExtName]) {
-                                                            studentMapping[examScoreRec.StudentID]["Exam" + subExamRec.ExamID] = examScoreRec.Extension.Extension[subExamRec.ExtName];
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        });
-                                        getCourseExamScoreFinish = true;
-                                        //定期跟總成績都抓完
-                                        if (getCourseExamScoreFinish && getCourseSemesterScore) {
-                                            $scope.studentList.forEach(function (studentRec, index) {
-                                                var rawStudentRec = angular.copy(studentRec);
-                                                for (var key in rawStudentRec) {
-                                                    if (!key.match(/Origin$/gi))
-                                                        studentRec[key + 'Origin'] = studentRec[key];
-                                                }
-                                            });
-                                            $scope.setupCurrent();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-                        //抓課程總成績
-                        $scope.connection.send({
-                            service: "TeacherAccess.GetCourseSemesterScore",
-                            autoRetry: true,
-                            body: {
-                                Content: {
-                                    Field: {
-                                        All: ''
-                                    },
-                                    Condition: {
-                                        CourseID: course.CourseID
-                                    },
-                                    Order: {
-                                        SeatNumber: ''
-                                    }
-                                }
-                            },
-                            result: function (response, error, http) {
-                                if (error) {
-                                    alert("TeacherAccess.GetCourseSemesterScore Error");
-                                } else {
-                                    $scope.$apply(function () {
-                                        [].concat(response.Scores.Item || []).forEach(function (finalScoreRec, index) {
-                                            studentMapping[finalScoreRec.StudentID]["Exam" + finalScore.ExamID] = finalScoreRec.Score;
-                                        });
-
-                                        getCourseSemesterScore = true;
-                                        //定期跟總成績都抓完
-                                        if (getCourseExamScoreFinish && getCourseSemesterScore) {
-                                            $scope.studentList.forEach(function (studentRec, index) {
-                                                var rawStudentRec = angular.copy(studentRec);
-                                                for (var key in rawStudentRec) {
-                                                    if (!key.match(/Origin$/gi))
-                                                        studentRec[key + 'Origin'] = studentRec[key];
-                                                }
-                                            });
-                                            $scope.setupCurrent();
-                                        }
-                                    });
-                                }
-                            }
                         });
                     }
                 }
             });
+
         }
 
         $scope.checkAllTable = function () {

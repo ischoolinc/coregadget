@@ -70,8 +70,16 @@
 
 <body ng-controller="MainCtrl">
     <div ng-if="!(current && studentList)" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
-    <div id="gadget" class="my-page" ng-if="current && studentList ">
+    <div id="gadget" class="my-page" ng-if="current && studentList">
         <h1 class="hidden-xs">高中補考成績輸入</h1>
+        <h3 class="hidden-xs">補考梯次: {{current.Batch.BatchName}}</h3>
+        <h3 class="hidden-xs">補考梯次描述:{{current.Batch.BatchDescription}}</h3>
+        <h3 class="hidden-xs">輸入開放時間: {{current.Batch.BatchStartTime}} ~ {{current.Batch.BatchEndTime}}</h3>
+        <h3 class="hidden-xs">補考群組: {{current.Group.GroupName}}</h3>
+        <h3 class="hidden-xs">補考群組描述:{{current.Group.GroupDescription}}</h3>
+        <h3 class="hidden-xs">補考群組日期:{{current.Group.GroupMakeupDate}}</h3>
+        <h3 class="hidden-xs">補考群組時間:{{current.Group.GroupMakeupTime}}</h3>        
+        <h3 class="hidden-xs">補考群組地點:{{current.Group.GroupMakeupPlace}}</h3>        
         <div>
             <div class="btn-group pull-right">
                 <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable()}">
@@ -80,11 +88,20 @@
                 </a>                
             </div>
             <div class="btn-group">
-                <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span> </a>
+                <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Batch.BatchName}}&nbsp;<span class="caret"></span> </a>
                 <ul class="dropdown-menu">
-                    <li ng-repeat="course in courseList"
-                        ng-class="{active:course==current.Course}">
-                        <a href="javascript:;" ng-click="setCurrentCourse(course)">{{course.CourseName}}</a>
+                    <li ng-repeat="batch in batchList"
+                        ng-class="{active:batch==current.Batch}">
+                        <a href="javascript:;" ng-click="setCurrentBatch(batch)">{{batch.BatchName}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Group.GroupName}}&nbsp;<span class="caret"></span> </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="group in current.currentGroupList"
+                        ng-class="{active:group==current.Group}">
+                        <a href="javascript:;" ng-click="setCurrentGroup(group)">{{group.GroupName}}</a>
                     </li>
                 </ul>
             </div>
@@ -281,11 +298,11 @@
                             </td>
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.SubjectName}}</span>
+                                <span>{{stuRec.Subject}}</span>
                             </td>
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.SubjectLevel}}</span>
+                                <span>{{stuRec.Level}}</span>
                             </td>
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
