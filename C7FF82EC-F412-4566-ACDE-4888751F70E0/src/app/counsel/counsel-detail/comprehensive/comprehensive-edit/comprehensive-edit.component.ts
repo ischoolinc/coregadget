@@ -130,7 +130,7 @@ export class ComprehensiveEditComponent implements OnInit {
                       break;
                   }
 
-                  option.AnswerMatrix = [].concat(JSON.parse('' + option.AnswerMatrix) || []);
+                  option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
                   option.IsTextArea = false;
                   option.Template = [];
                   //分割OptionText進Template

@@ -87,7 +87,7 @@ export class ComprehensiveViewComponent implements OnInit {
                 text.Option = [].concat(text.Option || []);
                 text.Option.forEach(option => {
                   option.AnswerChecked = (option.AnswerChecked == "true");
-                  option.AnswerMatrix = [].concat(JSON.parse('' + option.AnswerMatrix) || []);
+                  option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
                   option.AnswerComplete = (option.AnswerComplete == "true");
                   if (option.AnswerChecked && option.AnswerComplete) {
                     text.HasValue = true;
