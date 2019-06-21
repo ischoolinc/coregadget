@@ -11,30 +11,24 @@ export class ComprehensiveComponent implements OnInit {
 
   deny: boolean = false;
   isLoading: boolean = false;
-  currentItem: string = "";
+  currentSemester: any;
+  semeserList: any[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     @Optional()
     private appComponent: AppComponent
-    ) {
+  ) {
 
   }
 
   ngOnInit() {
     this.appComponent.currentComponent = "comprehensive";
+    this.semeserList = [{ SchoolYear: "107", Semester: "2" }, { SchoolYear: "107", Semester: "1" }];
   }
 
-  routeTo(to) {
-    //讓特效跑
-    setTimeout(
-      function () {
-        this.router.navigate([].concat(to || []), {
-          relativeTo: this.activatedRoute
-        });
-      }.bind(this),
-      200
-    );
+  setCurrentSemester(semester: any) {
+    this.currentSemester = semester;
   }
 }

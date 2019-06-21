@@ -1,3 +1,27 @@
-<p>
-  comprehensive works!
-</p>
+<div class="tab-content">
+  <ng-container *ngIf="!isLoading;else tmpLoading">
+    <div class="dropdown">
+      <button class="btn btn-light dropdown-toggle"
+              type="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+        {{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item"
+           *ngFor="let semester of semeserList"
+           [ngClass]="{ active: semester === currentSemester }"
+           (click)="currentSemester=semester"> {{ semester.SchoolYear }}學年度 第{{semester.Semester}}學期</a>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

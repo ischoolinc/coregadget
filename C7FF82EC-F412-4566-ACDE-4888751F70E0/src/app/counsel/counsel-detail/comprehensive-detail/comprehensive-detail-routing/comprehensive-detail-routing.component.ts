@@ -1,13 +1,13 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComprehensiveDetailComponent } from "../comprehensive-detail/comprehensive.component";
+import { ComprehensiveDetailComponent } from "../../comprehensive-detail/comprehensive.component";
 
 @Component({
-  selector: 'app-comprehensive-routing',
-  templateUrl: './comprehensive-routing.component.html',
-  styleUrls: ['./comprehensive-routing.component.css']
+  selector: 'app-comprehensive-detail-routing',
+  templateUrl: './comprehensive-detail-routing.component.html',
+  styleUrls: ['./comprehensive-detail-routing.component.css']
 })
-export class ComprehensiveRoutingComponent implements OnInit {
+export class ComprehensiveDetailRoutingComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,

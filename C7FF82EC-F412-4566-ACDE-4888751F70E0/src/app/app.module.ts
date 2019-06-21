@@ -33,7 +33,6 @@ import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel
 import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
 import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive.component";
 import { RenderModule } from './render';
-import { ComprehensiveRoutingComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-routing.component';
 import { ComprehensiveViewComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-view/comprehensive-view.component';
 import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-edit/comprehensive-edit.component";
 import { AdminComponent } from './admin/admin.component';
@@ -41,6 +40,7 @@ import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counse
 import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
 import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
+import { ComprehensiveDetailRoutingComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-detail-routing/comprehensive-detail-routing.component';
 
 @NgModule({
   declarations: [
@@ -70,14 +70,14 @@ import { ComprehensiveComponent } from "./comprehensive/comprehensive.component"
     AddCaseInterviewModalComponent,
     ViewCaseInterviewModalComponent,
     ComprehensiveDetailComponent,
-    ComprehensiveRoutingComponent,
     ComprehensiveViewComponent,
     ComprehensiveEditComponent,
     AdminComponent,
     CounselTeacherRoleComponent,
     AdminRoutingComponent,
     CounselClassComponent,
-    ComprehensiveComponent
+    ComprehensiveComponent,
+    ComprehensiveDetailRoutingComponent
   ],
   imports: [
     BrowserModule,

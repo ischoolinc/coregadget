@@ -19,7 +19,7 @@ import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/
 import { ReferralListComponent } from "./referral/referral-list/referral-list.component";
 import { ReferralDetailComponent } from "./referral/referral-detail/referral-detail.component";
 import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive.component";
-import { ComprehensiveRoutingComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-routing.component";
+import { ComprehensiveDetailRoutingComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-detail-routing/comprehensive-detail-routing.component";
 import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-view/comprehensive-view.component";
 import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-edit/comprehensive-edit.component';
 // import { CaseRoleGuard, CounselRoleGuard, CounselStatisticsRoleGuard, ReferralRoleGuard, InterviewStatisticsRoleGuard } from "./role.guard";
@@ -56,7 +56,7 @@ const routes: Routes = [
             path: "comprehensive",
             component: ComprehensiveDetailComponent,
             children: [
-              { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
+              { path: "", pathMatch: "full", component: ComprehensiveDetailRoutingComponent },
               { path: "view/:schoolYear/:semester", component: ComprehensiveViewComponent },
               { path: "edit/:sectionID", component: ComprehensiveEditComponent }
             ]
