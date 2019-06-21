@@ -70,7 +70,7 @@
           <i class="material-icons">edit</i>
           <span>編輯</span>
         </button>
-        <div class="dropdown-menu">
+        <div class="dropdown-menu dropdown-menu-right">
           <a *ngFor="let section of fillInSection"
              [routerLink]="['../../../edit', section.FillInSectionID]"
              class="dropdown-item">{{section.Name}}</a>

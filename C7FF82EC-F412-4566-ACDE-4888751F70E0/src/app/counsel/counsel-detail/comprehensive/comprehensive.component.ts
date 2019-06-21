@@ -8,7 +8,7 @@ import { DsaService } from '../../../dsa.service';
   templateUrl: './comprehensive.component.html',
   styleUrls: ['./comprehensive.component.css']
 })
-export class ComprehensiveComponent implements OnInit {
+export class ComprehensiveDetailComponent implements OnInit {
 
   isLoading = true;
   isSaving = false;

@@ -49,7 +49,8 @@
       <li class="nav-item">
         <a class="nav-link"
            [attr.data-toggle]="roleService.enableCase?'tab':null"
-           [ngClass]="{'active': currentComponent == 'case', 'disabled': !roleService.enableCase}">
+           (click)="routeTo('/comprehensive')"
+           [ngClass]="{'active': currentComponent == 'comprehensive'}">
           綜合紀錄表</a>
       </li>
       <li class="nav-item">

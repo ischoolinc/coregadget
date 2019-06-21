@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 
 import { AppComponent } from './app.component';
@@ -31,7 +31,7 @@ import { ReferralListComponent } from './referral/referral-list/referral-list.co
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
 import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
 import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
-import { ComprehensiveComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
+import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
 import { RenderModule } from './render';
 import { ComprehensiveRoutingComponent } from './counsel/counsel-detail/comprehensive/comprehensive-routing.component';
 import { ComprehensiveViewComponent } from './counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component';
@@ -40,6 +40,7 @@ import { AdminComponent } from './admin/admin.component';
 import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counsel-teacher-role.component';
 import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
 import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
+import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 
 @NgModule({
   declarations: [
@@ -64,18 +65,19 @@ import { CounselClassComponent } from './admin/counsel-class/counsel-class.compo
     ReferralComponent,
     CounselRoutingComponent,
     DetailRoutingComponent,
-    ReferralListComponent, 
-    ReferralDetailComponent, 
-    AddCaseInterviewModalComponent, 
+    ReferralListComponent,
+    ReferralDetailComponent,
+    AddCaseInterviewModalComponent,
     ViewCaseInterviewModalComponent,
-    ComprehensiveComponent,
+    ComprehensiveDetailComponent,
     ComprehensiveRoutingComponent,
     ComprehensiveViewComponent,
     ComprehensiveEditComponent,
     AdminComponent,
     CounselTeacherRoleComponent,
     AdminRoutingComponent,
-    CounselClassComponent
+    CounselClassComponent,
+    ComprehensiveComponent
   ],
   imports: [
     BrowserModule,

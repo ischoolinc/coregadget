@@ -6,7 +6,7 @@ import {
   RoutesRecognized
 } from "@angular/router";
 import { DsaService } from 'src/app/dsa.service';
-import { ComprehensiveComponent } from '../comprehensive.component';
+import { ComprehensiveDetailComponent } from '../comprehensive.component';
 
 @Component({
   selector: 'app-comprehensive-edit',
@@ -44,7 +44,7 @@ export class ComprehensiveEditComponent implements OnInit {
     private route: ActivatedRoute,
     private dsaService: DsaService,
     @Optional()
-    private comprehensiveComponent: ComprehensiveComponent
+    private comprehensiveComponent: ComprehensiveDetailComponent
   ) { }
 
   ngOnInit() {

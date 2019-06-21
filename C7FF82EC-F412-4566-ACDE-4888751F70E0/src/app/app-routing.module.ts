@@ -18,7 +18,7 @@ import { CounselRoutingComponent } from "./counsel/counsel-routing/counsel-routi
 import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/detail-routing.component";
 import { ReferralListComponent } from "./referral/referral-list/referral-list.component";
 import { ReferralDetailComponent } from "./referral/referral-detail/referral-detail.component";
-import { ComprehensiveComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
+import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
 import { ComprehensiveRoutingComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-routing.component";
 import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component";
 import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component';
@@ -27,6 +27,7 @@ import { AdminComponent } from "./admin/admin.component";
 import { AdminRoutingComponent } from "./admin/admin-routing/admin-routing.component";
 import { CounselTeacherRoleComponent } from "./admin/counsel-teacher-role/counsel-teacher-role.component";
 import { CounselClassComponent } from "./admin/counsel-class/counsel-class.component";
+import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -53,7 +54,7 @@ const routes: Routes = [
           { path: "semester_score", component: SemesterScoreDetailComponent },
           {
             path: "comprehensive",
-            component: ComprehensiveComponent,
+            component: ComprehensiveDetailComponent,
             children: [
               { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
               { path: "view/:schoolYear/:semester", component: ComprehensiveViewComponent },
@@ -99,6 +100,9 @@ const routes: Routes = [
       { path: "counsel_teacher_role", component: CounselTeacherRoleComponent },
       { path: "counsel_class", component: CounselClassComponent }
     ]
+  }, {
+    path: "comprehensive",
+    component: ComprehensiveComponent
   }
 ];
 

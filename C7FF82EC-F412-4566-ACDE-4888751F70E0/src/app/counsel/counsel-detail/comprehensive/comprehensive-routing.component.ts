@@ -1,6 +1,6 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComprehensiveComponent } from "../comprehensive/comprehensive.component";
+import { ComprehensiveDetailComponent } from "../comprehensive/comprehensive.component";
 
 @Component({
   selector: 'app-comprehensive-routing',
@@ -13,7 +13,7 @@ export class ComprehensiveRoutingComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     @Optional()
-    private comprehensiveComponent: ComprehensiveComponent
+    private comprehensiveComponent: ComprehensiveDetailComponent
   ) { }
 
   async ngOnInit() {
