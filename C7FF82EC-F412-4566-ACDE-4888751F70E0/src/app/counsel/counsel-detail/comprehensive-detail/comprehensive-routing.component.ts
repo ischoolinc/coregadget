@@ -1,6 +1,6 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComprehensiveDetailComponent } from "../comprehensive/comprehensive.component";
+import { ComprehensiveDetailComponent } from "../comprehensive-detail/comprehensive.component";
 
 @Component({
   selector: 'app-comprehensive-routing',

@@ -18,10 +18,10 @@ import { CounselRoutingComponent } from "./counsel/counsel-routing/counsel-routi
 import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/detail-routing.component";
 import { ReferralListComponent } from "./referral/referral-list/referral-list.component";
 import { ReferralDetailComponent } from "./referral/referral-detail/referral-detail.component";
-import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
-import { ComprehensiveRoutingComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-routing.component";
-import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component";
-import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component';
+import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive.component";
+import { ComprehensiveRoutingComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-routing.component";
+import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-view/comprehensive-view.component";
+import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-edit/comprehensive-edit.component';
 // import { CaseRoleGuard, CounselRoleGuard, CounselStatisticsRoleGuard, ReferralRoleGuard, InterviewStatisticsRoleGuard } from "./role.guard";
 import { AdminComponent } from "./admin/admin.component";
 import { AdminRoutingComponent } from "./admin/admin-routing/admin-routing.component";

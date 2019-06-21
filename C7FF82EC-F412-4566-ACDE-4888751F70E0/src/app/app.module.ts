@@ -31,11 +31,11 @@ import { ReferralListComponent } from './referral/referral-list/referral-list.co
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
 import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
 import { ViewCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
-import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
+import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive.component";
 import { RenderModule } from './render';
-import { ComprehensiveRoutingComponent } from './counsel/counsel-detail/comprehensive/comprehensive-routing.component';
-import { ComprehensiveViewComponent } from './counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component';
-import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component";
+import { ComprehensiveRoutingComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-routing.component';
+import { ComprehensiveViewComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-view/comprehensive-view.component';
+import { ComprehensiveEditComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-edit/comprehensive-edit.component";
 import { AdminComponent } from './admin/admin.component';
 import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counsel-teacher-role.component';
 import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
