@@ -308,9 +308,14 @@
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 <span>{{stuRec.Score}}</span>
                             </td>
-                            <td class="text-left"
+                            <td class="text-center"
+                                style="position:relative;"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.MakeUpScore}}</span>
+                                <div ng-if="!checkOneCell(stuRec, 'MakeUpScore')"
+                                     ng-attr-title="{{stuRec['MakeUpScore'+'Origin']?'原值為：'+stuRec['MakeUpScore'+'Origin']:''}}"
+                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
+                                </div>
+                                <span>{{stuRec['MakeUpScore']}}</span>
                             </td>
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
@@ -319,29 +324,7 @@
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 <span>{{stuRec.PassStandard}}</span>
-                            </td>
-
-
-                            <!--<td ng-repeat="exam in examList | filter: filterPermission"
-                                class="text-center"
-                                style="position:relative;"
-                                ng-click="setCurrent(stuRec, exam, true, true)">
-                                <div ng-if="!checkOneCell(stuRec, 'Exam'+exam.ExamID)"
-                                     ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
-                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
-                                </div>
-                                <h6 ng-if="exam.Group" style="margin:0px;display:inline-block;">
-                                    <small>
-                                        <span>
-                                            {{stuRec['Exam'+exam.ExamID]}}
-                                        </span>
-                                    </small>
-                                </h6>
-                                <span ng-if="!exam.Group"
-                                      ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < 60}">
-                                    {{stuRec['Exam'+exam.ExamID]}}
-                                </span>
-                            </td>-->
+                            </td>                           
                         </tr>
                     </tbody>
                 </table>

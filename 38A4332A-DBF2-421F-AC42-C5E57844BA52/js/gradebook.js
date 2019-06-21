@@ -132,27 +132,21 @@
         $scope.enterGrade = function (event) {
             if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
             var flag = false;
-            if ($scope.current.Exam.Type == 'Number') {
-                var temp = Number($scope.current.Value);
-                if (!isNaN(temp)
-                    && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
-                    && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
-                    flag = true;
-                    if (!$scope.current.Exam.Group) {
-                        var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
-                        temp = Math.round(temp * round) / round;
-                    }
-                }
-                if ($scope.current.Value == "缺")
-                    flag = true;
-                if (flag) {
-                    if ($scope.current.Value != "" && $scope.current.Value != "缺")
-                        $scope.current.Value = temp;
-                }
-            }
-            else {
+
+            var temp = Number($scope.current.Value);
+            if (!isNaN(temp)) {
                 flag = true;
+                var round = Math.pow(10, $scope.current.Student.DecimalNumber || $scope.params.DefaultRound);
+                temp = Math.round(temp * round) / round;
             }
+            if ($scope.current.Value == "缺")
+                flag = true;
+            if (flag) {
+                if ($scope.current.Value != "" && $scope.current.Value != "缺")
+                    $scope.current.Value = temp;
+            }
+
+  
             if (flag) {
                 $scope.submitGrade();
             }
@@ -180,8 +174,8 @@
             $scope.Data_is_original = false;
             $scope.Data_has_changed = true;
 
-            $scope.current.Student["Exam" + $scope.current.Exam.ExamID] = $scope.current.Value;
-            $scope.calc();
+            $scope.current.Student["MakeUpScore"] = $scope.current.Value;
+            
             var nextStudent =
                 $scope.studentList.length > ($scope.current.Student.index + 1) ?
                 $scope.studentList[$scope.current.Student.index + 1] :
@@ -317,8 +311,8 @@
         }
 
         $scope.setupCurrent = function () {
-            if ($scope.studentList && $scope.examList && $scope.current.ExamOrder) {
-                $scope.calc();
+            if ($scope.studentList) {
+                
                 if (!$scope.current.Student && !$scope.current.Exam) {
                     //#region 設定預設資料顯示
                     var ts, te;
@@ -519,6 +513,12 @@
                                 //    studentRec["Exam" + examRec.ExamID] = '';
                                 //});
 
+                                MakeUpData.index = index;
+
+                                MakeUpData['MakeUpScore'] = MakeUpData.MakeUpScore;
+
+                                MakeUpData['MakeUpScoreOrigin'] = MakeUpData.MakeUpScore;
+
                                 $scope.studentList.push(MakeUpData);
                                 studentMapping[MakeUpData.RefStudentID] = MakeUpData;
                             });
@@ -531,19 +531,17 @@
 
         $scope.checkAllTable = function () {
             var pass = true;
-            [].concat($scope.examList || []).forEach(function (examRec) {
-                if (pass)
-                    [].concat($scope.studentList || []).forEach(function (stuRec) {
-                        if (pass)
-                            pass = !!$scope.checkOneCell(stuRec, 'Exam' + examRec.ExamID);
-                    });
-            });
+            if (pass)
+                [].concat($scope.studentList || []).forEach(function (stuRec) {
+                    if (pass)
+                        pass = !!$scope.checkOneCell(stuRec, 'MakeUpScore');
+                });
             return pass;
         }
 
         $scope.checkOneCell = function (studentRec, examKey) {
             var pass = true;
-            pass = (studentRec[examKey] == studentRec[examKey + 'Origin']) || (studentRec[examKey + 'Origin'] === undefined) || (examKey == "Exam學期成績_試算");
+            pass = (studentRec[examKey] == studentRec[examKey + 'Origin']) || (studentRec[examKey + 'Origin'] === undefined);
             return pass;
         }
 
