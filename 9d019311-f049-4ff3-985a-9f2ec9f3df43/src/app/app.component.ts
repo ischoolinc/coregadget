@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
   // 日常生活表現評量項目
   examList: any[];
   // 學生清單
-  studentList: StudentRecord[];
+  studentList: StudentRecord[] = [];
   // 成績輸入時間設定
   dailyLifeInputConfig: DailyLifeInputConfig;
   // 目前班級成績輸入時間

@@ -17,6 +17,14 @@ body {
   /* min-height: 60vh; */
 }
 
+.my-page:after {
+  clear : both;
+  content : '.';
+  display : block;
+  height : 0;
+  overflow : hidden;
+}
+
 .my-page h1:first-child {
   font-size: 20px;
   position: relative;
