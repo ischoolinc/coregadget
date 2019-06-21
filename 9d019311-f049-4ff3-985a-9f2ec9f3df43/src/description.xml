@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="日常生活表現登錄" description="1Campus國中-日常生活表現登錄">
+    <Title lang="zh-TW">日常生活表現登錄</Title>
+    <Icon>icon.png</Icon>
+    <Mobile />
+    <Title lang="zh-CN">
+    </Title>
+    <Title lang="en-US">
+    </Title>
+  </ModulePrefs>
+</Module>
