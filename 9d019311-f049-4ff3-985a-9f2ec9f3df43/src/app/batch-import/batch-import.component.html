@@ -1,0 +1,76 @@
+<ng-container *ngIf="data;else tplLoading">
+    <div>
+      <div class="modal-header">
+        <h3 class="modal-title pull-left">{{data.title}}</h3>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="!parseValues.length">
+        <div class="mx-3">
+          <span>使用說明</span>
+          <ol>
+            <li>
+              <span>從excel中複製成績</span>
+              <ul>
+                <li class="text-danger">請先確認excel中學生的人數及順序皆與系統相符</li>
+                <li class="text-danger">複製成績時，僅需圈選成績的部分，不含學生姓名及表頭</li>
+                <li class="text-danger">如有學生沒有成績資料，請輸入"-"，表示無資料，否則系統將認定錯誤</li>
+              </ul>
+            </li>
+            <li>於下方文字方塊中貼上</li>
+            <li>使用"解析"按鈕，進行解析</li>
+            <li>預覽資料確認成績正確</li>
+            <li>
+              <span>使用"匯入"按鈕，進行匯入</span>
+              <ul>
+                <li class="text-danger">如果輸入資料有錯誤，將無法匯入</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+        <div class="row mx-3">
+          <textarea class="w-100" rows="5" [(ngModel)]="sourceText"></textarea>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="parseValues.length">
+        <p>預覽</p>
+        <table class="table table-bordered rwdtable">
+          <tr *ngFor="let stu of data.studentList;let idx = index;">
+            <td data-label="學生" class="w-25">
+              <span *ngIf="stu.SeatNumber">{{stu.SeatNumber}}.&nbsp;</span>
+              <span>{{stu.Name}}</span>
+            </td>
+            <td data-label="成績">
+              <span *ngIf="parseValues[idx]=='錯誤'" class="badge badge-danger">錯誤</span>
+              <span *ngIf="parseValues[idx]==''" class="text-danger">--</span>
+              <span *ngIf="parseValues[idx]!='錯誤' && parseValues[idx]!=''">{{parseValues[idx]}}</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <ng-container *ngIf="!parseValues.length">
+          <button type="button"
+            class="btn btn-outline-secondary"
+            (click)="modalRef.hide()">取消</button>
+          <button type="button"
+            class="btn btn-primary"
+            (click)="parse()">解析</button>
+        </ng-container>
+        <ng-container *ngIf="parseValues.length">
+          <button type="button"
+            class="btn btn-outline-secondary"
+            (click)="clear()">返回</button>
+          <button type="button"
+            class="btn btn-primary"
+            [class.disabled]="hasError"
+            (click)="importData()"
+            [disabled]="hasError">匯入</button>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #tplLoading>
+    <div class="text-center">Loading...</div>
+  </ng-template>
