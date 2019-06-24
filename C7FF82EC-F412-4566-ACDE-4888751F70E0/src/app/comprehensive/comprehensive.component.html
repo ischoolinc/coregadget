@@ -1,21 +1,50 @@
 <div class="tab-content">
-  <ng-container *ngIf="!isLoading;else tmpLoading">
-    <div class="dropdown">
-      <button class="btn btn-light dropdown-toggle"
-              type="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-        {{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item"
-           *ngFor="let semester of semeserList"
-           [ngClass]="{ active: semester === currentSemester }"
-           (click)="currentSemester=semester"> {{ semester.SchoolYear }}學年度 第{{semester.Semester}}學期</a>
-      </div>
-    </div>
-  </ng-container>
+  <div class="tab-pane fade-in show active">
+    <ng-container *ngIf="!isLoading;else tmpLoading">
+      <!-- <div class="float-right d-flex mb-3 mb-md-0 sticky-top">
+        <ng-container *ngTemplateOutlet="plugin"></ng-container>
+      </div> -->
+      <ng-container *ngIf="semeserList.length>0;else noData">
+        <div class="d-flex">
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              <span *ngIf="currentSemester">{{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期</span>
+              <span *ngIf="!currentSemester">未選擇</span>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item"
+                 *ngFor="let semester of semeserList"
+                 [ngClass]="{ active: semester === currentSemester }"
+                 [routerLink]="[ 'section', semester.SchoolYear, semester.Semester]">
+                <span>{{ semester.SchoolYear }}學年度 第{{semester.Semester}}學期</span>
+              </a>
+            </div>
+          </div>
+          <button class="btn btn-info ml-auto"
+                  (click)="shoModal()">
+            <i class="material-icons">add</i> 產生綜合紀錄表
+          </button>
+        </div>
+        <router-outlet></router-outlet>
+      </ng-container>
+      <ng-template #noData>
+        <div class="d-flex">
+          <button class="btn btn-info ml-auto"
+                  (click)="shoModal()">
+            <i class="material-icons">add</i> 產生綜合紀錄表
+          </button>
+        </div>
+        <div class="row justify-content-center"
+             style="margin-top:250px;margin-bottom:200px;">
+          沒有資料
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
 </div>
 
 <ng-template #tmpLoading
@@ -25,3 +54,50 @@
     Loading...
   </div>
 </ng-template>
+
+
+<!-- 建立新個案 Modal -->
+<div class="modal fade"
+     id="GenerateFillInData"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="newCaseLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="newCaseLabel">
+          產生綜合紀錄表
+        </h5>
+        <button *ngIf="!generater.isSaving"
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="!generater.isLoading">
+          <p>產生{{generater.SchoolYear}}學年度 第{{generater.Semester}}學期在校學生的綜合紀錄表資料，將花費較多時間，請耐心等候。</p>
+        </ng-container>
+        <ng-container *ngIf="generater.isLoading">
+          資料讀取中...
+        </ng-container>
+        <ng-container *ngIf="generater.isSaving">
+          <p class="text-muted">資料產生中...</p>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-info"
+                (click)="generater.gen()"
+                [disabled]="generater.isLoading || generater.isSaving">
+          產生
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

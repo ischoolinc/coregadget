@@ -28,6 +28,8 @@ import { AdminRoutingComponent } from "./admin/admin-routing/admin-routing.compo
 import { CounselTeacherRoleComponent } from "./admin/counsel-teacher-role/counsel-teacher-role.component";
 import { CounselClassComponent } from "./admin/counsel-class/counsel-class.component";
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
+import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
+import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -102,7 +104,11 @@ const routes: Routes = [
     ]
   }, {
     path: "comprehensive",
-    component: ComprehensiveComponent
+    component: ComprehensiveComponent,
+    children: [
+      { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
+      { path: "section/:schoolYear/:semester", component: ComprehensiveSectionComponent }
+    ]
   }
 ];
 

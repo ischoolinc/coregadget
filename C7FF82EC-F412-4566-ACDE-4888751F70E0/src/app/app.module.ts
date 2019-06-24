@@ -41,6 +41,8 @@ import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.compo
 import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 import { ComprehensiveDetailRoutingComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-detail-routing/comprehensive-detail-routing.component';
+import { ComprehensiveRoutingComponent } from './comprehensive/comprehensive-routing/comprehensive-routing.component';
+import { ComprehensiveSectionComponent } from './comprehensive/comprehensive-section/comprehensive-section.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import { ComprehensiveDetailRoutingComponent } from './counsel/counsel-detail/co
     AdminRoutingComponent,
     CounselClassComponent,
     ComprehensiveComponent,
-    ComprehensiveDetailRoutingComponent
+    ComprehensiveDetailRoutingComponent,
+    ComprehensiveRoutingComponent,
+    ComprehensiveSectionComponent
   ],
   imports: [
     BrowserModule,
