@@ -315,25 +315,31 @@
             >
             認輔老師
           </label>
-          <div class="dropdown">
-            <button
-              class="btn btn-light dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {{ selectVoluntaryGuidanceValue }}
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a
-                class="dropdown-item"
-                *ngFor="let item of voluntaryGuidanceTeacherList"
-                (click)="setVoluntaryGuidanceTeacher(item)"
-                >{{ item.GetTeacherName() }}</a
-              >
-            </div>
+          <div class="form-group d-flex flex-wrap">
+              <ng-container *ngFor="let itemTeacher of caseStudent.selectCaseTeacers;let i = index">
+           
+                  <div class="dropdown">
+                      <button
+                        class="btn btn-light dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        {{ itemTeacher.CounselTeacher.TeacherName }}
+                      </button>
+                      <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
+                        <a
+                          class="dropdown-item"
+                          *ngFor="let item of CounselTeacherList"
+                          (click)="SetSelectCaseTeacher(item,i)"
+                          >{{ item.TeacherName }}({{item.Role}})</a
+                        >
+                      </div>
+                    </div>         
+  
+            </ng-container>
           </div>
         </div>
         <div class="form-row">
@@ -412,6 +418,49 @@
             [(ngModel)]="caseStudent.CloseDescription"
           ></textarea>
         </div>
+        <div class="form-group">
+          <label for="semester" class="col-form-label">
+            <span class="text-samll text-danger" *ngIf="!caseStudent.isCaseLevelHasValue" >*</span> 個案輔導層級
+          </label>
+          <div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="r1"
+                name="grantradio"
+                class="custom-control-input"
+                (click)="caseStudent.SetCaseLevel('初級')"
+                [checked]="caseStudent.isCaseLevel1Checked"
+              />
+              <label class="custom-control-label" for="r1">初級</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="r2"
+                name="grantradio"
+                class="custom-control-input"
+                (click)="caseStudent.SetCaseLevel('二級')"
+                [checked]="caseStudent.isCaseLevel2Checked"
+              />
+              <label class="custom-control-label" for="r2">二級</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="r3"
+                name="grantradio"
+                class="custom-control-input"
+                (click)="caseStudent.SetCaseLevel('三級')"
+                [checked]="caseStudent.isCaseLevel3Checked"
+              />
+              <label class="custom-control-label" for="r3">三級</label>
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" data-dismiss="modal">

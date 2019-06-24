@@ -8,7 +8,48 @@
       *ngIf="!roleService.isLoading && roleService.enableCase"
       class="tab-pane fade show active"
     >
+
       <div class="d-flex">
+        <div class="dropdown">
+          <button
+            class="btn btn-light dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {{ selectItemClosed }}
+          </button>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              *ngFor="let item of itemClosedList"
+              [ngClass]="{ active: selectItemClosed === item }"
+              (click)="SetSelectItemClosed(item)"
+              >{{ item }}</a
+            >
+          </div>
+        </div>
+        <div class="dropdown" style="margin-left: 20px">
+          <button
+            class="btn btn-light dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {{ selectItemClass }}
+          </button>
+          <div class="dropdown-menu scrollable-menu">
+            <a
+              class="dropdown-item"
+              *ngFor="let item of itemClassList"
+              [ngClass]="{ active: selectItemClass === item }"
+              (click)="SetSelectItemClass(item)"
+              >{{ item }}</a
+            >
+          </div>
+        </div>
         <button
           class="btn btn-info ml-auto"
           data-toggle="modal"
@@ -21,9 +62,7 @@
       </div>
       <ul class="rwd-table">
         <li class="thead">
-          <ol class="tr">
-            <li>學年度</li>
-            <li>學期</li>
+          <ol class="tr">          
             <li>班級</li>
             <li>座號</li>
             <li>姓名</li>
@@ -39,33 +78,34 @@
         </li>
         <li class="tbody">
           <ol class="tr" *ngFor="let item of caseList">
-            <li data-title="學年度">{{ item.SchoolYear }}</li>
-            <li data-title="學期">{{ item.Semester }}</li>
-            <li data-title="班級">{{ item.ClassName }}</li>
-            <li data-title="座號">{{ item.SeatNo }}</li>
-            <li data-title="姓名">{{ item.Name }}</li>
-            <li data-title="性別">{{ item.Gender }}</li>
-            <li data-title="學生身份">{{ item.StudentIdentity }}</li>
-            <li data-title="個案編號">{{ item.CaseNo }}</li>
-            <li class="text-left text-normal" data-title="個案類別">
-              {{ item.getProblemCategoryCheckedValue() }}
-            </li>
-            <li data-title="認輔老師">
-              {{ item.GuidanceTeacher.GetTeacherName() }}
-            </li>
-            <li data-title="輔導次數">{{ item.CaseCount }}</li>
-            <li data-title="結案">{{item.GetClosedString()}}</li>
-            <li data-title="">
-              <button
-                class="btn btn-light"
-                data-toggle="modal"
-                data-backdrop="static"
-                data-target="#newCase"
-                (click)="setEditCaseModal(item)"
-              >
-                編輯
-              </button>
-            </li>
+            <ng-container *ngIf="item.isDisplay === true">
+                <li data-title="班級">{{ item.ClassName }}</li>
+                <li data-title="座號">{{ item.SeatNo }}</li>
+                <li data-title="姓名">{{ item.Name }}</li>
+                <li data-title="性別">{{ item.Gender }}</li>
+                <li data-title="學生身份">{{ item.StudentIdentity }}</li>
+                <li data-title="個案編號">{{ item.CaseNo }}</li>
+                <li class="text-left text-normal" data-title="個案類別">
+                  {{ item.getProblemCategoryCheckedValue() }}
+                </li>
+                <li data-title="認輔老師">
+                  {{ item.GetTeacherNames() }}
+                </li>
+                <li data-title="輔導次數">{{ item.CaseCount }}</li>
+                <li data-title="結案">{{item.GetClosedString()}}</li>
+                <li data-title="">
+                  <button
+                    class="btn btn-light"
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    data-target="#newCase"
+                    (click)="setEditCaseModal(item)"
+                  >
+                    編輯
+                  </button>
+                </li>
+            </ng-container>         
+            
           </ol>
         </li>
       </ul>

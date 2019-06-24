@@ -3,21 +3,23 @@ import { CaseQuestionTemplate } from "./case-question-template";
 import { QuizData } from "../counsel/counsel-detail/psychological-test-detail/quiz-data-vo";
 import { stream } from 'xlsx/types';
 import { stringify } from '@angular/compiler/src/util';
+import { retry } from 'rxjs/operators';
+
+
 export class CaseStudent {
   constructor() {
     this.CaseSource = "";
     this.setOccurDateNow();
-    this.GuidanceTeacher = new VoluntaryGuidanceTeacher();
+    this.CaseTeachers = [];
+    this.selectCaseTeacers = [];
     this.isGuidanceTeacherHasValue = false;
   }
   UID: string;
   ClassName: string; // 班級
   SeatNo: string; // 座號
   Name: string; // 姓名
-  Gender: string; // 性別
+  Gender: string = ''; // 性別
   TeacherName: string; // 班導師
-  SchoolYear: number; // 學年度
-  Semester: number; // 學期
   OccurDate: string; // 建立個案日期
   CaseNo: string; // 個案編號
   StudentIdentity: string; // 學生身份
@@ -38,7 +40,17 @@ export class CaseStudent {
   CaseSource: string; // 個案來源
   CaseCount: string; // 個案輔導次數
   PhotoUrl: string;
-  GuidanceTeacher: VoluntaryGuidanceTeacher;
+  CaseTeachers: CaseTeacher[];
+
+  // 個案輔導等級相關
+  isCaseLevel1Checked: boolean = false;
+  isCaseLevel2Checked: boolean = false;
+  isCaseLevel3Checked: boolean = false;
+  isCaseLevelHasValue: boolean = false;
+  CaseLevel: string = "";
+
+  // 這個案選的個案老師
+  selectCaseTeacers: SelectCaseTeacher[];
 
   deviant_behavior: QOption[]; // 偏差行為
   problem_category: QOption[]; // 	個案類別
@@ -57,6 +69,8 @@ export class CaseStudent {
   isCloseNo: boolean = false;
   isCloseDateHasValue = false;
 
+  // 是否顯示
+  isDisplay: boolean = false;
   isDeviantBehaviorHasValue: boolean = false;
   isProblemCategoryHasValue: boolean = false;
   isProbleDescriptionHasValue: boolean = false;
@@ -73,6 +87,31 @@ export class CaseStudent {
     this.loadProbleDescriptionTemplate();
     this.loadProblemCategoryTemplate();
     this.loadSpecialSituationTemplate();
+  }
+
+  // 設定個案輔導層級
+  SetCaseLevel(level: string) {
+    this.isCaseLevel1Checked = false;
+    this.isCaseLevel2Checked = false;
+    this.isCaseLevel3Checked = false;   
+    this.CaseLevel = level;
+
+    if (level === '初級') {
+      this.isCaseLevel1Checked = true;      
+    } if (level === '二級') {
+      this.isCaseLevel2Checked = true;
+    } if (level === '三級') {
+      this.isCaseLevel3Checked = true;
+    }
+  }
+
+  // 取得目前個案教師名稱
+  public GetTeacherNames() {
+    let ta: string[] = [];
+    this.CaseTeachers.forEach(item => {
+      ta.push(item.TeacherName);
+    });
+    return ta.join(',');
   }
 
   public loadDeviantBehaviorTemplate() {
@@ -329,7 +368,7 @@ export class CaseStudent {
       this.isCaseSourceHasValue = false;
     }
 
-    if (this.GuidanceTeacher && this.GuidanceTeacher.TeacherID) {
+    if (this.selectCaseTeacers.length > 0) {
       this.isGuidanceTeacherHasValue = true;
     } else {
       this.isGuidanceTeacherHasValue = false;
@@ -368,6 +407,13 @@ export class CaseStudent {
       }
     }
 
+    if (this.CaseLevel != '')
+    {
+      this.isCaseLevelHasValue = true;
+    } else {
+      this.isCaseLevelHasValue = false;
+    }
+
     if (
       this.isOccurDateHasValue &&
       this.isCaseNoHasValue &&
@@ -377,6 +423,7 @@ export class CaseStudent {
       this.isProblemCategoryHasValue &&
       this.isProbleDescriptionHasValue &&
       this.isEvaluationResultHasValue &&
+      this.isCaseLevelHasValue &&
       this.StudentID
     ) {
       this.isSaveButtonDisable = false;
@@ -407,25 +454,23 @@ export class CaseStudent {
   }
 }
 
-// 認輔老師
-export class VoluntaryGuidanceTeacher {
+// 個案輔導老師
+export class CaseTeacher {
   constructor() { }
   CaseID: string;
-  UID: string;
   TeacherID: string;
-  Name: string;
-  NickName: string;
-  StLoginName: string;
-  GetTeacherName(): string {
-    let name = "";
+  MainTeacher: boolean;
+  Role: string;
+  TeacherName: string;
+  Order: number;
+}
 
-    if (this.Name) name = this.Name;
-
-    if (this.NickName && this.NickName != "") {
-      name = `${this.Name}(${this.NickName})`;
-    }
-    return name;
-  }
+// 輔導老師
+export class CounselTeacher {
+  constructor() { }
+  TeacherID: string;
+  Role: string;
+  TeacherName: string;
 }
 
 // 當月個案
@@ -456,7 +501,7 @@ export class CaseMonthlyStatistics {
     return value;
   }
 
-  AddOtherDetailCount(name: string) {   
+  AddOtherDetailCount(name: string) {
     let addValue: boolean = true;
     this.OtherDetailCount.forEach(item => {
       if (item.ItemName === name) {
@@ -486,7 +531,12 @@ export class CaseMonthlyStatistics {
 export class CaseMonthlyItemCount {
   constructor() {
   }
-
   ItemName: string;
   Count: number = 0;
+}
+
+export class SelectCaseTeacher {
+  constructor() { }
+  Order: number;
+  CounselTeacher: CounselTeacher;
 }
