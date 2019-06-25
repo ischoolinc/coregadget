@@ -172,7 +172,7 @@
                 $scope.studentList[$scope.current.Student.index + 1] :
                 $scope.studentList[0];
 
-            $scope.setCurrent(nextStudent, $scope.current.Exam, true, false);
+            $scope.setCurrent(nextStudent, true, false);
 
             if ($scope.current.SelectMode != 'Seq.')
                 $('.pg-seatno-textbox:visible').select().focus();
@@ -264,7 +264,7 @@
         $scope.setupCurrent = function () {
             if ($scope.studentList) {
                 
-                if (!$scope.current.Student && !$scope.current.Exam) {
+                if (!$scope.current.Student) {
                     //#region 設定預設資料顯示
                     var ts;
                     if ($scope.studentList) ts = $scope.studentList[0];
@@ -299,8 +299,7 @@
             SelectMode: "Seq.",
             SelectSeatNo: "",
             Value: "",
-            Student: null,
-            Exam: null,
+            Student: null,            
             Course: null
         };
 
@@ -453,6 +452,7 @@
                         });
 
                         // 取得學生後，初始化
+                        $scope.current.Student = null;
                         $scope.setupCurrent();
                     }
                 }
