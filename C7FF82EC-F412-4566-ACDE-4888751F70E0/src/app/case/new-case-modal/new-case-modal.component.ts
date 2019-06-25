@@ -12,6 +12,7 @@ import {
 import { QOption } from "../case-question-data-modal";
 import { getMatIconFailedToSanitizeLiteralError } from '@angular/material';
 import { debug } from 'util';
+import { Alert } from 'selenium-webdriver';
 
 @Component({
   selector: "app-new-case-modal",
@@ -230,41 +231,66 @@ export class NewCaseModalComponent implements OnInit {
 
   // 設定輔導老師
   SetSelectCaseTeacher(item: CounselTeacher, itemOrder: number) {
-    let selectItem: SelectCaseTeacher = new SelectCaseTeacher();
-    selectItem.Order = itemOrder + 1;
-    selectItem.CounselTeacher = item;
-    if (this.caseStudent.selectCaseTeacers.length > 0) {
-      let hasValue: boolean = false;
-
-      this.caseStudent.selectCaseTeacers.forEach(item => {
-        if (item.CounselTeacher.TeacherID === selectItem.CounselTeacher.TeacherID) {
-          hasValue = true;
-        }
-      });
-
-      if (hasValue) {
-        // 如果只有一筆，不變，如果有1筆以上，將自己移除
-        if (this.caseStudent.selectCaseTeacers.length > 1) {
-          this.caseStudent.selectCaseTeacers = this.caseStudent.selectCaseTeacers.filter(x => x.CounselTeacher.TeacherID !== selectItem.CounselTeacher.TeacherID);
-        }
-      } else {
-        this.caseStudent.selectCaseTeacers.push(selectItem);
+    let Order: number = itemOrder + 1;    
+    let hasTeacherID: string[] = [];
+    
+    // 更新自己  
+    this.caseStudent.selectCaseTeacers.forEach(teacher => {
+      hasTeacherID.push(teacher.CounselTeacher.TeacherID);
+      if (teacher.Order === Order)
+      {        
+        // 如果已有不重複設定
+        if (!hasTeacherID.includes(item.TeacherID))
+        {          
+          teacher.CounselTeacher = item;
+        }        
       }
-
-    } else {
-      selectItem.Order = 1;
-      this.caseStudent.selectCaseTeacers.push(selectItem);
-    }
-
-    this.caseStudent.selectCaseTeacers.sort(x => x.Order);
-
+    });
+    this.caseStudent.checkValue(); 
   }
 
+  // 新增認輔老師
+  selectTeacherAdd(item: CounselTeacher) {
+    let Order: number = this.caseStudent.selectCaseTeacers.length + 1;
+    let canAdd = true;
 
+    // 當新增沒有傳入，
+    if (!item)
+    {
+      item = new CounselTeacher();
+      item.TeacherName = "請選擇..";      
+    }
+
+    // 檢查是否有重複
+    this.caseStudent.selectCaseTeacers.forEach(tea => {
+      if (tea.CounselTeacher.TeacherID === item.TeacherID)
+      {
+        canAdd = false;
+      }
+    });
+
+    if (canAdd)
+    {
+      let selTeacher: SelectCaseTeacher = new SelectCaseTeacher();
+      selTeacher.Order = Order;
+      selTeacher.CounselTeacher = item;
+      this.caseStudent.selectCaseTeacers.push(selTeacher);
+    }
+  }
+
+  // 移除認輔老師
+  selectTeacherRemove(item: SelectCaseTeacher) {
+    if (this.caseStudent.selectCaseTeacers.length > 1)
+    {
+      this.caseStudent.selectCaseTeacers = this.caseStudent.selectCaseTeacers.filter(x => x.CounselTeacher.TeacherID !== item.CounselTeacher.TeacherID);
+      this.caseStudent.selectCaseTeacers.sort(x => x.Order);
+      this.caseStudent.checkValue();
+    }    
+  }
 
   // 取得預設資料
   async GetDefault() {
-  
+
     // 取得個案可以使用教師
     this.CounselTeacherList = [];
     let dataList: CounselTeacher[] = [];
@@ -281,10 +307,9 @@ export class NewCaseModalComponent implements OnInit {
     // 加入自己當預設
     dataList.forEach(item => {
       if (this.counselStudentService.teacherInfo.ID === item.TeacherID) {
-        this.SetSelectCaseTeacher(item, 1);
+        this.selectTeacherAdd(item);
       }
     });
-
 
     // 取得輔導班級
     this.canSelectClassList = [];

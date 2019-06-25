@@ -242,8 +242,8 @@ export class CaseStudent {
       );
       // 檢查是否有輸入文字
       for (const cc of this.proble_description) {
-        // 有值
-        if (cc.answer_value.length > 0) {
+        // 有值 
+        if (cc.answer_value.length > 0 || cc.answer_martix.length > 0) {
           this.isProbleDescriptionHasValue = true;
         }
       }
