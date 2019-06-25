@@ -148,7 +148,7 @@ export class CaseComponent implements OnInit {
 
     }else
     {
-      debugger;
+      this.case_modal.selectTeacherAdd(null);
     }
 
     // 解析個案層級
