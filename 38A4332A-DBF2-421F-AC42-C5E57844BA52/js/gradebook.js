@@ -12,14 +12,7 @@
                     StudentName: "凱澤",
                     StudentID: "3597",
                     StudentScoreTag :"成績身分:一般生"
-                },
-                Exam: {
-                    Name: 'Midterm',
-                    Range: {
-                        Max: 100,
-                        Min: 0
-                    }
-                },
+                },               
                 ExamOrder: [],
                 Course: {},
                 VisibleExam: []
@@ -52,11 +45,11 @@
             }, 1);
         }
 
-        $scope.setCurrent = function (student, exam, setCondition, setFocus) {
-            $scope.current.Exam = exam;
+        $scope.setCurrent = function (student, setCondition, setFocus) {
+            
             $scope.current.Student = student;
 
-            var val = (student || {})['Exam' + (exam || {}).ExamID];
+            var val = (student || {})['MakeUpScore'];
             $scope.current.Value = (angular.isNumber(val) ? val : (val || ""));
             if (setCondition && student) {
                 $scope.current.SelectSeatNo = student.SeatNo;
@@ -95,7 +88,7 @@
                     }
                 }
             });
-            $scope.setCurrent(nextStudent2 || nextStudent, $scope.current.Exam, false, false);
+            $scope.setCurrent(nextStudent2 || nextStudent, false, false);
             $('.pg-seatno-textbox:visible').focus();
         }
 
@@ -104,8 +97,7 @@
             $scope.setCurrent(
                 (currentIndex == 0) ?
                     $scope.studentList[$scope.studentList.length - 1] :
-                    $scope.studentList[currentIndex - 1]
-                , $scope.current.Exam
+                    $scope.studentList[currentIndex - 1]                
                 , true
                 , true);
             $('.pg-grade-textbox:visible').focus();
@@ -119,8 +111,7 @@
             $scope.setCurrent(
                 (currentIndex == $scope.studentList.length - 1) ?
                     $scope.studentList[0] :
-                    $scope.studentList[currentIndex + 1]
-                , $scope.current.Exam
+                    $scope.studentList[currentIndex + 1]              
                 , true
                 , true);
             $('.pg-grade-textbox:visible').focus();
@@ -198,107 +189,37 @@
         }
 
         $scope.saveAll = function () {
+
             var body = {
-                Content: {
-                    '@CourseID': $scope.current.Course.CourseID,
-                    Exam: []
+                Content: {                    
+                    MakeUpScores: []
                 }
             };
-            [].concat($scope.current.Course.Scores.Score || []).forEach(function (examRec, index) {
-                if (!examRec.Lock) {
-                    var eItem = {
-                        '@ExamID': examRec.ExamID,
-                        Student: []
-                    };
-                    [].concat($scope.studentList || []).forEach(function (studentRec, index) {
-                        var obj = {
-                            '@StudentID': studentRec.StudentID,
-                            '@Score': studentRec["Exam" + examRec.ExamID],
-                            Extension: {
-                                Extension: { Score: studentRec["Exam" + examRec.ExamID] }
-                            }
-                        };
-                        [].concat(examRec.SubExamList || []).forEach(function (subExamRec) {
-                            if (subExamRec.ExtName) {
-                                obj.Extension.Extension[subExamRec.ExtName] = studentRec["Exam" + subExamRec.ExamID];
-                            }
-                        });
-                        eItem.Student.push(obj);
-                    });
-                    body.Content.Exam.push(eItem);
-                }
+
+            [].concat($scope.studentList || []).forEach(function (studentRec, index) {
+                var MakeUpScore = {
+                    '@MakeUpScoreID': studentRec.MakeUpDataID
+                    ,'@MakeUpScore': studentRec["MakeUpScore"]
+                    ,'@MakeUpScoreOri': studentRec["MakeUpScoreOrigin"]
+                    ,'@RefStudentID': studentRec.RefStudentID                  
+                    , '@SchoolYear': $scope.current.Batch.SchoolYear       
+                    , '@Semester': $scope.current.Batch.Semester       
+                };                          
+
+                body.Content.MakeUpScores.push(MakeUpScore);
             });
 
+            
             $scope.connection.send({
-                service: "TeacherAccess.SetCourseExamScoreWithExtension",
+                service: "SetMakeUpStudentReocrd",
                 autoRetry: true,
                 body: body,
                 result: function (response, error, http) {
                     if (error) {
-                        alert("TeacherAccess.SetCourseExamScoreWithExtension Error");
+                        alert("SetMakeUpStudentReocrd Error");
                     } else {
-                        if ($scope.current.Course.AllowUpload == '是' && new Date($scope.current.Course.InputStartTime) < new Date() && new Date() < new Date($scope.current.Course.InputEndTime)) {
-                            //#region 儲存學期成績
-                            var body = {
-                                Content: {
-                                    Course: {
-                                        '@CourseID': $scope.current.Course.CourseID,
-                                        Student: []
-                                    }
-                                }
-                            };
-                            [].concat($scope.studentList || []).forEach(function (studentRec, index) {
-                                var obj = {
-                                    '@StudentID': studentRec.StudentID,
-                                    '@Score': studentRec["Exam" + '學期成績']
-                                };
-                                body.Content.Course.Student.push(obj);
-                            });
-                            $scope.connection.send({
-                                service: "TeacherAccess.SetCourseSemesterScore",
-                                autoRetry: true,
-                                body: body,
-                                result: function (response, error, http) {
-                                    if (error) {
-                                        //失敗但評量成績已儲存
-                                        $scope.$apply(function () {
-                                            $scope.studentList.forEach(function (studentRec, index) {
-                                                var rawStudentRec = angular.copy(studentRec);
-                                                for (var key in rawStudentRec) {
-                                                    if (!key.match(/(學期成績|Origin)$/gi))
-                                                        studentRec[key + 'Origin'] = studentRec[key];
-                                                }
-                                            });
-                                        });
-                                        alert("TeacherAccess.SetCourseSemesterScore Error");
-                                    } else {
-                                        $scope.$apply(function () {
-                                            $scope.studentList.forEach(function (studentRec, index) {
-                                                var rawStudentRec = angular.copy(studentRec);
-                                                for (var key in rawStudentRec) {
-                                                    if (!key.match(/Origin$/gi))
-                                                        studentRec[key + 'Origin'] = studentRec[key];
-                                                }
-                                            });
-                                        });
-                                        alert("儲存完成。");
-                                    }
-                                }
-                            });
-                            //#endregion
-                        }
-                        else {
-                            $scope.$apply(function () {
-                                $scope.studentList.forEach(function (studentRec, index) {
-                                    var rawStudentRec = angular.copy(studentRec);
-                                    for (var key in rawStudentRec) {
-                                        if (!key.match(/(學期成績|Origin)$/gi))
-                                            studentRec[key + 'Origin'] = studentRec[key];
-                                    }
-                                });
-                            });
-                            alert("儲存完成。");
-                        }
+
+                        alert("儲存完成。");
                     }
                 }
             });
@@ -315,39 +236,21 @@
                 
                 if (!$scope.current.Student && !$scope.current.Exam) {
                     //#region 設定預設資料顯示
-                    var ts, te;
+                    var ts;
                     if ($scope.studentList) ts = $scope.studentList[0];
-                    $scope.examList.forEach(function (e) {
-                        if (!te && !e.Lock && e.Permission == "Editor" && e.Type !== 'Program')
-                            te = e;
-                    });
-                    if (ts && te) {
-                        $scope.setCurrent(ts, te, true, true);
+                    
+                    if (ts ) {
+                        $scope.setCurrent(ts, true, true);
                     }
-                    if ($scope.examList.length == 0) {
-                        $scope.showCreateModal();
-                    }
+     
                     //#endregion
                 }
                 else {
                     var ts = $scope.current.Student,
                         te;
                     if (!ts && $scope.studentList && $scope.studentList.length > 0) ts = $scope.studentList[0];
-
-                    if ($scope.current.Exam) {
-                        var currentExamName = $scope.current.Exam.Name;
-                        $scope.examList.forEach(function (e) {
-                            if (currentExamName == e.Name)
-                                te = e;
-                        });
-                    }
-                    else {
-                        $scope.examList.forEach(function (e) {
-                            if (!te && !e.Lock && e.Permission == "Editor")
-                                te = e;
-                        });
-                    }
-                    $scope.setCurrent(ts, te, true, true);
+                   
+                    $scope.setCurrent(ts, true, true);
                 }
                 $(function () {
                     $("#affixPanel").affix({
@@ -436,7 +339,7 @@
 
             $scope.setCurrentGroup($scope.current.currentGroupList[0])
 
-            $scope.examList = [];
+         
 
                         
             
