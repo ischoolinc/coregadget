@@ -36,17 +36,40 @@ export class ComprehensiveComponent implements OnInit {
 
   async shoModal() {
     this.generater = {
-      SchoolYear: null,
-      Semester: null,
+      schoolYear: null,
+      semester: null,
       isLoading: true,
       isSaving: false,
       dsaService: this.dsaService,
+      progress: 0,
+      currentClass: "",
       gen: async function () {
+        if (this.isSaving || this.isLoading) return;
         this.isSaving = true;
-        await this.dsaService.send("GenerateFillInData", {
-          SchoolYear: this.SchoolYear
-          , Semester: this.Semester
-        });
+        this.progress = 0;
+        this.currentClass = "";
+        var classList = await this.dsaService.send("GetClass", {});
+        classList = [].concat(classList.Class || []);
+        var index = 0;
+        for (const classRec of classList) {
+          this.currentClass = classRec.ClassName;
+          console.log("GenerateFillInData" + JSON.stringify({
+            SchoolYear: this.schoolYear
+            , Semester: this.semester
+            , ClassID: classRec.ClassID
+          }));
+          try {
+            await this.dsaService.send("GenerateFillInData", {
+              SchoolYear: this.schoolYear
+              , Semester: this.semester
+              , ClassID: classRec.ClassID
+            });
+          }
+          catch (err) {
+            console.log(err);
+          }
+          this.progress = Math.round((++index) * 100 / classList.length);
+        }
         this.isSaving = false;
       }
     };
@@ -60,8 +83,8 @@ export class ComprehensiveComponent implements OnInit {
 
     let currentSemeRsp = await this.dsaService.send("GetCurrentSemester", {});
     [].concat(currentSemeRsp.CurrentSemester || []).forEach(sems => {
-      this.generater.SchoolYear = sems.SchoolYear;
-      this.generater.Semester = sems.Semester;
+      this.generater.schoolYear = sems.SchoolYear;
+      this.generater.semester = sems.Semester;
       this.generater.isLoading = false;
     });
   }

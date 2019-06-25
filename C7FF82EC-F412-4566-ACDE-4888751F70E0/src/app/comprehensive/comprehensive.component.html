@@ -79,18 +79,27 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <ng-container *ngIf="!generater.isLoading">
-          <p>產生{{generater.SchoolYear}}學年度 第{{generater.Semester}}學期在校學生的綜合紀錄表資料，將花費較多時間，請耐心等候。</p>
-        </ng-container>
+      <div class="modal-body pb-0">
         <ng-container *ngIf="generater.isLoading">
           資料讀取中...
         </ng-container>
+        <ng-container *ngIf="!generater.isLoading">
+          <p>產生{{generater.schoolYear}}學年度 第{{generater.semester}}學期 在校學生的綜合紀錄表資料，將花費較多時間，請耐心等候。</p>
+        </ng-container>
         <ng-container *ngIf="generater.isSaving">
-          <p class="text-muted">資料產生中...</p>
+          <div class="progress">
+            <div class="progress-bar"
+                 role="progressbar"
+                 [ngStyle]="{'width': generater.progress + '%'}"
+                 [attr.aria-valuenow]="generater.progress"
+                 aria-valuemin="0"
+                 aria-valuemax="100">{{generater.progress}}%</div>
+          </div>
         </ng-container>
       </div>
       <div class="modal-footer">
+        <h6 *ngIf="generater.isSaving"
+            class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
         <button type="button"
                 class="btn btn-info"
                 (click)="generater.gen()"
