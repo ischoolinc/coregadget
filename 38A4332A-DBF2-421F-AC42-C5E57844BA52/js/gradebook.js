@@ -197,16 +197,36 @@
             };
 
             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
-                var MakeUpScore = {
-                    '@MakeUpScoreID': studentRec.MakeUpDataID
-                    ,'@MakeUpScore': studentRec["MakeUpScore"]
-                    ,'@MakeUpScoreOri': studentRec["MakeUpScoreOrigin"]
-                    ,'@RefStudentID': studentRec.RefStudentID                  
-                    , '@SchoolYear': $scope.current.Batch.SchoolYear       
-                    , '@Semester': $scope.current.Batch.Semester       
-                };                          
 
-                body.Content.MakeUpScores.push(MakeUpScore);
+                // 分數有更動 才做儲存
+                if (studentRec["MakeUpScore"] != studentRec["MakeUpScoreOrigin"])
+                {
+                    var MakeUpScore = {
+                        '@MakeUpScoreID': studentRec.MakeUpDataID
+                        , '@MakeUpScore': studentRec["MakeUpScore"]
+                        , '@MakeUpScoreOri': studentRec["MakeUpScoreOrigin"]
+                        , '@RefStudentID': studentRec.RefStudentID
+                        , '@SchoolYear': $scope.current.Batch.SchoolYear
+                        , '@Semester': $scope.current.Batch.Semester
+                        , '@BatchName': $scope.current.Batch.BatchName
+                        , '@GroupName': $scope.current.Group.GroupName
+                        , '@StudentName': studentRec.StudentName
+                        , '@Department': studentRec.Department
+                        , '@ClassName': studentRec.ClassName
+                        , '@SeatNo': studentRec.SeatNo
+                        , '@Subject': studentRec.Subject
+                        , '@Level': studentRec.Level
+                        , '@Credit': studentRec.Credit
+                        , '@C_is_required_by': studentRec.C_is_required_by
+                        , '@C_is_required': studentRec.C_is_required
+                        , '@Score': studentRec.Score
+                        , '@PassStandard': studentRec.PassStandard
+                        , '@MakeUpStandard': studentRec.MakeUpStandard
+                    };
+
+                    body.Content.MakeUpScores.push(MakeUpScore);
+
+                }                
             });
 
             
@@ -218,6 +238,16 @@
                     if (error) {
                         alert("SetMakeUpStudentReocrd Error");
                     } else {
+
+                        [].concat($scope.studentList || []).forEach(function (studentRec, index) {
+
+                            studentRec["MakeUpScoreOrigin"] = studentRec["MakeUpScore"];                            
+                        });
+
+                        //$scope.checkAllTable();
+                        
+                        // 目前 Group 重 Load 一次
+                        $scope.setCurrentGroup($scope.current.Group);
 
                         alert("儲存完成。");
                     }
@@ -295,6 +325,9 @@
 
                             var repeatBatchRec = $scope.batchList.filter(_batchRec => _batchRec.BatchID == batchRec.BatchID);
 
+                            // 梯次開放輸入期間
+                            batchRec.Lock = !(new Date(batchRec.BatchStartTime) < new Date() && new Date() < new Date(batchRec.BatchEndTime));
+
                             // 一個 補考梯次 加入一次即可
                             if (repeatBatchRec.length == 0)
                             {
@@ -322,9 +355,7 @@
                     if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動"))
                         return;
                 }
-            }
-
-                        
+            }                        
             //$scope.current.Student = null;
             //$scope.studentList = null;
 
@@ -338,11 +369,7 @@
             $scope.current.currentGroupList = currentGroupList;
 
             $scope.setCurrentGroup($scope.current.currentGroupList[0])
-
-         
-
-                        
-            
+                                            
         }
 
 
@@ -400,9 +427,7 @@
                                 //_MakeUpData.C_is_required_by = MakeUpData.C_is_required_by;
 
                                 //_MakeUpData.C_is_required = MakeUpData.C_is_required;
-
-                                //_MakeUpData.C_is_required = MakeUpData.C_is_required;
-
+                                
                                 //_MakeUpData.Score = MakeUpData.Score;
 
                                 //_MakeUpData.MakeUpScore = MakeUpData.MakeUpScore;
@@ -426,6 +451,9 @@
                                 studentMapping[MakeUpData.RefStudentID] = MakeUpData;
                             });
                         });
+
+                        // 取得學生後，初始化
+                        $scope.setupCurrent();
                     }
                 }
             });

@@ -14,9 +14,9 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'yinghua.lin@ischool.com.tw',
-                //password: window.prompt('password:b501284956')
-                password: 'b501284956'
+                account: 'bubu@debug.ischool.com.tw',
+                //password: window.prompt('password:1234')
+                password: '1234'
             }
         });
     </script>
@@ -81,7 +81,7 @@
         <h3 class="hidden-xs">補考群組時間:{{current.Group.GroupMakeupTime}}</h3>        
         <h3 class="hidden-xs">補考群組地點:{{current.Group.GroupMakeupPlace}}</h3>        
         <div>
-            <div class="btn-group pull-right">
+            <div ng-if="!current.Batch.Lock" class="btn-group pull-right">
                 <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable()}">
                     <i class="fa fa-floppy-o"></i>
                     儲存
@@ -112,8 +112,11 @@
                        style="width:260px;"
                        data-offset-top="145"  bs-affix>
                     <thead>
-                        <tr>
+                        <tr ng-if="!current.Batch.Lock">
                             <th colspan="2">補考成績輸入</th>
+                        </tr>
+                        <tr ng-if="current.Batch.Lock">
+                            <th colspan="2">本梯次目前未開放補考成績輸入</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -173,11 +176,11 @@
                                 <span>{{current.Student.StudentName}}</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr ng-if="!current.Batch.Lock">
                             <td style="position:relative;">
                                 <span>補考分數</span>
                             </td>
-                            <td ng-if="current.Student">
+                            <td ng-if="current.Student ">
                                 <div class="input-group">
                                     <input ng-model="current.Value"
                                            ng-keydown="enterGrade($event)"
@@ -272,11 +275,11 @@
                             ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
                             style="cursor:pointer;">
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">                                
+                                ng-click="setCurrent(stuRec, true, true)">                                
                                 <span>{{stuRec.Department}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.GradeYear}}</span>
                             </td>
                             <td class="text-left"
@@ -284,33 +287,33 @@
                                 <span>{{stuRec.ClassName}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec,true, true)">
                                 <span ng-if="stuRec.SeatNo"
                                       style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.StudentNumber}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">                                
+                                ng-click="setCurrent(stuRec, true, true)">                                
                                 <span>{{stuRec.StudentName}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.Subject}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.Level}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.Score}}</span>
                             </td>
                             <td class="text-center"
                                 style="position:relative;"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec,true, true)">
                                 <div ng-if="!checkOneCell(stuRec, 'MakeUpScore')"
                                      ng-attr-title="{{stuRec['MakeUpScore'+'Origin']?'原值為：'+stuRec['MakeUpScore'+'Origin']:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
@@ -318,11 +321,11 @@
                                 <span>{{stuRec['MakeUpScore']}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.CalRole}}</span>
                             </td>
                             <td class="text-left"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.PassStandard}}</span>
                             </td>                           
                         </tr>
@@ -330,10 +333,7 @@
                 </table>
             </div>
         </div>
-    </div>
-
-    
-
+    </div>    
 </body>
 
 </html>
