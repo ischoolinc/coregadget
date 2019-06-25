@@ -41,13 +41,16 @@ export class CaseStudent {
   CaseCount: string; // 個案輔導次數
   PhotoUrl: string;
   CaseTeachers: CaseTeacher[];
-
+  
   // 個案輔導等級相關
   isCaseLevel1Checked: boolean = false;
   isCaseLevel2Checked: boolean = false;
   isCaseLevel3Checked: boolean = false;
   isCaseLevelHasValue: boolean = false;
+  
   CaseLevel: string = "";
+  MainTeacher: string = "";
+  Role: string = "";
 
   // 這個案選的個案老師
   selectCaseTeacers: SelectCaseTeacher[];

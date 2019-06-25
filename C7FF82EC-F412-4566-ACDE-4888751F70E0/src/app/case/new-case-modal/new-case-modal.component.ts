@@ -231,22 +231,20 @@ export class NewCaseModalComponent implements OnInit {
 
   // 設定輔導老師
   SetSelectCaseTeacher(item: CounselTeacher, itemOrder: number) {
-    let Order: number = itemOrder + 1;    
+    let Order: number = itemOrder + 1;
     let hasTeacherID: string[] = [];
-    
+
     // 更新自己  
     this.caseStudent.selectCaseTeacers.forEach(teacher => {
       hasTeacherID.push(teacher.CounselTeacher.TeacherID);
-      if (teacher.Order === Order)
-      {        
+      if (teacher.Order === Order) {
         // 如果已有不重複設定
-        if (!hasTeacherID.includes(item.TeacherID))
-        {          
+        if (!hasTeacherID.includes(item.TeacherID)) {
           teacher.CounselTeacher = item;
-        }        
+        }
       }
     });
-    this.caseStudent.checkValue(); 
+    this.caseStudent.checkValue();
   }
 
   // 新增認輔老師
@@ -255,22 +253,19 @@ export class NewCaseModalComponent implements OnInit {
     let canAdd = true;
 
     // 當新增沒有傳入，
-    if (!item)
-    {
+    if (!item) {
       item = new CounselTeacher();
-      item.TeacherName = "請選擇..";      
+      item.TeacherName = "請選擇..";
     }
 
     // 檢查是否有重複
     this.caseStudent.selectCaseTeacers.forEach(tea => {
-      if (tea.CounselTeacher.TeacherID === item.TeacherID)
-      {
+      if (tea.CounselTeacher.TeacherID === item.TeacherID) {
         canAdd = false;
       }
     });
 
-    if (canAdd)
-    {
+    if (canAdd) {
       let selTeacher: SelectCaseTeacher = new SelectCaseTeacher();
       selTeacher.Order = Order;
       selTeacher.CounselTeacher = item;
@@ -280,12 +275,11 @@ export class NewCaseModalComponent implements OnInit {
 
   // 移除認輔老師
   selectTeacherRemove(item: SelectCaseTeacher) {
-    if (this.caseStudent.selectCaseTeacers.length > 1)
-    {
+    if (this.caseStudent.selectCaseTeacers.length > 1) {
       this.caseStudent.selectCaseTeacers = this.caseStudent.selectCaseTeacers.filter(x => x.CounselTeacher.TeacherID !== item.CounselTeacher.TeacherID);
       this.caseStudent.selectCaseTeacers.sort(x => x.Order);
       this.caseStudent.checkValue();
-    }    
+    }
   }
 
   // 取得預設資料
@@ -368,11 +362,13 @@ export class NewCaseModalComponent implements OnInit {
 
     let reqCaseTeacher = [];
     this.caseStudent.selectCaseTeacers.forEach(it => {
-      let itItm = {
-        TeacherID: it.CounselTeacher.TeacherID,
-        Role: it.CounselTeacher.Role
+      if (it.CounselTeacher.TeacherID) {
+        let itItm = {
+          TeacherID: it.CounselTeacher.TeacherID,
+          Role: it.CounselTeacher.Role
+        }
+        reqCaseTeacher.push(itItm);
       }
-      reqCaseTeacher.push(itItm);
     });
 
 
@@ -422,17 +418,16 @@ export class NewCaseModalComponent implements OnInit {
 
     let reqCaseTeacher = [];
     this.caseStudent.selectCaseTeacers.forEach(it => {
-      let itItm = {
-        TeacherID: it.CounselTeacher.TeacherID,
-        Role: it.CounselTeacher.Role
+      if (it.CounselTeacher.TeacherID) {
+        let itItm = {
+          TeacherID: it.CounselTeacher.TeacherID,
+          Role: it.CounselTeacher.Role
+        }
+        reqCaseTeacher.push(itItm);
       }
-      reqCaseTeacher.push(itItm);
     });
 
-
     if (data.UID) {
-
-
       let req = {
         CaseID: data.UID,
 
