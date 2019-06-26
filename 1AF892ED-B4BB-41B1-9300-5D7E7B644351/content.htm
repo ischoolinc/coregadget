@@ -369,18 +369,24 @@
 
                                 <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
                                      class="input-group">
-                                    <input ng-model="current.Value"
-                                           ng-keydown="enterGrade($event)"
-                                           type="text"
-                                           class="form-control pg-grade-textbox"
-                                           placeholder="{{isMobile?'':'Enter送出'}}"
-                                           select-on-click />
-                                    <span class="input-group-btn">
-                                        <a ng-click="enterGrade()"
-                                           class="btn btn-default">
-                                            送出
-                                        </a>
-                                    </span>
+                                    <!--文字輸入區域-->
+                                    <textarea ng-model="current.Value"
+                                              ng-keydown="enterGrade($event)"
+                                              maxlength="200"
+                                              placeholder="{{isMobile?'':'Enter送出'}}"
+                                              style="min-height: 60px;height:120px;resize: vertical;"
+                                              type="text"
+                                              class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid"
+                                              select-on-click>                                        
+                                    </textarea>
+                                    <div class="pull-right">                                        
+                                        <span class="input-group-btn">
+                                            <a ng-click="enterGrade()"
+                                               class="btn btn-default">
+                                                送出
+                                            </a>
+                                        </span>
+                                    </div>                                   
                                 </div>
 
                                 <div ng-if="!current.Exam.Lock && current.Student && (current.Exam.Type == 'Enum') && current.Exam.Permission == 'Editor'"
