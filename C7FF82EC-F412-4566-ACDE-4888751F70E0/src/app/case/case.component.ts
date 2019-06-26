@@ -1,9 +1,10 @@
 import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { RoleService } from "../role.service";
 import { AppComponent } from "../app.component";
-import { CaseStudent, CaseTeacher, SelectCaseTeacher,CounselTeacher } from "./case-student";
+import { CaseStudent, CaseTeacher, SelectCaseTeacher, CounselTeacher } from "./case-student";
 import { DsaService } from "../dsa.service";
 import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.component";
+import { GlobalService } from "../global.service";
 import { debug } from 'util';
 @Component({
   selector: "app-case",
@@ -18,6 +19,9 @@ export class CaseComponent implements OnInit {
   // 可選班級
   itemClassList: string[] = [];
 
+  // 判斷可以啟用個案資料功能
+  enableCase: boolean = false;
+
   // 是否結案選擇後
   selectItemClosed: string = "";
 
@@ -30,17 +34,17 @@ export class CaseComponent implements OnInit {
   constructor(
     public roleService: RoleService,
     private dsaService: DsaService,
+    public globalService: GlobalService,
     @Optional()
     private appComponent: AppComponent
   ) {
-    if (this.appComponent) this.appComponent.currentComponent = "case";
+    if (this.appComponent) this.appComponent.currentComponent = "case";    
   }
 
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
 
   // 新增
   setNewCaseModal() {
-
     this.case_modal.isAddMode = true;
     this.case_modal.editModeString = "新增";
     this.case_modal.caseStudent = new CaseStudent();
@@ -135,7 +139,7 @@ export class CaseComponent implements OnInit {
       this.case_modal.caseStudent.selectCaseTeacers = [];
       let idx: number = 1;
       item.CaseTeachers.forEach(it => {
-      
+
         let st: SelectCaseTeacher = new SelectCaseTeacher();
         st.Order = idx;
         st.CounselTeacher = new CounselTeacher();
@@ -146,8 +150,7 @@ export class CaseComponent implements OnInit {
         this.case_modal.caseStudent.selectCaseTeacers.push(st);
       });
 
-    }else
-    {
+    } else {
       this.case_modal.selectTeacherAdd(null);
     }
 
@@ -181,6 +184,7 @@ export class CaseComponent implements OnInit {
   }
 
   loadData() {
+    this.enableCase = false;
     this.isLoading = true;
     this.caseList = [];
     this.caseTeacherList = [];
@@ -190,10 +194,13 @@ export class CaseComponent implements OnInit {
     this.itemClosedList.push('已結案');
     this.selectItemClosed = '未結案';
     this.itemClassList.push("全部");
-    this.selectItemClass = '全部';
+    this.selectItemClass = '全部';  
     this.GetCaseTeacher();
     this.GetCase();
   }
+
+
+
 
   // 取得個案
   async GetCase() {

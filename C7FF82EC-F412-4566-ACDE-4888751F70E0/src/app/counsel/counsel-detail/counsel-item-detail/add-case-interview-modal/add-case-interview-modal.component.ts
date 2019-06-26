@@ -107,7 +107,8 @@ export class AddCaseInterviewModalComponent implements OnInit {
       StudentID: data.StudentID,
       Attachment: "",
       Content: data.Content,
-      CaseID: data.CaseID
+      CaseID: data.CaseID,
+      AuthorRole: data.AuthorRole
     };
     // console.log(req);
 
