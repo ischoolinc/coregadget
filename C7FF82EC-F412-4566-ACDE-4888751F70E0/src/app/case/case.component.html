@@ -1,11 +1,11 @@
 <div *ngIf="!isLoading; else tmpLoading">
   <div class="tab-content">
     <app-permission-denied
-      *ngIf="!roleService.isLoading && !roleService.enableCase"
+      *ngIf="!roleService.isLoading && !globalService.enableCase"
     ></app-permission-denied>
     <!-- TAB 4 個案資料 -->
     <div
-      *ngIf="!roleService.isLoading && roleService.enableCase"
+      *ngIf="!roleService.isLoading && globalService.enableCase"
       class="tab-pane fade show active"
     >
 

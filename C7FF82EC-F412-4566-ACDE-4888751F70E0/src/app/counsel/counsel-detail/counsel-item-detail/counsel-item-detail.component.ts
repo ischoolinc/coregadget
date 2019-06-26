@@ -2,6 +2,7 @@ import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { CaseStudent } from "../../../case/case-student";
 import { DsaService } from "../../../dsa.service";
 import { CounselDetailComponent } from "../counsel-detail.component";
+import { GlobalService } from "../../../global.service";
 import {
   CaseInterview,
   SemesterInfo
@@ -24,9 +25,10 @@ export class CounselItemDetailComponent implements OnInit {
 
   constructor(
     private dsaService: DsaService,
+    public globalService: GlobalService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.counselDetailComponent.setCurrentItem('counsel');
@@ -48,7 +50,7 @@ export class CounselItemDetailComponent implements OnInit {
     CaseInterviewAdd.CaseID = item.UID;
     CaseInterviewAdd.CaseNo = item.CaseNo;
     CaseInterviewAdd.StudentID = item.StudentID;
-    CaseInterviewAdd.AuthorRole = item.Role;
+    CaseInterviewAdd.AuthorRole = this.globalService.MyCounselTeacherRole;
 
     this._addInterview.caseInterview = CaseInterviewAdd;
     this._addInterview.caseInterview.checkValue();
@@ -66,7 +68,8 @@ export class CounselItemDetailComponent implements OnInit {
 
   // 修改
   editInterviewModal(counselView: CaseInterview) {
-        this._addInterview._editMode = "edit";
+    this._addInterview._editMode = "edit";
+    counselView.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview.caseInterview = counselView;
 
     this._addInterview.loadDefaultData();
@@ -89,7 +92,7 @@ export class CounselItemDetailComponent implements OnInit {
     if (
       this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
     ) {
-     // ServiceName = "GetStudentCase1";
+      // ServiceName = "GetStudentCase1";
     }
 
     let resp = await this.dsaService.send(ServiceName, {
@@ -105,7 +108,7 @@ export class CounselItemDetailComponent implements OnInit {
 
       let x = Number(caseRec.OccurDate);
       let dt = new Date(x);
-      rec.OccurDate = rec.parseDate(dt,'-');
+      rec.OccurDate = rec.parseDate(dt, '-');
       rec.CaseNo = caseRec.CaseNo;
       rec.StudentIdentity = caseRec.StudentIdentity;
       rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
@@ -128,11 +131,11 @@ export class CounselItemDetailComponent implements OnInit {
 
       rec.PhotoUrl = `${
         this.dsaService.AccessPoint
-      }/GetStudentPhoto?stt=Session&sessionid=${
+        }/GetStudentPhoto?stt=Session&sessionid=${
         this.dsaService.SessionID
-      }&parser=spliter&content=StudentID:${rec.StudentID}`;
+        }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.TeacherName = caseRec.TeacherName;
-      
+
       data.push(rec);
     });
     this.caseList = data;

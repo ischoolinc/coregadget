@@ -110,7 +110,7 @@ export class CaseStudent {
 
   // 取得目前個案教師名稱
   public GetTeacherNames() {
-    let ta: string[] = [];
+    let ta: string[] = [];    
     this.CaseTeachers.forEach(item => {
       ta.push(item.TeacherName);
     });
