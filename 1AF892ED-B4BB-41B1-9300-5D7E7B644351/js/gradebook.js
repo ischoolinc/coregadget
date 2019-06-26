@@ -657,7 +657,10 @@
                             '@StudentID': studentRec.StudentID,
                             '@Score': studentRec["Exam" + examRec.ExamID],
                             Extension: {
-                                Extension: { Score: studentRec["Exam" + examRec.ExamID] }
+                                Extension: {
+                                    Score: studentRec["Exam" + examRec.ExamID]
+                                    , Text: studentRec["Exam" + examRec.ExamID + "_" + "文字評量"]
+                                }
                             }
                         };
                         [].concat(examRec.SubExamList || []).forEach(function (subExamRec) {
@@ -1371,7 +1374,7 @@
 
                             // 高中讀卡成績 項目
                             if (extensionRec.Name == 'GradeItemExtension') {
-                                [].concat(extensionRec.GradeItemExtension || []).forEach(function (gradeItemExtensionRec) {
+                                 [].concat(extensionRec.GradeItemExtension || []).forEach(function (gradeItemExtensionRec) {
                                     $scope.examList.forEach(function (examRec, examIndex) {
                                         if (examRec.ExamID == gradeItemExtensionRec.ExamID) {
                                             examRec.SubExamList = [];
@@ -1394,6 +1397,12 @@
                                                     var isAbsent = false;
                                                     var seed = 10000;
                                                     examRec.SubExamList.forEach(function (subExamRec) {
+
+                                                        if (subExamRec.Type == "Text")
+                                                        {
+                                                            return;
+                                                        }
+
                                                         if (stu["Exam" + subExamRec.ExamID] || stu["Exam" + subExamRec.ExamID] == "0") {
                                                             hasVal = true;
                                                             if (stu["Exam" + subExamRec.ExamID] == "缺") {
@@ -1431,6 +1440,36 @@
 
                         });
 
+                        // 2019/6/26 穎驊 因應 高中評量成績辦法 2019/06/18 調整 (http://edu.law.moe.gov.tw/LawContent.aspx?id=GL001247)
+                        // 增加支援 高中評量成績 輸入文字評量， 目前先初步做 web 前端 處理儲存編輯
+                        // 後續 ischool DeskTop 端 的UI 編輯、 報表輸出 等等 還有待後人 補做
+                        $scope.examList.forEach(function (examRec, examIndex) {
+                            if (examRec.Extension) {
+                                if (examRec.Extension.Extension.UseText == "是") {
+                                    var subExamRec = {};
+
+                                    subExamRec.ExamID = examRec.ExamID + "_" + "文字評量";
+                                    subExamRec.Name = examRec.Name + "_" + "文字評量";
+                                    subExamRec.SubName = "文字評量";
+                                    subExamRec.Lock = examRec.Lock;
+                                    subExamRec.Group = examRec;
+                                    subExamRec.Permission = "Editor";
+                                    subExamRec.Type = "Text";
+
+                                    //如果原來 沒有 子評量 幫新增，(子評量除了 文字評量之外， 只有 讀卡模組來的 CSCORE 、PSCORE 會建立)
+                                    if (!examRec.SubExamList)
+                                    {
+                                        examRec.SubExamList = [];
+                                    }
+
+                                    examRec.SubExamList.push(subExamRec);
+
+                                    $scope.examList.splice(examIndex + examRec.SubExamList.length, 0, subExamRec);
+                                    $scope.current.VisibleExam.splice(examIndex + examRec.SubExamList.length, 0, subExamRec.Name);
+                                }
+                            }
+                        });
+
 
                         $scope.connection.send({
                             service: "TeacherAccess.GetCourseStudents",
@@ -1452,6 +1491,8 @@
                                         [].concat(response.Students.Student || []).forEach(function (studentRec, index) {
                                             studentRec.SeatNo = studentRec.SeatNumber;
 
+                                            studentRec.StudentScoreTag = "預設";
+
                                             //2017/6/15 穎驊新增，因應 [A09][06] 子成績輸入-顯示成績身分 項目 ，加入顯示身分類別 ，以利老師在輸入成績時作為判別資訊。
                                             if (studentRec.Tags) {
                                                 [].concat(studentRec.Tags.Tag || []).forEach(function (tag) {
@@ -1459,6 +1500,10 @@
                                                     if (tag.Name.includes("成績身分")) {
                                                         studentRec.StudentScoreTag = tag.Name;
                                                     }
+
+                                                    // 列出所有類別(沒道理...)
+                                                    //studentRec.StudentScoreTag += tag.Name;
+                      
                                                 });
                                             }
                                             
@@ -1491,8 +1536,21 @@
                                             } else {
                                                 $scope.$apply(function () {
                                                     [].concat(response.Scores.Item || []).forEach(function (examScoreRec, index) {
+
+                                                        // 評量分數
                                                         studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID] = examScoreRec.Score;
 
+                                                        // 文字評量
+                                                        if (examScoreRec.Extension.Extension.Text) {
+                                                            studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID + "_" + "文字評量"] = examScoreRec.Extension.Extension.Text;
+                                                        }
+                                                        else
+                                                        {
+                                                            studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID + "_" + "文字評量"] = "";
+                                                        }
+                                                        
+
+                                                        // 子評量分數 (讀卡)
                                                         $scope.examList.forEach(function (examRec) {
                                                             if (examRec.ExamID == examScoreRec.ExamID) {
                                                                 [].concat(examRec.SubExamList || []).forEach(function (subExamRec) {
@@ -1642,6 +1700,9 @@
                     }
                 }
             });
+
+
+
         }
 
         $scope.checkAllTable = function (target) {
