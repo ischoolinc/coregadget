@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BasicService } from './service';
 import * as FileSaver from 'file-saver';
-import { ClassReocrd, CommentCode, DailyLifeInputConfig, StudentRecord, TargetRecord, ExamRecord, LevelCode, EffortCode } from './data';
+import { ClassReocrd, CommentCode, DailyLifeInputConfig, StudentRecord, ExamRecord, LevelCode, EffortCode } from './data';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { BatchImportComponent } from './batch-import/batch-import.component';
 import { GadgetService } from './gadget.service';
@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
   // 日常生活表現評量項目
   examList: any[];
   // 學生清單
-  studentList: StudentRecord[];
+  studentList: StudentRecord[] = [];
   // 成績輸入時間設定
   dailyLifeInputConfig: DailyLifeInputConfig;
   // 目前班級成績輸入時間
@@ -57,8 +57,7 @@ export class AppComponent implements OnInit {
   curStudent: StudentRecord;
   // 目前學生編號
   curStudentID: string;
-  // 目前物件
-  targetData: TargetRecord = {} as TargetRecord;
+
   /**
    * 判斷成績資料是否變更
    * 切換儲存按鈕樣式
@@ -374,15 +373,15 @@ export class AppComponent implements OnInit {
       dailyBehavior.Item.forEach((item: {Index: string, Name: string}) => {
         const data = {
           '@Name': item.Name,
-          '@Degree': student.DailyLifeScore.get(`DailyBehavior_${item.Name}`),
+          '@Degree': student.DailyLifeScore.get(`DailyBehavior_${item.Name}`) || '',
           '@Index': item.Index
         };
         stuData.DailyLifeScore.TextScore.DailyBehavior.Item.push(data);
       });
       // GroupActivity
       groupActivity.Item.forEach((item: any) => {
-        const degree = student.DailyLifeScore.get(`GroupActivity_${item.Name}_努力程度`);
-        const description = student.DailyLifeScore.get(`GroupActivity_${item.Name}_文字評量`);
+        const degree = student.DailyLifeScore.get(`GroupActivity_${item.Name}_努力程度`) || '';
+        const description = student.DailyLifeScore.get(`GroupActivity_${item.Name}_文字評量`) || '';
         const data = {
           '@Name': item.Name,
           '@Degree': degree,
@@ -394,7 +393,7 @@ export class AppComponent implements OnInit {
       publicService.Item.forEach((item: any) => {
         const data = {
           '@Name': item.Name,
-          '@Description': student.DailyLifeScore.get(`PublicService_${item.Name}`)
+          '@Description': student.DailyLifeScore.get(`PublicService_${item.Name}`) || ''
         };
         stuData.DailyLifeScore.TextScore.PublicService.Item.push(data);
       });
@@ -402,14 +401,14 @@ export class AppComponent implements OnInit {
       schoolSpecial.Item.forEach((item: any) => {
         const data = {
           '@Name': item.Name,
-          '@Description': student.DailyLifeScore.get(`SchoolSpecial_${item.Name}`)
+          '@Description': student.DailyLifeScore.get(`SchoolSpecial_${item.Name}`) || ''
         };
         stuData.DailyLifeScore.TextScore.SchoolSpecial.Item.push(data);
       });
       // DailyLifeRecommend
       stuData.DailyLifeScore.TextScore.DailyLifeRecommend = {
         '@Name': dailyLifeRecommend.Name,
-        '@Description': student.DailyLifeScore.get('DailyLifeRecommend_文字描述')
+        '@Description': student.DailyLifeScore.get('DailyLifeRecommend_文字描述') || ''
       };
 
       body.Content.Student.push(stuData);

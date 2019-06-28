@@ -266,13 +266,13 @@ export class InputBlockComponent implements OnInit, OnDestroy {
 
   /**選擇程度代碼 */
   selectLevelCode(code: LevelCode) {
-    this.curValue = this.curValue.trim();
-
-    if (this.curValue) {
-      this.curValue += `,${code.Desc}`
-    } else {
-      this.curValue = code.Desc;
-    }
+    // this.curValue = this.curValue.trim();
+    // if (this.curValue) {
+    //   this.curValue += `,${code.Desc}`
+    // } else {
+    //   this.curValue = code.Desc;
+    // }
+    this.curValue = code.Desc;
   }
 
   /**選擇文字代碼 */

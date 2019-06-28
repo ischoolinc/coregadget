@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StudentRecord, TargetRecord, ExamRecord } from '../data';
+import { StudentRecord, ExamRecord } from '../data';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -13,19 +13,11 @@ export class TargetDataService {
   student$ = new BehaviorSubject<StudentRecord>({} as StudentRecord);
   studentList$ = new BehaviorSubject<StudentRecord[]>([] as StudentRecord[]);
 
-
-  grade$ = new BehaviorSubject<string>('');
-  targetData$ = new BehaviorSubject<TargetRecord>({} as TargetRecord);
-
   constructor() { }
 
   /**設定學生及成績清單 */
   setStudentList(data: StudentRecord[]): void {
     this.studentList$.next(data);
-
-    if (this.student$.value) {
-
-    }
   }
 
   /**取得學生及成績清單 */

@@ -1,5 +1,4 @@
 export * from './exam';
-export * from './target';
 export * from './student';
 export * from './comment-code';
 export * from './teach-class';

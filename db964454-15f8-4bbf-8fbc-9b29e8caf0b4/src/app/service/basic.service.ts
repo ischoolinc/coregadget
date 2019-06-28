@@ -22,39 +22,31 @@ export class BasicService {
     return this._conn;
   }
 
-  /**
-   * 取得目前學年期
-   */
+  /** 取得目前學年期 */
   async getCurrentSemester() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetCurrentSemester', {});
-
     const curSchoolYear = rsp.Current.SchoolYear;
-		const curSemester = rsp.Current.Semester;
+    const curSemester = rsp.Current.Semester;
+    
     return {
       curSchoolYear: curSchoolYear,
       curSemester: curSemester,
     }
   }
 
-  /**
-   * 取得主機時間
-   */
+  /** 取得主機時間 */
   async getCurrentDateTime() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetCurrentDateTime');
     const date = (rsp.Response && rsp.Response.DateTime) ? moment(rsp.Response.DateTime,'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm') : '';
+
     return date;
   }
 
-  /**
-   *取得班級清單
-   */
+  /** 取得班級清單 */
   async getClass() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetMyClasses', {
         Content: {
           Field: {
@@ -67,16 +59,15 @@ export class BasicService {
           }
         }
     });
+
     return [].concat(rsp.ClassList && rsp.ClassList.Class || []);
   }
 
-  /**
-   * 取得日常生活表現具體建議代碼表
-   */
+  /** 取得日常生活表現具體建議代碼表 */
   async getMoralCommentMappingTable() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetMoralCommentMappingTable');
+
     return [].concat(
       rsp.GetMoralCommentMappingTable
       && rsp.GetMoralCommentMappingTable.Morality || []);
@@ -88,9 +79,7 @@ export class BasicService {
    */
   async getDailyLifeMappingTable() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetDailyLifeMappingTable');
-
     const examList: ExamRecord[] = [];
     const degreeCode: LevelCode[] = [];
     // 資料整理
@@ -153,15 +142,10 @@ export class BasicService {
     return {examList, degreeCode};
   }
 
-  /**
-   * 取得努力程度對照表
-   */
+  /** 取得努力程度對照表 */
   async getEffortDegreeMappingTable() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetEffortDegreeMappingTable');
-
-    console.log(rsp);
 
     return [].concat(rsp.Response.EffortList && rsp.Response.EffortList.Effort || [] );
   }
@@ -173,7 +157,6 @@ export class BasicService {
    */
   async getDailyLifeInputConfig() {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetDailyLifeInputConfig');
     const data: DailyLifeInputConfig = {} as DailyLifeInputConfig;
 
@@ -181,7 +164,6 @@ export class BasicService {
       data.SchoolYear = rsp.Response.DailyLifeInputConfig.SchoolYear;
       data.Semester = rsp.Response.DailyLifeInputConfig.Semester;
       data.Time = [];
-
       [].concat(rsp.Response.DailyLifeInputConfig.InputTimeControl.Time || []).forEach(time => {    
           data.Time.push(time);
       });
@@ -190,12 +172,9 @@ export class BasicService {
     return data;
   }
 
-  /**
-   * 取得學生清單 
-   */
+  /** 取得學生清單 */
   async getMyClassStudents(classID: string) {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.GetMyClassStudents',{
       Content: {
         Field: {
@@ -228,12 +207,9 @@ export class BasicService {
     return studentList;
   }
 
-  /**
-   * 取得日常生活表現成績 
-   */
+  /** 取得日常生活表現成績 */
   async getStudentDailyLifeScore(classID: string, schoolYear: string, semester: string) {
     const conn = await this.connection();
-
     const scoreMapByStudentID: Map<string, any> = new Map();
     const rsp = await conn.send('TeacherAccess.GetStudentDailyLifeScore',{
       Content: {
@@ -288,7 +264,6 @@ export class BasicService {
           score.set(`DailyLifeRecommend_文字描述`,data.DailyLifeRecommend ? data.DailyLifeRecommend.Description : '');
           score.set(`Origin_DailyLifeRecommend_文字描述`,data.DailyLifeRecommend ? data.DailyLifeRecommend.Description : '');
 
-
           scoreMapByStudentID.set(student.StudentID, score);
         }
       });
@@ -297,12 +272,9 @@ export class BasicService {
     return scoreMapByStudentID;
   }
 
-  /**
-   * 儲存
-   */
+  /** 儲存 */
   async saveDailyLifeScore(data: any) {
     const conn = await this.connection();
-
     const rsp = await conn.send('TeacherAccess.SetStudentDailyLifeScore', data);
 
     return rsp;
