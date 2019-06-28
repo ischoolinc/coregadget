@@ -1,3 +1,54 @@
-<p>
-  counsel-teacher-role works!
-</p>
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-content">
+    <div class="d-flex">
+      <button class="btn btn-info ml-auto"
+              data-toggle="modal"
+              data-backdrop="static"              
+              (click)="save()">
+        <i class="material-icons">save</i> 儲存
+      </button>
+    </div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>教師姓名</li>
+          <li>教師輔導身分</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr"
+            *ngFor="let item of teachersCounselRole">
+          <li data-title="姓名">{{ item.TeacherName }}</li>
+          <li data-title="身分">
+            <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                {{ item.Role  }}
+              </button>
+              <div class="dropdown-menu scrollable-menu"
+                   aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item"
+                   *ngFor="let name of counselRole"
+                   (click)="SetTeacherRole(name,item)">{{ name}}</a>
+              </div>
+            </div>
+
+          </li>
+
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
