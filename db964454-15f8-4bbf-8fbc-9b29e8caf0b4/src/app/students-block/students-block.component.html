@@ -1,0 +1,73 @@
+<div class="studentBlock d-none d-md-block">
+  <ng-container *ngIf="studentList.length; else tplNoStudent">
+    <table class="table table-bordered table-striped table-hover text-center">
+      <ng-container *ngIf="curExam.ExamID !== 'GroupActivity'; else tplGroupActivity">
+        <thead>
+          <tr>
+            <th class="text-center">
+              姓名
+            </th>
+            <th *ngFor="let item of curExam.Item" class="text-center">{{item.Name}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of studentList"
+            [class.table-warning]="student.ID === curStudent.ID">
+            <td class="no-cursor">{{student.Name}} ({{student.SeatNumber}})</td>
+            <td *ngFor="let item of curExam.Item"
+              (click)="doSelect(student, item.Name)"
+              class="text-center" style="position:relative">
+              <!-- 小紅點識別資料是否變更未儲存 -->
+              <div *ngIf="checkHasChanged(student, item.Name)" class="red-point"></div>
+              <span class="text-score">{{getScoreText(student, item.Name)}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+  </ng-container>
+</div>
+
+<!--GroupActivity成績結構不同所以另外寫-->
+<ng-template #tplGroupActivity>
+  <thead>
+    <tr>
+      <th class="text-center" rowspan="2">
+        姓名
+      </th>
+      <th *ngFor="let item of curExam.Item" class="text-center" colspan="2">{{item.Name}}</th>
+    </tr>
+    <tr>
+      <ng-container *ngFor="let item of curExam.Item">
+          <th>努力程度</th>
+          <th>文字評量</th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let student of studentList"
+      [class.table-warning]="student.ID === curStudent.ID">
+      <td class="no-cursor">{{student.Name}} ({{student.SeatNumber}})</td>
+      <ng-container *ngFor="let item of curExam.Item">
+        <td 
+          (click)="doSelect(student, item.Name + '_努力程度')"
+          class="text-center" style="position:relative">
+          <!-- 小紅點識別資料是否變更未儲存 -->
+          <div *ngIf="checkHasChanged(student, item.Name + '_努力程度')" class="red-point"></div>
+          <span class="text-score">{{getScoreText(student, item.Name + '_努力程度')}}</span>
+        </td>
+        <td 
+          (click)="doSelect(student, item.Name + '_文字評量')"
+          class="text-center" style="position:relative">
+          <!-- 小紅點識別資料是否變更未儲存 -->
+          <div *ngIf="checkHasChanged(student, item.Name + '_文字評量')" class="red-point"></div>
+          <span class="text-score">{{getScoreText(student, item.Name + '_文字評量')}}</span>
+        </td>
+      </ng-container>
+    </tr>
+  </tbody>
+</ng-template>
+
+<ng-template #tplNoStudent>
+  <div class="text-center">目前無資料</div>
+</ng-template>
