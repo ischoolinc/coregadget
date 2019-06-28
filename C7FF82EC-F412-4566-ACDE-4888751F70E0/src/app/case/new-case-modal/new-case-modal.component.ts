@@ -209,12 +209,15 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.CaseSource = this.selectCaseSourceValue;
     // 新增
     if (!this.caseStudent.UID) {
+      this.caseStudent.isSaveButtonDisable = true;
       try {
         // 新增個案
         await this.AddCase(this.caseStudent);
         $("#newCase").modal("hide");
+        this.caseStudent.isSaveButtonDisable = false;
       } catch (error) {
         alert(error);
+        this.caseStudent.isSaveButtonDisable = false;
       }
     } else {
       // 更新
@@ -222,8 +225,10 @@ export class NewCaseModalComponent implements OnInit {
         // 新增個案
         await this.UpdateCase(this.caseStudent);
         $("#newCase").modal("hide");
+        this.caseStudent.isSaveButtonDisable = false;
       } catch (error) {
         alert(error);
+        this.caseStudent.isSaveButtonDisable = false;
       }
     }
   }
@@ -236,14 +241,40 @@ export class NewCaseModalComponent implements OnInit {
 
     // 更新自己  
     this.caseStudent.selectCaseTeacers.forEach(teacher => {
-      hasTeacherID.push(teacher.CounselTeacher.TeacherID);
-      if (teacher.Order === Order) {
-        // 如果已有不重複設定
-        if (!hasTeacherID.includes(item.TeacherID)) {
-          teacher.CounselTeacher = item;
-        }
-      }
+      if (teacher.CounselTeacher.TeacherID)
+      {
+        hasTeacherID.push(teacher.CounselTeacher.TeacherID);
+      }      
     });
+
+    if (item.TeacherName == "空白" && Order === 1) {
+      // 不處理
+    } else {
+      this.caseStudent.selectCaseTeacers.forEach(teacher => {
+        // 如果已有不重複設定
+        if (item.TeacherID)
+        {
+          if (!hasTeacherID.includes(item.TeacherID))
+          {
+            if (teacher.Order === Order) {
+              teacher.CounselTeacher = item;
+            }
+          }        
+        }else {
+          if(item.TeacherName === '空白')
+          {
+            this.caseStudent.selectCaseTeacers.forEach(teacher => {
+              if (teacher.Order === Order) {
+                teacher.CounselTeacher = item;
+              }
+            });
+
+          }
+        }       
+      });
+    }
+
+
     this.caseStudent.checkValue();
   }
 
@@ -288,6 +319,10 @@ export class NewCaseModalComponent implements OnInit {
     // 取得個案可以使用教師
     this.CounselTeacherList = [];
     let dataList: CounselTeacher[] = [];
+    let nul: CounselTeacher = new CounselTeacher();
+    nul.TeacherName = '空白';
+    nul.Role = '不加入';
+    dataList.push(nul);
     let counselTeacher = await this.dsaService.send("GetCounselTeacherRole", {});
     [].concat(counselTeacher.CounselTeacher || []).forEach(tea => {
       let data: CounselTeacher = new CounselTeacher();
@@ -448,12 +483,11 @@ export class NewCaseModalComponent implements OnInit {
         CaseTeacher: reqCaseTeacher
       };
 
-      console.log(req);
-
+      //  console.log(req);
       let resp = await this.dsaService.send("UpdateCase", {
         Request: req
       });
-      console.log(resp);
+      //  console.log(resp);
     }
   }
 }

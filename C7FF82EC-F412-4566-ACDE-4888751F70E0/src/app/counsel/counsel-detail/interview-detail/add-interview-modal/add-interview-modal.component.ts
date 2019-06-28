@@ -84,14 +84,18 @@ export class AddInterviewModalComponent implements OnInit {
   // click 儲存
   async save() {
     try {
+      this._CounselInterview.isSaveDisable = true;
       if (this._CounselInterview.isReferralValue)
         this._CounselInterview.isReferral = "t";
       else this._CounselInterview.isReferral = "f";
       await this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");
+      this._CounselInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
+      this._CounselInterview.isSaveDisable = false;
     }
+   
   }
 
   // 新增/更新輔導資料，Service 使用UID是否有值判斷新增或更新
