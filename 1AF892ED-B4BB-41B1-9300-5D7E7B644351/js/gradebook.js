@@ -111,6 +111,9 @@
 
                 // 取得課程學生以及學生成績資料
                 //$scope.dataReload();
+
+                // 切換試別  要帶出不同的 功能
+                $scope.getProcess();
             }
         }
 
@@ -1102,8 +1105,7 @@
                 }
                 //#endregion
 
-
-                $scope.process = process;
+                
 
                 // 整理小考匯入清單
                 {
@@ -1188,6 +1190,41 @@
                         $scope.importGradeItemList.push(importProcess);
                     });
                 }
+
+                // 成績管理模式  可以帶入平時成績
+                if ($scope.current.mode == $scope.modeList[0])
+                {
+                    // 帶入平時成績
+                    var importAssessmentScoreProcesses = [];
+
+                    [].concat($scope.examList).forEach(function (examRec, index) {
+                        if (examRec.Type == 'Number' && examRec.Permission == "Editor") {
+                            var importProcess = {
+                                Name: '帶入' + examRec.Name + '平時成績',
+                                Type: 'Function',
+                                ExamID: examRec.ExamID,
+                                Fn: function () {
+                                    // 將入目標exam 的 分數 通通換成之前試算出來儲存的
+                                    $scope.studentList.forEach(function (stuRec) {
+                                        stuRec["Exam" + importProcess.ExamID] = stuRec['QuizResult_' + importProcess.ExamID]
+                                    });
+                                },
+                                Disabled: examRec.Lock
+                            };
+
+                            importAssessmentScoreProcesses.push(importProcess);
+                        }
+                    });
+
+                    process = process.concat({
+                        Name: '帶入平時成績',
+                        Type: 'Header'
+                    }).concat(importAssessmentScoreProcesses);
+
+                }
+               
+                $scope.process = process;
+
             }
             else {
                 $scope.process = [];
