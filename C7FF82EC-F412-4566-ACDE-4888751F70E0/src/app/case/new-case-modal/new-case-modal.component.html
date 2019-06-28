@@ -272,12 +272,8 @@
                 </button>
                 <span style="width: 10px">
                   <button class="btn btn-info btn-xs"
-                          (click)="selectTeacherAdd(null)" *ngIf="i == 0" >
+                          (click)="selectTeacherAdd(null)" *ngIf="i == (caseStudent.selectCaseTeacers.length-1)" >
                     <i class="tiny material-icons">add</i>
-                  </button>
-                  <button class="btn btn-info btn-xs" *ngIf="i != 0 && caseStudent.selectCaseTeacers.length > 1"
-                          (click)="selectTeacherRemove(itemTeacher)">
-                    <i class="tiny material-icons">delete_forever</i>
                   </button>
                 </span>
                 <div class="dropdown-menu scrollable-menu"

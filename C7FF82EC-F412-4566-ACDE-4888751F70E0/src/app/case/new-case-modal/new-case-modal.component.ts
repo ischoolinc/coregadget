@@ -238,20 +238,43 @@ export class NewCaseModalComponent implements OnInit {
   SetSelectCaseTeacher(item: CounselTeacher, itemOrder: number) {
     let Order: number = itemOrder + 1;
     let hasTeacherID: string[] = [];
-    
+
     // 更新自己  
     this.caseStudent.selectCaseTeacers.forEach(teacher => {
-      hasTeacherID.push(teacher.CounselTeacher.TeacherID);
+      if (teacher.CounselTeacher.TeacherID)
+      {
+        hasTeacherID.push(teacher.CounselTeacher.TeacherID);
+      }      
     });
 
-    this.caseStudent.selectCaseTeacers.forEach(teacher => {      
-      // 如果已有不重複設定
-      if (!hasTeacherID.includes(item.TeacherID)) {
-        if (teacher.Order === Order) {
-          teacher.CounselTeacher = item;
-        }
-      }
-    });
+    if (item.TeacherName == "空白" && Order === 1) {
+      // 不處理
+    } else {
+      this.caseStudent.selectCaseTeacers.forEach(teacher => {
+        // 如果已有不重複設定
+        if (item.TeacherID)
+        {
+          if (!hasTeacherID.includes(item.TeacherID))
+          {
+            if (teacher.Order === Order) {
+              teacher.CounselTeacher = item;
+            }
+          }        
+        }else {
+          if(item.TeacherName === '空白')
+          {
+            this.caseStudent.selectCaseTeacers.forEach(teacher => {
+              if (teacher.Order === Order) {
+                teacher.CounselTeacher = item;
+              }
+            });
+
+          }
+        }       
+      });
+    }
+
+
     this.caseStudent.checkValue();
   }
 
@@ -296,6 +319,10 @@ export class NewCaseModalComponent implements OnInit {
     // 取得個案可以使用教師
     this.CounselTeacherList = [];
     let dataList: CounselTeacher[] = [];
+    let nul: CounselTeacher = new CounselTeacher();
+    nul.TeacherName = '空白';
+    nul.Role = '不加入';
+    dataList.push(nul);
     let counselTeacher = await this.dsaService.send("GetCounselTeacherRole", {});
     [].concat(counselTeacher.CounselTeacher || []).forEach(tea => {
       let data: CounselTeacher = new CounselTeacher();
