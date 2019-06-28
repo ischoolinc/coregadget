@@ -1,16 +1,8 @@
 import { Component, OnInit, Optional } from "@angular/core";
-import {
-  ActivatedRoute,
-  Router,
-  ParamMap,
-  RoutesRecognized
-} from "@angular/router";
-import {
-  CounselStudentService,
-  CounselClass,
-  CounselStudent
-} from "../../counsel-student.service";
+import { ActivatedRoute, Router, ParamMap, RoutesRecognized } from "@angular/router";
+import { CounselStudentService, CounselClass, CounselStudent } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
+import { DsaService } from "../../dsa.service";
 
 @Component({
   selector: "app-counsel-detail",
@@ -30,10 +22,13 @@ export class CounselDetailComponent implements OnInit {
   // 顯示心理測驗
   _psychological_testEnable: boolean = false;
 
+  printDocument: any[];
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     public counselStudentService: CounselStudentService,
+    private dsaService: DsaService,
     @Optional()
     private counselComponent: CounselComponent
   ) { }
@@ -108,6 +103,8 @@ export class CounselDetailComponent implements OnInit {
           this.deny = false;
         }
       }
+
+      this.loadPrintDocument();
     } else {
       setTimeout(this.loadStudent, 100);
     }
@@ -129,5 +126,10 @@ export class CounselDetailComponent implements OnInit {
     setTimeout(() => {
       this.currentItem = item;
     });
+  }
+
+  async loadPrintDocument() {
+    var rsp = await this.dsaService.send("GetPrintDocumentTemplate");
+    this.printDocument = [].concat(rsp.PrintDocument || []);
   }
 }

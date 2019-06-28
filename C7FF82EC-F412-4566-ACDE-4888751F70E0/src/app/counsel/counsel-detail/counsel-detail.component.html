@@ -5,6 +5,24 @@
     <div class="row mt-3">
       <div class="col-md-3">
         <div class="sticky-top mb-3">
+          <div *ngIf="printDocument && printDocument.length"
+               class="float-right ml-1 dropdown ">
+            <button class="btn btn-sm btn-light dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">列印</button>
+            <div class="dropdown-menu">
+              <ng-container *ngFor="let doc of printDocument">
+                <a class="dropdown-item"
+                   target="_blank"
+                   [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_doc/'+currentStudent.StudentID+'/'+doc.PrintDocumentID+')'"
+                   >
+                  {{doc.Name}}&nbsp;(&nbsp;{{doc.DocumentName}}&nbsp;)
+                </a>
+              </ng-container>
+            </div>
+          </div>
           <h4 class="mt-1 mb-3">
             {{ currentStudent.ClassName }}({{ currentStudent.SeatNo }})
             {{ currentStudent.StudentName }}
