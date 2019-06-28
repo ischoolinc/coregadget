@@ -1,0 +1,118 @@
+<!-- 學生個人 - 綜合紀錄表 -->
+<script src="assets/js/xml2json.js"></script>
+<div>
+  <div style="position: fixed;z-index: 1;top: 8px;right: 8px;">
+    <button class="btn btn-info"
+            data-toggle="modal"
+            data-backdrop="static"
+            data-target="#modal-editor">
+      <i class="material-icons">edit</i>
+      設定
+    </button>
+  </div>
+  <ng-container *ngIf="reportData">
+    <h4 class="text-center">學校名稱&nbsp;{{reportData.ReportName||'顯示名稱'}}</h4>
+    <h5>
+      <span>學號：</span><span>XXXXXX</span>
+      <span>&nbsp;</span>
+      <span>姓名：</span><span>王OO</span>
+    </h5>
+    <ng-container *ngIf="reportData.Template">
+      <table *ngFor="let formPage of reportData.Template.FormPage; let pageIndex = index">
+        <ng-container *ngFor="let subject of formPage.FormSubject; let subjectIndex = index">
+          <ng-container *ngFor="let group of subject.FormGroup; let groupIndex = index">
+            <ng-container *ngFor="let query of group.FormQuery; let queryIndex = index">
+              <tr>
+                <td *ngIf="groupIndex==0 && queryIndex==0"
+                    [attr.rowspan]="subject.rowCount"
+                    style="writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; writing-mode: vertical-rl; width: 1rem">
+                  {{subject.Title}}
+                </td>
+                <td *ngIf="group.rowCount==1 || queryIndex==0"
+                    [attr.rowspan]="group.rowCount"
+                    style="width:150px;">
+                  {{group.Title}}
+                </td>
+                <td style="width:150px;"
+                    *ngIf="query.Title">
+                  {{query.Title}}
+                </td>
+                <td [attr.colspan]="query.Title?1:2">
+                  <ng-container *ngFor="let text of query.FormText;let textIndex = index">
+                    <span *ngIf="textIndex > 0"
+                          class="ml-2 mr-3">;</span>
+                    <span *ngIf="text.Title">
+                      <span>{{text.Title}}</span>
+                      <span class="ml-1 mr-1">:</span>
+                    </span>
+                    <span *ngIf="!text.Value"
+                          class="text-muted">未填寫
+                    </span>
+                    <span *ngIf="text.Value">
+                      {{text.Value}}
+                    </span>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </table>
+    </ng-container>
+  </ng-container>
+</div>
+
+
+
+<div class="modal fade"
+     id="modal-editor"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addInterviewLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="addInterviewLabel">設定報表樣板</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group col-md-12">
+          <label for="display_name"
+                 class="col-form-label">
+            顯示名稱
+          </label>
+          <input type="text"
+                 class="form-control"
+                 id="display_name"
+                 placeholder=""
+                 [(ngModel)]="config.configName">
+        </div>
+        <div class="form-group">
+          <label for="xml"
+                 class="col-form-label">XML樣板</label>
+          <textarea class="form-control"
+                    id="xml"
+                    rows="15"
+                    [(ngModel)]="config.configXml"
+                    placeholder=""></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-dark"
+                data-dismiss="modal">取消</button>
+        <button type="button"
+                class="btn btn-info"
+                (click)="setConfig()">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>

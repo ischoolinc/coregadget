@@ -1,0 +1,16 @@
+table{
+    width: 100%;
+    /* border: 2px solid; */
+}
+td{
+    border: 1px solid;
+    padding: 4px;
+}
+
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
