@@ -112,7 +112,7 @@
                         </li>
                     </ul>
                 </div>
-                <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable()}">
+                <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable('成績管理')}">
                     <i class="fa fa-floppy-o"></i>
                     儲存
                 </a>
@@ -340,7 +340,20 @@
                                      style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -25px;"
                                      >
                                     <small class="text-muted" style="width: 260px;">
-                                        {{current.Student.StudentScoreTag}}
+                                        學生成績身分類別: {{current.Student.StudentScoreTag}}
+                                    </small>
+                                </div>
+                                <div ng-if="current.Exam.InputStartTime && current.Exam.SubName !='讀卡'"
+                                     style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -65px;">
+                                    <small class="text-muted" style="width: 260px;">
+                                        評量成績輸入開放時間: {{current.Exam.InputStartTime}} ~ {{current.Exam.InputEndTime}}
+                                    </small>
+                                </div>
+                                <!--只有再點選學期成績才顯示-->
+                                <div ng-if="current.Course.InputStartTime && current.Exam.ExamID =='學期成績' "
+                                     style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -65px;">
+                                    <small class="text-muted" style="width: 260px;">
+                                        學期總成績輸入開放時間: {{current.Course.InputStartTime}} ~ {{current.Course.InputEndTime}}
                                     </small>
                                 </div>
                             </td>
@@ -464,14 +477,15 @@
                                      ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <h6 ng-if="exam.Group" style="margin:0px;display:inline-block;">
+                                <h6 ng-if="exam.Group" style="margin:0px;">
                                     <small>
-                                        <span>
+                                        <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                             {{stuRec['Exam'+exam.ExamID]}}
                                         </span>
                                     </small>
                                 </h6>
-                                <span ng-if="!exam.Group"
+                                <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap"
+                                      ng-if="!exam.Group"
                                       ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < 60}">
                                     {{stuRec['Exam'+exam.ExamID]}}
                                 </span>

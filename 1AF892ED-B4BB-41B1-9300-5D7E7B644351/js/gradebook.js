@@ -1383,6 +1383,9 @@
                                                 subExamRec.Name = examRec.Name + "_" + subExamRec.SubName;
                                                 subExamRec.Lock = examRec.Lock;
                                                 subExamRec.Group = examRec;
+                                                subExamRec.InputStartTime = examRec.InputStartTime;
+                                                subExamRec.InputEndTime = examRec.InputEndTime;
+
                                                 examRec.SubExamList.push(subExamRec);
 
 
@@ -1455,6 +1458,8 @@
                                     subExamRec.Group = examRec;
                                     subExamRec.Permission = "Editor";
                                     subExamRec.Type = "Text";
+                                    subExamRec.InputStartTime = examRec.InputStartTime;
+                                    subExamRec.InputEndTime = examRec.InputEndTime;
 
                                     //如果原來 沒有 子評量 幫新增，(子評量除了 文字評量之外， 只有 讀卡模組來的 CSCORE 、PSCORE 會建立)
                                     if (!examRec.SubExamList)
@@ -1728,7 +1733,13 @@
             [].concat(targetExamList || []).forEach(exam => {
                 if (pass) {
                     [].concat($scope.studentList || []).forEach(function (stuRec) {
-                        if (pass) {
+                        // 成績管理 的驗證
+                        if (pass && target == $scope.modeList[0]){
+                            pass = !!$scope.checkOneCell(stuRec,'Exam' +  exam.ExamID);
+                        }
+
+                        // 平時評量 的驗證
+                        if (pass && target == $scope.modeList[1]) {
                             pass = !!$scope.checkOneCell(stuRec, exam.ExamID);
                         }
                     });
