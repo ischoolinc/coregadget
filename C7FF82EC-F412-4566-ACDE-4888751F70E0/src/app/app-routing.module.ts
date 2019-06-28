@@ -30,6 +30,10 @@ import { CounselClassComponent } from "./admin/counsel-class/counsel-class.compo
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
 import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
+import { SimplePageComponent } from "./simple-page/simple-page.component";
+import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
+import { CounselDocEditorComponent } from "./simple-page/editor/counsel-doc-editor/counsel-doc-editor.component";
+import { ComprehensiveEditorComponent } from "./simple-page/editor/comprehensive-editor/comprehensive-editor.component";
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -109,7 +113,17 @@ const routes: Routes = [
       { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
       { path: "section/:schoolYear/:semester", component: ComprehensiveSectionComponent }
     ]
-  }
+  },
+  {
+    outlet: "simple-page",
+    path: "simple-page",
+    component: SimplePageComponent,
+    children: [
+      { path: "editor/counsel_doc_editor", component: CounselDocEditorComponent },
+      { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
+      { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent }
+    ]
+  },
 ];
 
 @NgModule({

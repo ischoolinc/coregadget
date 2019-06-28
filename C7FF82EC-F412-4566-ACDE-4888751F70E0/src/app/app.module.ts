@@ -43,6 +43,10 @@ import { ComprehensiveComponent } from "./comprehensive/comprehensive.component"
 import { ComprehensiveDetailRoutingComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-detail-routing/comprehensive-detail-routing.component';
 import { ComprehensiveRoutingComponent } from './comprehensive/comprehensive-routing/comprehensive-routing.component';
 import { ComprehensiveSectionComponent } from './comprehensive/comprehensive-section/comprehensive-section.component';
+import { SimplePageComponent } from './simple-page/simple-page.component';
+import { CounselDocComponent } from './simple-page/print/counsel-doc/counsel-doc.component';
+import { CounselDocEditorComponent } from './simple-page/editor/counsel-doc-editor/counsel-doc-editor.component';
+import { ComprehensiveEditorComponent } from './simple-page/editor/comprehensive-editor/comprehensive-editor.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +85,11 @@ import { ComprehensiveSectionComponent } from './comprehensive/comprehensive-sec
     ComprehensiveComponent,
     ComprehensiveDetailRoutingComponent,
     ComprehensiveRoutingComponent,
-    ComprehensiveSectionComponent
+    ComprehensiveSectionComponent,
+    SimplePageComponent,
+    CounselDocComponent,
+    CounselDocEditorComponent,
+    ComprehensiveEditorComponent
   ],
   imports: [
     BrowserModule,
