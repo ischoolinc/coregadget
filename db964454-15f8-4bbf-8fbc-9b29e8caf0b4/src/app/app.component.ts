@@ -433,16 +433,28 @@ export class AppComponent implements OnInit {
 
       // 標題列
       const titleList: string[] = [];
+      // 副標題
+      const scTitleList: string[] = [];
       // 學生資料
       const dataList: string[] = [];
 
       // 資料整理
       {
-        titleList.push(`<td width='40px'>座號</td>`);
-        titleList.push(`<td width='70px'>姓名</td>`);
-        [].concat(this.curExam.Item || []).forEach((item: {Index: string, Name: string}) => {
-          titleList.push(`<td>${item.Name}</td>`);
-        });
+        if (this.curExam.ExamID === 'GroupActivity') {
+          titleList.push(`<td rowspan="2" width='40px'>座號</td>`);
+          titleList.push(`<td rowspan="2" width='70px'>姓名</td>`);
+          [].concat(this.curExam.Item || []).forEach(item => {
+            titleList.push(`<td colspan="2">${item.Name}</td>`);
+            scTitleList.push('<td>努力程度</td>');
+            scTitleList.push('<td>文字評量</td>');
+          });
+        } else {
+          titleList.push(`<td width='40px'>座號</td>`);
+          titleList.push(`<td width='70px'>姓名</td>`);
+          [].concat(this.curExam.Item || []).forEach(item => {
+            titleList.push(`<td>${item.Name}</td>`);
+          });
+        }
 
         this.studentList.forEach((student: StudentRecord) => {
 
@@ -451,33 +463,53 @@ export class AppComponent implements OnInit {
           tdList.push(`<td>${student.Name}</td>`);
 
           [].concat(this.curExam.Item || []).forEach((item: { Index: string, Name: string}) => {
-            const score = student.DailyLifeScore.get(`${this.curExam.ExamID}_${item.Name}`);
-            tdList.push(`<td>${score}</td>`);
+            if (this.curExam.ExamID === 'GroupActivity') {
+              const effortScore = student.DailyLifeScore.get(`${this.curExam.ExamID}_${item.Name}_努力程度`);
+              tdList.push(`<td>${effortScore}</td>`);
+              const commentScore = student.DailyLifeScore.get(`${this.curExam.ExamID}_${item.Name}_文字評量`);
+              tdList.push(`<td>${commentScore}</td>`);
+            } else {
+              const score = student.DailyLifeScore.get(`${this.curExam.ExamID}_${item.Name}`);
+              tdList.push(`<td>${score}</td>`);
+            }
           }); 
-          const data: string = `
-            <tr>
-              ${tdList.join('')}
-            </tr>
-          `;
-
+          const data: string = `<tr>${tdList.join('')}</tr>`;
           dataList.push(data);
       });
       }
 
-    const html: string = `
+    const html: string = (this.curExam.ExamID === 'GroupActivity') ? `
 <html>
-    <head>
-      <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
-    </head>
-    <body onLoad='self.print()'>
-      <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
-        <tr>
-          ${titleList.join('')}
-        </tr>
-        ${dataList.join('')}
-      </table>
-      <br/>教師簽名：
-    </body>
+  <head>
+    <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
+  </head>
+  <body onLoad='self.print()'>
+    <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
+      <tr>
+        ${titleList.join('')}
+      </tr>
+      <tr>
+        ${scTitleList.join('')}
+      </tr>
+      ${dataList.join('')}
+    </table>
+    <br/>教師簽名：
+  </body>
+</html>
+        ` : `
+<html>
+  <head>
+    <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
+  </head>
+  <body onLoad='self.print()'>
+    <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
+      <tr>
+        ${titleList.join('')}
+      </tr>
+      ${dataList.join('')}
+    </table>
+    <br/>教師簽名：
+  </body>
 </html>
         `;
 
