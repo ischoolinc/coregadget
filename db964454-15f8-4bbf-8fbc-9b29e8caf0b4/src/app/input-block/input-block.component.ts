@@ -141,12 +141,6 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     if (this.canEdit) {
       this.focusAndSelect(this.inputTextScore);
     }
-    // GoupActivity 努力程度才需要顯示代碼表
-    if (this.curExam.ExamID === 'GroupActivity') {
-      this.showEffortCode = this.curQuizName.includes('努力程度');
-    } else{
-      this.showEffortCode = false;
-    }
   }
 
   /** 根據資料以及成績是否可編輯來切換樣板 */
@@ -161,6 +155,12 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       }
     } else {
       this.displayPage = this.tplSourceNoData;
+    }
+    // GoupActivity 努力程度才需要顯示代碼表
+    if (this.curExam.ExamID === 'GroupActivity') {
+      this.showEffortCode = this.curQuizName.includes('努力程度');
+    } else{
+      this.showEffortCode = false;
     }
   }
 
