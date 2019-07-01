@@ -1,0 +1,46 @@
+<!-- 學生個人 - 綜合紀錄表 -->
+<ng-container *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-pane fade-in"
+       id="listTwo">
+
+    <div class="float-right d-flex mb-3 mb-md-0 sticky-top">
+      <ng-container *ngTemplateOutlet="plugin"></ng-container>
+    </div>
+    <div class="float-right d-flex mb-3 mb-md-0">
+      <div *ngIf="fillInSemester.length>0"
+           class="dropdown ml-1">
+        <button class="btn btn-light dropdown-toggle"
+                type="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">{{currentFillInSemester.SchoolYear}}學年度&nbsp;第{{currentFillInSemester.Semester}}學期</button>
+        <div class="dropdown-menu">
+          <a *ngFor="let semester of fillInSemester"
+             [ngClass]="{'active': semester==currentFillInSemester}"
+             [routerLink]="['view', semester.SchoolYear, semester.Semester]"
+             class="dropdown-item">{{semester.SchoolYear}}學年度&nbsp;第{{semester.Semester}}學期</a>
+        </div>
+      </div>
+    </div>
+    <div class="d-md-flex align-items-center sub-title mb-3 ">
+      <h4 class="mb-0 mr-auto">綜合紀錄表</h4>
+    </div>
+    <div style="clear: both;"></div>
+    <div *ngIf="fillInSemester.length==0"
+         class="row justify-content-center"
+         style="margin-top:250px;margin-bottom:200px;">
+      沒有資料
+    </div>
+    <router-outlet *ngIf="fillInSemester.length>0"></router-outlet>
+  </div>
+</ng-container>
+
+
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

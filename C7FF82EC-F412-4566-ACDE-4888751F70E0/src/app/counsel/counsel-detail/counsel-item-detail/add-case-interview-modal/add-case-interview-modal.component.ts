@@ -34,7 +34,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
     private counselDetailComponent: CounselDetailComponent,
     @Optional()
     private counselStudentService: CounselStudentService
-  ) {}
+  ) { }
   caseInterview: CaseInterview;
   _editMode: string = "add";
   editModeString: string = "新增";
@@ -77,14 +77,17 @@ export class AddCaseInterviewModalComponent implements OnInit {
   }
 
   // click 取消
-  cancel() {}
+  cancel() { }
   // click 儲存
   async save() {
     try {
+      this.caseInterview.isSaveDisable = true;
       await this.SetCaseInterview(this.caseInterview);
       $("#addCaseInterview").modal("hide");
+      this.caseInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
+      this.caseInterview.isSaveDisable = false;
     }
   }
 
@@ -107,7 +110,8 @@ export class AddCaseInterviewModalComponent implements OnInit {
       StudentID: data.StudentID,
       Attachment: "",
       Content: data.Content,
-      CaseID: data.CaseID
+      CaseID: data.CaseID,
+      AuthorRole: data.AuthorRole
     };
     // console.log(req);
 

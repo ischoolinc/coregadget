@@ -34,9 +34,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link"
-           [attr.data-toggle]="roleService.enableCase?'tab':null"
-           (click)="!roleService.enableCase || routeTo('/case')"
-           [ngClass]="{'active': currentComponent == 'case', 'disabled': !roleService.enableCase}">
+           [attr.data-toggle]="globalService.enableCase?'tab':null"
+           (click)="!globalService.enableCase || routeTo('/case')"
+           [ngClass]="{'active': currentComponent == 'case', 'disabled': !globalService.enableCase}">
           個案資料</a>
       </li>
       <li class="nav-item">
@@ -44,7 +44,20 @@
            [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
            (click)="!roleService.enableInterviewStatistics || routeTo('/interview_statistics')"
            [ngClass]="{'active': currentComponent == 'interview_statistics', 'disabled': !roleService.enableInterviewStatistics}">
-          輔導填寫狀況(待開發)</a>
+          輔導填寫狀況</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="false?'tab':null"
+           [ngClass]="{'active': currentComponent == '', 'disabled': !true}">
+          綜合紀錄表</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableAdmin?'tab':null"
+           (click)="!roleService.enableAdmin || routeTo('/admin')"
+           [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
+          系統管理</a>
       </li>
     </ul>
     <router-outlet></router-outlet>
@@ -54,4 +67,3 @@
     Powered By ischool
   </footer>
 </div>
-

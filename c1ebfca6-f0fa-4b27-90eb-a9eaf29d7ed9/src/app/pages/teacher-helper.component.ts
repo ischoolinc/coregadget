@@ -60,13 +60,13 @@ export class TeacherHelperComponent implements OnInit {
   public async reloadTeacherHelper() {
     this.students = [];
     // 取得學生清單
-    const _students = await this.dsa.getStudents('Course', this.courseID, this.today, this.period);
+    const _students = await this.dsa.getStudent('Course', this.courseID, this.today, this.period);
     // 取得學生照片URL
     const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
     for (const stu of _students) {
       // 取得學生照片 url
-      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/_.GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.ID}`;
+      stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.StudentID}`;
       this.students.push(stu);
     }
     // 取得課程助手
@@ -83,7 +83,7 @@ export class TeacherHelperComponent implements OnInit {
   }
 
   getTeacherHelperText(stu: Student) {
-    return (stu.ID == this.teacherHelper.StudentID) ? '小幫手' : '- -';
+    return (stu.StudentID == this.teacherHelper.StudentID) ? '小幫手' : '- -';
   }
 
   getTeacherHelperStyle(stu: Student) {
@@ -91,7 +91,7 @@ export class TeacherHelperComponent implements OnInit {
     let bgColor = 'rgba(255,255,255, 0.1)';
     let fgColor = 'rgba(0,0,0,0.5)';
 
-    if (stu.ID == this.teacherHelper.StudentID) {
+    if (stu.StudentID == this.teacherHelper.StudentID) {
       bgColor = '#259B24';
       fgColor = 'white';
     }
@@ -103,7 +103,7 @@ export class TeacherHelperComponent implements OnInit {
   }
 
   changeTeacherHelper(stu: Student) {
-    this.teacherHelper.StudentID = stu.ID;
+    this.teacherHelper.StudentID = stu.StudentID;
     this.teacherHelper.StudentName = stu.Name;
     this.teacherHelper.StudentNumber = stu.StudentNumber;
   }

@@ -1,0 +1,111 @@
+<div id="gadget" class="my-page">
+  <h1 class="d-none d-md-block">日常生活表現登錄</h1>
+  <ng-container *ngIf="!isLoading;else tplLoading">
+    <ng-container *ngIf="!loadError; else tplLoadError">
+      <ng-container *ngIf="studentList.length; else tplNoData">
+          <div class="d-flex flex-wrap">
+              <!--學年度-->
+              <div class="dropdown mr-2">學年度：
+                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="schoolYearMenu"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{curSchoolYear}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="schoolYearMenu">
+                  <a *ngFor="let schoolYear of schoolYearList"
+                    class="dropdown-item"
+                    [class.active]="curSchoolYear === schoolYear"
+                    (click)="setSchoolYear(schoolYear)"
+                    href="javascript:;">{{schoolYear}}</a>
+                </div>
+              </div>
+              <!--學期-->
+              <div class="dropdown mr-2">學期：
+                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="semesterMenu"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{curSemester}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="semesterMenu">
+                  <a class="dropdown-item" [class.active]="curSemester === '1'" (click)="setSemester('1')" href="javascript:;">1</a>
+                  <a class="dropdown-item" [class.active]="curSemester === '2'" (click)="setSemester('2')" href="javascript:;">2</a>
+                </div>
+              </div>
+              <!--班級清單-->
+              <div class="dropdown mr-2">班級：
+                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="classMenu"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{curClass.ClassName}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="classMenu">
+                  <a *ngFor="let item of classList"
+                    class="dropdown-item"
+                    [class.active]="curClass.ClassID === item.ClassID"
+                    (click)="setCurrentClass(item)"
+                    href="javascript:;">{{item.ClassName}}</a>
+                </div>
+              </div>
+              <!--評量清單-->
+              <div class="dropdown mr-2">評量項目
+                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="mappingTable"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{curExam.Name}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="mappingTable">
+                  <a *ngFor="let exam of examList"
+                    class="dropdown-item"
+                    [class.active]="curExam.ExamID === exam.ExamID"
+                    (click)="setCurrentExam(exam)"
+                    href="javascript:;">{{exam.Name}}</a>
+                </div> 
+              </div>
+              <!--匯出報表-->
+              <a href="javascript:;" class="btn btn-outline-secondary mr-auto"
+                (click)="exportExcel()">
+                <i class="fas fa-file-excel mr-2"></i> 匯出報表
+              </a>
+              <!--批次-->
+              <div class="dropdown mr-1">
+                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink3"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-cog mr-2"></i> 批次
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink3">
+                  <a class="dropdown-item" href="javascript:;"
+                    *ngFor="let item of curExam.Item"
+                    (click)="openBatchModal(item.Name)">{{item.Name}}</a>
+                </div>
+              </div>
+              <!--儲存-->
+              <button type="button" class="btn"
+                [ngClass]="{
+                  'btn-outline-secondary': !isChange,
+                  'btn-danger': isChange
+                }"
+                (click)="saveAll()">
+                <i class="fas fa-save mr-2"></i> 儲存
+              </button>
+      
+            </div>
+            <div class="mt-1">
+              <span class="text-danger">{{curClassTimeConfig.Grade || ''}}年級 開放輸入時間：{{curClassTimeConfig.Start || '未指定'}} ~ {{curClassTimeConfig.End || '未指定'}}</span>
+            </div>
+            <div class="mainBlock">
+              <app-input-block
+                [degreeCodeList]="degreeCodeList"
+                [textCodeList]="textCodeList"
+              ></app-input-block>
+              <app-students-block></app-students-block>
+            </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #tplLoading>
+  <div class="text-center">Loading...</div>
+</ng-template>
+<ng-template #tplNoData>
+  <div class="text-center">目前無資料</div>
+</ng-template>
+<ng-template #tplLoadError>
+  <div class="text-center">{{loadError}}</div>
+</ng-template>

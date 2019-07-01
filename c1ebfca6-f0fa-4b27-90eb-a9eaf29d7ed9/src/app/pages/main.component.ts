@@ -2,7 +2,7 @@ import { ConfigService } from './../service/config.service';
 import { PeriodChooserComponent } from './../modal/period-chooser.component';
 import { AlertService } from './../service/alert.service';
 import { DebugComponent } from './../modal/debug.component';
-import { DSAService, RollCallRecord, SuggestRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
+import { DSAService, RollCallRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';

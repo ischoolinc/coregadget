@@ -36,7 +36,7 @@ export class CounselDetailComponent implements OnInit {
     public counselStudentService: CounselStudentService,
     @Optional()
     private counselComponent: CounselComponent
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(
@@ -116,7 +116,7 @@ export class CounselDetailComponent implements OnInit {
   routeTo(to) {
     //讓特效跑
     setTimeout(
-      function() {
+      function () {
         this.router.navigate([].concat(to || []), {
           relativeTo: this.activatedRoute
         });

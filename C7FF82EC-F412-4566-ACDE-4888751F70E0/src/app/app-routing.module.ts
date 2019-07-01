@@ -18,7 +18,15 @@ import { CounselRoutingComponent } from "./counsel/counsel-routing/counsel-routi
 import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/detail-routing.component";
 import { ReferralListComponent } from "./referral/referral-list/referral-list.component";
 import { ReferralDetailComponent } from "./referral/referral-detail/referral-detail.component";
+import { ComprehensiveComponent } from "./counsel/counsel-detail/comprehensive/comprehensive.component";
+import { ComprehensiveRoutingComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-routing.component";
+import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive/comprehensive-view/comprehensive-view.component";
+import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive/comprehensive-edit/comprehensive-edit.component';
 // import { CaseRoleGuard, CounselRoleGuard, CounselStatisticsRoleGuard, ReferralRoleGuard, InterviewStatisticsRoleGuard } from "./role.guard";
+import { AdminComponent } from "./admin/admin.component";
+import { AdminRoutingComponent } from "./admin/admin-routing/admin-routing.component";
+import { CounselTeacherRoleComponent } from "./admin/counsel-teacher-role/counsel-teacher-role.component";
+import { CounselClassComponent } from "./admin/counsel-class/counsel-class.component";
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -43,7 +51,15 @@ const routes: Routes = [
           { path: "absent", component: AbsentDetailComponent },
           { path: "exam_score", component: ExamScoreDetailComponent },
           { path: "semester_score", component: SemesterScoreDetailComponent },
-          { path: "comprehensive", loadChildren: './counsel/counsel-detail/comprehensive/comprehensive.module#ComprehensiveModule' }
+          {
+            path: "comprehensive",
+            component: ComprehensiveComponent,
+            children: [
+              { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
+              { path: "view/:schoolYear/:semester", component: ComprehensiveViewComponent },
+              { path: "edit/:sectionID", component: ComprehensiveEditComponent }
+            ]
+          }
         ]
       }
     ]
@@ -74,11 +90,20 @@ const routes: Routes = [
     ]
   },
   { path: "case", component: CaseComponent },
-  { path: "interview_statistics", component: InterviewStatisticsComponent }
+  { path: "interview_statistics", component: InterviewStatisticsComponent },
+  {
+    path: "admin",
+    component: AdminComponent,
+    children: [
+      { path: "", pathMatch: "full", component: AdminRoutingComponent },
+      { path: "counsel_teacher_role", component: CounselTeacherRoleComponent },
+      { path: "counsel_class", component: CounselClassComponent }
+    ]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -1,0 +1,236 @@
+<div class="inputBlock">
+  <div [ngClass]="{'inputBlockDefault': !affixTop, 'inputBlockAffixTop': affixTop}">
+    <table class="table table-bordered table-striped">
+      <thead class="thead-light">
+        <tr>
+          <th colspan="2">成績輸入</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="width:95px;">
+            <div class="dropdown mr-1">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMode"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{curMode == 'SEAT' ? '座號搜尋' : '切換學生'}}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMode">
+                <a class="dropdown-item" href="javascript:;"
+                  (click)="setCurMode('SEAT')"
+                  [ngClass]="{'active': curMode === 'SEAT'}"
+                  >座號搜尋</a>
+                <a class="dropdown-item" href="javascript:;"
+                  (click)="setCurMode('SEQ')"
+                  [ngClass]="{'active': curMode === 'SEQ'}"
+                  >切換學生</a>
+              </div>
+            </div>
+          </td>
+          <td class="miniPadding">
+            <div *ngIf="curMode === 'SEAT'" class="input-group">
+              <input #inputSeatNo
+                [(ngModel)]="selectSeatNumber"
+                [ngClass]="{'disabled': !curStudent}" type="text" placeholder="{{isMobile ? '' : 'Enter送出'}}"
+                (keyup.enter)="submitStudentNo()"
+                class="form-control"/>
+              <span class="input-group-append">
+                <a href="javascript:;" (click)="submitStudentNo()" class="btn btn-outline-secondary">
+                  送出
+                </a>
+              </span>
+            </div>
+            <div *ngIf="curMode === 'SEQ'" class="btn-group">
+              <a href="javascript:;" class="btn btn-outline-secondary" (click)="goPrev()"><<</a>
+              <a href="javascript:;" class="btn btn-outline-secondary" (click)="goNext()">>></a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>目前學生</td>
+          <td>
+            <ng-container *ngIf="curStudent">
+              <span>{{curStudent.Name}}</span>
+              <span *ngIf="curStudent.SeatNumber">({{curStudent.SeatNumber}})</span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+      <thead class="thead-light">
+        <tr>
+          <th colspan="2">
+            <div class="btn-group btn-block">
+              <div class="dropdown">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownExamScore"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                  <i *ngIf="canEdit" style="min-width: 14px;" class="fa fa-edit"></i>
+                  {{curQuizName || '請選擇'}}
+              </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownExamScore">
+                  <a class="dropdown-item" href="javascript:;"
+                    *ngFor="let item of curExam.Item"
+                    (click)="setQuiz(item.Name)"
+                    [ngClass]="{'active': curQuizName == item.Name}">
+                    <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                    {{item.Name}}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <ng-container *ngTemplateOutlet="displayPage"></ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<ng-template #tplSourceNoData>
+  <td colspan="2">
+    <span>--</span>
+  </td>
+</ng-template>
+
+<ng-template #tplSourceLock>
+  <td colspan="2" style="text-align: left;">
+    <div>
+      {{curValue || '&nbsp;'}}
+    </div>
+  </td>
+</ng-template>
+
+<ng-template #tplTextType>
+  <td colspan="2" class="miniPadding">
+    <textarea #inputTextScore
+      [(ngModel)]="curValue"
+      (keyup.enter)="enterGrade()"
+      maxlength="200"
+      placeholder="{{isMobile ? '' : 'Enter送出'}}"
+      style="min-height: 60px;height:120px;resize: vertical;"
+      class="form-control" select-on-click>
+    </textarea>
+    <div class="btn-group mt-1 d-flx align-items-center justify-content-center">
+      <a *ngIf="curExam.ExamID === 'DailyBehavior'" 
+        href="javascript:;" 
+        class="btn btn-outline-secondary"
+        (click)="openCodeModal(tplLevelCode)">
+        <i class="far fa-file-code">
+          文字代碼表
+        </i>
+      </a>
+      <a *ngIf="curExam.ExamID === 'DailyLifeRecommend'" 
+        href="javascript:;" 
+        class="btn btn-outline-secondary"
+        (click)="openCodeModal(tplCommentCode)">
+        <i class="far fa-file-code">
+          文字代碼表
+        </i>
+      </a>
+      <a *ngIf="showEffortCode"
+        href="javascript:;"
+        class="btn btn-outline-secondary"
+        (click)="openCodeModal(tplEfforCode)">
+        <i class="far fa-file-code">
+          文字代碼表
+        </i>
+      </a>
+      <a href="javascript:;" (click)="enterGrade()" class="btn btn-outline-secondary">
+        送出
+      </a>
+    </div>
+  </td>
+</ng-template>
+
+<!--程度代碼表-->
+<ng-template #tplLevelCode>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">程度代碼表</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-striped table-hover text-center" 
+      style="table-layout:fixed;">
+      <thead>
+        <tr>
+          <th>程度</th>
+          <th>文字描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let code of levelCodeList"
+          style="cursor:pointer;" 
+          (click)="selectLevelCode(code)">
+          <th>{{code.Degree}}</th>
+          <th>{{code.Desc}}</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
+
+<!--文字代碼表-->
+<ng-template #tplCommentCode>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">文字代碼表</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-striped table-hover text-center"
+      style="table-layout: fixed;">
+      <thead>
+        <tr>
+          <th>代碼</th>
+          <th>文字描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let code of commentCodeList"
+          style="cursor: pointer;"
+          (click)="selectCommentCode(code)">
+          <td>{{code.Code}}</td>
+          <td>{{code.Comment}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
+
+<!--努力程度代碼表-->
+<ng-template #tplEfforCode>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">努力程度代碼表</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-striped table-hover text-center"
+    style="table-layout: fixed;">
+      <thead>
+        <tr>
+          <th>分數</th>
+          <th>程度</th>
+          <th>文字描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let code of effortCodeList"
+          style="cursor: pointer;"
+          (click)="selectEffortCode(code)">
+          <td>{{code.Score}}</td>
+          <td>{{code.Code}}</td>
+          <td>{{code.Name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>

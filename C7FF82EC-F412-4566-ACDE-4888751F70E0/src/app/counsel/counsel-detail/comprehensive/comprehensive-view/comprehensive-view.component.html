@@ -1,0 +1,81 @@
+<!-- 學生個人 - 綜合紀錄表 -->
+<div *ngIf="!isLoading; else tmpLoading">
+  <ng-container *ngFor="let subject of fillInData">
+    <div class="card mb-2">
+      <h4 class="m-2">{{subject.Subject}}</h4>
+      <table class="table table-sm table-bordered">
+        <ng-container *ngFor="let group of subject.QuestionGroup">
+          <tr>
+            <th colspan="2"
+                class=" text-left">{{group.Group}}</th>
+          </tr>
+          <ng-container *ngFor="let query of group.QuestionQuery">
+            <tr>
+              <td class="text-left pl-4"
+                  style="width: 180px"
+                  scope="col">
+                {{query.Query}}
+              </td>
+              <td class="text-left"
+                  scope="col">
+                <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
+                  <span *ngIf="questionTextIndex > 0"
+                        class="ml-2 mr-3">;</span>
+                  <span *ngIf="questionText.Text">
+                    <span>{{questionText.Text}}</span>
+                    <span class="ml-1 mr-2">:</span>
+                  </span>
+                  <span *ngIf="!questionText.HasValue"
+                        class="text-muted">未填寫</span>
+                  <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
+                    <span *ngIf="optionIndex > 0">、</span>
+                    <span style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
+                  </ng-container>
+                  <!-- <pre>{{questionText | json}}</pre> -->
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </table>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<ng-template #plugin>
+  <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="fillInSection.length == 1">
+      <button class="btn btn-info ml-1"
+              [routerLink]="['../../../edit', fillInSection[0].FillInSectionID]">
+        <i class="material-icons">edit</i>
+        <span>編輯</span>
+        <span>{{fillInSection[0].Name}}</span>
+      </button>
+    </ng-container>
+    <ng-container *ngIf="fillInSection.length > 1">
+      <div class="dropdown ml-1">
+        <button class="btn btn-info dropdown-toggle"
+                type="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+          <i class="material-icons">edit</i>
+          <span>編輯</span>
+        </button>
+        <div class="dropdown-menu">
+          <a *ngFor="let section of fillInSection"
+             [routerLink]="['../../../edit', section.FillInSectionID]"
+             class="dropdown-item">{{section.Name}}</a>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>

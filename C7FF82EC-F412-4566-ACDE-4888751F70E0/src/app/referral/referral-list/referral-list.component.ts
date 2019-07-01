@@ -164,15 +164,6 @@ export class ReferralListComponent implements OnInit {
       }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.isDisplay = false;
 
-      
-      // if (this.selectItem === "已結案") {
-      //   if (rec.ReferralStatus === "已處理") {
-      //     rec.isDisplay = true;
-      //   }
-      // } else {
-      //   rec.isDisplay = true;
-      // }
-
       if (this.selectItem === rec.ReferralStatus)
       {
         rec.isDisplay = true;

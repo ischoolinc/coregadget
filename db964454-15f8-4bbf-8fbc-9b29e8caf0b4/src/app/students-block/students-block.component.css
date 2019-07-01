@@ -1,0 +1,37 @@
+table {
+  table-layout: fixed;
+}
+
+table.table td,
+table.table th {
+  vertical-align: middle;
+  text-align: center;
+  position: relative;
+}
+
+.studentBlock {
+  margin-right: 270px;
+}
+
+.red-point {
+  display: inline-block;
+  background-color: red;
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 5px;
+  height: 6px;
+  border-radius: 5px;
+}
+
+.text-score {
+  overflow: hidden;
+  width: 100%;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.no-cursor {
+  cursor: default!important;
+}
