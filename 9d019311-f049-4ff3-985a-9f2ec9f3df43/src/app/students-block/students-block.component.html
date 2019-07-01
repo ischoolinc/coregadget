@@ -12,14 +12,14 @@
 
       <tbody>
         <tr *ngFor="let student of studentList"
-          [class.table-warning]="student.ID === curStudentID">
+          [class.table-warning]="student.ID === curStudent.ID">
           <td class="no-cursor">{{student.Name}} ({{student.SeatNumber}})</td>
           <td *ngFor="let item of curExam.Item"
-            (click)="doSelect(student, item.Name, true, true)"
+            (click)="doSelect(student, item.Name)"
             class="text-center" style="position:relative">
             <!-- 小紅點識別資料是否變更未儲存 -->
             <div *ngIf="checkHasChanged(student, item)" class="red-point"></div>
-            <span class="text-score">{{getScoreText(student, item.Name)}}</span>
+            <span class="text-score">{{getScoreText(student, item)}}</span>
           </td>
         </tr>
       </tbody>

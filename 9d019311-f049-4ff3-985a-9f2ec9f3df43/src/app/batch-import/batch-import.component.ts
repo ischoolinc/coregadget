@@ -1,33 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { StudentRecord } from '../data';
 import * as Papa from 'papaparse';
-
-export interface InitialState {
-  title: string;
-  studentList: StudentRecord[];
-  callback: () => void;
-}
+import { TargetDataService } from '../service/target-data.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-batch-import',
   templateUrl: './batch-import.component.html',
   styleUrls: ['./batch-import.component.css']
 })
-export class BatchImportComponent implements OnInit {
+export class BatchImportComponent implements OnInit, OnDestroy {
 
-  data: InitialState;
-  callback: any;
+  // 標題
+  title: string;
+  // 學生清單
+  studentList: StudentRecord[] = [];
   // 匯入資料
   sourceText: string;
   // 解析資料
   parseValues: string[] = [];
   hasError = false;
+  dispose$ = new Subject();
 
-  constructor(public modalRef: BsModalRef) {
+  constructor(
+    public modalRef: BsModalRef,
+    private targetDataSrv: TargetDataService
+    ) {
   }
 
   ngOnInit() {
+    // 訂閱資料
+    this.targetDataSrv.studenList$.pipe(
+      takeUntil(this.dispose$)
+    ).subscribe((stuList: StudentRecord[]) => {
+      this.studentList = stuList;
+    });
+  }
+
+  ngOnDestroy() {
+    this.dispose$.next();
   }
 
   // 要處理原始來自 Excel 來源的資料會有跨行(自動換行Excel 貼出來的字會有幫前後字串加綴雙引號")
@@ -46,7 +59,7 @@ export class BatchImportComponent implements OnInit {
 
     const aryValues = this.csvToArray(parseText);
     this.hasError = false;
-    this.data.studentList.forEach((stu, idx) => {
+    this.studentList.forEach((stu, idx) => {
       if (idx >= aryValues.length) {
         aryValues.push('錯誤');
         this.hasError = true;
@@ -73,10 +86,18 @@ export class BatchImportComponent implements OnInit {
 
   /**匯入資料 */
   importData() {
-    if (this.hasError == true) { return; }
-    if (this.callback) {
-      this.callback(this.parseValues);
+    if (this.hasError == true) { 
+      return; 
     } else {
+      // 寫入匯入解析後的成績資料
+      [].concat(this.studentList || []).forEach((stu: StudentRecord) => {
+        stu.DailyLifeScore.set(`${this.targetDataSrv.exam$.value.ExamID}_${this.title}`, this.parseValues[stu.Index]);
+      });
+      const curStudent: StudentRecord = this.studentList.find((stu: StudentRecord) => stu.ID === this.targetDataSrv.student$.value.ID);
+
+      // service 資料更新
+      this.targetDataSrv.setStudentList(this.studentList);
+      this.targetDataSrv.setStudent(curStudent);
       this.modalRef.hide();
     }
   }

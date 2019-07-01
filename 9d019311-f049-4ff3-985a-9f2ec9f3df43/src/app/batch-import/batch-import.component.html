@@ -1,7 +1,7 @@
-<ng-container *ngIf="data;else tplLoading">
+<ng-container *ngIf="title;else tplLoading">
     <div>
       <div class="modal-header">
-        <h3 class="modal-title pull-left">{{data.title}}</h3>
+        <h3 class="modal-title pull-left">{{title}}</h3>
         <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -36,7 +36,7 @@
       <div class="modal-body" *ngIf="parseValues.length">
         <p>預覽</p>
         <table class="table table-bordered rwdtable">
-          <tr *ngFor="let stu of data.studentList;let idx = index;">
+          <tr *ngFor="let stu of studentList;let idx = index;">
             <td data-label="學生" class="w-25">
               <span *ngIf="stu.SeatNumber">{{stu.SeatNumber}}.&nbsp;</span>
               <span>{{stu.Name}}</span>

@@ -28,10 +28,10 @@
           </td>
           <td class="miniPadding">
             <div *ngIf="curMode === 'SEAT'" class="input-group">
-                <!-- (keyup)="submitStudentNo()" -->
               <input #inputSeatNo
                 [(ngModel)]="selectSeatNumber"
-                [ngClass]="{'disabled': !targetData.Student}" type="text" placeholder="{{isMobile ? '' : 'Enter送出'}}"
+                [ngClass]="{'disabled': !curStudent}" type="text" placeholder="{{isMobile ? '' : 'Enter送出'}}"
+                (keyup.enter)="submitStudentNo()"
                 class="form-control"/>
               <span class="input-group-append">
                 <a href="javascript:;" (click)="submitStudentNo()" class="btn btn-outline-secondary">
@@ -48,9 +48,9 @@
         <tr>
           <td>目前學生</td>
           <td>
-            <ng-container *ngIf="targetData.Student">
-              <span>{{targetData.Student.Name}}</span>
-              <span *ngIf="targetData.Student.SeatNumber">({{targetData.Student.SeatNumber}})</span>
+            <ng-container *ngIf="curStudent">
+              <span>{{curStudent.Name}}</span>
+              <span *ngIf="curStudent.SeatNumber">({{curStudent.SeatNumber}})</span>
             </ng-container>
           </td>
         </tr>
@@ -64,13 +64,13 @@
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
                   <i *ngIf="canEdit" style="min-width: 14px;" class="fa fa-edit"></i>
-                  {{targetData.ItemName || '請選擇'}}
+                  {{curQuizName || '請選擇'}}
               </a>
                 <div class="dropdown-menu" aria-labelledby="dropdownExamScore">
                   <a class="dropdown-item" href="javascript:;"
                     *ngFor="let item of curExam.Item"
-                    (click)="setTarget(targetData.Student, item.Name)"
-                    [ngClass]="{'active': targetData.ItemName == item.Name}">
+                    (click)="setQuiz(item.Name)"
+                    [ngClass]="{'active': curQuizName == item.Name}">
                     <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
                     {{item.Name}}
                   </a>
@@ -118,7 +118,7 @@
       <a *ngIf="curExam.ExamID === 'DailyBehavior'" 
         href="javascript:;" 
         class="btn btn-outline-secondary"
-        (click)="openCommentCode(degreeCode)">
+        (click)="openCodeModal(degreeCode)">
         <i class="far fa-file-code">
           文字代碼表
         </i>
@@ -126,7 +126,7 @@
       <a *ngIf="curExam.ExamID === 'DailyLifeRecommend'" 
         href="javascript:;" 
         class="btn btn-outline-secondary"
-        (click)="openCommentCode(textCode)">
+        (click)="openCodeModal(textCode)">
         <i class="far fa-file-code">
           文字代碼表
         </i>
