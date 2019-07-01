@@ -15,7 +15,7 @@
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
                 account: '',
-                //password: window.prompt('password:b501284956')
+                //password: window.prompt('password:')
                 password: ''
             }
         });
@@ -69,14 +69,15 @@
 
 
 <body ng-controller="MainCtrl">
-    <div ng-if="!(current && studentList)" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
+    <div ng-if="!(current && studentList) && !HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
+    <div ng-if="HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有任何監考補考群組，請洽教務處行政人員。</div>
     <div id="gadget" class="my-page" ng-if="current && studentList">
         <h1 class="hidden-xs">高中補考成績輸入</h1>
-        <h3 class="hidden-xs">補考梯次: {{current.Batch.BatchName}}</h3>
-        <h3 class="hidden-xs">補考梯次描述:{{current.Batch.BatchDescription}}</h3>
+        <!--<h3 class="hidden-xs">補考梯次: {{current.Batch.BatchName}}</h3>-->
+        <h3 class="hidden-xs">補考說明:{{current.Batch.BatchDescription}}</h3>
         <h3 class="hidden-xs">輸入開放時間: {{current.Batch.BatchStartTime}} ~ {{current.Batch.BatchEndTime}}</h3>
-        <h3 class="hidden-xs">補考群組: {{current.Group.GroupName}}</h3>
-        <h3 class="hidden-xs">補考群組描述:{{current.Group.GroupDescription}}</h3>
+        <!--<h3 class="hidden-xs">補考群組: {{current.Group.GroupName}}</h3>-->
+        <h3 class="hidden-xs">群組說明:{{current.Group.GroupDescription}}</h3>
         <h3 class="hidden-xs">補考群組日期:{{current.Group.GroupMakeupDate}}</h3>
         <h3 class="hidden-xs">補考群組時間:{{current.Group.GroupMakeupTime}}</h3>        
         <h3 class="hidden-xs">補考群組地點:{{current.Group.GroupMakeupPlace}}</h3>        
@@ -88,6 +89,9 @@
                 </a>                
             </div>
             <div class="btn-group">
+                <span>補考梯次:</span>
+            </div>
+            <div class="btn-group">                
                 <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Batch.BatchName}}&nbsp;<span class="caret"></span> </a>
                 <ul class="dropdown-menu">
                     <li ng-repeat="batch in batchList"
@@ -95,6 +99,9 @@
                         <a href="javascript:;" ng-click="setCurrentBatch(batch)">{{batch.BatchName}}</a>
                     </li>
                 </ul>
+            </div>
+            <div class="btn-group">
+                <span>補考群組:</span>
             </div>
             <div class="btn-group">
                 <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{current.Group.GroupName}}&nbsp;<span class="caret"></span> </a>
