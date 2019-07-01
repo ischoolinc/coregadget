@@ -28,11 +28,10 @@
           </td>
           <td class="miniPadding">
             <div *ngIf="curMode === 'SEAT'" class="input-group">
-                <!-- (keyup)="submitStudentNo()" -->
-                <!-- (keyup.enter)="submitStudentNo()" -->
               <input #inputSeatNo
                 [(ngModel)]="selectSeatNumber"
                 [ngClass]="{'disabled': !curStudent}" type="text" placeholder="{{isMobile ? '' : 'Enter送出'}}"
+                (keyup.enter)="submitStudentNo()"
                 class="form-control"/>
               <span class="input-group-append">
                 <a href="javascript:;" (click)="submitStudentNo()" class="btn btn-outline-secondary">
