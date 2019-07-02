@@ -230,7 +230,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       const scoreMapByStudentID = await this.basicSrv.getStudentDailyLifeScore(this.curClass.ClassID, this.curSchoolYear, this.curSemester);
       [].concat(this.studentList || []).forEach((student: StudentRecord) => {
-        student.DailyLifeScore = scoreMapByStudentID.get(student.ID) || defaultStuData;
+        student.DailyLifeScore = scoreMapByStudentID.get(student.ID) || new Map(defaultStuData);
       });
     }
     // service 資料更新
