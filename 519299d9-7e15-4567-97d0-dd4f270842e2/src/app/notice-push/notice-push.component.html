@@ -6,7 +6,7 @@
   <mat-chip-list class="typography-body-1">
 
     <code *ngIf="receivers.length <= 0; else receiverList"
-          class="mr-2 py-2 px-3 mb-2">還沒選擇任何件者。</code>
+          class="mr-2 py-2 px-3 mb-2">還沒選擇任何收件者。</code>
 
     <ng-template #receiverList>
       <app-receiver-list [(ngModel)]="receivers"></app-receiver-list>
@@ -48,6 +48,6 @@
 <app-redactor [(ngModel)]="smscontent" #editor="ngModel" required></app-redactor>
 
 <div class="text-center text-md-right pt-3">
-  <button mat-flat-button (click)="sendSelf()">測試傳送給自已</button>
+  <button mat-flat-button (click)="sendSelf()">測試傳送給自己</button>
   <button mat-flat-button color="primary" (click)="sendMessage()">送出</button>
 </div>
