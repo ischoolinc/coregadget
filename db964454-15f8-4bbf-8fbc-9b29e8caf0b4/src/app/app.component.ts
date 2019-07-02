@@ -119,12 +119,13 @@ export class AppComponent implements OnInit {
         this.examList = rsp[6].examList;
         this.levelCodeList = rsp[6].degreeCode;
         // 設定目前評量
-        this.curExam = rsp[6].examList[0] || {} as ExamRecord;
-        this.setCurrentExam(this.curExam);
+        this.setCurrentExam(rsp[6].examList[0] || {} as ExamRecord);
+        // this.curExam = rsp[6].examList[0] || {} as ExamRecord;
         // 設定目前班級
         if (rsp[3].length) {
           await this.setCurrentClass(rsp[3][0]);
         }
+        
       }
     } catch (error) {
       console.log(error);
@@ -249,7 +250,7 @@ export class AppComponent implements OnInit {
       }
       const scoreMapByStudentID = await this.basicSrv.getStudentDailyLifeScore(this.curClass.ClassID, this.curSchoolYear, this.curSemester);
       [].concat(this.studentList || []).forEach((student: StudentRecord) => {
-        student.DailyLifeScore = scoreMapByStudentID.get(student.ID) || defaultStuData;
+        student.DailyLifeScore = scoreMapByStudentID.get(student.ID) || new Map(defaultStuData);
       });
     }
 

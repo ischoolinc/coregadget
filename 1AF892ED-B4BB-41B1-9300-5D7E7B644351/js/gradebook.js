@@ -877,11 +877,7 @@
                     }
                     else if ($scope.current.mode == $scope.modeList[1]) { // 平時評量模式
 
-                        // 平時評量模式 te 還是來自於 examList 
-                        //$scope.examList.forEach(function (e) {
-                        //    if (!te && !e.Lock && e.Permission == "Editor" && e.Type !== 'Program')
-                        //        te = e;
-
+                       
                         $scope.current.gradeItemList.forEach(function (e) {
                         if (!te && !e.Lock && e.Permission == "Editor" && e.Type !== 'Program')
                             te = e;
@@ -1239,7 +1235,8 @@
                         return;
                 }
             }
-
+            
+            
             $scope.current.Student = null;
             $scope.studentList = null;
             $scope.current.VisibleExam = [];
@@ -1254,9 +1251,15 @@
 
             //$scope.gradeItemList = [{ Name: "Q1" }, { Name: "Q2" }, { Name: "Q3" }];
 
+            // 假如有目前試別的話 先將平均分數歸零
+            if ($scope.current.Exam)
+            {
+                $scope.current.Exam.avgScore = '';
+            }
             
-
             [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
+                examRec.totalStudent = 0;
+                examRec.totalScore = 0;
                 examRec.Type = 'Number';
                 examRec.Permission = "Editor";
                 examRec.Lock = !(new Date(examRec.InputStartTime) < new Date() && new Date() < new Date(examRec.InputEndTime));
@@ -1281,7 +1284,7 @@
                 //$scope.examList.push(assignmentScore);
 
             });
-            var finalScore = { ExamID: '學期成績', Name: '學期成績', Type: 'Number', Permission: 'Editor', Lock: !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date() && new Date() < new Date(course.InputEndTime)) };
+            var finalScore = { ExamID: '學期成績', Name: '學期成績', Type: 'Number', Permission: 'Editor', Lock: !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date() && new Date() < new Date(course.InputEndTime)), totalScore: 0, totalStudent:0 };
             var finalScorePreview = {
                 ExamID: '學期成績_試算',
                 Name: '學期成績_試算',
@@ -1480,9 +1483,13 @@
 
                         });
 
+                        var SubExamList = [];
+
                         // 2019/6/26 穎驊 因應 高中評量成績辦法 2019/06/18 調整 (http://edu.law.moe.gov.tw/LawContent.aspx?id=GL001247)
-                        // 增加支援 高中評量成績 輸入文字評量， 目前先初步做 web 前端 處理儲存編輯
+                        // 增加支援 高中評量成績 輸入文字評量， 目前先初步做 web 前端 處理儲存編輯，仿原本 讀卡成績輸入的方式
                         // 後續 ischool DeskTop 端 的UI 編輯、 報表輸出 等等 還有待後人 補做
+
+                        // 先整理 SubExamList
                         $scope.examList.forEach(function (examRec, examIndex) {
                             if (examRec.Extension) {
                                 if (examRec.Extension.Extension.UseText == "是") {
@@ -1498,19 +1505,52 @@
                                     subExamRec.InputStartTime = examRec.InputStartTime;
                                     subExamRec.InputEndTime = examRec.InputEndTime;
 
-                                    //如果原來 沒有 子評量 幫新增，(子評量除了 文字評量之外， 只有 讀卡模組來的 CSCORE 、PSCORE 會建立)
-                                    if (!examRec.SubExamList)
-                                    {
-                                        examRec.SubExamList = [];
-                                    }
+                                    SubExamList.push(subExamRec)
 
-                                    examRec.SubExamList.push(subExamRec);
-
-                                    $scope.examList.splice(examIndex + examRec.SubExamList.length, 0, subExamRec);
-                                    $scope.current.VisibleExam.splice(examIndex + examRec.SubExamList.length, 0, subExamRec.Name);
                                 }
                             }
                         });
+
+                        SubExamList.forEach(function (subExamRec) {
+                            $scope.examList.forEach(function (examRec, examIndex) {
+                                if (subExamRec.Group.ExamID == examRec.ExamID  && examRec.Extension) {
+                                    if (examRec.Extension.Extension.UseText == "是") {
+                                        
+                                        //如果原來 沒有 子評量 幫新增，(子評量除了 文字評量之外， 只有 讀卡模組來的 CSCORE 、PSCORE 會建立)
+                                        if (!examRec.SubExamList) {
+                                            examRec.SubExamList = [];
+                                        }
+
+                                        // 假如原本沒有子評量 代表連讀卡成績都沒有直接加即可
+                                        if (examRec.SubExamList.length == 0) {
+
+                                            examRec.SubExamList.push(subExamRec);
+
+                                            $scope.examList.splice(examIndex + examRec.SubExamList.length, 0, subExamRec);
+                                            $scope.current.VisibleExam.splice(examIndex + examRec.SubExamList.length, 0, subExamRec.Name);
+                                        } else {
+                                            // 如果原本有子評量，可能來源是讀卡的 或是文字評量， 如果非文字評量 再加
+                                            if (examRec.SubExamList[0].ExamID != examRec.ExamID + "_" + "文字評量") {
+                                                examRec.SubExamList.push(subExamRec);
+
+                                                $scope.examList.splice(examIndex + examRec.SubExamList.length, 0, subExamRec);
+                                                $scope.current.VisibleExam.splice(examIndex + examRec.SubExamList.length, 0, subExamRec.Name);
+                                            }
+                                            else
+                                            {
+                                                // 如果已經是文字評量 則讓它顯示出來
+                              
+                                                $scope.examList.splice(examIndex + examRec.SubExamList.length, 0, subExamRec);
+                                                $scope.current.VisibleExam.splice(examIndex + examRec.SubExamList.length, 0, subExamRec.Name);
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        });
+
+
+
 
 
                         $scope.connection.send({
@@ -1602,6 +1642,17 @@
                                                                 });
                                                             }
                                                         });
+
+                                                        // 計算平均
+                                                        if ($scope.examList.filter(exam => exam.ExamID == examScoreRec.ExamID).length > 0)
+                                                        {
+                                                            var totalScore = Number(examScoreRec.Score);
+
+                                                            $scope.examList.filter(exam => exam.ExamID == examScoreRec.ExamID)[0].totalStudent += 1;
+
+                                                            $scope.examList.filter(exam => exam.ExamID == examScoreRec.ExamID)[0].totalScore += totalScore;
+                                                        }
+
                                                     });
                                                     getCourseExamScoreFinish = true;
                                                     // 定期、學期、平時資料都讀取完後：備份原始資料
@@ -1611,6 +1662,15 @@
                                                             for (var key in rawStudentRec) {
                                                                 if (!key.match(/Origin$/gi))
                                                                     studentRec[key + 'Origin'] = studentRec[key];
+                                                            }
+                                                        });
+                                                        // 所有 定期、學期、平時資料都讀取完後 計算平均
+                                                        $scope.examList.forEach(function (examRec, examIndex) {
+                                                            if (examRec.totalStudent > 0) {
+                                                                examRec.avgScore = rounding((examRec.totalScore / examRec.totalStudent), 2)
+                                                            }
+                                                            else {
+                                                                examRec.avgScore = '';
                                                             }
                                                         });
                                                         $scope.setupCurrent();
@@ -1644,6 +1704,17 @@
                                                 $scope.$apply(function () {
                                                     [].concat(response.Scores.Item || []).forEach(function (finalScoreRec, index) {
                                                         studentMapping[finalScoreRec.StudentID]["Exam" + finalScore.ExamID] = finalScoreRec.Score;
+
+                                                        // 計算平均
+                                                        if ($scope.examList.filter(exam => exam.ExamID == '學期成績').length > 0 && finalScoreRec.Score) {
+
+                                                            var totalScore = Number(finalScoreRec.Score);
+
+                                                            $scope.examList.filter(exam => exam.ExamID == '學期成績')[0].totalStudent += 1;
+
+                                                            $scope.examList.filter(exam => exam.ExamID == '學期成績')[0].totalScore += totalScore;
+                                                        }
+
                                                     });
 
                                                     getCourseSemesterScore = true;
@@ -1654,6 +1725,15 @@
                                                             for (var key in rawStudentRec) {
                                                                 if (!key.match(/Origin$/gi))
                                                                     studentRec[key + 'Origin'] = studentRec[key];
+                                                            }
+                                                        });
+                                                        // 所有 定期、學期、平時資料都讀取完後 計算平均
+                                                        $scope.examList.forEach(function (examRec, examIndex) {
+                                                            if (examRec.totalStudent > 0) {
+                                                                examRec.avgScore = rounding((examRec.totalScore / examRec.totalStudent), 2)
+                                                            }
+                                                            else {
+                                                                examRec.avgScore = '';
                                                             }
                                                         });
                                                         $scope.setupCurrent();
@@ -1720,13 +1800,23 @@
                                                                     studentRec[key + 'Origin'] = rawStudentRec[key];
                                                             }
                                                         });
+
+                                                        // 所有 定期、學期、平時資料都讀取完後 計算平均
+                                                        $scope.examList.forEach(function (examRec, examIndex) {
+                                                            if (examRec.totalStudent > 0) {
+                                                                examRec.avgScore = rounding((examRec.totalScore / examRec.totalStudent), 2)
+                                                            }
+                                                            else {
+                                                                examRec.avgScore = '';
+                                                            }
+                                                        });
+
                                                         $scope.setupCurrent();
                                                     }
                                                 });
                                             }
                                         }
                                     });
-
                                 }
                             }
                         });

@@ -320,6 +320,8 @@
                         $scope.batchList = [];
                         $scope.groupList = [];
 
+                        $scope.HasNoCourse = false;
+
                         [].concat(response.BatchList || []).forEach(function (batchRec, index) {
 
                             var repeatBatchRec = $scope.batchList.filter(_batchRec => _batchRec.BatchID == batchRec.BatchID);
@@ -337,6 +339,11 @@
                         [].concat(response.GroupList || []).forEach(function (groupRec, index) {
                             $scope.groupList.push(groupRec);
                         });
+
+                        if ($scope.batchList.length == 0) {
+                            // 本學期沒有任何補考梯次
+                            $scope.HasNoCourse = true;
+                        }
 
 
                         $scope.setCurrentBatch($scope.batchList[0]);
