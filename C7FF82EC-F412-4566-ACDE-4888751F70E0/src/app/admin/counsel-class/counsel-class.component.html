@@ -1,3 +1,53 @@
-<p>
-  counsel-class works!
-</p>
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-content">
+
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>輔導身分</li>
+          <li>教師姓名</li>
+          <li>輔導班級</li>
+          <li></li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr"
+            *ngFor="let item of counselTeacherClassList">
+          <li data-title="身分">{{item.Role}}</li>
+          <li data-title="姓名">{{ item.TeacherName }}</li>
+          <li class="text-left text-normal"
+              data-title="輔導班級">
+              <div class="container">
+                  <div class="row">
+                      <div *ngFor="let cls of item.ClassNames.split(',')" class="col-sm-3">
+                          {{cls}}
+                        </div>
+                  </div>
+              </div>
+
+
+            
+            
+          </li>
+          <li data-title="edit">
+            <button class="btn btn-light"
+                    data-toggle="modal"
+                    (click)="EditClassNames(item)">
+              設定班級
+            </button>
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<app-add-counsel-teacher-modal #addCounselTeacher></app-add-counsel-teacher-modal>

@@ -1,0 +1,98 @@
+<div class="modal fade"
+     id="addCounselTeacher"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addInterviewLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="addInterviewLabel">
+          設定輔導班級 - {{ _CounselTeacherClass.TeacherName }}
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <span>
+            <span class="custom-control custom-checkbox w-25">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="0"
+                     [checked]="isSelectAllItem"
+                     (click)="SetSelectAllItem()" />
+
+              <label class="custom-control-label"
+                     [for]="0">全選 年級
+              </label>
+            </span>
+          </span>
+          <div class="d-flex flex-wrap pl-3" >
+            <div class="custom-control custom-checkbox w-25"
+                 *ngFor="let item of SelectGradeYearList">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="item.GradeYear"
+                     [checked]="item.Checked"
+                     (click)="SetSelectGradeItem(item.GradeYear)" />
+              <label class="custom-control-label"
+                     [for]="item.GradeYear">{{item.GradeYear}}年級
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngFor="let item of SelectGradeYearList">
+          <div class="form-group"
+               >
+
+            <span class="custom-control custom-checkbox w-25">
+
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]=item.GradeYear
+                     [checked]="item.Checked"
+                     (click)="SetSelectGradeItem(item.GradeYear)" />
+              <label class="custom-control-label"
+                     [for]=item.GradeYear> 全選 {{item.GradeYear}}年級
+              </label>
+            </span>
+
+            <div class="d-flex flex-wrap pl-3">
+              <div class="custom-control custom-checkbox w-25"
+                   *ngFor="let ClassItem of item.ClassItems">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       [id]="ClassItem.ClassID"
+                       [checked]="ClassItem.Checked"
+                       (click)="ClassItem.SetClassCheck()" />
+                <label class="custom-control-label"
+                       [for]="ClassItem.ClassID"> {{ClassItem.ClassName}}
+                </label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+
+      </div>
+
+
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-dark"
+                data-dismiss="modal"
+                (click)="cancel()">
+          取消
+        </button>
+        <button type="button"
+                class="btn btn-info"
+                (click)="save()">
+          儲存
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
