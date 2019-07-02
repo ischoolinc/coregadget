@@ -1379,6 +1379,14 @@
                                         // 篩選此評量成績 對應的 試別  以對應出 輸入時間
                                         var template = $scope.templateList.filter(template => template.ExamID == item.ExamID)[0];
 
+                                        var lock = true;
+
+                                        // 使用者可能建立課程樣板後 都輸入過某一次評量的小考項目後，又在樣板本該評量取消，造成 template undefined
+                                        if (template)
+                                        {
+                                            lock = !(new Date() < new Date(template.InputEndTime));                                            
+                                        }
+
                                         var gradeItem = {
                                             RefExamID: item.ExamID, // 是哪一次試別Exam 的 子成績
                                             ExamID: 'Quiz_' + item.SubExamID, // 作為儲存識別使用
@@ -1389,7 +1397,7 @@
                                             Type: 'Number',
                                             Permission: 'Editor',
                                             //  小考輸入開放與否，在該次評量 結束前都可以
-                                            Lock : !(new Date() < new Date(template.InputEndTime))
+                                            Lock: lock
                                             //Lock: false
                                         };
 
