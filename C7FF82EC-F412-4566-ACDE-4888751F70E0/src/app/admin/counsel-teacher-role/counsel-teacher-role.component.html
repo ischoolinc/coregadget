@@ -1,4 +1,4 @@
-<div *ngIf="!isLoading; else tmpLoading">
+<div *ngIf="!isLoading && adminComponent.isRoleEnable; else tmpLoading">
   <div class="tab-content">
     <div class="d-flex">
       <button class="btn btn-info ml-auto"

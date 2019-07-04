@@ -91,15 +91,18 @@ export class AddCounselTeacherModalComponent implements OnInit {
   }
 
   filterCheckBox() {
-    let className: string[] = this._CounselTeacherClass.ClassNames.split(',');
+    if (this._CounselTeacherClass.ClassNames)
+    {
+      let className: string[] = this._CounselTeacherClass.ClassNames.split(',');
 
-        this.SelectGradeYearList.forEach(item => {
-          item.ClassItems.forEach(classItem => {
-         
-            classItem.Checked = className.includes(classItem.ClassName);
-            
-          });
+      this.SelectGradeYearList.forEach(item => {
+        item.ClassItems.forEach(classItem => {
+       
+          classItem.Checked = className.includes(classItem.ClassName);
+          
         });
+      });
+    }    
   }
 
   save() {

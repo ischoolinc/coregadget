@@ -1,4 +1,4 @@
-<div *ngIf="!isLoading; else tmpLoading">
+<div *ngIf="!isLoading && adminComponent.isClassEnable; else tmpLoading">
   <div class="tab-content">
 
     <ul class="rwd-table">

@@ -19,7 +19,7 @@ export class CounselClassComponent implements OnInit {
     private router: Router,
     private dsaService: DsaService,
     @Optional()
-    private adminComponent: AdminComponent) { }
+    public adminComponent: AdminComponent) { }
 
   ngOnInit() {
     this.adminComponent.currentItem = "counsel_class";

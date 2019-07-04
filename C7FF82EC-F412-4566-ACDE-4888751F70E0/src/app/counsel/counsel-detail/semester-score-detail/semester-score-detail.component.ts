@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
+import { CounselDetailComponent } from "../counsel-detail.component";
+import { DsaService } from "../../../dsa.service";
+import { CounselStudentService } from "../../../counsel-student.service";
 
 @Component({
   selector: 'app-semester-score-detail',
@@ -7,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SemesterScoreDetailComponent implements OnInit {
 
-  constructor() { }
+  constructor(private counselStudentService: CounselStudentService,
+    private dsaService: DsaService,
+    @Optional() private counselDetailComponent: CounselDetailComponent) { }
 
   ngOnInit() {
+    this.counselDetailComponent.setCurrentItem('semester_score');
   }
 
 }

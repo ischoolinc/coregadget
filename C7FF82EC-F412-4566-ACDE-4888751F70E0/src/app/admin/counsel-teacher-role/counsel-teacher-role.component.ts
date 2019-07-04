@@ -23,7 +23,7 @@ export class CounselTeacherRoleComponent implements OnInit {
     private dsaService: DsaService,
     private router: Router,
     @Optional()
-    private adminComponent: AdminComponent) { }
+    public adminComponent: AdminComponent) { }
 
 
   @ViewChild("addCounselTeacherRole") _addCounselTeacherRole: AddCounselTeacherRoleModalComponent;

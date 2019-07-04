@@ -9,7 +9,7 @@ import { TeacherCounselRole } from "../counsel-teacher-role-vo";
 })
 export class DelCounselTeacherRoleModalComponent implements OnInit {
 
-  teacherCounselRole: TeacherCounselRole;
+  teacherCounselRole: TeacherCounselRole = new TeacherCounselRole();
   constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
