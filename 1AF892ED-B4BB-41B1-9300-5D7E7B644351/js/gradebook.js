@@ -770,6 +770,13 @@
 
                     return 0;
                 });
+
+                // 更新stu index 作為一個學生成績輸入完畢後，找下一筆的依據
+                $scope.studentList.forEach(function (studentRec,index) {
+                    studentRec.index = index;
+                });
+
+
                 if (showAlert)
                 {
                     alert("學生以學號排序。");
@@ -800,10 +807,14 @@
                             return 1;
                         }
                         return 0;
-                    }
-
-                    
+                    }                    
                 });
+
+                // 更新stu index 作為一個學生成績輸入完畢後，找下一筆的依據
+                $scope.studentList.forEach(function (studentRec, index) {
+                    studentRec.index = index;
+                });
+
                 if (showAlert) {
                     alert("學生以班座排序。");
                 }                
