@@ -752,6 +752,67 @@
             });
         }
 
+        // 排序學生，2019/07/04 穎驊應佳樺需求， 介面要有兩種模式排序(班座、學號) 、是否要跳提醒
+        $scope.sortStuList = function (mode, showAlert) {
+
+            // sort by 學號
+            if (mode == '學號排序')
+            {
+                $scope.studentList.sort(function (a, b) {
+                    var stuNumberA = a.StudentNumber.toUpperCase(); // ignore upper and lowercase
+                    var stuNumberB = b.StudentNumber.toUpperCase(); // ignore upper and lowercase
+                    if (stuNumberA < stuNumberB) {
+                        return -1;
+                    }
+                    if (stuNumberA > stuNumberB) {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+                if (showAlert)
+                {
+                    alert("學生以學號排序。");
+                }                
+            } 
+
+            if (mode == '班座排序') {
+                $scope.studentList.sort(function (a, b) {
+
+                    //假如學生沒有座號的話，先塞給它們座號99999 讓他們至底
+
+                    var stuSeatNoA = a.SeatNo !=''? Number(a.SeatNo): 99999;
+                    var stuSeatNoB = b.SeatNo != '' ? Number(b.SeatNo) : 99999;
+                    if (stuSeatNoA < stuSeatNoB) {
+                        return -1;
+                    }
+                    else if (stuSeatNoA > stuSeatNoB) {
+                        return 1;
+                    }
+                    else // 座號相同、或是都沒座號時，用姓名排序
+                    {
+                        var stuNameA = a.StudentName;
+                        var stuNameB = b.StudentName;
+                        if (stuNameA < stuNameB) {
+                            return -1;
+                        }
+                        if(stuNameA > stuNameB) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+
+                    
+                });
+                if (showAlert) {
+                    alert("學生以班座排序。");
+                }                
+            } 
+            
+
+            
+
+        }
 
         /**儲存平時評量 */
         $scope.saveGradeItemScore = function () {
@@ -1605,6 +1666,10 @@
                                             studentMapping[studentRec.StudentID] = studentRec;
                                         });
                                     });
+
+                                    // 把抓下來的學生資料排序，預設班座，(雖然service 的資料排序已經很接近班座，但是在沒有座號的排序 並沒有完全依照姓名排，所以再排一次)
+                                    $scope.sortStuList('班座排序', false);
+
                                     var getCourseExamScoreFinish = false;
                                     var getCourseSemesterScore = false;
                                     var getCourseAssignmentScore = false;

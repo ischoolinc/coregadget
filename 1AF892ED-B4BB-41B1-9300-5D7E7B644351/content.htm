@@ -440,7 +440,14 @@
                     <thead>
                         <tr>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 95px;"
+                                style="padding: 8px 2px;width: 95px;cursor:pointer;"
+                                ng-click="sortStuList('學號排序',true)"
+                                rowspan="2">
+                                學號
+                            </th>
+                            <th class="text-center"
+                                style="padding: 8px 2px;width: 95px; cursor:pointer;"
+                                ng-click="sortStuList('班座排序',true)"
                                 rowspan="2">
                                 學生
                             </th>
@@ -470,6 +477,10 @@
                         <tr ng-repeat="stuRec in studentList"
                             ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
                             style="cursor:pointer;">
+                            <td class="text-left"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.StudentNumber}}</span>
+                            </td>
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 <span ng-if="stuRec.SeatNo"
