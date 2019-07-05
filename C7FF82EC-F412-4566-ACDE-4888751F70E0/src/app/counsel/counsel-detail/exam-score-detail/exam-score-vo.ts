@@ -3,32 +3,81 @@
 export class DomainScoreInfo {
     constructor() { }
     DomainName: string;
-    DomainScore: number;
+
     SumScore: number;
     Credit: number;
     Order: number;
 
+    // 試別加權平均    
+    AvgExamScoreList: ScoreInfo[] = [];
+    ExamUpDownList: ExamUpDown[] = [];
     CourseScoreList: CourseScoreInfo[] = [];
     // 計算領域成績
     CalcDomainScore() {
+        let tmpKey: string[] = [];
+        // 各試別加權平均
         if (this.CourseScoreList.length > 0) {
-            this.CourseScoreList.forEach( courseItem => {
-                this.Credit += courseItem.CourseCredit;
-                this.SumScore += (courseItem.CourseCredit * courseItem.CourseScore);
+            this.CourseScoreList.forEach(courseItem => {
+                courseItem.ExamScoreList.forEach(examItem => {
+                    let key = examItem.ExamName;
+                    if (!tmpKey.includes(key)) {
+                        let si: ScoreInfo = new ScoreInfo();
+                        si.Name = key;
+                        this.AvgExamScoreList.push(si);
+                        tmpKey.push(key);
+                    }
+                    this.AvgExamScoreList.forEach(item => {
+                        if (item.Name === key) {
+                            item.SumCredit += courseItem.CourseCredit;
+                            item.SumScore += (courseItem.CourseCredit * examItem.ExamScore);
+                        }
+                    })
+                });
             });
+        }
+        // 計算加權平均
+        this.AvgExamScoreList.forEach(item => {
+            item.Calc();
+        });
+    }
 
-            if (this.Credit > 0) {
-                this.DomainScore = round(this.SumScore / this.Credit,2);
+    GetAvgExamScore(examName: string) {
+        let value = -1;
+        this.AvgExamScoreList.forEach(item => {
+            if (item.Name === examName) {
+                value = item.AvgSocre;
+            }
+        });
+
+        return value;
+    }
+
+    CalcUpDown() {
+        if (this.AvgExamScoreList.length > 1) {
+            for (let i = 1; i < this.AvgExamScoreList.length; i++) {
+                let xx: ExamUpDown = new ExamUpDown();
+                xx.Name = this.AvgExamScoreList[i].Name;
+                xx.isUp = (this.AvgExamScoreList[i].AvgSocre > this.AvgExamScoreList[i - 1].AvgSocre);
+                xx.isDown = (this.AvgExamScoreList[i].AvgSocre < this.AvgExamScoreList[i - 1].AvgSocre)
+                this.ExamUpDownList.push(xx);
             }
         }
     }
 
-    
+    GetUpDown(examName: string) {
+        let value = new ExamUpDown();
+        this.ExamUpDownList.forEach(item => {
+            if (item.Name === examName) {
+                value = item;
+            }
+        });
+        return value;
+    }
 }
 
 var round = function (val, precision) {
     return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
-  }
+}
 
 // 課程成績
 export class CourseScoreInfo {
@@ -40,6 +89,29 @@ export class CourseScoreInfo {
     CourseScore: number;
     Order: number;
     ExamScoreList: ExamScoreInfo[] = [];
+    ExamUpDownList: ExamUpDown[] = [];
+
+    CalcUpDown() {
+        if (this.ExamScoreList.length > 1) {
+            for (let i = 1; i < this.ExamScoreList.length; i++) {
+                let xx: ExamUpDown = new ExamUpDown();
+                xx.Name = this.ExamScoreList[i].ExamName;
+                xx.isUp = (this.ExamScoreList[i].ExamScore > this.ExamScoreList[i - 1].ExamScore);
+                xx.isDown = (this.ExamScoreList[i].ExamScore < this.ExamScoreList[i - 1].ExamScore)
+                this.ExamUpDownList.push(xx);
+            }
+        }
+    }
+
+    GetUpDown(examName: string) {
+        let value = new ExamUpDown();
+        this.ExamUpDownList.forEach(item => {
+            if (item.Name === examName) {
+                value = item;
+            }
+        });
+        return value;
+    }
 }
 
 // 評量成績
@@ -56,17 +128,6 @@ export class ExamScoreInfo {
     HasScore: boolean = false;
 }
 
-export class ExamAvgScoreInfo {
-    constructor() { }
-    ExamName: string;
-    // 加權平均
-    ExamAvgScore: number;
-    // 計算加權平均
-    Calc() {
-
-    }
-}
-
 export class SemesterInfo {
     SchoolYear: number;
     Semester: number;
@@ -78,6 +139,96 @@ export class StudentExamScore {
     CourseNameList: string[] = [];
     DomainScoreList: DomainScoreInfo[] = [];
     CourseScoreList: CourseScoreInfo[] = [];
-    ExamAvgScoreList: ExamAvgScoreInfo[] = [];
+    ExamAvgScoreList: ScoreInfo[] = [];
     ExamNameList: string[] = [];
+    AvgItemCountNameList: string[] = [];
+    AvgItemCountList: ItemCounts[] = [];
+    CalcExamAvgScore() {
+        let tmpKey: string[] = [];
+        // 各試別加權平均
+        if (this.CourseScoreList.length > 0) {
+            this.CourseScoreList.forEach(courseItem => {
+                courseItem.ExamScoreList.forEach(examItem => {
+                    let key = examItem.ExamName;
+                    if (!tmpKey.includes(key)) {
+                        let si: ScoreInfo = new ScoreInfo();
+                        si.Name = key;
+                        this.ExamAvgScoreList.push(si);
+                        tmpKey.push(key);
+                    }
+                    this.ExamAvgScoreList.forEach(item => {
+                        if (item.Name === key) {
+                            item.SumCredit += courseItem.CourseCredit;
+                            item.SumScore += (courseItem.CourseCredit * examItem.ExamScore);
+                        }
+                    })
+                });
+            });
+        }
+
+        // 計算加權平均
+        this.ExamAvgScoreList.forEach(item => {
+            item.Calc();
+        });
+    }
+
+    GetExamAvgScore(examName: string) {
+        let value = -1;
+        this.ExamAvgScoreList.forEach(item => {
+            if (item.Name === examName) {
+                value = item.AvgSocre;
+            }
+        });
+
+        return value;
+    }
+
+
+    GetItemCount(domin: string, subject: string, exam: string, level: string) {
+        let value: ItemCount = new ItemCount();
+        let key = domin + "_" + subject + "_" + exam;
+
+        this.AvgItemCountList.forEach(item => {
+            if (item.Name === key) {
+                item.itemList.forEach(it => {
+                    if (it.Name === level) {
+                        value = it;
+                    }
+                });
+            }
+        });
+        return value;
+    }
+}
+
+export class ScoreInfo {
+    Name: string;
+    SumScore: number = 0;
+    AvgSocre: number = 0;
+    SumCredit: number = 0;
+
+    Calc() {
+        if (this.SumCredit > 0) {
+            this.AvgSocre = round(this.SumScore / this.SumCredit, 2);
+        }
+
+    }
+}
+
+export class ExamUpDown {
+    Name: string;
+    isUp: boolean = false;
+    isDown: boolean = false;
+}
+
+export class ItemCount {
+    Name: string;
+    Count: number = 0;
+    // 我在這
+    isMe: boolean = false;
+}
+
+export class ItemCounts {
+    Name: string;
+    itemList: ItemCount[] = [];    
 }
