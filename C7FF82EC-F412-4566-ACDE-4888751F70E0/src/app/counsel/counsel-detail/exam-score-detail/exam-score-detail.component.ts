@@ -118,11 +118,7 @@ export class ExamScoreDetailComponent implements OnInit {
         this.studentExamScore.AvgItemCountList.push(items);
         tmpKey.push(key);
       }
-
-      if (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID) {
-        debugger;
-      }
-
+      
       let score = parseFloat(examScore.ExamScore);
 
       this.studentExamScore.AvgItemCountList.forEach(item => {
