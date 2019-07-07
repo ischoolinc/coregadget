@@ -1,83 +1,164 @@
 <!-- 學生個人 - 學期成績 -->
-<div class="tab-pane fade-in"
-     id="listFive">
-    <div class="d-md-flex align-items-center sub-title mb-3">
-        <h4 class="mb-0 mr-auto">學期成績</h4>
-    </div>
-    <div class="dropdown mb-3">
-        <button class="btn btn-light dropdown-toggle"
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">{{selectSchoolYearSemester.SchoolYear}}學年度 第{{selectSchoolYearSemester.Semester}}學期</button>
-        <div class="dropdown-menu">
-            <ng-container *ngFor="let semsInfo of semesterList">
-                <a class="dropdown-item"
-                   (click)="SetSelectSemester(semsInfo)">{{semsInfo.SchoolYear}}學年度 第{{semsInfo.Semester}}學期</a>
-            </ng-container>
+<!-- 新竹國中學期成績 -->
+<ng-container *ngIf="selectSchoolType === 'JHHC' ">
+    <div class="tab-pane fade-in"
+    id="listFive">
+   <div class="d-md-flex align-items-center sub-title mb-3">
+       <h4 class="mb-0 mr-auto">學期成績</h4>
+   </div>
+   <div class="dropdown mb-3">
+       <button class="btn btn-light dropdown-toggle"
+               type="button"
+               data-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false">{{selectSchoolYearSemester.SchoolYear}}學年度 第{{selectSchoolYearSemester.Semester}}學期</button>
+       <div class="dropdown-menu">
+           <ng-container *ngFor="let semsInfo of semesterList">
+               <a class="dropdown-item"
+                  (click)="SetSelectSemester(semsInfo)">{{semsInfo.SchoolYear}}學年度 第{{semsInfo.Semester}}學期</a>
+           </ng-container>
 
-        </div>
+       </div>
+   </div>
+   <!-- 新竹國中學期成績 -->
+   <div class="d-flex mb-3">
+       <div class="py-3 flex-fill bg-cyan text-center mr-2">
+           <p class="h3">{{studentSemesterScore.LearnDomainScore}}</p>
+           <small>學期領域成績（七大學習領域）</small>
+       </div>
+       <div class="py-3 flex-fill bg-cyan text-center">
+           <p class="h3">{{studentSemesterScore.LearnDomainScore}}</p>
+           <small>課程學習成績（含彈性課程）</small>
+       </div>
+   </div>
+   <div class="table-responsive table-hover score mb-3">
+       <table class="table">
+           <thead>
+               <tr class="table-active">
+                   <th scope="col">領域</th>
+                   <th scope="col">科目</th>
+                   <th scope="col">節/權數</th>
+                   <th scope="col">成績</th>
+                   <th scope="col">等第</th>
+                   <th scope="col">文字描述</th>
+                   <th scope="col">及格</th>
+               </tr>
+           </thead>
+           <tbody>
+               <ng-container *ngFor="let domainItem of studentSemesterScore.DomainScoreList">
+                   <tr class="table-gray">
+                       <th scope="row"
+                           colspan="2"
+                           class="text-left">
+                           <i class="material-icons md-24 md-dark">class</i>
+                           {{domainItem.Domain||''}}
+                       </th>
+                       <td>{{domainItem.Credit||''}}</td>
+                       <td>{{domainItem.Score||''}}</td>
+                       <td>{{domainItem.GetDegree()||''}}</td>
+                       <td>{{domainItem.Text||''}}</td>
+                       <td *ngIf="domainItem.Domain ==='彈性課程'"></td>
+                       <td *ngIf="domainItem.Domain !=='彈性課程' && domainItem.Score >= passScore"><i class="material-icons md-24 md-dark">check</i></td>
+                       <td *ngIf="domainItem.Domain !=='彈性課程' && domainItem.Score < passScore"><i class="material-icons md-24 text-danger">close</i></td>
+                   </tr>
+                   <ng-container *ngFor="let subjectItem of domainItem.SubjectScoreList">
+                       <tr>
+                           <th scope="row"></th>
+                           <th scope="row">{{subjectItem.SubjectName ||''}}</th>
+                           <td>{{subjectItem.Credit||''}}</td>
+                           <td>{{subjectItem.Score||''}}</td>
+                           <td>{{subjectItem.GetDegree()||''}}</td>
+                           <td>{{subjectItem.Text||''}}</td>
+                           <td *ngIf="subjectItem.Score >= passScore"><i class="material-icons md-24 md-dark">check</i></td>
+                           <td *ngIf="subjectItem.Score < passScore"><i class="material-icons md-24 text-danger">close</i></td>
+                       </tr>
+                   </ng-container>
+
+
+               </ng-container>
+           </tbody>
+       </table>
+   </div>
+
+</div>
+
+</ng-container>
+
+<!-- 高雄國中學期成績 -->
+<ng-container *ngIf="selectSchoolType === 'JHKH'">
+    <div class="tab-pane fade-in"
+    id="listFive">
+   <div class="d-md-flex align-items-center sub-title mb-3">
+       <h4 class="mb-0 mr-auto">學期成績</h4>
+   </div>
+   <div class="dropdown mb-3">
+       <button class="btn btn-light dropdown-toggle"
+               type="button"
+               data-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false">{{selectSchoolYearSemester.SchoolYear}}學年度 第{{selectSchoolYearSemester.Semester}}學期</button>
+       <div class="dropdown-menu">
+           <ng-container *ngFor="let semsInfo of semesterList">
+               <a class="dropdown-item"
+                  (click)="SetSelectSemester(semsInfo)">{{semsInfo.SchoolYear}}學年度 第{{semsInfo.Semester}}學期</a>
+           </ng-container>
+
+       </div>
+   </div>
+   <!-- 高雄國中學期成績 -->
+   <div class="d-flex mb-3">
+    <div class="py-3 flex-fill bg-cyan text-center">
+        <p class="h3">{{studentSemesterScore.LearnDomainScore}}</p>
+        <small>學期領域成績（七大學習領域）</small>
     </div>
-    <!-- 新竹國中學期成績 -->
-    <div class="d-flex mb-3">
-        <div class="py-3 flex-fill bg-cyan text-center mr-2">
-            <p class="h3">{{studentSemesterScore.LearnDomainScore}}</p>
-            <small>學期領域成績（七大學習領域）</small>
-        </div>
-        <div class="py-3 flex-fill bg-cyan text-center">
-            <p class="h3">{{studentSemesterScore.LearnDomainScore}}</p>
-            <small>課程學習成績（含彈性課程）</small>
-        </div>
-    </div>
-    <div class="table-responsive table-hover score mb-3">
-        <table class="table">
-            <thead>
-                <tr class="table-active">
-                    <th scope="col">領域</th>
-                    <th scope="col">科目</th>
-                    <th scope="col">節/權數</th>
-                    <th scope="col">成績</th>
-                    <th scope="col">等第</th>
-                    <th scope="col">文字描述</th>
-                    <th scope="col">及格</th>
+</div>
+<div class="table-responsive table-hover score mb-3">
+    <table class="table">
+        <thead>
+            <tr class="table-active">
+                <th scope="col">領域</th>
+                <th scope="col">科目</th>
+                <th scope="col">節/權數</th>
+                <th scope="col">成績</th>
+                <th scope="col">努力程度</th>
+                <th scope="col">文字描述</th>
+                <th scope="col">及格</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let domainItem of studentSemesterScore.DomainScoreList">
+                <tr class="table-gray">
+                    <th scope="row"
+                        colspan="2"
+                        class="text-left">
+                        <i class="material-icons md-24 md-dark">class</i>
+                        {{domainItem.Domain||''}}
+                    </th>
+                    <td>{{domainItem.Credit||''}}</td>
+                    <td>{{domainItem.Score||''}}</td>
+                    <td>{{domainItem.Effort||''}}</td>
+                    <td>{{domainItem.Text||''}}</td>
+                    <td *ngIf="domainItem.Domain ==='彈性課程'"></td>
+                    <td *ngIf="domainItem.Domain !=='彈性課程' && domainItem.Score >= passScore"><i class="material-icons md-24 md-dark">check</i></td>
+                    <td *ngIf="domainItem.Domain !=='彈性課程' && domainItem.Score < passScore"><i class="material-icons md-24 text-danger">close</i></td>
                 </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let domainItem of studentSemesterScore.DomainScoreList">
-                    <tr class="table-gray">
-                        <th scope="row"
-                            colspan="2"
-                            class="text-left">
-                            <i class="material-icons md-24 md-dark">class</i>
-                            {{domainItem.Domain}}
-                        </th>
-                        <td>{{domainItem.Credit}}</td>
-                        <td>{{domainItem.Score}}</td>
-                        <td>{{domainItem.GetDegree()}}</td>
-                        <td>{{domainItem.Text}}</td>
-                        <td *ngIf="domainItem.Score >= passScore"><i class="material-icons md-24 md-dark">check</i></td>
-                        <td *ngIf="domainItem.Score < passScore"><i class="material-icons md-24 text-danger">close</i></td>
+                <ng-container *ngFor="let subjectItem of domainItem.SubjectScoreList">
+                    <tr>
+                        <th scope="row"></th>
+                        <th scope="row">{{subjectItem.SubjectName ||''}}</th>
+                        <td>{{subjectItem.Credit||''}}</td>
+                        <td>{{subjectItem.Score||''}}</td>
+                        <td>{{subjectItem.Effort||''}}</td>
+                        <td>{{subjectItem.Text||''}}</td>
+                        <td *ngIf="subjectItem.Score >= passScore"><i class="material-icons md-24 md-dark">check</i></td>
+                        <td *ngIf="subjectItem.Score < passScore"><i class="material-icons md-24 text-danger">close</i></td>
                     </tr>
-                    <ng-container *ngFor="let subjectItem of domainItem.SubjectScoreList">
-                        <tr>
-                            <th scope="row"></th>
-                            <th scope="row">{{subjectItem.SubjectName}}</th>
-                            <td>{{subjectItem.Credit}}</td>
-                            <td>{{subjectItem.Score}}</td>
-                            <td>{{subjectItem.GetDegree()}}</td>
-                            <td>{{subjectItem.Text}}</td>
-                            <td *ngIf="subjectItem.Score >= passScore"><i class="material-icons md-24 md-dark">check</i></td>
-                            <td *ngIf="subjectItem.Score < passScore"><i class="material-icons md-24 text-danger">close</i></td>
-                        </tr>
-                    </ng-container>
-
-
                 </ng-container>
 
 
-            </tbody>
-        </table>
-    </div>
-
-
+            </ng-container>
+        </tbody>
+    </table>
 </div>
+    </div>
+</ng-container>

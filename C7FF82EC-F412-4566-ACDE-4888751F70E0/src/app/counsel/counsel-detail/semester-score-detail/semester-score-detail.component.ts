@@ -18,7 +18,7 @@ export class SemesterScoreDetailComponent implements OnInit {
   // 及格標準
   passScore: number = 60;
 
-  // 學校型態
+  // 學校型態 JHHC,JHKH
   selectSchoolType: string = "JHHC";
 
   semesterList: SemesterInfo[] = [];
@@ -41,7 +41,7 @@ export class SemesterScoreDetailComponent implements OnInit {
 
   loadData() {
 
-    if (this.selectSchoolType === 'JHHC') {
+    if (this.selectSchoolType === 'JHHC' || this.selectSchoolType ==='JHKH') {
       // 新竹版國中小評量成績
       this.serviceGetSemesterScore = "GetSemesterScoreJHHC";
       this.GetSemesterScore();
@@ -154,9 +154,9 @@ export class SemesterScoreDetailComponent implements OnInit {
       }
     });
 
-    this.studentSemesterScore.DomainScoreList.forEach(item => {
-      if (!item.Score)
-        item.Calc();
-    });
+    // this.studentSemesterScore.DomainScoreList.forEach(item => {
+    //   if (!item.Score)
+    //     item.Calc();
+    // });
   }
 }
