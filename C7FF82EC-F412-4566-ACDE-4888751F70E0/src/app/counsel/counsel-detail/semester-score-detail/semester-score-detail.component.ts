@@ -2,7 +2,7 @@ import { Component, OnInit, Optional } from '@angular/core';
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { DsaService } from "../../../dsa.service";
 import { CounselStudentService } from "../../../counsel-student.service";
-import { SemesterInfo, DomainScoreInfo, SubjectScoreInfo, StudentSemesterScoreInfo } from "./semester-score-vo";
+import { SemesterInfo, DomainScoreInfo, SubjectScoreInfo, StudentSemesterScoreInfo, SubjectScoreInfoSH } from "./semester-score-vo";
 import { identifierModuleUrl } from '@angular/compiler';
 
 @Component({
@@ -18,8 +18,8 @@ export class SemesterScoreDetailComponent implements OnInit {
   // 及格標準
   passScore: number = 60;
 
-  // 學校型態 JHHC,JHKH
-  selectSchoolType: string = "JHHC";
+  // 學校型態 JHHC(新竹國中小),JHKH(高雄國中小),SH(高中)
+  selectSchoolType: string = "SH";
 
   semesterList: SemesterInfo[] = [];
 
@@ -41,15 +41,220 @@ export class SemesterScoreDetailComponent implements OnInit {
 
   loadData() {
 
-    if (this.selectSchoolType === 'JHHC' || this.selectSchoolType ==='JHKH') {
+    if (this.selectSchoolType === 'JHHC' || this.selectSchoolType === 'JHKH') {
       // 新竹版國中小評量成績
       this.serviceGetSemesterScore = "GetSemesterScoreJHHC";
       this.GetSemesterScore();
     }
 
+    // 高中
+    if (this.selectSchoolType === 'SH') {
+      this.serviceGetSemesterScore = 'GetSemesterScoreSH';
+      this.GetSemesterScoreSH();
+    }
+
     // 取得預設學年度學期
     this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
     this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
+
+  }
+
+
+  // 取得高中學期成績
+  async GetSemesterScoreSH() {
+    this.semesterList = [];
+    let tmpSems: string[] = [];
+
+    let resp = await this.dsaService.send(this.serviceGetSemesterScore, {
+      Request: {
+        StudentID: this.counselDetailComponent.currentStudent.StudentID
+      }
+    });
+
+    this.semesterScoreSource = [].concat(resp.SemesterScore || []);
+    this.semesterScoreSource.forEach(semsScore => {
+      if (semsScore.SubjectScore) {
+        semsScore.SubjectScore.forEach(subjScore => {
+          let ss = subjScore.school_year + subjScore.semester;
+          if (!tmpSems.includes(ss)) {
+            let semsInfo: SemesterInfo = new SemesterInfo();
+            semsInfo.SchoolYear = parseInt(subjScore.school_year);
+            semsInfo.Semester = parseInt(subjScore.semester);
+            this.semesterList.push(semsInfo);
+            tmpSems.push(ss);
+          }
+        });
+      }
+    });
+
+    if (this.semesterList.length > 0)
+    {
+      let hasValue = false;
+      this.semesterList.forEach( ss => {
+        if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
+          hasValue = true;
+      });
+      
+      if (!hasValue)
+        this.selectSchoolYearSemester = this.semesterList[0];
+    }
+
+    this.parseScoreSH();
+  }
+
+  // 處理高中學期成績
+  parseScoreSH() {
+
+    this.studentSemesterScore = new StudentSemesterScoreInfo();
+
+    this.semesterScoreSource.forEach(semsScore => {
+      if (semsScore.EntryScore) {
+        semsScore.EntryScore.forEach(entryScore => {
+          // 學期分項成績
+          if (this.selectSchoolYearSemester.SchoolYear == entryScore.school_year && this.selectSchoolYearSemester.Semester == entryScore.semester) {
+            if (entryScore.學業成績)
+              this.studentSemesterScore.EntryLearnScore = parseFloat(entryScore.學業成績);
+            if (entryScore.實習成績)
+              this.studentSemesterScore.EntryPracticeScore = parseFloat(entryScore.實習成績);
+          }
+        });
+      }
+    });
+
+    this.semesterScoreSource.forEach(semsScore => {
+      if (semsScore.SubjectScore) {
+        semsScore.SubjectScore.forEach(subjectScore => {
+          // 學期科目成績
+          if (this.selectSchoolYearSemester.SchoolYear == subjectScore.school_year && this.selectSchoolYearSemester.Semester == subjectScore.semester) {
+            let subjScore: SubjectScoreInfoSH = new SubjectScoreInfoSH();
+            if (subjectScore.分項類別)
+              subjScore.Entry = subjectScore.分項類別;
+
+            if (subjectScore.科目)
+              subjScore.Subject = subjectScore.科目;
+
+            if (subjectScore.科目級別)
+              subjScore.Level = subjectScore.科目級別;
+
+            if (subjectScore.學分數)
+              subjScore.Credit = parseFloat(subjectScore.學分數);
+
+            subjScore.isPass = false;
+            if (subjectScore.取得學分) {
+              if (subjectScore.取得學分 === '是')
+                subjScore.isPass = true;
+            }
+
+            subjScore.isRequired = false;
+            if (subjectScore.必選修) {
+              if (subjectScore.必選修 === '必修')
+                subjScore.isRequired = true;
+            }
+
+            if (subjectScore.校部訂) {
+              if (subjectScore.校部訂 === '校訂') {
+                subjScore.SubjectType = '校訂';
+              }
+
+              if (subjectScore.校部訂 === '部訂' || subjectScore.校部訂 === '部定') {
+                subjScore.SubjectType = '部定';
+              }
+            }         
+
+            // 即時判斷取得成績
+            let score: number;
+
+            subjScore.isReScore = false;
+            // 判斷有手動調整成績，成績以手動為主要，不然就是取所有最大
+            if (subjectScore.手動調整成績) {
+              score = parseFloat(subjectScore.手動調整成績);
+            } else {
+              if (subjectScore.原始成績)
+                score = parseFloat(subjectScore.原始成績);
+
+              if (subjectScore.重修成績) {
+                let s1 = parseFloat(subjectScore.重修成績);
+                if (s1 > score)
+                  score = s1;
+              }
+
+              if (subjectScore.學年調整成績) {
+                let s2 = parseFloat(subjectScore.學年調整成績);
+                if (s2 > score)
+                  score = s2;
+              }
+
+              if (subjectScore.補考成績) {
+                let s3 = parseFloat(subjectScore.補考成績);
+                if (s3 > score) {
+                  score = s3;
+                  subjScore.isReScore = true;
+                }
+              }
+              // 最高分數
+              subjScore.Score = score;
+            }
+
+            subjScore.isNotCalc = false;
+            if (subjectScore.不需評分) {
+              if (subjectScore.不需評分 === '是')
+                subjScore.isNotCalc = true;
+            }
+
+            this.studentSemesterScore.SubjectScoreScoreListSH.push(subjScore);
+          }
+        });
+      }
+    });
+
+    this.studentSemesterScore.CalcCredits();
+    this.SetSubjectScoreDisplaySH('必修');
+  }
+
+  // 設定學期科目選項顯示
+  SetSubjectScoreDisplaySH(group: string) {
+    // 初始化
+    this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+      item.isDisplay = false;
+    });
+
+    if (group === '必修') {
+      this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+        if (item.isRequired)
+          item.isDisplay = true;
+      });
+
+    }
+    if (group === '選修') {
+      this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+        if (!item.isRequired)
+          item.isDisplay = true;
+      });
+    }
+    if (group === '部定必修') {
+      this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+        if (item.isRequired && item.SubjectType === '部定')
+          item.isDisplay = true;
+      });
+    }
+    if (group === '校訂必修') {
+      this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+        if (item.isRequired && item.SubjectType === '校訂')
+          item.isDisplay = true;
+      });
+    }
+    if (group === '校訂選修') {
+      this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+        if (item.isRequired === false && item.SubjectType === '校訂')
+          item.isDisplay = true;
+      });
+    }
+    if (group === '實習') {
+      this.studentSemesterScore.SubjectScoreScoreListSH.forEach(item => {
+        if (item.Entry === '實習科目')
+          item.isDisplay = true;
+      });
+    }
 
   }
 
@@ -79,12 +284,32 @@ export class SemesterScoreDetailComponent implements OnInit {
         });
       }
     });
+
+    if (this.semesterList.length > 0)
+    {
+      let hasValue = false;
+      this.semesterList.forEach( ss => {
+        if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
+          hasValue = true;
+      });
+      
+      if (!hasValue)
+        this.selectSchoolYearSemester = this.semesterList[0];
+    }
+
     this.parseScore();
   }
 
   SetSelectSemester(item: SemesterInfo) {
     this.selectSchoolYearSemester = item;
-    this.parseScore();
+    if (this.selectSchoolType === 'SH') {
+      // 高中
+      this.parseScoreSH();
+
+    } else {
+      // 國中
+      this.parseScore();
+    }
   }
 
   parseScore() {
