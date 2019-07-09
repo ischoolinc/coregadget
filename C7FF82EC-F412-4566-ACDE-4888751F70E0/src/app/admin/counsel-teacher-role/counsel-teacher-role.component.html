@@ -1,3 +1,48 @@
-<p>
-  counsel-teacher-role works!
-</p>
+<div *ngIf="!isLoading && adminComponent.isRoleEnable; else tmpLoading">
+  <div class="tab-content">
+    <div class="d-flex">
+      <button class="btn btn-info ml-auto"
+              data-toggle="modal"
+              data-backdrop="static"
+              (click)="Add()">
+        <i class="material-icons">add</i> 新增
+      </button>
+    </div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>教師輔導身分</li>
+          <li>教師姓名</li>
+          <li></li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr"
+            *ngFor="let item of teachersCounselRole">
+          <li data-title="身分">{{ item.Role }}</li>
+          <li data-title="姓名">{{ item.TeacherName }}</li>
+          <li data-title="刪除">
+            <button class="btn btn-danger ml-auto"
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    (click)="delete(item)">
+              刪除
+            </button>
+          </li>
+
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<app-add-counsel-teacher-role-modal #addCounselTeacherRole></app-add-counsel-teacher-role-modal>
+<app-del-counsel-teacher-role-modal #delCounselTeacherRole></app-del-counsel-teacher-role-modal>

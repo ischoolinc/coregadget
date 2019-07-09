@@ -1,0 +1,84 @@
+html {
+  font-size: 14px;
+}
+
+body {
+  margin: 20px auto;
+  background: url(/assets/css/images/page-bg.gif);
+  font-family: "微軟正黑體","Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.my-page {
+  max-width: 1280px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid #eee;
+  /* min-height: 60vh; */
+}
+
+.my-page h1:first-child {
+  font-size: 20px;
+  position: relative;
+  left: -10px;
+  border-left: 10px solid #B0CCC6;
+  border-bottom: 1px solid whiteSmoke;
+  padding: 10px 0 10px 20px;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+/*
+table.table-hover td:not(.cdk-table-sticky):hover {
+  cursor: pointer;
+}
+
+table.table-striped tbody tr:nth-of-type(odd) td {
+  background-color: #f2f2f2;
+}
+table.table-striped tbody tr:nth-of-type(even) td {
+  background-color: #ffffff;
+}
+
+table.table-hover tbody tr:hover td {
+  background-color: #ececec;
+}
+
+table.table-striped tbody tr td.table-warning {
+  background-color: #ffeeba;
+}
+
+table.table .cdk-header-cell {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+td.cdk-cell.cdk-table-sticky, th.cdk-header-cell.cdk-table-sticky {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+*/
+
+table.table .cdk-header-cell {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+table.table-hover td:not(.cdk-column-SeatNo):not(.cdk-column-StudentName):hover {
+  cursor: pointer;
+}
+
+table.table-hover tbody tr:hover {
+  background-color: #ececec;
+}
+
+@media (max-width: 767.98px) {
+  .my-page {
+    margin: 0 auto;
+    min-height: auto;
+  }
+}

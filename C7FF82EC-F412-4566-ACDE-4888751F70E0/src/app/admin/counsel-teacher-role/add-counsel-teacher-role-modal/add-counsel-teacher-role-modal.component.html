@@ -1,0 +1,73 @@
+<div class="modal fade"
+     id="addCounselTeacherRole"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addInterviewLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="addInterviewLabel">
+          新增輔導身分
+        </h5>
+      </div>
+
+      <div class="modal-body">
+        <div class="d-flex flex-column">
+
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              {{ selectRole }}
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item"
+                 *ngFor="let item of counselRole"
+                 [ngClass]="{ active: selectRole === item }"
+                 (click)="SetSelectRole(item)">{{ item }}</a>
+            </div>
+          </div>
+          <div style="height: 20px"></div>
+          <mat-form-field class="example-full-width">
+            <input type="text"
+                   placeholder="請選擇老師"
+                   aria-label="Number"
+                   matInput
+                   [formControl]="myControl"
+                   [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)='SetSelectTeacherName($event.option.value)'>
+              <mat-option *ngFor="let option  of filteredOptions | async"
+                          [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-dark"
+                  data-dismiss="modal"
+                  (click)="cancel()">
+            取消
+          </button>
+          <button type="button"
+                  class="btn btn-info"
+                  (click)="save()">
+            儲存
+          </button>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

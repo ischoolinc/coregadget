@@ -25,7 +25,7 @@ import { CaseComponent } from './case/case.component';
 import { ReferralComponent } from './referral/referral.component';
 import { CounselRoutingComponent } from './counsel/counsel-routing/counsel-routing.component';
 import { DetailRoutingComponent } from './counsel/counsel-detail/detail-routing/detail-routing.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
 import { ReferralListComponent } from './referral/referral-list/referral-list.component';
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
@@ -39,6 +39,7 @@ import { AdminComponent } from './admin/admin.component';
 import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counsel-teacher-role.component';
 import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
 import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
+
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 import { ComprehensiveDetailRoutingComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-detail-routing/comprehensive-detail-routing.component';
 import { ComprehensiveRoutingComponent } from './comprehensive/comprehensive-routing/comprehensive-routing.component';
@@ -48,6 +49,13 @@ import { CounselDocComponent } from './simple-page/print/counsel-doc/counsel-doc
 import { CounselDocEditorComponent } from './simple-page/editor/counsel-doc-editor/counsel-doc-editor.component';
 import { ComprehensiveEditorComponent } from './simple-page/editor/comprehensive-editor/comprehensive-editor.component';
 import { PsychologicalTestComponent } from './psychological-test/psychological-test.component';
+
+import { AddCounselTeacherModalComponent } from './admin/counsel-class/add-counsel-teacher-modal/add-counsel-teacher-modal.component';
+import { AddCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/add-counsel-teacher-role-modal/add-counsel-teacher-role-modal.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
 
 @NgModule({
   declarations: [
@@ -91,16 +99,23 @@ import { PsychologicalTestComponent } from './psychological-test/psychological-t
     CounselDocComponent,
     CounselDocEditorComponent,
     ComprehensiveEditorComponent,
-    PsychologicalTestComponent
+    PsychologicalTestComponent,
+    AddCounselTeacherModalComponent,
+    AddCounselTeacherRoleModalComponent,
+    DelCounselTeacherRoleModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     MatDialogModule,
+    MatAutocompleteModule,
     BrowserAnimationsModule,
     RenderModule,
-    TextareaAutosizeModule
+    TextareaAutosizeModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

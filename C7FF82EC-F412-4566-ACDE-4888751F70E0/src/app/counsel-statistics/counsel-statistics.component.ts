@@ -26,7 +26,7 @@ export class CounselStatisticsComponent implements OnInit {
     this.selectMonth = dt.getMonth() + 1;
     if (this.appComponent) this.appComponent.currentComponent = "counsel_statistics";
     this.reportNameList = [
-      "輔導工作月統計報表-教育局版",
+      "輔導工作月統計報表-教育部版",
       "輔導工作月統計報表-新北市版",
       "輔導工作月統計報表-新竹國中版",
       "輔導工作月統計報表-新竹國小版"
@@ -36,7 +36,7 @@ export class CounselStatisticsComponent implements OnInit {
   }
 
   exportRepot(item) {
-    if (item === '輔導工作月統計報表-教育局版') {
+    if (item === '輔導工作月統計報表-教育部版') {
       this.GetCaseMonthlyStatistics1();
     }
 
@@ -54,13 +54,13 @@ export class CounselStatisticsComponent implements OnInit {
 
   }
 
-  // 輔導工作月統計報表-教育局版
+  // 輔導工作月統計報表-教育部版
   async GetCaseMonthlyStatistics1() {
 
     // Service 取得資料邏輯：
     // 1. 未結案個案：是否結案=f  and 個案建立日期 <= 畫面上所選年月
     // 2. 該月結案:是否結案=t and 結案日期 = 畫面上所選年月
-    let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-教育局版";
+    let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-教育部版";
     let fileName: string = wsName + ".xlsx";
     let data: CaseMonthlyStatistics[] = [];
 

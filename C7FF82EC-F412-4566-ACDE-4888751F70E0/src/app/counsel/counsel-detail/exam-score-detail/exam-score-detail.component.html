@@ -1,955 +1,419 @@
-<!-- 學生個人 - 評量成績 -->
-<div class="tab-pane fade-in"
-      id="listFour">
-    <div class="d-md-flex align-items-center sub-title mb-3">
-        <h4 class="mb-0 mr-auto">評量成績</h4>
-    </div>
-    <div class="dropdown mb-3">
-        <button class="btn btn-light dropdown-toggle"
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">107學年度 第1學期</button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item"
-                href="#">107學年度 第1學期</a>
-            <a class="dropdown-item"
-                href="#">106學年度 第2學期</a>
-            <a class="dropdown-item"
-                href="#">106學年度 第1學期</a>
-        </div>
-    </div>
-    <!-- 新竹國中評量成績 -->
-    <div class="table-responsive table-hover score mb-3">
-        <table class="table">
-            <thead>
-                <tr class="table-active">
-                    <th rowspan="2"
-                        scope="col">領域名稱</th>
-                    <th rowspan="2"
-                        scope="col">科目名稱</th>
-                    <th rowspan="2"
-                        scope="col">權數</th>
-                    <th colspan="2"
-                        scope="col">第一次段考</th>
-                    <th colspan="2"
-                        scope="col">第二次段考</th>
-                    <th colspan="2"
-                        scope="col">期末考</th>
-                </tr>
-                <tr class="table-active">
-                    <th>總成績<br>(定期/平時)</th>
-                    <th>領域加權</th>
-                    <th>總成績<br>(定期/平時)</th>
-                    <th>領域加權</th>
-                    <th>總成績<br>(定期/平時)</th>
-                    <th>領域加權</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th rowspan="2"
-                        scope="row">語文</th>
-                    <th>國文</th>
-                    <td>５</td>
-                    <td>
-                        96.00<br>
-                        <span class="badge badge-light border mt-1">95 / 97</span>
-                    </td>
-                    <td rowspan="2">
-                        87.60
-                    </td>
-                    <td>
-                        66.40
-                        <span class="text-danger">↓</span><br>
-                        <span class="badge badge-light border mt-1">76 / 60</span>
-                    </td>
-                    <td rowspan="2">
-                        72.71
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        96.00
-                        <span class="text-success">↑</span><br>
-                        <span class="badge badge-light border mt-1">90 / 100</span>
-                    </td>
-                    <td rowspan="2">
-                        85.85
-                        <span class="text-success">↑</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>英語</th>
-                    <td>3</td>
-                    <td>
-                        73.60<br>
-                        <span class="badge badge-light border mt-1">64 / 80</span>
-                    </td>
-                    <td>
-                        96.00
-                        <span class="text-success">↑</span><br>
-                        <span class="badge badge-light border mt-1">90 / 100</span>
-                    </td>
-                    <td>
-                        66.40
-                        <span class="text-danger">↓</span><br>
-                        <span class="badge badge-light border mt-1">76 / 60</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">數學</th>
-                    <th>數學</th>
-                    <td>4</td>
-                    <td>
-                        96.00<br>
-                        <span class="badge badge-light border mt-1">95 / 97</span>
-                    </td>
-                    <td>
-                        87.60
-                    </td>
-                    <td>
-                        66.40
-                        <span class="text-danger">↓</span><br>
-                        <span class="badge badge-light border mt-1">76 / 60</span>
-                    </td>
-                    <td>
-                        72.71
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50.00
-                        <span class="text-danger">↓</span><br>
-                        <span class="badge badge-danger border mt-1">35 / 60</span>
-                    </td>
-                    <td class="fail">
-                        50.00
-                        <span class="text-danger">↓</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">彈性課程</th>
-                    <th colspan="2">英語選讀</th>
-                    <td>
-                        96.00<br>
-                        <span class="badge badge-light border mt-1">95 / 97</span>
-                    </td>
-                    <td>
-                        87.60
-                    </td>
-                    <td>
-                        66.40
-                        <span class="text-danger">↓</span><br>
-                        <span class="badge badge-light border mt-1">76 / 60</span>
-                    </td>
-                    <td>
-                        72.71
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50.00
-                        <span class="text-danger">↓</span><br>
-                        <span class="badge badge-danger border mt-1">35 / 60</span>
-                    </td>
-                    <td class="fail">
-                        50.00
-                        <span class="text-danger">↓</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th colspan="3"
-                        scope="row">加權平均</th>
-                    <td colspan="2">
-                        87.60
-                    </td>
-                    <td colspan="2">
-                        72.71
-                    </td>
-                    <td colspan="2"
-                        class="fail">
-                        50.00
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div *ngIf="!isLoading; else tmpLoading">
+    <!-- 學生個人 - 評量成績 -->
+    <!-- 新竹國中 -->
+    <ng-container *ngIf="selectSchoolType === 'JHHC'">
+        <div class="tab-pane fade-in"
+             id="listFour">
+            <div class="d-md-flex align-items-center sub-title mb-3">
+                <h4 class="mb-0 mr-auto">評量成績</h4>
+            </div>
+            <div class="dropdown mb-3">
+                <button class="btn btn-light dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">{{selectSchoolYearSemester.SchoolYear}}學年度 第{{selectSchoolYearSemester.Semester}}學期</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item"
+                       *ngFor="let item of semesterList"
+                       [ngClass]="{ active: selectSchoolYearSemester == item }"
+                       (click)="SetSelectSemester(item)">{{item.SchoolYear}}學年度 第{{item.Semester}}學期</a>
 
-    <ul class="nav nav-pills mb-3"
-        id="assessment-tab"
-        role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active"
-                id="pills-first-tab"
-                data-toggle="pill"
-                href="#pills-first"
-                role="tab"
-                aria-controls="pills-first"
-                aria-selected="true">第一次段考</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-                id="pills-second-tab"
-                data-toggle="pill"
-                href="#pills-second"
-                role="tab"
-                aria-controls="pills-second"
-                aria-selected="false">第二次段考</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-                id="pills-final-tab"
-                data-toggle="pill"
-                href="#pills-final"
-                role="tab"
-                aria-controls="pills-final"
-                aria-selected="false">期末考</a>
-        </li>
-    </ul>
-    <div class="tab-content"
-          id="assessment-tabContent">
-        <div class="tab-pane fade show active"
-              id="pills-first"
-              role="tabpanel"
-              aria-labelledby="pills-first-tab">
-            <div class="table-responsive table-hover score">
+                </div>
+            </div>
+            <!-- 新竹國中評量成績 -->
+            <div class="table-responsive table-hover score mb-3">
                 <table class="table">
                     <thead>
                         <tr class="table-active">
-                            <th scope="col">領域名稱</th>
-                            <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
                             <th rowspan="2"
-                                scope="row">語文</th>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">數學</th>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane fade"
-              id="pills-second"
-              role="tabpanel"
-              aria-labelledby="pills-second-tab">
-            <div class="table-responsive table-hover score">
-                <table class="table">
-                    <thead>
-                        <tr class="table-active">
-                            <th scope="col">領域名稱</th>
-                            <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
+                                scope="col">領域名稱</th>
                             <th rowspan="2"
-                                scope="row">語文</th>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">數學</th>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane fade"
-              id="pills-final"
-              role="tabpanel"
-              aria-labelledby="pills-final-tab">
-            <div class="table-responsive table-hover score">
-                <table class="table">
-                    <thead>
-                        <tr class="table-active">
-                            <th scope="col">領域名稱</th>
-                            <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
+                                scope="col">科目名稱</th>
                             <th rowspan="2"
-                                scope="row">語文</th>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
+                                scope="col">權數</th>
+                            <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                <th colspan="2"
+                                    scope="col">{{examName}}</th>
+                            </ng-container>
                         </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
+                        <tr class="table-active">
+                            <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                <th>總成績<br>(定期/平時)</th>
+                                <th>領域加權</th>
+                            </ng-container>
                         </tr>
-                        <tr>
-                            <th scope="row">數學</th>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let domainItem of studentExamScore.DomainScoreList">
+                            <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
+                                <tr *ngIf="rowIdx == 0">
+                                    <th [rowSpan]="domainItem.CourseScoreList.length"
+                                        scope="row">{{domainItem.DomainName}}
+                                    </th>
+                                    <th>{{courseItem.SubjectName}}</th>
+                                    <td>{{courseItem.CourseCredit}}</td>
+                                    <ng-container *ngFor="let exam of courseItem.ExamScoreList">
+                                        <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
+                                            {{exam.ExamScore}}
+                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                                  class="text-danger">↓</span>
+                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                  class="text-success">↑</span><br>
+                                            <br>
+                                            <span [ngClass]="(exam.Score < passScore ||exam.AssignmentScore < passScore )?'badge badge-danger border mt-1':'badge badge-light border mt-1'">{{exam.Score}} / {{exam.AssignmentScore}}</span>
+                                        </td>
+                                        <td [rowSpan]="domainItem.CourseScoreList.length"
+                                            [ngClass]="(domainItem.GetAvgExamScore(exam.ExamName) < passScore) ? 'fail':''">
+                                            {{domainItem.GetAvgExamScore(exam.ExamName)||''}}
+                                            <span *ngIf="domainItem.GetUpDown(exam.ExamName).isDown"
+                                                  class="text-danger">↓</span>
+                                            <span *ngIf="domainItem.GetUpDown(exam.ExamName).isUp"
+                                                  class="text-success">↑</span>
+                                        </td>
+                                    </ng-container>
 
-    <!-- 高雄國中評量成績 -->
-    <div class="table-responsive table-hover score mb-3">
-        <table class="table">
-            <thead>
-                <tr class="table-active">
-                    <th rowspan="2"
-                        scope="col">領域名稱</th>
-                    <th rowspan="2"
-                        scope="col">科目名稱</th>
-                    <th rowspan="2"
-                        scope="col">權數</th>
-                    <th colspan="2"
-                        scope="col">第一次段考</th>
-                    <th colspan="2"
-                        scope="col">第二次段考</th>
-                    <th colspan="2"
-                        scope="col">期末考</th>
-                    <th colspan="2"
-                        scope="col">平時評量</th>
-                </tr>
-                <tr class="table-active">
-                    <th>成績</th>
-                    <th>領域加權</th>
-                    <th>成績</th>
-                    <th>領域加權</th>
-                    <th>成績</th>
-                    <th>領域加權</th>
-                    <th>成績</th>
-                    <th>領域加權</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th rowspan="2"
-                        scope="row">語文</th>
-                    <th>國文</th>
-                    <td>５</td>
-                    <td>96</td>
-                    <td rowspan="2">87.60</td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td rowspan="2">
-                        72.71
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        96
-                        <span class="text-success">↑</span>
-                    </td>
-                    <td rowspan="2">
-                        85.85
-                        <span class="text-success">↑</span>
-                    </td>
-                    <td>96</td>
-                    <td rowspan="2">85.85</td>
-                </tr>
-                <tr>
-                    <th>英語</th>
-                    <td>3</td>
-                    <td>
-                        73
-                    </td>
-                    <td>
-                        96
-                        <span class="text-success">↑</span>
-                    </td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>96</td>
-                </tr>
-                <tr>
-                    <th scope="row">數學</th>
-                    <th>數學</th>
-                    <td>4</td>
-                    <td>96</td>
-                    <td>87.60</td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        72.71
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50.00
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>96</td>
-                    <td>85.85</td>
-                </tr>
-                <tr>
-                    <th scope="row">彈性課程</th>
-                    <th colspan="2">英語選讀</th>
-                    <td>96</td>
-                    <td>87.60</td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        72.71
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50.00
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>96</td>
-                    <td>85.85</td>
-                </tr>
-                <tr>
-                    <th colspan="3"
-                        scope="row">加權平均</th>
-                    <td colspan="2">
-                        87.60
-                    </td>
-                    <td colspan="2">
-                        72.71
-                    </td>
-                    <td colspan="2"
-                        class="fail">
-                        50.00
-                    </td>
-                    <td colspan="2">
-                        87.60
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 
-    <!-- 高中評量成績 -->
-    <div class="table-responsive table-hover score mb-3">
-        <table class="table">
-            <thead>
-                <tr class="table-active">
-                    <th scope="col">科目名稱</th>
-                    <th scope="col">第一次段考</th>
-                    <th scope="col">第二次段考</th>
-                    <th scope="col">期末考</th>
-                    <th scope="col">平時成績</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>國文</th>
-                    <td>96</td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        96
-                        <span class="text-success">↑</span>
-                    </td>
-                    <td>96</td>
-                </tr>
-                <tr>
-                    <th>英語</th>
-                    <td>73</td>
-                    <td>
-                        96
-                        <span class="text-success">↑</span>
-                    </td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        96
-                        <span class="text-success">↑</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>數學</th>
-                    <td>96</td>
-                    <td>
-                        66
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td class="fail">
-                        50
-                        <span class="text-danger">↓</span>
-                    </td>
-                    <td>
-                        96
-                        <span class="text-success">↑</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                                </tr>
+                                <tr *ngIf="rowIdx > 0">
+                                    <th>{{courseItem.SubjectName}}</th>
+                                    <td>{{courseItem.CourseCredit}}</td>
+                                    <ng-container *ngFor="let exam of courseItem.ExamScoreList">
+                                        <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
+                                            {{exam.ExamScore}}
+                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                                  class="text-danger">↓</span>
+                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                  class="text-success">↑</span><br>
+                                            <br>
+                                            <span [ngClass]="(exam.Score < passScore ||exam.AssignmentScore < passScore )?'badge badge-danger border mt-1':'badge badge-light border mt-1'">{{exam.Score}} / {{exam.AssignmentScore}}</span>
+                                        </td>
+                                        <!-- <td>
+                                   {{domainItem.DomainScore}}
+                               </td> -->
+                                    </ng-container>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                        <tr>
+                            <th colspan="3"
+                                scope="row">加權平均</th>
+                            <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                <td colspan="2"
+                                    [ngClass]="(studentExamScore.GetExamAvgScore(examName) < passScore) ? 'fail':''">
+                                    {{ studentExamScore.GetExamAvgScore(examName)||''}}
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <ul class="nav nav-pills mb-3"
-        id="assessment-tab"
-        role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active"
-                id="pills-first-tab"
-                data-toggle="pill"
-                href="#pills-first"
-                role="tab"
-                aria-controls="pills-first"
-                aria-selected="true">第一次段考</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-                id="pills-second-tab"
-                data-toggle="pill"
-                href="#pills-second"
-                role="tab"
-                aria-controls="pills-second"
-                aria-selected="false">第二次段考</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-                id="pills-final-tab"
-                data-toggle="pill"
-                href="#pills-final"
-                role="tab"
-                aria-controls="pills-final"
-                aria-selected="false">期末考</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-                id="pills-usual-tab"
-                data-toggle="pill"
-                href="#pills-usual"
-                role="tab"
-                aria-controls="pills-usual"
-                aria-selected="false">平時成績</a>
-        </li>
-    </ul>
-    <div class="tab-content"
-          id="assessment-tabContent">
-        <div class="tab-pane fade show active"
-              id="pills-first"
-              role="tabpanel"
-              aria-labelledby="pills-first-tab">
-            <div class="table-responsive table-hover score">
+            <ul class="nav nav-pills mb-3"
+                id="assessment-tab"
+                role="tablist">
+                <ng-container *ngFor="let itemExam of studentExamScore.ExamNameList">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           id="pills-second-tab"
+                           data-toggle="pill"
+                           href="#pills-second"
+                           role="tab"
+                           aria-controls="pills-second"
+                           [href]="itemExam"
+                           [ngClass]="{ 'active show': itemExam == SelectExamCountName}"
+                           (click)="SetSelectExamCountName(itemExam)"
+                           aria-selected="false">{{itemExam}}</a>
+                    </li>
+
+                </ng-container>
+            </ul>
+            <div class="tab-content"
+                 id="assessment-tabContent">
+                <div class="tab-pane fade show active"
+                     id="item"
+                     role="tabpanel"
+                     aria-labelledby="itemExam">
+                    <div class="table-responsive table-hover score">
+                        <table class="table">
+                            <thead>
+                                <tr class="table-active">
+                                    <th scope="col">領域名稱</th>
+                                    <th scope="col">科目名稱</th>
+                                    <ng-container *ngFor="let ItemCountName of studentExamScore.AvgItemCountNameList">
+                                        <th scope="col">{{ItemCountName}}</th>
+                                    </ng-container>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let itemExam of studentExamScore.ExamNameList">
+                                    <ng-container *ngIf="itemExam === SelectExamCountName">
+                                        <ng-container *ngFor="let domainItem of studentExamScore.DomainScoreList">
+                                            <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
+                                                <tr *ngIf="rowIdx == 0">
+                                                    <th [rowSpan]="domainItem.CourseScoreList.length"
+                                                        scope="row">{{domainItem.DomainName}}
+                                                    </th>
+                                                    <th>{{courseItem.SubjectName}}</th>
+                                                    <ng-container *ngFor="let itemCountName of studentExamScore.AvgItemCountNameList">
+                                                        <td [ngClass]="(studentExamScore.GetItemCount(courseItem.DomainName,courseItem.SubjectName,itemExam,itemCountName).isMe ? 'sty1':'')">{{studentExamScore.GetItemCount(courseItem.DomainName,courseItem.SubjectName,itemExam,itemCountName).Count}}</td>
+                                                    </ng-container>
+
+                                                </tr>
+                                                <tr *ngIf="rowIdx > 0">
+                                                    <th>{{courseItem.SubjectName}}</th>
+                                                    <ng-container *ngFor="let itemCountName of studentExamScore.AvgItemCountNameList">
+                                                        <td [ngClass]="(studentExamScore.GetItemCount(courseItem.DomainName,courseItem.SubjectName,itemExam,itemCountName).isMe ? 'sty1':'')">{{studentExamScore.GetItemCount(courseItem.DomainName,courseItem.SubjectName,itemExam,itemCountName).Count}}</td>
+                                                    </ng-container>
+
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 高雄國中 -->
+    <ng-container *ngIf="selectSchoolType === 'JHKH'">
+        <div class="tab-pane fade-in"
+             id="listFour">
+            <div class="d-md-flex align-items-center sub-title mb-3">
+                <h4 class="mb-0 mr-auto">評量成績</h4>
+            </div>
+            <div class="dropdown mb-3">
+                <button class="btn btn-light dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">{{selectSchoolYearSemester.SchoolYear}}學年度 第{{selectSchoolYearSemester.Semester}}學期</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item"
+                       *ngFor="let item of semesterList"
+                       [ngClass]="{ active: selectSchoolYearSemester == item }"
+                       (click)="SetSelectSemester(item)">{{item.SchoolYear}}學年度 第{{item.Semester}}學期</a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 高雄國中評量成績 -->
+        <div class="table-responsive table-hover score mb-3">
+            <table class="table">
+                <thead>
+                    <tr class="table-active">
+                        <th rowspan="2"
+                            scope="col">領域名稱</th>
+                        <th rowspan="2"
+                            scope="col">科目名稱</th>
+                        <th rowspan="2"
+                            scope="col">權數</th>
+                        <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                            <th colspan="2"
+                                scope="col">{{examName}}</th>
+                        </ng-container>                       
+                    </tr>
+                    <tr class="table-active">
+                        <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                            <th>成績</th>
+                            <th>領域加權</th>
+                        </ng-container>                      
+                    </tr>
+                </thead>
+                <tbody>
+                        <ng-container *ngFor="let domainItem of studentExamScore.DomainScoreList">
+                                <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
+                                    <tr *ngIf="rowIdx == 0">
+                                        <th [rowSpan]="domainItem.CourseScoreList.length"
+                                            scope="row">{{domainItem.DomainName}}
+                                        </th>
+                                        <th>{{courseItem.SubjectName}}</th>
+                                        <td>{{courseItem.CourseCredit || ''}}</td>
+                                        <ng-container *ngFor="let exam of courseItem.ExamScoreList">
+                                            <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
+                                                {{exam.ExamScore || ''}}
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                                      class="text-danger">↓</span>
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                      class="text-success">↑</span>                                                                                             
+                                            </td>
+                                            <td [rowSpan]="domainItem.CourseScoreList.length"
+                                                [ngClass]="(domainItem.GetAvgExamScore(exam.ExamName) < passScore) ? 'fail':''">
+                                                {{domainItem.GetAvgExamScore(exam.ExamName)||''}}
+                                                <span *ngIf="domainItem.GetUpDown(exam.ExamName).isDown"
+                                                      class="text-danger">↓</span>
+                                                <span *ngIf="domainItem.GetUpDown(exam.ExamName).isUp"
+                                                      class="text-success">↑</span>
+                                            </td>
+                                        </ng-container>
+    
+    
+                                    </tr>
+                                    <tr *ngIf="rowIdx > 0">
+                                        <th>{{courseItem.SubjectName}}</th>
+                                        <td>{{courseItem.CourseCredit}}</td>
+                                        <ng-container *ngFor="let exam of courseItem.ExamScoreList">
+                                            <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
+                                                {{exam.ExamScore || ''}}
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                                      class="text-danger">↓</span>
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                      class="text-success">↑</span>
+                                            </td>
+                                            <!-- <td>
+                                       {{domainItem.DomainScore}}
+                                   </td> -->
+                                        </ng-container>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <tr>
+                                <th colspan="3"
+                                    scope="row">加權平均</th>
+                                <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                    <td colspan="2"
+                                        [ngClass]="(studentExamScore.GetExamAvgScore(examName) < passScore) ? 'fail':''">
+                                        {{ studentExamScore.GetExamAvgScore(examName)||''}}
+                                    </td>
+                                </ng-container>
+                            </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </ng-container>
+
+    <!-- 高中 -->
+    <ng-container *ngIf="selectSchoolType === 'SH'">
+        <div class="tab-pane fade-in"
+             id="listFour">
+            <div class="d-md-flex align-items-center sub-title mb-3">
+                <h4 class="mb-0 mr-auto">評量成績</h4>
+            </div>
+            <div class="dropdown mb-3">
+                <button class="btn btn-light dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">{{selectSchoolYearSemester.SchoolYear}}學年度 第{{selectSchoolYearSemester.Semester}}學期</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item"
+                       *ngFor="let item of semesterList"
+                       [ngClass]="{ active: selectSchoolYearSemester == item }"
+                       (click)="SetSelectSemester(item)">{{item.SchoolYear}}學年度 第{{item.Semester}}學期</a>
+
+                </div>
+            </div>
+
+            <div class="table-responsive table-hover score mb-3">
                 <table class="table">
                     <thead>
                         <tr class="table-active">
                             <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
+                            <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                <th scope="col">{{examName}}</th>
+                            </ng-container>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
+                        <ng-container *ngFor="let courseItem of studentExamScore.CourseScoreList">
+                            <tr>
+                                <th>{{courseItem.SubjectName}}</th>
+                                <ng-container *ngFor="let examItem of courseItem.ExamScoreList">
+                                    <td>
+                                        {{examItem.ExamScore || ''}}
+                                        <span *ngIf="courseItem.GetUpDown(examItem.ExamName).isDown"
+                                              class="text-danger">↓</span>
+                                        <span *ngIf="courseItem.GetUpDown(examItem.ExamName).isUp"
+                                              class="text-success">↑</span>
+                                    </td>
+                                </ng-container>
+
+                            </tr>
+                        </ng-container>
+
+
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="tab-pane fade"
-              id="pills-second"
-              role="tabpanel"
-              aria-labelledby="pills-second-tab">
-            <div class="table-responsive table-hover score">
-                <table class="table">
-                    <thead>
-                        <tr class="table-active">
-                            <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <ul class="nav nav-pills mb-3"
+                id="assessment-tab"
+                role="tablist">
+                <ng-container *ngFor="let itemExam of studentExamScore.ExamNameList">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           id="pills-second-tab"
+                           data-toggle="pill"
+                           href="#pills-second"
+                           role="tab"
+                           aria-controls="pills-second"
+                           [href]="itemExam"
+                           [ngClass]="{ 'active show': itemExam == SelectExamCountName}"
+                           (click)="SetSelectExamCountName(itemExam)"
+                           aria-selected="false">{{itemExam}}</a>
+                    </li>
+
+                </ng-container>
+            </ul>
+
+            <div class="tab-content"
+                 id="assessment-tabContent">
+                <div class="tab-pane fade show active"
+                     id="item"
+                     role="tabpanel"
+                     aria-labelledby="itemExam">
+                    <div class="table-responsive table-hover score">
+                        <table class="table">
+                            <thead>
+                                <tr class="table-active">
+                                    <th scope="col">科目名稱</th>
+                                    <ng-container *ngFor="let ItemCountName of studentExamScore.AvgItemCountNameList">
+                                        <th scope="col">{{ItemCountName}}</th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let itemExam of studentExamScore.ExamNameList">
+                                    <ng-container *ngIf="itemExam === SelectExamCountName">
+                                        <ng-container *ngFor="let courseItem of studentExamScore.CourseScoreList;let rowIdx =index">
+
+                                            <tr>
+                                                <th>{{courseItem.SubjectName}}</th>
+
+                                                <ng-container *ngFor="let itemCountName of studentExamScore.AvgItemCountNameList">
+                                                    <td [ngClass]="(studentExamScore.GetItemCount('',courseItem.SubjectName,itemExam,itemCountName).isMe ? 'sty1':'')">{{studentExamScore.GetItemCount('',courseItem.SubjectName,itemExam,itemCountName).Count}}</td>
+                                                </ng-container>
+
+                                            </tr>
+                                        </ng-container>
+
+                                    </ng-container>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+
         </div>
-        <div class="tab-pane fade"
-              id="pills-final"
-              role="tabpanel"
-              aria-labelledby="pills-final-tab">
-            <div class="table-responsive table-hover score">
-                <table class="table">
-                    <thead>
-                        <tr class="table-active">
-                            <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane fade"
-              id="pills-usual"
-              role="tabpanel"
-              aria-labelledby="pills-usual-tab">
-            <div class="table-responsive table-hover score">
-                <table class="table">
-                    <thead>
-                        <tr class="table-active">
-                            <th scope="col">科目名稱</th>
-                            <th scope="col">0-9</th>
-                            <th scope="col">10-19</th>
-                            <th scope="col">20-29</th>
-                            <th scope="col">30-39</th>
-                            <th scope="col">40-49</th>
-                            <th scope="col">50-59</th>
-                            <th scope="col">60-69</th>
-                            <th scope="col">70-79</th>
-                            <th scope="col">80-89</th>
-                            <th scope="col">90-99</th>
-                            <th scope="col">100以上</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>國文</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>英語</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td class="fail">6</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>數學</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="fail">5</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+
+    </ng-container>
+
 </div>
+
+
+
+<ng-template #tmpLoading
+             class="container">
+    <div class="row justify-content-center"
+         style="margin-top:250px;margin-bottom:200px;">
+        Loading...
+    </div>
+</ng-template>

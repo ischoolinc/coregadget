@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RoutesRecognized } from "@angular/router";
 import { RoleService } from "./role.service";
+import { GlobalService } from "./global.service";
+import { DsaService } from "./dsa.service";
 
 @Component({
   selector: "app-root",
@@ -8,13 +10,35 @@ import { RoleService } from "./role.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
+ 
   constructor(
     private activeRoute: ActivatedRoute,
     private router: Router,
-    public roleService: RoleService
-  ) {}
+    public roleService: RoleService,
+    public globalService: GlobalService,
+    private dsaService: DsaService
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() {    
+    this.GetMyCounselTeacherRole();
+  }
+
+  async GetMyCounselTeacherRole() {
+    this.globalService.MyCounselTeacherRole = '';
+    this.globalService.enableCase = false;
+    let resp = await this.dsaService.send("GetMyCounselTeacherRole", {
+      Request: {}
+    });
+
+    [].concat(resp.CounselTeacherRole || []).forEach(TeacherRole => {
+      this.globalService.MyCounselTeacherRole = TeacherRole.Role;
+    });
+
+    if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師')
+    {   
+      this.globalService.enableCase = true;
+    }
+  }
 
   routeTo(to) {
     //讓特效跑

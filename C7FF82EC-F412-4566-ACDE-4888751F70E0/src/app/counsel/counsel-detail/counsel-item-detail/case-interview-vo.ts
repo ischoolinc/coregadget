@@ -16,6 +16,7 @@ export class CaseInterview {
   Content: string; // 內容
   CaseID: string; // 個案uid
   CaseNo: string; //個案編號
+  AuthorRole: string; // 個案老師角色
   isSchoolYearHasValue: boolean = false;
   isSemesterHasValue: boolean = false;
   isOccurDateHasValue: boolean = false;

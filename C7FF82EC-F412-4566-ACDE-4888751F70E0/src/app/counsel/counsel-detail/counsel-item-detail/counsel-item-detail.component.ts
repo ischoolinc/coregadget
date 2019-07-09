@@ -2,6 +2,7 @@ import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { CaseStudent } from "../../../case/case-student";
 import { DsaService } from "../../../dsa.service";
 import { CounselDetailComponent } from "../counsel-detail.component";
+import { GlobalService } from "../../../global.service";
 import {
   CaseInterview,
   SemesterInfo
@@ -24,9 +25,10 @@ export class CounselItemDetailComponent implements OnInit {
 
   constructor(
     private dsaService: DsaService,
+    public globalService: GlobalService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.counselDetailComponent.setCurrentItem('counsel');
@@ -47,9 +49,8 @@ export class CounselItemDetailComponent implements OnInit {
     let CaseInterviewAdd: CaseInterview = new CaseInterview();
     CaseInterviewAdd.CaseID = item.UID;
     CaseInterviewAdd.CaseNo = item.CaseNo;
-    CaseInterviewAdd.SchoolYear = item.SchoolYear;
-    CaseInterviewAdd.Semester = item.Semester;
     CaseInterviewAdd.StudentID = item.StudentID;
+    CaseInterviewAdd.AuthorRole = this.globalService.MyCounselTeacherRole;
 
     this._addInterview.caseInterview = CaseInterviewAdd;
     this._addInterview.caseInterview.checkValue();
@@ -68,7 +69,9 @@ export class CounselItemDetailComponent implements OnInit {
   // 修改
   editInterviewModal(counselView: CaseInterview) {
     this._addInterview._editMode = "edit";
+    counselView.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview.caseInterview = counselView;
+
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
     // 關閉畫面
@@ -89,7 +92,7 @@ export class CounselItemDetailComponent implements OnInit {
     if (
       this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
     ) {
-      ServiceName = "GetStudentCase1";
+      // ServiceName = "GetStudentCase1";
     }
 
     let resp = await this.dsaService.send(ServiceName, {
@@ -102,11 +105,10 @@ export class CounselItemDetailComponent implements OnInit {
       // 建立認輔資料
       let rec: CaseStudent = new CaseStudent();
       rec.UID = caseRec.UID;
-      rec.SchoolYear = caseRec.SchoolYear;
-      rec.Semester = caseRec.Semester;
+
       let x = Number(caseRec.OccurDate);
       let dt = new Date(x);
-      rec.OccurDate = rec.parseDate(dt,'-');
+      rec.OccurDate = rec.parseDate(dt, '-');
       rec.CaseNo = caseRec.CaseNo;
       rec.StudentIdentity = caseRec.StudentIdentity;
       rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
@@ -124,15 +126,16 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CloseDescription = caseRec.CloseDescription;
       rec.StudentID = caseRec.StudentID;
       rec.CaseSource = caseRec.CaseSource;
+      rec.MainTeacher = caseRec.MainTeacher;
+      rec.Role = caseRec.Role;
+
       rec.PhotoUrl = `${
         this.dsaService.AccessPoint
-      }/GetStudentPhoto?stt=Session&sessionid=${
+        }/GetStudentPhoto?stt=Session&sessionid=${
         this.dsaService.SessionID
-      }&parser=spliter&content=StudentID:${rec.StudentID}`;
+        }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.TeacherName = caseRec.TeacherName;
-      // if (caseRec.TeacherNickName != "") {
-      //   rec.TeacherName = `${rec.TeacherName}(${caseRec.TeacherNickName})`;
-      // }
+
       data.push(rec);
     });
     this.caseList = data;

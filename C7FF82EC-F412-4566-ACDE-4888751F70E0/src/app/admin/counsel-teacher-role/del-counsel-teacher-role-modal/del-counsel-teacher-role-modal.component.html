@@ -1,0 +1,39 @@
+<div class="modal fade"
+     id="delCounselTeacherRole"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addInterviewLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="addInterviewLabel">
+          請問確定刪除 {{teacherCounselRole.TeacherName}} 輔導身分？
+        </h5>
+      </div>
+
+      <div class="modal-body">
+
+
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-dark"
+                  data-dismiss="modal"
+                  (click)="cancel()">
+            取消
+          </button>
+          <button type="button"
+                  class="btn btn-danger"
+                  (click)="del()">
+            刪除
+          </button>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

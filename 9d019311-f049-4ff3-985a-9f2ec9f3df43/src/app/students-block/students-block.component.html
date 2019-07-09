@@ -1,0 +1,32 @@
+<div class="studentBlock d-none d-md-block">
+  <ng-container *ngIf="studentList.length; else tplNoStudent">
+    <table class="table table-bordered table-striped table-hover text-center">
+      <thead>
+        <tr>
+          <th class="text-center">
+            姓名
+          </th>
+          <th *ngFor="let item of curExam.Item" class="text-center">{{item.Name}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let student of studentList"
+          [class.table-warning]="student.ID === curStudent.ID">
+          <td class="no-cursor">{{student.Name}} ({{student.SeatNumber}})</td>
+          <td *ngFor="let item of curExam.Item"
+            (click)="doSelect(student, item.Name)"
+            class="text-center" style="position:relative">
+            <!-- 小紅點識別資料是否變更未儲存 -->
+            <div *ngIf="checkHasChanged(student, item)" class="red-point"></div>
+            <span class="text-score">{{getScoreText(student, item)}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>
+
+<ng-template #tplNoStudent>
+  <div class="text-center">目前無資料</div>
+</ng-template>
