@@ -3,7 +3,6 @@ import { CounselDetailComponent } from "../counsel-detail.component";
 import { DsaService } from "../../../dsa.service";
 import { CounselStudentService } from "../../../counsel-student.service";
 import { DomainScoreInfo, CourseScoreInfo, ExamScoreInfo, SemesterInfo, StudentExamScore, ExamUpDown, ItemCount, ItemCounts } from "./exam-score-vo";
-import { debug } from 'util';
 
 @Component({
   selector: 'app-exam-score-detail',
@@ -17,9 +16,9 @@ export class ExamScoreDetailComponent implements OnInit {
 
   // 及格標準
   passScore: number = 60;
-
+  isLoading = false;
   // 學校型態,JHHC,JHKH,SH
-  selectSchoolType: string = "SH";
+  selectSchoolType: string = "";
 
   semesterList: SemesterInfo[] = [];
 
@@ -35,6 +34,7 @@ export class ExamScoreDetailComponent implements OnInit {
   studentExamScore: StudentExamScore = new StudentExamScore();
   // 真正使用 service
   serviceGetExamScore: string = "";
+  serviceSchoolCoreInfo: string = "GetSchoolCoreInfo";
   serviceGetClassExamScore: string = "GetClassExamScoreJHHC";
   serviceGetClassExamScoreSH: string = "GetClassExamScoreSH";
   constructor(private counselStudentService: CounselStudentService,
@@ -43,7 +43,7 @@ export class ExamScoreDetailComponent implements OnInit {
 
   ngOnInit() {
     this.counselDetailComponent.setCurrentItem('exam_score');
-    this.loadData();
+    this.GetSchoolCoreInfo();
   }
 
   loadData() {
@@ -62,6 +62,24 @@ export class ExamScoreDetailComponent implements OnInit {
     // 取得預設學年度學期
     this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
     this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
+  }
+
+  // 取得學制
+  async GetSchoolCoreInfo() {
+    this.isLoading = true;
+    let resp = await this.dsaService.send(this.serviceSchoolCoreInfo, {});
+
+    let SchoolCoreInfo = [].concat(resp.SchoolCoreInfo || []);
+    SchoolCoreInfo.forEach(item => {
+      if (item.成績核心 === '高中一般') {
+        this.selectSchoolType = 'SH';
+      } else if (item.成績核心 === '國中高雄') {
+        this.selectSchoolType = 'JHKH';
+      } else {
+        this.selectSchoolType = 'JHHC';
+      }
+    });
+    this.loadData();
   }
 
   SetSelectSemester(item: SemesterInfo) {
@@ -202,6 +220,7 @@ export class ExamScoreDetailComponent implements OnInit {
         }
       });
     });
+    this.isLoading = false;
   }
 
   // 依學年度學期取得班級評量成績(高中)
@@ -288,6 +307,7 @@ export class ExamScoreDetailComponent implements OnInit {
         }
       });
     });
+    this.isLoading = false;
   }
 
   SetSelectExamCountName(item: string) {
@@ -485,7 +505,7 @@ export class ExamScoreDetailComponent implements OnInit {
         }
       });
     });
-
+    
     if (this.studentExamScore.ExamNameList.length) {
       this.SelectExamCountName = this.studentExamScore.ExamNameList[0];
     }

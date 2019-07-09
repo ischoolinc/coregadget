@@ -27,9 +27,12 @@ export class DomainScoreInfo {
                         tmpKey.push(key);
                     }
                     this.AvgExamScoreList.forEach(item => {
+                        // 參考 Web 評量成績 處理 JavaScript 進位方式
                         if (item.Name === key) {
-                            item.SumCredit += courseItem.CourseCredit;
-                            item.SumScore += (courseItem.CourseCredit * examItem.ExamScore);
+                            let CourseCredit = courseItem.CourseCredit * 100000;
+                            let Score = examItem.ExamScore * 100000;                            
+                            item.SumCredit += CourseCredit;
+                            item.SumScore += (CourseCredit * Score);
                         }
                     })
                 });
@@ -158,8 +161,12 @@ export class StudentExamScore {
                     }
                     this.ExamAvgScoreList.forEach(item => {
                         if (item.Name === key) {
-                            item.SumCredit += courseItem.CourseCredit;
-                            item.SumScore += (courseItem.CourseCredit * examItem.ExamScore);
+                            // 參考 Web 評量成績 處理 JavaScript 進位方式
+                            let CourseCredit = courseItem.CourseCredit * 100000;
+                            let Score = examItem.ExamScore * 100000;                            
+                            item.SumCredit += CourseCredit;
+                            item.SumScore += (CourseCredit * Score);                           
+                          
                         }
                     })
                 });
@@ -217,7 +224,8 @@ export class ScoreInfo {
 
     Calc() {
         if (this.SumCredit > 0) {
-            this.AvgSocre = round(this.SumScore / this.SumCredit, 2);
+            // 參考 Web 評量成績 處理 JavaScript 進位方式
+            this.AvgSocre = round(this.SumScore / this.SumCredit / 100000, 2);
         }
 
     }
