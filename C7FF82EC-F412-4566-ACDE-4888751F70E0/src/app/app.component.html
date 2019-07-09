@@ -41,19 +41,26 @@
            [ngClass]="{'active': currentComponent == 'case', 'disabled': !roleService.enableCase}">
           個案資料</a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link"
            [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
            (click)="!roleService.enableInterviewStatistics || routeTo('/interview_statistics')"
            [ngClass]="{'active': currentComponent == 'interview_statistics', 'disabled': !roleService.enableInterviewStatistics}">
           輔導填寫狀況</a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link"
            [attr.data-toggle]="roleService.enableCase?'tab':null"
            (click)="routeTo('/comprehensive')"
-           [ngClass]="{'active': currentComponent == 'comprehensive'}">
+           [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
           綜合紀錄表</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [attr.data-toggle]="roleService.enableCase?'tab':null"
+           (click)="routeTo('/psychological_test')"
+           [ngClass]="{'active': currentComponent == 'psychological-test', 'disabled': !roleService.enablePsychologicalTest}">
+          心理測驗</a>
       </li>
       <li class="nav-item">
         <a class="nav-link"

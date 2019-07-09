@@ -47,6 +47,7 @@ import { SimplePageComponent } from './simple-page/simple-page.component';
 import { CounselDocComponent } from './simple-page/print/counsel-doc/counsel-doc.component';
 import { CounselDocEditorComponent } from './simple-page/editor/counsel-doc-editor/counsel-doc-editor.component';
 import { ComprehensiveEditorComponent } from './simple-page/editor/comprehensive-editor/comprehensive-editor.component';
+import { PsychologicalTestComponent } from './psychological-test/psychological-test.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { ComprehensiveEditorComponent } from './simple-page/editor/comprehensive
     SimplePageComponent,
     CounselDocComponent,
     CounselDocEditorComponent,
-    ComprehensiveEditorComponent
+    ComprehensiveEditorComponent,
+    PsychologicalTestComponent
   ],
   imports: [
     BrowserModule,

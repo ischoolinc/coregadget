@@ -1,0 +1,129 @@
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-content">
+    <app-permission-denied *ngIf="!roleService.isLoading && !roleService.enablePsychologicalTest">
+    </app-permission-denied>
+    <!-- TAB 4 個案資料 -->
+    <div *ngIf="!roleService.isLoading && roleService.enablePsychologicalTest"
+         class="tab-pane fade show active">
+      <div class="d-flex">
+        <div class="ml-auto dropdown">
+          <button class="btn btn-info dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+            <i class="material-icons">add</i> 匯入測驗成績
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item"
+               (click)="modalImport()">
+              SPM-P(瑞文氏矩陣推理2006)
+            </a>
+            <a class="dropdown-item"
+               (click)="modalImport()">
+              CPM-P(瑞文氏彩色矩陣推理測驗)
+            </a>
+            <a class="dropdown-item"
+               (click)="modalImport()">
+              OO心理測驗
+            </a>
+            <a class="dropdown-item"
+               (click)="modalImport()">
+              XX心理測驗
+            </a>
+          </div>
+        </div>
+      </div>
+      <ul class="rwd-table">
+        <li class="thead">
+          <ol class="tr">
+            <li>班級</li>
+            <li>SPM-P(瑞文氏矩陣推理2006)</li>
+            <li>CPM-P(瑞文氏彩色矩陣推理測驗)</li>
+            <li>OO心理測驗</li>
+            <li>XX心理測驗</li>
+          </ol>
+        </li>
+        <li class="tbody">
+          <ol class="tr">
+            <li data-title="班級">101</li>
+            <li>30 / 30</li>
+            <li>30 / 30</li>
+            <li>0 / 30</li>
+            <li>0 / 30</li>
+          </ol>
+          <ol class="tr">
+            <li data-title="班級">102</li>
+            <li>30 / 30</li>
+            <li>30 / 30</li>
+            <li>0 / 30</li>
+            <li>0 / 30</li>
+          </ol>
+          <ol class="tr">
+            <li data-title="班級">103</li>
+            <li>30 / 30</li>
+            <li>30 / 30</li>
+            <li>0 / 30</li>
+            <li>0 / 30</li>
+          </ol>
+          <ol class="tr">
+            <li data-title="班級">104</li>
+            <li>30 / 30</li>
+            <li>30 / 30</li>
+            <li>0 / 30</li>
+            <li>0 / 30</li>
+          </ol>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+
+<div class="modal fade"
+     id="psychological-import"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modal-title"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="modal-title">匯入OOOO心理測驗</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="xml"
+                 class="col-form-label">XML樣板</label>
+          <textarea class="form-control"
+                    id="xml"
+                    rows="15"
+                    placeholder=""></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-dark"
+                data-dismiss="modal">取消</button>
+        <button type="button"
+                class="btn btn-info"
+                (click)="setConfig()">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>

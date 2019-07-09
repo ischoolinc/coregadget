@@ -1,13 +1,7 @@
 import { Component, Optional, OnInit, ViewChild } from "@angular/core";
 import { AppComponent } from "../app.component";
 import { RoleService } from "../role.service";
-
-import {
-  ActivatedRoute,
-  ParamMap,
-  Router,
-  RoutesRecognized
-} from "@angular/router";
+import {ActivatedRoute,ParamMap,Router,RoutesRecognized} from "@angular/router";
 
 @Component({
   selector: "app-referral",

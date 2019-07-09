@@ -30,6 +30,10 @@ import { CounselClassComponent } from "./admin/counsel-class/counsel-class.compo
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
 import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
+import { PsychologicalTestComponent } from "./psychological-test/psychological-test.component";
+
+
+
 import { SimplePageComponent } from "./simple-page/simple-page.component";
 import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
 import { CounselDocEditorComponent } from "./simple-page/editor/counsel-doc-editor/counsel-doc-editor.component";
@@ -98,6 +102,7 @@ const routes: Routes = [
   },
   { path: "case", component: CaseComponent },
   { path: "interview_statistics", component: InterviewStatisticsComponent },
+  { path: "psychological_test", component: PsychologicalTestComponent },
   {
     path: "admin",
     component: AdminComponent,

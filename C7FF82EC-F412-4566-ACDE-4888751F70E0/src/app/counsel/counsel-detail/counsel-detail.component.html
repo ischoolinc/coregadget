@@ -16,8 +16,7 @@
               <ng-container *ngFor="let doc of printDocument">
                 <a class="dropdown-item"
                    target="_blank"
-                   [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_doc/'+currentStudent.StudentID+'/'+doc.PrintDocumentID+')'"
-                   >
+                   [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_doc/'+currentStudent.StudentID+'/'+doc.PrintDocumentID+')'">
                   {{doc.Name}}&nbsp;(&nbsp;{{doc.DocumentName}}&nbsp;)
                 </a>
               </ng-container>

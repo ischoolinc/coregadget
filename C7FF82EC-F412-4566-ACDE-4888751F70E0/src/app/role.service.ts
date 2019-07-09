@@ -14,6 +14,8 @@ export class RoleService {
   private _enableCase: boolean = false;
   private _enableInterviewStatistics: boolean = false;
   private _enableAdmin: boolean = false;
+  private _enableComprehensive: boolean = false;
+  private _enablePsychologicalTest: boolean = false;
 
   public get isLoading() {
     return this._isLoading;
@@ -33,6 +35,12 @@ export class RoleService {
   }
   public get enableInterviewStatistics() {
     return this._enableInterviewStatistics;
+  }
+  public get enableComprehensive() {
+    return this._enableComprehensive;
+  }
+  public get enablePsychologicalTest() {
+    return this._enablePsychologicalTest;
   }
   public get enableAdmin() {
     return this._enableAdmin;
@@ -88,6 +96,20 @@ export class RoleService {
       this._role.indexOf("認輔老師") >= 0
     ) {
       this._enableInterviewStatistics = true;
+    }
+
+    if (
+      this._role.indexOf("管理者") >= 0 ||
+      this._role.indexOf("輔導老師") >= 0
+    ) {
+      this._enableComprehensive = true;
+    }
+
+    if (
+      this._role.indexOf("管理者") >= 0 ||
+      this._role.indexOf("輔導老師") >= 0
+    ) {
+      this._enablePsychologicalTest = true;
     }
 
     if (
