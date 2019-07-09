@@ -185,13 +185,21 @@ export class StudentExamScore {
 
 
     GetItemCount(domin: string, subject: string, exam: string, level: string) {
+      
         let value: ItemCount = new ItemCount();
-        let key = domin + "_" + subject + "_" + exam;
+        let key = '';
+        if (domin !== '')
+        {
+            key = domin + "_" + subject + "_" + exam;
+        } else {
+            key = subject + "_" + exam;
+        }
+            
 
         this.AvgItemCountList.forEach(item => {
             if (item.Name === key) {
                 item.itemList.forEach(it => {
-                    if (it.Name === level) {
+                    if (it.Name === level) {                      
                         value = it;
                     }
                 });
