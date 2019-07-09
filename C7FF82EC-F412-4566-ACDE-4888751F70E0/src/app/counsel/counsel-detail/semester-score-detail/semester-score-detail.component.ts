@@ -292,7 +292,9 @@ export class SemesterScoreDetailComponent implements OnInit {
     this.semesterScoreSource = [].concat(resp.SemesterScore || []);
 
     this.semesterScoreSource.forEach(semsScore => {
+     
       if (semsScore.AverageScore) {
+        semsScore.AverageScore = [].concat(semsScore.AverageScore || []);        
         semsScore.AverageScore.forEach(avgScore => {
           let ss = avgScore.SchoolYear + avgScore.Semester;
           if (!tmpSems.includes(ss)) {
@@ -335,7 +337,7 @@ export class SemesterScoreDetailComponent implements OnInit {
   parseScore() {
     this.studentSemesterScore = new StudentSemesterScoreInfo();
 
-    this.semesterScoreSource.forEach(semsScore => {
+    this.semesterScoreSource.forEach(semsScore => {     
       // 學期平均
       if (semsScore.AverageScore) {
         semsScore.AverageScore.forEach(avgScore => {

@@ -38,12 +38,10 @@
                             </ng-container>
                         </tr>
                         <tr class="table-active">
-                            <th>總成績<br>(定期/平時)</th>
-                            <th>領域加權</th>
-                            <th>總成績<br>(定期/平時)</th>
-                            <th>領域加權</th>
-                            <th>總成績<br>(定期/平時)</th>
-                            <th>領域加權</th>
+                            <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                <th>總成績<br>(定期/平時)</th>
+                                <th>領域加權</th>
+                            </ng-container>
                         </tr>
                     </thead>
                     <tbody>
@@ -203,6 +201,90 @@
 
                 </div>
             </div>
+        </div>
+
+        <!-- 高雄國中評量成績 -->
+        <div class="table-responsive table-hover score mb-3">
+            <table class="table">
+                <thead>
+                    <tr class="table-active">
+                        <th rowspan="2"
+                            scope="col">領域名稱</th>
+                        <th rowspan="2"
+                            scope="col">科目名稱</th>
+                        <th rowspan="2"
+                            scope="col">權數</th>
+                        <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                            <th colspan="2"
+                                scope="col">{{examName}}</th>
+                        </ng-container>                       
+                    </tr>
+                    <tr class="table-active">
+                        <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                            <th>成績</th>
+                            <th>領域加權</th>
+                        </ng-container>                      
+                    </tr>
+                </thead>
+                <tbody>
+                        <ng-container *ngFor="let domainItem of studentExamScore.DomainScoreList">
+                                <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
+                                    <tr *ngIf="rowIdx == 0">
+                                        <th [rowSpan]="domainItem.CourseScoreList.length"
+                                            scope="row">{{domainItem.DomainName}}
+                                        </th>
+                                        <th>{{courseItem.SubjectName}}</th>
+                                        <td>{{courseItem.CourseCredit || ''}}</td>
+                                        <ng-container *ngFor="let exam of courseItem.ExamScoreList">
+                                            <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
+                                                {{exam.ExamScore || ''}}
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                                      class="text-danger">↓</span>
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                      class="text-success">↑</span>                                                                                             
+                                            </td>
+                                            <td [rowSpan]="domainItem.CourseScoreList.length"
+                                                [ngClass]="(domainItem.GetAvgExamScore(exam.ExamName) < passScore) ? 'fail':''">
+                                                {{domainItem.GetAvgExamScore(exam.ExamName)||''}}
+                                                <span *ngIf="domainItem.GetUpDown(exam.ExamName).isDown"
+                                                      class="text-danger">↓</span>
+                                                <span *ngIf="domainItem.GetUpDown(exam.ExamName).isUp"
+                                                      class="text-success">↑</span>
+                                            </td>
+                                        </ng-container>
+    
+    
+                                    </tr>
+                                    <tr *ngIf="rowIdx > 0">
+                                        <th>{{courseItem.SubjectName}}</th>
+                                        <td>{{courseItem.CourseCredit}}</td>
+                                        <ng-container *ngFor="let exam of courseItem.ExamScoreList">
+                                            <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
+                                                {{exam.ExamScore || ''}}
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                                      class="text-danger">↓</span>
+                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                      class="text-success">↑</span>
+                                            </td>
+                                            <!-- <td>
+                                       {{domainItem.DomainScore}}
+                                   </td> -->
+                                        </ng-container>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <tr>
+                                <th colspan="3"
+                                    scope="row">加權平均</th>
+                                <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
+                                    <td colspan="2"
+                                        [ngClass]="(studentExamScore.GetExamAvgScore(examName) < passScore) ? 'fail':''">
+                                        {{ studentExamScore.GetExamAvgScore(examName)||''}}
+                                    </td>
+                                </ng-container>
+                            </tr>
+                </tbody>
+            </table>
         </div>
 
     </ng-container>

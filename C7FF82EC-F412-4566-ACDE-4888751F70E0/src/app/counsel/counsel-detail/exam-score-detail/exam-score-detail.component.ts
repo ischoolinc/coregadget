@@ -24,7 +24,7 @@ export class ExamScoreDetailComponent implements OnInit {
 
   // 評量成績來源資料
   examScoreSource: any[] = [];
-
+  examScoreOrdinarilySource: any[] = [];
   SelectExamCountName: string = "";
 
   currentClassExamScoreSource: any[] = [];
@@ -34,6 +34,7 @@ export class ExamScoreDetailComponent implements OnInit {
   studentExamScore: StudentExamScore = new StudentExamScore();
   // 真正使用 service
   serviceGetExamScore: string = "";
+  serviceGetExamScoreOrdinarilyScoreJHKH: string = "GetExamScoreOrdinarilyScoreJHKH";
   serviceSchoolCoreInfo: string = "GetSchoolCoreInfo";
   serviceGetClassExamScore: string = "GetClassExamScoreJHHC";
   serviceGetClassExamScoreSH: string = "GetClassExamScoreSH";
@@ -53,6 +54,13 @@ export class ExamScoreDetailComponent implements OnInit {
       this.GetExamScore();
     }
 
+    if (this.selectSchoolType === 'JHKH') {
+      // 高雄版國中小評量成績
+      this.serviceGetExamScore = "GetExamScoreJHKH";
+      this.GetExamScoreOrdinarilyScoreJHKH();
+
+    }
+
     if (this.selectSchoolType === 'SH') {
       // 高中評量成績
       this.serviceGetExamScore = "GetExamScoreSH";
@@ -62,6 +70,22 @@ export class ExamScoreDetailComponent implements OnInit {
     // 取得預設學年度學期
     this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
     this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
+  }
+
+  // 高雄評量成績
+  async GetExamScoreOrdinarilyScoreJHKH() {
+    let resp = await this.dsaService.send(this.serviceGetExamScoreOrdinarilyScoreJHKH, {
+      Request: {
+        StudentID: this.counselDetailComponent.currentStudent.StudentID
+      }
+    });
+
+    this.examScoreOrdinarilySource = [].concat(resp.CourseExamScore || []);
+
+    this.examScoreOrdinarilySource.forEach(ExamScore => {
+
+    });
+    this.GetExamScore();
   }
 
   // 取得學制
@@ -505,9 +529,13 @@ export class ExamScoreDetailComponent implements OnInit {
         }
       });
     });
-    
+
     if (this.studentExamScore.ExamNameList.length) {
       this.SelectExamCountName = this.studentExamScore.ExamNameList[0];
+
+      if (this.selectSchoolType === 'JHKH') {
+        this.studentExamScore.ExamNameList.push('平時評量');
+      }
     }
 
     this.studentExamScore.CourseScoreList.forEach(courseItem => {
@@ -548,6 +576,27 @@ export class ExamScoreDetailComponent implements OnInit {
       domainItem.CalcDomainScore();
       domainItem.CalcUpDown();
     });
+
+    // 處理高雄平時評量
+    if (this.selectSchoolType === 'JHKH') {
+      this.studentExamScore.DomainScoreList.forEach(domainItem => {
+        this.studentExamScore.CourseScoreList.forEach(courseItem => {
+              this.examScoreOrdinarilySource.forEach(item => {
+                
+                if (courseItem.CourseName === item.CourseName && item.SchoolYear == this.selectSchoolYearSemester.SchoolYear && item.Semester == this.selectSchoolYearSemester.Semester) {
+                  if (item.OrdinarilyScore) {
+                    let examItem = courseItem.ExamScoreList[courseItem.ExamScoreList.length -1];
+                    examItem.ExamName = '平時評量';
+                    examItem.ExamScore = parseFloat(item.OrdinarilyScore);
+                  }
+                }
+              });            
+        });
+
+      });
+
+
+    }
 
     this.studentExamScore.DomainScoreList.sort(function (a, b) {
       return a.Order - b.Order;

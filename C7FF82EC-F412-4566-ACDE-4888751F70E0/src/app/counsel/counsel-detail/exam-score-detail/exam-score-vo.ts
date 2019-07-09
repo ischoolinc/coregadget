@@ -30,7 +30,7 @@ export class DomainScoreInfo {
                         // 參考 Web 評量成績 處理 JavaScript 進位方式
                         if (item.Name === key) {
                             let CourseCredit = courseItem.CourseCredit * 100000;
-                            let Score = examItem.ExamScore * 100000;                            
+                            let Score = examItem.ExamScore * 100000;
                             item.SumCredit += CourseCredit;
                             item.SumScore += (CourseCredit * Score);
                         }
@@ -45,7 +45,7 @@ export class DomainScoreInfo {
     }
 
     GetAvgExamScore(examName: string) {
-        let value = -1;
+        let value: number;
         this.AvgExamScoreList.forEach(item => {
             if (item.Name === examName) {
                 value = item.AvgSocre;
@@ -163,10 +163,10 @@ export class StudentExamScore {
                         if (item.Name === key) {
                             // 參考 Web 評量成績 處理 JavaScript 進位方式
                             let CourseCredit = courseItem.CourseCredit * 100000;
-                            let Score = examItem.ExamScore * 100000;                            
+                            let Score = examItem.ExamScore * 100000;
                             item.SumCredit += CourseCredit;
-                            item.SumScore += (CourseCredit * Score);                           
-                          
+                            item.SumScore += (CourseCredit * Score);
+
                         }
                     })
                 });
@@ -192,21 +192,20 @@ export class StudentExamScore {
 
 
     GetItemCount(domin: string, subject: string, exam: string, level: string) {
-      
+
         let value: ItemCount = new ItemCount();
         let key = '';
-        if (domin !== '')
-        {
+        if (domin !== '') {
             key = domin + "_" + subject + "_" + exam;
         } else {
             key = subject + "_" + exam;
         }
-            
+
 
         this.AvgItemCountList.forEach(item => {
             if (item.Name === key) {
                 item.itemList.forEach(it => {
-                    if (it.Name === level) {                      
+                    if (it.Name === level) {
                         value = it;
                     }
                 });
@@ -246,5 +245,5 @@ export class ItemCount {
 
 export class ItemCounts {
     Name: string;
-    itemList: ItemCount[] = [];    
+    itemList: ItemCount[] = [];
 }
