@@ -4234,6 +4234,11 @@ node-sass@4.10.0:
     stdout-stream "^1.4.0"
     "true-case-path" "^1.0.2"
 
+nodexml@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/nodexml/-/nodexml-1.0.2.tgz#fb2973fa43a59ed46c820d38227ef49b9e92e2aa"
+  integrity sha1-+ylz+kOlntRsgg04In70m56S4qo=
+
 "nopt@2 || 3", nopt@3.x:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
