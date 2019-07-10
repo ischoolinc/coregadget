@@ -1,0 +1,41 @@
+<h4>服務學習</h4>
+<ng-container *ngIf="!isLoading; else tplLoading">
+  <ng-container *ngIf="serviceList.length; else tplNoData">
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">          
+          <li>學年度</li>
+          <li>學期</li>
+          <li>發生日期</li>
+          <li>事由</li>
+          <li>時數</li>
+          <li>主辦單位</li>
+          <li>校內校外</li>
+          <li>登錄日期</li>
+          <li>備註</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr" *ngFor="let data of serviceList">
+          <li data-title="學年度">{{data.SchoolYear}}</li>
+          <li data-title="學期">{{data.Semester}}</li>
+          <li data-title="發生日期">{{data.OccurDate}}</li>
+          <li data-title="事由">{{data.Reason}}</li>
+          <li data-title="時數">{{data.Hours}}</li>
+          <li data-title="主辦單位">{{data.Organizers}}</li>
+          <li data-title="校內校外">{{data.InternalOrExternal}}</li>
+          <li data-title="登錄日期">{{data.RegisterDate}}</li>
+          <li data-title="備註">{{data.Remark}}</li>
+        </ol>
+      </li>
+    </ul>
+  </ng-container>
+</ng-container>
+
+<ng-template #tplLoading>
+  <div class="text-center">Loading...</div>
+</ng-template>
+
+<ng-template #tplNoData>
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;"> 沒有資料 </div>
+</ng-template>

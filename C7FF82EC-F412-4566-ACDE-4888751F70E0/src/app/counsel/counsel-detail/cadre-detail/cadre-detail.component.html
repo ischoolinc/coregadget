@@ -1,0 +1,33 @@
+<h4>幹部紀錄</h4>
+<ng-container *ngIf="!isLoading; else tplLoading">
+  <ng-container *ngIf="cadreList.length; else tplNoData">
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">          
+          <li>學年度</li>
+          <li>學期</li>
+          <li>幹部類別</li>
+          <li>幹部名稱</li>
+          <li>說明</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr" *ngFor="let cadre of cadreList">
+          <li data-title="學年度">{{cadre.SchoolYear}}</li>
+          <li data-title="學期">{{cadre.Semester}}</li>
+          <li data-title="幹部類別">{{cadre.CadreType}}</li>
+          <li data-title="幹部名稱">{{cadre.CadreName}}</li>
+          <li data-title="說明">{{cadre.Text}}</li>
+        </ol>
+      </li>
+    </ul>
+  </ng-container>
+</ng-container>
+
+<ng-template #tplLoading>
+  <div class="text-center">Loading...</div>
+</ng-template>
+
+<ng-template #tplNoData>
+    <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;"> 沒有資料 </div>
+</ng-template>
