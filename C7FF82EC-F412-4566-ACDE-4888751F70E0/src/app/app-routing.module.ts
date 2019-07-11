@@ -38,6 +38,7 @@ import { SimplePageComponent } from "./simple-page/simple-page.component";
 import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
 import { CounselDocEditorComponent } from "./simple-page/editor/counsel-doc-editor/counsel-doc-editor.component";
 import { ComprehensiveEditorComponent } from "./simple-page/editor/comprehensive-editor/comprehensive-editor.component";
+import { ComprehensiveFillComponent } from "./simple-page/comprehensive-fill/comprehensive-fill.component";
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -126,7 +127,9 @@ const routes: Routes = [
     children: [
       { path: "editor/counsel_doc_editor", component: CounselDocEditorComponent },
       { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
-      { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent }
+      { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent },
+      { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
+      { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
     ]
   },
 ];
