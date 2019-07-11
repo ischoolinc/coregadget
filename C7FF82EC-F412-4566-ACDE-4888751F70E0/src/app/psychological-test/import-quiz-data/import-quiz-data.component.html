@@ -1,0 +1,43 @@
+<div class="modal fade"
+     id="psychological-import"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modal-title"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="modal-title">{{QuizData.QuizName}}</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label class="btn btn-info">
+                <input type="file"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                (change)="onFileChange($event)"
+                style="display:none;"                
+              />
+              <i class=""></i> 上傳 Excel 檔
+            </label>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-dark"
+                data-dismiss="modal">取消</button>
+        <button type="button"
+                class="btn btn-info"
+                (click)="save()">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>

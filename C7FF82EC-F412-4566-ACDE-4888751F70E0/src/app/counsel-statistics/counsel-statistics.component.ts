@@ -103,6 +103,7 @@ export class CounselStatisticsComponent implements OnInit {
           '個案類別': da.ProblemCategoryValue.join(','),
           '新案舊案': da.Status,
           '晤談次數': da.Count,
+          '其他服務次數': da.OtherCount,
         };
         data1.push(item);
       })

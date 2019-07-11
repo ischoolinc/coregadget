@@ -56,6 +56,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
+import { ImportQuizDataComponent } from './psychological-test/import-quiz-data/import-quiz-data.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-rol
     PsychologicalTestComponent,
     AddCounselTeacherModalComponent,
     AddCounselTeacherRoleModalComponent,
-    DelCounselTeacherRoleModalComponent
+    DelCounselTeacherRoleModalComponent,
+    ImportQuizDataComponent
   ],
   imports: [
     BrowserModule,

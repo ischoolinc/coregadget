@@ -5,7 +5,7 @@ import { CaseStudent, CaseTeacher, SelectCaseTeacher, CounselTeacher } from "./c
 import { DsaService } from "../dsa.service";
 import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.component";
 import { GlobalService } from "../global.service";
-import { debug } from 'util';
+
 @Component({
   selector: "app-case",
   templateUrl: "./case.component.html",
