@@ -57,6 +57,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
 import { ImportQuizDataComponent } from './psychological-test/import-quiz-data/import-quiz-data.component';
+import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
+import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +106,10 @@ import { ImportQuizDataComponent } from './psychological-test/import-quiz-data/i
     AddCounselTeacherModalComponent,
     AddCounselTeacherRoleModalComponent,
     DelCounselTeacherRoleModalComponent,
-    ImportQuizDataComponent
+    ImportQuizDataComponent,
+    CadreDetailComponent,
+    ServiceLearningDetailComponent
+
   ],
   imports: [
     BrowserModule,

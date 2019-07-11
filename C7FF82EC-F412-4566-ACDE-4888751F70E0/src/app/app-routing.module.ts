@@ -31,13 +31,12 @@ import { ComprehensiveComponent } from "./comprehensive/comprehensive.component"
 import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
 import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
 import { PsychologicalTestComponent } from "./psychological-test/psychological-test.component";
-
-
-
 import { SimplePageComponent } from "./simple-page/simple-page.component";
 import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
 import { CounselDocEditorComponent } from "./simple-page/editor/counsel-doc-editor/counsel-doc-editor.component";
 import { ComprehensiveEditorComponent } from "./simple-page/editor/comprehensive-editor/comprehensive-editor.component";
+import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
+import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -60,6 +59,8 @@ const routes: Routes = [
             component: PsychologicalTestDetailComponent
           },
           { path: "absent", component: AbsentDetailComponent },
+          { path: 'cadre', component: CadreDetailComponent },
+          { path: 'service_learning', component: ServiceLearningDetailComponent},
           { path: "exam_score", component: ExamScoreDetailComponent },
           { path: "semester_score", component: SemesterScoreDetailComponent },
           {

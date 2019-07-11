@@ -87,6 +87,41 @@ export class CounselStudentDataService {
 
     return examList;
   }
+
+  /**取得學生幹部紀錄 */
+  async getStudentCadre(body: any) {
+    const rsp = await this.dsaSrv.send('GetStudentCadre', body);
+    const dataList: CadreRecord[] = rsp.Cadres || [] as CadreRecord[];
+
+    return dataList;
+  }
+
+  /**取得學生服務學習紀錄 */
+  async getStudentServiceLearning(body: any) {
+    const rsp = await this.dsaSrv.send('GetStudentServiceLearning', body);
+    const dataList: ServiceLearningRecord[] = rsp.ServiceLearnings || [] as ServiceLearningRecord[];
+
+    dataList.forEach((data: ServiceLearningRecord) => {
+      // OccurDate
+      {
+        const date = new Date(data.OccurDate);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : (date.getMonth() + 1);
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+        data.OccurDate = `${year}/${month}/${day}`;
+      }
+      // RegisterDate
+      {
+        const date = new Date(data.RegisterDate);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : (date.getMonth() + 1);
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+        data.RegisterDate = `${year}/${month}/${day}`;
+      }
+    });
+
+    return dataList;
+  }
 }
 
 /** Record */
@@ -153,4 +188,26 @@ export class DisciplineRecord {
   DemeritClearReason: string;
   /**懲戒資訊 畫面呈現用 */
   Detail: string;
+}
+
+/**幹部資料 */
+export class CadreRecord {
+  SchoolYear: string;
+  Semester: string;
+  CadreType: string;
+  CadreName: string;
+  Text: string;
+}
+
+/**服務學習資料 */
+export class ServiceLearningRecord {
+  SchoolYear: string;
+  Semester: string;
+  OccurDate: string;
+  Reason: string;
+  Hours: string;
+  Organizers: string;
+  InternalOrExternal: string;
+  RegisterDate: string;
+  Remark: string;
 }
