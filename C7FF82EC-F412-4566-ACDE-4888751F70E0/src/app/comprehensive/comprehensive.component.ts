@@ -3,6 +3,7 @@ import { AppComponent } from '../app.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DsaService } from '../dsa.service';
 import { timeout } from 'rxjs/operators';
+import { RoleService } from "../role.service";
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 
 @Component({
@@ -23,6 +24,7 @@ export class ComprehensiveComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
+    public roleService: RoleService,
     @Optional()
     private appComponent: AppComponent
   ) {

@@ -1,5 +1,8 @@
 <div class="tab-content">
-  <div class="tab-pane fade-in show active">
+  <app-permission-denied *ngIf="!roleService.isLoading && !roleService.enableComprehensive">
+  </app-permission-denied>
+  <div *ngIf="!roleService.isLoading && roleService.enableComprehensive"
+       class="tab-pane fade-in show active">
     <ng-container *ngIf="!isLoading;else tmpLoading">
       <!-- <div class="float-right d-flex mb-3 mb-md-0 sticky-top">
         <ng-container *ngTemplateOutlet="plugin"></ng-container>
