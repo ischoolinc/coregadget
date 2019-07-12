@@ -110,17 +110,10 @@ import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service
     AddCounselTeacherRoleModalComponent,
     DelCounselTeacherRoleModalComponent,
     ComprehensiveFillComponent,
-    ComprehensiveClassViewComponent
+    ComprehensiveClassViewComponent,
     ImportQuizDataComponent,
     CadreDetailComponent,
     ServiceLearningDetailComponent
-<<<<<<< .mine
-    ServiceLearningDetailComponent
-
-=======
-
-
->>>>>>> .theirs
   ],
   imports: [
     BrowserModule,
