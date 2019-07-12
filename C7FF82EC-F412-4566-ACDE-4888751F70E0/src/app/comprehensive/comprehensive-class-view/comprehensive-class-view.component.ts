@@ -40,6 +40,7 @@ export class ComprehensiveClassViewComponent implements OnInit {
             });
           }
         });
+        this.comprehensiveComponent.changeDetectorRef.detectChanges();
 
         this.dsns = gadget.getApplication().accessPoint;
         this.load();

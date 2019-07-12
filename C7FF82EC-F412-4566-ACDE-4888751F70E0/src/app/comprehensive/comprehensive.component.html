@@ -59,7 +59,10 @@
                   (click)="genSSNKey(currentSection.FillInSectionID)">
             <span>產生填寫代碼(身分證號)</span>
           </button>
-          <button class="btn btn-info ml-auto"
+          <a class="text-info ml-auto my-auto"
+             target="_blank"
+             [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">填寫頁面</a>
+          <button class="btn btn-info ml-2"
                   (click)="shoModal()">
             <i class="material-icons">add</i> 產生綜合紀錄表
           </button>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional, TemplateRef } from '@angular/core';
+import { Component, OnInit, Optional, TemplateRef, ChangeDetectorRef } from '@angular/core';
 import { AppComponent } from '../app.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DsaService } from '../dsa.service';
@@ -22,11 +22,14 @@ export class ComprehensiveComponent implements OnInit {
   plugin: TemplateRef<any>;
   generater: any = {};
 
+  dsns:string;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
     public roleService: RoleService,
+    public changeDetectorRef: ChangeDetectorRef,
     @Optional()
     private appComponent: AppComponent
   ) {
@@ -35,6 +38,7 @@ export class ComprehensiveComponent implements OnInit {
 
   ngOnInit() {
     this.appComponent.currentComponent = "comprehensive";
+    this.dsns = gadget.getApplication().accessPoint;
     this.loadData();
   }
 

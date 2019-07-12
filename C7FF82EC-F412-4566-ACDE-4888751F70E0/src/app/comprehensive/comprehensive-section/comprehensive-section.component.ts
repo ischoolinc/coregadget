@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from '@angular/core';
+import { Component, OnInit, Optional, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { DsaService } from '../../dsa.service';
 import { ComprehensiveComponent } from "../comprehensive.component";
@@ -17,6 +17,7 @@ export class ComprehensiveSectionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
+    public changeDetectorRef: ChangeDetectorRef,
     @Optional()
     public comprehensiveComponent: ComprehensiveComponent
   ) { }
@@ -64,9 +65,11 @@ export class ComprehensiveSectionComponent implements OnInit {
                   this.statusCheck[classRec.ClassName + "_" + subject] = classRec.Count;
                 });
               }
+              this.changeDetectorRef.detectChanges();
             }
           });
-        })
+        });
+        this.comprehensiveComponent.changeDetectorRef.detectChanges();
       }
     );
   }
