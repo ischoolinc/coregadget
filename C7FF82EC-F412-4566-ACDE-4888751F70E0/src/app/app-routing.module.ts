@@ -30,6 +30,7 @@ import { CounselClassComponent } from "./admin/counsel-class/counsel-class.compo
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
 import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
+import { ComprehensiveClassViewComponent } from "./comprehensive/comprehensive-class-view/comprehensive-class-view.component";
 import { PsychologicalTestComponent } from "./psychological-test/psychological-test.component";
 
 
@@ -117,7 +118,8 @@ const routes: Routes = [
     component: ComprehensiveComponent,
     children: [
       { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
-      { path: "section/:schoolYear/:semester", component: ComprehensiveSectionComponent }
+      { path: ":fill_in_section_id/section", component: ComprehensiveSectionComponent },
+      { path: ":fill_in_section_id/class/:class_id", component: ComprehensiveClassViewComponent }
     ]
   },
   {

@@ -57,6 +57,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
 import { ComprehensiveFillComponent } from './simple-page/comprehensive-fill/comprehensive-fill.component';
+import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-class-view/comprehensive-class-view.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { ComprehensiveFillComponent } from './simple-page/comprehensive-fill/com
     AddCounselTeacherModalComponent,
     AddCounselTeacherRoleModalComponent,
     DelCounselTeacherRoleModalComponent,
-    ComprehensiveFillComponent
+    ComprehensiveFillComponent,
+    ComprehensiveClassViewComponent
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,29 @@
-<p>
-  comprehensive-section works!
-</p>
+<ul class="rwd-table">
+  <li class="thead">
+    <ol class="tr">
+      <li>年級</li>
+      <li>班級</li>
+      <li *ngFor="let subject of this.comprehensiveComponent.currentSection.Subject">{{subject}}</li>
+      <li>開啟</li>
+    </ol>
+  </li>
+  <li class="tbody">
+    <ol *ngFor="let classRec of this.comprehensiveComponent.currentSection.Class"
+        class="tr">
+      <li data-title="年級">{{classRec.GradeYear}}</li>
+      <li data-title="班級">
+        {{classRec.ClassName}}
+      </li>
+      <li *ngFor="let subject of this.comprehensiveComponent.currentSection.Subject"
+          class="text-danger"
+          [ngClass]="{'text-success': statusCheck[classRec.ClassName + '_' + subject]=='已完成', 'text-muted': statusCheck[classRec.ClassName + '_' + subject]=='--' || statusCheck[classRec.ClassName + '_' + subject]=='...'}">
+        {{statusCheck[classRec.ClassName + "_" + subject]}}
+      </li>
+      <li>
+        <a class="text-info"
+           [routerLink]="[ '/comprehensive', fillInSectionID, 'class',  classRec.ClassID]">開啟
+        </a>
+      </li>
+    </ol>
+  </li>
+</ul>
