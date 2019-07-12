@@ -18,7 +18,7 @@ export class ComprehensiveSectionComponent implements OnInit {
     private router: Router,
     private dsaService: DsaService,
     @Optional()
-    private comprehensiveComponent: ComprehensiveComponent
+    public comprehensiveComponent: ComprehensiveComponent
   ) { }
 
   ngOnInit() {

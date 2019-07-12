@@ -3,18 +3,18 @@
     <ol class="tr">
       <li>年級</li>
       <li>班級</li>
-      <li *ngFor="let subject of this.comprehensiveComponent.currentSection.Subject">{{subject}}</li>
+      <li *ngFor="let subject of comprehensiveComponent.currentSection.Subject">{{subject}}</li>
       <li>開啟</li>
     </ol>
   </li>
   <li class="tbody">
-    <ol *ngFor="let classRec of this.comprehensiveComponent.currentSection.Class"
+    <ol *ngFor="let classRec of comprehensiveComponent.currentSection.Class"
         class="tr">
       <li data-title="年級">{{classRec.GradeYear}}</li>
       <li data-title="班級">
         {{classRec.ClassName}}
       </li>
-      <li *ngFor="let subject of this.comprehensiveComponent.currentSection.Subject"
+      <li *ngFor="let subject of comprehensiveComponent.currentSection.Subject"
           class="text-danger"
           [ngClass]="{'text-success': statusCheck[classRec.ClassName + '_' + subject]=='已完成', 'text-muted': statusCheck[classRec.ClassName + '_' + subject]=='--' || statusCheck[classRec.ClassName + '_' + subject]=='...'}">
         {{statusCheck[classRec.ClassName + "_" + subject]}}

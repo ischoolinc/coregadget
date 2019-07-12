@@ -15,7 +15,7 @@ export class ImportQuizDataComponent implements OnInit {
 
   save() {}
 
-  onFileChange(){
+  onFileChange(args){
     
   }
 }
