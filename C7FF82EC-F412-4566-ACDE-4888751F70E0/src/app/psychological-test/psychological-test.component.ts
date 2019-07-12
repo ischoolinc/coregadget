@@ -35,7 +35,10 @@ export class PsychologicalTestComponent implements OnInit {
 
   ngOnInit() {
     //var str = node2json.obj2xml({ test: "test" },"root");
-    this.loadData();
+    
+    // let x1 = {Item:[{ '@name': "分數",'@value': "100" }]};
+    // var str = node2json.obj2xml(x1);
+  this.loadData();
   }
 
   loadData() {
@@ -101,7 +104,6 @@ export class PsychologicalTestComponent implements OnInit {
     this.AllClassQuizCountSource.forEach(item => {
       if (item.ClassHasQuizCount) {
         let ClassHasQuizCount = [].concat(item.ClassHasQuizCount || []);
-        debugger;
         ClassHasQuizCount.forEach(qCount => {
 
           if (qCount.class_name) {
@@ -135,6 +137,7 @@ export class PsychologicalTestComponent implements OnInit {
       // 重整資料
       this.loadData();
       $("#psychological-import").off("hide.bs.modal");
+
     });
   }
 }
