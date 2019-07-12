@@ -30,11 +30,13 @@ import { CounselClassComponent } from "./admin/counsel-class/counsel-class.compo
 import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
 import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
 import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
+import { ComprehensiveClassViewComponent } from "./comprehensive/comprehensive-class-view/comprehensive-class-view.component";
 import { PsychologicalTestComponent } from "./psychological-test/psychological-test.component";
 import { SimplePageComponent } from "./simple-page/simple-page.component";
 import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
 import { CounselDocEditorComponent } from "./simple-page/editor/counsel-doc-editor/counsel-doc-editor.component";
 import { ComprehensiveEditorComponent } from "./simple-page/editor/comprehensive-editor/comprehensive-editor.component";
+import { ComprehensiveFillComponent } from "./simple-page/comprehensive-fill/comprehensive-fill.component";
 import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
 import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
 
@@ -117,7 +119,8 @@ const routes: Routes = [
     component: ComprehensiveComponent,
     children: [
       { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
-      { path: "section/:schoolYear/:semester", component: ComprehensiveSectionComponent }
+      { path: ":fill_in_section_id/section", component: ComprehensiveSectionComponent },
+      { path: ":fill_in_section_id/class/:class_id", component: ComprehensiveClassViewComponent }
     ]
   },
   {
@@ -127,7 +130,9 @@ const routes: Routes = [
     children: [
       { path: "editor/counsel_doc_editor", component: CounselDocEditorComponent },
       { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
-      { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent }
+      { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent },
+      { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
+      { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
     ]
   },
 ];

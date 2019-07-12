@@ -10,8 +10,8 @@ import { ComprehensiveComponent } from "../comprehensive.component";
 })
 export class ComprehensiveSectionComponent implements OnInit {
 
-  schoolYear: string;
-  semester: string;
+  fillInSectionID: string;
+  statusCheck: any = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -24,14 +24,50 @@ export class ComprehensiveSectionComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
-        this.schoolYear = params.get("schoolYear");
-        this.semester = params.get("semester");
-        this.comprehensiveComponent.semeserList.forEach(target => {
-          if (target.SchoolYear == this.schoolYear && target.Semester == this.semester)
-            this.comprehensiveComponent.currentSemester = target;
+        this.fillInSectionID = params.get("fill_in_section_id");
+        this.comprehensiveComponent.currentClass = null;
+        this.comprehensiveComponent.sectionList.forEach(sectionRec => {
+          if (sectionRec.FillInSectionID == this.fillInSectionID) {
+            this.comprehensiveComponent.currentSection = sectionRec;
+          }
         });
+        this.comprehensiveComponent.currentSection.Class.forEach(classRec => {
+          this.comprehensiveComponent.currentSection.Subject.forEach(subject => {
+            if (classRec.Subject.indexOf(subject) >= 0) {
+              this.statusCheck[classRec.ClassName + "_" + subject] = "...";
+            }
+            else {
+              this.statusCheck[classRec.ClassName + "_" + subject] = "--";
+            }
+          });
+        });
+        this.comprehensiveComponent.currentSection.Subject.forEach(subject => {
+          gadget.getContract("1campus.counsel.teacher").send({
+            service: "GetFillInSectionClassCount",
+            body: {
+              FillInSectionID: this.fillInSectionID,
+              Subject: subject
+            },
+            result: (rsp, err, xmlhttp) => {
+              if (err) {
+                alert(err);
+              } else {
+                this.comprehensiveComponent.currentSection.Class.forEach(classRec => {
+                  if (classRec.Subject.indexOf(subject) >= 0) {
+                    this.statusCheck[classRec.ClassName + "_" + subject] = "已完成";
+                  }
+                  else {
+                    this.statusCheck[classRec.ClassName + "_" + subject] = "--";
+                  }
+                });
+                [].concat(rsp.Class || []).forEach(classRec => {
+                  this.statusCheck[classRec.ClassName + "_" + subject] = classRec.Count;
+                });
+              }
+            }
+          });
+        })
       }
     );
   }
-
 }
