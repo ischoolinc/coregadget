@@ -56,6 +56,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
+import { ComprehensiveFillComponent } from './simple-page/comprehensive-fill/comprehensive-fill.component';
+import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-class-view/comprehensive-class-view.component';
+
 import { ImportQuizDataComponent } from './psychological-test/import-quiz-data/import-quiz-data.component';
 import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
 import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
@@ -106,10 +109,11 @@ import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service
     AddCounselTeacherModalComponent,
     AddCounselTeacherRoleModalComponent,
     DelCounselTeacherRoleModalComponent,
+    ComprehensiveFillComponent,
+    ComprehensiveClassViewComponent,
     ImportQuizDataComponent,
     CadreDetailComponent,
     ServiceLearningDetailComponent
-
   ],
   imports: [
     BrowserModule,

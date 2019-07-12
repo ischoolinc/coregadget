@@ -201,7 +201,7 @@ export class ImportQuizDataComponent implements OnInit {
       });
    
     
-debugger;
+
       let req = {
         Request: {
           ImportType: this.selectImportStudentType,

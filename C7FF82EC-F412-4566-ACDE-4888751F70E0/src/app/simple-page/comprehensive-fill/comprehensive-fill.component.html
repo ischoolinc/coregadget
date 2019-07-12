@@ -7,15 +7,19 @@
       <span class="mx-1">{{requireList.length}}</span>
       <span>個項目未填寫</span>
     </button>
-    <button class="btn btn-info ml-1"
-            data-toggle="modal"
-            data-backdrop="static"
-            data-target="#modal-editor">
-      <i class="material-icons">edit</i>
-      設定
+    <button *ngIf="questionSubject&&questionSubject.length"
+            class="btn btn-info ml-1"
+            (click)="save()"
+            [disabled]="isSaving">
+      <i class="material-icons">save_alt</i>
+      <span *ngIf="!isSaving">儲存</span>
+      <span *ngIf="isSaving">儲存中...</span>
     </button>
   </div>
-  <ng-container *ngIf="questionSubject">
+  <ng-container *ngIf="schoolInfo&&schoolInfo.SchoolName">
+    <ng-container *ngIf="questionSubject">
+      <h4>{{schoolInfo.SchoolName}} {{sectionInfo.SchoolYear}}學年度 第{{sectionInfo.Semester}}學期 {{sectionInfo.Name}}</h4>
+      <h4>{{studentInfo.ClassName}}班 {{studentInfo.SeatNo}}號 {{studentInfo.Name}}</h4>
       <ng-container *ngFor="let subject of questionSubject">
         <div class="card mb-2">
           <h4 class="m-2">{{subject.Subject}}</h4>
@@ -94,7 +98,7 @@
                               </label>
                             </div>
                           </ng-container>
-    
+
                           <ng-template #optionLayout>
                             <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
                               <ng-container *ngIf="optionKey[optionPart];else normalPart">
@@ -118,7 +122,7 @@
                               </ng-template>
                             </ng-container>
                           </ng-template>
-    
+
                         </ng-container>
                       </ng-container>
                     </div>
@@ -130,47 +134,42 @@
           </table>
         </div>
       </ng-container>
+    </ng-container>
   </ng-container>
 </div>
 
 
 <div class="modal fade"
-     id="modal-editor"
+     id="modal-key"
      tabindex="-1"
      role="dialog"
      aria-labelledby="modal-title"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg"
+  <div class="modal-dialog modal-sm"
        role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"
-            id="modal-title">設定綜合紀錄表填寫題目</h5>
-        <button type="button"
+            id="modal-title">資料填寫</h5>
+        <!-- <button type="button"
                 class="close"
                 data-dismiss="modal"
                 aria-label="Close">
           <span aria-hidden="true">&times;</span>
-        </button>
+        </button> -->
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="xml"
-                 class="col-form-label">XML樣板</label>
-          <textarea class="form-control"
-                    id="xml"
-                    rows="15"
-                    [(ngModel)]="config.configXml"
-                    placeholder=""></textarea>
+          <label for="key"
+                 class="col-form-label">請輸入填寫代碼</label>
+          <input id="key"
+                 [(ngModel)]="config.key" />
         </div>
       </div>
       <div class="modal-footer">
         <button type="button"
-                class="btn btn-dark"
-                data-dismiss="modal">取消</button>
-        <button type="button"
                 class="btn btn-info"
-                (click)="setConfig()">儲存</button>
+                (click)="setConfig()">確定</button>
       </div>
     </div>
   </div>

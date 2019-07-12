@@ -7,3 +7,4 @@ interface NodeModule {
 declare const gadget: any;
 declare const $: any;
 declare const xml2json: any;
+declare const dsutil: any;

@@ -1,0 +1,34 @@
+<ul class="rwd-table">
+  <li class="thead">
+    <ol class="tr">
+      <li>座號</li>
+      <li>姓名</li>
+      <li>填寫代碼</li>
+      <li *ngFor="let subject of subjectList">{{subject}}</li>
+      <li>連結</li>
+    </ol>
+  </li>
+  <li class="tbody">
+    <ol *ngFor="let studentRec of studentList"
+        class="tr">
+      <li data-title="座號">{{studentRec.SeatNo}}</li>
+      <li data-title="姓名">{{studentRec.Name}}</li>
+      <li data-title="填寫代碼">{{studentRec.Key}}</li>
+      <li *ngFor="let subject of subjectList"
+          [attr.data-title]="subject"
+          class="text-danger"
+          [ngClass]="{'text-success': studentRec.Status[subject]=='已完成'}">
+        {{studentRec.Status[subject]}}
+      </li>
+      <li data-title="連結">
+        <a *ngIf="studentRec.Key"
+           class="text-info"
+           target="_blank"
+           [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill/'+studentRec.Key+')'">開啟</a>
+        <a *ngIf="!studentRec.Key"
+           href="javascript:void(0);"
+           class="text-muted">開啟</a>
+      </li>
+    </ol>
+  </li>
+</ul>
