@@ -16,8 +16,8 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: '',
-                password: ''//window.prompt('password:')
+                // account: 'bubu@debug.ischool.com.tw',
+                // password: '1234'//window.prompt('password:')
             }
         });
     </script>
@@ -260,7 +260,6 @@
                                             </a>
                                         </span>
                                     </div>
-
                                     <div ng-if="current.SelectMode=='Seq.'"
                                          class="btn-group btn-group-sm">
                                         <a class="btn btn-default" ng-click="goPrev()">
@@ -455,12 +454,10 @@
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
                     <thead>
-                            <th colspan="5"></th>
+                            <th colspan="3"></th>
                             <th colspan="4">{{current.template.Name}}</th>
                         </tr>
                         <tr>
-                            <th class="text-center">班級</th>
-                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <!--定期評量項目-->
                             <th ng-repeat="exam in examList | filter: filterPermission"
@@ -475,16 +472,10 @@
                         <tr ng-repeat="stuRec in studentList"
                             ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
                             style="cursor:pointer;">
-                            <td class="text-center">
-                                {{stuRec.ClassName}}
-                            </td>
-                            <td class="text-center">
-                                {{stuRec.SeatNumber}}
-                            </td>
+                            <!-- ng-class="{'boy':stuRec.Gender == '男' ,'girl': stuRec.Gender == '女'}" -->
                             <td class="text-center"
-                                ng-click="setCurrent(stuRec, current.Exam, true, true)"
-                                ng-class="{'boy':stuRec.Gender == '男' ,'girl': stuRec.Gender == '女'}">
-                                <span>{{stuRec.StudentName}}</span>
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.ClassName}} {{stuRec.StudentName}}({{stuRec.SeatNumber}})</span>
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
@@ -511,33 +502,27 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th colspan="4"
-                                class="text-center"></th>
-                            <th colspan="{{current.gradeItemList.length -1}}"
-                                class="text-center">評分項目</th>
+                            <th class="text-center"
+                                colspan="2"></th>
+                            <th class="text-center"
+                                colspan="{{current.gradeItemList.length -1}}">評分項目</th>
                         </tr>
                         <tr>
                             <th class="text-center">
-                                班級
-                            </th>
-                            <th class="text-center">
-                                座號
-                            </th>
-                            <th class="text-center">
                                 姓名
                             </th>
-                            <th ng-repeat="item in current.gradeItemList"
-                                class="text-center">{{item.Name}}</th>
+                            <th class="text-center"
+                                ng-repeat="item in current.gradeItemList">{{item.Name}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="student in studentList">
-                            <td>{{student.ClassName}}</td>
-                            <td>{{student.SeatNumber}}</td>
-                            <td>{{student.StudentName}}</td>
-                            <td ng-repeat="item in current.gradeItemList"
-                                class="text-center"
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.ClassName}} {{student.StudentName}}({{student.SeatNumber}})
+                            </td>
+                            <td class="text-center"
                                 style="position:relative"
+                                ng-repeat="item in current.gradeItemList"
                                 ng-click="setCurrent(student, item, true, true)">
                                 <!--小紅點識別資料是否變更未儲存-->
                                 <div ng-if="!checkOneCell(student, item.ExamID, true, true)"
@@ -784,7 +769,7 @@
                     </textarea>
                 </div>
                 <div class="modal-footer">
-                    <!-- <a ng-if="gradeItemConfig.Mode=='Editor'"
+                    <a ng-if="gradeItemConfig.Mode=='Editor'"
                        ng-click="gradeItemConfig.JSONMode()"
                        class="btn btn-link pull-left ng-scope">
                         JSON Editor
@@ -793,9 +778,10 @@
                        ng-click="gradeItemConfig.CommitJSON()"
                        class="btn btn-link pull-left ng-scope">
                         Parse JSON
-                    </a> -->
+                    </a>
                     <a ng-click="saveGradeItemConfig()"
-                       class="btn btn-default ng-scope">
+                       class="btn btn-default ng-scope"
+                       ng-class="{'btn-danger':!gradeItemConfig.CheckConfig()}">
                         <i class="fa fa-floppy-o"></i>
                         儲存
                     </a>
