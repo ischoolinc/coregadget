@@ -60,6 +60,7 @@ export class PsychologicalTestComponent implements OnInit {
       let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
       xq.forEach(FieldItem => {
         if (FieldItem.Field) {
+          FieldItem.Field = [].concat(FieldItem.Field || []);
           FieldItem.Field.forEach(xItem => {
             let qi: QuizItem = new QuizItem();
             if (xItem.name) {

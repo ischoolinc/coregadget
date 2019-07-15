@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Quiz, QuizItem, ItemCount, StudentQuizData } from '../PsychologicalTest-vo';
+import { Quiz, QuizItem, ItemCount, StudentQuizData, NormInfo, NormTable } from '../PsychologicalTest-vo';
 import * as XLSX from 'xlsx';
 import * as node2json from 'nodexml';
 import * as moment from 'moment';
@@ -63,9 +63,14 @@ export class ImportQuizDataComponent implements OnInit {
     let respData = await this.dsaService.send("AddStudentQuizData",
       importReq
     );
+    
+    if (respData)
+    {
+      alert('匯入完成');
+      $("#psychological-import").modal("hide");
+    }
 
-    alert('匯入完成');
-    console.log(respData);
+  //  console.log(respData);
   }
 
   // 載入匯入欄位名稱
@@ -200,8 +205,12 @@ export class ImportQuizDataComponent implements OnInit {
 
     }
 
-
     if (checkPass) {
+
+      // 處理常模對照
+      let n : NormTable = new NormTable();
+      n.loadMapTable();
+
       // 判斷使用驗證方式
       if (this.selectImportStudentType === '班級座號') {
         let noStudentIDList: string[] = [];
@@ -232,6 +241,18 @@ export class ImportQuizDataComponent implements OnInit {
           this.StudentQuizDataList.forEach(sItem => {
             if (item.class_name == sItem.ClassName && item.seat_no == sItem.SeatNo) {
               sItem.StudentID = item.student_id;
+              sItem.Birthday = moment(item.birthdate);
+              sItem.parseAge(moment(item.now_date));
+              sItem.Gender = item.gender;
+              if (sItem.QuizItemList[0].QuizName)
+              {
+                sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
+                sItem.NormScore = n.GetScore(sItem.NormSource,sItem.Age);
+                let qi: QuizItem = new QuizItem();
+                qi.QuizName = "常模分數"
+                qi.Value = sItem.NormScore;
+                sItem.QuizItemList.push(qi);
+              }            
             }
           });
         });
@@ -281,6 +302,18 @@ export class ImportQuizDataComponent implements OnInit {
 
             if (item.student_number == sItem.StudentNumber) {
               sItem.StudentID = item.student_id;
+              sItem.Birthday = moment(item.birthdate);
+              sItem.parseAge(moment(item.now_date));
+              sItem.Gender = item.gender;
+              if (sItem.QuizItemList[0].QuizName)
+              {
+                sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
+                sItem.NormScore = n.GetScore(sItem.NormSource,sItem.Age);
+                let qi: QuizItem = new QuizItem();
+                qi.QuizName = "常模分數"
+                qi.Value = sItem.NormScore;
+                sItem.QuizItemList.push(qi);
+              }            
             }
           });
         });
@@ -333,6 +366,18 @@ export class ImportQuizDataComponent implements OnInit {
 
             if (item.id_number == sItem.IDNumber) {
               sItem.StudentID = item.student_id;
+              sItem.Birthday = moment(item.birthdate);
+              sItem.parseAge(moment(item.now_date));
+              sItem.Gender = item.gender;
+              if (sItem.QuizItemList[0].QuizName)
+              {
+                sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
+                sItem.NormScore = n.GetScore(sItem.NormSource,sItem.Age);
+                let qi: QuizItem = new QuizItem();
+                qi.QuizName = "常模分數"
+                qi.Value = sItem.NormScore;
+                sItem.QuizItemList.push(qi);
+              }            
             }
           });
         });
