@@ -1,0 +1,159 @@
+<div class="inputBlock">
+  <div [ngClass]="{'inputBlockDefault': !affixTop, 'inputBlockAffixTop': affixTop}">
+    <table class="table table-bordered table-striped">
+      <thead class="thead-light">
+        <tr>
+          <th colspan="2">成績輸入</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="width:95px;">
+            <div class="dropdown mr-1">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMode"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{selectMode == 'SEAT' ? '座號搜尋' : '切換學生'}}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMode">
+                <a class="dropdown-item" href="javascript:;"
+                  (click)="setSelectMode('SEAT')"
+                  [ngClass]="{'active': selectMode === 'SEAT'}"
+                  >座號搜尋</a>
+                <a class="dropdown-item" href="javascript:;"
+                  (click)="setSelectMode('SEQ')"
+                  [ngClass]="{'active': selectMode === 'SEQ'}"
+                  >切換學生</a>
+              </div>
+            </div>
+          </td>
+          <td class="miniPadding">
+            <div *ngIf="selectMode === 'SEAT'" class="input-group">
+              <input #inputSeatNo
+                [(ngModel)]="selectSeatNumber"
+                (keydown.enter)="submitStudentNo()"
+                [ngClass]="{'disabled': !curStudent}" type="text" placeholder="{{isMobile ? '' : 'Enter送出'}}"
+                class="form-control"/>
+              <span class="input-group-append">
+                <a href="javascript:;" (click)="submitStudentNo()" class="btn btn-outline-secondary">
+                  送出
+                </a>
+              </span>
+            </div>
+            <div *ngIf="selectMode === 'SEQ'" class="btn-group">
+              <a href="javascript:;" class="btn btn-outline-secondary" (click)="goPrev()"><<</a>
+              <a href="javascript:;" class="btn btn-outline-secondary" (click)="goNext()">>></a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>目前學生</td>
+          <td>
+            <ng-container *ngIf="curStudent">
+              <span *ngIf="curStudent.ClassName">
+                {{curStudent.ClassName}}
+              </span>
+              <span>{{curStudent.Name}}</span>
+              <span [hidden]="!curStudent.SeatNumber"> ({{curStudent.SeatNumber}})</span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+      <thead class="thead-light">
+        <tr>
+          <th colspan="2">
+            <div class="btn-group btn-block">
+              <div class="dropdown">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownExamScore"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i *ngIf="curGrade && !canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                  <i *ngIf="curGrade && canEdit" style="min-width: 14px;" class="fa fa-edit"></i>
+                  {{curGrade || '請選擇'}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownExamScore">
+                  <a class="dropdown-item" href="javascript:;"
+                    *ngFor="let grade of mode.GradeItemList"
+                    (click)="setTarget(curStudent, grade, false, true)"
+                    [ngClass]="{'active': grade == curGrade}">
+                    <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                    {{grade}}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <ng-container *ngTemplateOutlet="displayPage"></ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<ng-template appGradeScorePage let-toggle="toggle" name="tplSourceNoData">
+  <td colspan="2">
+    <span>--</span>
+  </td>
+</ng-template>
+
+<ng-template #tplSourceLock>
+  <td colspan="2" style="text-align: left;">
+    <div>
+      {{getScoreText(curStudent) || '&nbsp;' }}
+    </div>
+  </td>
+</ng-template>
+
+<ng-template #tplTextType>
+  <td colspan="2" class="miniPadding">
+    <textarea #inputTextScore
+      [(ngModel)]="newValue"
+      (keydown.enter)="enterGrade()"
+      maxlength="200"
+      placeholder="{{isMobile ? '' : 'Enter送出'}}"
+      style="min-height: 60px;height:120px;resize: vertical;"
+      class="form-control" select-on-click>
+    </textarea>
+    <div class="btn-group mt-1 d-flx align-items-center justify-content-center">
+      <a href="javascript:;" (click)="openCommentCode(tplCodeList)" class="btn btn-outline-secondary">
+        <i class="far fa-file-code">
+          文字代碼表
+        </i>
+      </a>
+      <a href="javascript:;" (click)="enterGrade()" class="btn btn-outline-secondary">
+        送出
+      </a>
+    </div>
+  </td>
+</ng-template>
+
+<ng-template #tplCodeList>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left">文字代碼表</h3>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-bordered table-striped table-hover text-center" style="table-layout: fixed;">
+      <thead>
+        <tr>
+          <th>代碼</th>
+          <th>評語</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of codeList | mapsToArray"
+          style="cursor:pointer;"
+          (click)="selectCode(item)"
+          [class.text-danger]="item.Selected">
+          <td>{{item.Code}}</td>
+          <td>{{item.Comment}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
