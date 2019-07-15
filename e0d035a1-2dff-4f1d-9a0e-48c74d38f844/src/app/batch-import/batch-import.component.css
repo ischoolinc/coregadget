@@ -1,0 +1,44 @@
+@media screen and (max-width: 768px) {
+  .rwdtable {
+    border: 0;
+  }
+
+  .rwdtable thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .rwdtable tr {
+    background-color: lightgrey;
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  .rwdtable td {
+    color: #D20B2A;
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: .8em;
+    text-align: right;
+    width: 100%!important;
+  }
+
+  .rwdtable td:before {
+    color: black;
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .rwdtable td:last-child {
+    border-bottom: 0;
+  }
+}
