@@ -131,6 +131,7 @@ export class PsychologicalTestComponent implements OnInit {
 
   modalImport(data: Quiz) {
     this.import_quiz_data_modal.QuizData = data;
+    this.import_quiz_data_modal.loadImportFieldName();
     $("#psychological-import").modal("show");
     // 關閉畫面
     $("#psychological-import").on("hide.bs.modal", () => {

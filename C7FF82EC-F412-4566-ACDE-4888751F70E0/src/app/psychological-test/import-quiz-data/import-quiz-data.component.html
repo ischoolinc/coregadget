@@ -59,15 +59,27 @@
         </div>
 
         <div class="form-group">
-            <label class="btn btn-info">
-              <input type="file"
-                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                     (change)="onFileChange($event)"
-                   
-                     style="display:none;" />
-              <i class=""></i> 請選擇 Excel 檔
-            </label>
+          <label for=""
+                 class="col-form-label">
+            需要欄位
+          </label>
+          <div class="d-flex flex-wrap">
+            {{importFieldName}}
           </div>
+        </div>
+
+        <div class="form-group">
+          <label class="btn btn-info">
+            <input type="file"
+                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                   (change)="onFileChange($event)"
+                   #fileInput
+                   (click)="fileInput.value = null"
+                   value=''
+                   style="display:none;" />
+            <i class=""></i> 請選擇 Excel 檔
+          </label>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button"
@@ -76,8 +88,7 @@
         <button type="button"
                 class="btn btn-info"
                 (click)="importData()"
-                [disabled]="isImportButtonDisable"
-                >匯入</button>                
+                [disabled]="isImportButtonDisable">匯入</button>
       </div>
     </div>
   </div>
