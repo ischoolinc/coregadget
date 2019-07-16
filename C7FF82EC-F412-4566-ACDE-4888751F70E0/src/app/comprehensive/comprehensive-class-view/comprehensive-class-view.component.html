@@ -15,7 +15,7 @@
       <li data-title="姓名">{{studentRec.Name}}</li>
       <li data-title="填寫代碼">{{studentRec.Key}}</li>
       <li *ngFor="let subject of subjectList"
-          [attr.data-title]="subject"
+          [attr.data-title]="subject.substring(0,4)"
           class="text-danger"
           [ngClass]="{'text-success': studentRec.Status[subject]=='已完成'}">
         {{studentRec.Status[subject]}}

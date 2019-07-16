@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
@@ -34,7 +34,8 @@ export class ComprehensiveFillComponent implements OnInit {
   };
 
   constructor(
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -167,6 +168,7 @@ export class ComprehensiveFillComponent implements OnInit {
         this.sectionInfo = rsp.Section;
         this.studentInfo = rsp.Student;
         this.questionSubject = rsp.QuestionSubject;
+        this.changeDetectorRef.detectChanges();
         this.refreshMark();
       }
     });

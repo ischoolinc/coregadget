@@ -8,10 +8,10 @@
         <ng-container *ngTemplateOutlet="plugin"></ng-container>
       </div> -->
       <ng-container *ngIf="sectionList.length>0;else noData">
-        <div class="d-flex">
+        <div class="d-flex align-items-stretch">
           <div>
-            <div class="dropdown">
-              <button class="btn btn-light dropdown-toggle"
+            <div class="dropdown h-100">
+              <button class="btn btn-light dropdown-toggle h-100"
                       type="button"
                       data-toggle="dropdown"
                       aria-haspopup="true"
@@ -29,9 +29,9 @@
             </div>
           </div>
           <div *ngIf="currentSection"
-               class=" ml-2">
-            <div class="dropdown">
-              <button class="btn btn-light dropdown-toggle"
+               class="ml-2">
+            <div class="dropdown h-100">
+              <button class="btn btn-light dropdown-toggle h-100"
                       type="button"
                       data-toggle="dropdown"
                       aria-haspopup="true"
@@ -59,7 +59,7 @@
                   (click)="genSSNKey(currentSection.FillInSectionID)">
             <span>產生填寫代碼(身分證號)</span>
           </button>
-          <a class="text-info ml-auto my-auto"
+          <a class="text-info ml-2 ml-auto my-auto"
              target="_blank"
              [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">填寫頁面</a>
           <button class="btn btn-info ml-2"

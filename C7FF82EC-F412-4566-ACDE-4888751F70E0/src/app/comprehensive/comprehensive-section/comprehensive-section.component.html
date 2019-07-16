@@ -15,11 +15,12 @@
         {{classRec.ClassName}}
       </li>
       <li *ngFor="let subject of comprehensiveComponent.currentSection.Subject"
+          [attr.data-title]="subject.substring(0,4)"
           class="text-danger"
           [ngClass]="{'text-success': statusCheck[classRec.ClassName + '_' + subject]=='已完成', 'text-muted': statusCheck[classRec.ClassName + '_' + subject]=='--' || statusCheck[classRec.ClassName + '_' + subject]=='...'}">
         {{statusCheck[classRec.ClassName + "_" + subject]}}
       </li>
-      <li>
+      <li data-title="開啟">
         <a class="text-info"
            [routerLink]="[ '/comprehensive', fillInSectionID, 'class',  classRec.ClassID]">開啟
         </a>
