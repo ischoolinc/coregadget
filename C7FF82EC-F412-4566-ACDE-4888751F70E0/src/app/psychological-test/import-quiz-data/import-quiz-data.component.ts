@@ -242,9 +242,9 @@ export class ImportQuizDataComponent implements OnInit {
             if (item.class_name == sItem.ClassName && item.seat_no == sItem.SeatNo) {
               sItem.StudentID = item.student_id;
               sItem.Birthday = moment(item.birthdate);
-              sItem.parseAge(moment(item.now_date));
+              sItem.parseAge();
               sItem.Gender = item.gender;
-              if (sItem.QuizItemList[0].QuizName)
+              if (sItem.QuizItemList[0].QuizName === "原始分數")
               {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
                 sItem.NormScore = n.GetScore(sItem.NormSource,sItem.Age);
@@ -303,9 +303,9 @@ export class ImportQuizDataComponent implements OnInit {
             if (item.student_number == sItem.StudentNumber) {
               sItem.StudentID = item.student_id;
               sItem.Birthday = moment(item.birthdate);
-              sItem.parseAge(moment(item.now_date));
+              sItem.parseAge();
               sItem.Gender = item.gender;
-              if (sItem.QuizItemList[0].QuizName)
+              if (sItem.QuizItemList[0].QuizName === "原始分數")
               {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
                 sItem.NormScore = n.GetScore(sItem.NormSource,sItem.Age);
@@ -367,9 +367,9 @@ export class ImportQuizDataComponent implements OnInit {
             if (item.id_number == sItem.IDNumber) {
               sItem.StudentID = item.student_id;
               sItem.Birthday = moment(item.birthdate);
-              sItem.parseAge(moment(item.now_date));
+              sItem.parseAge();
               sItem.Gender = item.gender;
-              if (sItem.QuizItemList[0].QuizName)
+              if (sItem.QuizItemList[0].QuizName === "原始分數")
               {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
                 sItem.NormScore = n.GetScore(sItem.NormSource,sItem.Age);

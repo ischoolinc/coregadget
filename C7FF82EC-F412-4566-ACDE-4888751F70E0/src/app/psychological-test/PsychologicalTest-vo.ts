@@ -94,11 +94,11 @@ export class StudentQuizData {
     }
 
     // 年紀轉換
-    parseAge(end_date: moment.Moment) {
-        if (this.Birthday) {
-            let endDate = end_date;
-            let years: number = endDate.diff(this.Birthday, "years");
-            let months: number = endDate.diff(this.Birthday, "months") - (years * 12);
+    parseAge() {
+        // 實施日期與生日比對
+        if (this.Birthday && this.ImplementationDate) {            
+            let years: number = this.ImplementationDate.diff(this.Birthday, "years");
+            let months: number = this.ImplementationDate.diff(this.Birthday, "months") - (years * 12);
             //console.log(years, months);
             if (months > 5)
                 this.Age = years + 0.5;
