@@ -46,6 +46,7 @@ export class StudentQuizData {
     QuizUID: string;
     StudentID: string;
     StudentNumber: string;
+    StudentName: string;
     ClassName: string;
     // 男女
     Gender: string;

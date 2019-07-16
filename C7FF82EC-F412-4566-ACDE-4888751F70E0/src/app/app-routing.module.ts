@@ -39,6 +39,9 @@ import { ComprehensiveEditorComponent } from "./simple-page/editor/comprehensive
 import { ComprehensiveFillComponent } from "./simple-page/comprehensive-fill/comprehensive-fill.component";
 import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
 import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
+import { StudentQuizDataComponent } from './psychological-test/student-quiz-data/student-quiz-data.component';
+import { PsychologicalTestRoutingComponent } from './psychological-test/psychological-test-routing/psychological-test-routing.component';
+import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -62,7 +65,7 @@ const routes: Routes = [
           },
           { path: "absent", component: AbsentDetailComponent },
           { path: 'cadre', component: CadreDetailComponent },
-          { path: 'service_learning', component: ServiceLearningDetailComponent},
+          { path: 'service_learning', component: ServiceLearningDetailComponent },
           { path: "exam_score", component: ExamScoreDetailComponent },
           { path: "semester_score", component: SemesterScoreDetailComponent },
           {
@@ -105,7 +108,15 @@ const routes: Routes = [
   },
   { path: "case", component: CaseComponent },
   { path: "interview_statistics", component: InterviewStatisticsComponent },
-  { path: "psychological_test", component: PsychologicalTestComponent },
+  {
+    path: "psychological_test",
+    component: PsychologicalTestComponent,
+    children: [
+      { path: "", pathMatch: "full", component: PsychologicalTestRoutingComponent },
+      { path: "psychological-test-list", component: PsychologicalTestListComponent },
+      { path: "student-quiz-data/:quiz_id/:class_name", component: StudentQuizDataComponent }
+    ]
+  },
   {
     path: "admin",
     component: AdminComponent,

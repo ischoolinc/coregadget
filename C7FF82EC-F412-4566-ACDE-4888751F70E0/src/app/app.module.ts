@@ -62,6 +62,9 @@ import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-c
 import { ImportQuizDataComponent } from './psychological-test/import-quiz-data/import-quiz-data.component';
 import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
 import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
+import { StudentQuizDataComponent } from './psychological-test/student-quiz-data/student-quiz-data.component';
+import { PsychologicalTestRoutingComponent } from './psychological-test/psychological-test-routing/psychological-test-routing.component';
+import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 
 @NgModule({
   declarations: [
@@ -113,7 +116,10 @@ import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service
     ComprehensiveClassViewComponent,
     ImportQuizDataComponent,
     CadreDetailComponent,
-    ServiceLearningDetailComponent
+    ServiceLearningDetailComponent,
+    StudentQuizDataComponent,
+    PsychologicalTestRoutingComponent,
+    PsychologicalTestListComponent
   ],
   imports: [
     BrowserModule,
