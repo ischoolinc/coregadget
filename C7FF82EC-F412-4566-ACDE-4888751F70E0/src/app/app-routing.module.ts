@@ -31,6 +31,7 @@ import { ComprehensiveComponent } from "./comprehensive/comprehensive.component"
 import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
 import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
 import { ComprehensiveClassViewComponent } from "./comprehensive/comprehensive-class-view/comprehensive-class-view.component";
+import { ComprehensiveStatisticsComponent } from "./comprehensive/comprehensive-statistics/comprehensive-statistics.component";
 import { PsychologicalTestComponent } from "./psychological-test/psychological-test.component";
 import { SimplePageComponent } from "./simple-page/simple-page.component";
 import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
@@ -130,8 +131,9 @@ const routes: Routes = [
     component: ComprehensiveComponent,
     children: [
       { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
-      { path: ":fill_in_section_id/section", component: ComprehensiveSectionComponent },
-      { path: ":fill_in_section_id/class/:class_id", component: ComprehensiveClassViewComponent }
+      { path: "view/all/section/:fill_in_section_id", component: ComprehensiveSectionComponent },
+      { path: "view/:class_id/section/:fill_in_section_id", component: ComprehensiveClassViewComponent },
+      { path: "statistics", component: ComprehensiveStatisticsComponent }
     ]
   },
   {

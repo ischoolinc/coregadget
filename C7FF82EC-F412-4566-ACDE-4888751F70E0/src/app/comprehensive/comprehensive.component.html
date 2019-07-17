@@ -9,6 +9,7 @@
       </div> -->
       <ng-container *ngIf="sectionList.length>0;else noData">
         <div class="d-flex align-items-stretch">
+          <!-- currentMode -->
           <div>
             <div class="dropdown h-100">
               <button class="btn btn-light dropdown-toggle h-100"
@@ -16,19 +17,27 @@
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false">
-                <span>{{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期 {{currentSection.Name}}</span>
+                <span *ngIf="currentMode=='view'">填寫狀態({{ currentSemester.SchoolYear }}
+                  {{currentSemester.Semester}})</span>
+                <span *ngIf="currentMode=='statistics'">分析統計({{ currentSemester.SchoolYear }}
+                  {{currentSemester.Semester}})</span>
               </button>
               <div class="dropdown-menu">
                 <a class="dropdown-item"
-                   *ngFor="let sectionRec of sectionList"
-                   [ngClass]="{ active: sectionRec === currentSection }"
-                   [routerLink]="[ sectionRec.FillInSectionID, 'section']">
-                  <span>{{ sectionRec.Name }}</span>
+                   [ngClass]="{ active: currentMode=='view' }"
+                   [routerLink]="['/comprehensive']">
+                  <span>填寫狀態</span>
+                </a>
+                <a class="dropdown-item"
+                   [ngClass]="{ active: currentMode=='statistics' }"
+                   [routerLink]="['/comprehensive', 'statistics']">
+                  <span>分析統計</span>
                 </a>
               </div>
             </div>
           </div>
-          <div *ngIf="currentSection"
+          <!-- currentClass -->
+          <div *ngIf="currentMode=='view'"
                class="ml-2">
             <div class="dropdown h-100">
               <button class="btn btn-light dropdown-toggle h-100"
@@ -39,33 +48,74 @@
                 <span *ngIf="currentClass">{{ currentClass.ClassName}}</span>
                 <span *ngIf="!currentClass">總攬</span>
               </button>
-              <div class="dropdown-menu">
+              <div *ngIf="currentSection"
+                   class="dropdown-menu dropdown-menu-scrollable">
                 <a class="dropdown-item"
                    [ngClass]="{ active: !currentClass }"
-                   [routerLink]="['/comprehensive', currentSection.FillInSectionID, 'section']">
+                   [routerLink]="['/comprehensive', 'view', 'all', 'section', currentSection.FillInSectionID]">
                   <span>總攬</span>
                 </a>
+                <hr />
                 <a class="dropdown-item"
                    *ngFor="let classRec of currentSection.Class"
                    [ngClass]="{ active: classRec === currentClass }"
-                   [routerLink]="['/comprehensive', currentSection.FillInSectionID, 'class',  classRec.ClassID]">
+                   [routerLink]="['/comprehensive', 'view', classRec.ClassID, 'section', currentSection.FillInSectionID ]">
                   <span>{{ classRec.ClassName }}</span>
                 </a>
               </div>
             </div>
           </div>
-          <button class="btn btn-light ml-2"
-                  type="button"
-                  (click)="genSSNKey(currentSection.FillInSectionID)">
-            <span>產生填寫代碼(身分證號)</span>
-          </button>
-          <a class="text-info ml-2 ml-auto my-auto"
-             target="_blank"
-             [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">填寫頁面</a>
-          <button class="btn btn-info ml-2"
-                  (click)="shoModal()">
-            <i class="material-icons">add</i> 產生綜合紀錄表
-          </button>
+          <!-- currentSection -->
+          <div *ngIf="currentMode=='view'"
+               class="ml-2">
+            <div class="dropdown h-100">
+              <button class="btn btn-light dropdown-toggle h-100"
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                <span *ngIf="currentSection">{{currentSection.Name}}</span>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item"
+                   *ngFor="let sectionRec of sectionList"
+                   [ngClass]="{ active: sectionRec === currentSection }"
+                   [routerLink]="['/comprehensive', 'view', (currentClass?currentClass.ClassID:'all'), 'section', sectionRec.FillInSectionID]">
+                  <span>{{ sectionRec.Name }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="currentMode=='view'"
+               class="ml-auto my-auto dropdown">
+            <button class="btn btn-info dropdown-toggle h-100"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              <i class="material-icons">settings</i>
+              工具
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item"
+                 (click)="shoModal()">
+                <i class="material-icons">add</i>
+                產生綜合紀錄表
+              </a>
+              <a class="dropdown-item"
+                 (click)="genSSNKey(currentSection.FillInSectionID)">
+                <i style="display: inline-block;width: 27.42px;"></i>
+                產生填寫代碼(身分證號)
+              </a>
+              <hr />
+              <a class="dropdown-item"
+                 target="_blank"
+                 [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">
+                <i style="display: inline-block;width: 27.42px;"></i>
+                學生填寫頁面連結
+              </a>
+            </div>
+          </div>
         </div>
         <router-outlet></router-outlet>
       </ng-container>

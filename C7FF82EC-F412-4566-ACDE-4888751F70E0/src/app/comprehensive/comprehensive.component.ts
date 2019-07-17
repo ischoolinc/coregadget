@@ -17,6 +17,7 @@ export class ComprehensiveComponent implements OnInit {
   isLoading: boolean = false;
   currentSemester: any;
   sectionList: any[];
+  currentMode: string;
   currentSection: any;
   currentClass:any;
   plugin: TemplateRef<any>;
@@ -38,6 +39,7 @@ export class ComprehensiveComponent implements OnInit {
 
   ngOnInit() {
     this.appComponent.currentComponent = "comprehensive";
+    this.currentMode="view";
     this.dsns = gadget.getApplication().accessPoint;
     this.loadData();
   }

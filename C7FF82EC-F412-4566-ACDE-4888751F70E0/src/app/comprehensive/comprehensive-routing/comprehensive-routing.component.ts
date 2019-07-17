@@ -16,7 +16,7 @@ export class ComprehensiveRoutingComponent implements OnInit {
     private comprehensiveComponent: ComprehensiveComponent) { }
 
   ngOnInit() {
-    this.router.navigate([this.comprehensiveComponent.sectionList[0].FillInSectionID, "section"], {
+    this.router.navigate(['/comprehensive', 'view', "all", "section", this.comprehensiveComponent.sectionList[0].FillInSectionID], {
       relativeTo: this.route,
       skipLocationChange: true
     });

@@ -26,6 +26,7 @@ export class ComprehensiveSectionComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.fillInSectionID = params.get("fill_in_section_id");
+        this.comprehensiveComponent.currentMode="view";
         this.comprehensiveComponent.currentClass = null;
         this.comprehensiveComponent.sectionList.forEach(sectionRec => {
           if (sectionRec.FillInSectionID == this.fillInSectionID) {

@@ -8,3 +8,20 @@
 .custom-control {
     margin-top: 0.75rem;
 }
+
+/* rwd-table的表頭貼上sticky-top時修復底色 */
+ul.rwd-table .tr li.sticky-top {
+    background-color: #DDDDDD !important;
+}
+
+/* 有卷軸的 dropdown-menu */
+.dropdown-menu-scrollable {
+    height: auto;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow: scroll;
+    background: white !important;
+}
+.dropdown-menu-scrollable::before{
+    box-shadow: inherit !important;
+}

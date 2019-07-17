@@ -1,11 +1,12 @@
 <ul class="rwd-table">
   <li class="thead">
     <ol class="tr">
-      <li>座號</li>
-      <li>姓名</li>
-      <li>填寫代碼</li>
-      <li *ngFor="let subject of subjectList">{{subject}}</li>
-      <li>連結</li>
+      <li class="sticky-top">座號</li>
+      <li class="sticky-top">姓名</li>
+      <li class="sticky-top">填寫代碼</li>
+      <li *ngFor="let subject of subjectList"
+          class="sticky-top">{{subject}}</li>
+      <li class="sticky-top">連結</li>
     </ol>
   </li>
   <li class="tbody">
