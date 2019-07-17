@@ -1,0 +1,94 @@
+import { Component, OnInit, Optional, ViewChild } from '@angular/core';
+import { AdminComponent } from "../admin.component";
+import { ActivatedRoute, Router } from '@angular/router';
+import { DsaService } from "../../dsa.service";
+import { Quiz, QuizItem } from './psychological-quiz-setup-vo';
+import * as node2json from 'nodexml';
+import { AddPsychologicalQuizDataComponent } from './add-psychological-quiz-data/add-psychological-quiz-data.component';
+import { DelPsychologicalQuizDataComponent } from './del-psychological-quiz-data/del-psychological-quiz-data.component';
+
+@Component({
+  selector: 'app-psychological-quiz-setup',
+  templateUrl: './psychological-quiz-setup.component.html',
+  styleUrls: ['./psychological-quiz-setup.component.css']
+})
+export class PsychologicalQuizSetupComponent implements OnInit {
+  isLoading = false;
+  @ViewChild("addPsychologicalQuizData") _addPsychologicalQuizData: AddPsychologicalQuizDataComponent;
+  @ViewChild("delPsychologicalQuizData") _delPsychologicalQuizData: DelPsychologicalQuizDataComponent;
+  AllQuizList: Quiz[] = [];
+  AllQuizSource: any[] = [];
+  constructor(private activatedRoute: ActivatedRoute,
+    private dsaService: DsaService,
+    private router: Router,
+    @Optional()
+    public adminComponent: AdminComponent) { }
+
+  ngOnInit() {
+    this.adminComponent.currentItem = "psychological_quiz_setup";
+    this.loadData();
+  }
+
+  loadData() {
+    this.GetAllQuiz();
+  }
+
+  Add() {
+    $("#addPsychologicalQuizData").modal("show");
+
+    // 關閉畫面
+    $("#addPsychologicalQuizData").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadData();
+      $("#addPsychologicalQuizData").off("hide.bs.modal");
+    });
+  }
+  delete(item: Quiz) {
+    $("#delPsychologicalQuizData").modal("show");
+
+    // 關閉畫面
+    $("#delPsychologicalQuizData").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadData();
+      $("#delPsychologicalQuizData").off("hide.bs.modal");
+    });
+  }
+
+  edit(item: Quiz) {
+
+  }
+
+  // 取得心理測驗題目
+  async GetAllQuiz() {
+    this.isLoading = true;
+    let resp = await this.dsaService.send("GetAllQuiz", {});
+    this.AllQuizList = [];
+    this.AllQuizSource = [].concat(resp.Quiz || []);
+    this.AllQuizSource.forEach(item => {
+      let qz: Quiz = new Quiz();
+      qz.uid = item.UID;
+      qz.QuizName = item.QuizName;
+      qz.xmlSource = item.QuizDataField;
+
+      let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
+      xq.forEach(FieldItem => {
+        if (FieldItem.Field) {
+          FieldItem.Field = [].concat(FieldItem.Field || []);
+          FieldItem.Field.forEach(xItem => {
+            let qi: QuizItem = new QuizItem();
+            if (xItem.name) {
+              qi.QuizName = xItem.name;
+            }
+
+            if (xItem.order) {
+              qi.QuizOrder = parseInt(xItem.order);
+            }
+            qz.QuizItemList.push(qi);
+          });
+        }
+      });
+      this.AllQuizList.push(qz);
+    });
+    this.isLoading = false;
+  }
+}
