@@ -1,0 +1,39 @@
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-content">
+    <app-permission-denied *ngIf="!roleService.isLoading && !roleService.enablePsychologicalTest">
+    </app-permission-denied>
+    <!-- TAB 4 個案資料 -->
+    <div *ngIf="!roleService.isLoading && roleService.enablePsychologicalTest"
+         class="tab-pane fade show active">
+
+      <ul class="rwd-table">
+        <li class="thead">
+          <ol class="tr">
+            <li>班級</li>
+            <li>座號</li>
+            <li>姓名</li>
+            <li>學號</li>
+            <ng-container *ngFor="let item of Quiz.QuizItemList">
+              <li>{{item.QuizName}}</li>
+            </ng-container>
+          </ol>
+        </li>
+        <li class="tbody">
+          <ol class="tr">
+            <li data-title="班級">座號</li>
+
+          </ol>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

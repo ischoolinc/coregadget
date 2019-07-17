@@ -40,6 +40,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
     //console.log(resp);
     // 解析題目
     [].concat(resp.Quiz || []).forEach(data => {
+      data = [].concat(data || []);
       this._QuizDataList.forEach(data1 => {
         // 使用題目 uid 比對
         if (data1.QuizUid === data.uid) {

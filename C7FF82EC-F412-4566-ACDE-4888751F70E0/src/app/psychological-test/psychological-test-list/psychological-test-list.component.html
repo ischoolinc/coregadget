@@ -1,0 +1,62 @@
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-content">
+    <app-permission-denied *ngIf="!roleService.isLoading && !roleService.enablePsychologicalTest">
+    </app-permission-denied>
+    <!-- TAB 4 個案資料 -->
+    <div *ngIf="!roleService.isLoading && roleService.enablePsychologicalTest"
+         class="tab-pane fade show active">
+      <div class="d-flex">
+        <div class="ml-auto dropdown">
+          <button class="btn btn-info dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+            <i class="material-icons">add</i> 匯入測驗成績
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <ng-container *ngFor="let QuizItem of AllQuizList">
+              <a class="dropdown-item"
+                 (click)="modalImport(QuizItem)">
+                {{QuizItem.QuizName}}
+              </a>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <ul class="rwd-table">
+        <li class="thead">
+          <ol class="tr">
+            <li>班級</li>
+            <ng-container *ngFor="let QuizItem of AllQuizList">
+              <li              
+              >{{QuizItem.QuizName}}</li>
+            </ng-container>
+          </ol>
+        </li>
+        <li class="tbody">
+          <ng-container *ngFor="let classItem of AllClassQuizCountList">
+            <ol class="tr">
+              <li data-title="班級">{{classItem.ClassName}}</li>
+              <ng-container *ngFor="let QuizItem of AllQuizList">
+                <li
+                (click)="showStudentQuizData(QuizItem.uid,classItem.ClassName)"
+                >{{classItem.GetQuizCount(QuizItem.QuizName)}} / {{classItem.ClassStudents}}</li>
+              </ng-container>
+            </ol>
+          </ng-container>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<app-import-quiz-data #import_quiz_data></app-import-quiz-data>

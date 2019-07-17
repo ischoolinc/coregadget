@@ -18,16 +18,67 @@
         </button>
       </div>
       <div class="modal-body">
+
         <div class="form-group">
-            <label class="btn btn-info">
-                <input type="file"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                (change)="onFileChange($event)"
-                style="display:none;"                
-              />
-              <i class=""></i> 上傳 Excel 檔
-            </label>
-          
+          <label for="semester"
+                 class="col-form-label">
+            學生匯入方式
+          </label>
+          <div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio"
+                     id="r1"
+                     name="grantradio"
+                     class="custom-control-input"
+                     (click)="SetSelectImportType('班級座號')"
+                     [checked]="isSelectImportTypeClassSeatNo" />
+              <label class="custom-control-label"
+                     for="r1">班級座號</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio"
+                     id="r2"
+                     name="grantradio"
+                     class="custom-control-input"
+                     (click)="SetSelectImportType('學號')"
+                     [checked]="isSelectImportTypeStudentNumber" />
+              <label class="custom-control-label"
+                     for="r2">學號</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio"
+                     id="r3"
+                     name="grantradio"
+                     class="custom-control-input"
+                     (click)="SetSelectImportType('身分證號')"
+                     [checked]="isSelectImportTypeIDNumber" />
+              <label class="custom-control-label"
+                     for="r3">身分證號</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for=""
+                 class="col-form-label">
+            需要欄位
+          </label>
+          <div class="d-flex flex-wrap">
+            {{importFieldName}}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="btn btn-info">
+            <input type="file"
+                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                   (change)="onFileChange($event)"
+                   #fileInput
+                   (click)="fileInput.value = null"
+                   value=''
+                   style="display:none;" />
+            <i class=""></i> 請選擇 Excel 檔
+          </label>
         </div>
       </div>
       <div class="modal-footer">
@@ -36,7 +87,8 @@
                 data-dismiss="modal">取消</button>
         <button type="button"
                 class="btn btn-info"
-                (click)="save()">儲存</button>
+                (click)="importData()"
+                [disabled]="isImportButtonDisable">匯入</button>
       </div>
     </div>
   </div>
