@@ -19,6 +19,7 @@ export class QuizItem {
 
 // 班級心理測驗統計
 export class ClassQuizCount {
+    ClassID: string;
     ClassName: string;
     QuizItemList: QuizItem[] = [];
     ClassStudents: number;
@@ -26,7 +27,7 @@ export class ClassQuizCount {
 
     GetQuizCount(name: string) {
         let val: number = 0;
-        this.HasQuizCountList.forEach(item => {
+        this.HasQuizCountList.forEach(item => {          
             if (item.Name === name) {
                 val = item.Count;
             }
@@ -65,6 +66,11 @@ export class StudentQuizData {
     ImplementationDate: moment.Moment;
     // 解析日期
     AnalysisDate: moment.Moment;
+    // 實施日期(文字)
+    ImplementationDateStr: string;
+
+    // 解析日期(文字)
+    AnalysisDateStr: string;
 
     // 存放解析後存入資料庫
     ContentXML: string;
@@ -97,7 +103,7 @@ export class StudentQuizData {
     // 年紀轉換
     parseAge() {
         // 實施日期與生日比對
-        if (this.Birthday && this.ImplementationDate) {            
+        if (this.Birthday.isValid() && this.ImplementationDate.isValid()) {
             let years: number = this.ImplementationDate.diff(this.Birthday, "years");
             let months: number = this.ImplementationDate.diff(this.Birthday, "months") - (years * 12);
             //console.log(years, months);
@@ -106,6 +112,32 @@ export class StudentQuizData {
             else
                 this.Age = years;
         }
+    }
+    // 解析日期
+    parseDT() {
+        if (this.AnalysisDate.isValid()) {
+            this.AnalysisDateStr = this.AnalysisDate.format('YYYY-MM-DD');
+        } else {
+            this.AnalysisDateStr = '';
+        }
+
+        if (this.ImplementationDate.isValid()) {
+            this.ImplementationDateStr = this.ImplementationDate.format('YYYY-MM-DD');
+        } else {
+            this.ImplementationDateStr = '';
+        }
+    }
+
+    getQuizItemValue(uid: string, q_name: string) {
+        let value = '';     
+        if (this.QuizUID === uid) {
+            this.QuizItemList.forEach(item => {             
+                if (item.QuizName === q_name) {
+                    value = item.Value;
+                }
+            })
+        }
+        return value;
     }
 }
 
@@ -126,21 +158,20 @@ export class NormTable {
     }
 
     // 載入對照資料
-    loadMapTable (){
+    loadMapTable() {
         let tmp: tmpMapXML = new tmpMapXML();
         let data = node2json.xml2obj(tmp.xml);
-        if (data.Mapping && data.Mapping.Table && data.Mapping.Table.Row)
-        {
+        if (data.Mapping && data.Mapping.Table && data.Mapping.Table.Row) {
             let dataRow = data.Mapping.Table.Row;
-            dataRow.forEach( item => {
+            dataRow.forEach(item => {
                 let ni: NormInfo = new NormInfo();
                 ni.Score = item.Score;
                 ni.Age = parseFloat(item.Age);
                 ni.Source = parseFloat(item.Source);
                 this.NormList.push(ni);
             });
-        }       
-    }   
+        }
+    }
 
 }
 
@@ -154,8 +185,13 @@ export class NormInfo {
     Score: string;
 }
 
+export class ClassInfo {
+    ClassID: string;
+    ClassName: string;
+}
+
 export class tmpMapXML {
-    xml:string = `
+    xml: string = `
     <Mapping From="原始分數" To="常模分數">
     <Table Gender="男女">
         <Row Age="6.0" Source="1.0" Score="1-" />

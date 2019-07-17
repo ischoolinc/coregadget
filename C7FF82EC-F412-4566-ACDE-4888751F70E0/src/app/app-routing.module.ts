@@ -114,7 +114,7 @@ const routes: Routes = [
     children: [
       { path: "", pathMatch: "full", component: PsychologicalTestRoutingComponent },
       { path: "psychological-test-list", component: PsychologicalTestListComponent },
-      { path: "student-quiz-data/:quiz_id/:class_name", component: StudentQuizDataComponent }
+      { path: "student-quiz-data/:quiz_id/:class_id", component: StudentQuizDataComponent }
     ]
   },
   {

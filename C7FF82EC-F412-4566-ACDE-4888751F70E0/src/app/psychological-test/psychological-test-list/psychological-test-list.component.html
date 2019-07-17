@@ -40,7 +40,7 @@
               <li data-title="班級">{{classItem.ClassName}}</li>
               <ng-container *ngFor="let QuizItem of AllQuizList">
                 <li
-                (click)="showStudentQuizData(QuizItem.uid,classItem.ClassName)"
+                (click)="showStudentQuizData(QuizItem.uid,classItem.ClassID)"
                 >{{classItem.GetQuizCount(QuizItem.QuizName)}} / {{classItem.ClassStudents}}</li>
               </ng-container>
             </ol>
