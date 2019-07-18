@@ -126,6 +126,11 @@ export class StudentQuizDataComponent implements OnInit {
       qz.uid = item.UID;
       qz.QuizName = item.QuizName;
       qz.xmlSource = item.QuizDataField;
+      qz.MappingTable = item.MappingTable;
+      if (item.UseMappingTable && item.UseMappingTable === 't')
+        qz.UseMappingTable = true;
+      else
+        qz.UseMappingTable = false;
 
       let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
       xq.forEach(FieldItem => {

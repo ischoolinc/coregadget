@@ -13,6 +13,7 @@
         <ol class="tr">
           <li>測驗名稱</li>
           <li>測驗項目</li>
+          <li>測驗類型</li>
           <li></li>
           <li></li>
         </ol>
@@ -32,6 +33,7 @@
               </div>
             </div>
           </li>
+          <li data-title="測驗類型">{{ item.GetQuizType() }}</li>
           <li data-title="編輯">
             <button class="btn btn-light ml-auto"
                     data-toggle="modal"

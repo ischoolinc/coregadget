@@ -84,11 +84,15 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
       Role: this.selectRole
     }
     reqTeacherCounselRole.push(itItm);
-    let resp = await this.dsaService.send("SetTeachersCounselRole", {
-      Request: { TeacherCounselRole: reqTeacherCounselRole }
-    });
+    try {
+      let resp = await this.dsaService.send("SetTeachersCounselRole", {
+        Request: { TeacherCounselRole: reqTeacherCounselRole }
+      });
 
-    console.log(resp);
-    $("#addCounselTeacherRole").modal("hide");
+      console.log(resp);
+      $("#addCounselTeacherRole").modal("hide");
+    } catch (err) {
+      alert(err);
+    }
   }
 }

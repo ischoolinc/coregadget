@@ -34,6 +34,16 @@ export class PsychologicalQuizSetupComponent implements OnInit {
   }
 
   Add() {
+    this._addPsychologicalQuizData.QuizData = new Quiz();
+    let qi:QuizItem = new QuizItem();
+    qi.QuizOrder = 1;
+    
+    this._addPsychologicalQuizData.QuizData.QuizItemList.push(qi);
+    this._addPsychologicalQuizData.isAdd = true;
+    this._addPsychologicalQuizData.isQuizNameHasValue = false;
+    this._addPsychologicalQuizData.isUserDefined = true;
+    this._addPsychologicalQuizData.isUseMappingTable = false;
+    this._addPsychologicalQuizData.editType = '新增';
     $("#addPsychologicalQuizData").modal("show");
 
     // 關閉畫面
@@ -43,7 +53,9 @@ export class PsychologicalQuizSetupComponent implements OnInit {
       $("#addPsychologicalQuizData").off("hide.bs.modal");
     });
   }
+
   delete(item: Quiz) {
+    this._delPsychologicalQuizData.quizData = item;
     $("#delPsychologicalQuizData").modal("show");
 
     // 關閉畫面
@@ -55,7 +67,26 @@ export class PsychologicalQuizSetupComponent implements OnInit {
   }
 
   edit(item: Quiz) {
+    this._addPsychologicalQuizData.isAdd = false;
+    this._addPsychologicalQuizData.QuizData = item;
+    this._addPsychologicalQuizData.editType = '編輯';
 
+    if (item.UseMappingTable)
+    {
+      this._addPsychologicalQuizData.isUseMappingTable = true;
+      this._addPsychologicalQuizData.isUserDefined = false;
+    }else {
+      this._addPsychologicalQuizData.isUseMappingTable = false;
+      this._addPsychologicalQuizData.isUserDefined = true;
+    }
+    $("#addPsychologicalQuizData").modal("show");
+
+    // 關閉畫面
+    $("#addPsychologicalQuizData").on("hide.bs.modal", () => {
+      // 重整資料
+      this.loadData();
+      $("#addPsychologicalQuizData").off("hide.bs.modal");
+    });
   }
 
   // 取得心理測驗題目
@@ -69,6 +100,11 @@ export class PsychologicalQuizSetupComponent implements OnInit {
       qz.uid = item.UID;
       qz.QuizName = item.QuizName;
       qz.xmlSource = item.QuizDataField;
+      qz.MappingTable = item.MappingTable;
+      if (item.UseMappingTable && item.UseMappingTable === 't')
+        qz.UseMappingTable = true;
+      else
+        qz.UseMappingTable = false;
 
       let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
       xq.forEach(FieldItem => {

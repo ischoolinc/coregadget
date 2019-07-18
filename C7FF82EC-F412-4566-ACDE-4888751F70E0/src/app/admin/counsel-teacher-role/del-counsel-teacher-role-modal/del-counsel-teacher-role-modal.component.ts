@@ -21,15 +21,19 @@ export class DelCounselTeacherRoleModalComponent implements OnInit {
 
   del() {
     this.DelTeachersCounselRole();
-   
+
   }
 
   async DelTeachersCounselRole() {
-    let resp = await this.dsaService.send("DelTeachersCounselRole", {
-      Request: {
-        TeacherID: this.teacherCounselRole.TeacherID
-      }
-    });
-    $("#delCounselTeacherRole").modal("hide");
+    try {
+      let resp = await this.dsaService.send("DelTeachersCounselRole", {
+        Request: {
+          TeacherID: this.teacherCounselRole.TeacherID
+        }
+      });
+      $("#delCounselTeacherRole").modal("hide");
+    } catch (err) {
+      alert(err);
+    }
   }
 }

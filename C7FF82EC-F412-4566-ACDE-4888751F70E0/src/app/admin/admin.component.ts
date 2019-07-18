@@ -25,11 +25,12 @@ export class AdminComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.appComponent.currentComponent = "admin";
     this.isRoleEnable = false;
     this.isClassEnable = false;
 
+    await this.appComponent.GetMyCounselTeacherRole();
     if (this.globalService.MyCounselTeacherRole === '輔導主任') {
       this.isRoleEnable = true;
       this.isClassEnable = true;

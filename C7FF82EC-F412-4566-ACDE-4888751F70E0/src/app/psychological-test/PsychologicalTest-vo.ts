@@ -8,6 +8,10 @@ export class Quiz {
     QuizName: string;
     xmlSource: string;
     QuizItemList: QuizItem[] = [];
+    // 常模對照表
+    MappingTable: string;
+    // 使用對照表
+    UseMappingTable:boolean;
 }
 
 // 心測題目答案項目
@@ -158,9 +162,9 @@ export class NormTable {
     }
 
     // 載入對照資料
-    loadMapTable() {
+    loadMapTable(xml:string) {
         let tmp: tmpMapXML = new tmpMapXML();
-        let data = node2json.xml2obj(tmp.xml);
+        let data = node2json.xml2obj(xml);
         if (data.Mapping && data.Mapping.Table && data.Mapping.Table.Row) {
             let dataRow = data.Mapping.Table.Row;
             dataRow.forEach(item => {

@@ -58,6 +58,11 @@ export class PsychologicalTestListComponent implements OnInit {
       qz.uid = item.UID;
       qz.QuizName = item.QuizName;
       qz.xmlSource = item.QuizDataField;
+      qz.MappingTable = item.MappingTable;
+      if (item.UseMappingTable && item.UseMappingTable === 't')
+        qz.UseMappingTable = true;
+      else
+        qz.UseMappingTable = false;
 
       let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
       xq.forEach(FieldItem => {
@@ -76,7 +81,7 @@ export class PsychologicalTestListComponent implements OnInit {
           });
         }
       });
-      this.AllQuizList.push(qz);      
+      this.AllQuizList.push(qz);
     });
     this.psychologicalTestService.AllQuizList = this.AllQuizList;
     this.GetClassQuizCount();
@@ -166,7 +171,7 @@ export class PsychologicalTestListComponent implements OnInit {
   showStudentQuizData(quiz_id: string, class_id: string) {
     if (quiz_id && class_id) {
       this.router.navigate(['../student-quiz-data', quiz_id, class_id], {
-        relativeTo: this.activatedRoute,       
+        relativeTo: this.activatedRoute,
       });
     }
   }

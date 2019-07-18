@@ -1,3 +1,137 @@
-<p>
-  add-psychological-quiz-data works!
-</p>
+<div class="modal fade"
+     id="addPsychologicalQuizData"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addPsychologicalQuizDataLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="addPsychologicalQuizDataLabel">
+          {{editType}} 心理測驗題目
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="QuizName"
+                 class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!isQuizNameHasValue">*</span>
+            測驗名稱
+          </label>
+          <input type="text"
+                 class="form-control"
+                 id="QuizName"
+                 placeholder="請輸入測驗名稱"
+                 [(ngModel)]="QuizData.QuizName"
+                 (keyup)="checkValue()" />
+        </div>
+        <div class="form-group">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio"
+                   id="r1"
+                   name="grantradio"
+                   class="custom-control-input"
+                   (click)="setQuizType('自訂項目')"
+                   [checked]="isUserDefined" />
+            <label class="custom-control-label"
+                   for="r1">自訂項目</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio"
+                   id="r2"
+                   name="grantradio"
+                   class="custom-control-input"
+                   (click)="setQuizType('常模轉換')"
+                   [checked]="isUseMappingTable" />
+            <label class="custom-control-label"
+                   for="r2">常模轉換</label>
+          </div>
+        </div>
+
+        <div class="form-group"
+             *ngIf="isUserDefined">
+          <div class="modal-footer">
+            <button type="button"
+                    class="btn btn-info"
+                    (click)="AddNullQuitItem()">
+              新增項目
+            </button>
+          </div>
+          <ul class="rwd-table">
+            <li class="thead">
+              <ol class="tr">
+                <li class="col-md-10">測驗項目</li>
+                <li class="col-md-1">顯示順序</li>
+                <li class="col-md-1" *ngIf="QuizData.QuizItemList.length > 1"> </li>
+              </ol>
+            </li>
+            <li class="tbody">
+              <ng-container *ngFor="let quizItem of QuizData.QuizItemList">
+                <ol class="tr">
+                  <li data-title="測驗項目">
+                    <div> <input type="text"
+                             class="form-control"
+                             [(ngModel)]="quizItem.QuizName"
+                             placeholder="請輸入測驗項目"></div>
+                  </li>
+                  <li data-title="顯示順序">
+                    <div> <input type="text"
+                             class="form-control"
+                             [(ngModel)]="quizItem.QuizOrder"
+                             placeholder="請輸入顯示順序"></div>
+                  </li>
+                  <li *ngIf="QuizData.QuizItemList.length > 1">
+                    <button type="button"
+                            class="btn btn-danger"
+                            (click)="delItem(quizItem)">
+                      刪除
+                    </button>
+                  </li>
+                </ol>
+              </ng-container>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-group"
+             *ngIf="isUseMappingTable">
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              {{ selectMappingTableName }}
+            </button>
+            <div class="dropdown-menu scrollable-menu">
+              <a class="dropdown-item"
+                 *ngFor="let item of MappingTableList"
+                 [ngClass]="{ active: selectMappingTableName === item.Name }"
+                 (click)="SetSelectMappingTable(item)">{{ item.Name }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-dark"
+                data-dismiss="modal"
+                (click)="cancel()">
+          取消
+        </button>
+        <button type="button"
+                class="btn btn-info"
+                (click)="save()"
+                [disabled]="isSaveButtonDisable">
+          儲存
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

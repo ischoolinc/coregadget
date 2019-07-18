@@ -36,10 +36,35 @@ export class ImportQuizDataComponent implements OnInit {
 
   }
 
+async checkHasData(){
+  try {
+    let StudentID = [];
+    this.StudentQuizDataList.forEach(item => {
+      StudentID.push(item.StudentID);
+    });
+    let resp = await this.dsaService.send("GetQuizStudentDataCheckData",{
+      Request:{
+        QuizID:this.QuizData.uid,
+        StudentID
+      }
+    }    
+  );
+
+  let chkData = [].concat(resp.StudentQuizDataCheck || []);
+  if (chkData.length > 0)
+  {
+    alert('已有資料');
+  }
+
+  }catch(err){
+    alert(err);
+  }
+}
+
 
   async importData() {
     let importData: any[] = [];
-
+    
     this.StudentQuizDataList.forEach(item => {
       item.parseXML();
       let data = {
@@ -58,8 +83,10 @@ export class ImportQuizDataComponent implements OnInit {
         StudentQuizData: importData
       }
     }
-    console.log(importReq);
+  //  console.log(importReq);
 
+
+  try {
     let respData = await this.dsaService.send("AddStudentQuizData",
       importReq
     );
@@ -68,7 +95,9 @@ export class ImportQuizDataComponent implements OnInit {
       alert('匯入完成');
       $("#psychological-import").modal("hide");
     }
-
+  }catch(err) {
+    alert(err);
+  }
     //  console.log(respData);
   }
 
@@ -208,7 +237,9 @@ export class ImportQuizDataComponent implements OnInit {
 
       // 處理常模對照
       let n: NormTable = new NormTable();
-      n.loadMapTable();
+
+      if (this.QuizData.UseMappingTable)
+        n.loadMapTable(this.QuizData.MappingTable);
 
       // 判斷使用驗證方式
       if (this.selectImportStudentType === '班級座號') {
@@ -229,7 +260,7 @@ export class ImportQuizDataComponent implements OnInit {
             ClassName
           }
         };
-        console.log(req);
+        // console.log(req);
         // console.log(tmpClassName);
         let resp: any;
         try {
