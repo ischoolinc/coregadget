@@ -66,6 +66,10 @@ import { StudentQuizDataComponent } from './psychological-test/student-quiz-data
 import { PsychologicalTestRoutingComponent } from './psychological-test/psychological-test-routing/psychological-test-routing.component';
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 import { ComprehensiveStatisticsComponent } from './comprehensive/comprehensive-statistics/comprehensive-statistics.component';
+import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
+import { AddPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/add-psychological-quiz-data/add-psychological-quiz-data.component';
+import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/del-psychological-quiz-data/del-psychological-quiz-data.component';
+
 
 @NgModule({
   declarations: [
@@ -121,7 +125,10 @@ import { ComprehensiveStatisticsComponent } from './comprehensive/comprehensive-
     StudentQuizDataComponent,
     PsychologicalTestRoutingComponent,
     PsychologicalTestListComponent,
-    ComprehensiveStatisticsComponent
+    ComprehensiveStatisticsComponent,
+    PsychologicalQuizSetupComponent,
+    AddPsychologicalQuizDataComponent,
+    DelPsychologicalQuizDataComponent
   ],
   imports: [
     BrowserModule,

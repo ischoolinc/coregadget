@@ -1,12 +1,6 @@
 ﻿<!-- 選課（志願序） -->
 <div id="select-more">
-    <div *ngIf="loading">
-        <div style="position: absolute;top: 50%;left: 50%;margin-top: -20px;margin-left: -50px;z-index: 100;">Loading ...</div>
-    </div>
-    <div *ngIf="saving">
-        <div style="position: absolute;top: 50%;left: 50%;margin-top: -20px;margin-left: -50px;z-index: 100; ">Saving ...</div>
-    </div>
-    <ng-container *ngIf="currentStatus">
+    <ng-container *ngIf="!loading; else tplLoading">
         <nav aria-label="breadcrumb text-nowrap text-truncate">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item point"
@@ -15,55 +9,42 @@
                     aria-current="page">{{subjectType}}</li>
             </ol>
         </nav>
-
         <ul class="list-group mb-3">
             <li class="list-group-item active">
-                {{subjectType}}（已選志願數：{{currentStatus.Wish.length}} / 5）
+                {{subjectType}}（已選志願數：{{wishList.length}} / 5）
             </li>
-
-            <ng-container *ngIf="currentStatus.Wish.length==0">
-                <!-- 尚未選課時顯示 -->
-                <div>
-                    <li class="list-group-item text-gray">
-                        尚未選課
-                    </li>
-                </div>
-            </ng-container>
-
-            <!-- 已選課後顯示 -->
-            <ng-container *ngIf="currentStatus.Wish.length>0">
-                <li *ngFor="let subject of currentStatus.Wish"
-                    class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-0 point"            
-                    data-toggle="modal"
-                    data-target="#crouseInfo">
-                    <div (click)="showDialog(subject, '')"
-                         style="flex: 1"
-                         class="d-flex flex-md-row justify-content-md-between py-3">
+            <!-- 志願序清單 -->
+            <ng-container *ngIf="wishList.length; else tplNoData">
+                <li *ngFor="let wish of wishList"
+                    class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-0 point">
+                    <div (click)="showDialog(wish, '')"
+                        style="flex: 1"
+                        class="d-flex flex-md-row justify-content-md-between py-3">
                         <div class="mr-auto">
-                            <span class="pr-2">{{subject.WishOrder}}</span>
-                            <span>&nbsp;{{subject.SubjectName}}{{getLevel(subject)}}</span>
+                            <span class="pr-2">{{wish.WishOrder}}</span>
+                            <span>&nbsp;{{wish.SubjectName}}{{basicSrv.getLevel(wish)}}</span>
                         </div>
                         <div>
                             <span class="badge badge-light mt-2 mt-md-0 mr-md-3"
                                   [matTooltip]="Tooltip">
                                 <span>選為第一志願人數 / 名額：</span>
-                                <span>{{subject.FirstWishCount}} / {{subject.Limit}}</span>
+                                <span>{{wish.FirstWishCount}} / {{wish.Limit}}</span>
                             </span>
                         </div>
                     </div>
                     <div class="text-right">
                         <button class="btn btn-link text-green bt-auto"
-                                (click)="moveUp(subject)">
+                                (click)="moveUp(wish)">
                             <i class="material-icons">arrow_upward</i>
                             <span class="d-none d-sm-inline-block">上移</span>
                         </button>
                         <button class="btn btn-link text-green bt-auto"
-                                (click)="moveDown(subject)">
+                                (click)="moveDown(wish)">
                             <i class="material-icons">arrow_downward</i>
                             <span class="d-none d-sm-inline-block">下移</span>
                         </button>
                         <button class="btn btn-link text-danger bt-auto"
-                                (click)="removeItem(subject)">
+                                (click)="removeItem(wish)">
                             <i class="material-icons">remove</i>
                             <span class="d-none d-sm-inline-block">移除</span>
                         </button>
@@ -75,44 +56,51 @@
             <li class="list-group-item active d-flex">
                 課程清單
             </li>
-            <li *ngFor="let subject of currentStatus.Subject"
-                class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-0 point"
-        
-                data-toggle="modal"
-                data-target="#crouseInfo">
-
+            <li *ngFor="let subject of subjectList"
+                class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-0 point">
                 <div (click)="showDialog(subject, '志願序')"
-                     style="flex: 1"
-                     class="d-flex flex-md-row justify-content-md-between py-3">
+                    style="flex: 1"
+                    class="d-flex flex-md-row justify-content-md-between py-3">
                     <div class="mr-auto">
-                        {{subject.SubjectName}}{{getLevel(subject)}}
+                        {{subject.SubjectName}}{{basicSrv.getLevel(subject)}}
                         <i *ngIf="subject.WishOrder"
                            class="material-icons mr-2"
-                           data-toggle="tooltip"
-                           data-placement="top"
                            title="已加入志願"
                            style="color: darkgreen">check_circle_outline</i>
                     </div>
                     <div>
-                        <span *ngIf="subject.BlockReason || subject.TimeSelect == 't' "
-                              class="badge badge-light mt-2 mt-md-0 mr-md-3">
-                            <code>{{subject.BlockReason}}</code>
-                            <code *ngIf="subject.BlockReason && subject.TimeSelect =='t' ">、</code>
-                            <code *ngIf="subject.TimeSelect == 't'">該課程時段已選修課程</code>
-                        </span>
-                        <span *ngIf="!!!subject.BlockReason && subject.TimeSelect != 't' "
-                              class="badge badge-light mt-2 mt-md-0 mr-md-3"
-                              [matTooltip]="Tooltip">
-                            <span>第一志願 / 名額：</span>
-                            <span>{{subject.FirstWishCount}} / {{subject.Limit}}</span>
-                        </span>
+                        <ng-container *ngIf="!subject.BlockReason && subject.TimeSelect !== 't' && subject.RepeatSelect !== 't'; else tplForbidden">
+                            <span class="badge badge-light mt-2 mt-md-0 mr-md-3"
+                                [matTooltip]="Tooltip">
+                              <span>第一志願 / 名額：</span>
+                              <span>{{subject.FirstWishCount}} / {{subject.Limit}}</span>
+                          </span>
+                        </ng-container>
+                        <ng-template #tplForbidden>
+                            <span class="badge badge-light mt-2 mt-md-0 mr-md-3">
+                                <code *ngIf="subject.BlockReason" class="mr-1">{{subject.BlockReason}}</code>
+                                <code *ngIf="subject.TimeSelect === 't'" class="mr-1">該課程時段已選修課程</code>
+                                <code *ngIf="subject.RepeatSelect === 't'">已選修此課程</code>
+                            </span>
+                        </ng-template>
                     </div>
                 </div>
                 <button (click)="joinCourse(subject)"
-                        [matTooltip]="subject.SubjectName+getLevel(subject)"
-                        [disabled]="subject.BlockReason || (subject.TimeSelect =='t') ? 'disabled':null"
-                        class="btn btn-info">加入志願</button>
+                    [matTooltip]="subject.SubjectName + basicSrv.getLevel(subject)"
+                    [disabled]="subject.BlockReason || subject.TimeSelect === 't' || subject.RepeatSelect === 't'"
+                    class="btn btn-info">加入志願</button>
             </li>
         </ul>
     </ng-container>
 </div>
+
+<ng-template #tplLoading>
+    <div style="position: absolute;top: 50%;left: 50%;margin-top: -20px;margin-left: -50px;z-index: 100;">Loading ...</div>
+</ng-template>
+
+<ng-template #tplNoData>
+    <li class="list-group-item text-gray">
+        尚未選填志願
+    </li>
+</ng-template>
+

@@ -1,108 +1,114 @@
 ﻿<!-- 選課首頁 -->
 <div id="index" page>
-    <div *ngIf="loading;else noloading">
-        <div style="position: absolute;top: 50%;left: 50%;margin-top: -20px;margin-left: -50px;">Loading ...</div>
-    </div>
-    <ng-template #noloading>
+    <ng-container *ngIf='!loading; else tplLoading'>
+        <!--選課基本資料-->
         <nav aria-label="breadcrumb text-nowrap text-truncate">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item point active"
                     aria-current="page">學生選課</li>
             </ol>
         </nav>
-
-        <div *ngIf="currentStatus">
+        <div *ngIf="basicInfo">
             <ul class="list-group mb-3">
                 <li class="list-group-item active">
-                    {{currentStatus.SchoolYear}} 學年度 {{currentStatus.Semester}} 學期
+                    {{basicInfo.SchoolYear}} 學年度 {{basicInfo.Semester}} 學期
                 </li>
-                <li *ngIf="currentStatus.PS"
-                    class="list-group-item">
-                    選課時間：{{currentStatus.PS}}
+                <li class="list-group-item">
+                    選課時間：{{basicInfo.PS || '(無資料)'}}
                 </li>
-                <li *ngIf="currentStatus.SubjectType"
-                    class="list-group-item">
+                <li class="list-group-item">
                     開放課程：
-                    <span *ngFor="let subjectType of currentStatus.SubjectType;let i = index">
-                        <span *ngIf="i > 0 && subjectType.IsOpenType == 't'">、</span>
-                        <span *ngIf="subjectType.IsOpenType == 't'">{{subjectType.SubjectType}}</span>
+                    <span>
+                        {{getSelectableType() || '(無資料)'}}
                     </span>
                 </li>
-                <li *ngIf="currentStatus.Memo"
-                    class="list-group-item active">
-                    選課說明：
-                </li>
-                <li *ngIf="currentStatus.Memo"
-                    class="list-group-item">
-                    <pre style="font-size: 100%"
-                         class="my-0">{{currentStatus.Memo}}</pre>
-                </li>
+                <ng-container >
+                    <li class="list-group-item active">
+                        選課說明：
+                    </li>
+                    <li class="list-group-item">
+                        <pre style="font-size: 100%"
+                            class="my-0">{{basicInfo.Memo || '(無資料)'}}</pre>
+                    </li>
+                </ng-container>
             </ul>
         </div>
-        <div *ngIf="currentStatus">
+        <!--課程時段清單-->
+        <div *ngIf="subjectTypeList.length">
             <ul class="list-group mb-3"
-                *ngFor="let subjectType of currentStatus.SubjectType">
+                *ngFor="let type of subjectTypeList">
                 <li class="list-group-item active d-flex flex-column flex-md-row align-items-md-center py-2">
                     <span class="mr-auto">
-                        <span>{{subjectType.SubjectType}}</span>
-                        <span *ngIf="currentStatus.Mode == '志願序' && !subjectType.Attend">（已選志願數：{{subjectType.Wish.length}} / 5）</span>
+                        <span>{{type.SubjectType}}</span>
+                        <!--如果沒有修課紀錄並且選課模式為「志願序」-->
+                        <span *ngIf="basicInfo.Mode === '志願序' && !type.Attend">（已選志願數：{{type.WishList.length}} / 5）</span>
                     </span>
-
-                    <div *ngIf="currentStatus.Mode == '先搶先贏' && subjectType.IsOpenType == 't'">
-                        <button class="btn btn-info mt-2 mt-md-0"
-                                (click)="selectTakeAwayCourse(subjectType.SubjectType)"
-                                [disabled]="subjectType.Attend.Lock==='true'">進入選課</button>
-                    </div>
-                    <div *ngIf="currentStatus.Mode == '志願序' && subjectType.IsOpenType == 't'">
-                        <button class="btn btn-info mt-2 mt-md-0"
-                                (click)="selectWishCourse(subjectType.SubjectType)"
-                                [disabled]="subjectType.Attend.Lock==='true'">選填志願</button>
-                    </div>
+                    <ng-container *ngIf="type.IsOpenType ==='t'">
+                        <button *ngIf="basicInfo.Mode == '先搶先贏'"
+                            class="btn btn-info mt-2 mt-md-0"
+                            (click)="selectTakeAwayCourse(type.SubjectType)"
+                            [disabled]="type.Attend.Lock === 'true'">進入選課</button>
+                        <button *ngIf="basicInfo.Mode == '志願序'"
+                            class="btn btn-info mt-2 mt-md-0"
+                            (click)="selectWishCourse(type.SubjectType)"
+                            [disabled]="type.Attend.Lock === 'true'">選填志願</button>
+                    </ng-container>
                 </li>
-                <!-- 顯示選課結果 -->
-                <ng-container *ngIf="subjectType.Attend">
-                    <li class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-2 point"
-                        (click)="showDialog(subjectType.Attend, '', '先搶先贏')">
+                <!--有修課紀錄顯示修課紀錄，沒有的話顯示目前選課模式「先搶先贏」or「志願序」資料 -->
+                <ng-container *ngIf="type.Attend; else tplNoAttend">
+                     <li class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-2 point"
+                        (click)="showDialog(type.Attend, '')">
                         <!-- 指定選課才有這 icon -->
                         <i class="material-icons mr-2"
-                           data-toggle="tooltip"
-                           data-placement="top"
-                           title="指定修課"
-                           *ngIf="subjectType.Attend.Lock=='true'">lock_outline</i>
-                        {{subjectType.Attend.SubjectName}}{{getLevel(subjectType.Attend)}}
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="指定修課"
+                            *ngIf="type.Attend.Lock === 'true'">lock_outline</i>
+                        {{type.Attend.SubjectName}}{{basicSrv.getLevel(type.Attend)}}
+                        <span *ngIf="type.Attend.IsCrossType" class="badge badge-primary ml-4">
+                            跨課程時段
+                        </span>
                     </li>
                 </ng-container>
-                <!-- 顯示尚未選課 -->
-                <ng-container *ngIf="!subjectType.Attend&&(currentStatus.Mode == '先搶先贏' || subjectType.Wish.length==0)">
-                    <li class="list-group-item text-gray">
-                        尚未選課
-                    </li>
-                </ng-container>
-                <!-- 顯示選填志願 -->
-                <ng-container *ngIf="!subjectType.Attend&&currentStatus.Mode != '先搶先贏'&&subjectType.Wish.length>0">
-                    <li *ngFor="let subject of subjectType.Wish"
-                        class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-0 point"
-                
-                        data-toggle="modal"
-                        data-target="#crouseInfo">
-                        <div (click)="showDialog(subject, '', '志願序')"
-                             style="flex: 1"
-                             class="d-flex flex-md-row justify-content-md-between py-3">
-                            <div class="mr-auto">
-                                <span class="pr-2">{{subject.WishOrder}}</span>
-                                <span>&nbsp;{{subject.SubjectName}}{{getLevel(subject)}}</span>
+                <ng-template #tplNoAttend>
+                    <ng-container *ngIf="(basicInfo.Mode === '志願序' && !type.WishList.length) || basicInfo.Mode === '先搶先贏'">
+                        <li class="list-group-item text-gray">
+                            尚未選課
+                        </li>
+                    </ng-container>
+                    <ng-container *ngIf="basicInfo.Mode === '志願序'">
+                        <li *ngFor="let wish of type.WishList"
+                            class="list-group-item list-group-item-action d-flex flex-column flex-md-row align-items-md-center py-0 point">
+                            <div (click)="showDialog(wish, '')"
+                                style="flex: 1"
+                                class="d-flex flex-md-row justify-content-md-between py-3">
+                                <div class="mr-auto">
+                                    <span class="pr-2">{{wish.WishOrder}}</span>
+                                    <span>&nbsp;{{wish.SubjectName}}{{basicSrv.getLevel(wish)}}</span>
+                                </div>
+                                <div>
+                                    <span class="badge badge-light mt-2 mt-md-0 mr-md-3"
+                                        [matTooltip]="Tooltip">
+                                        <span>選為第一志願人數 / 名額：</span>
+                                        <span>{{wish.FirstWishCount}} / {{wish.Limit}}</span>
+                                    </span>
+                                </div>
                             </div>
-                            <div>
-                                <span class="badge badge-light mt-2 mt-md-0 mr-md-3"
-                                      [matTooltip]="Tooltip">
-                                    <span>選為第一志願人數 / 名額：</span>
-                                    <span>{{subject.FirstWishCount}} / {{subject.Limit}}</span>
-                                </span>
-                            </div>
-                        </div>
-                    </li>
-                </ng-container>
+                        </li>
+                    </ng-container>
+                </ng-template>
             </ul>
         </div>
-    </ng-template>
+    </ng-container>
 </div>
+
+<ng-template #tplLoading>
+    <div style="position: absolute;top: 50%;left: 50%;margin-top: -20px;margin-left: -50px;">Loading ...</div>
+</ng-template>
+
+<!-- <ng-template #tplNoData>
+    <li class="list-group-item text-gray">
+        尚未選課
+    </li>
+</ng-template> -->
+

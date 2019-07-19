@@ -40,7 +40,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
   }
 
   SetSelectAllItem() {
-    
+
     this.isSelectAllItem = !this.isSelectAllItem;
     this.SelectGradeYearList.forEach(item => {
       item.Checked = this.isSelectAllItem;
@@ -56,57 +56,59 @@ export class AddCounselTeacherModalComponent implements OnInit {
     this.SelectGradeYearList = [];
     this.tmpClass = [];
     this.tmpGradeYear = [];
-    let resp = await this.dsaService.send("GetClasses", {
-      Request: {}
-    });
+    try {
+      let resp = await this.dsaService.send("GetClasses", {
+        Request: {}
+      });
 
-    [].concat(resp.Class || []).forEach(counselClass => {
-      let gryear: number = parseInt(counselClass.GradeYear);
-      let CClass: CounselClass = new CounselClass();
-      CClass.GradeYear = gryear;
-      CClass.ClassName = counselClass.ClassName;
-      CClass.ClassID = counselClass.ClassID;
-      CClass.Checked = false;
-      this.tmpClass.push(CClass);
-      if (!this.tmpGradeYear.includes(gryear)) {
-        this.tmpGradeYear.push(gryear);
-      }
-    });
+      [].concat(resp.Class || []).forEach(counselClass => {
+        let gryear: number = parseInt(counselClass.GradeYear);
+        let CClass: CounselClass = new CounselClass();
+        CClass.GradeYear = gryear;
+        CClass.ClassName = counselClass.ClassName;
+        CClass.ClassID = counselClass.ClassID;
+        CClass.Checked = false;
+        this.tmpClass.push(CClass);
+        if (!this.tmpGradeYear.includes(gryear)) {
+          this.tmpGradeYear.push(gryear);
+        }
+      });
+
+      // 整理資料
+      this.tmpGradeYear.forEach(gr => {
+        let grClass: GradeClassInfo = new GradeClassInfo();
+        grClass.GradeYear = gr;
+        grClass.Checked = false;
+        grClass.ClassItems = this.tmpClass.filter(x => x.GradeYear === gr);
+        this.SelectGradeYearList.push(grClass);
+      });
+
+      this.filterCheckBox();
+    } catch (err) {
+      alert(err);
+    }
 
 
-
-    // 整理資料
-    this.tmpGradeYear.forEach(gr => {
-      let grClass: GradeClassInfo = new GradeClassInfo();
-      grClass.GradeYear = gr;
-      grClass.Checked = false;
-      grClass.ClassItems = this.tmpClass.filter(x => x.GradeYear === gr);
-      this.SelectGradeYearList.push(grClass);
-    });
-
-    this.filterCheckBox();
-  
 
     //this.isLoading = false;
   }
 
   filterCheckBox() {
-    if (this._CounselTeacherClass.ClassNames)
-    {
+    if (this._CounselTeacherClass.ClassNames) {
       let className: string[] = this._CounselTeacherClass.ClassNames.split(',');
 
       this.SelectGradeYearList.forEach(item => {
         item.ClassItems.forEach(classItem => {
-       
+
           classItem.Checked = className.includes(classItem.ClassName);
-          
+
         });
       });
-    }    
+    }
   }
 
   save() {
-    this.selectClassIDs = [];    
+    this.selectClassIDs = [];
     this.SelectGradeYearList.forEach(item => {
       item.ClassItems.forEach(classItem => {
         if (classItem.Checked) {
@@ -130,15 +132,18 @@ export class AddCounselTeacherModalComponent implements OnInit {
       }
       reqClassIDs.push(itItm);
     });
-
-    let resp = await this.dsaService.send("SetCounselClasses", {
-      Request: {
-        TeacherID: this._CounselTeacherClass.TeacherID,
-        ClassIDs: reqClassIDs
-      }
-    });
-    console.log(resp);
-    $("#addCounselTeacher").modal("hide");
+    try {
+      let resp = await this.dsaService.send("SetCounselClasses", {
+        Request: {
+          TeacherID: this._CounselTeacherClass.TeacherID,
+          ClassIDs: reqClassIDs
+        }
+      });
+      //  console.log(resp);
+      $("#addCounselTeacher").modal("hide");
+    } catch (err) {
+      alert(err);
+    }
   }
 
 

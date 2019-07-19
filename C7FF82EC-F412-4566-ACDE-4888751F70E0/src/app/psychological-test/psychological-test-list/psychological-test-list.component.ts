@@ -4,7 +4,7 @@ import { RoleService } from "../../role.service";
 import { ActivatedRoute, ParamMap, Router, RoutesRecognized } from "@angular/router";
 import * as node2json from 'nodexml';
 import { DsaService } from "../../dsa.service";
-import { Quiz, QuizItem, ClassQuizCount, ItemCount } from '../PsychologicalTest-vo';
+import { Quiz, QuizItem, ClassQuizCount, ItemCount, ClassInfo } from '../PsychologicalTest-vo';
 import { ImportQuizDataComponent } from '../import-quiz-data/import-quiz-data.component';
 import { PsychologicalTestService } from '../psychological-test.service';
 @Component({
@@ -58,6 +58,11 @@ export class PsychologicalTestListComponent implements OnInit {
       qz.uid = item.UID;
       qz.QuizName = item.QuizName;
       qz.xmlSource = item.QuizDataField;
+      qz.MappingTable = item.MappingTable;
+      if (item.UseMappingTable && item.UseMappingTable === 't')
+        qz.UseMappingTable = true;
+      else
+        qz.UseMappingTable = false;
 
       let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
       xq.forEach(FieldItem => {
@@ -77,8 +82,8 @@ export class PsychologicalTestListComponent implements OnInit {
         }
       });
       this.AllQuizList.push(qz);
-      this.psychologicalTestService.AllQuizList = this.AllQuizList;
     });
+    this.psychologicalTestService.AllQuizList = this.AllQuizList;
     this.GetClassQuizCount();
   }
 
@@ -100,6 +105,9 @@ export class PsychologicalTestListComponent implements OnInit {
         let ClassStudent = [].concat(item.ClassStudent || []);
         ClassStudent.forEach(classItem => {
           let ci: ClassQuizCount = new ClassQuizCount();
+          if (classItem.class_id)
+            ci.ClassID = classItem.class_id;
+
           if (classItem.class_name)
             ci.ClassName = classItem.class_name;
 
@@ -135,6 +143,14 @@ export class PsychologicalTestListComponent implements OnInit {
       }
     });
 
+    this.psychologicalTestService.AllClassList = [];
+    this.AllClassQuizCountList.forEach(item => {
+      let ci: ClassInfo = new ClassInfo();
+      ci.ClassID = item.ClassID;
+      ci.ClassName = item.ClassName;
+      this.psychologicalTestService.AllClassList.push(ci);
+    });
+
     this.isLoading = false;
 
   }
@@ -152,10 +168,10 @@ export class PsychologicalTestListComponent implements OnInit {
     });
   }
 
-  showStudentQuizData(quiz_id: string, class_name: string) {
-    if (quiz_id && class_name) {
-      this.router.navigate(['../student-quiz-data', quiz_id, class_name], {
-        relativeTo: this.activatedRoute
+  showStudentQuizData(quiz_id: string, class_id: string) {
+    if (quiz_id && class_id) {
+      this.router.navigate(['../student-quiz-data', quiz_id, class_id], {
+        relativeTo: this.activatedRoute,
       });
     }
   }

@@ -43,6 +43,7 @@ import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service
 import { StudentQuizDataComponent } from './psychological-test/student-quiz-data/student-quiz-data.component';
 import { PsychologicalTestRoutingComponent } from './psychological-test/psychological-test-routing/psychological-test-routing.component';
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
+import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -115,7 +116,7 @@ const routes: Routes = [
     children: [
       { path: "", pathMatch: "full", component: PsychologicalTestRoutingComponent },
       { path: "psychological-test-list", component: PsychologicalTestListComponent },
-      { path: "student-quiz-data/:quiz_id/:class_name", component: StudentQuizDataComponent }
+      { path: "student-quiz-data/:quiz_id/:class_id", component: StudentQuizDataComponent }
     ]
   },
   {
@@ -124,7 +125,8 @@ const routes: Routes = [
     children: [
       { path: "", pathMatch: "full", component: AdminRoutingComponent },
       { path: "counsel_teacher_role", component: CounselTeacherRoleComponent },
-      { path: "counsel_class", component: CounselClassComponent }
+      { path: "counsel_class", component: CounselClassComponent },
+      { path: "psychological_quiz_setup", component: PsychologicalQuizSetupComponent }
     ]
   }, {
     path: "comprehensive",

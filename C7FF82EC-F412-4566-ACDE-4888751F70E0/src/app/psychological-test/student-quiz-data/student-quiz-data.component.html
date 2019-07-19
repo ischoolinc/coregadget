@@ -6,6 +6,50 @@
     <div *ngIf="!roleService.isLoading && roleService.enablePsychologicalTest"
          class="tab-pane fade show active">
 
+         <div class="d-flex">
+            <div class="dropdown">
+                <button
+                  class="btn btn-light dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {{ selectQuizName }}
+                </button>
+                <div class="dropdown-menu">
+                  <a
+                    class="dropdown-item"
+                    *ngFor="let item of QuizList"
+                    [ngClass]="{ active: selectQuizName === item.QuizName }"
+                    (click)="SetSelectQuiz(item)"
+                    >{{ item.QuizName }}</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown" style="margin-left: 20px">
+                <button
+                  class="btn btn-light dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {{ selectClassName }}
+                </button>
+                <div class="dropdown-menu scrollable-menu">
+                  <a
+                    class="dropdown-item"
+                    *ngFor="let item of classList"
+                    [ngClass]="{ active: selectClassName === item.ClassName }"
+                    (click)="SetSelectClass(item)"
+                    >{{ item.ClassName }}</a
+                  >
+                </div>
+              </div>
+
+         </div>
+
       <ul class="rwd-table">
         <li class="thead">
           <ol class="tr">
@@ -13,17 +57,28 @@
             <li>座號</li>
             <li>姓名</li>
             <li>學號</li>
-            <ng-container *ngFor="let item of Quiz.QuizItemList">
-              <li>{{item.QuizName}}</li>
+            <li>實施日期</li>
+            <li>解析日期</li>
+            <ng-container *ngFor="let itemName of QuizItemNameList">
+              <li>{{itemName}}</li>
             </ng-container>
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr">
-            <li data-title="班級">座號</li>
+          <ng-container *ngFor="let studItem of StudentQuizDataList">
+            <ol class="tr">
+              <li data-title="班級">{{studItem.ClassName}}</li>
+              <li data-title="座號">{{studItem.SeatNo}}</li>
+              <li data-title="姓名">{{studItem.StudentName}}</li>
+              <li data-title="學號">{{studItem.StudentNumber}}</li>
+              <li data-title="實施日期">{{studItem.ImplementationDateStr}}</li>
+              <li data-title="解析日期">{{studItem.AnalysisDateStr}}</li>
+              <ng-container *ngFor="let itemName of QuizItemNameList">
+                <li data-title="">{{studItem.getQuizItemValue(QuizID,itemName)}}</li>
+              </ng-container>
 
-          </ol>
-
+            </ol>
+          </ng-container>
         </li>
       </ul>
     </div>

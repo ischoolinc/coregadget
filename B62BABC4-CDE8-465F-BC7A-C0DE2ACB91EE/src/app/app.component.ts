@@ -1,6 +1,5 @@
 import { GadgetService } from './gadget.service';
-import { Component, OnInit, NgZone } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from './dialog.component';
 

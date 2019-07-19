@@ -1,0 +1,69 @@
+<div *ngIf="!isLoading && adminComponent.isRoleEnable; else tmpLoading">
+  <div class="tab-content">
+    <div class="d-flex">
+      <button class="btn btn-info ml-auto"
+              data-toggle="modal"
+              data-backdrop="static"
+              (click)="Add()">
+        <i class="material-icons">add</i> 新增
+      </button>
+    </div>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li>測驗名稱</li>
+          <li>測驗項目</li>
+          <li>測驗類型</li>
+          <li></li>
+          <li></li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr"
+            *ngFor="let item of AllQuizList">
+          <li data-title="測驗名稱">{{ item.QuizName }}</li>
+          <li data-title="測驗項目"
+              class="text-left text-normal">
+            <div class="container">
+              <div class="row">
+                <div *ngFor="let qi of item.QuizItemList"
+                     class="col-sm-3">
+                  {{qi.QuizName}}
+                </div>
+              </div>
+            </div>
+          </li>
+          <li data-title="測驗類型">{{ item.GetQuizType() }}</li>
+          <li data-title="編輯">
+            <button class="btn btn-light ml-auto"
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    (click)="edit(item)">
+              編輯
+            </button>
+          </li>
+          <li data-title="刪除">
+            <button class="btn btn-danger ml-auto"
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    (click)="delete(item)">
+              刪除
+            </button>
+          </li>
+
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<app-add-psychological-quiz-data #addPsychologicalQuizData></app-add-psychological-quiz-data>
+<app-del-psychological-quiz-data #delPsychologicalQuizData></app-del-psychological-quiz-data>

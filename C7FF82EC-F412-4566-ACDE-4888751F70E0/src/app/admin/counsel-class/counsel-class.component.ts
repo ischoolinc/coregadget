@@ -28,19 +28,23 @@ export class CounselClassComponent implements OnInit {
 
   // 取得教師輔導班級
   async GetCounselTeacherClass() {
-    this.counselTeacherClassList = [];
-    let resp = await this.dsaService.send("GetCounselTeacherClass", {
-      Request: {}
-    });
+    try {
+      this.counselTeacherClassList = [];
+      let resp = await this.dsaService.send("GetCounselTeacherClass", {
+        Request: {}
+      });
 
-    [].concat(resp.CounselTeacher || []).forEach(CounselTeacher => {
-      let tea: CounselTeacherClass = new CounselTeacherClass();
-      tea.TeacherID = CounselTeacher.TeacherID;
-      tea.TeacherName = CounselTeacher.TeacherName;
-      tea.Role = CounselTeacher.Role;
-      tea.ClassNames = CounselTeacher.ClassNames;
-      this.counselTeacherClassList.push(tea);
-    });
+      [].concat(resp.CounselTeacher || []).forEach(CounselTeacher => {
+        let tea: CounselTeacherClass = new CounselTeacherClass();
+        tea.TeacherID = CounselTeacher.TeacherID;
+        tea.TeacherName = CounselTeacher.TeacherName;
+        tea.Role = CounselTeacher.Role;
+        tea.ClassNames = CounselTeacher.ClassNames;
+        this.counselTeacherClassList.push(tea);
+      });
+    } catch (err) {
+      alert(err);
+    }
 
     this.isLoading = false;
   }
@@ -50,14 +54,14 @@ export class CounselClassComponent implements OnInit {
     // 載入輔導身分
     this.GetCounselTeacherClass();
 
-    
+
   }
 
   // 編輯班級資料
-  EditClassNames(item: CounselTeacherClass) {    
+  EditClassNames(item: CounselTeacherClass) {
     this._addCounselTeacher._CounselTeacherClass = item;
     this._addCounselTeacher.filterCheckBox();
-   
+
     $("#addCounselTeacher").modal("show");
 
     // 關閉畫面

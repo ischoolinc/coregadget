@@ -1,4 +1,4 @@
-export class Attend{
+export class AttendRecord{
 
     /**選課科目系統編號 */
     SubjectID: string;
@@ -36,4 +36,12 @@ export class Attend{
     /**修課模式 */
     AttendType: string;
 
+    /**跨課程時段1 */
+    CrossType1: string;
+
+    /**跨課程時段2 */
+    CrossType2: string;
+
+    /**是否為跨課程時段 */
+    IsCrossType: boolean;
 }
