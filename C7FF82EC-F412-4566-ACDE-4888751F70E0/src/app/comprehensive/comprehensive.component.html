@@ -9,18 +9,22 @@
       </div> -->
       <ng-container *ngIf="sectionList.length>0;else noData">
         <div class="d-flex align-items-stretch">
+          <!-- semester -->
+          <div>
+            <button class="btn btn-light h-100">
+              <span>{{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期</span>
+            </button>
+          </div>
           <!-- currentMode -->
           <div>
-            <div class="dropdown h-100">
+            <div class="dropdown ml-2 h-100">
               <button class="btn btn-light dropdown-toggle h-100"
                       type="button"
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false">
-                <span *ngIf="currentMode=='view'">填寫狀態({{ currentSemester.SchoolYear }}
-                  {{currentSemester.Semester}})</span>
-                <span *ngIf="currentMode=='statistics'">分析統計({{ currentSemester.SchoolYear }}
-                  {{currentSemester.Semester}})</span>
+                <span *ngIf="currentMode=='view'">填寫狀態</span>
+                <span *ngIf="currentMode=='statistics'">分析統計</span>
               </button>
               <div class="dropdown-menu">
                 <a class="dropdown-item"
@@ -86,6 +90,55 @@
               </div>
             </div>
           </div>
+          <div class="ml-auto"></div>
+          <div class="ml-2"
+               *ngIf="currentMode=='view'">
+            <div class="dropdown h-100">
+              <button class="btn btn-info dropdown-toggle h-100"
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                <i class="material-icons">settings</i>
+                工具
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item"
+                   (click)="shoModal()">
+                  <i class="material-icons">add</i>
+                  產生綜合紀錄表
+                </a>
+                <a class="dropdown-item"
+                   (click)="genSSNKey(currentSection.FillInSectionID)">
+                  <i style="display: inline-block;width: 27.42px;"></i>
+                  產生填寫代碼(身分證號)
+                </a>
+                <hr />
+                <a class="dropdown-item"
+                   target="_blank"
+                   [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">
+                  <i style="display: inline-block;width: 27.42px;"></i>
+                  學生填寫頁面連結
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="ml-2"
+               *ngIf="plugin">
+            <ng-container *ngTemplateOutlet="plugin"></ng-container>
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </ng-container>
+      <ng-template #noData>
+        <div *ngIf="currentSemester"
+             class="d-flex">
+          <!-- semester -->
+          <div>
+            <button class="btn btn-light h-100">
+              <span>{{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期</span>
+            </button>
+          </div>
           <div *ngIf="currentMode=='view'"
                class="ml-auto my-auto dropdown">
             <button class="btn btn-info dropdown-toggle h-100"
@@ -102,8 +155,7 @@
                 <i class="material-icons">add</i>
                 產生綜合紀錄表
               </a>
-              <a class="dropdown-item"
-                 (click)="genSSNKey(currentSection.FillInSectionID)">
+              <a class="dropdown-item disabled">
                 <i style="display: inline-block;width: 27.42px;"></i>
                 產生填寫代碼(身分證號)
               </a>
@@ -116,19 +168,6 @@
               </a>
             </div>
           </div>
-        </div>
-        <router-outlet></router-outlet>
-      </ng-container>
-      <ng-template #noData>
-        <div *ngIf="currentSemester"
-             class="d-flex">
-          <div>
-            <span>目前學年度：{{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期</span>
-          </div>
-          <button class="btn btn-info ml-auto"
-                  (click)="shoModal()">
-            <i class="material-icons">add</i> 產生綜合紀錄表
-          </button>
         </div>
         <div class="row justify-content-center"
              style="margin-top:250px;margin-bottom:200px;">

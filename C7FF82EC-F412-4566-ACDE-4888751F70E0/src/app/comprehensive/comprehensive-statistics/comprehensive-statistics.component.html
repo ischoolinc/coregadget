@@ -1,3 +1,50 @@
-<p>
-  comprehensive-statistics works!
-</p>
+<ng-container *ngIf="!isLoading;else tmpLoading">
+  <ng-container *ngIf="currentStatistics;else noData">
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li class="sticky-top">年級</li>
+          <li class="sticky-top">班級</li>
+          <li class="sticky-top">學生數</li>
+          <li *ngFor="let target of currentStatistics.Target"
+              class="sticky-top">{{target.Title}}</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol *ngFor="let classRec of classList"
+            class="tr">
+          <li data-title="年級">{{classRec.GradeYear}}</li>
+          <li data-title="班級">{{classRec.ClassName}}</li>
+          <li data-title="學生數">{{classRec.Count}}</li>
+          <li *ngFor="let target of currentStatistics.Target"
+              [attr.data-title]="target.Title.substring(0,4)"
+              [ngClass]="{'text-muted': classRec['OPT_' + target.Title]=='0'}">
+            {{classRec['OPT_' + target.Title]}}
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </ng-container>
+</ng-container>
+<ng-template #noData>
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    請選擇統計項目
+  </div>
+</ng-template>
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+<ng-template #plugin>
+  <ng-container *ngIf="currentStatistics">
+    <button class="btn btn-info"
+            (click)="save()">
+      <i class="material-icons">save_alt</i>
+      <span>下載</span>
+    </button>
+  </ng-container>
+</ng-template>

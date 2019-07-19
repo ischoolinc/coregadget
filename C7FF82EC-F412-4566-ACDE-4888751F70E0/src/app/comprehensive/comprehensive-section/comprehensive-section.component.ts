@@ -28,6 +28,8 @@ export class ComprehensiveSectionComponent implements OnInit {
         this.fillInSectionID = params.get("fill_in_section_id");
         this.comprehensiveComponent.currentMode="view";
         this.comprehensiveComponent.currentClass = null;
+        this.comprehensiveComponent.plugin = null;
+        
         this.comprehensiveComponent.sectionList.forEach(sectionRec => {
           if (sectionRec.FillInSectionID == this.fillInSectionID) {
             this.comprehensiveComponent.currentSection = sectionRec;
