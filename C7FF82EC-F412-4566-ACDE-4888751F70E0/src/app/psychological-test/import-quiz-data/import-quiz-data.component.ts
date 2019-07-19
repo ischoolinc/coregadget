@@ -36,35 +36,66 @@ export class ImportQuizDataComponent implements OnInit {
 
   }
 
-async checkHasData(){
-  try {
-    let StudentID = [];
-    this.StudentQuizDataList.forEach(item => {
-      StudentID.push(item.StudentID);
-    });
-    let resp = await this.dsaService.send("GetQuizStudentDataCheckData",{
-      Request:{
-        QuizID:this.QuizData.uid,
-        StudentID
+  async checkHasData() {
+    try {
+      let StudentID = [];
+      this.StudentQuizDataList.forEach(item => {
+        StudentID.push(item.StudentID);
+      });
+      let resp = await this.dsaService.send("GetQuizStudentDataCheckData", {
+        Request: {
+          QuizID: this.QuizData.uid,
+          StudentID
+        }
       }
-    }    
-  );
+      );
 
-  let chkData = [].concat(resp.StudentQuizDataCheck || []);
-  if (chkData.length > 0)
-  {
-    alert('已有資料');
-  }
+      let chkData = [].concat(resp.StudentQuizDataCheck || []);
+      if (chkData.length > 0) {
+        // 整理已有資料
+        let hasData: string[] = [];
+        if (this.selectImportStudentType === '班級座號') {
+          this.StudentQuizDataList.forEach(sItem => {
+            chkData.forEach(item => {
+              if (sItem.StudentID === item.student_id) {
+                let str = `班級：${sItem.ClassName},座號：${sItem.SeatNo}`;
+                hasData.push(str);
+              }
+            });
+          });
+        }
+        if (this.selectImportStudentType === '學號') {
+          this.StudentQuizDataList.forEach(sItem => {
+            chkData.forEach(item => {
+              if (sItem.StudentID === item.student_id) {
+                let str = `學號：${sItem.StudentNumber}`;
+                hasData.push(str);
+              }
+            });
+          });
+        }
+        if (this.selectImportStudentType === '身分證號') {
+          this.StudentQuizDataList.forEach(sItem => {
+            chkData.forEach(item => {
+              if (sItem.StudentID === item.student_id) {
+                let str = `身分證號${sItem.IDNumber}`;
+                hasData.push(str);
+              }
+            });
+          });
+        }
+        alert('資料庫內已有心理測驗資料，匯入將會覆蓋：\n' + hasData.join('\n'));
+      }
 
-  }catch(err){
-    alert(err);
+    } catch (err) {
+      alert(err);
+    }
   }
-}
 
 
   async importData() {
     let importData: any[] = [];
-    
+    this.isImportButtonDisable = true;
     this.StudentQuizDataList.forEach(item => {
       item.parseXML();
       let data = {
@@ -83,21 +114,22 @@ async checkHasData(){
         StudentQuizData: importData
       }
     }
-  //  console.log(importReq);
+    //  console.log(importReq);
 
 
-  try {
-    let respData = await this.dsaService.send("AddStudentQuizData",
-      importReq
-    );
+    try {
+      let respData = await this.dsaService.send("AddStudentQuizData",
+        importReq
+      );
 
-    if (respData) {
-      alert('匯入完成');
-      $("#psychological-import").modal("hide");
+      if (respData) {
+        alert('匯入完成');
+        $("#psychological-import").modal("hide");
+      }
+    } catch (err) {
+      this.isImportButtonDisable = false;
+      alert(err);
     }
-  }catch(err) {
-    alert(err);
-  }
     //  console.log(respData);
   }
 
@@ -221,8 +253,15 @@ async checkHasData(){
     // 驗證欄位是否缺少
     if (this.sheet1.length > 0) {
       this.importFieldNameList.forEach(item => {
-        if (!this.sheet1[0][item]) {
-          lostField.push(item);
+        // 常模轉換
+        if (this.QuizData.UseMappingTable) {
+          if (!this.sheet1[0]['原始分數']) {
+            lostField.push('原始分數');
+          }
+        } else {
+          if (!this.sheet1[0][item]) {
+            lostField.push(item);
+          }
         }
       });
     }
@@ -443,9 +482,11 @@ async checkHasData(){
         }
 
       }
+    
+      this.checkHasData();
     } else {
       this.isImportButtonDisable = true;
-    }
+    }   
   }
 
   SetSelectImportType(name: string) {
