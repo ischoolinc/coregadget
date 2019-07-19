@@ -1,11 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { GadgetService, Contract } from '../gadget.service';
-import { Utils } from '../util';
-import { Subject } from '../data/subject';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { AddDialogComponent } from './add-dialog.component';
-import { Wish } from '../data/wish';
+import { BasicService } from '../service/basic.service';
+import { SubjectRecord, WishRecord } from "../data/index";
 
 @Component({
   selector: 'app-add-wish',
@@ -13,154 +11,112 @@ import { Wish } from '../data/wish';
   styles: []
 })
 export class AddWishComponent implements OnInit {
+
   loading: boolean = true;
-  saving: boolean = false;
+  // 課程時段
   subjectType: string;
-  currentStatus: any;
+  // 學生志願序清單
+  wishList: WishRecord[] = [];
+  // 課程清單
+  subjectList: SubjectRecord[] =[];
+
   Tooltip = "推算第一輪志願分發狀況\n 1. 自行評估選上的機率\n 2. 避免後面志願選填必定額滿的課程";
-  constructor(private route: ActivatedRoute, private gadget: GadgetService, private router: Router, private dialog: MatDialog) { }
-  // 取得 contract 連線。
-  contract: Contract;
+
+  constructor(
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private basicSrv: BasicService
+  ) {}
 
   async ngOnInit() {
-    this.contract = await this.gadget.getContract('ischool.course_selection');
-    this.subjectType = this.route.snapshot.paramMap.get("subjectType");
-    this.getData();
-  }
-
-  async getData() {
     try {
-      this.loading = true;
-      this.currentStatus = await this.contract.send('GetSubjectList', { SubjectType: this.subjectType });
-      // 志願序清單
-      this.currentStatus.Wish = [].concat(this.currentStatus.Wish || []) as Wish[];
-      // 該課程時段(類別)的所有課程
-      this.currentStatus.Subject = [].concat(this.currentStatus.Subject || []) as Subject[];
-    } catch (err) {
+      // 取得課程時段
+      this.subjectType = this.route.snapshot.paramMap.get("subjectType");
+      await this.getData();
+    } catch(err) {
       console.log(err);
-      alert("GetSubjectList error:\n" + JSON.stringify(err));
     } finally {
       this.loading = false;
     }
   }
 
-  async setData() {
-    try {
-      this.saving = true;
-      await this.contract.send('SetWish', { SubjectType: this.subjectType, Wish: this.currentStatus.Wish });
+  /**取得該課程時段選課資料 */
+  async getData() {
+    const rsp = await this.basicSrv.getSubjectListByType({ SubjectType: this.subjectType });
+    this.wishList = rsp.WishList;
+    this.subjectList = rsp.SubjectList;
+  }
 
-    } catch (err) {
-      alert("SetWish error:\n" + JSON.stringify(err));
-    } finally {
-      var self = this;
-      this.saving = false;
-      self.currentStatus.Subject.forEach(function (subject: Subject) {
-        subject.WishOrder = "";
-        self.currentStatus.Wish.forEach(function (wish: Wish) {
-          if (subject.SubjectID == wish.SubjectID) {
-            subject.WishOrder = wish.WishOrder;
-          }
-        });
-      });
+  /**志願選填 */
+  async setWish() {
+    const rsp = await this.basicSrv.setWish({ SubjectType: this.subjectType, Wish: this.wishList });
+    if(rsp.Result === 'success') {
       this.getData();
+    } else {
+      alert("SetWish error: 資料儲存失敗!");
     }
   }
 
-  removeItem(subject: Wish) {
-    if (this.saving)
-      return;
-
-    var index = this.currentStatus.Wish.indexOf(subject);
+  /**刪除志願 */
+  removeItem(subject: WishRecord) {
+    var index = this.wishList.indexOf(subject);
     if (index >= 0) {
-      this.currentStatus.Wish.splice(index, 1);
-      this.currentStatus.Wish.forEach(function (wish: Wish, order) {
-        wish.WishOrder = order + 1;
+      this.wishList.splice(index, 1);
+      // 重新設定志願序
+      this.wishList.forEach((wish: WishRecord, index: number) => {
+        wish.WishOrder = index + 1;
       });
 
-      this.setData();
+      this.setWish();
     }
   }
 
-  moveDown(subject: Wish) {
-    if (this.saving)
-      return;
-    subject.WishOrder += 1.5;
-    this.currentStatus.Wish.sort(function (a: Wish, b: Wish) {
-      return a.WishOrder - b.WishOrder;
+  /**志願往下 */
+  moveDown(subject: WishRecord) {
+    subject.WishOrder = Number(subject.WishOrder) + 1.5;
+    this.wishList.sort((a: WishRecord, b: WishRecord) => a.WishOrder - b.WishOrder);
+    this.wishList.forEach((wish: WishRecord, index: number) => {
+      wish.WishOrder = index + 1;
     });
-    this.currentStatus.Wish.forEach(function (wish: Wish, order: number) {
-      wish.WishOrder = order + 1;
-    });
-    this.setData();
+
+    this.setWish();
   }
 
-  moveUp(subject: Wish) {
-    if (this.saving)
-      return;
-    subject.WishOrder -= 1.5;
-    this.currentStatus.Wish.sort(function (a: Wish , b: Wish) {
-      return a.WishOrder - b.WishOrder;
+  /**志願往下 */
+  moveUp(subject: WishRecord) {
+    subject.WishOrder = Number(subject.WishOrder) - 1.5;
+    this.wishList.sort((a: WishRecord, b: WishRecord) => a.WishOrder - b.WishOrder);
+    this.wishList.forEach((wish: WishRecord, index: number) => {
+      wish.WishOrder = index + 1;
     });
-    this.currentStatus.Wish.forEach(function (wish: Wish, order: number) {
-      wish.WishOrder = order + 1;
-    });
-    this.setData();
+
+    this.setWish();
   }
 
-  /**加入志願按鈕 */
-  joinCourse(subject: Subject) {
-    if (this.saving)
-      return;
-    var index = -1;
-    [].concat(this.currentStatus.Wish || []).forEach(function (wish, i) {
-      if (wish.SubjectID == subject.SubjectID)
-        index = i;
-    });
-    if (index < 0 && this.currentStatus.Wish.length < 5) {
-      this.currentStatus.Wish.push({ ...subject });
-      this.currentStatus.Wish.forEach(function (wish: Wish, order: number) {
-        wish.WishOrder = order + 1;
+  /**加入志願 */
+  joinCourse(subject: any) {
+    const wish = this.wishList.find((wish: WishRecord) => wish.SubjectID === subject.SubjectID);
+
+    if (!wish && this.wishList.length < 5) {
+      this.wishList.push(subject);
+      this.wishList.forEach((wish: WishRecord, index: number) => {
+        wish.WishOrder = index + 1;
       });
-      this.setData();
-    }
+      this.setWish();
+    } 
   }
 
   /**顯示選課科目資料 */
-  showDialog(subject: Subject, mode: string) {
-    // console.log(JSON.stringify(subject));
+  showDialog(subject: SubjectRecord, mode: string) {
     const dig = this.dialog.open(AddDialogComponent, {
       data: { subject: subject, mode: mode, countMode: '志願序' }
     });
 
     dig.afterClosed().subscribe((v) => {
-      //  alert(JSON.stringify(v.subject));
       if (v && v.subject) {
         this.joinCourse(v.subject);
       }
     });
   }
 
-  /**取得科目級別 */
-  getLevel(subject: Subject) {
-    switch (subject.Level) {
-      case "":
-        return "";
-      case "1":
-        return " I";
-      case "2":
-        return " II";
-      case "3":
-        return " III";
-      case "4":
-        return " IV";
-      case "5":
-        return " V";
-      case "6":
-        return " VI";
-      case "7":
-        return " VII";
-      case "8":
-        return " VIII";
-    }
-  }
 }

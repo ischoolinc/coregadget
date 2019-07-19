@@ -1,4 +1,4 @@
-export class Wish{
+export class WishRecord{
 
     /**科目系統編號 */
     SubjectID: string;

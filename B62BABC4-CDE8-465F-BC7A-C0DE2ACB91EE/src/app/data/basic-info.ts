@@ -1,6 +1,6 @@
-import { SubjectType } from "./subjectType";
+import { SubjectTypeRecord } from "./subjectType";
 
-export class SCBasicInfo{
+export class BasicInfo{
 
     /**學年度 */
     SchoolYear: string;
@@ -24,7 +24,7 @@ export class SCBasicInfo{
     Memo: string;
 
     /**取得所有課程類別的選課狀態與資料 */
-    SubjectType: SubjectType[];
+    SubjectTypeList: SubjectTypeRecord[];
 
     /**選課時間: ~ (模式) */
     PS: string;    

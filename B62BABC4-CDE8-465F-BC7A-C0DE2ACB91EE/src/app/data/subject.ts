@@ -1,4 +1,4 @@
-export class Subject{
+export class SubjectRecord{
 
     /**選課科目系統編號 */
     SubjectID: string;
@@ -44,4 +44,8 @@ export class Subject{
 
     /**志願序 */
     WishOrder: any;
+
+    TimeSelect: string;
+
+    RepeatSelect: string;
 }

@@ -1,13 +1,9 @@
-﻿import { Component, OnInit } from '@angular/core';
-import { GadgetService, Contract } from '../gadget.service';
-import { Utils } from '../util';
-import * as moment from 'moment';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
+﻿import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { BasicService } from '../service/basic.service';
 import { AddDialogComponent } from './add-dialog.component';
-import { Subject } from '../data/subject';
-import { Attend } from '../data/attend';
-
+import { SubjectRecord, AttendRecord } from '../data/index';
 
 @Component({
   selector: 'app-add-task-away',
@@ -17,130 +13,87 @@ import { Attend } from '../data/attend';
 export class AddTaskAwayComponent implements OnInit {
 
   loading: boolean = true;
-  saving: boolean = false;
+  // 課程時段
   subjectType: string;
-  currentStatus: any;
-  // 取得 contract 連線。
-  contract: Contract;
+  // 選課清單
+  subjectList: SubjectRecord[] = [];
+  // 學生選課資料
+  stuAttend: AttendRecord;
+  // 學生目前修課資料
+  stuAttendList: AttendRecord[] = [];
 
-  constructor(private route: ActivatedRoute, private gadget: GadgetService, private router: Router, private dialog: MatDialog) { }
+  dialogConfirm: MatDialogRef<any>;
+
+  @ViewChild('tplConfirm') tplConfirm: TemplateRef<any>;
+
+  constructor (
+    private route: ActivatedRoute, 
+    private basicSrv: BasicService,
+    private dialog: MatDialog,
+  ) { }
   
   async ngOnInit() {
-    this.contract = await this.gadget.getContract('ischool.course_selection');
-    this.subjectType = this.route.snapshot.paramMap.get("subjectType");
-    this.getData();
-  }
-
-  /**取得該課程類別選課資料 */
-  async getData() {
     try {
-      this.loading = true;
-      this.currentStatus = await this.contract.send('GetSubjectList', { SubjectType: this.subjectType });
-
-      // this.currentStatus.Attend = this.currentStatus.Attend || {};
-      this.currentStatus.Subject = [].concat(this.currentStatus.Subject || []) as Subject[];
-
-    } catch (err) {
-      // console.log(err);
-      alert("GetSubjectList error:\n" + JSON.stringify(err));
+      // 取得課程時段
+      this.subjectType = this.route.snapshot.paramMap.get('subjectType');
+      await this.getData();
+    } catch(err) {
+      alert('GetSubjectList error:\n' + JSON.stringify(err));
+      console.log(err);
     } finally {
       this.loading = false;
     }
   }
 
-  /**選課按鈕 */
-  joinCourse(subject: Subject) {
-    if (this.saving)
-      return;
-
-    this.setData({ ...subject });
+  /**取得該課程時段選課資料 */
+  async getData() {
+    const rsp = await this.basicSrv.getSubjectListByType({ SubjectType: this.subjectType });
+    this.subjectList = rsp.SubjectList;
+    this.stuAttend = rsp.Attend;
   }
 
-  /**退選按鈕 */
-  leaveCourse(subject: Attend){
-    if (this.saving)
-      return;
-
-    this.removeData({ ...subject });
-  }
-
-  async removeData(subject: Attend) {
-    try {
-      this.saving = true;
-
-      let rsp = await this.contract.send('LeaveTakeAway', { SubjectID: subject.SubjectID });
-      console.log(rsp);
-      if (rsp.message != "" && rsp) {
-        alert(rsp.message);
-      }
-    } catch (err) {
-
-      alert("LeaveTakeAway error:\n" + JSON.stringify(err));
-    } finally {
-      // var self = this;
-      this.saving = false;
-
-      this.getData();
+  /**加選 */
+  async joinCourse(subject: SubjectRecord) {
+    const rsp = await this.basicSrv.setTakeAway({ SubjectType: this.subjectType, SubjectID: subject.SubjectID });
+    if (rsp.status === 'success') {
+      // 重新取得資料
+      await this.getData();
+    } else {
+      alert(`SetTakeAway error:\n ${rsp.message}`);
     }
   }
-  
-  async setData(subject: Subject) {
-    try {
-      this.saving = true;
 
-      let rsp = await this.contract.send('SetTakeAway', { SubjectType: this.subjectType, SubjectID: subject.SubjectID });
-      console.log(rsp);
-      if (rsp.message != "") {
-        alert(rsp.message);
-      }
-    } catch (err) {
-
-      alert("SetTakeAway error:\n" + JSON.stringify(err));
-    } finally {
-      // var self = this;
-      this.saving = false;
-
+  /**退選 */
+  async leaveCourse(subject: AttendRecord){
+    const rsp = await this.basicSrv.leaveTakeAway({ SubjectID: subject.SubjectID });
+    if (rsp.status === 'success') {
+      // 重新取得資料
       this.getData();
+      // 關閉退選確認畫面
+      this.dialogConfirm.close();
+    } else {
+      alert(`LeaveTakeAway error:\n ${rsp.message}`);
     }
   }
 
   /**顯示科目資訊 */
-  showDialog(subject: Subject, mode: string) {
-    // console.log(JSON.stringify(subject));
+  showDialog(subject: SubjectRecord, mode: string) {
     const dig = this.dialog.open(AddDialogComponent, {
       data: { subject: subject, mode: mode , countMode:'先搶先贏'}
     });
 
     dig.afterClosed().subscribe((v) => {
-      //  alert(JSON.stringify(v.subject));
       if (v && v.subject) {
         this.joinCourse(v.subject);
       }
     });
   }
 
-  /**取得科目級別 */
-  getLevel(subject: Subject) {
-    switch (subject.Level) {
-      case "":
-        return "";
-      case "1":
-        return " I";
-      case "2":
-        return " II";
-      case "3":
-        return " III";
-      case "4":
-        return " IV";
-      case "5":
-        return " V";
-      case "6":
-        return " VI";
-      case "7":
-        return " VII";
-      case "8":
-        return " VIII";
-    }
+  /**退選確認畫面 */
+  openConfirmDialog() {
+    this.dialogConfirm = this.dialog.open(this.tplConfirm, {
+      width: '450px'
+    });
   }
 
 }
