@@ -37,7 +37,6 @@
 
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
 
-
         $scope.changeSelectMode = function (mode) {
             $scope.current.SelectMode = mode;
             $timeout(function () {
@@ -73,7 +72,6 @@
 
         $scope.typeStudentNo = function () {
             var currentIndex = $scope.current.Student ? $scope.current.Student.index : 0;
-
             var nextStudent = null;
             var nextStudent2 = null;
             angular.forEach($scope.studentList, function (item, index) {
@@ -136,8 +134,6 @@
                 if ($scope.current.Value != "" && $scope.current.Value != "缺")
                     $scope.current.Value = temp;
             }
-
-  
             if (flag) {
                 $scope.submitGrade();
             }
@@ -164,7 +160,6 @@
 
             $scope.Data_is_original = false;
             $scope.Data_has_changed = true;
-
             $scope.current.Student["MakeUpScore"] = $scope.current.Value;
             
             var nextStudent =
@@ -189,7 +184,6 @@
         }
 
         $scope.saveAll = function () {
-
             var body = {
                 Content: {                    
                     MakeUpScores: []
@@ -229,7 +223,6 @@
                 }                
             });
 
-            
             $scope.connection.send({
                 service: "SetMakeUpStudentReocrd",
                 autoRetry: true,
@@ -351,7 +344,6 @@
                 }
             }
         });
-
         
         $scope.setCurrentBatch = function (batch) {
 
@@ -374,10 +366,8 @@
 
             $scope.current.currentGroupList = currentGroupList;
 
-            $scope.setCurrentGroup($scope.current.currentGroupList[0])
-                                            
+            $scope.setCurrentGroup($scope.current.currentGroupList[0])                
         }
-
 
         $scope.setCurrentGroup = function (group) {
 
@@ -407,55 +397,23 @@
                         $scope.$apply(function () {
                             $scope.studentList = [];
                             [].concat(response.MakeUpDataList || []).forEach(function (MakeUpData, index) {
-
-                                //var _MakeUpData;
-
-                                //_MakeUpData.MakeUpDataID = MakeUpData.MakeUpDataID;
-
-                                //_MakeUpData.RefStudentID = MakeUpData.RefStudentID;
-
-                                //_MakeUpData.StudentName = MakeUpData.StudentName;
-
-                                //_MakeUpData.Department = MakeUpData.Department;
-
-                                //_MakeUpData.ClassName = MakeUpData.ClassName;
-
-                                //_MakeUpData.SeatNo = MakeUpData.SeatNo;
-
-                                //_MakeUpData.StudentNumber = MakeUpData.StudentNumber;
-
-                                //_MakeUpData.Subject = MakeUpData.Subject;
-
-                                //_MakeUpData.Level = MakeUpData.Level;
-
-                                //_MakeUpData.Credit = MakeUpData.Credit;
-
-                                //_MakeUpData.C_is_required_by = MakeUpData.C_is_required_by;
-
-                                //_MakeUpData.C_is_required = MakeUpData.C_is_required;
-                                
-                                //_MakeUpData.Score = MakeUpData.Score;
-
-                                //_MakeUpData.MakeUpScore = MakeUpData.MakeUpScore;
-
-                                //_MakeUpData.PassStandard = MakeUpData.PassStandard;
-
-                                //_MakeUpData.MakeUpStandard = MakeUpData.MakeUpStandard;
-
-                                //_MakeUpData.DecimalNumber = MakeUpData.DecimalNumber;                                                                
-                                //$scope.examList.forEach(function (examRec) {
-                                //    studentRec["Exam" + examRec.ExamID] = '';
-                                //});
-
                                 MakeUpData.index = index;
-
                                 MakeUpData['MakeUpScore'] = MakeUpData.MakeUpScore;
-
                                 MakeUpData['MakeUpScoreOrigin'] = MakeUpData.MakeUpScore;
 
                                 $scope.studentList.push(MakeUpData);
                                 studentMapping[MakeUpData.RefStudentID] = MakeUpData;
                             });
+
+                        });
+
+                        // 學生資料按學號排序
+                        $scope.studentList.sort((a, b) => {
+                            return b.StudentNumber - a.StudentNumber;
+                        });
+                        // 重整資料索引
+                        $scope.studentList.forEach((data, index) => {
+                            data.index = index;
                         });
 
                         // 取得學生後，初始化
@@ -464,7 +422,6 @@
                     }
                 }
             });
-
         }
 
         $scope.checkAllTable = function () {
@@ -482,11 +439,6 @@
             pass = (studentRec[examKey] == studentRec[examKey + 'Origin']) || (studentRec[examKey + 'Origin'] === undefined);
             return pass;
         }
-
-
-        //#endregion
-        //#endregion
-
     }
 ])
 .provider('$affix', function () {
@@ -496,10 +448,8 @@
     };
 
     this.$get = function ($window, debounce, dimensions) {
-
         var bodyEl = angular.element($window.document.body);
         var windowEl = angular.element($window);
-
         function AffixFactory(element, config) {
 
             var $affix = {};
@@ -676,7 +626,6 @@
         }
 
         return AffixFactory;
-
     };
 
 })
@@ -690,14 +639,12 @@
             angular.forEach(['offsetTop', 'offsetBottom', 'offsetParent', 'offsetUnpin'], function (key) {
                 if (angular.isDefined(attr[key])) options[key] = attr[key];
             });
-
             var affix = $affix(element, options);
             scope.$on('$destroy', function () {
                 affix && affix.destroy();
                 options = null;
                 affix = null;
             });
-
         }
     };
 

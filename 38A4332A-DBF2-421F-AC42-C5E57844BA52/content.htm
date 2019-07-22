@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html ng-app="gradebook">
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +19,6 @@
             }
         });
     </script>
-
 
     <title>GradeBook</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -43,44 +41,32 @@
     <script src="js/xml2json.js"></script>
     <script src="js/angular-strap.min.js"></script>
     <script src="js/angular-strap.tpl.min.js"></script>
-
     <script src="js/gradebook.js"></script>
-
     <style>
         .dropdown-header {
             padding: 3px 10px;
             font-size: 14px;
         }
-
         .importStudentPreview {
             padding: 5px 10px;
             border-radius: .25em;
             border: solid 1px lightgray;
             margin: 3px 0px;
         }
-
-            .importStudentPreview .studentInfo {
-            }
-
+        .importStudentPreview .studentInfo {
+        }
         .my-page {
         }
     </style>
 </head>
-
-
 <body ng-controller="MainCtrl">
     <div ng-if="!(current && studentList) && !HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
     <div ng-if="HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有任何監考補考群組，請洽教務處行政人員。</div>
     <div id="gadget" class="my-page" ng-if="current && studentList">
         <h1 class="hidden-xs">高中補考成績輸入</h1>
-        <!--<h3 class="hidden-xs">補考梯次: {{current.Batch.BatchName}}</h3>-->
-        <h3 class="hidden-xs">補考說明:{{current.Batch.BatchDescription}}</h3>
-        <h3 class="hidden-xs">輸入開放時間: {{current.Batch.BatchStartTime}} ~ {{current.Batch.BatchEndTime}}</h3>
-        <!--<h3 class="hidden-xs">補考群組: {{current.Group.GroupName}}</h3>-->
-        <h3 class="hidden-xs">群組說明:{{current.Group.GroupDescription}}</h3>
-        <h3 class="hidden-xs">補考群組日期:{{current.Group.GroupMakeupDate}}</h3>
-        <h3 class="hidden-xs">補考群組時間:{{current.Group.GroupMakeupTime}}</h3>        
-        <h3 class="hidden-xs">補考群組地點:{{current.Group.GroupMakeupPlace}}</h3>        
+        <div class="alert alert-info" role="alert">
+            <b>輸入開放時間:</b> {{current.Batch.BatchStartTime}} ~ {{current.Batch.BatchEndTime}}</li>
+        </div>
         <div>
             <div ng-if="!current.Batch.Lock" class="btn-group pull-right">
                 <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable()}">
@@ -97,7 +83,7 @@
                     <li ng-repeat="batch in batchList"
                         ng-class="{active:batch==current.Batch}">
                         <a href="javascript:;" ng-click="setCurrentBatch(batch)">{{batch.BatchName}}</a>
-                    </li>
+                    </span>
                 </ul>
             </div>
             <div class="btn-group">
@@ -114,10 +100,9 @@
             </div>
         </div>
         <div ng-if="studentList" class="hidden-xs" style="margin-top:10px;">
-            <div style="position:relative;float:right;width:260px;">
-                <table class="table table-bordered table-striped"
-                       style="width:260px;"
-                       data-offset-top="145"  bs-affix>
+            <div style="position: sticky; top: 0px; float:right; width:260px;">
+                <!-- <div data-offset-top="145"  bs-affix> -->
+                <table class="table table-bordered table-striped" style="width:260px;">
                     <thead>
                         <tr ng-if="!current.Batch.Lock">
                             <th colspan="2">補考成績輸入</th>
@@ -143,31 +128,31 @@
                             </td>
                             <td class="text-center" style="padding:0px;">
                                 <div ng-if="current.SelectMode=='No.'"
-                                     class="input-group">
+                                        class="input-group">
                                     <input ng-model="current.SelectSeatNo"
-                                           ng-keydown="submitStudentNo($event)"
-                                           ng-change="typeStudentNo()"
-                                           ng-class="{disabled:!current.Student}"
-                                           type="text"
-                                           placeholder="{{isMobile?'':'Enter送出'}}"
-                                           class="form-control pg-seatno-textbox"
-                                           select-on-click />
+                                            ng-keydown="submitStudentNo($event)"
+                                            ng-change="typeStudentNo()"
+                                            ng-class="{disabled:!current.Student}"
+                                            type="text"
+                                            placeholder="{{isMobile?'':'Enter送出'}}"
+                                            class="form-control pg-seatno-textbox"
+                                            select-on-click />
                                     <span class="input-group-btn">
                                         <a ng-click="submitStudentNo()"
-                                           class="btn btn-default">
+                                            class="btn btn-default">
                                             送出
                                         </a>
                                     </span>
                                 </div>
 
                                 <div ng-if="current.SelectMode=='Seq.'"
-                                     class="btn-group btn-group-sm">
+                                        class="btn-group btn-group-sm">
                                     <a class="btn btn-default"
-                                       ng-click="goPrev()">
+                                        ng-click="goPrev()">
                                         &nbsp;&nbsp;&nbsp; << &nbsp;&nbsp;&nbsp;
                                     </a>
                                     <a class="btn btn-default"
-                                       ng-click="goNext()">
+                                        ng-click="goNext()">
                                         &nbsp;&nbsp;&nbsp; >> &nbsp;&nbsp;&nbsp;
                                     </a>
                                 </div>
@@ -190,14 +175,14 @@
                             <td ng-if="current.Student ">
                                 <div class="input-group">
                                     <input ng-model="current.Value"
-                                           ng-keydown="enterGrade($event)"
-                                           type="text"
-                                           class="form-control pg-grade-textbox"
-                                           placeholder="{{isMobile?'':'Enter送出'}}"
-                                           select-on-click />
+                                            ng-keydown="enterGrade($event)"
+                                            type="text"
+                                            class="form-control pg-grade-textbox"
+                                            placeholder="{{isMobile?'':'Enter送出'}}"
+                                            select-on-click />
                                     <span class="input-group-btn">
                                         <a ng-click="enterGrade()"
-                                           class="btn btn-default">
+                                            class="btn btn-default">
                                             送出
                                         </a>
                                     </span>
@@ -205,11 +190,8 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>      
+                </table>
             </div>
-            
-            
-
             <div style="margin-right:270px;">
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
@@ -279,7 +261,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="stuRec in studentList"
-                            ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
+                            ng-class="{'warning': stuRec.Subject === current.Student.Subject && stuRec.RefStudentID === current.Student.RefStudentID}"
                             style="cursor:pointer;">
                             <td class="text-left"
                                 ng-click="setCurrent(stuRec, true, true)">                                
