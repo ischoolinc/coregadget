@@ -2,36 +2,6 @@
 
 .controller('MainCtrl', ['$scope', '$timeout',
     function ($scope, $timeout) {
-        var $scope長這個樣子 = {
-            current: {
-                SelectMode: "No.",
-                SelectSeatNo: "",
-                Value: "",
-                Student: {
-                    SeatNo: "5",
-                    StudentName: "凱澤",
-                    StudentID: "3597",
-                    StudentScoreTag :"成績身分:一般生"
-                },               
-                ExamOrder: [],
-                Course: {},
-                VisibleExam: []
-            },
-            studentList: [
-                {
-                    StudentID: "3597",
-                    StudentName: "凱澤",
-                    SeatNo: "5",
-                    Final: "",
-                    Midterm: "89",
-                    StudentScoreTag: "成績身分:一般生",
-                    index: 0
-                }
-            ],
-            process: [{
-
-            }]
-        };
 
         $scope.params = gadget.params;
 
@@ -407,10 +377,25 @@
 
                         });
 
-                        // 學生資料按學號排序
-                        $scope.studentList.sort((a, b) => {
-                            return b.StudentNumber - a.StudentNumber;
-                        });
+                        // 學生資料排序: 年級 班級 座號
+                        {
+                            $scope.studentList.sort((a, b) => {
+                                return a.SeatNo - b.SeatNo;
+                            });
+                            $scope.studentList.sort((a, b) => {
+                                if (a.ClassName < b.ClassName) {
+                                    return -1;
+                                } 
+                                if (a.ClassName > b.ClassName) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                            $scope.studentList.sort((a, b) => {
+                                return a.GradeYear - b.GradeYear;
+                            });
+                        }
+
                         // 重整資料索引
                         $scope.studentList.forEach((data, index) => {
                             data.index = index;
