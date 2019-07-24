@@ -32,8 +32,19 @@ export class Quiz {
             let qi2: QuizItem = new QuizItem();
             qi2.QuizName = '常模分數';
             qi2.QuizOrder = 2;
+            
+            let qi3: QuizItem = new QuizItem();
+            qi3.QuizName = '年齡';
+            qi3.QuizOrder = 3;
+
+            let qi4: QuizItem = new QuizItem();
+            qi4.QuizName = '性別';
+            qi4.QuizOrder = 4;
+
             this.QuizItemList.push(qi1);
             this.QuizItemList.push(qi2);
+            this.QuizItemList.push(qi3);
+            this.QuizItemList.push(qi4);
         }
 
         if (this.QuizItemList.length > 0) {           

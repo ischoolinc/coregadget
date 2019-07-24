@@ -5,6 +5,8 @@ import { CaseMonthlyStatistics, CaseMonthlyItemCount } from '../case/case-studen
 import * as XLSX from 'xlsx';
 import { concat } from 'rxjs';
 import { _MatListItemMixinBase } from '@angular/material';
+import { StudentQuizData } from '../psychological-test/PsychologicalTest-vo';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-counsel-statistics',
@@ -13,9 +15,16 @@ import { _MatListItemMixinBase } from '@angular/material';
 })
 export class CounselStatisticsComponent implements OnInit {
 
+  ImplementationDate_Begin: string;
+  ImplementationDate_End: string;
   reportNameList: string[];
   selectYear: number;
   selectMonth: number;
+  selectReportType: string = '輔導工作月統計';
+  reportTypeList: string[] = [];
+  QuizInfoReportList: QuizInfoReport[] = [];
+  ClassStudentCountReportList: ClassStudentCountReport[] = [];
+
   constructor(
     @Optional()
     private appComponent: AppComponent, private dsaService: DsaService, ) { }
@@ -24,6 +33,9 @@ export class CounselStatisticsComponent implements OnInit {
     let dt = new Date();
     this.selectYear = dt.getFullYear();
     this.selectMonth = dt.getMonth() + 1;
+    this.reportTypeList.push('輔導工作月統計');
+    this.selectReportType = '輔導工作月統計';
+    this.reportTypeList.push('心理測驗結果分析');
     if (this.appComponent) this.appComponent.currentComponent = "counsel_statistics";
     this.reportNameList = [
       "輔導工作月統計報表-教育部版",
@@ -31,7 +43,8 @@ export class CounselStatisticsComponent implements OnInit {
       "輔導工作月統計報表-新竹國中版",
       "輔導工作月統計報表-新竹國小版"
     ];
-
+    this.ImplementationDate_Begin = moment().format('YYYY-MM-DD');
+    this.ImplementationDate_End = moment().format('YYYY-MM-DD');
     //this.reportNameList.push("新北市國民中小輔導當月個案");
   }
 
@@ -189,7 +202,7 @@ export class CounselStatisticsComponent implements OnInit {
       let detail = [].concat(rspRec.Detail || []);
 
       detail.forEach(item => {
-        detailItemnNameList.forEach(itemName =>{
+        detailItemnNameList.forEach(itemName => {
           if (item.counsel_type.indexOf(itemName) > -1 || item.counsel_type_other.indexOf(itemName) > -1) {
             rec.AddOtherDetailCount(itemName);
           }
@@ -380,5 +393,107 @@ export class CounselStatisticsComponent implements OnInit {
   // 名稱與代碼轉換(新竹國小版)
   parseProblemCategoryNoT4(item: string) { }
 
+  // 心測功能檢查值
+  async psyCheckValue() {
+    this.QuizInfoReportList = await this.loadQuziInfoReportByImplementationDate();
+  }
+
+  // 產生心理測驗報表
+  async psyExportReport(item: QuizInfoReport) {
+    this.ClassStudentCountReportList = [];
+    let respClass = await this.dsaService.send("GetClassStudetCountByQuizID", {
+      Request: {
+        QuizID: item.QuizID,
+        ImplementationDate: item.ImplementationDateStr
+      }
+    });
+
+    let dataClass = [].concat(respClass.ClassStudentCount || []);
+    if (dataClass && dataClass.length > 0) {
+      dataClass.forEach(classItem => {
+        let csr: ClassStudentCountReport = new ClassStudentCountReport();
+        csr.ClassID = classItem.class_id;
+        csr.ClassName = classItem.class_name;
+        csr.StudentCount = parseInt(classItem.student_count);
+        csr.GradeYear = parseInt(classItem.grade_year);
+        this.ClassStudentCountReportList.push(csr);
+      });
+    }
+
+    let respStud = await this.dsaService.send("GetQuizStudentDataByQuizID", {
+      Request: {
+        QuizID: item.QuizID,
+        ImplementationDate: item.ImplementationDateStr
+      }
+    });
+
+    let dataStud = [].concat(respStud.QuizStudentData || []);
+    if (dataStud && dataStud.length > 0) {
+      dataStud.forEach(studItem => {
+        this.ClassStudentCountReportList.forEach( classItem => {
+          if (studItem.class_id === classItem.ClassID)
+          {
+            classItem.StudentDataSource.push(studItem);
+          }
+        });
+      });
+    }
+    debugger;
+  }
+
+  SetSelectReportType(name: string) {
+    this.selectReportType = name;
+  }
+
+  // 透過實施開始結束取得測驗試別
+  async loadQuziInfoReportByImplementationDate() {
+    let resp = await this.dsaService.send("GetQuizNameByImplementationDate", {
+      Request: {
+        BeginDate: this.ImplementationDate_Begin,
+        EndDate: this.ImplementationDate_End
+      }
+    });
+
+    let value: QuizInfoReport[] = [];
+    let data = [].concat(resp.QuizName || []);
+    if (data && data.length > 0) {
+      data.forEach(item => {
+        let da: QuizInfoReport = new QuizInfoReport();
+        da.QuizID = item.quiz_id;
+        da.QuizName = item.quiz_name;
+        da.ImplementationDate = moment(item.implementation_date);
+        da.ImplementationDateStr = da.ImplementationDate.format('YYYY-MM-DD');
+        value.push(da);
+      });
+    }
+    return value;
+  }
+
 }
 
+export class QuizInfoReport {
+  QuizID: string;
+  QuizName: string;
+  ImplementationDate: moment.Moment;
+  ImplementationDateStr: string;
+}
+
+export class ClassStudentCountReport {
+  ClassID: string;
+  GradeYear: number = 0;
+  ClassName: string;
+  StudentCount: number;
+  ItemCountList: ItemCount[] = [];
+  StudentDataSource: any[] = [];
+
+  // 計算統計
+  Calc() {
+
+  }
+}
+
+export class ItemCount {
+  Name: string;
+  Count: number;
+  pst: number;
+}

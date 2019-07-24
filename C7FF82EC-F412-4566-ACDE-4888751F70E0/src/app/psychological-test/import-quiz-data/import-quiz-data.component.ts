@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import * as node2json from 'nodexml';
 import * as moment from 'moment';
 import { DsaService } from "../../dsa.service";
+import { single } from 'rxjs/operators';
 
 @Component({
   selector: 'app-import-quiz-data',
@@ -320,11 +321,25 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Gender = item.gender;
               if (sItem.QuizItemList[0].QuizName === "原始分數") {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
+                debugger;
                 sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age);
                 let qi: QuizItem = new QuizItem();
                 qi.QuizName = "常模分數"
                 qi.Value = sItem.NormScore;
                 sItem.QuizItemList.push(qi);
+
+                let qiG: QuizItem = new QuizItem();             
+                qiG.QuizName = "年齡";
+                if (sItem.Age)
+                  qiG.Value = sItem.Age + '';
+                else
+                  qiG.Value = '';
+                sItem.QuizItemList.push(qiG);
+
+                let qigender: QuizItem = new QuizItem();
+                qigender.QuizName = "性別";
+                qigender.Value = sItem.Gender;
+                sItem.QuizItemList.push(qigender);
               }
             }
           });
@@ -392,6 +407,19 @@ export class ImportQuizDataComponent implements OnInit {
                 qi.QuizName = "常模分數"
                 qi.Value = sItem.NormScore;
                 sItem.QuizItemList.push(qi);
+
+                let qiG: QuizItem = new QuizItem();
+                qiG.QuizName = "年齡";
+                if (sItem.Age)
+                  qiG.Value = sItem.Age + '';
+                else
+                  qiG.Value = '';
+                sItem.QuizItemList.push(qiG);
+
+                let qigender: QuizItem = new QuizItem();
+                qigender.QuizName = "性別";
+                qigender.Value = sItem.Gender;
+                sItem.QuizItemList.push(qigender);
               }
             }
           });
@@ -457,10 +485,24 @@ export class ImportQuizDataComponent implements OnInit {
               if (sItem.QuizItemList[0].QuizName === "原始分數") {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
                 sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age);
+
                 let qi: QuizItem = new QuizItem();
-                qi.QuizName = "常模分數"
+                qi.QuizName = "常模分數";
                 qi.Value = sItem.NormScore;
                 sItem.QuizItemList.push(qi);
+
+                let qiG: QuizItem = new QuizItem();
+                qiG.QuizName = "年齡";
+                if (sItem.Age)
+                  qiG.Value = sItem.Age + '';
+                else
+                  qiG.Value = '';
+                sItem.QuizItemList.push(qiG);
+
+                let qigender: QuizItem = new QuizItem();
+                qigender.QuizName = "性別";
+                qigender.Value = sItem.Gender;
+                sItem.QuizItemList.push(qigender);
               }
             }
           });
@@ -482,11 +524,11 @@ export class ImportQuizDataComponent implements OnInit {
         }
 
       }
-    
+
       this.checkHasData();
     } else {
       this.isImportButtonDisable = true;
-    }   
+    }
   }
 
   SetSelectImportType(name: string) {

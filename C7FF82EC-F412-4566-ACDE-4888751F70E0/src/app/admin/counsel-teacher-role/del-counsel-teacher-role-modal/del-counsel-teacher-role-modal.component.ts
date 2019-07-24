@@ -31,9 +31,10 @@ export class DelCounselTeacherRoleModalComponent implements OnInit {
           TeacherID: this.teacherCounselRole.TeacherID
         }
       });
+     
       $("#delCounselTeacherRole").modal("hide");
     } catch (err) {
-      alert(err);
+      alert("無法刪除:"+ err.dsaError.message);
     }
   }
 }
