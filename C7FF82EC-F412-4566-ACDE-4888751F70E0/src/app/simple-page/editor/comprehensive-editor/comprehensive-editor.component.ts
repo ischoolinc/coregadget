@@ -27,6 +27,12 @@ export class ComprehensiveEditorComponent implements OnInit {
     '%TEXT5%': { element: 'input', style: { width: '300px' } },
     '%TEXTAREA%': { element: 'textarea', style: { width: '100%' } }
   };
+
+  needSorting = false ;
+  sortingTitle = "";
+  sortingItems = [];  // 需要排序的選項清單
+  sortingType: string ;  // default
+
   constructor() { }
 
   ngOnInit() {
@@ -249,4 +255,27 @@ export class ComprehensiveEditorComponent implements OnInit {
     // console.log(xmlstring);
     // console.log(this.questionSubject);
   }
+
+  sortQueryText(query) {
+    console.log(query.QuestionText);
+    this.sortingTitle = query.Query ;
+    this.sortingType = "TEXT" ;
+    this.sortingItems = query.QuestionText ;
+  }
+
+  sortOptions(questionText, queryTitle) {
+    console.log(questionText.Option);
+    this.sortingTitle = `${queryTitle}/${questionText.Text}`;
+    this.sortingType = "OPTION" ;
+    this.sortingItems = questionText.Option ;
+  }
+
+  showSorting(event) {
+    if (!this.needSorting) {
+      this.sortingItems = []; // 清空
+      this.sortingTitle = '';
+    }
+  }
 }
+
+

@@ -56,6 +56,8 @@ import { AddCounselTeacherRoleModalComponent } from './admin/counsel-teacher-rol
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
 import { ComprehensiveFillComponent } from './simple-page/comprehensive-fill/comprehensive-fill.component';
 import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-class-view/comprehensive-class-view.component';
@@ -146,6 +148,7 @@ import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel
     TextareaAutosizeModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     DragDropModule
   ],

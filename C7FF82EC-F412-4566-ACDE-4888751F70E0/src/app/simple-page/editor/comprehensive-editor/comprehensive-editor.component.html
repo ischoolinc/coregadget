@@ -1,5 +1,6 @@
 <div class="p-3" cdkDropListGroup>
   <div style="position: fixed;z-index: 1;top: 8px;right: 8px;">
+      <mat-checkbox [(ngModel)]="needSorting" (change)="showSorting(event)" >顯示排序</mat-checkbox>
     <button *ngIf="requireList&&requireList.length"
             class="btn btn-danger ml-1"
             (click)="showRequireList()">
@@ -44,6 +45,7 @@
                   <td class="text-left"
                       scope="col">
                     <div class="form-group mb-0">
+                      <div class="btn btn-info btn-small" *ngIf="query.QuestionText.length > 1 && needSorting" (click)="sortQueryText(query);">T</div>
                       <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
                         <label *ngIf="questionTextIndex > 0"
                                class="custom-control-label mx-1">;</label>
@@ -55,6 +57,7 @@
                           <span>{{questionText.Text}}</span>
                           <span class="mx-1">:</span>
                         </label>
+                        <div class="btn btn-success btn-small" *ngIf="questionText.Option.length > 1 && needSorting" (click)="sortOptions(questionText, query.Query);">O</div>
                         <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
                           <!-- <span *ngIf="optionIndex > 0">、</span> -->
                           <!-- <span style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span> -->
@@ -138,7 +141,14 @@
       </ng-container>
   </ng-container>
 </div>
-
+<div style="position:fixed;right: 0px;top:100px;padding: 8px; background-color: #DEB887 ;" *ngIf="needSorting">
+  <div>{{ sortingTitle }}</div>
+  <div cdkDropList class="example-list" [cdkDropListData]="sortingItems" (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of sortingItems" cdkDrag>
+      {{ sortingType == "TEXT" ? item.Text : item.OptionText }}
+    </div>
+  </div>
+</div>
 
 <div class="modal fade"
      id="modal-editor"
