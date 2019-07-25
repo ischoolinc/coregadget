@@ -31,6 +31,7 @@ export class AddInterviewModalComponent implements OnInit {
     private counselDetailComponent: CounselDetailComponent
   ) { }
 
+  isCancel: boolean = false;
   _editMode: string = "add";
   editModeString: string = "新增";
   _studentName: string;
@@ -79,11 +80,13 @@ export class AddInterviewModalComponent implements OnInit {
 
   // click 取消
   cancel() {
+    this.isCancel = true;
     $("#addInterview").modal("hide");
   }
   // click 儲存
   async save() {
     try {
+      this.isCancel = false;
       this._CounselInterview.isSaveDisable = true;
       if (this._CounselInterview.isReferralValue)
         this._CounselInterview.isReferral = "t";
