@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AppComponent } from './app.component';
 import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
@@ -141,7 +142,8 @@ import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-se
     TextareaAutosizeModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]
