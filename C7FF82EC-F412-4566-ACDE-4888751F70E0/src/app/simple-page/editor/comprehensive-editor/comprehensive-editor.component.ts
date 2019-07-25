@@ -210,6 +210,13 @@ export class ComprehensiveEditorComponent implements OnInit {
     alert(this.requireList.join("\n"));
   }
 
+  /**
+   * 處理拖拉項目後，json 物件的順序該如何調整。
+   * 此外也把結果轉回 XML ，寫回 config.configXml，這樣可出現在輸入 XML 的畫面中。
+   * 技術文件請參考：https://material.angular.io/cdk/drag-drop/examples
+   * @param event 拖拉事件的資料參數
+   * @param queries 把 cdkDragList 裡的所有項目傳入，但後來發現好像 event.container.data 就可以抓到了，所以好像沒用到？
+   */
   drop(event: CdkDragDrop<string[]>, queries) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -220,22 +227,24 @@ export class ComprehensiveEditorComponent implements OnInit {
                         event.currentIndex);
     }
     // moveItemInArray(queries, event.previousIndex, event.currentIndex);
-    console.log(this.questionSubject);
+    // console.log(this.questionSubject);
 
-    let objRoot = {"Template" : {
+    // 把 Json 轉回 XML
+    const objRoot = {"Template" : {
       "QuestionSubject" : []
     }};
-    
+
     this.questionSubject.forEach(subj => {
       objRoot.Template.QuestionSubject.push(subj);
     });
-    
-    console.log(objRoot);
+    // console.log(objRoot);
 
-    const xmlstring = require('nodexml').obj2xml(objRoot);
-    const finalXmlString = xmlstring.replace("<root>", "").replace("</root", "");
+    const xmlstring = require('nodexml').obj2xml(objRoot);   // convert json to xml
+    const finalXmlString = xmlstring.replace("<root>", "").replace("</root>", "");
+
+    // 把 XML 寫回 config.configXml，好顯示在設定 XML 的畫面中。
     this.config.configXml = finalXmlString;
-    console.log(xmlstring);
-    //console.log(this.questionSubject);
+    // console.log(xmlstring);
+    // console.log(this.questionSubject);
   }
 }
