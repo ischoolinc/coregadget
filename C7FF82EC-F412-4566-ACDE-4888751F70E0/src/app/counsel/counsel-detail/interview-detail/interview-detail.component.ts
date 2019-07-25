@@ -11,8 +11,9 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
 // import { MatDialog } from '@angular/material';
 import { DsaService } from "../../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
-
 import { CounselDetailComponent } from "../counsel-detail.component";
+import { DelInterviewModalComponent } from "./del-interview-modal/del-interview-modal.component";
+import { GlobalService } from "../../../global.service";
 
 @Component({
   selector: "app-interview-detail",
@@ -25,15 +26,19 @@ export class InterviewDetailComponent implements OnInit {
   _counselInterview: CounselInterview[] = [];
   _StudentID: string = "";
   isLoading = false;
+  isDeleteButtonDisable: boolean = true;
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
+  @ViewChild("delInterview") _delInterview: DelInterviewModalComponent;
+
 
   constructor(
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
+    public globalService: GlobalService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._StudentID = "";
@@ -75,6 +80,11 @@ export class InterviewDetailComponent implements OnInit {
     });
 
     this._counselInterview = dataList;
+    if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長') {
+      this.isDeleteButtonDisable = false;
+    } else {
+      this.isDeleteButtonDisable = true;
+    }
     this.isLoading = false;
   }
 
@@ -83,7 +93,7 @@ export class InterviewDetailComponent implements OnInit {
     this._viewInterview._CounselInterview = counselView;
     this._viewInterview._id = "viewInterview";
     $("#viewInterview").modal("show");
-    $("#viewInterview").on("hide.bs.modal", function(e) {
+    $("#viewInterview").on("hide.bs.modal", function (e) {
       // do something...
     });
   }
@@ -96,9 +106,11 @@ export class InterviewDetailComponent implements OnInit {
 
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
-      // 重整資料
-      this.counselStudentService.reload();
-      this.loadCounselInterview(this._StudentID);
+      if (!this._addInterview.isCancel) {
+        // 重整資料
+        this.counselStudentService.reload();
+        this.loadCounselInterview(this._StudentID);
+      }
       $("#addInterview").off("hide.bs.modal");
     });
   }
@@ -113,10 +125,28 @@ export class InterviewDetailComponent implements OnInit {
     $("#addInterview").modal("show");
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
-      // 重整資料
-      this.counselStudentService.reload();
-      this.loadCounselInterview(this._StudentID);
+      if (!this._addInterview.isCancel) {
+        // 重整資料
+        this.counselStudentService.reload();
+        this.loadCounselInterview(this._StudentID);
+      }
       $("#addInterview").off("hide.bs.modal");
+    });
+  }
+
+  // 刪除
+  delInterviewModal(counselView: CounselInterview) {
+    this._delInterview._CounselInterview = counselView;
+
+    $("#delInterview").modal("show");
+    // 關閉畫面
+    $("#delInterview").on("hide.bs.modal", () => {
+      if (!this._delInterview.isCancel) {
+        // 重整資料
+        this.counselStudentService.reload();
+        this.loadCounselInterview(this._StudentID);
+      }
+      $("#delInterview").off("hide.bs.modal");
     });
   }
 

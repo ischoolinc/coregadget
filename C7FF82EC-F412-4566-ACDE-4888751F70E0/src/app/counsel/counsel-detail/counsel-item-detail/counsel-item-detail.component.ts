@@ -8,6 +8,8 @@ import {
   SemesterInfo
 } from "../counsel-item-detail/case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
+import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
+
 @Component({
   selector: "app-counsel-item-detail",
   templateUrl: "./counsel-item-detail.component.html",
@@ -20,8 +22,10 @@ export class CounselItemDetailComponent implements OnInit {
   isLoading = false;
   // 個案資料
   caseList: CaseStudent[];
+  isDeleteButtonDisable: boolean = true;
 
   @ViewChild("addCaseInterview") _addInterview: AddCaseInterviewModalComponent;
+  @ViewChild("delCaseInterview") _delCaseInterview: DelCaseInterviewModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -34,6 +38,7 @@ export class CounselItemDetailComponent implements OnInit {
     this.counselDetailComponent.setCurrentItem('counsel');
     this.caseList = [];
     this._StudentID = "";
+    this.isDeleteButtonDisable = true;
     this._StudentID = this.counselDetailComponent.currentStudent.StudentID;
     this.loadData();
   }
@@ -60,8 +65,10 @@ export class CounselItemDetailComponent implements OnInit {
 
     // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {
-      // 重整資料
-      this.loadData();
+      if (!this._addInterview.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
       $("#addCaseInterview").off("hide.bs.modal");
     });
   }
@@ -76,9 +83,25 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addCaseInterview").modal("show");
     // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {
-      // 重整資料
-      this.loadData();
+      if (!this._addInterview.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
       $("#addCaseInterview").off("hide.bs.modal");
+    });
+  }
+
+  // 刪除
+  deleteInterviewModal(counselView: CaseInterview) {
+    this._delCaseInterview.caseInterview = counselView;
+    $("#delCaseInterview").modal("show");
+    // 關閉畫面
+    $("#delCaseInterview").on("hide.bs.modal", () => {
+      if (!this._delCaseInterview.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
+      $("#delCaseInterview").off("hide.bs.modal");
     });
   }
 
@@ -187,5 +210,11 @@ export class CounselItemDetailComponent implements OnInit {
       }
     });
     this.isLoading = false;
+
+    if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長') {
+      this.isDeleteButtonDisable = false;
+    } else {
+      this.isDeleteButtonDisable = true;
+    }
   }
 }

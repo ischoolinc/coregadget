@@ -91,7 +91,7 @@
                 </p>
                 <p *ngIf="counselRec.Content"
                    style="white-space: pre-wrap;word-break: break-all;">
-                   <strong>內容：</strong>
+                  <strong>內容：</strong>
                   <span>{{ counselRec.Content }}</span>
                 </p>
               </li>
@@ -104,6 +104,13 @@
                         (click)="editInterviewModal(counselRec)"
                         [disabled]="counselRec.isEditDisable">
                   修改
+                </button>
+                <button class="btn btn-danger"
+                        data-toggle="modal"
+                        style="margin-left: 10px"
+                        (click)="delInterviewModal(counselRec)"
+                        [disabled]="isDeleteButtonDisable">
+                  刪除
                 </button>
               </li>
             </ol>
@@ -125,3 +132,4 @@
 
 <app-add-interview-modal #addInterview></app-add-interview-modal>
 <app-view-interview-modal #viewInterview></app-view-interview-modal>
+<app-del-interview-modal #delInterview></app-del-interview-modal>

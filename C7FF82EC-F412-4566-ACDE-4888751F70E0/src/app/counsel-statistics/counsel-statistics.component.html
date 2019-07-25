@@ -81,7 +81,8 @@
              name="ImplementationDate_Begin"
              placeholder="請輸入實施日期開始日期"
              [(ngModel)]="ImplementationDate_Begin"
-             (keyup)="psyCheckValue()" />
+             (keyup)="psyCheckValue()"
+             (change)="psyCheckValue()" />
     </div>
 
     <div class="form-group col-md-4">
@@ -96,28 +97,33 @@
              name="ImplementationDate_End"
              placeholder="請輸入實施日期結束日期"
              [(ngModel)]="ImplementationDate_End"
-             (keyup)="psyCheckValue()" 
-             (change)="psyCheckValue()"
-             />
+             (keyup)="psyCheckValue()"
+             (change)="psyCheckValue()" />
 
     </div>
   </div>
 
   <ul class="rwd-table">
-    <li class="thead" *ngIf="QuizInfoReportList.length > 0">
+    <li class="thead"
+        *ngIf="QuizInfoReportList.length > 0">
       <ol class="tr">
         <li style="width: 15%">實施日期</li>
-        <li style="width: 70%">測驗名稱</li>
-        <li style="width: 15%"> </li>
+        <li style="width: 65%">測驗名稱</li>
+        <li style="width: 10%">測驗類型</li>
+        <li style="width: 10%"> </li>
       </ol>
     </li>
-    <li class="tbody">      
-      <ol class="tr" *ngFor="let item of QuizInfoReportList">
+    <li class="tbody">
+      <ol class="tr"
+          *ngFor="let item of QuizInfoReportList">
         <li data-title="">{{item.ImplementationDateStr}} </li>
         <li data-title="報表名稱">{{item.QuizName}}</li>
+        <li data-title="測驗類型">{{item.GetQuizType()}}</li>
         <li data-title="">
           <button class="btn btn-light"
-                  (click)="psyExportReport(item)">
+                  (click)="psyExportReport(item)"
+                  *ngIf="item.UseMappingTable === true"
+                  [disabled]="isPsyButtonDisable">
             產生分析結果
           </button>
         </li>

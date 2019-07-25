@@ -70,6 +70,8 @@ import { ComprehensiveStatisticsComponent } from './comprehensive/comprehensive-
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
 import { AddPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/add-psychological-quiz-data/add-psychological-quiz-data.component';
 import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/del-psychological-quiz-data/del-psychological-quiz-data.component';
+import { DelInterviewModalComponent } from './counsel/counsel-detail/interview-detail/del-interview-modal/del-interview-modal.component';
+import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/del-case-interview-modal/del-case-interview-modal.component';
 
 
 @NgModule({
@@ -129,7 +131,9 @@ import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-se
     ComprehensiveStatisticsComponent,
     PsychologicalQuizSetupComponent,
     AddPsychologicalQuizDataComponent,
-    DelPsychologicalQuizDataComponent
+    DelPsychologicalQuizDataComponent,
+    DelInterviewModalComponent,
+    DelCaseInterviewModalComponent
   ],
   imports: [
     BrowserModule,
