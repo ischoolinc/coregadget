@@ -213,9 +213,11 @@ export class ComprehensiveEditorComponent implements OnInit {
   /**
    * 處理拖拉項目後，json 物件的順序該如何調整。
    * 此外也把結果轉回 XML ，寫回 config.configXml，這樣可出現在輸入 XML 的畫面中。
-   * 技術文件請參考：https://material.angular.io/cdk/drag-drop/examples
+   * 
    * @param event 拖拉事件的資料參數
    * @param queries 把 cdkDragList 裡的所有項目傳入，但後來發現好像 event.container.data 就可以抓到了，所以好像沒用到？
+   * @see json轉xml請參考 https://www.npmjs.com/package/nodexml
+   * @see 拖拉技術文件請參考： https://material.angular.io/cdk/drag-drop/examples
    */
   drop(event: CdkDragDrop<string[]>, queries) {
     if (event.previousContainer === event.container) {
