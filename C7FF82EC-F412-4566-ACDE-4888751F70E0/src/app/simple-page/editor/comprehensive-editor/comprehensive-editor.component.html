@@ -1,4 +1,4 @@
-<div class="p-3">
+<div class="p-3" cdkDropListGroup>
   <div style="position: fixed;z-index: 1;top: 8px;right: 8px;">
     <button *ngIf="requireList&&requireList.length"
             class="btn btn-danger ml-1"
@@ -17,16 +17,19 @@
   </div>
   <ng-container *ngIf="questionSubject">
       <ng-container *ngFor="let subject of questionSubject">
-        <div class="card mb-2">
+        <tbody class="card mb-2">
           <h4 class="m-2">{{subject.Subject}}</h4>
-          <table class="table table-sm table-bordered">
-            <ng-container *ngFor="let group of subject.QuestionGroup">
+          <table class="table table-sm table-bordered"  >
+            <ng-container *ngFor="let group of subject.QuestionGroup"  >
               <tr>
                 <th colspan="2"
                     class=" text-left">{{group.Group}}</th>
               </tr>
+
+              <tbody cdkDropList [cdkDropListData]="group.QuestionQuery" (cdkDropListDropped)="drop($event, group.QuestionQuery)">
               <ng-container *ngFor="let query of group.QuestionQuery">
-                <tr>
+                   
+                <tr  cdkDrag>
                   <td class="text-left pl-4 pr-1"
                       style="width: 150px"
                       scope="col">
@@ -125,10 +128,13 @@
                     <!-- <pre>{{query | json}}</pre> -->
                   </td>
                 </tr>
+
               </ng-container>
+              </tbody>
+
             </ng-container>
           </table>
-        </div>
+        <!-- </div> -->
       </ng-container>
   </ng-container>
 </div>

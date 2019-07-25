@@ -1,6 +1,7 @@
 import { Component, OnInit, Optional, ViewChild, TemplateRef } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-comprehensive-editor',
@@ -207,5 +208,34 @@ export class ComprehensiveEditorComponent implements OnInit {
   }
   showRequireList() {
     alert(this.requireList.join("\n"));
+  }
+
+  drop(event: CdkDragDrop<string[]>, queries) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+    // moveItemInArray(queries, event.previousIndex, event.currentIndex);
+    console.log(this.questionSubject);
+
+    let objRoot = {"Template" : {
+      "QuestionSubject" : []
+    }};
+    
+    this.questionSubject.forEach(subj => {
+      objRoot.Template.QuestionSubject.push(subj);
+    });
+    
+    console.log(objRoot);
+
+    const xmlstring = require('nodexml').obj2xml(objRoot);
+    const finalXmlString = xmlstring.replace("<root>", "").replace("</root", "");
+    this.config.configXml = finalXmlString;
+    console.log(xmlstring);
+    //console.log(this.questionSubject);
   }
 }
