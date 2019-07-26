@@ -710,20 +710,19 @@
                                                     [].concat(item.Extension.Exam.Item || []).forEach(function (data, index) {
                                                         studentMapping[item.StudentID]['Quiz_' + data.SubExamID] = data.Score;
                                                     });
-
-                                                    getGradeItemScoreFinsih = true;
-                                                    /**
-                                                     * 資料取得完成後
-                                                     * 1. 原始資料備份
-                                                     * 2. 設定目前學生、目前試別
-                                                     */
-                                                    if (getExamScoreFinish && getSemesterScoreFinish && getExtensionScoreFinish && getGradeItemScoreFinsih) {
-                                                        $scope.setupOrigin();
-                                                        $scope.setupCurrent();
-                                                    }
                                                 }
-                                            }
+                                            } 
                                         });
+                                        getGradeItemScoreFinsih = true;
+                                        /**
+                                         * 資料取得完成後
+                                         * 1. 原始資料備份
+                                         * 2. 設定目前學生、目前試別
+                                         */
+                                        if (getExamScoreFinish && getSemesterScoreFinish && getExtensionScoreFinish && getGradeItemScoreFinsih) {
+                                            $scope.setupOrigin();
+                                            $scope.setupCurrent();
+                                        }
                                     });
                                 }
                             }

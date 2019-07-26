@@ -35,6 +35,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
     @Optional()
     private counselStudentService: CounselStudentService
   ) { }
+  isCancel: boolean = true;
   caseInterview: CaseInterview;
   _editMode: string = "add";
   editModeString: string = "新增";
@@ -42,6 +43,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   ngOnInit() {
     this.caseInterview = new CaseInterview();
+    this.isCancel = true;
   }
 
   // 載入預設資料
@@ -77,7 +79,10 @@ export class AddCaseInterviewModalComponent implements OnInit {
   }
 
   // click 取消
-  cancel() { }
+  cancel() {
+    this.isCancel = true;
+    $("#addCaseInterview").modal("hide");
+  }
   // click 儲存
   async save() {
     try {

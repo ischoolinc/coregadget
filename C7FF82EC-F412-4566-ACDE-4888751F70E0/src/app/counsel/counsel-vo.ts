@@ -34,7 +34,7 @@ export class CounselInterview {
   selectCounselType: string = "請選擇方式";
   isSaveDisable: boolean = true;
   isEditDisable: boolean = true;
-
+  isDelDisable: boolean = true;
   // 檢查是否有值
   checkValue() {
     if (this.SchoolYear) {

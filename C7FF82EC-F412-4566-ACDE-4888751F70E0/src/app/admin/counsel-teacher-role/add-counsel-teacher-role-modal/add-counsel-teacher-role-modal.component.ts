@@ -92,7 +92,7 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
       console.log(resp);
       $("#addCounselTeacherRole").modal("hide");
     } catch (err) {
-      alert(err);
+      alert(err.dsaError.message);
     }
   }
 }

@@ -3,7 +3,8 @@ export class CounselTeacherClass {
     TeacherID: string;
     TeacherName: string;
     Role: string;
-    ClassNames: string;
+    ClassNames: string []= [];
+    SetClassButtonDisable: boolean = true;
 }
 
 export class CounselClass {

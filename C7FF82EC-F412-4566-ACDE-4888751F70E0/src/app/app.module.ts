@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AppComponent } from './app.component';
 import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
@@ -55,6 +56,8 @@ import { AddCounselTeacherRoleModalComponent } from './admin/counsel-teacher-rol
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { DelCounselTeacherRoleModalComponent } from './admin/counsel-teacher-role/del-counsel-teacher-role-modal/del-counsel-teacher-role-modal.component';
 import { ComprehensiveFillComponent } from './simple-page/comprehensive-fill/comprehensive-fill.component';
 import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-class-view/comprehensive-class-view.component';
@@ -69,6 +72,8 @@ import { ComprehensiveStatisticsComponent } from './comprehensive/comprehensive-
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
 import { AddPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/add-psychological-quiz-data/add-psychological-quiz-data.component';
 import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/del-psychological-quiz-data/del-psychological-quiz-data.component';
+import { DelInterviewModalComponent } from './counsel/counsel-detail/interview-detail/del-interview-modal/del-interview-modal.component';
+import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/del-case-interview-modal/del-case-interview-modal.component';
 
 
 @NgModule({
@@ -128,7 +133,9 @@ import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-se
     ComprehensiveStatisticsComponent,
     PsychologicalQuizSetupComponent,
     AddPsychologicalQuizDataComponent,
-    DelPsychologicalQuizDataComponent
+    DelPsychologicalQuizDataComponent,
+    DelInterviewModalComponent,
+    DelCaseInterviewModalComponent
   ],
   imports: [
     BrowserModule,
@@ -141,7 +148,9 @@ import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-se
     TextareaAutosizeModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]
