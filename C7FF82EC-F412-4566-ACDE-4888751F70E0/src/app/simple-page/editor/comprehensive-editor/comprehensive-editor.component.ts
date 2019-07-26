@@ -1,6 +1,7 @@
 import { Component, OnInit, Optional, ViewChild, TemplateRef } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-comprehensive-editor',
@@ -26,6 +27,12 @@ export class ComprehensiveEditorComponent implements OnInit {
     '%TEXT5%': { element: 'input', style: { width: '300px' } },
     '%TEXTAREA%': { element: 'textarea', style: { width: '100%' } }
   };
+
+  needSorting = false ;
+  sortingTitle = "";
+  sortingItems = [];  // 需要排序的選項清單
+  sortingType: string ;  // default
+
   constructor() { }
 
   ngOnInit() {
@@ -208,4 +215,67 @@ export class ComprehensiveEditorComponent implements OnInit {
   showRequireList() {
     alert(this.requireList.join("\n"));
   }
+
+  /**
+   * 處理拖拉項目後，json 物件的順序該如何調整。
+   * 此外也把結果轉回 XML ，寫回 config.configXml，這樣可出現在輸入 XML 的畫面中。
+   * 
+   * @param event 拖拉事件的資料參數
+   * @param queries 把 cdkDragList 裡的所有項目傳入，但後來發現好像 event.container.data 就可以抓到了，所以好像沒用到？
+   * @see json轉xml請參考 https://www.npmjs.com/package/nodexml
+   * @see 拖拉技術文件請參考： https://material.angular.io/cdk/drag-drop/examples
+   */
+  drop(event: CdkDragDrop<string[]>, queries) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+    // moveItemInArray(queries, event.previousIndex, event.currentIndex);
+    // console.log(this.questionSubject);
+
+    // 把 Json 轉回 XML
+    const objRoot = {"Template" : {
+      "QuestionSubject" : []
+    }};
+
+    this.questionSubject.forEach(subj => {
+      objRoot.Template.QuestionSubject.push(subj);
+    });
+    // console.log(objRoot);
+
+    const xmlstring = parseXml.CreateParser().parse(objRoot, "root"); // require('nodexml').obj2xml(objRoot);   // convert json to xml
+    const finalXmlString = xmlstring.replace("<root>", "").replace("</root>", "");
+
+    // 把 XML 寫回 config.configXml，好顯示在設定 XML 的畫面中。
+    this.config.configXml = finalXmlString;
+    // console.log(xmlstring);
+    // console.log(this.questionSubject);
+  }
+
+  sortQueryText(query) {
+    console.log(query.QuestionText);
+    this.sortingTitle = query.Query ;
+    this.sortingType = "TEXT" ;
+    this.sortingItems = query.QuestionText ;
+  }
+
+  sortOptions(questionText, queryTitle) {
+    console.log(questionText.Option);
+    this.sortingTitle = `${queryTitle}/${questionText.Text}`;
+    this.sortingType = "OPTION" ;
+    this.sortingItems = questionText.Option ;
+  }
+
+  showSorting() {
+    if (!this.needSorting) {
+      this.sortingItems = []; // 清空
+      this.sortingTitle = '';
+    }
+  }
 }
+
+
