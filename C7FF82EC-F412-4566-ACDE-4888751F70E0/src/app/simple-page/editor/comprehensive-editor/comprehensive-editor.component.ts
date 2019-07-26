@@ -247,7 +247,7 @@ export class ComprehensiveEditorComponent implements OnInit {
     });
     // console.log(objRoot);
 
-    const xmlstring = require('nodexml').obj2xml(objRoot);   // convert json to xml
+    const xmlstring = parseXml.CreateParser().parse(objRoot, "root"); // require('nodexml').obj2xml(objRoot);   // convert json to xml
     const finalXmlString = xmlstring.replace("<root>", "").replace("</root>", "");
 
     // 把 XML 寫回 config.configXml，好顯示在設定 XML 的畫面中。
@@ -270,7 +270,7 @@ export class ComprehensiveEditorComponent implements OnInit {
     this.sortingItems = questionText.Option ;
   }
 
-  showSorting(event) {
+  showSorting() {
     if (!this.needSorting) {
       this.sortingItems = []; // 清空
       this.sortingTitle = '';
