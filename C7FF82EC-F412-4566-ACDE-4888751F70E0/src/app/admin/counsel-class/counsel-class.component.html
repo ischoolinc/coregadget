@@ -17,22 +17,22 @@
           <li data-title="姓名">{{ item.TeacherName }}</li>
           <li class="text-left text-normal"
               data-title="輔導班級">
-              <div class="container">
-                  <div class="row">
-                      <div *ngFor="let cls of item.ClassNames.split(',')" class="col-sm-3">
-                          {{cls}}
-                        </div>
-                  </div>
+            <div class="container">
+              <div class="row">
+                <div *ngFor="let cls of item.ClassNames"
+                     class="col-sm-3">
+                  {{cls}}
+                </div>
+                <span *ngIf="item.ClassNames.length > 0">共{{item.ClassNames.length}}班</span>
               </div>
-
-
-            
+            </div>
             
           </li>
           <li data-title="edit">
             <button class="btn btn-light"
                     data-toggle="modal"
-                    (click)="EditClassNames(item)">
+                    (click)="EditClassNames(item)"
+                    [disabled]="item.SetClassButtonDisable">
               設定班級
             </button>
           </li>

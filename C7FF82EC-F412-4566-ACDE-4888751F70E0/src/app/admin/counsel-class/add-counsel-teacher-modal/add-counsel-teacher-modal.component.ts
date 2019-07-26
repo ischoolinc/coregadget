@@ -95,7 +95,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
 
   filterCheckBox() {
     if (this._CounselTeacherClass.ClassNames) {
-      let className: string[] = this._CounselTeacherClass.ClassNames.split(',');
+      let className: string[] = this._CounselTeacherClass.ClassNames;
 
       this.SelectGradeYearList.forEach(item => {
         item.ClassItems.forEach(classItem => {
