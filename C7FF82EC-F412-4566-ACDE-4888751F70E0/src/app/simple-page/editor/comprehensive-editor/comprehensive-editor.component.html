@@ -1,6 +1,6 @@
 <div class="p-3" cdkDropListGroup>
   <div style="position: fixed;z-index: 1;top: 8px;right: 8px;">
-      <mat-checkbox [(ngModel)]="needSorting" (change)="showSorting(event)" >顯示排序</mat-checkbox>
+      <mat-checkbox [(ngModel)]="needSorting" (change)="showSorting()" >顯示排序</mat-checkbox>
     <button *ngIf="requireList&&requireList.length"
             class="btn btn-danger ml-1"
             (click)="showRequireList()">
