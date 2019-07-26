@@ -19,18 +19,20 @@
               <td class="text-left"
                   scope="col">
                 <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
-                  <span *ngIf="questionTextIndex > 0"
-                        class="ml-2 mr-3">;</span>
-                  <span *ngIf="questionText.Text">
-                    <span>{{questionText.Text}}</span>
-                    <span class="ml-1 mr-2">:</span>
+                  <span [attr.questionCode]=questionText.QuestionCode>
+                    <span *ngIf="questionTextIndex > 0"
+                          class="ml-2 mr-3">;</span>
+                    <span *ngIf="questionText.Text">
+                      <span>{{questionText.Text}}</span>
+                      <span class="ml-1 mr-2">:</span>
+                    </span>
+                    <span *ngIf="!questionText.HasValue"
+                          class="text-muted">未填寫</span>
+                    <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
+                      <span *ngIf="optionIndex > 0">、</span>
+                      <span style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
+                    </ng-container>
                   </span>
-                  <span *ngIf="!questionText.HasValue"
-                        class="text-muted">未填寫</span>
-                  <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
-                    <span *ngIf="optionIndex > 0">、</span>
-                    <span style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
-                  </ng-container>
                   <!-- <pre>{{questionText | json}}</pre> -->
                 </ng-container>
               </td>
