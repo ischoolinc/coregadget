@@ -48,8 +48,8 @@ export class ReferralDetailComponent implements OnInit {
     this.loadReferralStudent();
   }
 
-  loadReferralStudent() {
-    this.GetReferralStudentByUid();
+  async loadReferralStudent() {
+    await this.GetReferralStudentByUid();
   }
 
   setNewCaseMmodal(refStudent: ReferralStudent) {
@@ -59,7 +59,8 @@ export class ReferralDetailComponent implements OnInit {
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
-      // this.loadData();
+      if(!this.case_modal.isCancel)
+       this.loadReferralStudent();
     });
   }
 
@@ -70,6 +71,7 @@ export class ReferralDetailComponent implements OnInit {
       // this._viewInterview._CounselInterview.SchoolYear = 107;
       $("#viewInterview1").modal("show");
       
+    
       $("#viewInterview1").on("hide.bs.modal", function (e) {
         // do something...
       });

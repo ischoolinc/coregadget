@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">
+        <button type="button" class="btn btn-dark" (click)="cancel()">
           取消
         </button>
         <button type="button" class="btn btn-info" (click)="save()" [disabled]="referralStudent.isSaveButtonDisable">

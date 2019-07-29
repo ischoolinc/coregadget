@@ -33,7 +33,7 @@ export class ReferralListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.currentReferralStudent = new ReferralStudent();
@@ -102,7 +102,8 @@ export class ReferralListComponent implements OnInit {
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadData();
+      if (!this.case_modal.isCancel)
+        this.loadData();
       $("#newCase").off("hide.bs.modal");
     });
   }
@@ -122,7 +123,8 @@ export class ReferralListComponent implements OnInit {
     // 關閉畫面
     $("#grant_modal").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadData();
+      if (!this.grant_modal.isCancel)
+        this.loadData();
       $("#grant_modal").off("hide.bs.modal");
     });
   }
@@ -159,13 +161,12 @@ export class ReferralListComponent implements OnInit {
       rec.RefCaseID = studRec.CaseID;
       rec.PhotoUrl = `${
         this.dsaService.AccessPoint
-      }/GetStudentPhoto?stt=Session&sessionid=${
+        }/GetStudentPhoto?stt=Session&sessionid=${
         this.dsaService.SessionID
-      }&parser=spliter&content=StudentID:${rec.StudentID}`;
+        }&parser=spliter&content=StudentID:${rec.StudentID}`;
       rec.isDisplay = false;
 
-      if (this.selectItem === rec.ReferralStatus)
-      {
+      if (this.selectItem === rec.ReferralStatus) {
         rec.isDisplay = true;
       }
 

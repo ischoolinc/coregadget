@@ -7,7 +7,6 @@ import {
   CounselStudent
 } from "../../counsel-student.service";
 
-
 @Component({
   selector: "app-grant-modal",
   templateUrl: "./grant-modal.component.html",
@@ -16,19 +15,26 @@ import {
 export class GrantModalComponent implements OnInit {
   //@Input('test') masterName: string;
 
+  isCancel: boolean = true;
   referralStudent: ReferralStudent;
 
   constructor(private dsaService: DsaService,
-    public counselStudentService: CounselStudentService) {}
+    public counselStudentService: CounselStudentService) { }
 
   ngOnInit() {
     this.referralStudent = new ReferralStudent();
-  } 
+  }
+
+  cancel() {
+    this.isCancel = true;
+    $("#grant_modal").modal("hide");
+  }
 
   async save() {
+    this.isCancel = false;
     // 儲存資料
     try {
-      
+
       await this.SetReferralStudent(this.referralStudent);
       $("#grant_modal").modal("hide");
     } catch (error) {
@@ -37,21 +43,19 @@ export class GrantModalComponent implements OnInit {
   }
 
   async SetReferralStudent(data: ReferralStudent) {
-    
+
     // 處理當設定狀態後同步到輔導學生主畫面
-    this.counselStudentService.guidanceStudent.forEach(rstud =>{
-      if (rstud.StudentID === data.StudentID)
-      {
+    this.counselStudentService.guidanceStudent.forEach(rstud => {
+      if (rstud.StudentID === data.StudentID) {
         rstud.ReferralStatus = data.ReferralStatus;
       }
     });
 
     this.counselStudentService.studentMap.forEach(
       (value: CounselStudent, key: string) => {
-        if (value.StudentID === data.StudentID)
-        {
+        if (value.StudentID === data.StudentID) {
           value.ReferralStatus = data.ReferralStatus;
-        }        
+        }
       }
     );
 

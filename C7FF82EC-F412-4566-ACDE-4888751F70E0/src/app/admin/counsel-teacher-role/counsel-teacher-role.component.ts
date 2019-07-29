@@ -56,12 +56,14 @@ export class CounselTeacherRoleComponent implements OnInit {
     this._addCounselTeacherRole.selectRole = "請選擇身分";
     this._addCounselTeacherRole.selectTeacherName = "請選擇教師";
     this._addCounselTeacherRole.notTeachersCounselRole = this.notTeachersCounselRole;
+    this._addCounselTeacherRole.isSaveButtonDisable = true;
     $("#addCounselTeacherRole").modal("show");
 
     // 關閉畫面
     $("#addCounselTeacherRole").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadData();
+      if (!this._addCounselTeacherRole.isCancel)
+        this.loadData();
       $("#addCounselTeacherRole").off("hide.bs.modal");
     });
   }
@@ -91,10 +93,11 @@ export class CounselTeacherRoleComponent implements OnInit {
     // 關閉畫面
     $("#delCounselTeacherRole").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadData();
+      if (!this._delCounselTeacherRole.isCancel)
+        this.loadData();
       $("#delCounselTeacherRole").off("hide.bs.modal");
     });
-  }  
+  }
 
   // 取得所有教師輔導身分
   async GetTeachersCounselRole() {
@@ -110,7 +113,7 @@ export class CounselTeacherRoleComponent implements OnInit {
       tea.TeacherName = CounselRole.TeacherName;
       tea.Role = CounselRole.Role;
       tea.parseOrder();
-      if (tea.Role !== '') {
+      if (tea.Role && tea.Role !== '') {
         this.teachersCounselRole.push(tea);
       } else {
         this.notTeachersCounselRole.push(tea);
