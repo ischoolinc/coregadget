@@ -42,29 +42,29 @@ export class ExamScoreDetailComponent implements OnInit {
     private dsaService: DsaService,
     @Optional() private counselDetailComponent: CounselDetailComponent) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.counselDetailComponent.setCurrentItem('exam_score');
-    this.GetSchoolCoreInfo();
+    await this.GetSchoolCoreInfo();
   }
 
-  loadData() {
+  async loadData() {
     if (this.selectSchoolType === 'JHHC') {
       // 新竹版國中小評量成績
       this.serviceGetExamScore = "GetExamScoreJHHC";
-      this.GetExamScore();
+      await this.GetExamScore();
     }
 
     if (this.selectSchoolType === 'JHKH') {
       // 高雄版國中小評量成績
       this.serviceGetExamScore = "GetExamScoreJHKH";
-      this.GetExamScoreOrdinarilyScoreJHKH();
+      await this.GetExamScoreOrdinarilyScoreJHKH();
 
     }
 
     if (this.selectSchoolType === 'SH') {
       // 高中評量成績
       this.serviceGetExamScore = "GetExamScoreSH";
-      this.GetExamScore();
+      await this.GetExamScore();
     }
 
     // 取得預設學年度學期
@@ -74,6 +74,13 @@ export class ExamScoreDetailComponent implements OnInit {
 
   // 高雄評量成績
   async GetExamScoreOrdinarilyScoreJHKH() {
+    try {
+
+    } catch (err) {
+      alert('無法取得高雄評量成績：' + err.dsaError.message);
+    }
+
+
     let resp = await this.dsaService.send(this.serviceGetExamScoreOrdinarilyScoreJHKH, {
       Request: {
         StudentID: this.counselDetailComponent.currentStudent.StudentID
@@ -91,19 +98,23 @@ export class ExamScoreDetailComponent implements OnInit {
   // 取得學制
   async GetSchoolCoreInfo() {
     this.isLoading = true;
-    let resp = await this.dsaService.send(this.serviceSchoolCoreInfo, {});
+    try {
+      let resp = await this.dsaService.send(this.serviceSchoolCoreInfo, {});
 
-    let SchoolCoreInfo = [].concat(resp.SchoolCoreInfo || []);
-    SchoolCoreInfo.forEach(item => {
-      if (item.成績核心 === '高中一般') {
-        this.selectSchoolType = 'SH';
-      } else if (item.成績核心 === '國中高雄') {
-        this.selectSchoolType = 'JHKH';
-      } else {
-        this.selectSchoolType = 'JHHC';
-      }
-    });
-    this.loadData();
+      let SchoolCoreInfo = [].concat(resp.SchoolCoreInfo || []);
+      SchoolCoreInfo.forEach(item => {
+        if (item.成績核心 === '高中一般') {
+          this.selectSchoolType = 'SH';
+        } else if (item.成績核心 === '國中高雄') {
+          this.selectSchoolType = 'JHKH';
+        } else {
+          this.selectSchoolType = 'JHHC';
+        }
+      });
+      this.loadData();
+    } catch (err) {
+      alert('無法取得學制：' + err.dsaError.message);
+    }
   }
 
   SetSelectSemester(item: SemesterInfo) {
@@ -119,218 +130,234 @@ export class ExamScoreDetailComponent implements OnInit {
     this.semesterList = [];
     let tmpSems: string[] = [];
 
-    let resp = await this.dsaService.send(this.serviceGetExamScore, {
-      Request: {
-        StudentID: this.counselDetailComponent.currentStudent.StudentID
-      }
-    });
-
-    this.examScoreSource = [].concat(resp.CourseExamScore || []);
-
-    this.examScoreSource.forEach(ExamScore => {
-      let ss = ExamScore.SchoolYear + ExamScore.Semester;
-      if (!tmpSems.includes(ss)) {
-        let semsInfo: SemesterInfo = new SemesterInfo();
-        semsInfo.SchoolYear = parseInt(ExamScore.SchoolYear);
-        semsInfo.Semester = parseInt(ExamScore.Semester);
-        this.semesterList.push(semsInfo);
-        tmpSems.push(ss);
-      }
-    });
-
-    // 處理當學校預設學年度學期沒有成績，預設選有成績第一項。
-    if (this.semesterList.length > 0) {
-      let hasValue = false;
-      this.semesterList.forEach(ss => {
-        if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
-          hasValue = true;
+    try {
+      let resp = await this.dsaService.send(this.serviceGetExamScore, {
+        Request: {
+          StudentID: this.counselDetailComponent.currentStudent.StudentID
+        }
       });
 
-      if (!hasValue)
-        this.selectSchoolYearSemester = this.semesterList[0];
+      this.examScoreSource = [].concat(resp.CourseExamScore || []);
+
+      this.examScoreSource.forEach(ExamScore => {
+        let ss = ExamScore.SchoolYear + ExamScore.Semester;
+        if (!tmpSems.includes(ss)) {
+          let semsInfo: SemesterInfo = new SemesterInfo();
+          semsInfo.SchoolYear = parseInt(ExamScore.SchoolYear);
+          semsInfo.Semester = parseInt(ExamScore.Semester);
+          this.semesterList.push(semsInfo);
+          tmpSems.push(ss);
+        }
+      });
+
+      // 處理當學校預設學年度學期沒有成績，預設選有成績第一項。
+      if (this.semesterList.length > 0) {
+        let hasValue = false;
+        this.semesterList.forEach(ss => {
+          if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
+            hasValue = true;
+        });
+
+        if (!hasValue)
+          this.selectSchoolYearSemester = this.semesterList[0];
+      }
+
+      if (this.selectSchoolType === 'SH') {
+        this.parseScoreSH();
+      } else {
+        this.parseScore();
+      }
+    } catch (err) {
+      alert('無法取得評量成績：' + err.dsaError.message);
     }
 
-    if (this.selectSchoolType === 'SH') {
-      this.parseScoreSH();
-    } else {
-      this.parseScore();
-    }
+
   }
 
   // 依學年度學期取得班級評量成績
   async GetCalssExamScoreBySchoolYearSemester() {
 
-    let resp = await this.dsaService.send(this.serviceGetClassExamScore, {
-      Request: {
-        StudentID: this.counselDetailComponent.currentStudent.StudentID,
-        SchoolYear: this.selectSchoolYearSemester.SchoolYear,
-        Semester: this.selectSchoolYearSemester.Semester
-      }
-    });
-
-    // 班級學生成績
-    let tmpKey: string[] = [];
-    this.currentClassExamScoreSource = [].concat(resp.CourseExamScore || []);
-    this.currentClassExamScoreSource.forEach(examScore => {
-      if (!examScore.Domain) {
-        examScore.Domain = '彈性課程';
-      }
-      let key = examScore.Domain + '_' + examScore.Subject + '_' + examScore.ExamName;
-      if (!tmpKey.includes(key)) {
-        let items: ItemCounts = new ItemCounts();
-        items.Name = key;
-        this.studentExamScore.AvgItemCountNameList.forEach(itemName => {
-          let it: ItemCount = new ItemCount();
-          it.Name = itemName;
-          it.Count = 0;
-          it.isMe = false;
-          items.itemList.push(it);
-        });
-        this.studentExamScore.AvgItemCountList.push(items);
-        tmpKey.push(key);
-      }
-
-      let score = parseFloat(examScore.ExamScore);
-
-      this.studentExamScore.AvgItemCountList.forEach(item => {
-        if (item.Name === key) {
-          if (score >= 100) {
-            item.itemList[10].Count++;
-            if (item.itemList[10].isMe == false)
-              item.itemList[10].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 90 && score < 100) {
-            item.itemList[9].Count++;
-            if (item.itemList[9].isMe == false)
-              item.itemList[9].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 80 && score < 90) {
-            item.itemList[8].Count++;
-            if (item.itemList[8].isMe == false)
-              item.itemList[8].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 70 && score < 80) {
-            item.itemList[7].Count++;
-            if (item.itemList[7].isMe == false)
-              item.itemList[7].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 60 && score < 70) {
-            item.itemList[6].Count++;
-            if (item.itemList[6].isMe == false)
-              item.itemList[6].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 50 && score < 60) {
-            item.itemList[5].Count++;
-            if (item.itemList[5].isMe == false)
-              item.itemList[5].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 40 && score < 50) {
-            item.itemList[4].Count++;
-            if (item.itemList[4].isMe == false)
-              item.itemList[4].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 30 && score < 40) {
-            item.itemList[3].Count++;
-            if (item.itemList[3].isMe == false)
-              item.itemList[3].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 20 && score < 30) {
-            item.itemList[2].Count++;
-            if (item.itemList[2].isMe == false)
-              item.itemList[2].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 10 && score < 20) {
-            item.itemList[1].Count++;
-            if (item.itemList[1].isMe == false)
-              item.itemList[1].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 0 && score < 10) {
-            item.itemList[0].Count++;
-            if (item.itemList[0].isMe == false)
-              item.itemList[0].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else {
-
-          }
+    try {
+      let resp = await this.dsaService.send(this.serviceGetClassExamScore, {
+        Request: {
+          StudentID: this.counselDetailComponent.currentStudent.StudentID,
+          SchoolYear: this.selectSchoolYearSemester.SchoolYear,
+          Semester: this.selectSchoolYearSemester.Semester
         }
       });
-    });
+
+      // 班級學生成績
+      let tmpKey: string[] = [];
+      this.currentClassExamScoreSource = [].concat(resp.CourseExamScore || []);
+      this.currentClassExamScoreSource.forEach(examScore => {
+        if (!examScore.Domain) {
+          examScore.Domain = '彈性課程';
+        }
+        let key = examScore.Domain + '_' + examScore.Subject + '_' + examScore.ExamName;
+        if (!tmpKey.includes(key)) {
+          let items: ItemCounts = new ItemCounts();
+          items.Name = key;
+          this.studentExamScore.AvgItemCountNameList.forEach(itemName => {
+            let it: ItemCount = new ItemCount();
+            it.Name = itemName;
+            it.Count = 0;
+            it.isMe = false;
+            items.itemList.push(it);
+          });
+          this.studentExamScore.AvgItemCountList.push(items);
+          tmpKey.push(key);
+        }
+
+        let score = parseFloat(examScore.ExamScore);
+
+        this.studentExamScore.AvgItemCountList.forEach(item => {
+          if (item.Name === key) {
+            if (score >= 100) {
+              item.itemList[10].Count++;
+              if (item.itemList[10].isMe == false)
+                item.itemList[10].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 90 && score < 100) {
+              item.itemList[9].Count++;
+              if (item.itemList[9].isMe == false)
+                item.itemList[9].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 80 && score < 90) {
+              item.itemList[8].Count++;
+              if (item.itemList[8].isMe == false)
+                item.itemList[8].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 70 && score < 80) {
+              item.itemList[7].Count++;
+              if (item.itemList[7].isMe == false)
+                item.itemList[7].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 60 && score < 70) {
+              item.itemList[6].Count++;
+              if (item.itemList[6].isMe == false)
+                item.itemList[6].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 50 && score < 60) {
+              item.itemList[5].Count++;
+              if (item.itemList[5].isMe == false)
+                item.itemList[5].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 40 && score < 50) {
+              item.itemList[4].Count++;
+              if (item.itemList[4].isMe == false)
+                item.itemList[4].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 30 && score < 40) {
+              item.itemList[3].Count++;
+              if (item.itemList[3].isMe == false)
+                item.itemList[3].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 20 && score < 30) {
+              item.itemList[2].Count++;
+              if (item.itemList[2].isMe == false)
+                item.itemList[2].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 10 && score < 20) {
+              item.itemList[1].Count++;
+              if (item.itemList[1].isMe == false)
+                item.itemList[1].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 0 && score < 10) {
+              item.itemList[0].Count++;
+              if (item.itemList[0].isMe == false)
+                item.itemList[0].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else {
+
+            }
+          }
+        });
+      });
+    } catch (err) {
+      alert('無法依學年度學期取得班級評量成績：' + err.dsaError.message);
+    }
+
     this.isLoading = false;
   }
 
   // 依學年度學期取得班級評量成績(高中)
   async GetCalssExamScoreBySchoolYearSemesterSH() {
-    let resp = await this.dsaService.send(this.serviceGetClassExamScoreSH, {
-      Request: {
-        StudentID: this.counselDetailComponent.currentStudent.StudentID,
-        SchoolYear: this.selectSchoolYearSemester.SchoolYear,
-        Semester: this.selectSchoolYearSemester.Semester
-      }
-    });
 
-    // 班級學生成績
-    let tmpKey: string[] = [];
-    this.currentClassExamScoreSource = [].concat(resp.CourseExamScore || []);
-    this.currentClassExamScoreSource.forEach(examScore => {
-
-      let key = examScore.Subject + '_' + examScore.ExamName;
-      if (!tmpKey.includes(key)) {
-        let items: ItemCounts = new ItemCounts();
-        items.Name = key;
-        this.studentExamScore.AvgItemCountNameList.forEach(itemName => {
-          let it: ItemCount = new ItemCount();
-          it.Name = itemName;
-          it.Count = 0;
-          it.isMe = false;
-          items.itemList.push(it);
-        });
-        this.studentExamScore.AvgItemCountList.push(items);
-        tmpKey.push(key);
-      }
-
-      let score = parseFloat(examScore.ExamScore);
-
-      this.studentExamScore.AvgItemCountList.forEach(item => {
-        if (item.Name === key) {
-          if (score >= 100) {
-            item.itemList[10].Count++;
-            if (item.itemList[10].isMe == false)
-              item.itemList[10].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 90 && score < 100) {
-            item.itemList[9].Count++;
-            if (item.itemList[9].isMe == false)
-              item.itemList[9].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 80 && score < 90) {
-            item.itemList[8].Count++;
-            if (item.itemList[8].isMe == false)
-              item.itemList[8].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 70 && score < 80) {
-            item.itemList[7].Count++;
-            if (item.itemList[7].isMe == false)
-              item.itemList[7].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 60 && score < 70) {
-            item.itemList[6].Count++;
-            if (item.itemList[6].isMe == false)
-              item.itemList[6].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 50 && score < 60) {
-            item.itemList[5].Count++;
-            if (item.itemList[5].isMe == false)
-              item.itemList[5].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 40 && score < 50) {
-            item.itemList[4].Count++;
-            if (item.itemList[4].isMe == false)
-              item.itemList[4].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 30 && score < 40) {
-            item.itemList[3].Count++;
-            if (item.itemList[3].isMe == false)
-              item.itemList[3].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 20 && score < 30) {
-            item.itemList[2].Count++;
-            if (item.itemList[2].isMe == false)
-              item.itemList[2].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 10 && score < 20) {
-            item.itemList[1].Count++;
-            if (item.itemList[1].isMe == false)
-              item.itemList[1].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else if (score >= 0 && score < 10) {
-            item.itemList[0].Count++;
-            if (item.itemList[0].isMe == false)
-              item.itemList[0].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
-          } else {
-
-          }
+    try {
+      let resp = await this.dsaService.send(this.serviceGetClassExamScoreSH, {
+        Request: {
+          StudentID: this.counselDetailComponent.currentStudent.StudentID,
+          SchoolYear: this.selectSchoolYearSemester.SchoolYear,
+          Semester: this.selectSchoolYearSemester.Semester
         }
       });
-    });
+
+      // 班級學生成績
+      let tmpKey: string[] = [];
+      this.currentClassExamScoreSource = [].concat(resp.CourseExamScore || []);
+      this.currentClassExamScoreSource.forEach(examScore => {
+
+        let key = examScore.Subject + '_' + examScore.ExamName;
+        if (!tmpKey.includes(key)) {
+          let items: ItemCounts = new ItemCounts();
+          items.Name = key;
+          this.studentExamScore.AvgItemCountNameList.forEach(itemName => {
+            let it: ItemCount = new ItemCount();
+            it.Name = itemName;
+            it.Count = 0;
+            it.isMe = false;
+            items.itemList.push(it);
+          });
+          this.studentExamScore.AvgItemCountList.push(items);
+          tmpKey.push(key);
+        }
+
+        let score = parseFloat(examScore.ExamScore);
+
+        this.studentExamScore.AvgItemCountList.forEach(item => {
+          if (item.Name === key) {
+            if (score >= 100) {
+              item.itemList[10].Count++;
+              if (item.itemList[10].isMe == false)
+                item.itemList[10].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 90 && score < 100) {
+              item.itemList[9].Count++;
+              if (item.itemList[9].isMe == false)
+                item.itemList[9].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 80 && score < 90) {
+              item.itemList[8].Count++;
+              if (item.itemList[8].isMe == false)
+                item.itemList[8].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 70 && score < 80) {
+              item.itemList[7].Count++;
+              if (item.itemList[7].isMe == false)
+                item.itemList[7].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 60 && score < 70) {
+              item.itemList[6].Count++;
+              if (item.itemList[6].isMe == false)
+                item.itemList[6].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 50 && score < 60) {
+              item.itemList[5].Count++;
+              if (item.itemList[5].isMe == false)
+                item.itemList[5].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 40 && score < 50) {
+              item.itemList[4].Count++;
+              if (item.itemList[4].isMe == false)
+                item.itemList[4].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 30 && score < 40) {
+              item.itemList[3].Count++;
+              if (item.itemList[3].isMe == false)
+                item.itemList[3].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 20 && score < 30) {
+              item.itemList[2].Count++;
+              if (item.itemList[2].isMe == false)
+                item.itemList[2].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 10 && score < 20) {
+              item.itemList[1].Count++;
+              if (item.itemList[1].isMe == false)
+                item.itemList[1].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else if (score >= 0 && score < 10) {
+              item.itemList[0].Count++;
+              if (item.itemList[0].isMe == false)
+                item.itemList[0].isMe = (examScore.StudentID === this.counselDetailComponent.currentStudent.StudentID);
+            } else {
+
+            }
+          }
+        });
+      });
+    } catch (err) {
+      alert('無法依學年度學期取得班級評量成績：' + err.dsaError.message);
+    }
     this.isLoading = false;
   }
 
@@ -581,16 +608,16 @@ export class ExamScoreDetailComponent implements OnInit {
     if (this.selectSchoolType === 'JHKH') {
       this.studentExamScore.DomainScoreList.forEach(domainItem => {
         this.studentExamScore.CourseScoreList.forEach(courseItem => {
-              this.examScoreOrdinarilySource.forEach(item => {
-                
-                if (courseItem.CourseName === item.CourseName && item.SchoolYear == this.selectSchoolYearSemester.SchoolYear && item.Semester == this.selectSchoolYearSemester.Semester) {
-                  if (item.OrdinarilyScore) {
-                    let examItem = courseItem.ExamScoreList[courseItem.ExamScoreList.length -1];
-                    examItem.ExamName = '平時評量';
-                    examItem.ExamScore = parseFloat(item.OrdinarilyScore);
-                  }
-                }
-              });            
+          this.examScoreOrdinarilySource.forEach(item => {
+
+            if (courseItem.CourseName === item.CourseName && item.SchoolYear == this.selectSchoolYearSemester.SchoolYear && item.Semester == this.selectSchoolYearSemester.Semester) {
+              if (item.OrdinarilyScore) {
+                let examItem = courseItem.ExamScoreList[courseItem.ExamScoreList.length - 1];
+                examItem.ExamName = '平時評量';
+                examItem.ExamScore = parseFloat(item.OrdinarilyScore);
+              }
+            }
+          });
         });
 
       });

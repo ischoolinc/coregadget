@@ -1,21 +1,19 @@
-<div
-  class="modal fade"
-  id="grant_modal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="grantLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
+<div class="modal fade"
+     id="grant_modal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="grantLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="grantLabel">編輯授理狀況</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <h5 class="modal-title"
+            id="grantLabel">編輯授理狀況</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -37,90 +35,94 @@
           <div class="col-md-10">{{ referralStudent.ReferralDesc }}</div>
         </div>
         <div class="form-group">
-          <label for="contactMatter" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralReplyHasValue">*</span> 輔導室接受情形
+          <label for="contactMatter"
+                 class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!isReferralReplyHasValue">*</span> 輔導室接受情形
           </label>
-          <textarea
-            class="form-control"
-            id="contactMatter"
-            rows="1"
-            placeholder="請輸入輔導室接受情形"
-            [(ngModel)]="referralStudent.ReferralReply"
-            (keyup)="referralStudent.checkValue()"
-          ></textarea>
+          <textarea class="form-control"
+                    id="contactMatter"
+                    rows="1"
+                    placeholder="請輸入輔導室接受情形"
+                    [(ngModel)]="ReferralReply"
+                    (keyup)="checkValue()"
+                    ></textarea>
         </div>
         <div class="form-group">
-          <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralStatusHasValue" >*</span> 授理狀況
+          <label for="semester"
+                 class="col-form-label">
+             授理狀況
           </label>
           <div>
             <div class="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="r1"
-                name="grantradio"
-                class="custom-control-input"
-                (click)="referralStudent.setProcessSatus('未處理')"
-                [checked]="referralStudent.isUnPrecessed"
-              />
-              <label class="custom-control-label" for="r1">未處理</label>
+              <input type="radio"
+                     id="r1"
+                     name="grantradio"
+                     class="custom-control-input"
+                     (click)="setProcessSatus('未處理')"
+                     [checked]="isUnPrecessed" />
+              <label class="custom-control-label"
+                     for="r1">未處理</label>
             </div>
             <div class="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="r2"
-                name="grantradio"
-                class="custom-control-input"
-                (click)="referralStudent.setProcessSatus('處理中')"
-                [checked]="referralStudent.isProcessing"
-              />
-              <label class="custom-control-label" for="r2">處理中</label>
+              <input type="radio"
+                     id="r2"
+                     name="grantradio"
+                     class="custom-control-input"
+                     (click)="setProcessSatus('處理中')"
+                     [checked]="isProcessing" />
+              <label class="custom-control-label"
+                     for="r2">處理中</label>
             </div>
             <div class="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="r3"
-                name="grantradio"
-                class="custom-control-input"
-                (click)="referralStudent.setProcessSatus('已處理')"
-                [checked]="referralStudent.isProcessed"
-              />
-              <label class="custom-control-label" for="r3">已處理</label>
+              <input type="radio"
+                     id="r3"
+                     name="grantradio"
+                     class="custom-control-input"
+                     (click)="setProcessSatus('已處理')"
+                     [checked]="isProcessed" />
+              <label class="custom-control-label"
+                     for="r3">已處理</label>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label for="interviewDate" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralReplyDateHasValue">*</span> 授理日期
+          <label for="interviewDate"
+                 class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!isReferralReplyDateHasValue">*</span> 授理日期
           </label>
-          <input
-            type="date"
-            class="form-control"
-            id="interviewDate"
-            placeholder="請輸入授理日期"
-            [(ngModel)]="referralStudent.ReferralReplyDate"
-            (keyup)="referralStudent.checkValue()"
-          />
+          <input type="date"
+                 class="form-control"
+                 id="interviewDate"
+                 placeholder="請輸入授理日期"
+                 [(ngModel)]="ReferralReplyDate"
+                 (keyup)="checkValue()" />
         </div>
         <div class="form-group">
-          <label for="contactMatter" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!referralStudent.isReferralReplyDescHasValue">*</span> 授理說明
+          <label for="contactMatter"
+                 class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!isReferralReplyDescHasValue">*</span> 授理說明
           </label>
-          <textarea
-            class="form-control"
-            id="contactMatter"
-            rows="3"
-            placeholder="請輸入授理說明"
-            [(ngModel)]="referralStudent.ReferralReplyDesc"
-            (keyup)="referralStudent.checkValue()"
-          ></textarea>
+          <textarea class="form-control"
+                    id="contactMatter"
+                    rows="3"
+                    placeholder="請輸入授理說明"
+                    [(ngModel)]="ReferralReplyDesc"
+                    (keyup)="checkValue()"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" (click)="cancel()">
+        <button type="button"
+                class="btn btn-dark"
+                (click)="cancel()">
           取消
         </button>
-        <button type="button" class="btn btn-info" (click)="save()" [disabled]="referralStudent.isSaveButtonDisable">
+        <button type="button"
+                class="btn btn-info"
+                (click)="save()"
+                [disabled]="isSaveButtonDisable">
           儲存
         </button>
       </div>

@@ -59,18 +59,18 @@ export class SemesterScoreDetailComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
+  async loadData() {
 
     if (this.selectSchoolType === 'JHHC' || this.selectSchoolType === 'JHKH') {
       // 新竹版國中小評量成績
       this.serviceGetSemesterScore = "GetSemesterScoreJHHC";
-      this.GetSemesterScore();
+      await this.GetSemesterScore();
     }
 
     // 高中
     if (this.selectSchoolType === 'SH') {
       this.serviceGetSemesterScore = 'GetSemesterScoreSH';
-      this.GetSemesterScoreSH();
+      await this.GetSemesterScoreSH();
     }
 
     // 取得預設學年度學期
@@ -85,40 +85,44 @@ export class SemesterScoreDetailComponent implements OnInit {
     this.semesterList = [];
     let tmpSems: string[] = [];
 
-    let resp = await this.dsaService.send(this.serviceGetSemesterScore, {
-      Request: {
-        StudentID: this.counselDetailComponent.currentStudent.StudentID
-      }
-    });
-
-    this.semesterScoreSource = [].concat(resp.SemesterScore || []);
-    this.semesterScoreSource.forEach(semsScore => {
-      if (semsScore.SubjectScore) {
-        semsScore.SubjectScore.forEach(subjScore => {
-          let ss = subjScore.school_year + subjScore.semester;
-          if (!tmpSems.includes(ss)) {
-            let semsInfo: SemesterInfo = new SemesterInfo();
-            semsInfo.SchoolYear = parseInt(subjScore.school_year);
-            semsInfo.Semester = parseInt(subjScore.semester);
-            this.semesterList.push(semsInfo);
-            tmpSems.push(ss);
-          }
-        });
-      }
-    });
-
-    if (this.semesterList.length > 0) {
-      let hasValue = false;
-      this.semesterList.forEach(ss => {
-        if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
-          hasValue = true;
+    try {
+      let resp = await this.dsaService.send(this.serviceGetSemesterScore, {
+        Request: {
+          StudentID: this.counselDetailComponent.currentStudent.StudentID
+        }
       });
 
-      if (!hasValue)
-        this.selectSchoolYearSemester = this.semesterList[0];
-    }
+      this.semesterScoreSource = [].concat(resp.SemesterScore || []);
+      this.semesterScoreSource.forEach(semsScore => {
+        if (semsScore.SubjectScore) {
+          semsScore.SubjectScore.forEach(subjScore => {
+            let ss = subjScore.school_year + subjScore.semester;
+            if (!tmpSems.includes(ss)) {
+              let semsInfo: SemesterInfo = new SemesterInfo();
+              semsInfo.SchoolYear = parseInt(subjScore.school_year);
+              semsInfo.Semester = parseInt(subjScore.semester);
+              this.semesterList.push(semsInfo);
+              tmpSems.push(ss);
+            }
+          });
+        }
+      });
 
-    this.parseScoreSH();
+      if (this.semesterList.length > 0) {
+        let hasValue = false;
+        this.semesterList.forEach(ss => {
+          if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
+            hasValue = true;
+        });
+
+        if (!hasValue)
+          this.selectSchoolYearSemester = this.semesterList[0];
+      }
+
+      this.parseScoreSH();
+    } catch (err) {
+      alert('無法取得高中學期成績：' + err.dsaError.message);
+    }
   }
 
   // 處理高中學期成績
@@ -186,7 +190,7 @@ export class SemesterScoreDetailComponent implements OnInit {
             subjScore.isReScore = false;
             // 判斷有手動調整成績，成績以手動為主要，不然就是取所有最大
             if (subjectScore.手動調整成績) {
-              
+
               subjScore.Score = parseFloat(subjectScore.手動調整成績);
             } else {
               if (subjectScore.原始成績)
@@ -283,43 +287,49 @@ export class SemesterScoreDetailComponent implements OnInit {
   async GetSemesterScore() {
     this.semesterList = [];
     let tmpSems: string[] = [];
-    let resp = await this.dsaService.send(this.serviceGetSemesterScore, {
-      Request: {
-        StudentID: this.counselDetailComponent.currentStudent.StudentID
-      }
-    });
 
-    this.semesterScoreSource = [].concat(resp.SemesterScore || []);
 
-    this.semesterScoreSource.forEach(semsScore => {
-     
-      if (semsScore.AverageScore) {
-        semsScore.AverageScore = [].concat(semsScore.AverageScore || []);        
-        semsScore.AverageScore.forEach(avgScore => {
-          let ss = avgScore.SchoolYear + avgScore.Semester;
-          if (!tmpSems.includes(ss)) {
-            let semsInfo: SemesterInfo = new SemesterInfo();
-            semsInfo.SchoolYear = parseInt(avgScore.SchoolYear);
-            semsInfo.Semester = parseInt(avgScore.Semester);
-            this.semesterList.push(semsInfo);
-            tmpSems.push(ss);
-          }
-        });
-      }
-    });
-
-    if (this.semesterList.length > 0) {
-      let hasValue = false;
-      this.semesterList.forEach(ss => {
-        if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
-          hasValue = true;
+    try {
+      let resp = await this.dsaService.send(this.serviceGetSemesterScore, {
+        Request: {
+          StudentID: this.counselDetailComponent.currentStudent.StudentID
+        }
       });
 
-      if (!hasValue)
-        this.selectSchoolYearSemester = this.semesterList[0];
-    }
+      this.semesterScoreSource = [].concat(resp.SemesterScore || []);
 
-    this.parseScore();
+      this.semesterScoreSource.forEach(semsScore => {
+
+        if (semsScore.AverageScore) {
+          semsScore.AverageScore = [].concat(semsScore.AverageScore || []);
+          semsScore.AverageScore.forEach(avgScore => {
+            let ss = avgScore.SchoolYear + avgScore.Semester;
+            if (!tmpSems.includes(ss)) {
+              let semsInfo: SemesterInfo = new SemesterInfo();
+              semsInfo.SchoolYear = parseInt(avgScore.SchoolYear);
+              semsInfo.Semester = parseInt(avgScore.Semester);
+              this.semesterList.push(semsInfo);
+              tmpSems.push(ss);
+            }
+          });
+        }
+      });
+
+      if (this.semesterList.length > 0) {
+        let hasValue = false;
+        this.semesterList.forEach(ss => {
+          if (ss.SchoolYear === this.counselDetailComponent.currentStudent.SchoolYear && ss.Semester === this.counselDetailComponent.currentStudent.Semester)
+            hasValue = true;
+        });
+
+        if (!hasValue)
+          this.selectSchoolYearSemester = this.semesterList[0];
+      }
+
+      this.parseScore();
+    } catch (err) {
+      alert('無法取得學期成績：' + err.dsaError.message);
+    }
   }
 
   SetSelectSemester(item: SemesterInfo) {
@@ -337,7 +347,7 @@ export class SemesterScoreDetailComponent implements OnInit {
   parseScore() {
     this.studentSemesterScore = new StudentSemesterScoreInfo();
 
-    this.semesterScoreSource.forEach(semsScore => {     
+    this.semesterScoreSource.forEach(semsScore => {
       // 學期平均
       if (semsScore.AverageScore) {
         semsScore.AverageScore.forEach(avgScore => {

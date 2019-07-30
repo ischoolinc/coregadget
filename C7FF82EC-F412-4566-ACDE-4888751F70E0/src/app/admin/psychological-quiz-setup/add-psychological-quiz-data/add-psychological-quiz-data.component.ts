@@ -91,7 +91,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
           let resp = await this.dsaService.send("SetCounselQuizByUID", req);
           $("#addPsychologicalQuizData").modal("hide");
         } catch (err) {
-          alert(err);
+          alert(err.dsaError.message);
         }
       }
 

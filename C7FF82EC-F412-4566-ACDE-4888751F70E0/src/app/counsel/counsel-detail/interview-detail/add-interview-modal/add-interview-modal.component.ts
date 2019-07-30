@@ -98,7 +98,7 @@ export class AddInterviewModalComponent implements OnInit {
       alert(error);
       this._CounselInterview.isSaveDisable = false;
     }
-   
+
   }
 
   // 新增/更新輔導資料，Service 使用UID是否有值判斷新增或更新
@@ -129,9 +129,13 @@ export class AddInterviewModalComponent implements OnInit {
     };
     // console.log(req);
 
-    let resp = await this.dsaService.send("SetCounselInterview", {
-      Request: req
-    });
+    try {
+      let resp = await this.dsaService.send("SetCounselInterview", {
+        Request: req
+      });
+    } catch (err) {
+      alert('無法新增：' + err.dsaError.message);
+    }
     // console.log(resp);
   }
 }

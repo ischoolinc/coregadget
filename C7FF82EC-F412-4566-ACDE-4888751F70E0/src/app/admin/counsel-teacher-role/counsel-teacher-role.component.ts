@@ -103,26 +103,32 @@ export class CounselTeacherRoleComponent implements OnInit {
   async GetTeachersCounselRole() {
     this.teachersCounselRole = [];
     this.notTeachersCounselRole = [];
-    let resp = await this.dsaService.send("GetTeachersCounselRole", {
-      Request: {}
-    });
 
-    [].concat(resp.TeacherCounselRole || []).forEach(CounselRole => {
-      let tea: TeacherCounselRole = new TeacherCounselRole();
-      tea.TeacherID = CounselRole.TeacherID;
-      tea.TeacherName = CounselRole.TeacherName;
-      tea.Role = CounselRole.Role;
-      tea.parseOrder();
-      if (tea.Role && tea.Role !== '') {
-        this.teachersCounselRole.push(tea);
-      } else {
-        this.notTeachersCounselRole.push(tea);
-      }
-    });
+    try {
+      let resp = await this.dsaService.send("GetTeachersCounselRole", {
+        Request: {}
+      });
 
-    this.teachersCounselRole.sort(function (a, b) {
-      return a.Order - b.Order;
-    });
+      [].concat(resp.TeacherCounselRole || []).forEach(CounselRole => {
+        let tea: TeacherCounselRole = new TeacherCounselRole();
+        tea.TeacherID = CounselRole.TeacherID;
+        tea.TeacherName = CounselRole.TeacherName;
+        tea.Role = CounselRole.Role;
+        tea.parseOrder();
+        if (tea.Role && tea.Role !== '') {
+          this.teachersCounselRole.push(tea);
+        } else {
+          this.notTeachersCounselRole.push(tea);
+        }
+      });
+
+      this.teachersCounselRole.sort(function (a, b) {
+        return a.Order - b.Order;
+      });
+    } catch (err) {
+      alert('無法取得輔導教師身分：' + err.dsaError.message);
+    }
+
     this.isLoading = false;
   }
 
@@ -138,10 +144,13 @@ export class CounselTeacherRoleComponent implements OnInit {
         reqTeacherCounselRole.push(itItm);
       }
     });
-    let resp = await this.dsaService.send("SetTeachersCounselRole", {
-      Request: { TeacherCounselRole: reqTeacherCounselRole }
-    });
-
+    try {
+      let resp = await this.dsaService.send("SetTeachersCounselRole", {
+        Request: { TeacherCounselRole: reqTeacherCounselRole }
+      });
+    } catch (err) {
+      alert('無法設定輔導教師身分：' + err.dsaError.message);
+    }
     //console.log(resp);
   }
 }

@@ -37,7 +37,7 @@ export class ReferralDetailComponent implements OnInit {
     private counselStudentService: CounselStudentService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.referralStudent = new ReferralStudent();
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
@@ -45,7 +45,7 @@ export class ReferralDetailComponent implements OnInit {
         this.interviewID = params.get("interviewID");
       }
     );
-    this.loadReferralStudent();
+    await this.loadReferralStudent();
   }
 
   async loadReferralStudent() {
@@ -59,8 +59,8 @@ export class ReferralDetailComponent implements OnInit {
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
-      if(!this.case_modal.isCancel)
-       this.loadReferralStudent();
+      if (!this.case_modal.isCancel)
+        this.loadReferralStudent();
     });
   }
 
@@ -70,8 +70,8 @@ export class ReferralDetailComponent implements OnInit {
       this._viewInterview._id = "viewInterview1";
       // this._viewInterview._CounselInterview.SchoolYear = 107;
       $("#viewInterview1").modal("show");
-      
-    
+
+
       $("#viewInterview1").on("hide.bs.modal", function (e) {
         // do something...
       });
@@ -79,12 +79,12 @@ export class ReferralDetailComponent implements OnInit {
   }
 
   setGrantModal(refStudent: ReferralStudent) {
-    this.grant_modal.referralStudent = refStudent;
-    this.grant_modal.referralStudent.loadDefault();
+    this.grant_modal.referralStudent = refStudent;    
+    this.grant_modal.loadDefault();
 
     if (this.grant_modal.referralStudent.ReferralStatus == "") {
       this.grant_modal.referralStudent.ReferralStatus = "未處理";
-      this.grant_modal.referralStudent.isUnPrecessed = true;
+      this.grant_modal.isUnPrecessed = true;
       this.grant_modal.referralStudent.isReferralStatusHasValue = true;
     }
     this.grant_modal.referralStudent.checkValue();
@@ -98,79 +98,87 @@ export class ReferralDetailComponent implements OnInit {
 
   async GetReferralStudentByUid() {
     this.isLoading = true;
-    let resp = await this.dsaService.send("GetReferralStudentByUid", {
-      Request: {
-        UID: this.interviewID
-      }
-    });
 
-    [].concat(resp.ReferralStudent || []).forEach(studRec => {
-      // 建立轉介學生資料
-      let rec: ReferralStudent = new ReferralStudent();
-      rec.UID = studRec.UID;
-      rec.StudentID = studRec.StudentID;
-      rec.ClassName = studRec.ClassName;
-      rec.SeatNo = studRec.SeatNo;
-      rec.Name = studRec.Name;
-      rec.Gender = studRec.Gender;
-      rec.TeacherName = studRec.TeacherName;
-      let n1 = Number(studRec.OccurDate);
-      let d1 = new Date(n1);
-      rec.OccurDate = rec.parseDate(d1);
-      rec.ReferralDesc = studRec.ReferralDesc;
-      rec.ReferralReply = studRec.ReferralReply;
-      rec.ReferralStatus = studRec.ReferralStatus;
-      rec.ReferralReplyDate = studRec.ReferralReplyDate;
-      rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
-      rec.RefCaseID = studRec.CaseID;
-      rec.checkValue();
-      this.referralStudent = rec;
-    });
+    try {
+      let resp = await this.dsaService.send("GetReferralStudentByUid", {
+        Request: {
+          UID: this.interviewID
+        }
+      });
 
-    let data: CounselInterview[] = [];
+      [].concat(resp.ReferralStudent || []).forEach(studRec => {
+        // 建立轉介學生資料
+        let rec: ReferralStudent = new ReferralStudent();
+        rec.UID = studRec.UID;
+        rec.StudentID = studRec.StudentID;
+        rec.ClassName = studRec.ClassName;
+        rec.SeatNo = studRec.SeatNo;
+        rec.Name = studRec.Name;
+        rec.Gender = studRec.Gender;
+        rec.TeacherName = studRec.TeacherName;
+        let n1 = Number(studRec.OccurDate);
+        let d1 = new Date(n1);
+        rec.OccurDate = rec.parseDate(d1);
+        rec.ReferralDesc = studRec.ReferralDesc;
+        rec.ReferralReply = studRec.ReferralReply;
+        rec.ReferralStatus = studRec.ReferralStatus;
+        rec.ReferralReplyDate = studRec.ReferralReplyDate;
+        rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
+        rec.RefCaseID = studRec.CaseID;
+        rec.checkValue();
+        this.referralStudent = rec;
+      });
+    } catch (err) {
+      alert('無法GetReferralStudentByUid：' + err.dsaError.message);
+    }
 
-    this.counselInterview = null;
-    let respC = await this.dsaService.send("GetStudentCounselInterview", {
-      Request: {
-        StudentID: this.studentID
-      }
-    });
+    try {
+      this.counselInterview = null;
+      let respC = await this.dsaService.send("GetStudentCounselInterview", {
+        Request: {
+          StudentID: this.studentID
+        }
+      });
 
-    [].concat(respC.CounselInterview || []).forEach(counselRec => {
-      // 建立輔導資料
-      let rec: CounselInterview = new CounselInterview();
-      rec.UID = counselRec.UID;
-      rec.StudentName = counselRec.StudentName;
-      rec.SchoolYear = parseInt(counselRec.SchoolYear);
-      rec.Semester = parseInt(counselRec.Semester);
-      let dN = Number(counselRec.OccurDate);
-      let x = new Date(dN);
-      rec.OccurDate = rec.parseDate(x);
-      rec.ContactName = counselRec.ContactName;
-      rec.AuthorName = counselRec.AuthorName;
-      rec.CounselType = counselRec.CounselType;
-      rec.CounselTypeOther = counselRec.CounselTypeOther;
-      rec.isPrivate = counselRec.isPrivate;
-      rec.StudentID = counselRec.StudentID;
-      rec.isReferral = counselRec.isReferral;
-      rec.ReferralDesc = counselRec.ReferralDesc;
-      rec.ReferralReply = counselRec.ReferralReply;
-      rec.ReferralStatus = counselRec.ReferralStatus;
-      rec.ReferralReplyDate = counselRec.ReferralReplyDate;
-      rec.Content = counselRec.Content;
-      rec.ContactItem = counselRec.ContactItem;
-      rec.RefTeacherID = counselRec.RefTeacherID;
-      // 判斷是否是自己新增才可以修改
-      if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
-        rec.isEditDisable = false;
-      } else {
-        rec.isEditDisable = true;
-      }
+      [].concat(respC.CounselInterview || []).forEach(counselRec => {
+        // 建立輔導資料
+        let rec: CounselInterview = new CounselInterview();
+        rec.UID = counselRec.UID;
+        rec.StudentName = counselRec.StudentName;
+        rec.SchoolYear = parseInt(counselRec.SchoolYear);
+        rec.Semester = parseInt(counselRec.Semester);
+        let dN = Number(counselRec.OccurDate);
+        let x = new Date(dN);
+        rec.OccurDate = rec.parseDate(x);
+        rec.ContactName = counselRec.ContactName;
+        rec.AuthorName = counselRec.AuthorName;
+        rec.CounselType = counselRec.CounselType;
+        rec.CounselTypeOther = counselRec.CounselTypeOther;
+        rec.isPrivate = counselRec.isPrivate;
+        rec.StudentID = counselRec.StudentID;
+        rec.isReferral = counselRec.isReferral;
+        rec.ReferralDesc = counselRec.ReferralDesc;
+        rec.ReferralReply = counselRec.ReferralReply;
+        rec.ReferralStatus = counselRec.ReferralStatus;
+        rec.ReferralReplyDate = counselRec.ReferralReplyDate;
+        rec.Content = counselRec.Content;
+        rec.ContactItem = counselRec.ContactItem;
+        rec.RefTeacherID = counselRec.RefTeacherID;
+        // 判斷是否是自己新增才可以修改
+        if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
+          rec.isEditDisable = false;
+        } else {
+          rec.isEditDisable = true;
+        }
 
-      if (this.interviewID === rec.UID) {
-        this.counselInterview = rec;
-      }
-    });
+        if (this.interviewID === rec.UID) {
+          this.counselInterview = rec;
+        }
+      });
+
+    } catch (err) {
+      alert('無法GetStudentCounselInterview：' + err.dsaError.message);
+    }
 
     this.isLoading = false;
   }

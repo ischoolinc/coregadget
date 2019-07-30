@@ -32,7 +32,7 @@ export class DelPsychologicalQuizDataComponent implements OnInit {
       });
       $("#delPsychologicalQuizData").modal("hide");
     } catch (err) {
-      alert(err);
+      alert(err.dsaError.message);
     }
   }
 }

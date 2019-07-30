@@ -1,5 +1,5 @@
 export class ReferralStudent {
-  constructor() {}
+  constructor() { }
   UID: string;
   StudentID: string;
   ClassName: string;
@@ -18,9 +18,7 @@ export class ReferralStudent {
   isReferralReplyHasValue: boolean = false;
   isReferralReplyDateHasValue: boolean = false;
   isReferralReplyDescHasValue: boolean = false;
-  isUnPrecessed: boolean = false;
-  isProcessing: boolean = false;
-  isProcessed: boolean = false;
+
   isSaveButtonDisable: boolean = true;
   isReferralStatusHasValue: boolean = false;
   isAddCaseButtonDisable: boolean = true;
@@ -62,18 +60,7 @@ export class ReferralStudent {
 
     this.isReferralStatusHasValue = false;
 
-    if (this.isUnPrecessed) {
-      this.ReferralStatus = "未處理";
-      this.isReferralStatusHasValue = true;
-    }
-    if (this.isProcessing) {
-      this.ReferralStatus = "處理中";
-      this.isReferralStatusHasValue = true;
-    }
-    if (this.isProcessed) {
-      this.ReferralStatus = "已處理";
-      this.isReferralStatusHasValue = true;
-    }
+
 
     if (this.RefCaseID) {
       this.isAddCaseButtonDisable = true;
@@ -91,43 +78,6 @@ export class ReferralStudent {
     } else {
       this.isSaveButtonDisable = true;
     }
-  
-  }
 
-  setProcessSatus(value: string) {
-    this.ReferralStatus = value;
-    this.loadProcessStatus();
-    this.checkValue();
-  }
-
-  loadProcessStatus() {
-    // 處理授理狀況
-    this.isUnPrecessed = false;
-    this.isProcessing = false;
-    this.isProcessed = false;
-    this.isReferralStatusHasValue = false;
-    if (this.ReferralStatus === "未處理") {
-      this.isUnPrecessed = true;
-      this.isReferralStatusHasValue = true;
-    }
-    if (this.ReferralStatus === "處理中") {
-      this.isProcessing = true;
-      this.isReferralStatusHasValue = true;
-    }
-
-    if (this.ReferralStatus === "已處理") {
-      this.isProcessed = true;
-      this.isReferralStatusHasValue = true;
-    }
-  }
-
-  loadDefault() {
-    this.loadProcessStatus();
-
-    // 處理預設值
-    if (!this.ReferralReplyDate) {
-      let dt = new Date();
-      this.ReferralReplyDate = this.parseDate(dt);
-    }
   }
 }
