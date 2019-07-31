@@ -34,3 +34,13 @@ input.inputPaymentDate[readonly] {
     background-color: transparent;
     cursor: default;
 }
+
+.modal-body {
+    max-height: 600px;
+}
+
+.important-msg {
+    font-size: 1rem;
+    color: red;
+    margin-bottom: 1rem;
+}

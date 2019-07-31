@@ -60,7 +60,19 @@ export class Payment {
   /**是否對帳成功 */
   VerifyAccounting: string;
 
+  /**正取繳費開始時間 */
+  AnnouncementStartDate: string;
 
+  /**正取繳費結束時間 */
+  AnnouncementEndDate: string;
+
+  /**備取繳費開始時間 */
+  IncrementStartDate: string;
+
+  /**備取繳費結束時間 */
+  IncrementEndDate: string;
+
+  Status: PaymentExpiryState;
 
   /**課號 (6碼系所代碼+4碼課號) */
   NewSubjectCode?: string;
@@ -74,6 +86,35 @@ export class Payment {
   /**保證金 */
   Margin?: string;
 
+
+  /**是否開立收據 */
+  IsInvoice: string;
+
+  /**收據抬頭 */
+  InvoiceTitle: string;
+
+  /**統一編號 */
+  UniformNumbers: string;
+
   /**勾選狀態(未取消: true, 取消: false) */
   Checked?: boolean;
+
+  /**勾選元件為 disabled */
+  IsDisabled?: boolean;
+
+  /**勾選元件為 visible */
+  IsVisible?: boolean;
 }
+
+/**
+ * 目前階段
+ * 'announcement': 正取繳費中
+ * 'afterAnnouncement': 正取繳費結束~備取繳費尚開始
+ * 'increment': 備取繳費中
+ * 'afterIncrement': 備取繳費結束
+*/
+export type PaymentExpiryState =
+  | 'announcement'
+  | 'afterAnnouncement'
+  | 'increment'
+  | 'afterIncrement';

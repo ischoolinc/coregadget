@@ -78,15 +78,55 @@
       <label class="control-label" for="inputDescription">繳款說明</label>
       <div class="controls">
         <textarea id="inputDescription" name="inputDescription" [(ngModel)]="inputDescription"></textarea>
-        <p>※如需收據請於繳款說明中備註。</p>
       </div>
     </div>
-
     <div class="control-group">
       <div class="controls">
         <label class="checkbox" for="needSendMail">
           <input type="checkbox" id="needSendMail" name="needSendMail" [(ngModel)]="needSendMail" /> 寄一份副本給我
         </label>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <label class="checkbox" for="needInvoice">
+          <input type="checkbox" id="needInvoice" name="needInvoice" [(ngModel)]="needInvoice" /> 是否開立收據
+        </label>
+      </div>
+    </div>
+    <div class="important-msg">重要提醒: 需繳交學雜費之課程才需填寫以下收據資訊</div>
+    <div class="control-group" [ngClass]="{'error': formErrors.inputInvoiceTitle}">
+      <label class="control-label" for="inputInvoiceTitle">
+        <span class="text-error">*</span>收據抬頭
+      </label>
+      <div class="controls">
+        <input
+          type="text"
+          id="inputInvoiceTitle"
+          name="inputInvoiceTitle"
+          [(ngModel)]="inputInvoiceTitle"
+          placeholder="收據抬頭"
+          [disabled]="!needInvoice"
+          required="true" />
+        <div class="help-inline">{{formErrors.inputInvoiceTitle}}</div>
+      </div>
+    </div>
+    <div class="control-group" [ngClass]="{'error': formErrors.inputUniformNumbers}">
+      <label class="control-label" for="inputUniformNumbers">
+        <span class="text-error">*</span>統一編號
+      </label>
+      <div class="controls">
+        <input
+          type="text"
+          id="inputUniformNumbers"
+          name="inputUniformNumbers"
+          [(ngModel)]="inputUniformNumbers"
+          placeholder="統一編號"
+          maxLength="8"
+          pattern="[0-9]{8}"
+          [disabled]="!needInvoice"
+          required="true" />
+        <div class="help-inline">{{formErrors.inputUniformNumbers}}</div>
       </div>
     </div>
   </form>
