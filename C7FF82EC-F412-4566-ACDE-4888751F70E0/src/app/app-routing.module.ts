@@ -47,6 +47,7 @@ import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setu
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
+  { path: "pd", component: PermissionDeniedComponent },
   { path: "permission_denied", component: PermissionDeniedComponent },
   {
     path: "counsel",
