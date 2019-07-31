@@ -1,0 +1,43 @@
+<!-- 學生個人 - 綜合紀錄表 B -->
+<div *ngIf="!isLoading; else tmpLoading">
+  <ng-container *ngIf="reportData">
+    <h4 class="text-center">{{SchoolName}} </h4>
+    <h5>
+      <span>學號：</span><span>{{StudentNumber}}</span>
+      <span>&nbsp;</span>
+      <span>姓名：</span><span>{{StudentName}}</span>
+    </h5>
+
+    <table>
+      <tr>
+        <td>學年度</td>
+        <td>學期</td>
+        <td>年級</td>
+        <td>日期</td>
+        <td>對象</td>
+        <td>聯絡事項及內容</td>
+        <td>記錄者</td>
+      </tr>
+      <ng-container *ngFor="let item of CounselInterview">
+        <tr>
+          <td>{{item.SchoolYear}}</td>
+          <td>{{item.Semester}}</td>
+          <td>{{item.GradeYear}}</td>
+          <td>{{item.OccurDate}}</td>
+          <td>{{item.ContactName}}</td>
+          <td *ngIf="item.Content.length > 0">{{item.Content}}</td>
+          <td>{{item.AuthorName}}</td>
+        </tr>
+      </ng-container>
+
+    </table>
+  </ng-container>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
