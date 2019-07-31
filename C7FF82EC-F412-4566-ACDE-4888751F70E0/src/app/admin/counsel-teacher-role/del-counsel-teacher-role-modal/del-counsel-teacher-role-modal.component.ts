@@ -9,6 +9,7 @@ import { TeacherCounselRole } from "../counsel-teacher-role-vo";
 })
 export class DelCounselTeacherRoleModalComponent implements OnInit {
 
+  isCancel: boolean = true;
   teacherCounselRole: TeacherCounselRole = new TeacherCounselRole();
   constructor(private dsaService: DsaService) { }
 
@@ -16,10 +17,12 @@ export class DelCounselTeacherRoleModalComponent implements OnInit {
   }
 
   cancel() {
+    this.isCancel = true;
     $("#delCounselTeacherRole").modal("hide");
   }
 
   del() {
+    this.isCancel = false;
     this.DelTeachersCounselRole();
 
   }
@@ -31,10 +34,10 @@ export class DelCounselTeacherRoleModalComponent implements OnInit {
           TeacherID: this.teacherCounselRole.TeacherID
         }
       });
-     
+
       $("#delCounselTeacherRole").modal("hide");
     } catch (err) {
-      alert("無法刪除:"+ err.dsaError.message);
+      alert("無法刪除:" + err.dsaError.message);
     }
   }
 }

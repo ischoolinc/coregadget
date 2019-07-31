@@ -12,6 +12,8 @@ import { DsaService } from "../../../dsa.service";
 })
 export class AddCounselTeacherRoleModalComponent implements OnInit {
 
+  isSaveButtonDisable: boolean = true;
+  isCancel: boolean = true;
   myControl = new FormControl();
   options: string[] = [];
   option: string;
@@ -41,21 +43,31 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   }
 
   cancel() {
+    this.isCancel = true;
     $("#addCounselTeacherRole").modal("hide");
   }
 
   // 選擇角色
   SetSelectRole(item: string) {
     this.selectRole = item;
+    this.chkSaveButton();
   }
 
   // 選擇老師
   SetSelectTeacherName(item) {
     this.selectTeacherName = item;
+    this.chkSaveButton();
+  }
 
+  chkSaveButton() {
+    if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師')
+      this.isSaveButtonDisable = true;
+    else
+      this.isSaveButtonDisable = false;
   }
 
   save() {
+    this.isCancel = false;
     let pass: boolean = false;
     this.selectTeacherID = '';
     this.notTeachersCounselRole.forEach(item => {
@@ -92,7 +104,7 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
       console.log(resp);
       $("#addCounselTeacherRole").modal("hide");
     } catch (err) {
-      alert(err.dsaError.message);
+      alert('無法新增：' + err.dsaError.message);
     }
   }
 }

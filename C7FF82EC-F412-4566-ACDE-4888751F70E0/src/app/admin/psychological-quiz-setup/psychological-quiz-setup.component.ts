@@ -35,9 +35,9 @@ export class PsychologicalQuizSetupComponent implements OnInit {
 
   Add() {
     this._addPsychologicalQuizData.QuizData = new Quiz();
-    let qi:QuizItem = new QuizItem();
+    let qi: QuizItem = new QuizItem();
     qi.QuizOrder = 1;
-    
+
     this._addPsychologicalQuizData.QuizData.QuizItemList.push(qi);
     this._addPsychologicalQuizData.isAdd = true;
     this._addPsychologicalQuizData.isQuizNameHasValue = false;
@@ -71,11 +71,10 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     this._addPsychologicalQuizData.QuizData = item;
     this._addPsychologicalQuizData.editType = '編輯';
 
-    if (item.UseMappingTable)
-    {
+    if (item.UseMappingTable) {
       this._addPsychologicalQuizData.isUseMappingTable = true;
       this._addPsychologicalQuizData.isUserDefined = false;
-    }else {
+    } else {
       this._addPsychologicalQuizData.isUseMappingTable = false;
       this._addPsychologicalQuizData.isUserDefined = true;
     }
@@ -92,39 +91,44 @@ export class PsychologicalQuizSetupComponent implements OnInit {
   // 取得心理測驗題目
   async GetAllQuiz() {
     this.isLoading = true;
-    let resp = await this.dsaService.send("GetAllQuiz", {});
-    this.AllQuizList = [];
-    this.AllQuizSource = [].concat(resp.Quiz || []);
-    this.AllQuizSource.forEach(item => {
-      let qz: Quiz = new Quiz();
-      qz.uid = item.UID;
-      qz.QuizName = item.QuizName;
-      qz.xmlSource = item.QuizDataField;
-      qz.MappingTable = item.MappingTable;
-      if (item.UseMappingTable && item.UseMappingTable === 't')
-        qz.UseMappingTable = true;
-      else
-        qz.UseMappingTable = false;
 
-      let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
-      xq.forEach(FieldItem => {
-        if (FieldItem.Field) {
-          FieldItem.Field = [].concat(FieldItem.Field || []);
-          FieldItem.Field.forEach(xItem => {
-            let qi: QuizItem = new QuizItem();
-            if (xItem.name) {
-              qi.QuizName = xItem.name;
-            }
+    try {
+      let resp = await this.dsaService.send("GetAllQuiz", {});
+      this.AllQuizList = [];
+      this.AllQuizSource = [].concat(resp.Quiz || []);
+      this.AllQuizSource.forEach(item => {
+        let qz: Quiz = new Quiz();
+        qz.uid = item.UID;
+        qz.QuizName = item.QuizName;
+        qz.xmlSource = item.QuizDataField;
+        qz.MappingTable = item.MappingTable;
+        if (item.UseMappingTable && item.UseMappingTable === 't')
+          qz.UseMappingTable = true;
+        else
+          qz.UseMappingTable = false;
 
-            if (xItem.order) {
-              qi.QuizOrder = parseInt(xItem.order);
-            }
-            qz.QuizItemList.push(qi);
-          });
-        }
+        let xq = [].concat(node2json.xml2obj(item.QuizDataField) || []);
+        xq.forEach(FieldItem => {
+          if (FieldItem.Field) {
+            FieldItem.Field = [].concat(FieldItem.Field || []);
+            FieldItem.Field.forEach(xItem => {
+              let qi: QuizItem = new QuizItem();
+              if (xItem.name) {
+                qi.QuizName = xItem.name;
+              }
+
+              if (xItem.order) {
+                qi.QuizOrder = parseInt(xItem.order);
+              }
+              qz.QuizItemList.push(qi);
+            });
+          }
+        });
+        this.AllQuizList.push(qz);
       });
-      this.AllQuizList.push(qz);
-    });
+    } catch (err) {
+      alert('無法取得心理測驗題目：' + err.dsaError.message);
+    }
     this.isLoading = false;
   }
 }

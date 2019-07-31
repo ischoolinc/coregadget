@@ -154,45 +154,49 @@ export class InterviewDetailComponent implements OnInit {
   async GetCounselInterviewByStudentID(StudentID: string) {
     let data: CounselInterview[] = [];
 
-    let resp = await this.dsaService.send("GetStudentCounselInterview", {
-      Request: {
-        StudentID: StudentID
-      }
-    });
+    try {
+      let resp = await this.dsaService.send("GetStudentCounselInterview", {
+        Request: {
+          StudentID: StudentID
+        }
+      });
 
-    [].concat(resp.CounselInterview || []).forEach(counselRec => {
-      // 建立輔導資料
-      let rec: CounselInterview = new CounselInterview();
-      rec.UID = counselRec.UID;
-      rec.StudentName = counselRec.StudentName;
-      rec.SchoolYear = parseInt(counselRec.SchoolYear);
-      rec.Semester = parseInt(counselRec.Semester);
-      let dN = Number(counselRec.OccurDate);
-      let x = new Date(dN);
-      rec.OccurDate = rec.parseDate(x);
-      rec.ContactName = counselRec.ContactName;
-      rec.AuthorName = counselRec.AuthorName;
-      rec.CounselType = counselRec.CounselType;
-      rec.CounselTypeOther = counselRec.CounselTypeOther;
-      rec.isPrivate = counselRec.isPrivate;
-      rec.StudentID = counselRec.StudentID;
-      rec.isReferral = counselRec.isReferral;
-      rec.ReferralDesc = counselRec.ReferralDesc;
-      rec.ReferralReply = counselRec.ReferralReply;
-      rec.ReferralStatus = counselRec.ReferralStatus;
-      rec.ReferralReplyDate = counselRec.ReferralReplyDate;
-      rec.Content = counselRec.Content;
-      rec.ContactItem = counselRec.ContactItem;
-      rec.RefTeacherID = counselRec.RefTeacherID;
-      // 判斷是否是自己新增才可以修改
-      if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
-        rec.isEditDisable = false;
-      } else {
-        rec.isEditDisable = true;
-      }
+      [].concat(resp.CounselInterview || []).forEach(counselRec => {
+        // 建立輔導資料
+        let rec: CounselInterview = new CounselInterview();
+        rec.UID = counselRec.UID;
+        rec.StudentName = counselRec.StudentName;
+        rec.SchoolYear = parseInt(counselRec.SchoolYear);
+        rec.Semester = parseInt(counselRec.Semester);
+        let dN = Number(counselRec.OccurDate);
+        let x = new Date(dN);
+        rec.OccurDate = rec.parseDate(x);
+        rec.ContactName = counselRec.ContactName;
+        rec.AuthorName = counselRec.AuthorName;
+        rec.CounselType = counselRec.CounselType;
+        rec.CounselTypeOther = counselRec.CounselTypeOther;
+        rec.isPrivate = counselRec.isPrivate;
+        rec.StudentID = counselRec.StudentID;
+        rec.isReferral = counselRec.isReferral;
+        rec.ReferralDesc = counselRec.ReferralDesc;
+        rec.ReferralReply = counselRec.ReferralReply;
+        rec.ReferralStatus = counselRec.ReferralStatus;
+        rec.ReferralReplyDate = counselRec.ReferralReplyDate;
+        rec.Content = counselRec.Content;
+        rec.ContactItem = counselRec.ContactItem;
+        rec.RefTeacherID = counselRec.RefTeacherID;
+        // 判斷是否是自己新增才可以修改
+        if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
+          rec.isEditDisable = false;
+        } else {
+          rec.isEditDisable = true;
+        }
+        data.push(rec);
+      });
+    } catch (err) {
+      alert('取得透過學生系統編號取得學生輔導資料:' + err.dsaError.message);
+    }
 
-      data.push(rec);
-    });
     return data;
   }
 }

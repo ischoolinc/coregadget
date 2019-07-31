@@ -1,9 +1,7 @@
 import { QOption } from "./case-question-data-modal";
 import { CaseQuestionTemplate } from "./case-question-template";
 import { QuizData } from "../counsel/counsel-detail/psychological-test-detail/quiz-data-vo";
-import { stream } from 'xlsx/types';
-import { stringify } from '@angular/compiler/src/util';
-import { retry } from 'rxjs/operators';
+
 
 
 export class CaseStudent {

@@ -40,7 +40,8 @@
                    matInput
                    [formControl]="myControl"
                    [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)='SetSelectTeacherName($event.option.value)'>
+            <mat-autocomplete #auto="matAutocomplete"
+                              (optionSelected)='SetSelectTeacherName($event.option.value)'>
               <mat-option *ngFor="let option  of filteredOptions | async"
                           [value]="option">
                 {{option}}
@@ -60,13 +61,11 @@
           </button>
           <button type="button"
                   class="btn btn-info"
-                  (click)="save()">
+                  (click)="save()"
+                  [disabled]="isSaveButtonDisable">
             儲存
           </button>
         </div>
-
-
-
       </div>
     </div>
   </div>

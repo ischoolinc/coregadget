@@ -38,7 +38,7 @@ export class CaseComponent implements OnInit {
     @Optional()
     private appComponent: AppComponent
   ) {
-    if (this.appComponent) this.appComponent.currentComponent = "case";    
+    if (this.appComponent) this.appComponent.currentComponent = "case";
   }
 
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
@@ -67,7 +67,8 @@ export class CaseComponent implements OnInit {
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadData();
+      if (!this.case_modal.isCancel)
+        this.loadData();
       $("#newCase").off("hide.bs.modal");
     });
   }
@@ -123,9 +124,7 @@ export class CaseComponent implements OnInit {
     this.case_modal.selectClassNameValue = item.ClassName;
     this.case_modal.selectSeatNoValue = item.SeatNo;
     this.case_modal.selectCaseSourceValue = item.CaseSource;
-    // this.case_modal.teacherName = item.GuidanceTeacher.GetTeacherName();
-    // this.case_modal.selectVoluntaryGuidanceValue = item.GuidanceTeacher.GetTeacherName();
-    // this.case_modal.selectVoluntaryGuidanceTeacher = item.GuidanceTeacher;
+
     this.case_modal.caseStudent.isCloseYes = false;
     this.case_modal.caseStudent.isCloseNo = true;
 
@@ -174,7 +173,8 @@ export class CaseComponent implements OnInit {
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
       // 重整資料
-      this.loadData();
+      if (!this.case_modal.isCancel)
+        this.loadData();
       $("#newCase").off("hide.bs.modal");
     });
   }
@@ -183,7 +183,7 @@ export class CaseComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
+  async loadData() {
     this.enableCase = false;
     this.isLoading = true;
     this.caseList = [];
@@ -194,9 +194,9 @@ export class CaseComponent implements OnInit {
     this.itemClosedList.push('已結案');
     this.selectItemClosed = '未結案';
     this.itemClassList.push("全部");
-    this.selectItemClass = '全部';  
-    this.GetCaseTeacher();
-    this.GetCase();
+    this.selectItemClass = '全部';
+    await this.GetCaseTeacher();
+    await this.GetCase();
   }
 
 
@@ -206,70 +206,74 @@ export class CaseComponent implements OnInit {
   async GetCase() {
     let data: CaseStudent[] = [];
 
-    let resp = await this.dsaService.send("GetCase", {
-      Request: {}
-    });
-
-    [].concat(resp.Case || []).forEach(caseRec => {
-      // 建立認輔資料
-      let rec: CaseStudent = new CaseStudent();
-      rec.UID = caseRec.UID;
-      rec.ClassName = caseRec.ClassName;
-      rec.SeatNo = caseRec.SeatNo;
-      rec.Name = caseRec.Name;
-      if (caseRec.Gender === "1") {
-        rec.Gender = "男";
-      } else {
-        rec.Gender = "女";
-      }
-      let x = Number(caseRec.OccurDate);
-      let dt = new Date(x);
-      rec.OccurDate = rec.parseDate(dt, '-');
-      rec.CaseNo = caseRec.CaseNo;
-      rec.StudentIdentity = caseRec.StudentIdentity;
-      rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
-      rec.SpecialLevel = caseRec.SpecialLevel;
-      rec.SpecialCategory = caseRec.SpecialCategory;
-      rec.HasDisabledBook = caseRec.HasDisabledBook;
-      rec.DeviantBehavior = caseRec.DeviantBehavior;
-      rec.ProblemCategory = caseRec.ProblemCategory;
-      rec.ProbleDescription = caseRec.ProbleDescription;
-      rec.SpecialSituation = caseRec.SpecialSituation;
-      rec.EvaluationResult = caseRec.EvaluationResult;
-      rec.IsClosed = caseRec.IsClosed;
-      rec.CloseDate = caseRec.CloseDate;
-      rec.ClosedByTeacherID = caseRec.ClosedByTeacherID;
-      rec.CloseDescription = caseRec.CloseDescription;
-      rec.StudentID = caseRec.StudentID;
-      rec.CaseSource = caseRec.CaseSource;
-      rec.CaseCount = caseRec.CaseCount;
-      rec.PhotoUrl = `${
-        this.dsaService.AccessPoint
-        }/GetStudentPhoto?stt=Session&sessionid=${
-        this.dsaService.SessionID
-        }&parser=spliter&content=StudentID:${rec.StudentID}`;
-      this.caseTeacherList.forEach(case_data => {
-        if (rec.UID === case_data.CaseID) {
-          rec.CaseTeachers.push(case_data);
-        }
+    try {
+      let resp = await this.dsaService.send("GetCase", {
+        Request: {}
       });
 
-      rec.TeacherName = caseRec.TeacherName;
-      rec.CaseLevel = caseRec.CaseLevel;
+      [].concat(resp.Case || []).forEach(caseRec => {
+        // 建立認輔資料
+        let rec: CaseStudent = new CaseStudent();
+        rec.UID = caseRec.UID;
+        rec.ClassName = caseRec.ClassName;
+        rec.SeatNo = caseRec.SeatNo;
+        rec.Name = caseRec.Name;
+        if (caseRec.Gender === "1") {
+          rec.Gender = "男";
+        } else {
+          rec.Gender = "女";
+        }
+        let x = Number(caseRec.OccurDate);
+        let dt = new Date(x);
+        rec.OccurDate = rec.parseDate(dt, '-');
+        rec.CaseNo = caseRec.CaseNo;
+        rec.StudentIdentity = caseRec.StudentIdentity;
+        rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
+        rec.SpecialLevel = caseRec.SpecialLevel;
+        rec.SpecialCategory = caseRec.SpecialCategory;
+        rec.HasDisabledBook = caseRec.HasDisabledBook;
+        rec.DeviantBehavior = caseRec.DeviantBehavior;
+        rec.ProblemCategory = caseRec.ProblemCategory;
+        rec.ProbleDescription = caseRec.ProbleDescription;
+        rec.SpecialSituation = caseRec.SpecialSituation;
+        rec.EvaluationResult = caseRec.EvaluationResult;
+        rec.IsClosed = caseRec.IsClosed;
+        rec.CloseDate = caseRec.CloseDate;
+        rec.ClosedByTeacherID = caseRec.ClosedByTeacherID;
+        rec.CloseDescription = caseRec.CloseDescription;
+        rec.StudentID = caseRec.StudentID;
+        rec.CaseSource = caseRec.CaseSource;
+        rec.CaseCount = caseRec.CaseCount;
+        rec.PhotoUrl = `${
+          this.dsaService.AccessPoint
+          }/GetStudentPhoto?stt=Session&sessionid=${
+          this.dsaService.SessionID
+          }&parser=spliter&content=StudentID:${rec.StudentID}`;
+        this.caseTeacherList.forEach(case_data => {
+          if (rec.UID === case_data.CaseID) {
+            rec.CaseTeachers.push(case_data);
+          }
+        });
 
-      // 題目答案轉換
-      rec.LoadQuestionOptionStringToList();
+        rec.TeacherName = caseRec.TeacherName;
+        rec.CaseLevel = caseRec.CaseLevel;
 
-      data.push(rec);
-    });
-    this.caseList = data;
+        // 題目答案轉換
+        rec.LoadQuestionOptionStringToList();
 
-    // 放入可選班級
-    this.caseList.forEach(item => {
-      if (!this.itemClassList.includes(item.ClassName)) {
-        this.itemClassList.push(item.ClassName);
-      }
-    });
+        data.push(rec);
+      });
+      this.caseList = data;
+
+      // 放入可選班級
+      this.caseList.forEach(item => {
+        if (!this.itemClassList.includes(item.ClassName)) {
+          this.itemClassList.push(item.ClassName);
+        }
+      });
+    } catch (err) {
+      alert("取得個案失敗(GetCase):" + err.dsaError.message);
+    }
 
     this.changeDisplay();
     this.isLoading = false;
@@ -277,22 +281,25 @@ export class CaseComponent implements OnInit {
 
   // 取得個案輔導老師
   async GetCaseTeacher() {
-    let data: CaseTeacher[] = [];
-    let rsp = await this.dsaService.send("GetCaseTeacher", {
-      Request: {}
-    });
+    try {
+      let data: CaseTeacher[] = [];
+      let rsp = await this.dsaService.send("GetCaseTeacher", {
+        Request: {}
+      });
 
-    [].concat(rsp.CaseTeacher || []).forEach(caseRec => {
-      let rec: CaseTeacher = new CaseTeacher();
-      rec.CaseID = caseRec.CaseID;
-      rec.MainTeacher = caseRec.MainTeacher;
-      rec.TeacherID = caseRec.TeacherID;
-      rec.TeacherName = caseRec.TeacherName;
-      rec.Role = caseRec.Role;
-      data.push(rec);
-    });
+      [].concat(rsp.CaseTeacher || []).forEach(caseRec => {
+        let rec: CaseTeacher = new CaseTeacher();
+        rec.CaseID = caseRec.CaseID;
+        rec.MainTeacher = caseRec.MainTeacher;
+        rec.TeacherID = caseRec.TeacherID;
+        rec.TeacherName = caseRec.TeacherName;
+        rec.Role = caseRec.Role;
+        data.push(rec);
+      });
 
-    this.caseTeacherList = data;
+      this.caseTeacherList = data;
+    } catch (err) {
+      alert("取得個案認輔老師失敗(GetCaseTeacher):" + err.dsaError.message);
+    }
   }
-
 }
