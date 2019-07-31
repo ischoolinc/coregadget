@@ -32,6 +32,8 @@ export class PaymentFormModalComponent implements OnInit {
     inputDigitsAfter5Number: '',
     inputPaymentDate: '',
     inputPaymentAmount: '',
+    inputInvoiceTitle: '',
+    inputUniformNumbers: '',
   };
 
   formValid = true;
@@ -43,14 +45,12 @@ export class PaymentFormModalComponent implements OnInit {
   inputPaymentAmount: number;
   inputDescription: string;
   paymentMessage: string;
+  needInvoice = true;
+  inputInvoiceTitle: string;
+  inputUniformNumbers: string;
   needSendMail = true;
 
-  defPaymentAmount: number;
   checkedCourseList: Payment[] = [];
-
-  get currLevel() {
-    return this.basicSrv.currLevel;
-  }
 
   get currSchoolYear() {
     return this.basicSrv.currSchoolYear;
@@ -67,25 +67,37 @@ export class PaymentFormModalComponent implements OnInit {
   @Input()
   set checkedCourses(courseList: Payment[]) {
     let defPaymentAmount = 0;
+    let lastBankCode = '';
+    let lastDigitsAfter5Number = '';
+    let lastIsInvoice = false;
+    let lastInvoiceTitle = '';
+    let lastUniformNumbers = '';
+    let lastDescription = '';
+
     for (const item of courseList) {
       try { defPaymentAmount += (+item.TuitionFees || 0); } catch (error) { }
       try { defPaymentAmount += (+item.Margin) || 0; } catch (error) {}
+
+      // 取得銀行帳戶最後記錄
+      if (item.BankCode) {
+        lastBankCode = item.BankCode;
+        lastDigitsAfter5Number = item.DigitsAfter5Number;
+        lastIsInvoice = item.IsInvoice === 't';
+        lastInvoiceTitle = item.InvoiceTitle || '';
+        lastUniformNumbers = item.UniformNumbers || '';
+        lastDescription = item.Description || '';
+      }
     }
 
-    this.defPaymentAmount = defPaymentAmount;
     this.inputPaymentAmount = defPaymentAmount;
     this.checkedCourseList = courseList;
+    this.inputBankCode = lastBankCode;
+    this.inputDigitsAfter5Number = lastDigitsAfter5Number;
+    this.needInvoice = lastIsInvoice;
+    this.inputInvoiceTitle = lastInvoiceTitle;
+    this.inputUniformNumbers = lastUniformNumbers;
+    this.inputDescription = lastDescription;
   };
-
-  @Input()
-  set lastBankCode(value: string) {
-    this.inputBankCode = value;
-  };
-
-  @Input()
-  set lastDigitsAfter5Number(value: string) {
-    this.inputDigitsAfter5Number = value;
-  }
 
   @Input() callback: Function;
 
@@ -108,19 +120,24 @@ export class PaymentFormModalComponent implements OnInit {
    * inputBankCode 不為空
    * inputDigitsAfter5Number 長度一定為 5 的數字
    * inputPaymentDate 日期可大於今天(預約轉帳)
-   * inputPaymentAmount 金額不小於 0
+   * inputPaymentAmount 金額需大於 0
+   * 需開立收據時 inputInvoiceTitle, inputUniformNumbers 皆必填
+   *   inputUniformNumbers 應為8碼的數字
    */
   async onSubmit() {
     if (this.sendBtnDisabled) return;
+    this.modalMsgText = '';
 
     const formErrors = {
       inputBankCode: '',
       inputDigitsAfter5Number: '',
       inputPaymentDate: '',
       inputPaymentAmount: '',
+      inputInvoiceTitle: '',
+      inputUniformNumbers: '',
     };
 
-    if (!this.inputBankCode) formErrors.inputBankCode = '必填！';
+    if (!this.inputBankCode.trim()) formErrors.inputBankCode = '必填！';
     if (this.inputDigitsAfter5Number.length != 5) {
       formErrors.inputDigitsAfter5Number = '請填入末5碼！';
     } else {
@@ -131,8 +148,26 @@ export class PaymentFormModalComponent implements OnInit {
     if (isNaN(Date.parse(this.inputPaymentDate))) {
       formErrors.inputPaymentDate = '日期不正確！';
     }
-    if (!((/^(\+|-)?\d+$/.test('' + this.inputPaymentAmount)))) {
-      if (+this.inputPaymentAmount < 0) formErrors.inputPaymentAmount = '請填入正整數！';
+    if (!this.inputPaymentAmount) {
+      formErrors.inputPaymentAmount = '必填！';
+    } else {
+      if (/^(\+|-)?\d+$/.test('' + this.inputPaymentAmount)) {
+        if (+this.inputPaymentAmount <= 0) formErrors.inputPaymentAmount = '請填入正整數！';
+      }
+    }
+    if (this.needInvoice) {
+      if (!this.inputInvoiceTitle.trim()) formErrors.inputInvoiceTitle = '必填！';
+      if (!this.inputUniformNumbers.trim()) {
+        formErrors.inputUniformNumbers = '必填！';
+      } else {
+        if (this.inputUniformNumbers.length != 8) {
+          formErrors.inputUniformNumbers = '應有8碼！';
+        } else {
+          if (!(/[0-9]{8}/.test(this.inputUniformNumbers))) {
+            formErrors.inputUniformNumbers = '統一編號應為數字！';
+          }
+        }
+      }
     }
 
     // 確認是否驗證成功
@@ -140,47 +175,79 @@ export class PaymentFormModalComponent implements OnInit {
       !formErrors.inputBankCode
       && !formErrors.inputDigitsAfter5Number
       && !formErrors.inputPaymentDate
-      && !formErrors.inputPaymentAmount);
+      && !formErrors.inputPaymentAmount
+      && !formErrors.inputInvoiceTitle
+      && !formErrors.inputUniformNumbers);
 
     this.formErrors = formErrors;
     this.formValid = formValid;
 
     if (formValid) {
       // 儲存繳款單資訊
-      if (['announcement', 'increment'].indexOf(this.currLevel) != -1) {
-        try {
-          this.sendBtnDisabled = true;
+      try {
+        this.sendBtnDisabled = true;
 
-          const data = this.checkedCourseList.map(item => {
-            return {
-              Status: this.currLevel, // 執行階段，儲存要用的
-              RefStudentSelectId: item.RefStudentSelectId,
-              BankCode: this.inputBankCode,
-              DigitsAfter5Number: this.inputDigitsAfter5Number,
-              PaymentDate: this.inputPaymentDate,
-              PaymentAmount: this.inputPaymentAmount,
-              Description: this.inputDescription,
+        const data = this.checkedCourseList.map(item => {
+          return {
+            Status: item.Status, // 執行階段，儲存要用的
+            RefStudentSelectId: item.RefStudentSelectId,
+            BankCode: this.inputBankCode,
+            DigitsAfter5Number: this.inputDigitsAfter5Number,
+            PaymentDate: this.inputPaymentDate,
+            PaymentAmount: this.inputPaymentAmount,
+            Description: this.inputDescription,
+            IsInvoice: this.needInvoice,
+            InvoiceTitle: this.needInvoice ? this.inputInvoiceTitle : '',
+            UniformNumbers: this.needInvoice ? this.inputUniformNumbers : '',
+          }
+        });
+        console.log(data);
+
+        // 取得系統時間，驗證是否皆在繳費期間
+        const sysNow = await this.basicSrv.getSystemNow();
+        if (sysNow) {
+          const systemNow = new Date(sysNow);
+          const expiredCourseNames = this.checkedCourseList.filter(item => {
+            if (!(
+              ( item.Status === 'announcement'
+                && new Date(item.AnnouncementStartDate) <= systemNow
+                && new Date(item.AnnouncementEndDate) >= systemNow
+              )
+              ||
+              (
+                item.Status === 'increment'
+                && new Date(item.IncrementStartDate) <= systemNow
+                && new Date(item.IncrementEndDate) >= systemNow
+              )
+            )) {
+              return item.CourseName;
             }
           });
-          // console.log(data);
 
-          // 儲存
-          const rsp = await this.setPaymentRecord(data);
-          if (rsp) {
-            // 寄信
-            await this.sendMail();
+          if (!expiredCourseNames.length) {
+            // 儲存
+            const rsp = await this.setPaymentRecord(data);
+            if (rsp) {
+              // 寄信
+              await this.sendMail();
 
-            // 關閉視窗，呼叫 callback
-            this.modalRef.hide();
+              // 關閉視窗，呼叫 callback
+              this.modalRef.hide();
 
-
-            if (this.callback) this.callback();
+              if (this.callback) this.callback();
+            }
+          } else {
+            this.modalMsgClass = 'text-danger';
+            this.modalMsgText = `課程 ${expiredCourseNames.join(', ')} 已過繳費期間！`;
           }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          this.sendBtnDisabled = false;
+        } else {
+          this.modalMsgClass = 'text-danger';
+          this.modalMsgText = '無法驗證繳費期間！';
         }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.sendBtnDisabled = false;
       }
     }
   }
@@ -200,6 +267,9 @@ export class PaymentFormModalComponent implements OnInit {
           paymentDate: '',
           paymentAmount: '',
           description: '',
+          isInvoice: false,
+          invoiceTitle: '',
+          uniformNumbers: '',
         };
 
         logMessage.courseNames = this.checkedCourseList.map((item) => {
@@ -218,18 +288,23 @@ export class PaymentFormModalComponent implements OnInit {
           logMessage.paymentDate = item.PaymentDate;
           logMessage.paymentAmount = item.PaymentAmount;
           logMessage.description = item.Description;
+          logMessage.isInvoice = item.IsInvoice;
+          logMessage.invoiceTitle = item.InvoiceTitle;
+          logMessage.uniformNumbers = item.UniformNumbers;
         });
 
         // 記錄 Log
         const logDescription = `
           校友「${this.student.StudentName}」填寫「校友選課保證金」。
-          階段：${(this.currLevel === 'announcement' ? '正取公告中' : '遞補公告中')}
           課程清單：${logMessage.courseNames.join('---------')}
           選課系統編號：${logMessage.refStudentSelectId.join(',')}
           銀行代號：${this.inputBankCode}
           帳號末5碼：${this.inputDigitsAfter5Number}
           繳款時間：${this.inputPaymentDate}
           繳款金額：${+(this.inputPaymentAmount || 0).toLocaleString('en')}
+          是否開立收據：${(this.needInvoice) ? '是' : '否'}
+          收據抬頭：${(this.needInvoice ? this.inputInvoiceTitle : '') || '未填寫'}
+          統一編號：${(this.needInvoice ? this.inputUniformNumbers : '')  || '未填寫'}
           繳款說明：${this.inputDescription || '未填寫'}
           寄送副本：${(this.needSendMail) ? '是' : '否' }
           使用者電腦時間：${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`;
@@ -292,8 +367,11 @@ export class PaymentFormModalComponent implements OnInit {
           課程名稱：${courseNames.join(', ')}<br />
           銀行代號：${this.inputBankCode}<br />
           帳號末5碼：${this.inputDigitsAfter5Number}<br />
-          繳款時間：${this.inputPaymentDate}<br />
+          繳款時間：${moment(this.inputPaymentDate).format('YYYY-MM-DD')}<br />
           繳款金額：${this.inputPaymentAmount}<br />
+          是否開立收據：${(this.needInvoice) ? '是' : '否'}<br />
+          收據抬頭：${this.inputInvoiceTitle || '未填寫'}<br />
+          統一編號：${this.inputUniformNumbers || '未填寫'}<br />
           繳款說明：${(this.inputDescription || '未填寫').replace(/\n/g, '<br />')}
         </p>
         <br /><br />

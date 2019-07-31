@@ -1,112 +1,29 @@
-<div *ngIf="['beforeChoose', 'choose', 'afterChoose'].indexOf(currLevel) !== -1; else elseBlock">現在非繳費期間</div>
-<ng-template #elseBlock>
-  <ng-container *ngIf="['announcement', 'increment'].indexOf(currLevel) !== -1; else tplOther">
-
-    <!-- 第一階段公告中 -->
-    <ng-container *ngIf="currLevel === 'announcement'">
-      <div *ngTemplateOutlet="tplAnnouncement"></div>
-    </ng-container>
-
-    <!-- 第二階段遞補中且有值 -->
-    <ng-container *ngIf="currLevel == 'increment'">
-      <div *ngTemplateOutlet="tplIncrement"></div>
-    </ng-container>
-
-  </ng-container>
-</ng-template>
-
-
-<ng-template #tplAnnouncement>
-  <!-- 第一階段公告，且沒有值 -->
-  <div *ngIf="admitteds.length === 0">您沒有可顯示的資料</div>
-
-  <!-- 第一階段公告，且有值 -->
-  <ng-container *ngIf="admitteds.length !== 0">
-    <div class="alert alert-info2">
-      繳款時間：{{openingDate.AnnouncementStartDate}} 至 {{openingDate.AnnouncementEndDate}} 止。
+<div *ngIf="paymentList.length;else tplNoData">
+  <div class="alert alert-info">
+    <div style="color: black; background-color: white;"
+      [innerHTML]="configuration['emba_alumnicoursemodule_view_alumni_notes'] | safeHtml">
     </div>
-    <div class="alert alert-info">
-      <div style="color: black; background-color: white;"
-        [innerHTML]="configuration['emba_alumnicoursemodule_view_alumni_notes'] | safeHtml">
-      </div>
-    </div>
-    <div>
-      <app-my-admission-list
-        type="admitted"
-        [canPayment]="true"
-        [list]="admitteds"
-        (callback)="handleInputChange($event)">
-      </app-my-admission-list>
-    </div>
-    <!-- 有正取課程，按鈕「填寫匯款通知」及「請先勾選」的提示訊息 -->
-    <div *ngIf="admitteds.length !== 0">
-      <button
-        type="button"
-        class="btn btn-info"
-        [ngClass]="{'disabled': !checkedCourses.length}"
-        (click)="handleShowModal()">
-        填寫匯款通知
-      </button>
-      <span *ngIf="!checkedCourses.length" class="text-error">請先勾選！</span>
-    </div>
-  </ng-container>
-</ng-template>
-
-<ng-template #tplIncrement>
-  <!-- 沒有值 -->
-  <div *ngIf="admitteds.length === 0 && waitings.length === 0">您無可顯示資料</div>
-
-  <ng-container *ngIf="!(admitteds.length === 0 && waitings.length === 0)">
-    <div class="alert alert-info2">
-      繳款時間：{{openingDate.IncrementStartDate}} 至 {{openingDate.IncrementEndDate}} 止。
-    </div>
-    <div class="alert alert-info">
-      <div style="color: black; background-color: white;"
-        [innerHTML]="configuration['emba_alumnicoursemodule_view_alumni_notes'] | safeHtml">
-      </div>
-    </div>
-    <div>
-      <app-my-admission-list
-        type="admitted"
-        [canPayment]="false"
-        [list]="admitteds"></app-my-admission-list>
-    </div>
-    <div style="margin-top: 20px">
-      <app-my-admission-list
-        type="waiting"
-        [canPayment]="true"
-        [list]="waitings"></app-my-admission-list>
-    </div>
-
-    <!-- 有備取課程，按鈕「填寫匯款通知」及「請先勾選」的提示訊息 -->
-    <div *ngIf="waitings.length !== 0">
-      <button
-        type="button"
-        class="btn btn-info"
-        [ngClass]="{'disabled': !checkedCourses.length}"
-        (click)="handleShowModal()">
-        填寫匯款通知
-      </button>
-      <span *ngIf="!checkedCourses.length" class="text-error">請先勾選！</span>
-    </div>
-  </ng-container>
-</ng-template>
-
-<ng-template #tplOther>
-  <!-- 其他階段 -->
-  <!-- 'afterAnnouncement': 第一階段公告結束~第二階段尚未公告 -->
-  <!-- 'afterIncrement': 第二階段遞補結束 -->
-  <!-- 或其他 -->
+  </div>
   <div>
     <app-my-admission-list
-      type="admitted"
-      [canPayment]="false"
-      [list]="admitteds"></app-my-admission-list>
+      [list]="paymentList"
+      (callback)="handleInputChange($event)"
+    ></app-my-admission-list>
   </div>
-  <div style="margin-top: 20px">
-    <app-my-admission-list
-      type="waiting"
-      [canPayment]="false"
-      [list]="waitings"></app-my-admission-list>
+
+  <!-- 有可匯款課程，按鈕「填寫匯款通知」及「請先勾選」的提示訊息 -->
+  <div *ngIf="checkedCourses.length">
+    <button
+      type="button"
+      class="btn btn-info"
+      [ngClass]="{'disabled': !checkedCourses.length}"
+      (click)="handleShowModal()">
+      填寫匯款通知
+    </button>
+    <span *ngIf="!checkedCourses.length" class="text-error">請先勾選！</span>
   </div>
+</div>
+
+<ng-template #tplNoData>
+  <div>目前無資料</div>
 </ng-template>

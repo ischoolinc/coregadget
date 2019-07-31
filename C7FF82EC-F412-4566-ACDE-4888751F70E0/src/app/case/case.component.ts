@@ -49,14 +49,15 @@ export class CaseComponent implements OnInit {
     this.case_modal.editModeString = "新增";
     this.case_modal.caseStudent = new CaseStudent();
     // 放入預設選項
+    this.case_modal.loadData();
     this.case_modal.caseStudent.useQuestionOptionTemplate();
     this.case_modal.selectClassNameValue = "請選擇班級";
     this.case_modal.selectSeatNoValue = "請選擇座號";
     this.case_modal.selectCaseSourceValue = "請選擇個案來源";
     this.case_modal.selectCaseTeachersValue = "請選擇認輔老師";
     this.case_modal.caseStudent.selectCaseTeacers = [];
-    this.case_modal.teacherName = "";
-    this.case_modal.GetDefault();
+    this.case_modal.closedTeacherName = "";
+    
     this.case_modal.isCanSetClass = true;
     this.case_modal.caseStudent.setIsCloseNo();
     // 個案輔導預設初級
@@ -121,6 +122,7 @@ export class CaseComponent implements OnInit {
     this.case_modal.isCanSetClass = false;
     this.case_modal.caseStudent = item;
 
+    this.case_modal.loadData();
     this.case_modal.selectClassNameValue = item.ClassName;
     this.case_modal.selectSeatNoValue = item.SeatNo;
     this.case_modal.selectCaseSourceValue = item.CaseSource;

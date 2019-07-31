@@ -3,16 +3,12 @@
 
   <div class="row-fluid">
     <div class="span12">
-      <h1 *ngIf="loadState !== 'finish'">選課</h1>
-      <h1 *ngIf="loadState === 'finish'">
+      <h1 *ngIf="'' + loadState !== 'finish'">校友選課</h1>
+      <h1 *ngIf="'' + loadState === 'finish'">
         <span>{{currSchoolYear}} 學年度 {{currSemester | semesterFormat}}</span>
         <ul class="nav nav-tabs my-navtabs">
-          <li [ngClass]="{'active': currTab === 'sa01'}" *ngIf="['s5', 'choose', 'beforeChoose'].indexOf(currLevel) !== -1"><a
-              href="javascript:;" (click)="toggleTab('sa01')">可選課程</a></li>
-          <li [ngClass]="{'active': currTab === 'sa06'}" *ngIf="['afterChoose', 'announcement', 'afterAnnouncement', 'increment'].indexOf(currLevel) !== -1"><a
-            href="javascript:;" (click)="toggleTab('sa06')">選課結果</a></li>
-          <li [ngClass]="{'active': currTab === 'sa07'}" *ngIf="['afterIncrement'].indexOf(currLevel) !== -1"><a
-            href="javascript:;" (click)="toggleTab('sa07')">選課結果</a></li>
+          <li [ngClass]="{'active': currTab === 'sa01'}"><a href="javascript:;" (click)="toggleTab('sa01')">可選課程</a></li>
+          <li [ngClass]="{'active': currTab === 'sa06'}"><a href="javascript:;" (click)="toggleTab('sa06')">選課結果</a></li>
           <li [ngClass]="{'active': currTab === 'sa02'}"><a href="javascript:;" (click)="toggleTab('sa02')">課程總表</a></li>
           <li [ngClass]="{'active': currTab === 'sa03'}"><a href="javascript:;" (click)="toggleTab('sa03')">衝堂與限制複選課程</a></li>
           <li [ngClass]="{'active': currTab === 'sa04'}"><a href="javascript:;" (click)="toggleTab('sa04')">選課注意事項</a></li>
@@ -25,18 +21,9 @@
           {{['載入中...', '載入失敗', '非畢業校友請至一般學生選課功能。', '目前尚未開放選課', '您目前沒有校友選課權限，請聯繫EMBA辦公室。'][['loading', 'error', 'limited',
           'closed', 'black'].indexOf(loadState)]}}
         </div>
-        <ng-container *ngIf="loadState === 'finish'">
+        <ng-container *ngIf="'' + loadState === 'finish'">
           <div [ngClass]="{'active': currTab === 'sa01', 'fade': currTab !== 'sa01'}" class="tab-pane sa01">
-            <div>
-              {{['目前尚未開放選課', '目前尚未開放選課'][['beforeChoose', 's5'].indexOf(currLevel)]}}
-            </div>
-            <div *ngIf="['beforeChoose', 's5'].indexOf(currLevel) === -1">
-              <div class="alert alert-info2">
-                <ng-container *ngIf="openingDate?.StartDate || openingDate?.EndDate">
-                  選課時間：{{openingDate.StartDate || '未設定'}}
-                  至 {{openingDate.EndDate || '未設定' }} 止。
-                </ng-container>
-              </div>
+            <ng-container *ngIf="(currAttends.length + canChooseCourses.length) > 0; else tplNoCourseOpening">
 
               <!--選課說明文字-->
               <div class="alert alert-info">
@@ -44,7 +31,7 @@
                   [innerHTML]="configuration.emba_alumnicoursemodule_course_description_temp | safeHtml"></div>
               </div>
 
-              <div *ngIf="currLevel == 'choose'" class='memb-list'>
+              <div class='memb-list'>
                 <app-add-quit-buttons
                   [conflicted]="conflicted"
                   (onConfirmSave)="confirmQuitAddCourse()"
@@ -53,7 +40,7 @@
               </div>
 
               <!-- 已選清單 -->
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered table-3-striped">
                 <thead>
                   <tr>
                     <th colspan="9" class="my-table-head1"><span style="color: blue">已選課程</span></th>
@@ -72,7 +59,7 @@
                 </thead>
                 <tbody *ngFor="let item of currAttends" data-type="quit">
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td rowspan="2" class="my-cbx-style">
+                    <td rowspan="3" class="my-cbx-style">
                       <input type="checkbox"
                         [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [(ngModel)]="item.WillQuit" [value]="item.AlumniID"
@@ -92,7 +79,12 @@
                     <td>{{item.CourseTimeInfo}}</td>
                   </tr>
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="8">{{item.Memo}}</td>
+                    <td colspan="8">{{item.Memo || '無備註'}}</td>
+                  </tr>
+                  <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    <td colspan="8">
+                      <ng-container *ngTemplateOutlet="tplDateRange; context: { course: item }"></ng-container>
+                    </td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="getLevelItems() === 0">
@@ -101,7 +93,7 @@
                 </tbody>
               </table>
               <!-- 可選課清單 -->
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered table-3-striped">
                 <thead>
                   <tr>
                     <th colspan="9" class="my-table-head2"><span style="color: red">可選課程</span>清單</th>
@@ -120,7 +112,7 @@
                 </thead>
                 <tbody *ngFor="let item of canChooseCourses" data-type="add">
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td rowspan="2" class="my-cbx-style">
+                    <td rowspan="3" class="my-cbx-style">
                       <input type="checkbox"
                         [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [(ngModel)]="item.WillAdd" [value]="item.AlumniID"
@@ -140,7 +132,12 @@
                     <td>{{item.CourseTimeInfo}}</td>
                   </tr>
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
-                    <td colspan="8">{{item.Memo}}</td>
+                    <td colspan="8">{{item.Memo || '無備註'}}</td>
+                  </tr>
+                  <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    <td colspan="8">
+                      <ng-container *ngTemplateOutlet="tplDateRange; context: { course: item }"></ng-container>
+                    </td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="canChooseCourses.length === 0">
@@ -149,21 +146,21 @@
                 </tbody>
               </table>
 
-              <div *ngIf="currLevel == 'choose'" class='memb-list'>
+              <div class='memb-list'>
                 <app-add-quit-buttons
                   [conflicted]="conflicted"
                   (onConfirmSave)="confirmQuitAddCourse()"
                   (onResetAddQuit)="resetAddQuit()"
                 ></app-add-quit-buttons>
               </div>
-            </div>
+            </ng-container>
+            <ng-template #tplNoCourseOpening>
+              <div>無可選課程</div>
+            </ng-template>
           </div>
           <div [ngClass]="{'active': currTab === 'sa02', 'fade': currTab !== 'sa02'}" class="tab-pane sa02">
             <div>
-              {{['目前無資料'][['beforeChoose'].indexOf(currLevel)]}}
-            </div>
-            <div *ngIf="['beforeChoose'].indexOf(currLevel) === -1">
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered table-3-striped">
                 <thead>
                   <tr>
                     <th>課程編號</th>
@@ -174,7 +171,7 @@
                     <th>上課時間</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of allCourse | mapsToArray">
+                <tbody *ngFor="let item of openingCourseList">
                   <tr>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>
@@ -187,21 +184,24 @@
                     <td>{{item.CourseTimeInfo}}</td>
                   </tr>
                   <tr>
-                    <td colspan="6">{{item.Memo}}</td>
+                    <td colspan="6">{{item.Memo || '無備註'}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="6">
+                      <ng-container *ngTemplateOutlet="tplDateRange; context: { course: item }"></ng-container>
+                    </td>
                   </tr>
                 </tbody>
-                <tbody *ngIf="allCourse.size === 0">
+                <tbody *ngIf="openingCourseList.length === 0">
                   <tr>
                     <td colspan="6">目前無資料</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
           <div [ngClass]="{'active': currTab === 'sa03', 'fade': currTab !== 'sa03'}" class="tab-pane sa03">
             <div>
-              {{['目前無資料'][['beforeChoose'].indexOf(currLevel)]}}
-            </div>
-            <div *ngIf="['beforeChoose'].indexOf(currLevel) === -1">
               <table *ngFor="let item of conflictCourseMap | mapsToArray" class="table table-bordered table-striped">
                 <thead>
                   <tr>
@@ -246,10 +246,7 @@
           </div>
           <div [ngClass]="{'active': currTab === 'sa06', 'fade': currTab !== 'sa06'}" class="tab-pane sa06">
             <div>
-              {{['尚未公告'][['afterChoose'].indexOf(currLevel)]}}
-            </div>
-            <div *ngIf="['afterChoose'].indexOf(currLevel) === -1">
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered table-3-striped">
                 <thead>
                   <tr>
                     <th>課程編號</th>
@@ -260,7 +257,7 @@
                     <th>上課時間</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of currAttends">
+                <tbody *ngFor="let item of scpcList">
                   <tr>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>
@@ -273,6 +270,14 @@
                     <td>{{item.CourseTimeInfo}}</td>
                   </tr>
                   <tr>
+                    <td colspan="6">{{item.Memo || '無備註'}}</td>
+                  </tr>
+                  <tr *ngIf="item.Status === 'Choose'">
+                    <td colspan="6">
+                      <ng-container *ngTemplateOutlet="tplDateRange; context: { course: item }"></ng-container>
+                    </td>
+                  </tr>
+                  <tr *ngIf="item.Status === 'Announcement' || item.Status === 'Increment'">
                     <td colspan="6">
                       <app-admission-list
                         [alumniId]="item.AlumniID"
@@ -281,46 +286,12 @@
                     </td>
                   </tr>
                 </tbody>
-                <tbody *ngIf="currAttends.length === 0">
+                <tbody *ngIf="scpcList.length === 0">
                   <tr>
                     <td colspan="6">目前無資料</td>
                 </tbody>
               </table>
             </div>
-          </div>
-          <div [ngClass]="{'active': currTab === 'sa07', 'fade': currTab !== 'sa07'}" class="tab-pane sa07">
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>課程編號</th>
-                  <th>課程名稱</th>
-                  <th>授課教師</th>
-                  <th>人數上限</th>
-                  <th>教室</th>
-                  <th>上課時間</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let item of scAttends">
-                <tr>
-                  <td>{{item.NewSubjectCode}}</td>
-                  <td>
-                    <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
-                    <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
-                  </td>
-                  <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
-                  <td>{{item.MumberOfElectives}}</td>
-                  <td>{{item.Classroom}}</td>
-                  <td>{{item.CourseTimeInfo}}</td>
-                </tr>
-                <tr>
-                  <td colspan="6">{{item.Memo}}</td>
-                </tr>
-              </tbody>
-              <tbody *ngIf="scAttends.length === 0">
-                <tr>
-                  <td colspan="6">目前無資料</td>
-              </tbody>
-            </table>
           </div>
           <div [ngClass]="{'active': currTab === 'sa08', 'fade': currTab !== 'sa08'}" class="tab-pane sa08">
             <app-payment-list></app-payment-list>
@@ -341,3 +312,16 @@
     </p>
   </div>
 </div>
+
+<ng-template #tplDateRange let-course="course">
+  <div *ngIf="course.Status==='Choose'" class="text-right text-warning font-weight-lighter">
+    選課期間： {{course.StartDate}} 至 <span class="font-weight-bold">{{course.EndDate}}</span> 止
+  </div>
+  <div *ngIf="course.Status==='Announcement'" class="text-right text-warning font-weight-lighter">
+    正取繳費期間： {{course.AnnouncementSDate}} 至 <span class="font-weight-bold">{{course.AnnouncementEDate}}</span> 止
+  </div>
+  <div *ngIf="course.Status==='Increment'" class="text-right text-warning font-weight-lighter">
+    備取繳費期間： {{course.IncrementSDate}} 至 <span class="font-weight-bold">{{course.IncrementEDate}}</span> 止
+  </div>
+  <div *ngIf="course.Status===''">&nbsp;</div>
+</ng-template>

@@ -10,7 +10,7 @@ export class AddQuitButtonsComponent implements OnInit {
 
   conflictState: boolean;
 
-  @ViewChild('sendBotton')
+  @ViewChild('sendBotton', { static: true })
   private sendBotton: TooltipDirective;
 
   /**目前勾選課程衝突狀態 */

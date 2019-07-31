@@ -74,6 +74,7 @@ import { AddPsychologicalQuizDataComponent } from './admin/psychological-quiz-se
 import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/del-psychological-quiz-data/del-psychological-quiz-data.component';
 import { DelInterviewModalComponent } from './counsel/counsel-detail/interview-detail/del-interview-modal/del-interview-modal.component';
 import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/del-case-interview-modal/del-case-interview-modal.component';
+import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
 
 
 @NgModule({
@@ -135,7 +136,8 @@ import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel
     AddPsychologicalQuizDataComponent,
     DelPsychologicalQuizDataComponent,
     DelInterviewModalComponent,
-    DelCaseInterviewModalComponent
+    DelCaseInterviewModalComponent,
+    CounselHistoryComponent
   ],
   imports: [
     BrowserModule,

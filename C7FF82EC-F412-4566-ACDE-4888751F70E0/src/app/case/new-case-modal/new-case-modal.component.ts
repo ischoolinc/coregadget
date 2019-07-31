@@ -37,7 +37,8 @@ export class NewCaseModalComponent implements OnInit {
   selectClassNameValue: string;
   // 座號
   selectSeatNoValue: string;
-  teacherName: string;
+  // 結案人員
+  closedTeacherName: string;
   selectCaseSourceValue: string;
   canSelectClassList: CounselClass[];
   canSelectNoList: CounselStudent[];
@@ -48,7 +49,7 @@ export class NewCaseModalComponent implements OnInit {
 
   ngOnInit() {
     this.caseStudent = new CaseStudent();
-   // this.loadData();
+   //  this.loadData();
   }
 
   async loadData() {
@@ -193,7 +194,7 @@ export class NewCaseModalComponent implements OnInit {
         let caseNo = this.caseStudent.CaseNo.toUpperCase();
 
         // 檢查是否有 uid，
-        if (this.caseStudent.UID) {
+        if (this.caseStudent.UID && this.caseStudent.UID.length > 0) {
           // 更新資料 ，當 case no 相同，uid 不同表示有重複
           if (this.caseStudent.UID !== Rec.UID) {
             value = false;
@@ -210,6 +211,7 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   async save() {
+    this.isCancel = false;
     let chk = await this.checkCaseNoPass();
 
     if (!chk) {
@@ -218,19 +220,8 @@ export class NewCaseModalComponent implements OnInit {
     }
 
     this.caseStudent.CaseSource = this.selectCaseSourceValue;
-    // 新增
-    if (!this.caseStudent.UID) {
-      this.caseStudent.isSaveButtonDisable = true;
-      try {
-        // 新增個案
-        await this.AddCase(this.caseStudent);
-        $("#newCase").modal("hide");
-        this.caseStudent.isSaveButtonDisable = false;
-      } catch (err) {
-        alert("無法新增個案：" + err.dsaError.message);
-        this.caseStudent.isSaveButtonDisable = false;
-      }
-    } else {
+
+    if (this.caseStudent.UID && this.caseStudent.UID.length > 0) {
       // 更新
       try {
         // 新增個案
@@ -241,6 +232,20 @@ export class NewCaseModalComponent implements OnInit {
         alert("無法更新個案：" + err.dsaError.message);
         this.caseStudent.isSaveButtonDisable = false;
       }
+    } else {
+      // 新增
+      this.caseStudent.isSaveButtonDisable = true;
+      try {
+        // 新增個案
+        await this.AddCase(this.caseStudent);
+        $("#newCase").modal("hide");
+        this.caseStudent.isSaveButtonDisable = false;
+      } catch (err) {
+        alert("無法新增個案：" + err.dsaError.message);
+        this.caseStudent.isSaveButtonDisable = false;
+      }
+
+
     }
   }
 
@@ -358,6 +363,22 @@ export class NewCaseModalComponent implements OnInit {
       alert("GetCounselTeacherRole error:" + err.dsaError.message);
     }
 
+    // 取得結案教師
+    if (this.caseStudent.UID && this.caseStudent.UID.length > 0)
+      try {
+        let rspCloseTeacher = await this.dsaService.send("GetCaseClosedTeacherName", {
+          Request:{
+            CaseID:this.caseStudent.UID
+          }
+        });
+        let dataCloseTeacher = [].concat(rspCloseTeacher.ClosedTeacher || []);
+        if (dataCloseTeacher.length > 0) {
+          this.closedTeacherName = dataCloseTeacher[0].TeacherName;
+        }
+
+      } catch (err) {
+        alert("GetCaseClosedTeacherName error:" + err.dsaError.message);
+      }
   }
 
   parseCaseOptions(data: QOption[]) {
@@ -476,7 +497,7 @@ export class NewCaseModalComponent implements OnInit {
       }
     });
 
-    if (data.UID) {
+    if (data.UID && data.UID.length > 0) {
       let req = {
         CaseID: data.UID,
 

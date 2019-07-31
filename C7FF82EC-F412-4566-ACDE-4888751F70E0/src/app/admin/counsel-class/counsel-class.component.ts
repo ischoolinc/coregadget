@@ -38,14 +38,18 @@ export class CounselClassComponent implements OnInit {
         let tea: CounselTeacherClass = new CounselTeacherClass();
         tea.TeacherID = CounselTeacher.TeacherID;
         tea.TeacherName = CounselTeacher.TeacherName;
-        if (CounselTeacher.Role === '認輔老師' || CounselTeacher.Role === '')
-        {
+        if (CounselTeacher.Role === '認輔老師' || CounselTeacher.Role === '') {
           tea.SetClassButtonDisable = true;
-        }else
+        } else
           tea.SetClassButtonDisable = false;
-        tea.Role = CounselTeacher.Role;        
+        tea.Role = CounselTeacher.Role;
+        tea.parseOrder();
         tea.ClassNames = [].concat(CounselTeacher.ClassName || []);
         this.counselTeacherClassList.push(tea);
+        this.counselTeacherClassList.sort(function (a, b) {
+          return a.Order - b.Order;
+        });
+
       });
     } catch (err) {
       alert(err);

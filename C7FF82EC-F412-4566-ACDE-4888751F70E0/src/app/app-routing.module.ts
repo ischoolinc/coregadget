@@ -44,6 +44,7 @@ import { StudentQuizDataComponent } from './psychological-test/student-quiz-data
 import { PsychologicalTestRoutingComponent } from './psychological-test/psychological-test-routing/psychological-test-routing.component';
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
+import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -147,6 +148,7 @@ const routes: Routes = [
       { path: "editor/counsel_doc_editor", component: CounselDocEditorComponent },
       { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
       { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent },
+      { path: "print/counsel_history/:studentID", component: CounselHistoryComponent },
       { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
       { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
     ]
