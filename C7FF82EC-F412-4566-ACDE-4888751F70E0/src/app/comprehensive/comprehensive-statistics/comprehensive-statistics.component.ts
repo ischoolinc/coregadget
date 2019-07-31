@@ -11,7 +11,7 @@ import * as XLSX from 'xlsx';
 })
 export class ComprehensiveStatisticsComponent implements OnInit {
 
-  loading: boolean;
+  isLoading: boolean;
   classList: any[];
   currentStatistics: any;
 
@@ -51,7 +51,7 @@ export class ComprehensiveStatisticsComponent implements OnInit {
   }
 
   async getFillInDataStatistics() {
-    this.loading = true;
+    this.isLoading = true;
     this.classList = [].concat((await this.dsaService.send("GetFillInDataStatistics", {
       SchoolYear: this.comprehensiveComponent.currentSemester.SchoolYear
       , Semester: this.comprehensiveComponent.currentSemester.Semester
@@ -75,7 +75,7 @@ export class ComprehensiveStatisticsComponent implements OnInit {
       });
     });
 
-    this.loading = false;
+    this.isLoading = false;
   }
 
   // getClassOptionCount(classRec: any, optionCode: string) {
