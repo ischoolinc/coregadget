@@ -142,6 +142,7 @@ td.my-conflicts>.my-conflict:not(:last-child):after {
 
 .sa01 tbody tr.my-error td {
     background: #F2DEDE;
+    border-color: #FFF;
 }
 
 .my-print-page {

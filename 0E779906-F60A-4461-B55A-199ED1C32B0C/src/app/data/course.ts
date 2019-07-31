@@ -61,5 +61,27 @@ export class Course {
   /**目前衝突課程清單 */
   HaveConflict: string[];
 
-  Time: string;
+  /**選課開始日 */
+  StartDate: string;
+
+  /**選課結束日 */
+  EndDate: string;
+
+  /**開始正取繳費*/
+  AnnouncementSDate: string;
+
+  /**結束正取繳費*/
+  AnnouncementEDate: string;
+
+  /**開始備取繳費*/
+  IncrementSDate: string;
+
+  /**結束備取繳費*/
+  IncrementEDate: string;
+
+  /**來源：已選課程 SelectCourse 修課清單 PractiseCourse */
+  Source?: 'SelectCourse' | 'PractiseCourse';
+
+  /**狀態 Choose: 選課期；Announcement: 正取繳費期；Increment: 備取繳費期；AfterIncrement: 繳費後 */
+  Status: 'Choose' | 'Announcement' | 'Increment' | 'AfterIncrement';
 }

@@ -23,13 +23,10 @@ export class AppComponent implements OnInit {
   mainMsgText = '';
   modalRef: BsModalRef;
 
-  currTab = '';
+  currTab = 'sa01';
 
   get student() {
     return this.basicSrv.student;
-  }
-  get openingDate() {
-    return this.basicSrv.openingDate;
   }
   get currSchoolYear() {
     return this.basicSrv.currSchoolYear;
@@ -37,11 +34,11 @@ export class AppComponent implements OnInit {
   get currSemester() {
     return this.basicSrv.currSemester;
   }
-  get currLevel() {
-    return this.basicSrv.currLevel;
-  }
   get allCourse() {
     return this.basicSrv.allCourse;
+  }
+  get openingCourseList() {
+    return this.basicSrv.openingCourseList;
   }
   get faqA() {
     return this.basicSrv.faqA;
@@ -60,18 +57,17 @@ export class AppComponent implements OnInit {
   currAttends: Course[] = [];
   /**可選課程(可加選) */
   canChooseCourses: Course[] = [];
-  /**選課最終確認課程清單 */
-  scAttends: Course[] = [];
   /**衝堂課程 */
   conflictCourseMap: Map<string, ConflictCourse> = new Map();
+  /**
+   * 未過繳費期限且已選課程(不分正備取) + 已過繳費期限且有繳費 + 修課課程之課程列表
+   * 因每個課程的選課期、正備取繳費期都可能不同，所以需整合一份綜合表
+   * 用於判斷是否衝堂、及顯示選課結果
+   */
+  scpcList: Course[] = [];
 
   /**取得退選記錄LOG */
   scAttendWithdrawnLogs: Course[] = [];
-
-  /**是否已確認最終選課結果 */
-  scConfirmed = false;
-  /**使用者確認最終選課結果的日期 */
-  scConfirmDate = '';
 
   constructor(
     private basicSrv: BasicService,
@@ -86,31 +82,10 @@ export class AppComponent implements OnInit {
 
     if (this.loadState === 'ready') {
       try {
-        if (this.currLevel === 'choose') {
-          this.getConflictCourse();
-          this.getCanChooseCourse();
-          this.getAttend();
-        } else if (['announcement', 'afterAnnouncement', 'increment'].indexOf(this.currLevel) !== -1) {
-          this.getConflictCourse();
-          this.getAttend();
-        } else if (this.currLevel === 'afterChoose') {
-          this.getConflictCourse();
-        } else if (this.currLevel === 'afterIncrement') {
-          this.getSCAttend();
-        } else if (this.currLevel === 's5') {
-          this.getConflictCourse();
-        }
-
-        // 設定預設 tabs
-        if (['s5', 'choose', 'beforeChoose'].indexOf(this.currLevel) !== -1) {
-          this.currTab = 'sa01';
-        } else if (['afterChoose', 'announcement', 'afterAnnouncement', 'increment'].indexOf(this.currLevel) !== -1) {
-          this.currTab = 'sa06';
-        } else if (['afterIncrement'].indexOf(this.currLevel) !== -1) {
-          this.currTab = 'sa07';
-        } else {
-          this.currTab = 'sa02';
-        }
+        await this.getConflictCourse();
+        await this.getCanChooseCourse();
+        await this.getAttend();
+        await this.getSCPCList();
 
         this.gadgetService.onLeave(() => {
           if (this.stopExit()) {
@@ -121,6 +96,7 @@ export class AppComponent implements OnInit {
 
         this.loadState = 'finish';
       } catch (error) {
+        console.log(error);
         this.loadState = 'error';
       }
     }
@@ -158,21 +134,22 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /**取得已選課程，調整課程的退選狀態、衝突課程、選課來自哪個階段 */
+  /**取得選課期間的已選課程，調整課程的退選狀態、衝突課程、選課來自哪個階段 */
   async getAttend() {
     this.currAttends = [];
 
     try {
       const rsp = await this.basicSrv.getAlumniSelectCourse(this.currSchoolYear, this.currSemester);
-
+      const currAttends = [];
       for (const item of rsp) {
         if (this.allCourse.has(item.AlumniID)) {
           const course = this.allCourse.get(item.AlumniID);
           course.WillQuit = false;
           course.HaveConflict = [];
-          this.currAttends.push(course);
+          currAttends.push(course);
         }
       }
+      this.currAttends = currAttends;
     } catch (error) {
 
     }
@@ -213,8 +190,8 @@ export class AppComponent implements OnInit {
 
       for (const alumniId of conflictIds) {
 
-        // 與已選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
-        for (const item of this.currAttends) {
+        // 與綜合已選課程比較，找出衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
+        for (const item of this.scpcList) {
           if (item.AlumniID === alumniId && !item.WillQuit) {
             if (status) {
               course.HaveConflict.push(item.AlumniID);
@@ -262,29 +239,25 @@ export class AppComponent implements OnInit {
 
     try {
       const rsp = await this.basicSrv.getCanChooseCourse(this.currSchoolYear, this.currSemester);
+      const canChooseCourses = [];
       for (const item of rsp) {
         if (this.allCourse.has(item.AlumniID)) {
           const course = this.allCourse.get(item.AlumniID);
           course.WillAdd = false;
           course.HaveConflict = [];
-          this.canChooseCourses.push(course);
+          canChooseCourses.push(course);
         }
       }
+      this.canChooseCourses = canChooseCourses;
     } catch (error) {
-
+      console.log(error);
     }
   }
 
   /**我的修課清單 */
-  async getSCAttend() {
+  async getSCPCList() {
     try {
-      const rsp = await this.basicSrv.getAlumniPractiseCourse(this.currSchoolYear, this.currSemester);
-      for (const item of rsp) {
-        if (this.allCourse.has(item.CourseID)) {
-          const course = this.allCourse.get(item.CourseID);
-          this.scAttends.push(course);
-        }
-      }
+      this.scpcList = await this.basicSrv.getSCPCList();
     } catch (error) {
 
     }
@@ -568,6 +541,7 @@ export class AppComponent implements OnInit {
 
     // 2、重新取得已選課程。(送出後狀態)
     await this.getAttend();
+    await this.getSCPCList();
 
     // 3、寄送郵件通知
     await this.sendMail(addListBackup, quitListBackup);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { GadgetService } from '../gadget.service';
-import { Student, OpeningInfo, OpenState, Configuration, Course } from '../data';
+import { Student, OpeningInfo, Configuration, Course } from '../data';
 
 @Injectable({
   providedIn: 'root'
@@ -10,15 +10,12 @@ export class BasicService {
 
   private _courseContract: any;
   private _studentContract: any;
+  private _basicContract: any;
 
   /**校友基本資料 */
   student: Student = new Student();
   currSchoolYear: string;
   currSemester: string;
-  openingDate: OpeningInfo;
-
-  /**目前階段 */
-  currLevel: OpenState;
 
   /**選課注意事項 */
   faqA: any[] = [];
@@ -35,17 +32,27 @@ export class BasicService {
 
   /**課程總表 */
   allCourse: Map<string, Course> = new Map();
+  /**已開放選課(不管是否已結束開放選課)的課程列表 */
+  openingCourseList: Course[] = [];
 
   constructor(
     private gadget: GadgetService,
-  ) {}
+  ) {
+    this._courseContract = this.gadget.getContract('emba.alumni');
+    this._studentContract = this.gadget.getContract('emba.student');
+    this._basicContract = this.gadget.getContract('basic.public');
+  }
 
   async getCourseContract() {
-    if (!this._courseContract) this._courseContract = await this.gadget.getContract('emba.alumni');
+    return this._courseContract;
   }
 
   async getStudentContract() {
-    if (!this._studentContract) this._studentContract = await this.gadget.getContract('emba.student');
+    return this._studentContract;
+  }
+
+  async getBasicContract() {
+    return this._basicContract;
   }
 
   /**初始化 */
@@ -60,33 +67,31 @@ export class BasicService {
       } else if (this.student.Status === '16') {
         await this.getCourseDates();
 
-        if (!this.currLevel) {
-          return 'closed';
-        } else {
-          const reqlist = [
-            this.getAlumniCSFaq(),
-            this.getConfiguration(),
-            this.getAlumniCourse(this.currSchoolYear, this.currSemester),
-          ];
-          await Promise.all(reqlist);
-          return 'ready';
-        }
+        const reqlist = [
+          this.getAlumniCSFaq(),
+          this.getConfiguration(),
+          this.getAlumniCourse(this.currSchoolYear, this.currSemester),
+        ];
+        await Promise.all(reqlist);
+
+        return 'ready';
       } else {
         return 'limited';
       }
     } catch (error) {
+      console.log(error);
       return 'error';
     }
   }
 
 
   /**
-   *可選課程(已選)
+   *可選課程(已選 且 目前為選課期間)
    */
   async getAlumniSelectCourse(schoolYear, semester) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.GetAlumniSelectCourse', {
+    const rsp = await conn.send('_.GetAlumniCurrSelectCourse', {
       Request: {
         Condition: {
           SchoolYear: schoolYear || '',
@@ -97,13 +102,14 @@ export class BasicService {
     return [].concat(rsp.Response && rsp.Response.SelectCourse || []);
   }
 
+
   /**
    *可選課程(可加選)
    */
   async getCanChooseCourse(schoolYear, semester) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.GetCanChooseCourse', {
+    const rsp = await conn.send('_.GetCanChooseCourse', {
       Request: {
         Condition: {
           SchoolYear: schoolYear || '',
@@ -118,9 +124,9 @@ export class BasicService {
    *我的修課清單
    */
   async getAlumniPractiseCourse(schoolYear, semester) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.GetAlumniPractiseCourse', {
+    const rsp = await conn.send('_.GetAlumniPractiseCourse', {
       Request: {
         Condition: {
           SchoolYear: schoolYear || '',
@@ -135,9 +141,9 @@ export class BasicService {
    *取得衝堂課程
    */
   async getConflictAlumniCourse(schoolYear, semester) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.GetConflictAlumniCourse', {
+    const rsp = await conn.send('_.GetConflictAlumniCourse', {
       Request: {
         Condition: {
           SchoolYear: schoolYear || '',
@@ -149,25 +155,12 @@ export class BasicService {
   }
 
   /**
-   *退選
-   */
-  async delSCAttendExt(courseIDs) {
-    await this.getCourseContract();
-
-    const rsp = await this._courseContract.send('_.DelSCAttendExt', {
-      Request: {
-        SCAttendExt: courseIDs || [],
-      }
-    });
-  }
-
-  /**
    *加選課程
    */
   async setElective(alumniIDs) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.SetElective', {
+    const rsp = await conn.send('_.SetElective', {
       Request: {
         Course: alumniIDs || [],
       }
@@ -178,9 +171,9 @@ export class BasicService {
    *新增加退選課程Log
    */
   async setElectiveLog(alumniIDs) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.SetElectiveLog', {
+    const rsp = await conn.send('_.SetElectiveLog', {
       Request: {
         Course: alumniIDs || [],
       }
@@ -192,9 +185,9 @@ export class BasicService {
    *退選課程
    */
   async withdrawnElective(alumniIDs) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.WithdrawnElective', {
+    const rsp = await conn.send('_.WithdrawnElective', {
       Request: {
         Course: alumniIDs || [],
       }
@@ -206,9 +199,9 @@ export class BasicService {
    *寄送電子郵件
    */
   async sendMail(receiver, subject, htmlContent) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.SendMail', {
+    const rsp = await conn.send('_.SendMail', {
       Request: {
         Receiver: receiver,
         Subject: subject,
@@ -222,9 +215,9 @@ export class BasicService {
    *取得正取備取名單
    */
   async getAdmissionList(alumniID) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.GetAdmissionList', {
+    const rsp = await conn.send('_.GetAdmissionList', {
       Request: {
         Condition: {
           AlumniID: alumniID
@@ -239,9 +232,9 @@ export class BasicService {
    *取得我的選課繳款單清單
    */
   async getMyPaymentList(schoolYear, semester) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.GetMyPaymentList', {
+    const rsp = await conn.send('_.GetMyPaymentList', {
       Request: {
         Condition: {
           SchoolYear: schoolYear || '',
@@ -257,9 +250,9 @@ export class BasicService {
    *更新繳款單資訊
    */
   async setPaymentRecord(data) {
-    await this.getCourseContract();
+    const conn = await this.getCourseContract();
 
-    const rsp = await this._courseContract.send('_.SetPaymentRecord', {
+    const rsp = await conn.send('_.SetPaymentRecord', {
       Request: {
         PaymentRecord: data
       }
@@ -275,11 +268,11 @@ export class BasicService {
    *新增 Log
    */
   async addLog(actionType = '', action = '', description = '') {
-    await this.getStudentContract();
+    const conn = await this.getStudentContract();
 
-    const actor = this._studentContract.getUserInfo.UserName;
+    const actor = await conn.getUserInfo.UserName;
 
-    const rsp = await this._studentContract.send('public.AddLog', {
+    const rsp = await conn.send('public.AddLog', {
       Request: {
         Log: {
           Actor: actor,
@@ -296,6 +289,63 @@ export class BasicService {
     });
   }
 
+  /**
+   * 取得系統時間
+   */
+  async getSystemNow() {
+    const conn = await this.getBasicContract();
+
+    const rsp = await conn.send('beta.GetNow');
+    return rsp.DateTime;
+  }
+
+  /**
+   *已選課程(且尚未過保證金繳費期限)
+   */
+  async getAlumniSemeSelectCourse(schoolYear, semester) {
+    const conn = await this.getCourseContract();
+
+    const rsp = await conn.send('_.GetAlumniSemeSelectCourse', {
+      Request: {
+        Condition: {
+          SchoolYear: schoolYear || '',
+          Semester: semester || ''
+        }
+      }
+    });
+    return [].concat(rsp.Response && rsp.Response.SelectCourse || []);
+  }
+
+  /**未過繳費期已選(不分正備取) + 已過繳費期且有繳費 + 修課課程列表 */
+  async getSCPCList() {
+    const reqlist = [
+      this.getAlumniSemeSelectCourse(this.currSchoolYear, this.currSemester),
+      this.getAlumniPractiseCourse(this.currSchoolYear, this.currSemester),
+    ];
+    const rsp = await Promise.all(reqlist);
+
+    const courseList: Map<string, Course> = new Map();
+
+    for (const item of rsp[0]) {
+      if (this.allCourse.has(item.AlumniID) && !courseList.has(item.AlumniID)) {
+        const course = this.allCourse.get(item.AlumniID);
+        course.Source = 'SelectCourse';
+        course.HaveConflict = [];
+        courseList.set(item.AlumniID, course);
+      }
+    }
+    for (const item of rsp[1]) {
+      if (this.allCourse.has(item.AlumniID)) {
+        const course = this.allCourse.get(item.AlumniID);
+        course.Source = 'PractiseCourse';
+        course.HaveConflict = [];
+        courseList.set(item.AlumniID, course);
+      }
+    }
+
+    return Array.from(courseList.values());
+  }
+
   ///////////////////////////////////////
 
 
@@ -303,53 +353,29 @@ export class BasicService {
    *取得我的基本資料
    */
   private async getMyInfo() {
-    const data = await this._courseContract.send('_.GetMyInfo');
+    const conn = await this.getCourseContract();
+    const data = await conn.send('_.GetMyInfo');
     return data.Response && data.Response.StudentInfo || {};
   }
 
   /**
-   *取得所有階段開放期間
+   *取得開放的學年期
    */
   private async getCourseDates() {
-    const today = new Date();
-    const data = await this._courseContract.send('_.GetCourseDates');
+    const conn = await this.getCourseContract();
+    const data = await conn.send('_.GetCourseDates');
     const rsp: OpeningInfo = (data && data.CourseSelectionDate) ? data.CourseSelectionDate : {};
 
-    this.openingDate = rsp;
     this.currSchoolYear = rsp.SchoolYear || '';
     this.currSemester = rsp.Semester || '';
-
-    // 'beforeChoose': 再度轉換為
-    //    's1': 選課前。可選課程=目前尚未開放選課,課程總表 + 衝堂課程=無資料
-    //    's5': 開放選課前五天。可選課程=目前尚未開放選課,課程總表+衝堂課程=正常顯示
-    // 'choose': 選課中(對應在校生選課 => 1)
-    // 'afterChoose': 選課後尚未第一階段公告。尚未公告選課最終結果(對應在校生選課 => s3, s4)
-    // 'announcement': 第一階段公告中
-    // 'afterAnnouncement': 第一階段公告結束~第二階段公告尚未開始
-    // 'increment': 第二階段遞補中
-    // 'afterIncrement': 第二階段遞補結束
-
-    switch (rsp.Status) {
-      case 'beforeChoose':
-        const sDate = new Date(this.openingDate.StartDate);
-        const addDays = moment(sDate).add(-6, 'days').toDate();
-        if (sDate > today) {
-          if (today >= addDays) {
-            this.currLevel = 's5';
-          }
-        }
-        break;
-      default:
-        if (rsp.Status) this.currLevel = rsp.Status;
-        break;
-    }
   }
 
   /**
    *選課注意事項, 選課問答集
    */
   private async getAlumniCSFaq() {
-    const data = await this._courseContract.send('_.GetAlumniCSFaq');
+    const conn = await this.getCourseContract();
+    const data = await conn.send('_.GetAlumniCSFaq');
     const rsp = [].concat(data.Response && data.Response.Faq || []);
 
     for (const item of rsp) {
@@ -367,7 +393,8 @@ export class BasicService {
    *退選訊息、Mail樣版
    */
   private async getConfiguration() {
-    const data = await this._courseContract.send('_.GetConfiguration', {
+    const conn = await this.getCourseContract();
+    const data = await conn.send('_.GetConfiguration', {
       Request: {
         Condition: {
           ConfName: [
@@ -385,14 +412,16 @@ export class BasicService {
     }
   }
 
-
   /**
    *取得課程總表
    */
   private async getAlumniCourse(schoolYear, semester) {
     if (!(this.currSchoolYear && this.currSemester)) return;
 
-    const data = await this._courseContract.send('_.GetAlumniCourse', {
+    const sysDate = await this.getSystemNow();
+
+    const conn = await this.getCourseContract();
+    const data = await conn.send('_.GetAlumniCourse', {
       Request: {
         Condition: {
           SchoolYear: schoolYear || '',
@@ -416,6 +445,9 @@ export class BasicService {
         });
         item.TeacherURLName = teachers.join(', ');
       }
+
+      const isOpening = (moment(new Date(item.StartDate)) <= moment(new Date(sysDate)));
+      if (isOpening) { this.openingCourseList.push(item) };
 
       this.allCourse.set(item.AlumniID, item);
     }

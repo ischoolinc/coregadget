@@ -16,11 +16,13 @@ export class PaymentListComponent implements OnInit {
   loadState: 'finish' | 'loading' | 'error' = 'loading';
   modalRef: BsModalRef;
 
-  admitteds: Payment[] = [];
-  waitings: Payment[] = [];
+  paymentList: Payment[] = [];
   checkedCourses: Payment[] = [];
   lastBankCode: string;
   lastDigitsAfter5Number: string;
+  lastIsInvoice: boolean;
+  lastInvoiceTitle: string;
+  lastUniformNumbers: string;
   showModal = false;
 
   get currSchoolYear() {
@@ -32,14 +34,8 @@ export class PaymentListComponent implements OnInit {
   get allCourse() {
     return this.basicSrv.allCourse;
   }
-  get currLevel() {
-    return this.basicSrv.currLevel;
-  }
   get student() {
     return this.basicSrv.student;
-  }
-  get openingDate() {
-    return this.basicSrv.openingDate;
   }
   get configuration() {
     return this.basicSrv.configuration;
@@ -62,13 +58,9 @@ export class PaymentListComponent implements OnInit {
       const rsp: Payment[] = await this.basicSrv.getMyPaymentList(this.currSchoolYear, this.currSemester);
 
       // 整理繳款單及正備取遞補課程名單
-      const data1 = []; // 全部正取課程
-      const data2 = []; // 全部備取課程
-      let checkedCourses = []; // 依階段，正取或遞補的打勾清單，排除淘汰 Cancel、及 VerifyAccounting 已入帳可勾選清單
-      const checkedCourses1 = []; // 正取排除淘汰 Cancel、及 VerifyAccounting 已入帳可勾選清單
-      const checkedCourses2 = []; // 正取排除淘汰 Cancel、及 VerifyAccounting 已入帳可勾選清單
-      let lastBankCode = '';
-      let lastDigitsAfter5Number = '';
+      const paymentList = []; // 全部正備取課程
+      const checkedCourses1 = []; // 正取，排除淘汰 Cancel、及已入帳 VerifyAccounting、及繳費期間 Status，可勾選清單
+      const checkedCourses2 = []; // 備取，排除淘汰 Cancel、及已入帳 VerifyAccounting、及繳費期間 Status，可勾選清單
 
       for (const elective of rsp) {
         if (this.allCourse.has(elective.AlumniID)) {
@@ -78,33 +70,33 @@ export class PaymentListComponent implements OnInit {
           elective.CourseName = repo.CourseName;
           elective.TuitionFees = repo.TuitionFees;
           elective.Margin = repo.Margin;
-          elective.Checked = (elective.Cancel === 't' || elective.VerifyAccounting === 't') ? false : true;
+          elective.Checked = false;
+          elective.IsDisabled = true;
+          elective.IsVisible = false;
 
           // IsAdmitted == 't' 正取, 否則為備取
-          if (elective.IsAdmitted === 't') {
-            data1.push(elective);
-            if (elective.Cancel !== 't' &&  elective.VerifyAccounting !== 't') checkedCourses1.push(elective);
-          } else {
-            data2.push(elective);
-            if (elective.Cancel !== 't' && elective.VerifyAccounting !== 't') checkedCourses2.push(elective);
-          };
-
-          // 取得銀行帳戶最後記錄
-          if (elective.BankCode) {
-            lastBankCode = elective.BankCode;
-            lastDigitsAfter5Number = elective.DigitsAfter5Number;
+          if (elective.IsAdmitted === 't' && elective.Status === 'announcement') {
+            elective.IsVisible = true;
+            if (elective.Cancel !== 't' &&  elective.VerifyAccounting !== 't') {
+              elective.Checked = true;
+              elective.IsDisabled = false;
+              checkedCourses1.push(elective);
+            }
+          } else if (elective.IsAdmitted !== 't' && elective.Status === 'increment') {
+            elective.IsVisible = true;
+            if (elective.Cancel !== 't' &&  elective.VerifyAccounting !== 't') {
+              elective.Checked = true;
+              elective.IsDisabled = false;
+              checkedCourses2.push(elective);
+            }
           }
+
+          paymentList.push(elective);
         }
       }
 
-      if (this.currLevel == 'announcement') checkedCourses = checkedCourses1;
-      if (this.currLevel == 'increment') checkedCourses = checkedCourses2;
-
-      this.admitteds = data1;
-      this.waitings = data2;
-      this.checkedCourses = checkedCourses;
-      this.lastBankCode = lastBankCode;
-      this.lastDigitsAfter5Number = lastDigitsAfter5Number;
+      this.paymentList = paymentList;
+      this.checkedCourses = [].concat(checkedCourses1, checkedCourses2);
       this.loadState = 'finish';
     } catch (error) {
       this.loadState = 'error';
@@ -119,8 +111,6 @@ export class PaymentListComponent implements OnInit {
     const config = {
       initialState: {
         checkedCourses: this.checkedCourses,
-        lastBankCode: this.lastBankCode,
-        lastDigitsAfter5Number: this.lastDigitsAfter5Number,
         callback: () => {
           this.viewportScroller.scrollToPosition([0, 0]);
           this.appComponent.mainMsgClass = 'alert alert-success';

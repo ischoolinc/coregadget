@@ -9,3 +9,17 @@
 @import "assets/css/bootstrap.css";
 @import "assets/css/bootstrap-responsive.css";
 @import "assets/css/custom.css";
+
+
+.table-3-striped tbody:nth-child(even) td,
+.table-3-striped tbody:nth-child(even) th {
+  background-color: #f9f9f9;
+}
+
+.font-weight-lighter {
+  font-weight: lighter;
+}
+
+.font-weight-bold {
+  font-weight: bold;
+}
