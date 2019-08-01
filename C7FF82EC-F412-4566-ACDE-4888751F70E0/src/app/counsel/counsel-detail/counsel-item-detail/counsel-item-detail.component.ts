@@ -34,18 +34,18 @@ export class CounselItemDetailComponent implements OnInit {
     private counselDetailComponent: CounselDetailComponent
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.counselDetailComponent.setCurrentItem('counsel');
     this.caseList = [];
     this._StudentID = "";
     this.isDeleteButtonDisable = true;
     this._StudentID = this.counselDetailComponent.currentStudent.StudentID;
-    this.loadData();
+    await this.loadData();
   }
 
-  loadData() {
-    this.GetStudentCase();
-    this.GetCaseInterviewByStudentID(this._StudentID);
+  async loadData() {
+    await this.GetStudentCase();
+    await this.GetCaseInterviewByStudentID(this._StudentID);
   }
 
   // 新增
@@ -78,7 +78,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._editMode = "edit";
     counselView.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview.caseInterview = counselView;
-
+    let obj = Object.assign({},counselView);
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
     // 關閉畫面
@@ -86,6 +86,8 @@ export class CounselItemDetailComponent implements OnInit {
       if (!this._addInterview.isCancel) {
         // 重整資料
         this.loadData();
+      }else{
+        Object.assign(this._addInterview.caseInterview,obj);
       }
       $("#addCaseInterview").off("hide.bs.modal");
     });

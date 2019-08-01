@@ -57,7 +57,7 @@ export class CaseComponent implements OnInit {
     this.case_modal.selectCaseTeachersValue = "請選擇認輔老師";
     this.case_modal.caseStudent.selectCaseTeacers = [];
     this.case_modal.closedTeacherName = "";
-    
+
     this.case_modal.isCanSetClass = true;
     this.case_modal.caseStudent.setIsCloseNo();
     // 個案輔導預設初級
@@ -117,6 +117,7 @@ export class CaseComponent implements OnInit {
 
   // 編輯
   setEditCaseModal(item: CaseStudent) {
+    let obj = Object.assign({}, item);
     this.case_modal.isAddMode = false;
     this.case_modal.editModeString = "修改";
     this.case_modal.isCanSetClass = false;
@@ -177,6 +178,9 @@ export class CaseComponent implements OnInit {
       // 重整資料
       if (!this.case_modal.isCancel)
         this.loadData();
+      else {
+        Object.assign(this.case_modal.caseStudent, obj);
+      }
       $("#newCase").off("hide.bs.modal");
     });
   }

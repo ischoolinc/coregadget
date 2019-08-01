@@ -85,6 +85,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
   }
   // click 儲存
   async save() {
+    this.isCancel = false;
     try {
       this.caseInterview.isSaveDisable = true;
       await this.SetCaseInterview(this.caseInterview);

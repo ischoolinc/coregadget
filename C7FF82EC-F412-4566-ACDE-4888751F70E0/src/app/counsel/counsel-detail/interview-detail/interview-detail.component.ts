@@ -118,6 +118,7 @@ export class InterviewDetailComponent implements OnInit {
   // 修改
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
+    let obj =Object.assign({},counselView);
     this._addInterview._CounselInterview = counselView;
     this._addInterview._CounselInterview.selectCounselType =
       counselView.CounselType;
@@ -129,7 +130,11 @@ export class InterviewDetailComponent implements OnInit {
         // 重整資料
         this.counselStudentService.reload();
         this.loadCounselInterview(this._StudentID);
+      }else {
+        Object.assign(this._addInterview._CounselInterview,obj)
+        //this._addInterview._CounselInterview = obj;
       }
+
       $("#addInterview").off("hide.bs.modal");
     });
   }
