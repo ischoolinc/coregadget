@@ -15,7 +15,7 @@ export class CounselHistoryComponent implements OnInit {
   StudentNumber: string;
   SchoolName: string;
   StudentName: string;
-
+  addBlank: number[] = [];
   reportData: any;
   CounselInterview: any[] = [];
   constructor(private activatedRoute: ActivatedRoute,
@@ -53,6 +53,17 @@ export class CounselHistoryComponent implements OnInit {
       this.CounselInterview = [];
       if (this.reportData.CounselInterview) {
         this.CounselInterview = [].concat(this.reportData.CounselInterview || []);
+      }
+
+      this.addBlank = [];
+      // 判斷加入幾個空白
+      let n: number = (20-this.CounselInterview.length);
+      if(n > 1)
+      {
+        for(let i=1; i <=n ;i ++)
+        {
+          this.addBlank.push(i);
+        }
       }
 
     } catch (error) {

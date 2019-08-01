@@ -8,14 +8,14 @@
       <span>姓名：</span><span>{{StudentName}}</span>
     </h5>
 
-    <table>
+    <table >
       <tr>
         <td style="text-align: center; vertical-align: middle;width: 5%"><strong>學年度</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 5%"><strong>學期</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 5%"><strong>年級</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 10%"><strong>日期</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 10%"><strong>對象</strong></td>
-        <td style="text-align: center; vertical-align: middle;width: 55%"><strong>聯絡事項及內容</strong></td>
+        <td style="text-align: center; vertical-align: middle;width: 55%"><strong>輔導內容</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
       </tr>
       <ng-container *ngFor="let item of CounselInterview">
@@ -26,22 +26,25 @@
           <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
           <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
           <td>
-            <p *ngIf="item.ContactItem"
-               style="white-space: pre-wrap;word-break: break-all;">
-              <strong>聯絡事項：</strong>
-              <span>{{ item.ContactItem }}</span>
-            </p>
-            <p *ngIf="item.Content"
-               style="white-space: pre-wrap;word-break: break-all;">
-              <strong>內容：</strong>
+            <p *ngIf="item.Content">
               <span>{{ item.Content }}</span>
             </p>
-            <!-- {{item.Content}} -->
           </td>
           <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
         </tr>
       </ng-container>
 
+      <ng-container *ngFor="let item of addBlank">
+        <tr style="height: 50px">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </ng-container>
     </table>
   </ng-container>
 </div>
