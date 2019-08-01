@@ -48,6 +48,7 @@ import { CounselHistoryComponent } from './simple-page/print/counsel-history/cou
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
+  { path: "pd", component: PermissionDeniedComponent },
   { path: "permission_denied", component: PermissionDeniedComponent },
   {
     path: "counsel",

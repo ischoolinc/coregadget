@@ -22,6 +22,8 @@ export class ComprehensiveFillComponent implements OnInit {
   isSaving: boolean = false;
 
   config: any = { key: "" };
+  loadingFillInData: boolean = false;
+  loadFaildMsg: string = "";
 
   optionKey: any = {
     '%TEXT%': { element: 'input', style: { width: '100px' } },
@@ -48,27 +50,23 @@ export class ComprehensiveFillComponent implements OnInit {
     );
   }
 
-  getSchoolInfo() {
-    dsutil.creatConnection(this.dsns + "/1campus.counsel.public").send({
-      service: "GetSchoolInfo",
-      body: null,
-      result: (rsp, err, xmlhttp) => {
-        this.schoolInfo = rsp;
-        if (this.fillInKey)
-          this.getFillInData(false);
-        else {
-          $("#modal-key").modal({ show: true, backdrop: false, keyboard: false, focus: true });
-        }
-      }
-    });
+  async getSchoolInfo() {
+    this.schoolInfo = await this.send(this.dsns + "/1campus.counsel.public", "GetSchoolInfo");
+    if (this.fillInKey)
+      this.getFillInData(false);
+    else {
+      $("#modal-key").modal({ show: true, backdrop: false, keyboard: false, focus: true });
+    }
   }
 
-  getFillInData(closeModal) {
-    dsutil.creatConnection(this.dsns + "/1campus.counsel.public").send({
-      service: "GetFillInData",
-      body: { FillInKey: this.fillInKey },
-      result: (rsp, err, xmlhttp) => {
-        if(closeModal)
+  async getFillInData(closeModal) {
+    if (this.loadingFillInData) return;
+    this.loadingFillInData = true;
+
+    try{
+      var rsp = await this.send(this.dsns + "/1campus.counsel.public", "GetFillInData", { FillInKey: this.fillInKey });
+      if (rsp.QuestionSubject) {
+        if (closeModal)
           $("#modal-key").modal('hide');
         rsp.QuestionSubject = [].concat(rsp.QuestionSubject || []);
         rsp.QuestionSubject.forEach((subject) => {
@@ -78,7 +76,7 @@ export class ComprehensiveFillComponent implements OnInit {
             group.QuestionQuery.forEach(query => {
               query.HasText = false;
               query.ShowMark = false;
-
+  
               query.QuestionText = [].concat(query.QuestionText || []);
               query.QuestionText.forEach(text => {
                 if (text.Text) {
@@ -86,18 +84,18 @@ export class ComprehensiveFillComponent implements OnInit {
                 }
                 text.Require = (text.Require == "true");
                 text.RequireLink = text.RequireLink || "";
-
+  
                 text.ShowMark = false;
-
+  
                 text.Option = [].concat(text.Option || []);
                 text.Option.forEach(option => {
                   option.AnswerChecked = (option.AnswerChecked == "true");
                   option.AnswerComplete = (option.AnswerComplete == "true");
-
+  
                   if (option.OptionCode) {
                     this.optionCodeMapping[option.OptionCode] = option;
                   }
-
+  
                   switch (text.Type) {
                     case "單選":
                       option.change = () => {
@@ -122,7 +120,7 @@ export class ComprehensiveFillComponent implements OnInit {
                       option.AnswerChecked = true;
                       break;
                   }
-
+  
                   option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
                   option.IsTextArea = false;
                   option.Template = [];
@@ -133,11 +131,11 @@ export class ComprehensiveFillComponent implements OnInit {
                       keyWord.push(key);
                     }
                     keyWord.reverse();
-
+  
                     var keySplit = (query, keyWord) => {
                       var key = keyWord.pop();
                       var list = query.split(key);
-
+  
                       list.forEach((item, index) => {
                         if (keyWord.length > 0) {
                           if (item)
@@ -145,7 +143,7 @@ export class ComprehensiveFillComponent implements OnInit {
                         }
                         else {
                           if (item == "" && (index == 0 || index + 1 == list.length)) {
-
+  
                           }
                           else {
                             option.Template.push(item);
@@ -168,10 +166,17 @@ export class ComprehensiveFillComponent implements OnInit {
         this.sectionInfo = rsp.Section;
         this.studentInfo = rsp.Student;
         this.questionSubject = rsp.QuestionSubject;
-        this.changeDetectorRef.detectChanges();
         this.refreshMark();
       }
-    });
+      else{
+        alert("代碼錯誤");
+      }
+    }
+    catch (err) {
+      console.log(err);
+      alert("取得資料發生錯誤：\n" + JSON.stringify(err, null, 4));
+    }
+    this.loadingFillInData = false;
   }
 
   refreshMark() {
@@ -238,12 +243,13 @@ export class ComprehensiveFillComponent implements OnInit {
       });
     });
   }
+
   showRequireList() {
     alert(this.requireList.join("\n"));
   }
 
-  setConfig(){
-    if(this.config.key){
+  setConfig() {
+    if (this.config.key) {
       this.fillInKey = this.config.key;
       this.getFillInData(true);
     }
@@ -273,21 +279,54 @@ export class ComprehensiveFillComponent implements OnInit {
       }
     }
     console.log(options);
-    dsutil.creatConnection(this.dsns + "/1campus.counsel.public").send({
-      service: "SetFillInData",
-      body: {
+    try {
+      var rsp = await this.send(this.dsns + "/1campus.counsel.public", "SetFillInData", {
         FillInKey: this.fillInKey,
         Option: options
-      },
-      result: (rsp, err, xmlhttp) => {
-        if (!err)
-          alert("儲存完成");
-        else {
-          console.log(err);
-          alert("儲存發生錯誤：\n" + JSON.stringify(err, null, 4));
+      });
+      alert("儲存完成");
+    }
+    catch (err) {
+      console.log(err);
+      alert("儲存發生錯誤：\n" + JSON.stringify(err, null, 4));
+    }
+    this.isSaving = false;
+  }
+
+
+
+
+  async getContract(contractName: string): Promise<any> {
+    const contract = dsutil.creatConnection(contractName);
+    return await new Promise<any>((r, j) => {
+      contract.ready(() => {
+        r(contract);
+      });
+      contract.OnError((loginError, dsaError, networkError, ajaxException) => {
+        j({
+          loginError: loginError
+          , dsaError: dsaError
+          , networkError: networkError
+          , ajaxException: ajaxException
+        });
+      });
+    });;
+  }
+
+  async send(contractName: string, serviceName: string, body: any = {}): Promise<any> {
+    let conn = await this.getContract(contractName);
+    return new Promise<any>((r, j) => {
+      conn.send({
+        service: serviceName,
+        body: body,
+        result: (rsp, err, xmlhttp) => {
+          if (err) {
+            j(err);
+          } else {
+            r(rsp);
+          }
         }
-        this.isSaving = false;
-      }
+      });
     });
   }
 }
