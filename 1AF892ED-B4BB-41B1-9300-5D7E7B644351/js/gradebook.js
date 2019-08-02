@@ -142,8 +142,7 @@
                 $scope.current.mode = _mode;
 
                 // 假如切回去 成績管理模式 ， 把目前的 template 設回空，讓下次切換時，在下面重抓
-                if ($scope.current.mode == $scope.modeList[0]) {
-
+                if ($scope.current.mode == '成績管理') {
                     $scope.current.template = null;
                 }
 
@@ -152,7 +151,7 @@
                 $scope.setCurrentCourse($scope.current.Course);
 
                 // 設定目前定期評量 
-                if (!$scope.current.template && $scope.current.Exam)
+                if ($scope.current.mode == '平時評量')
                 {
                     var template = $scope.templateList.filter(template => template.ExamID == $scope.current.Exam.ExamID)[0];
 
@@ -466,11 +465,11 @@
 
             var val;
 
-            if ($scope.current.mode == $scope.modeList[0]) { // 成績管理模式
+            if ($scope.current.mode == '成績管理') { // 成績管理模式
 
                 val = (student || {})['Exam' + (exam || {}).ExamID];
             }
-            else if ($scope.current.mode == $scope.modeList[1]) { // 平時評量模式
+            else if ($scope.current.mode == '平時評量') { // 平時評量模式
                 
                 val = (student || {})[(exam || {}).ExamID];
             }
@@ -941,13 +940,13 @@
                 * 1. 成績管理模式 試別來自 examList
                 * 2. 平時評量模式 試別來自 gradeItemList
                 */
-                    if ($scope.current.mode == $scope.modeList[0]) { // 成績管理模式
+                    if ($scope.current.mode == '成績管理') { // 成績管理模式
                         $scope.examList.forEach(function (e) {
                         if (!te && !e.Lock && e.Permission == "Editor" && e.Type !== 'Program')
                                 te = e;                        
                     });
                     }
-                    else if ($scope.current.mode == $scope.modeList[1]) { // 平時評量模式
+                    else if ($scope.current.mode == '平時評量') { // 平時評量模式
 
                        
                         $scope.current.gradeItemList.forEach(function (e) {
@@ -1016,7 +1015,7 @@
         };
 
         // 設定目前資料顯示模式：成績管理 or 平時評量
-        $scope.current.mode = $scope.modeList[0];
+        $scope.current.mode = '成績管理';
 
         $scope.connection = gadget.getContract("ta");
 
@@ -1260,7 +1259,7 @@
                 }
 
                 // 成績管理模式  可以帶入平時成績
-                if ($scope.current.mode == $scope.modeList[0])
+                if ($scope.current.mode == '成績管理')
                 {
                     // 帶入平時成績
                     var importAssessmentScoreProcesses = [];
@@ -1707,7 +1706,9 @@
                                                         studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID] = examScoreRec.Score;
 
                                                         // 文字評量
-                                                        if (examScoreRec.Extension.Extension.Text) {
+                                                        if (examScoreRec.Extension
+                                                            && examScoreRec.Extension.Extension
+                                                            && examScoreRec.Extension.Extension.Text) {
                                                             studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID + "_" + "文字評量"] = examScoreRec.Extension.Extension.Text;
                                                         }
                                                         else
@@ -1901,19 +1902,27 @@
                                             }
                                         }
                                     });
+
+                                    
                                 }
                             }
                         });
                     }
 
-                    // 設定目前定期評量
-                    if($scope.current.template) {
-                        $scope.setCurrentTemplate($scope.current.template);
-                    } else{
-                        //var template = $scope.templateList.filter(template => template.ExamID == $scope.current.Exam.ExamID)[0];
-
-                        //$scope.setCurrentTemplate(template);
+                    // 設定目前定期評量 
+                    if ($scope.current.mode == '平時評量')
+                    {
+                        $scope.setCurrentTemplate($scope.templateList[0]);
                     }
+
+                    // // 設定目前定期評量
+                    // if($scope.current.template) {
+                    //     $scope.setCurrentTemplate($scope.current.template);
+                    // } else{
+                    //     //var template = $scope.templateList.filter(template => template.ExamID == $scope.current.Exam.ExamID)[0];
+
+                    //     //$scope.setCurrentTemplate(template);
+                    // }
                 }
             });
 
@@ -1935,9 +1944,9 @@
             var pass = true;
             var targetExamList = [];
 
-            if (target == $scope.modeList[0]) {
+            if (target == '成績管理') {
                 targetExamList = $scope.examList;
-            } else if (target == $scope.modeList[1]) {
+            } else if (target == '平時評量') {
                 targetExamList = $scope.gradeItemList;
             }
 
@@ -1945,12 +1954,12 @@
                 if (pass) {
                     [].concat($scope.studentList || []).forEach(function (stuRec) {
                         // 成績管理 的驗證
-                        if (pass && target == $scope.modeList[0]){
+                        if (pass && target == '成績管理'){
                             pass = !!$scope.checkOneCell(stuRec,'Exam' +  exam.ExamID);
                         }
 
                         // 平時評量 的驗證
-                        if (pass && target == $scope.modeList[1]) {
+                        if (pass && target == '平時評量') {
                             pass = !!$scope.checkOneCell(stuRec, exam.ExamID);
                         }
                     });
