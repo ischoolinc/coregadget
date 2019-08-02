@@ -46,7 +46,10 @@
             <div class="mr-auto">
                 <span class="badge badge-primary mr-1">科目級別：{{data.subject.Level}}</span>
                 <span class="badge badge-secondary">學分數：{{data.subject.Credit}}</span>
-                <ng-container *ngIf="!data.subject.BlockReason && data.subject.TimeSelect !== 't' && data.subject.RepeatSelect !== 't' ; else tplForbidden">
+                <ng-container *ngIf="!data.subject.BlockReason 
+                    && data.subject.TimeSelect !== 't' 
+                    && data.subject.RepeatSelect !== 't' 
+                    && (data.AttendCount < data.Limit); else tplForbidden">
                     <span *ngIf="data.countMode === '志願序'"
                         class="badge badge-light my-2 my-md-0 mr-md-3">
                         <span>第一志願 / 名額：</span>
@@ -60,8 +63,11 @@
                 </ng-container>
             </div>
             <button *ngIf="buttonText"
-                class="btn btn-info"
-                [disabled]="data.subject.BlockReason || data.subject.TimeSelect === 't' || data.subject.RepeatSelect"
+                class="btn btn-info ml-1"
+                [disabled]="data.subject.BlockReason 
+                    || data.subject.TimeSelect === 't' 
+                    || data.subject.RepeatSelect === 't' 
+                    || data.subject.AttendCount === data.subject.Limit"
                 (click)="join()">{{buttonText}}</button>
         </li>
     </ul>
@@ -78,6 +84,7 @@
       <code *ngIf="data.subject.BlockReason" class="mr-1">{{data.subject.BlockReason}}</code>
       <code *ngIf="data.subject.TimeSelect =='t'" class="mr-1">該課程時段已選修課程</code>
       <code *ngIf="data.subject.RepeatSelect === 't'">已選修此課程</code>
+      <code *ngIf="data.subject.AttendCount === data.subject.Limit">選課人數已額滿</code>
   </span>
 </ng-template>
 
