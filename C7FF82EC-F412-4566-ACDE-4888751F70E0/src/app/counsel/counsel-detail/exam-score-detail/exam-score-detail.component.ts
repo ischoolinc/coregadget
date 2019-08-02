@@ -396,9 +396,14 @@ export class ExamScoreDetailComponent implements OnInit {
       if (!this.studentExamScore.CourseNameList.includes(item.CourseName)) {
         this.studentExamScore.CourseNameList.push(item.CourseName);
         let courseScore: CourseScoreInfo = new CourseScoreInfo();
-        courseScore.CourseCredit = parseFloat(item.Credit);
+        if (item.Credit) {
+          courseScore.CourseCredit = parseFloat(item.Credit);
+        } else
+          courseScore.CourseCredit = 0;
         courseScore.CourseName = item.CourseName;
-        courseScore.CourseScore = parseFloat(item.ExamScore);
+        if (item.ExamScore)
+          courseScore.CourseScore = parseFloat(item.ExamScore);
+       
         courseScore.SubjectName = item.Subject;
         courseScore.ExamScoreList = [];
         this.studentExamScore.CourseScoreList.push(courseScore);
@@ -415,7 +420,8 @@ export class ExamScoreDetailComponent implements OnInit {
         if (item.CourseName === courseItem.CourseName) {
           let exam: ExamScoreInfo = new ExamScoreInfo();
           exam.DisplayOrder = parseInt(item.DisplayOrder);
-          exam.ExamScore = parseFloat(item.ExamScore);
+          if (item.ExamScore)
+           exam.ExamScore = parseFloat(item.ExamScore);
           exam.ExamName = item.ExamName;
           exam.HasScore = true;
           courseItem.ExamScoreList.push(exam);
@@ -528,9 +534,13 @@ export class ExamScoreDetailComponent implements OnInit {
         this.studentExamScore.CourseNameList.push(item.CourseName);
         let courseScore: CourseScoreInfo = new CourseScoreInfo();
         courseScore.DomainName = item.Domain;
-        courseScore.CourseCredit = parseFloat(item.Credit);
+        if (item.Credit) {
+          courseScore.CourseCredit = parseFloat(item.Credit);
+        } else
+          courseScore.CourseCredit = 0;
         courseScore.CourseName = item.CourseName;
-        courseScore.CourseScore = parseFloat(item.ExamScore);
+        if(item.ExamScore)
+         courseScore.CourseScore = parseFloat(item.ExamScore);
         courseScore.SubjectName = item.Subject;
         courseScore.ExamScoreList = [];
         this.studentExamScore.CourseScoreList.push(courseScore);
@@ -547,8 +557,10 @@ export class ExamScoreDetailComponent implements OnInit {
         if (item.CourseName === courseItem.CourseName) {
           let exam: ExamScoreInfo = new ExamScoreInfo();
           exam.Score = parseFloat(item.Score);
+          if (item.AssignmentScore)
           exam.AssignmentScore = parseFloat(item.AssignmentScore);
           exam.DisplayOrder = parseInt(item.DisplayOrder);
+          if (item.ExamScore)
           exam.ExamScore = parseFloat(item.ExamScore);
           exam.ExamName = item.ExamName;
           exam.HasScore = true;
@@ -635,5 +647,16 @@ export class ExamScoreDetailComponent implements OnInit {
     // 取得班級評量成績
     this.GetCalssExamScoreBySchoolYearSemester();
 
+  }
+
+  checkScoreFail(score: number) {
+    let val: boolean = false;
+    if (score)
+    {
+      if(score < this.passScore)
+        val = true;
+    }
+    
+    return val;
   }
 }
