@@ -7,8 +7,8 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "demo.ischool.h",
-            //application: "1admin_debug5",
+            // application: "demo.ischool.h",
+            application: "1admin_debug5",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
                 //"第一次期中考Round": "1",
@@ -20,10 +20,10 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',                
-                //account: 'bubu@debug.ischool.com.tw',
-                //password:'1234'
-                account: '',
-                password:''
+                account: 'bubu@debug.ischool.com.tw',
+                password:'1234'
+                // account: '',
+                // password:''
                 
             }
         });
@@ -88,7 +88,7 @@
     <div id="gadget" class="my-page" ng-if="current && studentList && examList">
         <h1 class="hidden-xs">成績管理</h1>
         <div>           
-            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]"
+            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == '成績管理'"
                  class="btn-group pull-right"
                  ng-init="getProcess()">
                 <div class="btn-group"
@@ -130,7 +130,7 @@
                 </a>
             </div>
             <!--平時評量模式: 編輯評分項目、批次、儲存-->
-            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[1]" class="btn-group pull-right" ng-init="getProcess()">
+            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == '平時評量'" class="btn-group pull-right" ng-init="getProcess()">
                 <a class="btn btn-default" ng-click="showGradeItemConfig()">
                     <i class="fa fa-edit">
                         編輯評分項目
@@ -182,13 +182,13 @@
                 </ul>
             </div>
             <!--成績管理：匯出報表 (只有在 mode『成績管理』可以匯出)-->
-            <div class="btn btn-default" ng-if="current.mode == modeList[0]">
+            <div class="btn btn-default" ng-if="current.mode == '成績管理'">
                 <i class="far fa-file-excel" ng-click="exportExcel()">
                     匯出報表
                 </i>
             </div>
             <!--成績管理：帶入平時成績 (只有在 mode『成績管理』可以匯出)(由於放在這裡對於使用者不明確是帶入哪一個試別的平常成績，後來統一到右邊的批次功能作業)-->
-            <!--<div class="btn btn-default" ng-if="current.mode == modeList[0]">
+            <!--<div class="btn btn-default" ng-if="current.mode == '成績管理'">
                 <i ng-if="current.Exam && current.Exam.Lock || current.Exam.SubName"
                    ng-class="{'disabled':current.Exam.Lock}"
                    style="min-width: 14px; color:gray"
@@ -201,7 +201,7 @@
                 </i>
             </div>-->
             <!--目前試別 (只有在mode『平時評量』會顯示，用來輸入各個評量子項目成績用)-->
-            <div class="btn-group" ng-if="current.mode == modeList[1]">
+            <div class="btn-group" ng-if="current.mode == '平時評量'">
                 <a class="btn btn-default dropdown-toggle"
                    data-toggle="dropdown">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -305,7 +305,7 @@
                                         {{current.Exam?current.Exam.Name:'請選擇'}}
                                         <span class="caret"></span>
                                     </a>
-                                    <ul ng-if="current.mode == modeList[0]" class="dropdown-menu" style="width:100%; ">
+                                    <ul ng-if="current.mode == '成績管理'" class="dropdown-menu" style="width:100%; ">
                                         <li ng-repeat="examItem in examList | filter: filterPermission" ng-class="{active:examItem==current.Exam}">
                                             <a href="javascript:;" ng-click="setCurrent(current.Student, examItem, false, true)">
                                                 <i ng-if="examItem.Lock"
@@ -357,7 +357,7 @@
                                         學期總成績輸入開放時間: {{current.Course.InputStartTime}} ~ {{current.Course.InputEndTime}}
                                     </small>
                                 </div>
-                                <div ng-if="!current.Exam.SubName && current.mode == modeList[0]"
+                                <div ng-if="!current.Exam.SubName && current.mode == '成績管理'"
                                      style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -105px;">
                                     <small class="text-muted" style="width: 260px;">
                                         {{current.Exam.Name}}全班平均: {{current.Exam.avgScore}}
@@ -433,7 +433,7 @@
             
             
             <!--成績管理Table-->
-            <div ng-if="current.mode == modeList[0]"
+            <div ng-if="current.mode == '成績管理'"
                  style="margin-right:270px;">
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
@@ -513,7 +513,7 @@
                 </table>
             </div>
             <!--平時評量Table-->
-            <div ng-if="current.mode == modeList[1]"
+            <div ng-if="current.mode == '平時評量'"
                  style="margin-right:270px;">
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">

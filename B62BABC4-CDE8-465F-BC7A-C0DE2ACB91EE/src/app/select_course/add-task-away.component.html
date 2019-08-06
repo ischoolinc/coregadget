@@ -57,7 +57,11 @@
                            title="已加選"
                            style="color:darkgreen">done</i>
                     </div>
-                    <ng-container *ngIf="!subject.BlockReason && subject.TimeSelect !== 't' && subject.RepeatSelect !== 't'; else tplForbidden">
+                    <ng-container *ngIf="!subject.BlockReason
+                        && subject.TimeSelect !== 't'
+                        && subject.RepeatSelect !== 't'
+                        && subject.AttendCount < subject.Limit;
+                        else tplForbidden">
                         <span class="badge badge-light my-2 my-md-0 mr-md-3">
                             <span>已選 / 名額：</span>
                             <span>{{subject.AttendCount}} / {{subject.Limit}}</span>
@@ -68,12 +72,16 @@
                             <code *ngIf="subject.BlockReason" class="mr-1">{{subject.BlockReason}}</code>
                             <code *ngIf="subject.TimeSelect === 't'" class="mr-1">該課程時段已選修課程</code>
                             <code *ngIf="subject.RepeatSelect === 't'">已選修此課程</code>
+                            <code *ngIf="subject.AttendCount === subject.Limit">選課人數已額滿</code>
                         </span>
                     </ng-template>
                 </div>
                 <button (click)="joinCourse(subject)"
                         class="btn btn-info"
-                        [disabled]="subject.BlockReason || subject.TimeSelect === 't' || subject.RepeatSelect === 't'"
+                        [disabled]="subject.BlockReason 
+                            || subject.TimeSelect === 't' 
+                            || subject.RepeatSelect === 't' 
+                            || subject.AttendCount == subject.Limit"
                         [matTooltip]="subject.SubjectName + basicSrv.getLevel(subject)">選課</button>
             </li>
         </ul>
