@@ -41,6 +41,7 @@
               "src/redactor-dist/redactor.js",
               "src/redactor-dist/zh_tw.js",
               "src/redactor-dist/video.js",
+              "src/redactor-dist/addimage.js",
               "node_modules/chart.js/dist/Chart.js"
             ],
             "es5BrowserSupport": true

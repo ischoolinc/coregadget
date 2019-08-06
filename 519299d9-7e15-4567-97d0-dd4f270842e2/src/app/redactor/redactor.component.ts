@@ -34,7 +34,7 @@ export class RedactorComponent implements OnInit, OnDestroy {
     const options = {
       lang: 'zh_tw',
       buttons: ['html', 'format', 'bold', 'italic', 'lists', 'link'],
-      plugins: ['video'], // 插入影片功能。
+      plugins: ['video', 'addimage'], // 插入影片、圖片功能。
       autoparseVideo: false, // 關閉自動解析影片功能，這會打壞圖片功能...
       callbacks: {
         started() {
