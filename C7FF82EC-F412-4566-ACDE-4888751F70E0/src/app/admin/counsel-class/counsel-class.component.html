@@ -4,10 +4,10 @@
     <ul class="rwd-table">
       <li class="thead">
         <ol class="tr">
-          <li>輔導身分</li>
-          <li>教師姓名</li>
-          <li>輔導班級</li>
-          <li></li>
+          <li class="sticky-top">輔導身分</li>
+          <li class="sticky-top">教師姓名</li>
+          <li class="sticky-top">輔導班級</li>
+          <li class="sticky-top"></li>
         </ol>
       </li>
       <li class="tbody">
@@ -26,7 +26,7 @@
                 <span *ngIf="item.ClassNames.length > 0">共{{item.ClassNames.length}}班</span>
               </div>
             </div>
-            
+
           </li>
           <li data-title="edit">
             <button class="btn btn-light"

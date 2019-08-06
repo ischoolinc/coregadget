@@ -19,13 +19,14 @@ export class AppComponent implements OnInit {
     private dsaService: DsaService
   ) { }
 
-  ngOnInit() {    
-    this.GetMyCounselTeacherRole();
+  async ngOnInit() {   
+
+    await this.GetMyCounselTeacherRole();
   }
 
   async GetMyCounselTeacherRole() {
     this.globalService.MyCounselTeacherRole = '';
-    this.globalService.enableCase = false;
+  //  this.globalService.enableCase = false;
     let resp = await this.dsaService.send("GetMyCounselTeacherRole", {
       Request: {}
     });
@@ -37,7 +38,8 @@ export class AppComponent implements OnInit {
     if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師')
     {   
       this.globalService.enableCase = true;
-    }
+    }else
+    this.globalService.enableCase = false;
   }
 
   routeTo(to) {

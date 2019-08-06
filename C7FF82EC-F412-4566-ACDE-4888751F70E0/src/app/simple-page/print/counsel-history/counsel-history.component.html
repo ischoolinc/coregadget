@@ -10,9 +10,9 @@
 
     <table >
       <tr>
-        <td style="text-align: center; vertical-align: middle;width: 5%"><strong>學年度</strong></td>
-        <td style="text-align: center; vertical-align: middle;width: 5%"><strong>學期</strong></td>
-        <td style="text-align: center; vertical-align: middle;width: 5%"><strong>年級</strong></td>
+        <td style="text-align: center; vertical-align: middle;width: 7%"><strong>學年度</strong></td>
+        <td style="text-align: center; vertical-align: middle;width: 4%"><strong>學期</strong></td>
+        <td style="text-align: center; vertical-align: middle;width: 4%"><strong>年級</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 10%"><strong>日期</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 10%"><strong>對象</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 55%"><strong>輔導內容</strong></td>
@@ -25,17 +25,20 @@
           <td style="text-align: center; vertical-align: middle;">{{item.GradeYear}}</td>
           <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
           <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
-          <td>
+
+          <td *ngIf="item.Content" style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
+          
+          <!-- <td >
             <p *ngIf="item.Content">
-              <span>{{ item.Content }}</span>
+              <span style="text-align: center; vertical-align: middle;"> {{item.Content }}</span>
             </p>
-          </td>
+          </td> -->
           <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
         </tr>
       </ng-container>
 
       <ng-container *ngFor="let item of addBlank">
-        <tr style="height: 50px">
+        <tr style="height: 30px">
           <td></td>
           <td></td>
           <td></td>

@@ -13,7 +13,7 @@ import { DsaService } from "../../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { DelInterviewModalComponent } from "./del-interview-modal/del-interview-modal.component";
-import { GlobalService } from "../../../global.service";
+import { RoleService } from "../../../role.service";
 
 @Component({
   selector: "app-interview-detail",
@@ -35,7 +35,7 @@ export class InterviewDetailComponent implements OnInit {
   constructor(
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
-    public globalService: GlobalService,
+    public roleService: RoleService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
   ) { }
@@ -80,11 +80,8 @@ export class InterviewDetailComponent implements OnInit {
     });
 
     this._counselInterview = dataList;
-    if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長') {
-      this.isDeleteButtonDisable = false;
-    } else {
-      this.isDeleteButtonDisable = true;
-    }
+    this.isDeleteButtonDisable = !this.roleService.enableAdmin;
+   
     this.isLoading = false;
   }
 

@@ -10,16 +10,19 @@ import { DsaService } from "../../../dsa.service";
 export class DelPsychologicalQuizDataComponent implements OnInit {
 
   quizData: Quiz = new Quiz();
+  isCancel: boolean = true;
   constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
   }
 
   cancel() {
+    this.isCancel = true;
     $("#delPsychologicalQuizData").modal("hide");
   }
 
   del() {
+    this.isCancel = false;
     this.DelCounselQuizByUID();
   }
 

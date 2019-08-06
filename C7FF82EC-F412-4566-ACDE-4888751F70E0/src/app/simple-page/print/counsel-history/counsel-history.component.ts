@@ -57,14 +57,19 @@ export class CounselHistoryComponent implements OnInit {
 
       this.addBlank = [];
       // 判斷加入幾個空白
-      let n: number = (20-this.CounselInterview.length);
-      if(n > 1)
-      {
-        for(let i=1; i <=n ;i ++)
-        {
+      if (this.CounselInterview.length > 0) {
+        let n: number = (20 - this.CounselInterview.length);
+        if (n > 1) {
+          for (let i = 1; i <= n; i++) {
+            this.addBlank.push(i);
+          }
+        }
+      } else {
+        for (let i = 1; i <= 20; i++) {
           this.addBlank.push(i);
         }
       }
+
 
     } catch (error) {
       console.log(error);

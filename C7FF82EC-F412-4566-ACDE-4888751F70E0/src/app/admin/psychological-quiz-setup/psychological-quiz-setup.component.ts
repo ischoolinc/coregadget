@@ -2,7 +2,7 @@ import { Component, OnInit, Optional, ViewChild } from '@angular/core';
 import { AdminComponent } from "../admin.component";
 import { ActivatedRoute, Router } from '@angular/router';
 import { DsaService } from "../../dsa.service";
-import { Quiz, QuizItem } from './psychological-quiz-setup-vo';
+import { Quiz, QuizItem, MappingTable } from './psychological-quiz-setup-vo';
 import * as node2json from 'nodexml';
 import { AddPsychologicalQuizDataComponent } from './add-psychological-quiz-data/add-psychological-quiz-data.component';
 import { DelPsychologicalQuizDataComponent } from './del-psychological-quiz-data/del-psychological-quiz-data.component';
@@ -18,6 +18,8 @@ export class PsychologicalQuizSetupComponent implements OnInit {
   @ViewChild("delPsychologicalQuizData") _delPsychologicalQuizData: DelPsychologicalQuizDataComponent;
   AllQuizList: Quiz[] = [];
   AllQuizSource: any[] = [];
+  AllQuizMappingTableSource: any[] = [];
+  AllQuizMappingTableList: MappingTable[] = [];
   constructor(private activatedRoute: ActivatedRoute,
     private dsaService: DsaService,
     private router: Router,
@@ -29,8 +31,9 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
-    this.GetAllQuiz();
+  async loadData() {
+    await this.GetQuizMappingTables();
+    await this.GetAllQuiz();
   }
 
   Add() {
@@ -41,15 +44,18 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     this._addPsychologicalQuizData.QuizData.QuizItemList.push(qi);
     this._addPsychologicalQuizData.isAdd = true;
     this._addPsychologicalQuizData.isQuizNameHasValue = false;
-    this._addPsychologicalQuizData.isUserDefined = true;
-    this._addPsychologicalQuizData.isUseMappingTable = false;
+    this._addPsychologicalQuizData.isUserDefine = true;
+    this._addPsychologicalQuizData.isSystemDefault = false;
+    this._addPsychologicalQuizData.MappingTableList = this.AllQuizMappingTableList;
     this._addPsychologicalQuizData.editType = '新增';
     $("#addPsychologicalQuizData").modal("show");
 
     // 關閉畫面
     $("#addPsychologicalQuizData").on("hide.bs.modal", () => {
-      // 重整資料
-      this.loadData();
+      if (!this._addPsychologicalQuizData.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
       $("#addPsychologicalQuizData").off("hide.bs.modal");
     });
   }
@@ -60,8 +66,11 @@ export class PsychologicalQuizSetupComponent implements OnInit {
 
     // 關閉畫面
     $("#delPsychologicalQuizData").on("hide.bs.modal", () => {
-      // 重整資料
-      this.loadData();
+      if (!this._delPsychologicalQuizData.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
+
       $("#delPsychologicalQuizData").off("hide.bs.modal");
     });
   }
@@ -72,25 +81,51 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     this._addPsychologicalQuizData.editType = '編輯';
 
     if (item.UseMappingTable) {
-      this._addPsychologicalQuizData.isUseMappingTable = true;
-      this._addPsychologicalQuizData.isUserDefined = false;
+      this._addPsychologicalQuizData.isSystemDefault = true;
+      this._addPsychologicalQuizData.isUserDefine = false;
     } else {
-      this._addPsychologicalQuizData.isUseMappingTable = false;
-      this._addPsychologicalQuizData.isUserDefined = true;
+      this._addPsychologicalQuizData.isSystemDefault = false;
+      this._addPsychologicalQuizData.isUserDefine = true;
     }
     $("#addPsychologicalQuizData").modal("show");
 
     // 關閉畫面
     $("#addPsychologicalQuizData").on("hide.bs.modal", () => {
-      // 重整資料
-      this.loadData();
+      if (!this._addPsychologicalQuizData.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
       $("#addPsychologicalQuizData").off("hide.bs.modal");
     });
   }
 
+
+  // 取得心理測驗對照表
+  async GetQuizMappingTables() {
+    this.isLoading = true;
+    this.AllQuizMappingTableList = [];
+    try {
+      let resp = await this.dsaService.send("GetQuizMappingTables", {});
+      this.AllQuizMappingTableSource = [].concat(resp.MappingTable || []);
+      this.AllQuizMappingTableSource.forEach(item => {
+        let mt: MappingTable = new MappingTable();
+        mt.UID = item.UID;
+        mt.Name = item.Name;
+        mt.ContentXML = item.Content;
+        mt.UseMappingTable = false;
+        if (item.UseMappingTable && item.UseMappingTable === 't')
+          mt.UseMappingTable = true;
+        this.AllQuizMappingTableList.push(mt);
+      });
+
+    } catch (err) {
+      alert('無法取得心理測驗常模對照表：' + err.dsaError.message);
+    }
+  }
+
+
   // 取得心理測驗題目
   async GetAllQuiz() {
-    this.isLoading = true;
 
     try {
       let resp = await this.dsaService.send("GetAllQuiz", {});

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Quiz, QuizItem, MappingTable } from '../psychological-quiz-setup-vo';
 import { DsaService } from "../../../dsa.service";
-import { tmpMapXML } from 'src/app/psychological-test/PsychologicalTest-vo';
 
 @Component({
   selector: 'app-add-psychological-quiz-data',
@@ -13,12 +12,12 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
   isAdd: boolean = true;
   editType: string = '新增';
   QuizData: Quiz = new Quiz();
-  isUserDefined: boolean = false;
-  isUseMappingTable: boolean = false;
+  isUserDefine: boolean = false;
+  isSystemDefault: boolean = false;
+  isCancel: boolean = true;
   isQuizNameHasValue: boolean = false;
   isSaveButtonDisable: boolean = true;
-  selectMappingTableName: string = "心理測驗常模轉換對照表.CPMP";
- 
+
   MappingTableList: MappingTable[] = [];
 
   constructor(private dsaService: DsaService) { }
@@ -28,37 +27,58 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
   }
 
   cancel() {
+    this.isCancel = true;
     $("#addPsychologicalQuizData").modal("hide");
   }
 
   async save() {
-    let useMt: string = 'f';
-    let mTable: string = '';
+    this.isCancel = false;
+
+    let QuizName: string = '';
+    let QuizDataFieldXML: string = '<Field name="原始分數" order="1" /> <Field name="常模分數" order="2" /> <Field name="年齡" order="3" /> <Field name="性別" order="4" />';
+    let useMTable: string = 'f';
+    let MTableXML: string = '';
     this.QuizData.parseXML();
-    if (this.isUseMappingTable) {
-      // 將暫存對照表寫入
-      useMt = 't';
-      let tt: tmpMapXML = new tmpMapXML();
-      mTable = tt.xml;
+
+    if (this.isUserDefine) {
+      QuizName = this.QuizData.QuizName;
+      QuizDataFieldXML = this.QuizData.QuizDataFieldXML;
     }
+
+    if (this.isSystemDefault) {
+      let selItem: MappingTable;
+      this.MappingTableList.forEach(item => {
+        if (item.isChecked) {
+          selItem = item;
+        }
+      });
+
+      if (selItem) {
+        QuizName = selItem.Name;
+        if (selItem.UseMappingTable)
+          useMTable = 't';
+        MTableXML = selItem.ContentXML;
+      }
+    }
+
     let req = {};
     if (this.isAdd) {
       req = {
         Request: {
-          QuizName: this.QuizData.QuizName,
-          QuizDataField: this.QuizData.QuizDataFieldXML,
-          MappingTable: mTable,
-          UseMappingTable: useMt
+          QuizName: QuizName,
+          QuizDataField: QuizDataFieldXML,
+          MappingTable: MTableXML,
+          UseMappingTable: useMTable
         }
       };
     } else {
       req = {
         Request: {
           QuizID: this.QuizData.uid,
-          QuizName: this.QuizData.QuizName,
-          QuizDataField: this.QuizData.QuizDataFieldXML,
-          MappingTable: mTable,
-          UseMappingTable: useMt
+          QuizName: QuizName,
+          QuizDataField: QuizDataFieldXML,
+          MappingTable: MTableXML,
+          UseMappingTable: useMTable
         }
       };
     }
@@ -71,9 +91,9 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
       let pass: boolean = true;
       if (this.isAdd) {
         chkQuiz.forEach(item => {
-          if (item.QuizName === this.QuizData.QuizName) {
+          if (item.QuizName === QuizName) {
             pass = false;
-            alert(this.QuizData.QuizName + ',已有相同名稱無法新增。');
+            alert(QuizName + ',已有相同名稱無法新增。');
           }
         });
       } else {
@@ -107,29 +127,46 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
       this.isSaveButtonDisable = false;
   }
 
-  SetSelectMappingTable(item: MappingTable) {
+  export(item: MappingTable) {
 
-  }
+ }
 
   AddNullQuitItem() {
     let qi: QuizItem = new QuizItem();
     qi.QuizName = '';
-    qi.QuizOrder =this.QuizData.QuizItemList.length + 1;
+    qi.QuizOrder = this.QuizData.QuizItemList.length + 1;
     this.QuizData.QuizItemList.push(qi);
+  }
+
+  setSelectMapping(item: MappingTable) {
+    item.isChecked = true;
+    this.isSaveButtonDisable = true;
+    this.MappingTableList.forEach(itemData => {
+      if (itemData.UID === item.UID)
+      {
+        itemData.isChecked = true;
+        this.isSaveButtonDisable = false;
+      }
+      else
+        itemData.isChecked = false;
+    });   
+
   }
 
   setQuizType(name: string) {
     if (name === '自訂項目') {
-      this.isUserDefined = true;
-      this.isUseMappingTable = false;
+      this.isUserDefine = true;
+      this.isSystemDefault = false;
       this.QuizData.UseMappingTable = false;
     }
 
-    if (name === '常模轉換') {
-      this.isUserDefined = false;
-      this.isUseMappingTable = true;
-      this.QuizData.UseMappingTable = true;
+    if (name === '系統預設') {
+      this.isUserDefine = false;
+      this.isSystemDefault = true;
+      this.QuizData.UseMappingTable = true;      
     }
+
+    this.checkValue();
   }
 
   delItem(item: QuizItem) {

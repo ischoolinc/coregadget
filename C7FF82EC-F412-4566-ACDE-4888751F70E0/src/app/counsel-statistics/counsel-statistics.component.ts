@@ -36,7 +36,7 @@ export class CounselStatisticsComponent implements OnInit {
     this.selectMonth = dt.getMonth() + 1;
     this.reportTypeList.push('輔導工作月統計');
     this.selectReportType = '輔導工作月統計';
-    this.reportTypeList.push('心理測驗結果分析');
+    // this.reportTypeList.push('心理測驗結果分析');
     if (this.appComponent) this.appComponent.currentComponent = "counsel_statistics";
     this.reportNameList = [
       "輔導工作月統計報表-教育部版",

@@ -24,13 +24,16 @@
           </div>
         </div>
       </div>
-      <ul class="rwd-table">
+      <ul class="rwd-table" style="width: 100%">
         <li class="thead">
           <ol class="tr">
-            <li>班級</li>
+            <li class="sticky-top">班級</li>
             <ng-container *ngFor="let QuizItem of AllQuizList">
-              <li              
-              >{{QuizItem.QuizName}}</li>
+              <li class="sticky-top"
+                  style="width: 50px">
+                <div style="width:100%;position: relative;">{{QuizItem.QuizName}}</div>
+              </li>
+
             </ng-container>
           </ol>
         </li>
@@ -39,9 +42,7 @@
             <ol class="tr">
               <li data-title="班級">{{classItem.ClassName}}</li>
               <ng-container *ngFor="let QuizItem of AllQuizList">
-                <li
-                (click)="showStudentQuizData(QuizItem.uid,classItem.ClassID)"
-                >{{classItem.GetQuizCount(QuizItem.QuizName)}} / {{classItem.ClassStudents}}</li>
+                <li (click)="showStudentQuizData(QuizItem.uid,classItem.ClassID)">{{classItem.GetQuizCount(QuizItem.QuizName)}} / {{classItem.ClassStudents}}</li>
               </ng-container>
             </ol>
           </ng-container>

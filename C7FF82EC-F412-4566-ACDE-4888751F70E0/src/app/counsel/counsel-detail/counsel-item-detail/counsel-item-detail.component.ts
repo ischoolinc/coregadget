@@ -3,6 +3,8 @@ import { CaseStudent } from "../../../case/case-student";
 import { DsaService } from "../../../dsa.service";
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { GlobalService } from "../../../global.service";
+import { RoleService } from "../../../role.service";
+
 import {
   CaseInterview,
   SemesterInfo
@@ -30,6 +32,7 @@ export class CounselItemDetailComponent implements OnInit {
   constructor(
     private dsaService: DsaService,
     public globalService: GlobalService,
+    public roleService: RoleService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
   ) { }
@@ -213,10 +216,7 @@ export class CounselItemDetailComponent implements OnInit {
     });
     this.isLoading = false;
 
-    if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長') {
-      this.isDeleteButtonDisable = false;
-    } else {
-      this.isDeleteButtonDisable = true;
-    }
+    this.isDeleteButtonDisable = !this.roleService.enableAdmin;
+   
   }
 }

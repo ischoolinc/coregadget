@@ -321,7 +321,7 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Gender = item.gender;
               if (sItem.QuizItemList[0].QuizName === "原始分數") {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
-                debugger;
+            
                 sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age);
                 let qi: QuizItem = new QuizItem();
                 qi.QuizName = "常模分數"
