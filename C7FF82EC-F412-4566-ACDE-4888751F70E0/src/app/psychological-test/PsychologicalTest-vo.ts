@@ -11,7 +11,7 @@ export class Quiz {
     // 常模對照表
     MappingTable: string;
     // 使用對照表
-    UseMappingTable:boolean;
+    UseMappingTable: boolean;
 }
 
 // 心測題目答案項目
@@ -31,7 +31,7 @@ export class ClassQuizCount {
 
     GetQuizCount(name: string) {
         let val: number = 0;
-        this.HasQuizCountList.forEach(item => {          
+        this.HasQuizCountList.forEach(item => {
             if (item.Name === name) {
                 val = item.Count;
             }
@@ -133,9 +133,9 @@ export class StudentQuizData {
     }
 
     getQuizItemValue(uid: string, q_name: string) {
-        let value = '';     
+        let value = '';
         if (this.QuizUID === uid) {
-            this.QuizItemList.forEach(item => {             
+            this.QuizItemList.forEach(item => {
                 if (item.QuizName === q_name) {
                     value = item.Value;
                 }
@@ -148,30 +148,86 @@ export class StudentQuizData {
 // 常模對照表
 export class NormTable {
     Name: string = "";
+    // 使用男女對照
+    isUseGender: boolean = false;
+    // 男女
     NormList: NormInfo[] = [];
+    // 女
+    NormListG: NormInfo[] = [];
+    // 男
+    NormListB: NormInfo[] = [];
 
     // 傳入 原始分數與年齡，回傳常模分數
-    GetScore(Source: number, Age: number) {
+    GetScore(Source: number, Age: number, Gender: string) {
         let value: string = "";
-        this.NormList.forEach(item => {
-            if (item.Source === Source && item.Age === Age) {
-                value = item.Score;
+        // 需要區分男女
+        if (this.isUseGender) {
+            if (Gender === '男') {
+                this.NormListB.forEach(item => {
+                    if (item.Source === Source && item.Age === Age) {
+                        value = item.Score;
+                    }
+                });
             }
-        });
+
+            if (Gender === '女') {
+                this.NormListG.forEach(item => {
+                    if (item.Source === Source && item.Age === Age) {
+                        value = item.Score;
+                    }
+                });
+            }
+        } else {
+            this.NormList.forEach(item => {
+                if (item.Source === Source && item.Age === Age) {
+                    value = item.Score;
+                }
+            });
+        }
         return value;
     }
 
     // 載入對照資料
-    loadMapTable(xml:string) {        
+    loadMapTable(xml: string) {
+        this.NormList = [];
+        this.NormListB = [];
+        this.NormListG = [];
         let data = node2json.xml2obj(xml);
-        if (data.Mapping && data.Mapping.Table && data.Mapping.Table.Row) {
-            let dataRow = data.Mapping.Table.Row;
-            dataRow.forEach(item => {
-                let ni: NormInfo = new NormInfo();
-                ni.Score = item.Score;
-                ni.Age = parseFloat(item.Age);
-                ni.Source = parseFloat(item.Source);
-                this.NormList.push(ni);
+        if (data.Mapping.Name)
+            this.Name = data.Mapping.Name;
+        let tableData = [].concat(data.Mapping.Table || []);
+        if (tableData) {
+            tableData.forEach(tableItem => {
+                if (tableItem.Gender && tableItem.Gender === '男女') {
+                    this.isUseGender = false;
+                    tableItem.Row.forEach(rowItem => {
+                        let ni: NormInfo = new NormInfo();
+                        ni.Score = rowItem.Score;
+                        ni.Age = parseFloat(rowItem.Age);
+                        ni.Source = parseFloat(rowItem.Source);
+                        this.NormList.push(ni);
+                    });
+                }
+                if (tableItem.Gender && tableItem.Gender === '男') {
+                    this.isUseGender = true;
+                    tableItem.Row.forEach(rowItem => {
+                        let ni: NormInfo = new NormInfo();
+                        ni.Score = rowItem.Score;
+                        ni.Age = parseFloat(rowItem.Age);
+                        ni.Source = parseFloat(rowItem.Source);
+                        this.NormListB.push(ni);
+                    });
+                }
+                if (tableItem.Gender && tableItem.Gender === '女') {
+                    this.isUseGender = true;
+                    tableItem.Row.forEach(rowItem => {
+                        let ni: NormInfo = new NormInfo();
+                        ni.Score = rowItem.Score;
+                        ni.Age = parseFloat(rowItem.Age);
+                        ni.Source = parseFloat(rowItem.Source);
+                        this.NormListG.push(ni);
+                    });
+                }
             });
         }
     }

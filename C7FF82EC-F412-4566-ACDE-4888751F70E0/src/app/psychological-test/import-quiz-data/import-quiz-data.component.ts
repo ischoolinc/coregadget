@@ -321,14 +321,14 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Gender = item.gender;
               if (sItem.QuizItemList[0].QuizName === "原始分數") {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
-            
-                sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age);
+
+                sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age, sItem.Gender);
                 let qi: QuizItem = new QuizItem();
                 qi.QuizName = "常模分數"
                 qi.Value = sItem.NormScore;
                 sItem.QuizItemList.push(qi);
 
-                let qiG: QuizItem = new QuizItem();             
+                let qiG: QuizItem = new QuizItem();
                 qiG.QuizName = "年齡";
                 if (sItem.Age)
                   qiG.Value = sItem.Age + '';
@@ -402,7 +402,7 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Gender = item.gender;
               if (sItem.QuizItemList[0].QuizName === "原始分數") {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
-                sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age);
+                sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age, sItem.Gender);
                 let qi: QuizItem = new QuizItem();
                 qi.QuizName = "常模分數"
                 qi.Value = sItem.NormScore;
@@ -484,7 +484,7 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Gender = item.gender;
               if (sItem.QuizItemList[0].QuizName === "原始分數") {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
-                sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age);
+                sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age, sItem.Gender);
 
                 let qi: QuizItem = new QuizItem();
                 qi.QuizName = "常模分數";
@@ -525,7 +525,7 @@ export class ImportQuizDataComponent implements OnInit {
 
       }
 
-      this.checkHasData();
+      await this.checkHasData();
     } else {
       this.isImportButtonDisable = true;
     }

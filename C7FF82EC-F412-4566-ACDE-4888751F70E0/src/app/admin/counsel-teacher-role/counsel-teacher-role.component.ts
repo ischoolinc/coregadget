@@ -31,7 +31,9 @@ export class CounselTeacherRoleComponent implements OnInit {
 
   ngOnInit() {
 
-    this.adminComponent.currentItem = "counsel_teacher_role";
+    setTimeout(() => { this.adminComponent.currentItem = "counsel_teacher_role"; });
+
+
     this.counselRole = [];
     // 目前輔導身分counselRole    
     this.counselRole.push('輔導主任');

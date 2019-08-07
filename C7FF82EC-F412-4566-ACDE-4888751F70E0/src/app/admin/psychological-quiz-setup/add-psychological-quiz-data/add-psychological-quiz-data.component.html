@@ -121,7 +121,8 @@
                                class="custom-control-input"
                                (click)="setSelectMapping(item)"
                                [checked]="item.isChecked"
-                               [id]="item.UID" />
+                               [id]="item.UID" 
+                               [disabled]='!isAdd'/>
                         <label class="custom-control-label"
                                [for]="item.UID">{{ item.Name }}</label>
                       </div>

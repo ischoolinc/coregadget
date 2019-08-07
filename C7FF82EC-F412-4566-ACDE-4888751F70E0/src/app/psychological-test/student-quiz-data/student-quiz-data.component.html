@@ -6,61 +6,59 @@
     <div *ngIf="!roleService.isLoading && roleService.enablePsychologicalTest"
          class="tab-pane fade show active">
 
-         <div class="d-flex">
-            <div class="dropdown">
-                <button
-                  class="btn btn-light dropdown-toggle"
+      <div class="d-flex">
+        <div class="dropdown">
+          <button class="btn btn-light dropdown-toggle"
                   type="button"
                   data-toggle="dropdown"
                   aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {{ selectQuizName }}
-                </button>
-                <div class="dropdown-menu">
-                  <a
-                    class="dropdown-item"
-                    *ngFor="let item of QuizList"
-                    [ngClass]="{ active: selectQuizName === item.QuizName }"
-                    (click)="SetSelectQuiz(item)"
-                    >{{ item.QuizName }}</a
-                  >
-                </div>
-              </div>
-              <div class="dropdown" style="margin-left: 20px">
-                <button
-                  class="btn btn-light dropdown-toggle"
+                  aria-expanded="false">
+            {{ selectQuizName }}
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item"
+               *ngFor="let item of QuizList"
+               [ngClass]="{ active: selectQuizName === item.QuizName }"
+               (click)="SetSelectQuiz(item)">{{ item.QuizName }}</a>
+          </div>
+        </div>
+        <div class="dropdown"
+             style="margin-left: 20px">
+          <button class="btn btn-light dropdown-toggle"
                   type="button"
                   data-toggle="dropdown"
                   aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {{ selectClassName }}
-                </button>
-                <div class="dropdown-menu scrollable-menu">
-                  <a
-                    class="dropdown-item"
-                    *ngFor="let item of classList"
-                    [ngClass]="{ active: selectClassName === item.ClassName }"
-                    (click)="SetSelectClass(item)"
-                    >{{ item.ClassName }}</a
-                  >
-                </div>
-              </div>
+                  aria-expanded="false">
+            {{ selectClassName }}
+          </button>
+          <div class="dropdown-menu scrollable-menu">
+            <a class="dropdown-item"
+               *ngFor="let item of classList"
+               [ngClass]="{ active: selectClassName === item.ClassName }"
+               (click)="SetSelectClass(item)">{{ item.ClassName }}</a>
+          </div>
+        </div>
 
-         </div>
+      </div>
 
       <ul class="rwd-table">
         <li class="thead">
           <ol class="tr">
-            <li>班級</li>
-            <li>座號</li>
-            <li>姓名</li>
-            <li>學號</li>
-            <li>實施日期</li>
-            <li>解析日期</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">班級</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">座號</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">姓名</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">學號</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">實施日期</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">解析日期</li>
             <ng-container *ngFor="let itemName of QuizItemNameList">
-              <li>{{itemName}}</li>
+              <li class="sticky-top"
+                  style="white-space: pre-wrap;word-break: break-all;">{{itemName}}</li>
             </ng-container>
           </ol>
         </li>

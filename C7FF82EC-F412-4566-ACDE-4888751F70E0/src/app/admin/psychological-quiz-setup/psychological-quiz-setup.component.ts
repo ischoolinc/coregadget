@@ -27,7 +27,10 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     public adminComponent: AdminComponent) { }
 
   ngOnInit() {
-    this.adminComponent.currentItem = "psychological_quiz_setup";
+    setTimeout(() => {
+      this.adminComponent.currentItem = "psychological_quiz_setup";  
+    });
+      
     this.loadData();
   }
 
@@ -48,6 +51,8 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     this._addPsychologicalQuizData.isSystemDefault = false;
     this._addPsychologicalQuizData.MappingTableList = this.AllQuizMappingTableList;
     this._addPsychologicalQuizData.editType = '新增';
+
+
     $("#addPsychologicalQuizData").modal("show");
 
     // 關閉畫面
@@ -79,7 +84,14 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     this._addPsychologicalQuizData.isAdd = false;
     this._addPsychologicalQuizData.QuizData = item;
     this._addPsychologicalQuizData.editType = '編輯';
+    this.AllQuizMappingTableList.forEach(itemQ => {
+      if (itemQ.Name === item.QuizName) {
+        itemQ.isChecked = true;
+      } else
+        itemQ.isChecked = false;
+    });
 
+    this._addPsychologicalQuizData.MappingTableList = this.AllQuizMappingTableList;
     if (item.UseMappingTable) {
       this._addPsychologicalQuizData.isSystemDefault = true;
       this._addPsychologicalQuizData.isUserDefine = false;

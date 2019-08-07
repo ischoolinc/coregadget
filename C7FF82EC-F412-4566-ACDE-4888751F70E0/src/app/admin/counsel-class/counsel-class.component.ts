@@ -22,7 +22,8 @@ export class CounselClassComponent implements OnInit {
     public adminComponent: AdminComponent) { }
 
   ngOnInit() {
-    this.adminComponent.currentItem = "counsel_class";
+
+    setTimeout(() => { this.adminComponent.currentItem = "counsel_class"; });
     this.loadData();
   }
 

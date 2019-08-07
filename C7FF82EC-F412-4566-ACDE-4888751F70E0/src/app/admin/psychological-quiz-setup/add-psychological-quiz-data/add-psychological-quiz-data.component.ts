@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Quiz, QuizItem, MappingTable } from '../psychological-quiz-setup-vo';
 import { DsaService } from "../../../dsa.service";
+import * as XLSX from 'xlsx';
+import * as node2json from 'nodexml';
 
 @Component({
   selector: 'app-add-psychological-quiz-data',
@@ -121,15 +123,42 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
   }
 
   checkValue() {
-    if (this.QuizData.QuizName.length === 0) {
-      this.isSaveButtonDisable = true;
-    } else
+    if (this.QuizData.QuizName && this.QuizData.QuizName.length > 0) {
       this.isSaveButtonDisable = false;
+    } else
+      this.isSaveButtonDisable = true;        
   }
 
   export(item: MappingTable) {
+    // 使用常模轉換
+    if (item.UseMappingTable) {
+      let xd = [].concat(node2json.xml2obj(item.ContentXML) || []);
+      if (xd) {
+        let wb_name: string = xd[0].Mapping.Name + '.xlsx';
+        const wb = XLSX.utils.book_new();
+        let tableData = [].concat(xd[0].Mapping.Table || []);
+        tableData.forEach(tableItem => {
+          let rowData: any[] = [];
+          if (tableItem) {
+            let ws_name = tableItem.Gender;
+            tableItem.Row.forEach(rowItem => {
+              let item = {
+                'Age': rowItem.Age,
+                'Source': rowItem.Source,
+                'Score': rowItem.Score
+              };
+              rowData.push(item);
+            });
+            let ws = XLSX.utils.json_to_sheet(rowData, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+            XLSX.utils.book_append_sheet(wb, ws, ws_name);
+          }
+        });
 
- }
+        XLSX.writeFile(wb, wb_name);
+      }
+    }
+  }
+
 
   AddNullQuitItem() {
     let qi: QuizItem = new QuizItem();
@@ -142,14 +171,13 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
     item.isChecked = true;
     this.isSaveButtonDisable = true;
     this.MappingTableList.forEach(itemData => {
-      if (itemData.UID === item.UID)
-      {
+      if (itemData.UID === item.UID) {
         itemData.isChecked = true;
         this.isSaveButtonDisable = false;
       }
       else
         itemData.isChecked = false;
-    });   
+    });
 
   }
 
@@ -163,7 +191,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
     if (name === '系統預設') {
       this.isUserDefine = false;
       this.isSystemDefault = true;
-      this.QuizData.UseMappingTable = true;      
+      this.QuizData.UseMappingTable = true;
     }
 
     this.checkValue();

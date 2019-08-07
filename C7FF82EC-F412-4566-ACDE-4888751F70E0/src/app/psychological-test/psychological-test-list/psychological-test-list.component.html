@@ -24,14 +24,16 @@
           </div>
         </div>
       </div>
-      <ul class="rwd-table" style="width: 100%">
+      <ul class="rwd-table"
+          style="width: 100%">
         <li class="thead">
           <ol class="tr">
-            <li class="sticky-top">班級</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">班級</li>
             <ng-container *ngFor="let QuizItem of AllQuizList">
               <li class="sticky-top"
-                  style="width: 50px">
-                <div style="width:100%;position: relative;">{{QuizItem.QuizName}}</div>
+                  style="white-space: pre-wrap;word-break: break-all;">
+                {{QuizItem.QuizName}}
               </li>
 
             </ng-container>

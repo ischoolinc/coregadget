@@ -38,7 +38,8 @@ export class CaseComponent implements OnInit {
     @Optional()
     private appComponent: AppComponent
   ) {
-    if (this.appComponent) this.appComponent.currentComponent = "case";
+    setTimeout(() => { if (this.appComponent) this.appComponent.currentComponent = "case"; });
+
   }
 
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;

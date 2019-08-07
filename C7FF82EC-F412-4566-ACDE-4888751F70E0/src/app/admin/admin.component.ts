@@ -15,6 +15,7 @@ export class AdminComponent implements OnInit {
   currentItem: string = "";
   isRoleEnable: boolean = false;
   isClassEnable: boolean = false;
+  isPsyEnable: boolean = false;
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -29,15 +30,20 @@ export class AdminComponent implements OnInit {
     this.appComponent.currentComponent = "admin";
     this.isRoleEnable = false;
     this.isClassEnable = false;
+    this.isPsyEnable = false;
 
     await this.appComponent.GetMyCounselTeacherRole();
     if (this.globalService.MyCounselTeacherRole === '輔導主任') {
+      this.currentItem = 'counsel_teacher_role';
       this.isRoleEnable = true;
       this.isClassEnable = true;
-    }
+      this.isPsyEnable = true;
+    } 
     if (this.globalService.MyCounselTeacherRole === '輔導組長') {
+      this.currentItem = 'counsel_class';
       this.isClassEnable = true;
-    }
+      this.isPsyEnable = true;
+    } 
   }
 
   routeTo(to) {
