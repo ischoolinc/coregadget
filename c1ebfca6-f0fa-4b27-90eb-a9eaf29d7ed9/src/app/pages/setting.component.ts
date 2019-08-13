@@ -39,8 +39,8 @@ export class SettingComponent implements OnInit {
     this.loading = true;
     try {
       //取得老師設定
-      const SettingJSON = await this.dsa.getTeacherSetting();
-      this.teacherSetting = JSON.parse(SettingJSON);
+      // const SettingJSON = ;
+      this.teacherSetting = await this.dsa.getTeacherSetting();//JSON.parse(SettingJSON);
       this.settingList = this.objectKeys(this.teacherSetting);
 
       //取得課程資料

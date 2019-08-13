@@ -21,23 +21,20 @@
         *ngIf="!loading;else Loading">
       <li *ngIf="true"
           class="list-group-item active d-flex align-items-center py-2 ">
-
-
         <div>點名設定</div>
-
         <button (click)="saveSetting()"
                 type="button"
                 class="btn btn-sm btn-info"
                 style="float:right"
                 class="btn btn-sm btn-info ml-auto">儲存
         </button>
-
       </li>
       <li class="list-group-item "
           *ngFor="let key of settingList">
-        <div class="row">
+        <div *ngIf="key=='use_photo'"
+             class="row">
           <div class="col-8 col-sm-9 col-md-10 col-lg-11 text-nowrap">
-            <div style="display :inline"> 是否顯示照片</div>
+            <div style="display :inline">是否顯示照片</div>
           </div>
 
           <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-right text-nowrap">
@@ -54,6 +51,24 @@
                      value=""
                      [checked]="teacherSetting[key] === true"
                      (change)="settingChange(key,true)"> 是
+            </label>
+          </div>
+        </div>
+        <div *ngIf="key=='teacherKey'"
+             class="row">
+          <div class="col-6 col-sm-7 col-md-8 col-lg-9 text-nowrap">
+            <div style="display :inline">
+              <span>設定點名密碼</span>
+              <span class="text-muted small">(小幫手點名完後直接確認)</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-sm-5 col-md-4 col-lg-3 text-right text-nowrap">
+            <label class="point">
+              <input type="password"
+                     name="teacherKey"
+                     value=""
+                     [(ngModel)]="teacherSetting[key]" />
             </label>
           </div>
         </div>

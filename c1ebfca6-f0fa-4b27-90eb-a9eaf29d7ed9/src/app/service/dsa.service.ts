@@ -68,7 +68,12 @@ export class DSAService {
 
     const req: any = {
       Period: period,
-      Student: JSON.stringify(data),
+      Student: data.map((item) => {
+        return {
+          ID: item.ID
+          , Absence: item.Absence
+        };
+      })//JSON.stringify(data),
     };
 
     if (type === 'Course') {
@@ -162,13 +167,12 @@ export class DSAService {
     await this.ready;
     const rsp = await this.contract.send('GetTeacherSetting');
 
+    var teacherSetting = JSON.parse(rsp.Content);
 
-    if (rsp.Content === "{}") {
-      const defaultSetting = '{"use_photo":true}'; //若老師初次設定檔案 
-      return defaultSetting;
-    }
+    if (!teacherSetting.use_photo) teacherSetting.use_photo = false;
+    if (!teacherSetting.teacherKey) teacherSetting.teacherKey = "";
 
-    const teacherSetting = rsp.Content
+
     return teacherSetting;
   }
 
@@ -235,7 +239,7 @@ export interface Student {
 }
 
 export interface Absence {
-  AbsenceName:string;
+  AbsenceName: string;
   HelperRollCall: string;
   RollCall: string;
   RollCallChecked: string;
