@@ -35,6 +35,8 @@ export class StudentPickComponent implements OnInit {
   objectKeys = Object.keys;
   showPhoto: boolean;
 
+  teacherIdentity: any;
+
   constructor(
     private dsa: DSAService,
     private route: ActivatedRoute,
@@ -88,7 +90,9 @@ export class StudentPickComponent implements OnInit {
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
 
-    const students = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
+    const rollCallInfo = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
+    this.setTeacherIdentity(rollCallInfo.TeacherName);
+    const students = rollCallInfo.Student;
     this.studentChecks = [];
 
     const c = await this.gadget.getContract("campus.rollcall.student");
@@ -110,6 +114,50 @@ export class StudentPickComponent implements OnInit {
     this.calcSummaryText();
 
     if (msg) this.alert.snack(msg);
+  }
+
+  setTeacherIdentity(name: string) {
+    this.teacherIdentity = {
+      teacherName: name
+      , teacherKey: ""
+      , error: ""
+      , saving: false
+      , open: () => {
+        $("#modal-key").modal({ show: true, backdrop: false, keyboard: false, focus: false });
+        setTimeout(() => { $("#teacherKey").focus(); }, 500);
+      }
+      , save: async () => {
+        this.teacherIdentity.saving = true;
+        try {
+          const items: RollCallCheck[] = [];
+          for (const check of this.studentChecks) {
+            items.push(check.getCheckData());
+          }
+          const rsp = await this.dsa.setRollCallWithTeacherKey(
+            this.groupInfo.type
+            , this.groupInfo.id
+            , this.periodConf.Name
+            , this.teacherIdentity.teacherName
+            , this.teacherIdentity.teacherKey
+            , items);
+          if (rsp.Result == "Well done!") {
+            this.router.navigate(['/main']);
+          }
+          else {
+            this.teacherIdentity.error = rsp.Result;
+          }
+        }
+        catch (exc) {
+          this.alert.json(exc);
+        }
+        finally {
+          this.teacherIdentity.saving = false;
+        }
+      }
+      , ignore: () => {
+        this.router.navigate(['/main']);
+      }
+    };
   }
 
   changeAttendance(stu: StudentCheck) {
@@ -223,14 +271,16 @@ export class StudentPickComponent implements OnInit {
 
     const dialog = this.alert.waiting("儲存中...");
 
+    var saved = false;
     try {
       await this.dsa.setRollCall(this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);
-      // await this.reloadStudentAttendances();
-      this.router.navigate(['/main']);
+      saved = true;
     } catch (error) {
       this.alert.json(error);
     } finally {
       dialog.close();
+      if (saved)
+        this.teacherIdentity.open();
     }
   }
 
@@ -241,11 +291,11 @@ export class StudentPickComponent implements OnInit {
 
   //取得學生出席率 
   async loadAbsencreRate() {
-    
-    if(this.groupInfo.type=='Course')
+
+    if (this.groupInfo.type == 'Course')
       this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
     else
-    this.absenceRates = {};
+      this.absenceRates = {};
 
     console.log('', this.absenceRates);
     console.log("課程ID", this.groupInfo.id);

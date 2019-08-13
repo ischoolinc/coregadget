@@ -84,9 +84,12 @@ export class DSAService {
 
     const rsp = await this.contract.send('GetStudent', req);
 
-    return [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; });
+    return {
+      TeacherName: rsp.TeacherName
+      , Student: [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; })
+    };
   }
-  
+
   //取得出席率
   public async getAbsenceRate(courseId: string) {
     await this.ready;
@@ -115,7 +118,12 @@ export class DSAService {
 
     const req: any = {
       Period: period,
-      Student: JSON.stringify(data),
+      Student: data.map((item) => {
+        return {
+          ID: item.ID
+          , Absence: item.Absence
+        };
+      })//JSON.stringify(data),
     };
 
     if (type === 'Course') {
@@ -128,16 +136,44 @@ export class DSAService {
 
     return rsp;
   }
-
-  public async isTeacherRollCall(courseID: string, date: string){
+  /**
+   * 儲存點名資料。
+   */
+  public async setRollCallWithTeacherKey(type: GroupType, id: string, period: string, teacherName: string, teacherKey: string, data: RollCallCheck[]) {
     await this.ready;
 
-    const req: any={
+    const req: any = {
+      Period: period,
+      TeacherName: teacherName,
+      TeacherKey: teacherKey,
+      Student: data.map((item) => {
+        return {
+          ID: item.ID
+          , Absence: item.Absence
+        };
+      })//JSON.stringify(data),
+    };
+
+    if (type === 'Course') {
+      req.CourseID = id;
+    } else {
+      req.ClassID = id;
+    }
+
+    const rsp = await this.contract.send('SetRollCallWithTeacherKey', req);
+
+    return rsp;
+  }
+
+  public async isTeacherRollCall(courseID: string, date: string) {
+    await this.ready;
+
+    const req: any = {
       CourseID: courseID,
       Date: date
     };
 
-    const rsp = await this.contract.send('_.IsTeacherRollCall',req);
+    const rsp = await this.contract.send('_.IsTeacherRollCall', req);
     return [].concat((rsp && rsp.Result) || []);
   }
 
@@ -155,8 +191,8 @@ export class DSAService {
   public async getToday() {
     // return Moment().format('YYYY/MM/DD');
     await this.ready;
-    let rsp = await this.basicContract.send('beta.GetNow',{
-      Pattern:'yyyy/MM/dd'
+    let rsp = await this.basicContract.send('beta.GetNow', {
+      Pattern: 'yyyy/MM/dd'
     });
     return rsp.DateTime;
   }
@@ -223,7 +259,7 @@ export interface Student {
 }
 
 export interface Absence {
-  AbsenceName:string;
+  AbsenceName: string;
   HelperRollCall: string;
   RollCall: string;
   RollCallChecked: string;
@@ -293,7 +329,7 @@ export interface CourseConf {
   CourseName: string;
   // 小幫手資料
   StudentID: string;
-  StudentName: string; 
+  StudentName: string;
   StudentNumber: string;
 }
 
