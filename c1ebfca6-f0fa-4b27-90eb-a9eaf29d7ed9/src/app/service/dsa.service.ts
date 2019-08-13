@@ -24,6 +24,13 @@ export class DSAService {
     }
   }
 
+  public async send(serviceName: string, body?: any) {
+    await this.ready;
+    const rsp = await this.contract.send(serviceName, body);
+    return rsp;
+  }
+
+
   /**
    * 取得缺曠類別節次
    */
@@ -90,14 +97,22 @@ export class DSAService {
   /**
    * 儲存課堂點名小幫手
    */
-  public async setHelper(courseID: string, studentID: string) {
+  public async setHelper(type: string, targetID: string, studentID: string) {
     await this.ready;
+    var req: any;
 
-    const req: any = {
-      RefCourseID: courseID,
-      RefStudentID: studentID
-    };
-
+    if (type == "Class") {
+      req = {
+        RefClassID: targetID,
+        RefStudentID: studentID
+      };
+    }
+    if (type == "Course") {
+      req = {
+        RefCourseID: targetID,
+        RefStudentID: studentID
+      };
+    }
     const rsp = await this.contract.send('SetHelper', req);
 
     return rsp;
@@ -169,7 +184,7 @@ export class DSAService {
 
     var teacherSetting = JSON.parse(rsp.Content);
 
-    if (!teacherSetting.use_photo) teacherSetting.use_photo = false;
+    if (!teacherSetting.usePhoto) teacherSetting.usePhoto = (teacherSetting.use_photo === false ? false : true);
     if (!teacherSetting.teacherKey) teacherSetting.teacherKey = "";
 
 

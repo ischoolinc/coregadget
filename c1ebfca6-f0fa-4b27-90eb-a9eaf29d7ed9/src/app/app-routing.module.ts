@@ -12,7 +12,7 @@ const routes: Routes = [
     { path: 'pick/:type/:id/:period/:name', component: StudentPickComponent },
     { path: 'sub', component: SubstituteComponent },
     { path: 'course', component: CourseSelcComponent },
-    { path: 'teacher-helper/:id/:name', component: TeacherHelperComponent},
+    { path: 'teacher-helper/:type/:id', component: TeacherHelperComponent},
     { path: 'setting', component: SettingComponent }
 
 ];
