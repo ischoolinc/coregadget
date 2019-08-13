@@ -63,6 +63,51 @@ export class DSAService {
   }
 
   /**
+   * 取得班級課程學生清單。
+   * @param type 類型：Course、Class
+   * @param id 編號。
+   * @param date 日期。
+   */
+  public async getStudent(type, id, date, period) {
+    await this.ready;
+
+    const req: any = {
+      Request: {
+        Type: type,
+        OccurDate: date,
+        Period: period
+      }
+    }
+
+    if (type === "Course") req.Request.CourseID = id;
+    if (type === "Class") req.Request.ClassID = id;
+
+    const rsp = await this.contract.send('GetStudent', req);
+
+    return [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; });
+  }
+  
+  //取得出席率
+  public async getAbsenceRate(courseId: string) {
+    await this.ready;
+    const rsp = await this.contract.send('GetAttendanceRate', {
+      Request: {
+        CourseId: courseId
+      }
+    });
+    //取得學生出席率
+    const studentsAbsenceRate = rsp.Student;
+    const absenceRateObj = {}
+    //轉成 JSON 格式 
+    if (studentsAbsenceRate) {
+      for (var i = 0; i < studentsAbsenceRate.length; i++) {
+        absenceRateObj[studentsAbsenceRate[i].StudentID] = studentsAbsenceRate[i].AbsenceRate;
+      }
+      return absenceRateObj;
+    }
+  }
+
+  /**
    * 儲存點名資料。
    */
   public async setRollCall(type: GroupType, id: string, period: string, data: RollCallCheck[]) {
@@ -79,7 +124,7 @@ export class DSAService {
       req.ClassID = id;
     }
 
-    const rsp = await this.contract.send('_.SetRollCall', req);
+    const rsp = await this.contract.send('SetRollCall', req);
 
     return rsp;
   }
@@ -165,16 +210,28 @@ export interface SuggestRecord {
 }
 
 export interface Student {
-  ID: string;
+  StudentID: string;
   Name: string;
   SeatNo: string;
   StudentNumber: string;
-  Photo: string;
   ClassName: string;
-  Attendance: AttendanceItem;
-  Period: string;
-  Absence: string;
+  // Attendance: AttendanceItem;
   PhotoUrl: string; //2018/10/24 new
+  AbsenceRate: number;  //Jean 20190522 增加 出席率
+  Absence: Absence;
+  PrevAbsence: PrevAbsence;
+}
+
+export interface Absence {
+  AbsenceName:string;
+  HelperRollCall: string;
+  RollCall: string;
+  RollCallChecked: string;
+}
+
+export interface PrevAbsence {
+  Period: string;
+  AbsenceName: string;
 }
 
 export interface AttendanceItem {

@@ -13,16 +13,19 @@
       </ng-container>
       <ng-template #titleText>
         <li class="breadcrumb-item active"
-            aria-current="page">{{groupInfo.name}}&nbsp;&nbsp;({{today}}：{{periodConf?.Name}})</li>
+            aria-current="page">
+          {{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</li>
       </ng-template>
     </ol>
   </nav>
-
+  <!--  -->
   <ng-container *ngIf="!studentChecks; else elseTemplate">
     <div style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
       loading...
     </div>
   </ng-container>
+
+  <!--  -->
   <ng-template #elseTemplate>
     <div class="d-flex flex-column-reverse flex-sm-row mb-3">
       <div class="btn-group dropdown mr-auto">
@@ -46,25 +49,72 @@
       <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
 
-    <div class="d-flex flex-wrap mt-3 mt-lg-1">
-      <div *ngFor="let student of studentChecks"
-           class="col-xs-12 col-sm-4 col-lg-3 col-xl-2 p-2">
-        <div class="card st-check w-100"
-             style="height: 22em;background-position: center;background-size: cover;"
-             [ngStyle]="{ 'background-image': 'url('+ student.data.PhotoUrl +')'}"
-             (click)="changeAttendance(student)">
+
+    <!-- 學生資料(no photo)-->
+    <div class="row mt-3 mt-lg-1"
+         *ngIf="!showPhoto">
+      <div class=" col-12 col-sm-6 col-lg-4"
+           style="margin-bottom: 0.75rem;"
+           *ngFor="let student of studentChecks">
+        <div class="card">
+          <div (click)="changeAttendance(student)"
+               class="point row pr-2">
+            <div class="col-9 card-body p-2 text-truncate ">
+              <div class="text-gray text-truncate d-flex">
+                <strong class="mb-0 text-truncate">{{student.data?.Name}}</strong>
+                <div class="ml-auto"
+                     *ngIf="student.data?.AbsenceRate"
+                     [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
+                  <span>{{student.data?.AbsenceRate}}</span>
+                  <span>%</span>
+                </div>
+              </div>
+              <div class="text-gray text-truncate d-flex">
+                <span>{{student.data?.StudentNumber}}</span>
+                <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
+              </div>
+            </div>
+            <div class="col-3 ad-status text-truncate py-2 my-auto"
+                 [ngStyle]="getAttendanceStyle(student)">
+              {{getAttendanceText(student)}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 學生資料 (with photo)-->
+    <div class="st-list d-flex flex-wrap mt-3 mt-lg-1"
+         *ngIf="showPhoto">
+      <div class="card st-check"
+           style="height:320px"
+           *ngFor="let student of studentChecks">
+        <label (click)="changeAttendance(student)"
+               class="point">
+          <div style="height: 259px;width: 100%;">
+            <div style="height:100%;width:100%;background-position: center center;background-size: cover;"
+                 [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
+          </div>
           <div style="position:absolute;bottom:0px;width:100%;">
             <div [ngStyle]="getAttendanceStyle(student)"
-                 class="w-100 ad-status text-truncate">{{getAttendanceText(student)}}</div>
-            <div class="card-body py-2 text-truncate w-100"
-                 style="background-color:rgba(255,255,255,0.8)">
-              <h5 class="mb-0 text-truncate">{{student.data?.Name}}</h5>
-              <div class="text-gray text-truncate d-flex">{{student.data?.StudentNumber}}
+                 class="w-100 ad-status text-truncate">
+              {{getAttendanceText(student)}}</div>
+            <div class="card-body py-2 text-truncate w-100">
+              <div class="text-gray text-truncate d-flex">
+                <strong class="mb-0 text-truncate">{{student.data?.Name}}</strong>
+                <div class="ml-auto"
+                     *ngIf="student.data?.AbsenceRate"
+                     [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
+                  {{student.data?.AbsenceRate}} <span>%</span>
+                </div>
+              </div>
+              <div class="text-gray text-truncate d-flex">
+                <span>{{student.data?.StudentNumber}}</span>
                 <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
               </div>
             </div>
           </div>
-        </div>
+        </label>
       </div>
     </div>
 
@@ -74,48 +124,9 @@
     </div>
   </ng-template>
 
-  <!-- 
-  <ng-container *ngIf="!studentChecks; else elseTemplate">
-    <div>loading...</div>
-  </ng-container>
-  <ng-template #elseTemplate>
-    <div class="d-flex flex-column-reverse flex-sm-row">
-      <div class="btn-group dropdown mr-auto">
-        <button [matMenuTriggerFor]="menu" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <span *ngIf="!selectedAbsence">選擇假別</span>
-          <span *ngIf="selectedAbsence">假別：{{selectedAbsence}}</span>
-        </button>
-        <mat-menu #menu="matMenu">
-          <div *ngIf="!periodConf">loading...</div>
-          <button mat-menu-item *ngFor="let abb of periodConf?.Absence" (click)="selectedAbsence = abb.Name">{{abb?.Name}}</button>
-        </mat-menu>
-      </div>
-      <ng-container [ngTemplateOutlet]="save"></ng-container>
-    </div>
-
-    <div class="st-list d-flex flex-wrap mt-3 mt-lg-1">
-      <div *ngFor="let student of studentChecks" (click)="changeAttendance(student)" class="card st-check">
-        <img src="{{student.data.PhotoUrl}}" />
-        <div [ngStyle]="getAttendanceStyle(student)" class="ad-status text-truncate">{{getAttendanceText(student)}}</div>
-        <div class="card-body py-2 text-truncate">
-          <h5 class="mb-0 text-truncate">{{student.data?.Name}}</h5>
-          <div class="text-gray text-truncate d-flex">{{student.data?.StudentNumber}}
-            <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-right">
-      <ng-container [ngTemplateOutlet]="save"></ng-container>
-    </div>
-  </ng-template> -->
-
   <ng-template #save>
     <button (click)="saveRollCall()"
             type="button"
-            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
-      +')': '儲存'}}</button>
+            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary +')': '儲存'}}</button>
   </ng-template>
 </div>
