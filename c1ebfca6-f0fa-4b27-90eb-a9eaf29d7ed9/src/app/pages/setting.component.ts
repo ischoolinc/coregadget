@@ -18,11 +18,11 @@ export class SettingComponent implements OnInit {
   showPicture: boolean;
   teacherSetting: any;
   objectKeys = Object.keys;
-  today: string;
-  conf: ConfigData; //課程
   loading: boolean;
   settingList: any;
-  courses: any;
+
+  classList:any[];
+  courseList: any[];
 
   constructor(
     private dsa: DSAService,
@@ -39,14 +39,13 @@ export class SettingComponent implements OnInit {
     this.loading = true;
     try {
       //取得老師設定
-      const SettingJSON = await this.dsa.getTeacherSetting();
-      this.teacherSetting = JSON.parse(SettingJSON);
+      this.teacherSetting = await this.dsa.getTeacherSetting();
       this.settingList = this.objectKeys(this.teacherSetting);
 
-      //取得課程資料
-      this.today = await this.dsa.getToday();
-      this.conf = await this.dsa.getSchedule(this.today);
-      this.courses = this.conf.CourseConf;
+      //取得班級、課程資料
+      var rsp = await this.dsa.send("GetClassHelper");
+      this.classList = [].concat(rsp.Class || []);
+      this.courseList = [].concat(rsp.Course || []);
     } catch (error) {
 
     } finally {

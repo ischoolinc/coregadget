@@ -24,6 +24,13 @@ export class DSAService {
     }
   }
 
+  public async send(serviceName: string, body?: any) {
+    await this.ready;
+    const rsp = await this.contract.send(serviceName, body);
+    return rsp;
+  }
+
+
   /**
    * 取得缺曠類別節次
    */
@@ -68,7 +75,12 @@ export class DSAService {
 
     const req: any = {
       Period: period,
-      Student: JSON.stringify(data),
+      Student: data.map((item) => {
+        return {
+          ID: item.ID
+          , Absence: item.Absence
+        };
+      })//JSON.stringify(data),
     };
 
     if (type === 'Course') {
@@ -85,14 +97,22 @@ export class DSAService {
   /**
    * 儲存課堂點名小幫手
    */
-  public async setHelper(courseID: string, studentID: string) {
+  public async setHelper(type: string, targetID: string, studentID: string) {
     await this.ready;
+    var req: any;
 
-    const req: any = {
-      RefCourseID: courseID,
-      RefStudentID: studentID
-    };
-
+    if (type == "Class") {
+      req = {
+        RefClassID: targetID,
+        RefStudentID: studentID
+      };
+    }
+    if (type == "Course") {
+      req = {
+        RefCourseID: targetID,
+        RefStudentID: studentID
+      };
+    }
     const rsp = await this.contract.send('SetHelper', req);
 
     return rsp;
@@ -162,13 +182,12 @@ export class DSAService {
     await this.ready;
     const rsp = await this.contract.send('GetTeacherSetting');
 
+    var teacherSetting = JSON.parse(rsp.Content);
 
-    if (rsp.Content === "{}") {
-      const defaultSetting = '{"use_photo":true}'; //若老師初次設定檔案 
-      return defaultSetting;
-    }
+    if (!teacherSetting.usePhoto) teacherSetting.usePhoto = (teacherSetting.use_photo === false ? false : true);
+    if (!teacherSetting.teacherKey) teacherSetting.teacherKey = "";
 
-    const teacherSetting = rsp.Content
+
     return teacherSetting;
   }
 
@@ -235,7 +254,7 @@ export interface Student {
 }
 
 export interface Absence {
-  AbsenceName:string;
+  AbsenceName: string;
   HelperRollCall: string;
   RollCall: string;
   RollCallChecked: string;

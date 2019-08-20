@@ -167,6 +167,19 @@ export class ComprehensiveEditComponent implements OnInit {
                     keySplit(option.OptionText, keyWord);
                   };
                   splitTemplate();
+                  //建置預設的AnswerMatrix
+                  if (option.AnswerMatrix.length < option.Template.length) {
+                    option.Template.forEach((part, index) => {
+                      if(option.AnswerMatrix.length <= index){
+                        if(this.optionKey[part]){
+                          option.AnswerMatrix.push("");
+                        }
+                        else{
+                          option.AnswerMatrix.push(part);
+                        }
+                      }
+                    });
+                  }
                 });
               });
             });

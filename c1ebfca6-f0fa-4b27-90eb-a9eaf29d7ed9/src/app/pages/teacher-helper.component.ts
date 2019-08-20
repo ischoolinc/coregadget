@@ -13,8 +13,9 @@ import { Console } from '@angular/core/src/console';
 export class TeacherHelperComponent implements OnInit {
 
   today: string;
-  courseName: string;
-  courseID: string;
+  type: string;
+  targetName: string;
+  targetID: string;
   period: string;
   teacherHelper: TeacherHelper = {} as TeacherHelper;
   students: Student[];
@@ -36,16 +37,16 @@ export class TeacherHelperComponent implements OnInit {
 
 
     // 取得 setting  (是否取得照片)
-    const SettingJSON = await this.dsa.getTeacherSetting();
-    this.teacherSetting = JSON.parse(SettingJSON);
+    this.teacherSetting = await this.dsa.getTeacherSetting();
     this.settingList = this.objectKeys(this.teacherSetting);
-    this.showPhoto = this.teacherSetting['use_photo'];
+    this.showPhoto = this.teacherSetting['usePhoto'];
 
     this.today = await this.dsa.getToday();
     this.route.paramMap.subscribe(async pm => {
 
-      this.courseName = pm.get('name'); // course name
-      this.courseID = pm.get('id'); // course id
+      this.type = pm.get('type');
+      // this.targetName = pm.get('name'); // course name
+      this.targetID = pm.get('id'); // course id
       this.period = pm.get('period');
 
       try {
@@ -60,7 +61,7 @@ export class TeacherHelperComponent implements OnInit {
   public async reloadTeacherHelper() {
     this.students = [];
     // 取得學生清單
-    const _students = await this.dsa.getStudent('Course', this.courseID, this.today, this.period);
+    const _students = await this.dsa.getStudent(this.type, this.targetID, this.today, this.period);
     // 取得學生照片URL
     const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
@@ -70,15 +71,30 @@ export class TeacherHelperComponent implements OnInit {
       this.students.push(stu);
     }
     // 取得課程助手
-    const courseRecord = await this.dsa.getSchedule(this.today);
-    courseRecord.CourseConf.forEach((course) => {
-      console.log(this.courseID);
-      if (course.CourseID == this.courseID) {
-        this.teacherHelper.StudentID = course.StudentID;
-        this.teacherHelper.StudentName = course.StudentName;
-        this.teacherHelper.StudentNumber = course.StudentNumber;
+    var rsp = await this.dsa.send("GetClassHelper");
+    [].concat(rsp.Class || []).concat(rsp.Course || []).forEach(item => {
+      if (this.type == "Course" && item.CourseID == this.targetID) {
+        this.targetName = item.CourseName;
+        this.teacherHelper.StudentID = item.StudentID;
+        this.teacherHelper.StudentName = item.StudentName;
+        this.teacherHelper.StudentNumber = item.StudentNumber;
       }
-    });
+      if (this.type == "Class" && item.ClassID == this.targetID) {
+        this.targetName = item.ClassName;
+        this.teacherHelper.StudentID = item.StudentID;
+        this.teacherHelper.StudentName = item.StudentName;
+        this.teacherHelper.StudentNumber = item.StudentNumber;
+      }
+    });;
+    // const courseRecord = await this.dsa.getSchedule(this.today);
+    // courseRecord.CourseConf.forEach((course) => {
+    //   console.log(this.targetID);
+    //   if (course.CourseID == this.targetID) {
+    //     this.teacherHelper.StudentID = course.StudentID;
+    //     this.teacherHelper.StudentName = course.StudentName;
+    //     this.teacherHelper.StudentNumber = course.StudentNumber;
+    //   }
+    // });
 
   }
 
@@ -113,7 +129,7 @@ export class TeacherHelperComponent implements OnInit {
     const dialog = this.alert.waiting("儲存中...");
 
     try {
-      await this.dsa.setHelper(this.courseID, this.teacherHelper.StudentID);
+      await this.dsa.setHelper(this.type, this.targetID, this.teacherHelper.StudentID);
 
       this.router.navigate(['/setting']);
     } catch (error) {
