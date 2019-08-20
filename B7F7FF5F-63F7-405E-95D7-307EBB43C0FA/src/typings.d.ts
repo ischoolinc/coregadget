@@ -6,3 +6,4 @@ interface NodeModule {
 
 declare const gadget: any;
 declare const dsutil: any;
+declare const $: any;

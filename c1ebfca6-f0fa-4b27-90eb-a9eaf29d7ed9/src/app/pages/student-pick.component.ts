@@ -50,11 +50,10 @@ export class StudentPickComponent implements OnInit {
     this.today = await this.dsa.getToday();
 
     //setting 
-    const SettingJSON = await this.dsa.getTeacherSetting();
-    this.teacherSetting = JSON.parse(SettingJSON);
+    this.teacherSetting = await this.dsa.getTeacherSetting();
     this.settingList = this.objectKeys(this.teacherSetting);
 
-    this.showPhoto = this.teacherSetting['use_photo'];
+    this.showPhoto = this.teacherSetting['usePhoto'];
 
     this.groupInfo = { type: '', id: '', name: '' };
     await this.config.ready;
@@ -248,9 +247,11 @@ export class StudentPickComponent implements OnInit {
 
   //取得學生出席率 
   async loadAbsencreRate() {
-    // if(){
-    //  if(this.groupInfo.type=='Course')
-    this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
+    
+    if(this.groupInfo.type=='Course')
+      this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
+    else
+    this.absenceRates = {};
 
     console.log('', this.absenceRates);
     console.log("課程ID", this.groupInfo.id);
