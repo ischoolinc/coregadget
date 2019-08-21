@@ -192,21 +192,25 @@
                         RefExamID: $scope.current.template.ExamID // 定期評量ID
                         , Name: ''
                         , Weight: '1'
-                        , ExamID: 'Quiz_' + item.SubExamID
-                        , SubExamID: ''
-                        , Index: $scope.gradeItemConfig.Item.length + 1                                                                                                                                               
+                        , SubExamID: ''                                                                                                                                          
                     });
                 }
                 , JSONMode: function () {
                     $scope.gradeItemConfig.Mode = 'JSON';
                     var jsonList = [];
                     $scope.gradeItemConfig.Item.forEach(function (item) {
-                        jsonList.push({
-                            Name: item.Name
-                            , Weight: item.Weight
-                            , SubExamID: item.SubExamID
-                            , Index: item.Index
-                        });
+                        /**
+                         * 篩選目前定期評量 的平時評量項目
+                         * 定期評量ID、平時評量ID不可給使用者調整
+                         */
+                        if($scope.current.template.ExamID == item.RefExamID) {
+                            jsonList.push({
+                                RefExamID: item.RefExamID
+                                , Name: item.Name
+                                , Weight: item.Weight
+                                , SubExamID: item.Name
+                            });
+                        }
                     });
                     $scope.gradeItemConfig.JSONCode = JSON.stringify(jsonList, null, '    ');
                 }
@@ -227,14 +231,22 @@
                         alert('Parse Error');
                         return;
                     }
+                    // 1. json parse 
                     $scope.gradeItemConfig.Item = [];
                     jsonList.forEach(function (item) {
                         $scope.gradeItemConfig.Item.push({
-                            Name: item.Name
+                            RefExamID: item.RefExamID
+                            , Name: item.Name
                             , Weight: item.Weight
                             , SubExamID: item.SubExamID
-                            , Index: item.Index
                         });
+                    });
+                    // 2. 小考設定資料整理
+                    var itemList = $scope.gradeItemList.filter(item => 
+                        (item.RefExamID !== $scope.current.template.ExamID) 
+                        && (item.Permission == 'Editor'));
+                    itemList.forEach(item => {
+                        $scope.gradeItemConfig.Item.push(angular.copy(item));
                     });
                     $scope.gradeItemConfig.Mode = 'Editor';
                 }
