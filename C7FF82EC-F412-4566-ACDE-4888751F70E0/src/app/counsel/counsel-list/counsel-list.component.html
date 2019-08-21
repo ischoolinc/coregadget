@@ -20,14 +20,21 @@
       <ul class="rwd-table">
         <li class="thead">
           <ol class="tr">
-            <li class="sticky-top" style="width: 70px">座號</li>
-            <li class="sticky-top" style="width: 120px">姓名</li>
-            <li class="sticky-top" style="width: 70px">筆數</li>
-            <li class="sticky-top" style="width: 100px">最後日期</li>
-            <li class="sticky-top" style="width: 120px">對象</li>
-            <li class="sticky-top" style="width: 120px">方式</li>
+            <li class="sticky-top"
+                style="width: 70px">座號</li>
+            <li class="sticky-top"
+                style="width: 120px">姓名</li>
+            <li class="sticky-top"
+                style="width: 70px">筆數</li>
+            <li class="sticky-top"
+                style="width: 100px">最後日期</li>
+            <li class="sticky-top"
+                style="width: 120px">對象</li>
+            <li class="sticky-top"
+                style="width: 120px">方式</li>
             <li class="sticky-top">聯絡事項/內容</li>
-            <li class="sticky-top" style="width: 100px">轉介</li>
+            <li class="sticky-top"
+                style="width: 100px">轉介</li>
           </ol>
         </li>
         <li class="tbody">
@@ -41,6 +48,11 @@
             <li data-title="姓名"
                 title="{{stuRec.StudentName}}">
               <div style="width:100%;position: relative;">
+                <div *ngIf="stuRec.Status!='一般'"
+                     class="text-danger"
+                     style="position: absolute; top:-17px; left:-12px; z-index: 100;">
+                  <small>{{stuRec.Status}}</small>
+                </div>
                 <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
                   {{ stuRec.StudentName }}
                 </div>
