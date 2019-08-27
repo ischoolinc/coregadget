@@ -1,0 +1,13 @@
+.student-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.custom-control-label.my-font-bold {
+  font-weight: bold;
+}
+
+.custom-control-label {
+  min-width: 250px;
+}

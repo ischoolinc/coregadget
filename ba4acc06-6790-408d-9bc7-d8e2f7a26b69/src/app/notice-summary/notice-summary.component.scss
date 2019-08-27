@@ -1,0 +1,50 @@
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+ol.tr {
+  cursor: pointer;
+}
+
+
+.my-progress {
+  display: flex;
+  height: 1.5rem;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.12);;
+  border-radius: .25rem;
+}
+
+.my-progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #f79965;
+  transition: width .6s ease;
+}
+
+.my-progress-text {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.my-message {
+  width: 450px;
+}
+.my-message img,
+.my-message iframe {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 450px) {
+  .my-message {
+    max-width: 370px;
+  }
+}

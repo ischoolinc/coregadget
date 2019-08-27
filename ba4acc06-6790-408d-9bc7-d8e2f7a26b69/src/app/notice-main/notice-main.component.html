@@ -1,0 +1,41 @@
+<div>
+  <div class="d-flex flex-column flex-lg-row align-items-center mb-3">
+    <div class="mr-auto mb-3 mb-lg-0">
+      <span class="my-count">APP 註冊數統計：</span>
+      <span class="badge badge-info mr-2">老師({{installCount.T_Install}} / {{installCount.T_Count}})</span>
+      <span class="badge badge-info mr-2">學生({{installCount.S_Install}} / {{installCount.S_Count}})</span>
+      <span class="badge badge-info">家長({{installCount.P_Install}} / {{installCount.P_Count}}) 涵蓋學生數：{{installCount.Cover}}</span>
+    </div>
+    <div>
+      <button class="btn btn-dark mr-3" routerLink="/notice_push" [queryParams]="{to: 'teacher'}">新增老師簡訊</button>
+      <button class="btn btn-dark" routerLink="/notice_push" [queryParams]="{to: 'student'}">新增學生及家長簡訊</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading; else noticeList">loading...</div>
+  <ng-template #noticeList>
+    <div class="card mb-2" *ngFor="let notice of notices">
+      <div class="card-body">
+        <h5>{{notice.Title}}</h5>
+        <p class="card-text">{{notice.Message}}</p>
+        <div class="card-subtitle mt-2 d-sm-flex align-items-center">
+          <div class="mb-2 mb-sm-0">
+            <span class="badge badge-light mr-1">{{notice.PostTime}}</span>
+            <span class="badge badge-success">{{notice.DisplaySender}}</span>
+          </div>
+          <button class="btn btn-info ml-auto"
+            [routerLink]="['/notice_summary', notice.Id]">
+            查詢（已讀：{{notice.Readed}} 未讀：{{notice.Unread}})
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <mat-paginator
+    [length]="noticeLength"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[10, 30, 100]"
+    (page)="onPageEvent($event)">
+  </mat-paginator>
+
+</div>

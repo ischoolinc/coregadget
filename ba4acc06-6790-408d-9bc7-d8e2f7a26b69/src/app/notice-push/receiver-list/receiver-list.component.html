@@ -1,0 +1,13 @@
+<mat-chip *ngFor="let receiver of receivers"
+  (removed)="removeSelectionItem(receiver)"
+  (click)="showDetail(receiver)"
+  color="primary"
+  [selected]="receiver.previewable"
+  class="mr-2 py-2 px-3 mb-2">
+  {{receiver.displayText}}
+  <mat-icon matChipRemove>cancel</mat-icon>
+</mat-chip>
+
+<ng-template #tplLoading>
+  <p>Loading...</p>
+</ng-template>

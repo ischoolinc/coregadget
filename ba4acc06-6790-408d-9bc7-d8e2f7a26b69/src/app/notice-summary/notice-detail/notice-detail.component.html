@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>訊息讀取記錄</h1>
+
+<div mat-dialog-content style="height: 250px">
+  <div *ngIf="loading; else log_content">loading...</div>
+
+  <ng-template #log_content>
+    <div *ngIf="histories.length <= 0">沒有任何讀取記錄。</div>
+    <ng-container *ngIf="histories.length > 0">
+      <ng-container *ngFor="let group of groupby">
+        <p><strong>{{group.rel}}</strong></p>
+        <p *ngFor="let log of group.records">{{log.Time}}</p>
+      </ng-container>
+    </ng-container>
+  </ng-template>
+</div>
+
+<div mat-dialog-actions>
+  <p>* 收件者每開啟一次訊息即增加一筆讀取記錄</p>
+</div>

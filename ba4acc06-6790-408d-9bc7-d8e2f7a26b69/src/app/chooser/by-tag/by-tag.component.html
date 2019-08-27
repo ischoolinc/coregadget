@@ -1,0 +1,49 @@
+<div *ngIf="!loading; else tplLoading">
+  <div [hidden]="processing">
+    <div class="mb-3" *ngFor="let item of tagPrefixs;let idx = index;">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input"
+          [attr.id]="'prefix_check_' + idx"
+          [(ngModel)]="item.checked"
+          (ngModelChange)="toggleAll(item)">
+
+        <label class="custom-control-label my-font-bold"
+          [attr.for]="'prefix_check_' + idx">
+          <h5>{{item.Prefix}} ({{item.MemberCount}})</h5></label>
+      </div>
+      <div class="student-container">
+        <div class="mb-2" *ngFor="let tag of item.Tags">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"
+              [attr.id]="'tag_check_' + tag.TagId"
+              [(ngModel)]="tag.checked"
+              (ngModelChange)="reflectClassSelection(item)">
+            <label class="custom-control-label"
+              [attr.for]="'tag_check_' + tag.TagId">
+              {{tag.Name}} ({{tag.MemberIds.length}})</label>
+            <!-- {{tag | json}} -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p [hidden]="!processing" [ngClass]="message.msgClass || ''">{{ message.text }}</p>
+</div>
+
+<ng-template #tplLoading>
+  <p>loading...</p>
+</ng-template>
+
+<ng-template #tplOuterDialogTitle>
+  <div>
+    <span class="mr-1">已選擇 {{selectionCount}} 人</span>
+    <span class="my-note">(同一帳號，人數不會重複計數)</span>
+  </div>
+</ng-template>
+
+<ng-template #tplOuterDialogAction>
+  <button [hidden]="processing" mat-flat-button color="primary" class="add-btn" (click)="confirm()">
+    <mat-icon>add</mat-icon>加入收件者
+  </button>
+</ng-template>

@@ -1,0 +1,83 @@
+<ng-container *ngIf="!loading; else tplLoading">
+  <div class="d-flex flex-column flex-md-row">
+    <div class="bg-light py-1 px-3 pb-3" style="flex: 1">
+      <div class="form-group">
+        <label class="col-form-label">選擇收件者</label>
+        <button mat-icon-button color="primary" (click)="chooser()">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      </div>
+
+      <span *ngIf="!receivers.length; else receiverList"
+        class="no-data text-danger mb-2">還沒選擇任何收件者。</span>
+      <mat-chip-list class="typography-body-1">
+        <ng-template #receiverList>
+          <app-receiver-list></app-receiver-list>
+        </ng-template>
+      </mat-chip-list>
+    </div>
+    <div class="px-4" style="max-width: 490px;">
+      <div class="form-group">
+        <mat-form-field>
+          <input type="text" placeholder="發送單位" matInput required [formControl]="senderControl" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of filterDisplaySenders | async" [value]="option">
+              {{option}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="form-group" *ngIf="target === 'STUDENT'">
+        <label class="col-form-label">傳送給</label>
+        <div class="row">
+          <div class="col-sm-4 mb-2">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="customCheck1"
+                      name="receiverType" [(ngModel)]="receiverType" value="學生與家長">
+              <label class="custom-control-label" for="customCheck1">學生與家長</label>
+            </div>
+          </div>
+          <div class="col-sm-4 mb-2">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="customCheck2"
+                      name="receiverType" [(ngModel)]="receiverType" value="只有學生">
+              <label class="custom-control-label" for="customCheck2">只有學生</label>
+            </div>
+          </div>
+          <div class="col-sm-4 mb-2">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="customCheck3"
+                      name="receiverType" [(ngModel)]="receiverType" value="只有家長">
+              <label class="custom-control-label" for="customCheck3">只有家長</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-form-field class="form-group textfield-box">
+        <input matInput placeholder="簡訊標題" required [(ngModel)]="smstitle">
+      </mat-form-field>
+
+      <div class="d-flex justify-content-center">
+        <div style="max-width: 450px;">
+          <app-redactor [(ngModel)]="smscontent" #editor="ngModel" required></app-redactor>
+        </div>
+      </div>
+
+      <div class="text-center text-md-right pt-3">
+        <button mat-flat-button (click)="sendSelf()">測試傳送給自己</button>
+        <button mat-flat-button color="primary" (click)="sendMessage()">送出</button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #tplLoading>
+  <p>loading...</p>
+</ng-template>
+
+<ng-template #tplOuterDialogTitle>
+</ng-template>
+
+<ng-template #tplOuterDialogAction>
+</ng-template>

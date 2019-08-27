@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+
+// html {font-size: 16pt;}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+button:focus {
+  outline: unset;
+}
+
+@import '~@angular/material/theming';
+
+// https://github.com/angular/components/blob/master/src/material/core/typography/_typography.scss
+// $custom-typography: mat-typography-config(
+//   $button: mat-typography-level(18px, 14px, 500),
+//   $body-2: mat-typography-level(16px, 24px, 500),
+// );
+
+// @include angular-material-typography($custom-typography);
+// @include mat-core($custom-typography);
+
+.add-btn {
+  float: right;
+}

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>智慧簡訊</title>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/material.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="./css/material.css" rel="stylesheet" type="text/css">
+    <link href="./css/default.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container-fluid cbs d-flex justify-content-between flex-column">
+
+        <!-- 簡訊首頁 -->
+        <div id="index" page>
+            <nav aria-label="breadcrumb text-nowrap text-truncate">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">智慧簡訊</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex flex-column flex-md-row align-items-md-center mb-3">
+                <code class="mb-2 mb-md-0"><i class="material-icons">error_outline</i> 可用簡訊總數 10000 則，已發送 35 則，尚於 9965 則。</code>
+                <button class="ml-auto btn btn-dark" onclick="toggle(event, 'msg-add')">新增簡訊</button>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5>本校高斯班劉若緹、羅莎琳班周伶、舒曼班黃凱琳參加108全國中等學校運動會新竹市跆拳道選拔賽表現優異</h5>
+                    <p class="card-text">劉若緹  榮獲  品勢國中女子個人組第一名、團體組第一名。
+
+                            周伶    榮獲  品勢國中女子團體組第一名。
+                            
+                            黃凱琳  榮獲  品勢國中女子組第二名、團體組第一名。
+                            
+                            以上三位同學獲得代表新竹市 參與108年全國中等學校運動會。</p>
+                    <div class="card-subtitle mt-2 d-sm-flex align-items-center">
+                        <div class="mb-2 mb-sm-0">
+                            <span class="badge badge-light">2019-02-19</span>
+                            <span class="badge badge-success">教務處教學組長</span>
+                        </div>
+                        <button class="btn btn-info ml-auto" onclick="toggle(event, 'msg-page')">查詢（已讀：1 未讀：44）</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5>新竹市107學年度國中奧林匹亞科學趣味競賽金榜</h5>
+                    <p class="card-text">霹靂啪啦閃亮亮：林妤真、李亞宸、陳彥廷、黃威倫、呂孟昕榮獲七年級組 二足運動第三名；天空之橋第一名；水黽家族pk賽 第五名；蘋果大力士第三名<br>SHIELD神盾局：張凱翔、趙定宇、鐘奕其、呂紫萱、黃承雁榮獲八年級組二足運動優勝；天空之橋第一名；水黽家族pk賽第四名；蘋果大力士第二名</p>
+                    <div class="card-subtitle mt-2 d-sm-flex align-items-center">
+                        <div class="mb-2 mb-sm-0">
+                            <span class="badge badge-light">2019-01-10</span>
+                            <span class="badge badge-success">教務處教學組長</span>
+                        </div>
+                        <button class="btn btn-info ml-auto" onclick="toggle(event, 'msg-page')">查詢（已讀：2 未讀：43）</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5>107年度新竹市生命教育典範學習3Q達人獲獎學生名單</h5>
+                    <p class="card-text">903蔡伊甯同學榮獲新竹市生命教育典範學習-AQ達人競賽全市佳作
+
+                            906鄭子綸同學榮獲新竹市生命教育典範學習-EQ達人競賽全市第二名
+                            
+                            906鄭又慈同學榮獲新竹市生命教育典範學習-MQ達人競賽全市佳作</p>
+                    <div class="card-subtitle mt-2 d-sm-flex align-items-center">
+                        <div class="mb-2 mb-sm-0">
+                            <span class="badge badge-light">2019-01-03</span>
+                            <span class="badge badge-success">輔導處</span>
+                        </div>
+                        <button class="btn btn-info ml-auto" onclick="toggle(event, 'msg-page')">查詢（已讀：23 未讀：17）</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 簡訊查詢 -->
+        <div id="msg-page" page style="display: none;">
+            <nav aria-label="breadcrumb text-nowrap text-truncate">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" onclick="toggle(event, 'index')">智慧簡訊</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">簡訊查詢</li>
+                </ol>
+            </nav>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <img class="w-75" src="img/sample.png">
+                    </div>
+                    <img class="mt-3" src="img/sample-2.png">
+                </div>
+                <div class="col-md-8">
+                    <button class="btn btn-dark float-right mb-3">匯出 Excel</button>
+                    <ul class="rwd-table">
+                        <li class="thead">
+                            <ol class="tr">
+                                <li>班級</li>
+                                <li>座號</li>
+                                <li>學號</li>
+                                <li>姓名</li>
+                                <li>讀取</li>
+                                <li>安裝</li>
+                            </ol>
+                        </li>
+                        <li class="tbody">
+                            <ol class="tr">
+                                <li data-title="班級">普通科一年1班</li>
+                                <li data-title="座號">1</li>
+                                <li data-title="學號">510002</li>
+                                <li data-title="姓名">王同學</li>
+                                <li data-title="讀取"></li>
+                                <li data-title="安裝"></li>
+                            </ol>
+                            <ol class="tr">
+                                <li data-title="班級">普通科一年1班</li>
+                                <li data-title="座號">1</li>
+                                <li data-title="學號">510002</li>
+                                <li data-title="姓名">王同學</li>
+                                <li data-title="讀取"><i class="material-icons">check</i></li>
+                                <li data-title="安裝"></li>
+                            </ol>
+                            <ol class="tr">
+                                <li data-title="班級">普通科一年1班</li>
+                                <li data-title="座號">1</li>
+                                <li data-title="學號">510002</li>
+                                <li data-title="姓名">王同學</li>
+                                <li data-title="讀取"><i class="material-icons">check</i></li>
+                                <li data-title="安裝"><i class="material-icons">check</i></li>
+                            </ol>
+                            <ol class="tr">
+                                <li data-title="班級">普通科一年1班</li>
+                                <li data-title="座號">1</li>
+                                <li data-title="學號">510002</li>
+                                <li data-title="姓名">王同學</li>
+                                <li data-title="讀取"></li>
+                                <li data-title="安裝"></li>
+                            </ol>
+                            <ol class="tr">
+                                <li data-title="班級">普通科一年1班</li>
+                                <li data-title="座號">1</li>
+                                <li data-title="學號">510002</li>
+                                <li data-title="姓名">王同學</li>
+                                <li data-title="讀取"><i class="material-icons">check</i></li>
+                                <li data-title="安裝"></li>
+                            </ol>
+                            <ol class="tr">
+                                <li data-title="班級">普通科一年1班</li>
+                                <li data-title="座號">1</li>
+                                <li data-title="學號">510002</li>
+                                <li data-title="姓名">王同學</li>
+                                <li data-title="讀取"><i class="material-icons">check</i></li>
+                                <li data-title="安裝"><i class="material-icons">check</i></li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增簡訊 -->
+        <div id="msg-add" page style="display: none;">
+            <nav aria-label="breadcrumb text-nowrap text-truncate">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" onclick="toggle(event, 'index')">智慧簡訊</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">新增簡訊</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex flex-column border p-3">
+                <h6>依科系班級搜尋收件者名單</h6>
+                <div class="d-md-flex mb-2">
+                    <div class="dropdown mr-2 mb-2 mb-md-0">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            請選擇科系
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">全校不分科系</a>
+                            <a class="dropdown-item" href="#">普通科</a>
+                            <a class="dropdown-item" href="#">國貿科</a>
+                            <a class="dropdown-item" href="#">商經科</a>
+                        </div>
+                    </div>
+                    <div class="dropdown mr-2 mb-2 mb-md-0">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            全部年級
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">全部年級</a>
+                            <a class="dropdown-item" href="#">一年級</a>
+                            <a class="dropdown-item" href="#">二年級</a>
+                            <a class="dropdown-item" href="#">三年級</a>
+                        </div>
+                    </div>
+                    <div class="dropdown mr-2 mb-2 mb-md-0">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            全部班級
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">全部班級</a>
+                            <a class="dropdown-item" href="#">一班</a>
+                            <a class="dropdown-item" href="#">二班</a>
+                            <a class="dropdown-item" href="#">三班</a>
+                            <a class="dropdown-item" href="#">四班</a>
+                        </div>
+                    </div>
+                    <div class="btn btn-light mr-2 mb-2 mb-md-0" data-toggle="modal" data-target="#exampleModalCenter">選擇學生（如未選擇，則預設全班）</div>
+                </div>
+                <div class="typography-body-1">
+                    <h6>已選名單</h6>
+                    <div class="badge badge-light mr-2 py-2 px-3 mb-2">
+                        王同學（510002）
+                        <button type="button" class="close ml-3">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <h6>依類別團體搜尋收件者名單</h6>
+                <div class="d-md-flex mb-2">
+                    <div class="dropdown mr-2 mb-2 mb-md-0">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            請選擇類別團體
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">全校團體</a>
+                            <a class="dropdown-item" href="#">社團</a>
+                        </div>
+                    </div>
+                    <div class="dropdown mr-2 mb-2 mb-md-0">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            全部
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">全部</a>
+                            <a class="dropdown-item" href="#">合唱團</a>
+                        </div>
+                    </div>
+                    <div class="btn btn-dark ml-auto"><i class="material-icons">add</i>加入收件者</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-form-label">收件者</label>
+                <div class="typography-body-1">
+                    <div class="badge badge-light mr-2 py-2 px-3 mb-2">
+                        普通科一年一班 王同學（510002）
+                        <button type="button" class="close ml-3 snackbar-toggler" onclick="showSnackbar()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="badge badge-light mr-2 py-2 px-3 mb-2">
+                        普通科一年一班 王同學（510002）
+                        <button type="button" class="close ml-3 snackbar-toggler" onclick="showSnackbar()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="badge badge-light mr-2 py-2 px-3 mb-2">
+                        普通科一年一班 王同學（510002）
+                        <button type="button" class="close ml-3 snackbar-toggler" onclick="showSnackbar()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="badge badge-light mr-2 py-2 px-3 mb-2">
+                        普通科一年一班 王同學（510002）
+                        <button type="button" class="close ml-3 snackbar-toggler" onclick="showSnackbar()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="badge badge-light mr-2 py-2 px-3 mb-2">
+                        普通科一年一班 王同學（510002）
+                        <button type="button" class="close ml-3 snackbar-toggler" onclick="showSnackbar()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">收件者身份</label>
+                <div class="row">
+                    <div class="col-sm-2 mb-2">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">全部</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 mb-2">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">教師</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 mb-2">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">家長</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 mb-2">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">學生</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group textfield-box">
+                <label class="col-form-label" for="formSender">發送者</label>
+                <input type="password" class="form-control" id="formSender" placeholder="請輸入發送者">
+            </div>
+            <div class="form-group textfield-box">
+                <label class="col-form-label" for="formTitle">標題</label>
+                <input type="password" class="form-control" id="formTitle" placeholder="請輸入標題">
+            </div>
+            <div class="form-group textfield-box">
+                <label class="col-form-label" for="formContent">內容</label>
+                <textarea class="form-control" id="formContent" placeholder="請輸入內容" rows="3"></textarea>
+            </div>
+
+            <div class="text-center text-md-right pt-3">
+                <button type="button" class="btn btn-outline-dark mr-3">取消</button>
+                <button type="button" class="btn btn-info">送出</button>
+            </div>
+
+            <!-- 移除收件者提示 snackbar -->
+            <div class="snackbar">
+                <div class="snackbar-body">
+                    已將「普通科一年一班 王同學（510002）」從收件者移除。
+                </div>
+                <button class="snackbar-btn" type="button">復原</button>
+            </div>
+
+            <!-- 選擇學生 Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">選擇學生</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">王同學（510002）</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">王同學（510002）</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">王同學（510002）</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">王同學（510002）</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">王同學（510002）</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-info">確定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="text-center p-2 mt-auto">
+            Powered By ischool
+        </footer>
+    </div>
+
+    <script type="text/javascript">
+        function toggle(event,page){
+            event.preventDefault();
+            event.stopPropagation();
+            $('[page]').hide();
+            $(`#${page}`).show();
+
+            window.scrollTo(0,0);
+        }
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        function showSnackbar() {
+            $('.snackbar').toggleClass('show');
+            setTimeout(function () {
+                $('.snackbar').toggleClass('show');
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

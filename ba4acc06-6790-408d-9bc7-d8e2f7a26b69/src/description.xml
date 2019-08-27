@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="發送訊息" description="發送訊息(管理者)" preload="true">
+    <Icon>assets/icon.png</Icon>
+    <Title lang="zh-TW">發送訊息</Title>
+    <Title lang="zh-CN">發送訊息</Title>
+    <Title lang="en-US">發送訊息</Title>
+  </ModulePrefs>
+</Module>
