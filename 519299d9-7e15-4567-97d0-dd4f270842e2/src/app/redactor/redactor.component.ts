@@ -36,6 +36,7 @@ export class RedactorComponent implements OnInit, OnDestroy {
       buttons: ['html', 'format', 'bold', 'italic', 'lists', 'link'],
       plugins: ['video', 'addimage'], // 插入影片、圖片功能。
       autoparseVideo: false, // 關閉自動解析影片功能，這會打壞圖片功能...
+      paragraphize: false,  // 不要破壞原本 attr 的結構
       callbacks: {
         started() {
           // 在這裡只能用 this.source.setCode 這類 api 進行操作，其他方式可能不運作。

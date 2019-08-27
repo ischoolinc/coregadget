@@ -28,6 +28,7 @@ export class RedactorValueAccessorDirective implements OnInit, OnDestroy, Contro
     this.component.htmlChange.pipe(
       takeUntil(this.$dispose)
     ).subscribe((v: string) => {
+      v = v.replace(/<script(.*?[^>]?)>([\w\W]*?)<\/script>/gi, '');
       this._onChange(v);
     });
 

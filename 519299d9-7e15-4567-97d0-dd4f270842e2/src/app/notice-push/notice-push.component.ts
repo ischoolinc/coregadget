@@ -28,6 +28,8 @@ export class NoticePushComponent implements OnInit, NavigationItem {
   smstitle: string;
   smscontent: string;
 
+  sending = false;
+
   constructor(
     nav: NavigationItemDirective,
     private dialog: MatDialog,
@@ -56,44 +58,62 @@ export class NoticePushComponent implements OnInit, NavigationItem {
 
   }
 
+  /** 驗證訊息資料 */
+  validMessage() {
+    // console.log(this.sending, this.myControl.value, this.smstitle, this.smscontent, this.receivers);
+
+    if (this.sending) { return false; }
+
+    if (!this.smstitle) {
+      this.snackbar.open('請輸入「簡訊標題」。', null, { duration: 5000 });
+      return false;
+    }
+
+    const txt = Util.trimHtml(this.smscontent);
+    if (!(txt || '').trim()) {
+      this.snackbar.open('請輸入「簡訊內容」。', null, { duration: 5000 });
+      return false;
+    }
+
+    return true;
+  }
+
   async sendSelf() {
+
+    if (!this.validMessage()) { return; }
+
     const user = await this.teacher.getUserInfo().toPromise();
 
     this.snackbar.open(user.userName, "立即傳送", {
       duration: 5000,
     }).onAction()
     .subscribe(() => {
+      this.sending = true;
       this.teacher.pushNoticeSelf(this.smstitle, this.smscontent)
         .subscribe(rsp => {
           this.snackbar.open(`傳送結果：${rsp.postResult}`, null, { duration: 5000 });
-        }, err => {
+        }, (err) => {
           this.snackbar.open('傳送失敗。', null, { duration: 5000 });
+        }, () => {
+          this.sending = false;
         });
     });
   }
 
   sendMessage() {
 
+    if (!this.validMessage()) { return; }
+
     if (this.receivers.length <= 0) {
       this.snackbar.open('請選擇收件者。', null, { duration: 5000 });
-      return;
-    }
-
-    if (!this.smstitle) {
-      this.snackbar.open('請輸入「簡訊標題」。', null, { duration: 5000 });
-      return;
-    }
-
-    const txt = Util.trimHtml(this.smscontent);
-    if (!(txt || '').trim()) {
-      this.snackbar.open('請輸入「簡訊內容」。', null, { duration: 5000 });
-      return;
+      return false;
     }
 
     this.snackbar.open('確定傳送訊息？', '立即傳送', {
       duration: 5000
     }).onAction()
     .subscribe(async () => {
+      this.sending = true;
 
       const nestArray = this.receivers.map(r => r.IdList);
       const flatArray = flatten(nestArray);
@@ -113,6 +133,10 @@ export class NoticePushComponent implements OnInit, NavigationItem {
       } else {
         this.snackbar.open('傳送失敗。', null, { duration: 5000 });
       }
+    }, (err) => {
+      this.snackbar.open('傳送失敗，過程中發生錯誤。', null, { duration: 5000 });
+    }, () => {
+      this.sending = false;
     });
   }
 }
