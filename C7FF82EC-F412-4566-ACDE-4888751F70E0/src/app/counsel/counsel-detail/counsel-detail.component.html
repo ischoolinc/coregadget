@@ -5,7 +5,7 @@
     <div class="row mt-3">
       <div class="col-md-3">
         <div class="sticky-top mb-3">
-          <div class="float-right ml-1 dropdown ">
+          <div class="float-right ml-1 dropdown " *ngIf="_interviewEnable">
             <button class="btn btn-sm btn-light dropdown-toggle"
                     type="button"
                     data-toggle="dropdown"
@@ -57,9 +57,9 @@
           </a> -->
             <a href="javascript:;"
                class="list-group-item list-group-item-action d-flex"
-               (click)="routeTo('comprehensive')"
+               (click)="!_interviewEnable||routeTo('comprehensive')"
                data-toggle="list"
-               [ngClass]="{ 'active show': currentItem == 'comprehensive' }">
+               [ngClass]="{ 'active show': currentItem == 'comprehensive', 'disabled': !_interviewEnable  }">
               綜合紀錄表
             </a>
             <a href="javascript:void(0);"
@@ -72,32 +72,37 @@
             </a>
             <a href="javascript:void(0);"
                class="list-group-item list-group-item-action d-flex"
-               (click)="routeTo('absent')"
-               data-toggle="list">
+               (click)="!_interviewEnable||routeTo('absent')"
+               data-toggle="list"
+               [ngClass]="{ 'disabled': !_interviewEnable }">
               缺曠獎懲
             </a>
             <a href="javascript:void(0);"
                class="list-group-item list-group-item-action d-flex"
-               (click)="routeTo('cadre')"
-               data-toggle="list">
+               (click)="!_interviewEnable||routeTo('cadre')"
+               data-toggle="list"
+               [ngClass]="{ 'disabled': !_interviewEnable }">
               幹部紀錄
             </a>
             <a href="javascript:void(0);"
                class="list-group-item list-group-item-action d-flex"
-               (click)="routeTo('service_learning')"
-               data-toggle="list">
+               (click)="!_interviewEnable||routeTo('service_learning')"
+               data-toggle="list"
+               [ngClass]="{ 'disabled': !_interviewEnable }">
               服務學習
             </a>
             <a href="javascript:void(0);"
                class="list-group-item list-group-item-action d-flex"
-               (click)="routeTo('exam_score')"
-               data-toggle="list">
+               (click)="!_interviewEnable||routeTo('exam_score')"
+               data-toggle="list"
+               [ngClass]="{ 'disabled': !_interviewEnable }">
               評量成績
             </a>
             <a href="javascript:void(0);"
                class="list-group-item list-group-item-action d-flex"
-               (click)="routeTo('semester_score')"
-               data-toggle="list">
+               (click)="!_interviewEnable||routeTo('semester_score')"
+               data-toggle="list"
+               [ngClass]="{ 'disabled': !_interviewEnable }">
               學期成績
             </a>
           </div>

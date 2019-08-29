@@ -51,14 +51,14 @@
       <li class="nav-item">
         <a class="nav-link"
            [attr.data-toggle]="roleService.enableComprehensive?'tab':null"
-           (click)="routeTo('/comprehensive')"
+           (click)="!roleService.enableComprehensive || routeTo('/comprehensive')"
            [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
           綜合紀錄表</a>
       </li>
       <li class="nav-item">
         <a class="nav-link"
            [attr.data-toggle]="roleService.enableCase?'tab':null"
-           (click)="routeTo('/psychological_test')"
+           (click)="!roleService.enablePsychologicalTest || routeTo('/psychological_test')"
            [ngClass]="{'active': currentComponent == 'psychological-test', 'disabled': !roleService.enablePsychologicalTest}">
           心理測驗</a>
       </li>

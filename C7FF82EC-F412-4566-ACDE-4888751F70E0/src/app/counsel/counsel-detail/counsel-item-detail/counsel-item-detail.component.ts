@@ -81,7 +81,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._editMode = "edit";
     counselView.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview.caseInterview = counselView;
-    let obj = Object.assign({},counselView);
+    let obj = Object.assign({}, counselView);
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
     // 關閉畫面
@@ -89,8 +89,8 @@ export class CounselItemDetailComponent implements OnInit {
       if (!this._addInterview.isCancel) {
         // 重整資料
         this.loadData();
-      }else{
-        Object.assign(this._addInterview.caseInterview,obj);
+      } else {
+        Object.assign(this._addInterview.caseInterview, obj);
       }
       $("#addCaseInterview").off("hide.bs.modal");
     });
@@ -117,11 +117,7 @@ export class CounselItemDetailComponent implements OnInit {
 
     let ServiceName: string = "GetStudentCase";
 
-    if (
-      this.counselDetailComponent.currentStudent.Role.indexOf("認輔老師") >= 0
-    ) {
-      // ServiceName = "GetStudentCase1";
-    }
+
 
     let resp = await this.dsaService.send(ServiceName, {
       Request: {
@@ -199,7 +195,14 @@ export class CounselItemDetailComponent implements OnInit {
       rec.Content = counselRec.Content;
       rec.CaseNo = counselRec.CaseNo;
 
-      data.push(rec);
+      // 如果只有認輔老師權限，認輔紀錄只能看到自己的。
+      if (this.globalService.MyCounselTeacherRole === "認輔老師") {
+        if (counselRec.AuthorTeacherID === this.counselDetailComponent.counselStudentService.teacherInfo.ID) {
+          data.push(rec);
+        }
+      } else {
+        data.push(rec);
+      }
     });
     this.caseInterview = data;
     let tmp = [];
@@ -217,6 +220,6 @@ export class CounselItemDetailComponent implements OnInit {
     this.isLoading = false;
 
     this.isDeleteButtonDisable = !this.roleService.enableAdmin;
-   
+
   }
 }
