@@ -3,6 +3,7 @@ import { Quiz, QuizItem, MappingTable } from '../psychological-quiz-setup-vo';
 import { DsaService } from "../../../dsa.service";
 import * as XLSX from 'xlsx';
 import * as node2json from 'nodexml';
+import { Alert } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-add-psychological-quiz-data',
@@ -18,7 +19,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
   isSystemDefault: boolean = false;
   isCancel: boolean = true;
   isQuizNameHasValue: boolean = false;
-  isSaveButtonDisable: boolean = true;
+  isSaveButtonDisable: boolean = false;
 
   MappingTableList: MappingTable[] = [];
 
@@ -41,6 +42,14 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
     let useMTable: string = 'f';
     let MTableXML: string = '';
     this.QuizData.parseXML();
+
+    // 檢查欄位是否重複
+    if(this.QuizData.CheckQuizItemSame())
+    {
+      alert("測驗項目有重覆無法儲存");
+      this.isCancel = true;
+      return;
+    }
 
     if (this.isUserDefine) {
       QuizName = this.QuizData.QuizName;
@@ -186,6 +195,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
       this.isUserDefine = true;
       this.isSystemDefault = false;
       this.QuizData.UseMappingTable = false;
+      this.isSaveButtonDisable = false;
     }
 
     if (name === '系統預設') {

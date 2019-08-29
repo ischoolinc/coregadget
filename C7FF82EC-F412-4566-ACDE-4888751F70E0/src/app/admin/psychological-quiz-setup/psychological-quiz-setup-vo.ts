@@ -13,6 +13,24 @@ export class Quiz {
 
     QuizDataFieldXML: string = "";
 
+    // 檢查欄位名稱是否重複
+    CheckQuizItemSame() {
+        let  value = false;
+        let tmp: string[] =[];
+        
+        this.QuizItemList.forEach(item => {
+            if (tmp.includes(item.QuizName))
+            {
+                value = true;
+            }else
+            {
+                tmp.push(item.QuizName);
+            }
+        });
+
+        return value;
+    }
+
     // 取得測驗類型
     GetQuizType() {
         if (this.UseMappingTable) {
