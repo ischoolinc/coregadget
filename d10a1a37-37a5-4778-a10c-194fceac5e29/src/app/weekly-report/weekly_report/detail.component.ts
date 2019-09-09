@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { WeeklyDataService } from '../weekly-data.service';
 import { GadgetService, Contract } from 'src/app/gadget.service';
 import { Utils } from 'src/app/util';
+import { DialogService } from 'src/app/behavior/dialog-service.service';
 
 @Component({
   selector: 'app-detail',
@@ -25,7 +26,7 @@ export class DetailComponent implements OnInit {
   behaviorDataList: any;
   teacherName: string = "";
 
-  constructor(private route: ActivatedRoute, private gadget: GadgetService, private weeklyData: WeeklyDataService, private router: Router) {
+  constructor(private route: ActivatedRoute, private gadget: GadgetService, private weeklyData: WeeklyDataService, private router: Router, private dialogService: DialogService) {
     // 取得 contract 連線。
 
   }
@@ -34,7 +35,7 @@ export class DetailComponent implements OnInit {
   async ngOnInit() {
     this.courseName = this.route.snapshot.paramMap.get("name");
     this.weeklyReportUID = this.route.snapshot.paramMap.get("wruid");
-    this.teacherName = this.weeklyData.teacherName;
+    // this.teacherName = this.weeklyData.teacherName; // 老師名字不再預設 使用下面的service 抓教師名字
 
     // console.log(this.courseID);
     this.contract = await this.gadget.getContract('kcis');
@@ -118,5 +119,35 @@ export class DetailComponent implements OnInit {
     this.router.navigate(['/weekly_report/add-s1/' + this.route.snapshot.paramMap.get("courseid") + '/' + this.courseName + '/' + this.weeklyReportUID], {
     });
   }
+
+  
+  // 刪除資料
+  async delete() {
+    const result = await this.dialogService.confirm(
+      "Confirmation",
+      "Are you sure to delete all the students' weekly report?"
+    );
+    if (result) {
+      try {
+        // 確認刪除
+        const rsp = await this.contract.send("weekly.DelWeeklyReportByWeeklyReportUID", {
+          Request: {WeeklyReportUID: this.weeklyReportUID }
+        });
+
+        alert('successfully deleted!');
+
+        this.router.navigate(['/weekly_report/main'], {});
+        
+      } catch (error) {
+        alert(error);
+      } finally {
+      }
+    } else {
+      return;
+    }
+    // console.log(data);
+  }
+
+
 }
 
