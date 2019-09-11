@@ -184,9 +184,8 @@ export class DSAService {
 
     var teacherSetting = JSON.parse(rsp.Content);
 
-    if (!teacherSetting.usePhoto) teacherSetting.usePhoto = (teacherSetting.use_photo === false ? false : true);
+    if (!teacherSetting.usePhoto && teacherSetting.usePhoto !== false) teacherSetting.usePhoto = (teacherSetting.use_photo === false ? false : true)
     if (!teacherSetting.teacherKey) teacherSetting.teacherKey = "";
-
 
     return teacherSetting;
   }

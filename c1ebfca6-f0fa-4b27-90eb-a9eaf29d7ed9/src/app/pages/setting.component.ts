@@ -41,7 +41,6 @@ export class SettingComponent implements OnInit {
       //取得老師設定
       this.teacherSetting = await this.dsa.getTeacherSetting();
       this.settingList = this.objectKeys(this.teacherSetting);
-
       //取得班級、課程資料
       var rsp = await this.dsa.send("GetClassHelper");
       this.classList = [].concat(rsp.Class || []);
@@ -61,7 +60,6 @@ export class SettingComponent implements OnInit {
 
   async settingChange(settingKey: any, settingValue: boolean) {
     this.teacherSetting[settingKey] = settingValue;
-    console.log(this.teacherSetting);
   }
   async saveSetting() {
 
