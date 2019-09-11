@@ -1,15 +1,46 @@
 import { Injectable } from '@angular/core';
 import { WeeklyReportEntry } from './weekly_report/weeklyReportEntry';
+import { GadgetService, Contract } from 'src/app/gadget.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WeeklyDataService {
 
-  constructor() { }
+  contract: Contract;
+
+  constructor(private gadget: GadgetService) {        
+    this.getTeacherInfo() ;
+
+  }
+
+  async getTeacherInfo() {
+   
+    this.contract = await this.gadget.getContract('kcis');
+
+    try {
+      // 呼叫 service。
+
+      // const data = await this.contract.send('weekly.GetMyInfo');
+
+      const rsp = await this.contract.send('weekly.GetMyInfo', {
+        Request: {         
+        }
+      })
+
+      this.teacherName = rsp.TeacherName;
+      // console.log(rsp.TeacherName);
+
+    } catch (err) {
+      console.log(err);
+    } finally {
+      
+    }
+    
+  }
 
   // 教師名稱
-  public teacherName: string = "Miranda";
+  public teacherName: string = "";
 
   // 已讀統計
   public weeklyReportHasReadCountLst: any;
