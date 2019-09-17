@@ -1,5 +1,41 @@
 <div id="appcomponent"
      class="container-fluid cbs d-flex justify-content-between flex-column">
+  <div class="tab-content">
+    <!-- TAB 2 輔導統計 -->
+
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li style="width: 10%;">學年度</li>
+          <li style="width: 10%;">學期</li>
+          <li>名   稱</li>
+          <li style="width: 15%;">開始時間</li>
+          <li style="width: 15%;">結束時間</li>
+          <li style="width: 10%;">開啟</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr"
+            *ngFor="let item of fillSectionList">
+          <li style="width: 10%;">{{item.SchoolYear}}</li>
+          <li style="width: 10%;">{{item.Semester}}</li>
+          <li>{{item.SectionName}}</li>
+          <li style="width: 15%;">{{item.StartTime}}</li>
+          <li style="width: 15%;">{{item.EndTime}}</li>
+          <li style="width: 10%;">
+            <button class="btn btn-light"
+                    (click)="RunCounselReportAUrl(item.KeyID)"
+                    [disabled]="item.keyButtonDisable">
+              開啟
+            </button>
+          </li>
+        </ol>
+      </li>
+    </ul>
+
+  </div>
+
+
   <footer class="text-center p-2 mt-auto">
     Powered By ischool
   </footer>
