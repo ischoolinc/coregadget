@@ -29,6 +29,7 @@ export class CounselTeacherClass {
 
 export class CounselClass {
     constructor() { }
+    id:string = '';
     ClassID: string;
     ClassName: string;
     GradeYear: number;
@@ -43,7 +44,7 @@ export class GradeClassInfo {
     GradeYear: number;
     Checked: boolean = false;
     ClassItems: CounselClass[] = [];
-
+    id: string ='';
     SetGradeYearCheck(){
         this.Checked = !this.Checked;
     }
