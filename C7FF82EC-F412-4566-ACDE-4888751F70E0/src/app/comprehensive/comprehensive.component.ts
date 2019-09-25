@@ -76,6 +76,16 @@ export class ComprehensiveComponent implements OnInit {
     }
   }
 
+  async genGUIDKey(fillInSectionID) {
+    try {
+      await this.dsaService.send("GenerateFillInKeyGUID", {FillInSectionID:fillInSectionID});
+      window.location.reload();
+    }
+    catch (err) {
+      alert(err);
+    }
+  }
+
   async shoModal() {
     this.generater = {
       schoolYear: this.currentSemester.SchoolYear,

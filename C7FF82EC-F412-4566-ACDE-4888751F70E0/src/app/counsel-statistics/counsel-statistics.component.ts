@@ -116,8 +116,7 @@ export class CounselStatisticsComponent implements OnInit {
           '學生性別': da.StudentGender,
           '個案類別': da.ProblemCategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count,
-          '其他服務次數': da.OtherCount,
+          '晤談次數': da.Count        
         };
         data1.push(item);
       })
@@ -145,7 +144,7 @@ export class CounselStatisticsComponent implements OnInit {
       case '創傷反應': value = 7; break;
       case '自我傷害': value = 8; break;
       case '性別議題': value = 9; break;
-      case '高風險家庭': value = 10; break;
+      case '脆弱家庭': value = 10; break;
       case '兒少保議題': value = 11; break;
       case '學習困擾': value = 12; break;
       case '生涯輔導': value = 13; break;
@@ -303,8 +302,7 @@ export class CounselStatisticsComponent implements OnInit {
           '學生性別': da.StudentGender,
           '個案類別': da.ProblemCategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count,
-          '其他服務次數': da.OtherCount
+          '晤談次數': da.Count        
         };
         data1.push(item);
       })
@@ -368,8 +366,7 @@ export class CounselStatisticsComponent implements OnInit {
           '學生性別': da.StudentGender,
           '個案類別': da.ProblemCategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count,
-          '其他服務次數': da.OtherCount
+          '晤談次數': da.Count         
         };
         data1.push(item);
       })

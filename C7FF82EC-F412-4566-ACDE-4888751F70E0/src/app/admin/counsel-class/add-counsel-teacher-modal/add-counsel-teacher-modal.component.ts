@@ -65,6 +65,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
         let gryear: number = parseInt(counselClass.GradeYear);
         let CClass: CounselClass = new CounselClass();
         CClass.GradeYear = gryear;
+        CClass.id = 'class_' + counselClass.ClassID;
         CClass.ClassName = counselClass.ClassName;
         CClass.ClassID = counselClass.ClassID;
         CClass.Checked = false;
@@ -78,6 +79,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
       this.tmpGradeYear.forEach(gr => {
         let grClass: GradeClassInfo = new GradeClassInfo();
         grClass.GradeYear = gr;
+        grClass.id = 'grade_' + gr;
         grClass.Checked = false;
         grClass.ClassItems = this.tmpClass.filter(x => x.GradeYear === gr);
         this.SelectGradeYearList.push(grClass);

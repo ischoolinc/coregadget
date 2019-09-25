@@ -33,11 +33,11 @@
                  *ngFor="let item of SelectGradeYearList">
               <input type="checkbox"
                      class="custom-control-input"
-                     [id]="item.GradeYear"
+                     [id]="item.id"
                      [checked]="item.Checked"
                      (click)="SetSelectGradeItem(item.GradeYear)" />
               <label class="custom-control-label"
-                     [for]="item.GradeYear">{{item.GradeYear}}年級
+                     [for]="item.id">{{item.GradeYear}}年級
               </label>
             </div>
           </div>
@@ -51,11 +51,11 @@
 
               <input type="checkbox"
                      class="custom-control-input"
-                     [id]=item.GradeYear
+                     [id]="item.id"
                      [checked]="item.Checked"
                      (click)="SetSelectGradeItem(item.GradeYear)" />
               <label class="custom-control-label"
-                     [for]=item.GradeYear> 全選 {{item.GradeYear}}年級
+                     [for]="item.id"> 全選 {{item.GradeYear}}年級
               </label>
             </span>
 
@@ -64,11 +64,11 @@
                    *ngFor="let ClassItem of item.ClassItems">
                 <input type="checkbox"
                        class="custom-control-input"
-                       [id]="ClassItem.ClassID"
+                       [id]="ClassItem.id"
                        [checked]="ClassItem.Checked"
                        (click)="ClassItem.SetClassCheck()" />
                 <label class="custom-control-label"
-                       [for]="ClassItem.ClassID"> {{ClassItem.ClassName}}
+                       [for]="ClassItem.id"> {{ClassItem.ClassName}}
                 </label>
               </div>
             </div>
