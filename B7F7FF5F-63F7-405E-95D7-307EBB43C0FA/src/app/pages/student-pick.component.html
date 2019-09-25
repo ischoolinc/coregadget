@@ -158,12 +158,15 @@
           <label for="teacherName"
                  class="col-form-label">授課教師</label>
           <input id="teacherName"
+                 type="text"
                  [(ngModel)]="teacherIdentity.teacherName" />
         </div>
         <div class="form-group">
           <label for="teacherKey"
                  class="col-form-label">點名密碼</label>
           <input id="teacherKey"
+                 type="password"
+                 autocomplete="off"
                  [(ngModel)]="teacherIdentity.teacherKey" />
         </div>
         <div *ngIf="teacherIdentity.error&&!teacherIdentity.saving"
@@ -182,7 +185,7 @@
                 (click)="teacherIdentity.saving || teacherIdentity.ignore()">略過</button>
         <button type="button"
                 class="btn btn-info"
-                [ngClass]="{'disabled': teacherIdentity.saving}"
+                [ngClass]="{'disabled': teacherIdentity.saving || !teacherIdentity.teacherKey}"
                 (click)="teacherIdentity.saving || teacherIdentity.save()">確定</button>
       </div>
     </div>

@@ -127,6 +127,9 @@ export class StudentPickComponent implements OnInit {
         setTimeout(() => { $("#teacherKey").focus(); }, 500);
       }
       , save: async () => {
+        //點名密碼未填不送出
+        if (!this.teacherIdentity.teacherKey) return;
+        
         this.teacherIdentity.saving = true;
         try {
           const items: RollCallCheck[] = [];
