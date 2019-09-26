@@ -113,6 +113,8 @@
 
         //$scope.FilterClub = ['籃球社','桌球社','羽球社','壁球社']
 
+        $scope.isLoading = true ;  // 是否正在載入資料中的狀態
+
         $scope.FilterClub = dicClub;
 
         $scope.VolunteerClub = [];
@@ -185,6 +187,12 @@
         }
 
 
+        gadget.onLeave(function(){
+            if($scope.isLoading)
+              return "資料存取中";
+            else
+              return "";
+        });
 
 
         $scope.SetCurrent = function (ClubRec) {
@@ -379,11 +387,15 @@
 
         $scope.ChooseClub = function (CurrentClub_info) {
             var IsNewClub = true;
+
+            if ($scope.isLoading) { return ;}  // 避免同時重複載入
+
             if ($scope.student.ClubID == CurrentClub_info.ClubID) {
                 IsNewClub = false;
             }
             if (CurrentClub_info.ClubID && IsNewClub) {
                 if (!!!$scope.student.ClubID || confirm("目前已經加入:" + $scope.student.ClubName + "，確定要轉加入:" + CurrentClub_info.ClubName + "嗎? 將會刪除原本社團選社紀錄")) {
+                    $scope.isLoading = true ;
                     gadget.getContract('ischool.universal_club_v2.student').send({
                         service: "_.SetMyClub",
                         body: '<Request><SCJoin><ClubID>' + CurrentClub_info.ClubID + '</ClubID></SCJoin></Request>',
@@ -391,12 +403,18 @@
                             if (error !== null) {
                                 //alert('SetMyClub' + JSON.stringify(error));
                                 alert('無法加入社團!!!\n錯誤:' + error.dsaError.message);
+                                $scope.isLoading = false ;
+                                $scope.$apply();
                             } else {
                                 //alert("已從" + $scope.student.ClubName + "轉加入" + CurrentClub_info.ClubName + "成功");
                                 if (response.status != 'success') {
                                     alert("無法加入社團!!!\n原因："+response.message);
                                 }
-                                $scope.init();
+                                // $scope.init();
+                                reloadClubList(() => {
+                                    $scope.isLoading = false;
+                                    $scope.$apply();
+                                });
                             }
                         }
                     });
@@ -412,17 +430,26 @@
         }
 
         $scope.RemoveClub = function (CurrentClub_info) {
+            if ($scope.isLoading) { return ;}  // 避免同時重複載入
+            
             if ($scope.student.ClubID) {
                 if (confirm("目前已經加入:" + $scope.student.ClubName + "，確定要退選嗎? 將會刪除此社團選社紀錄")) {
+                    $scope.isLoading = true ;
                     gadget.getContract('ischool.universal_club_v2.student').send({
                         service: "_.RemoveClub",
                         body: '<Request><SCJoin><ClubID>' + $scope.student.ClubID + '</ClubID></SCJoin></Request>',
                         result: function (response, error, http) {
                             if (error !== null) {
                                 alert('RemoveClub' + JSON.stringify(error));
+                                $scope.isLoading = false;
+                                $scope.$apply();
                             } else {
                                 //alert("已從" + $scope.student.ClubName + "退選成功");
-                                $scope.init();
+                                // $scope.init();
+                                reloadClubList(() => {
+                                    $scope.isLoading = false;
+                                    $scope.$apply();
+                                });
                             }
                         }
                     });
@@ -582,7 +609,327 @@
         });
 
         $scope.init = function () {
+
+            getMyInfo( () => {
+                getOpenningHours();
+            });
+
+            getCurrentSemester( ()=> {
+                reloadClubList( () => {
+                    $scope.isLoading = false ;
+                    $scope.$apply();
+                });
+            }) ;
+
             // TODO: 取得個人資料
+            // gadget.getContract('ischool.universal_club_v2.student').send({
+            //     service: "_.GetMyBaseInfo",
+            //     body: '',
+            //     result: function (response, error, http) {
+            //         if (error !== null) {
+            //             set_error_message("#mainMsg", "GetMyBaseInfo", error);
+            //         } else {
+            //             $(response.Response.Student).each(function (index, item) {
+            //                 Student = {
+            //                     StudentID: item.StudentID,
+            //                     Name: item.Name,
+            //                     Gender: item.Gender,
+            //                     GradeYear: item.GradeYear,
+            //                     DeptName: item.DeptName,
+            //                     SemsHistory: {},
+            //                     Clubs: []
+            //                 };
+            //                 // TODO: 設定年級對應學年度的預設值
+            //                 var tmp_y = 0;
+            //                 for (var i = Student.GradeYear; i <= 3; i++) {
+            //                     Student.SemsHistory['GS' + i + '1'] = parseInt(SchoolYear, 10) + tmp_y + ''; //上學期
+            //                     Student.SemsHistory['GS' + i + '2'] = parseInt(SchoolYear, 10) + tmp_y + ''; //下學期
+            //                     tmp_y += 1;
+            //                 }
+            //                 // TODO: 覆寫年級對應學年度，處理學生重讀
+            //                 var tmp_alias;
+            //                 $(item.SemsHistory.History).each(function (index, item) {
+            //                     tmp_alias = 'GS' + item.GradeYear + item.Semester;
+            //                     Student.SemsHistory[tmp_alias] = Student.SemsHistory[tmp_alias] || 0;
+            //                     if (parseInt(item.SchoolYear, 10) > parseInt(Student.SemsHistory[tmp_alias], 10)) {
+            //                         Student.SemsHistory[tmp_alias] = item.SchoolYear;
+            //                     }
+            //                 });
+            //             });
+            //             $scope.$apply(function () {
+            //                 $scope.student = Student;
+            //             });
+                        // // TODO: 取得開放時間
+                        // getOpenningHours();
+                        // gadget.getContract('ischool.universal_club_v2.student').send({
+                        //     service: "_.GetOpeningHours",
+                        //     body: '<Request><GradeYear>' + $scope.student.GradeYear + '</GradeYear></Request>',
+                        //     result: function (response, error, http) {
+                        //         $scope.$apply(function () {
+                        //             if (error !== null) {
+                        //                 alert('GetOpeningHours Error' + JSON.stringify(error));
+                        //             } else {
+                        //                 $(response.Response.OpeningHours).each(function (index, item) {
+
+                        //                     if (item.Startdate1 && item.Enddate1) {
+                        //                         var tmp_Date = new Date();
+                        //                         var Startdate = new Date(item.Startdate1);
+                        //                         var Enddate = new Date(item.Enddate1);
+
+                        //                         if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
+
+                        //                             Opening = "yes";
+                        //                             $scope.Stage = "1";
+                        //                             $scope.OpenTime = "第1階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
+                        //                             $scope.StageMode = "模式:" + item.Stage1_Mode;
+
+                        //                         } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
+
+                        //                             Opening = "no";
+                        //                             $scope.Stage = "3";
+                        //                             $scope.OpenTime = "目前未開放選社"
+                        //                         }
+                        //                     }
+                        //                     if (item.Startdate2 && item.Enddate2) {
+                        //                         var tmp_Date = new Date();
+                        //                         var Startdate = new Date(item.Startdate2);
+                        //                         var Enddate = new Date(item.Enddate2);
+                        //                         if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
+                        //                             Opening = "yes";
+                        //                             $scope.Stage = "2";
+                        //                             $scope.OpenTime = "第2階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
+                        //                             $scope.StageMode = "模式:" + item.Stage2_Mode;
+                        //                         } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
+                        //                             if ($scope.Stage != 1) {
+                        //                                 Opening = "no";
+                        //                                 $scope.Stage = "3";
+                        //                                 $scope.OpenTime = "目前未開放選社"
+                        //                             }
+                        //                         }
+                        //                     }
+                        //                     if (!item.Startdate1 && !item.Enddate1 && !item.Startdate2 && !item.Enddate2) {
+                        //                         $scope.OpenTime = "開放選社時間：未指定"
+                        //                         Opening = "no";
+                        //                         $scope.Stage = "3";
+                        //                     }
+                        //                 });
+                        //             }
+                        //         });
+                        //     }
+                        // });
+            //         }
+            //     }
+            // });
+
+            
+            // TODO: 取得目前學年度學期
+            // gadget.getContract('ischool.universal_club_v2.student').send({
+            //     service: "_.GetCurrentSemester",
+            //     body: '',
+            //     result: function (response, error, http) {
+            //         $scope.$apply(function () {
+            //             if (error !== null) {
+            //                 alert('GetCurrentSemester' + JSON.stringify(error));
+            //             } else {                            
+            //                 $scope.SchoolYear = response.SchoolYear;
+            //                 $scope.Semester = response.Semester;
+            //                 SchoolYear = response.SchoolYear;
+            //                 Semester = response.Semester;                            
+            //             }
+            //         });
+
+                    // // TODO: 目前學年度學期社團資料(已過濾性別、總人數=0、各年級人數=0、科別條件)
+                    // gadget.getContract('ischool.universal_club_v2.student').send({
+                    //     service: "_.GetAllClubs",
+                    //     body: '<Request><SchoolYear>' + SchoolYear + '</SchoolYear><Semester>' + Semester + '</Semester></Request>',
+                    //     result: function (response, error, http) {
+                    //         if (error !== null) {
+                    //             alert('GetAllClubs' + JSON.stringify(error));
+                    //         } else {
+                    //             $scope.$apply(function () {
+                    //                 $(response.Response.ClubRecord).each(function (index, item) {
+                    //                     item.FilterKey = item.ClubName;
+                    //                     dicClub[item.ClubName] = item;
+                    //                     dicClub_Log[item.ClubName] = item;
+                    //                 });
+                    //             });
+
+                   
+                                
+                                // // TODO: 取得選社志願
+                                // gadget.getContract('ischool.universal_club_v2.student').send({
+                                //     service: "_.GetVolunteer",
+                                //     body: { Request: { Condition: { SchoolYear: SchoolYear, Semester: Semester } } },
+                                //     result: function (response, error, http) {
+                                //         if (error !== null) {
+                                //             alert('GetVolunteer' + JSON.stringify(error));
+                                //         } else {
+                                //             if (response.Response.Volunteer && response.Response.Volunteer.Content
+                                //                 && response.Response.Volunteer.Content.xml
+                                //                 && response.Response.Volunteer.Content.xml.Club) {
+
+                                //                 var ClubList = [];
+                                //                 var ClubList_Log = [];
+
+                                //                 $(response.Response.Volunteer.Content.xml.Club).each(function (index, item) {
+                                //                     for (var index in dicClub) {
+                                //                         if (dicClub[index].ClubID == item.Ref_Club_ID) {
+                                //                             dicClub[index].VolunteerIndex = item.Index;
+                                //                             dicClub_Log[index].VolunteerIndex = item.Index;
+                                //                             ClubList.push(dicClub[index]);
+                                //                             ClubList_Log.push(dicClub_Log[index]);
+                                //                         }
+                                //                     }
+                                //                     //_chooseClub.push(cid);
+                                //                 });
+
+                                //                 VolunteerClub_Log = ClubList_Log;
+                                //                 $scope.$apply(function () {
+                                //                     $scope.VolunteerClub = ClubList;
+                                //                 });
+                                //             }
+                                //         }
+                                //     }
+                                // });
+                    //         }
+                    //     }
+                    // });
+
+                    
+
+                    // // TODO: 取得所有學年度學期個人選社資料
+                    // gadget.getContract('ischool.universal_club_v2.student').send({
+                    //     service: "_.GetMyClub",
+                    //     body: '',
+                    //     result: function (response, error, http) {
+                    //         if (error !== null) {
+                    //             alert('GetMyClub' + JSON.stringify(error));
+                    //         } else {
+                    //             $(response.Response.Clubs).each(function (index, item) {
+                    //                 var tmp_cadreName = '';
+                    //                 if (item.ClubID) {
+                    //                     var tmp_cn = item.CadreName.split(',');
+                    //                     $(tmp_cn).each(function (key, value) {
+                    //                         if (value) {
+                    //                             if (tmp_cadreName) tmp_cadreName += ', ';
+                    //                             tmp_cadreName += value;
+                    //                         }
+                    //                     });
+                    //                     $scope.student.Clubs[index] = {
+                    //                         'SchoolYear': item.SchoolYear,
+                    //                         'Semester': item.Semester,
+                    //                         'ClubName': item.ClubName,
+                    //                         'TeacherName1': item.TeacherName1,
+                    //                         'Lock': item.Lock,
+                    //                         'Score': item.Score,
+                    //                         'CadreName': tmp_cadreName,
+                    //                         'ResultScore': item.ResultScore
+                    //                     };
+                    //                 } else {
+                    //                     var tmp_cn = item.RSCadreName.split(',');
+                    //                     $(tmp_cn).each(function (key, value) {
+                    //                         if (value) {
+                    //                             if (tmp_cadreName) tmp_cadreName += ', ';
+                    //                             tmp_cadreName += value;
+                    //                         }
+                    //                     });
+                    //                     // TODO: 轉學生未連結選社紀錄
+                    //                     $scope.student.Clubs[index] = {
+                    //                         'SchoolYear': item.RSSchoolYear,
+                    //                         'Semester': item.RSSemester,
+                    //                         'ClubName': item.RSClubName,
+                    //                         'TeacherName1': '',
+                    //                         'Lock': '否',
+                    //                         'Score': '',
+                    //                         'CadreName': tmp_cadreName,
+                    //                         'ResultScore': item.ResultScore
+                    //                     };
+                    //                 }
+                    //                 // 現在學年度、學期社團
+                    //                 if (item.SchoolYear === SchoolYear && item.Semester === Semester) {
+                    //                     $scope.student.ClubID = item.ClubID;
+                    //                     $scope.student.ClubName = item.ClubName;
+                    //                     $scope.student.Lock = item.Lock;
+                    //                 }
+                    //                 if ($scope.student.Lock == "是") {
+                    //                     $scope.Stage = "3";
+                    //                     $scope.StageMode = "目前身分為鎖社狀態，不開放選社";
+                    //                     $scope.OpenTime = ""
+                    //                 }
+                    //             });
+                    //         }
+                    //     }
+                    // });
+            //     }
+            // });
+        };
+
+        // 取得開放時間
+        var getOpenningHours = function( callback_handler ) {
+            gadget.getContract('ischool.universal_club_v2.student').send({
+                service: "_.GetOpeningHours",
+                body: '<Request><GradeYear>' + $scope.student.GradeYear + '</GradeYear></Request>',
+                result: function (response, error, http) {
+                    $scope.$apply(function () {
+                        if (error !== null) {
+                            alert('GetOpeningHours Error' + JSON.stringify(error));
+                        } else {
+                            $(response.Response.OpeningHours).each(function (index, item) {
+
+                                if (item.Startdate1 && item.Enddate1) {
+                                    var tmp_Date = new Date();
+                                    var Startdate = new Date(item.Startdate1);
+                                    var Enddate = new Date(item.Enddate1);
+
+                                    if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
+
+                                        Opening = "yes";
+                                        $scope.Stage = "1";
+                                        $scope.OpenTime = "第1階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
+                                        $scope.StageMode = "模式:" + item.Stage1_Mode;
+
+                                    } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
+
+                                        Opening = "no";
+                                        $scope.Stage = "3";
+                                        $scope.OpenTime = "目前未開放選社"
+                                    }
+                                }
+                                if (item.Startdate2 && item.Enddate2) {
+                                    var tmp_Date = new Date();
+                                    var Startdate = new Date(item.Startdate2);
+                                    var Enddate = new Date(item.Enddate2);
+                                    if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
+                                        Opening = "yes";
+                                        $scope.Stage = "2";
+                                        $scope.OpenTime = "第2階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
+                                        $scope.StageMode = "模式:" + item.Stage2_Mode;
+                                    } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
+                                        if ($scope.Stage != 1) {
+                                            Opening = "no";
+                                            $scope.Stage = "3";
+                                            $scope.OpenTime = "目前未開放選社"
+                                        }
+                                    }
+                                }
+                                if (!item.Startdate1 && !item.Enddate1 && !item.Startdate2 && !item.Enddate2) {
+                                    $scope.OpenTime = "開放選社時間：未指定"
+                                    Opening = "no";
+                                    $scope.Stage = "3";
+                                }
+                            });
+                        }
+
+                        if (callback_handler != null) {
+                            callback_handler();
+                        }
+                    });
+                }
+            });
+        };
+
+        // 取得個人資料
+        var getMyInfo = function ( callback_handler ) {
             gadget.getContract('ischool.universal_club_v2.student').send({
                 service: "_.GetMyBaseInfo",
                 body: '',
@@ -620,67 +967,16 @@
                         $scope.$apply(function () {
                             $scope.student = Student;
                         });
-                        // TODO: 取得開放時間
-                        gadget.getContract('ischool.universal_club_v2.student').send({
-                            service: "_.GetOpeningHours",
-                            body: '<Request><GradeYear>' + $scope.student.GradeYear + '</GradeYear></Request>',
-                            result: function (response, error, http) {
-                                $scope.$apply(function () {
-                                    if (error !== null) {
-                                        alert('GetOpeningHours Error' + JSON.stringify(error));
-                                    } else {
-                                        $(response.Response.OpeningHours).each(function (index, item) {
 
-                                            if (item.Startdate1 && item.Enddate1) {
-                                                var tmp_Date = new Date();
-                                                var Startdate = new Date(item.Startdate1);
-                                                var Enddate = new Date(item.Enddate1);
-
-                                                if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
-
-                                                    Opening = "yes";
-                                                    $scope.Stage = "1";
-                                                    $scope.OpenTime = "第1階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
-                                                    $scope.StageMode = "模式:" + item.Stage1_Mode;
-
-                                                } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
-
-                                                    Opening = "no";
-                                                    $scope.Stage = "3";
-                                                    $scope.OpenTime = "目前未開放選社"
-                                                }
-                                            }
-                                            if (item.Startdate2 && item.Enddate2) {
-                                                var tmp_Date = new Date();
-                                                var Startdate = new Date(item.Startdate2);
-                                                var Enddate = new Date(item.Enddate2);
-                                                if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
-                                                    Opening = "yes";
-                                                    $scope.Stage = "2";
-                                                    $scope.OpenTime = "第2階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
-                                                    $scope.StageMode = "模式:" + item.Stage2_Mode;
-                                                } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
-                                                    if ($scope.Stage != 1) {
-                                                        Opening = "no";
-                                                        $scope.Stage = "3";
-                                                        $scope.OpenTime = "目前未開放選社"
-                                                    }
-                                                }
-                                            }
-                                            if (!item.Startdate1 && !item.Enddate1 && !item.Startdate2 && !item.Enddate2) {
-                                                $scope.OpenTime = "開放選社時間：未指定"
-                                                Opening = "no";
-                                                $scope.Stage = "3";
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                        if ( callback_handler ) {
+                            callback_handler();
+                        }
                     }
                 }
             });
-            // TODO: 取得目前學年度學期
+        };
+
+        var getCurrentSemester = function( callback_handler ) {
             gadget.getContract('ischool.universal_club_v2.student').send({
                 service: "_.GetCurrentSemester",
                 body: '',
@@ -696,127 +992,193 @@
                         }
                     });
 
-                    // TODO: 目前學年度學期社團資料(已過濾性別、總人數=0、各年級人數=0、科別條件)
-                    gadget.getContract('ischool.universal_club_v2.student').send({
-                        service: "_.GetAllClubs",
-                        body: '<Request><SchoolYear>' + SchoolYear + '</SchoolYear><Semester>' + Semester + '</Semester></Request>',
-                        result: function (response, error, http) {
-                            if (error !== null) {
-                                alert('GetAllClubs' + JSON.stringify(error));
-                            } else {
-                                $scope.$apply(function () {
-                                    $(response.Response.ClubRecord).each(function (index, item) {
-                                        item.FilterKey = item.ClubName;
-                                        dicClub[item.ClubName] = item;
-                                        dicClub_Log[item.ClubName] = item;
-                                    });
-                                });
-
-                                // TODO: 取得選社志願
-                                gadget.getContract('ischool.universal_club_v2.student').send({
-                                    service: "_.GetVolunteer",
-                                    body: { Request: { Condition: { SchoolYear: SchoolYear, Semester: Semester } } },
-                                    result: function (response, error, http) {
-                                        if (error !== null) {
-                                            alert('GetVolunteer' + JSON.stringify(error));
-                                        } else {
-                                            if (response.Response.Volunteer && response.Response.Volunteer.Content
-                                                && response.Response.Volunteer.Content.xml
-                                                && response.Response.Volunteer.Content.xml.Club) {
-
-                                                var ClubList = [];
-                                                var ClubList_Log = [];
-
-                                                $(response.Response.Volunteer.Content.xml.Club).each(function (index, item) {
-                                                    for (var index in dicClub) {
-                                                        if (dicClub[index].ClubID == item.Ref_Club_ID) {
-                                                            dicClub[index].VolunteerIndex = item.Index;
-                                                            dicClub_Log[index].VolunteerIndex = item.Index;
-                                                            ClubList.push(dicClub[index]);
-                                                            ClubList_Log.push(dicClub_Log[index]);
-                                                        }
-                                                    }
-                                                    //_chooseClub.push(cid);
-                                                });
-
-                                                VolunteerClub_Log = ClubList_Log;
-                                                $scope.$apply(function () {
-                                                    $scope.VolunteerClub = ClubList;
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-                    // TODO: 取得所有學年度學期個人選社資料
-                    gadget.getContract('ischool.universal_club_v2.student').send({
-                        service: "_.GetMyClub",
-                        body: '',
-                        result: function (response, error, http) {
-                            if (error !== null) {
-                                alert('GetMyClub' + JSON.stringify(error));
-                            } else {
-                                $(response.Response.Clubs).each(function (index, item) {
-                                    var tmp_cadreName = '';
-                                    if (item.ClubID) {
-                                        var tmp_cn = item.CadreName.split(',');
-                                        $(tmp_cn).each(function (key, value) {
-                                            if (value) {
-                                                if (tmp_cadreName) tmp_cadreName += ', ';
-                                                tmp_cadreName += value;
-                                            }
-                                        });
-                                        $scope.student.Clubs[index] = {
-                                            'SchoolYear': item.SchoolYear,
-                                            'Semester': item.Semester,
-                                            'ClubName': item.ClubName,
-                                            'TeacherName1': item.TeacherName1,
-                                            'Lock': item.Lock,
-                                            'Score': item.Score,
-                                            'CadreName': tmp_cadreName,
-                                            'ResultScore': item.ResultScore
-                                        };
-                                    } else {
-                                        var tmp_cn = item.RSCadreName.split(',');
-                                        $(tmp_cn).each(function (key, value) {
-                                            if (value) {
-                                                if (tmp_cadreName) tmp_cadreName += ', ';
-                                                tmp_cadreName += value;
-                                            }
-                                        });
-                                        // TODO: 轉學生未連結選社紀錄
-                                        $scope.student.Clubs[index] = {
-                                            'SchoolYear': item.RSSchoolYear,
-                                            'Semester': item.RSSemester,
-                                            'ClubName': item.RSClubName,
-                                            'TeacherName1': '',
-                                            'Lock': '否',
-                                            'Score': '',
-                                            'CadreName': tmp_cadreName,
-                                            'ResultScore': item.ResultScore
-                                        };
-                                    }
-                                    // 現在學年度、學期社團
-                                    if (item.SchoolYear === SchoolYear && item.Semester === Semester) {
-                                        $scope.student.ClubID = item.ClubID;
-                                        $scope.student.ClubName = item.ClubName;
-                                        $scope.student.Lock = item.Lock;
-                                    }
-                                    if ($scope.student.Lock == "是") {
-                                        $scope.Stage = "3";
-                                        $scope.StageMode = "目前身分為鎖社狀態，不開放選社";
-                                        $scope.OpenTime = ""
-                                    }
-                                });
-                            }
-                        }
-                    });
+                    if ( callback_handler ) {
+                        callback_handler();
+                    }
                 }
             });
+        }
+
+        // 取得選社志願
+        var getVolunteer = function( callback_handler ) {
+            // TODO: 取得選社志願
+            gadget.getContract('ischool.universal_club_v2.student').send({
+                service: "_.GetVolunteer",
+                body: { Request: { Condition: { SchoolYear: SchoolYear, Semester: Semester } } },
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert('GetVolunteer' + JSON.stringify(error));
+                    } else {
+                        if (response.Response.Volunteer && response.Response.Volunteer.Content
+                            && response.Response.Volunteer.Content.xml
+                            && response.Response.Volunteer.Content.xml.Club) {
+
+                            var ClubList = [];
+                            var ClubList_Log = [];
+
+                            $(response.Response.Volunteer.Content.xml.Club).each(function (index, item) {
+                                for (var index in dicClub) {
+                                    if (dicClub[index].ClubID == item.Ref_Club_ID) {
+                                        dicClub[index].VolunteerIndex = item.Index;
+                                        dicClub_Log[index].VolunteerIndex = item.Index;
+                                        ClubList.push(dicClub[index]);
+                                        ClubList_Log.push(dicClub_Log[index]);
+                                    }
+                                }
+                                //_chooseClub.push(cid);
+                            });
+
+                            VolunteerClub_Log = ClubList_Log;
+                            $scope.$apply(function () {
+                                $scope.VolunteerClub = ClubList;
+                            });
+                        }
+                    }
+
+                    if ( callback_handler ) {
+                        callback_handler();
+                    }
+                }
+            });
+        }
+
+        var getAllClubs = function( callback_handler ) {
+            gadget.getContract('ischool.universal_club_v2.student').send({
+                service: "_.GetAllClubs",
+                body: '<Request><SchoolYear>' + SchoolYear + '</SchoolYear><Semester>' + Semester + '</Semester></Request>',
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert('GetAllClubs' + JSON.stringify(error));
+                    } else {
+                        $scope.$apply(function () {
+                            $(response.Response.ClubRecord).each(function (index, item) {
+                                item.FilterKey = item.ClubName;
+                                dicClub[item.ClubName] = item;
+                                dicClub_Log[item.ClubName] = item;
+                            });
+                        });
+                    }
+
+                    if ( callback_handler ) {
+                        callback_handler();
+                    }
+                }
+            });
+        }
+
+        // 取得所有學年度學期個人選社資料
+        var getMyClub = function( callback_handler ) {
+            gadget.getContract('ischool.universal_club_v2.student').send({
+                service: "_.GetMyClub",
+                body: '',
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert('GetMyClub' + JSON.stringify(error));
+                    } else {
+                        // reset ---
+                        $scope.student.ClubID = undefined ;
+                        $scope.student.ClubName = undefined;
+                        $scope.student.Lock = undefined;
+
+                        $(response.Response.Clubs).each(function (index, item) {
+                            var tmp_cadreName = '';
+                            if (item.ClubID) {
+                                var tmp_cn = item.CadreName.split(',');
+                                $(tmp_cn).each(function (key, value) {
+                                    if (value) {
+                                        if (tmp_cadreName) tmp_cadreName += ', ';
+                                        tmp_cadreName += value;
+                                    }
+                                });
+                                $scope.student.Clubs[index] = {
+                                    'SchoolYear': item.SchoolYear,
+                                    'Semester': item.Semester,
+                                    'ClubName': item.ClubName,
+                                    'TeacherName1': item.TeacherName1,
+                                    'Lock': item.Lock,
+                                    'Score': item.Score,
+                                    'CadreName': tmp_cadreName,
+                                    'ResultScore': item.ResultScore
+                                };
+                            } else {
+                                var tmp_cn = item.RSCadreName.split(',');
+                                $(tmp_cn).each(function (key, value) {
+                                    if (value) {
+                                        if (tmp_cadreName) tmp_cadreName += ', ';
+                                        tmp_cadreName += value;
+                                    }
+                                });
+                                // TODO: 轉學生未連結選社紀錄
+                                $scope.student.Clubs[index] = {
+                                    'SchoolYear': item.RSSchoolYear,
+                                    'Semester': item.RSSemester,
+                                    'ClubName': item.RSClubName,
+                                    'TeacherName1': '',
+                                    'Lock': '否',
+                                    'Score': '',
+                                    'CadreName': tmp_cadreName,
+                                    'ResultScore': item.ResultScore
+                                };
+                            }
+                            // 現在學年度、學期社團
+                            if (item.SchoolYear === SchoolYear && item.Semester === Semester) {
+                                $scope.student.ClubID = item.ClubID;
+                                $scope.student.ClubName = item.ClubName;
+                                $scope.student.Lock = item.Lock;
+                            }
+                            if ($scope.student.Lock == "是") {
+                                $scope.Stage = "3";
+                                $scope.StageMode = "目前身分為鎖社狀態，不開放選社";
+                                $scope.OpenTime = ""
+                            }
+                        });
+
+                        $scope.$apply();
+                    }
+
+                    if ( callback_handler ) {
+                        callback_handler();
+                    }
+                }
+            });
+        }
+
+        // 重新載入社團清單所需要的資訊
+        var reloadClubList = ( callback_handler ) => {
+            let flags = { a: false, b:false} ;
+            // 取得所有社團資訊
+            getAllClubs( () => {
+                // 取得志願
+                getVolunteer( () => {
+                    flags.a = true ;
+                    checkAllReturned();
+                });
+
+                // 取得我的社團資訊
+                getMyClub(() => {
+                    flags.b = true ;
+                    checkAllReturned();
+                });
+            });
+
+            // 檢查是否全部都回傳了 ...
+            var checkAllReturned = () => {
+                if (flags.a && flags.b) {
+                    if (callback_handler) {
+                        callback_handler();
+                    }
+                }
+            };
         };
+
+        $scope.reloadClubList = function() {
+            $scope.isLoading = true ;
+            reloadClubList(() => {
+                $scope.isLoading = false;
+                $scope.$apply();
+            });
+        }
+
         $scope.init();
     }
 ])
