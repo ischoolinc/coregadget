@@ -91,11 +91,11 @@ export class AddS1Component implements OnInit {
         // 比對成績有資料項勾
         for (const dd of this.canSelectGradeBookList) {
           for (const wd of this.weeklyData.selectWeeklyData) {
-            for(const item of wd.GradeBookDataList){
+            for (const item of wd.GradeBookDataList) {
               if (dd.Assessment === item.Assessment && dd.CustomAssessment === item.CustomAssessment && dd.Subject === item.Subject && dd.Term === item.Term) {
                 dd.checked = true;
                 break;
-            }            
+              }
             }
           }
         }
@@ -266,7 +266,6 @@ export class AddS1Component implements OnInit {
           checkedGradeBookList.push(sc);
         }
       }
-
     }
     // console.log(checkedGradeBookList);
 
@@ -278,21 +277,34 @@ export class AddS1Component implements OnInit {
 
 
     for (const stud of this.weeklyData.studentWeeklyDataList) {
-
       let gList = checkedGradeBookList.filter(v => v.StudentID === stud.ID);
-
       // console.log(gList);
       let bList = this.weeklyData.addBehavoirList.filter(v => v.ID === stud.ID);
-
       // 放入評語可勾選資料
       for (const bb of bList) {
         bb.checked = true;
       }
-
       stud.PersonalComment = "";
       stud.GradeBookList = gList;
       stud.BehaviorList = bList;
 
+      if (this.weeklyData.selectWeeklyData) {
+        this.weeklyData.selectWeeklyData.forEach(oldData => {
+          if (oldData.ID == stud.ID) {
+            // 填入原個人評語
+            stud.PersonalComment = oldData.PersonalComment;
+            // 比對填入原Behavior勾選狀態
+            var bTemp=[].concat(stud.BehaviorList);
+            oldData.BehaviorDataList.forEach(oldB => {
+              bTemp.forEach(newB => {
+                if(newB.UID==oldB.UID){
+                  newB.checked = oldB.checked;
+                }
+              });
+            });
+          }
+        });
+      }
     }
     this.weeklyData.addSelectdGradebook = this.gradeBookList;
     //  console.log(this.weeklyData.studentWeeklyDataList);
