@@ -10,9 +10,6 @@ import {
   SemesterInfo
 } from "../../counsel-student.service";
 import { QOption } from "../case-question-data-modal";
-import { getMatIconFailedToSanitizeLiteralError } from '@angular/material';
-import { debug } from 'util';
-import { Alert } from 'selenium-webdriver';
 
 @Component({
   selector: "app-new-case-modal",
@@ -37,6 +34,8 @@ export class NewCaseModalComponent implements OnInit {
   selectClassNameValue: string;
   // 座號
   selectSeatNoValue: string;
+  // 姓名
+  selectStudentName: string;
   // 結案人員
   closedTeacherName: string;
   selectCaseSourceValue: string;
@@ -113,6 +112,7 @@ export class NewCaseModalComponent implements OnInit {
   //設定座號
   setSeatNo(item: CounselStudent) {
     this.selectSeatNoValue = item.SeatNo;
+    this.selectStudentName = item.StudentName;
     // this.caseStudent = new CaseStudent();
     this.caseStudent.Name = item.StudentName;
     this.caseStudent.PhotoUrl = item.PhotoUrl;

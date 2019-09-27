@@ -48,13 +48,13 @@
               <div class="dropdown-menu scrollable-menu">
                 <a class="dropdown-item"
                    (click)="setSeatNo(item)"
-                   *ngFor="let item of canSelectNoList">{{ item.SeatNo }}</a>
+                   *ngFor="let item of canSelectNoList">{{ item.SeatNo }}  {{item.StudentName}}</a>
               </div>
             </div>
           </ng-container>
           <ng-container *ngIf="!isCanSetClass">
             <span class="dropdown mr-2 mb-3">{{ selectClassNameValue }}</span>
-            <span class="dropdown mr-2 mb-3">{{ selectSeatNoValue }} 號</span>
+            <span class="dropdown mr-2 mb-3">{{ selectSeatNoValue }} 號 </span>
           </ng-container>
         </div>
         <div class="row bg-light border p-3">
@@ -256,7 +256,7 @@
                  class="col-form-label">
             <span class="text-samll text-danger"
                   *ngIf="!caseStudent.isGuidanceTeacherHasValue">*</span>
-            認輔老師
+            認輔老師及輔導老師
           </label>
           <div class="form-group d-flex flex-wrap">
             <ng-container *ngFor="let itemTeacher of caseStudent.selectCaseTeacers;let i = index">
@@ -272,7 +272,8 @@
                 </button>
                 <span style="width: 10px">
                   <button class="btn btn-info btn-xs"
-                          (click)="selectTeacherAdd(null)" *ngIf="i == (caseStudent.selectCaseTeacers.length-1)" >
+                          (click)="selectTeacherAdd(null)"
+                          *ngIf="i == (caseStudent.selectCaseTeacers.length-1)">
                     <i class="tiny material-icons">add</i>
                   </button>
                 </span>

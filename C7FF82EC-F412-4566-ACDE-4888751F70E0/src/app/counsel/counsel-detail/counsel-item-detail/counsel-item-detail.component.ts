@@ -4,7 +4,11 @@ import { DsaService } from "../../../dsa.service";
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { GlobalService } from "../../../global.service";
 import { RoleService } from "../../../role.service";
-
+import {
+  CounselStudentService,
+  CounselClass,
+  CounselStudent,
+} from "../../../counsel-student.service";
 import {
   CaseInterview,
   SemesterInfo
@@ -34,7 +38,8 @@ export class CounselItemDetailComponent implements OnInit {
     public globalService: GlobalService,
     public roleService: RoleService,
     @Optional()
-    private counselDetailComponent: CounselDetailComponent
+    private counselDetailComponent: CounselDetailComponent,
+    private counselStudentService: CounselStudentService
   ) { }
 
   async ngOnInit() {
@@ -152,13 +157,27 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CaseSource = caseRec.CaseSource;
       rec.MainTeacher = caseRec.MainTeacher;
       rec.Role = caseRec.Role;
+      rec.ClassID = caseRec.ClassID;
 
       rec.PhotoUrl = `${
         this.dsaService.AccessPoint
         }/GetStudentPhoto?stt=Session&sessionid=${
         this.dsaService.SessionID
         }&parser=spliter&content=StudentID:${rec.StudentID}`;
-      rec.TeacherName = caseRec.TeacherName;
+
+      rec.TeacherName = "";
+      if (this.counselStudentService.classMap.has(rec.ClassID)) {
+        let classRec: CounselClass;
+        classRec = this.counselStudentService.classMap.get(
+          rec.ClassID
+        );
+        rec.TeacherName = classRec.HRTeacherName;
+        if (classRec.HRTeacherNickName && classRec.HRTeacherNickName.length > 0) {
+          rec.TeacherName = classRec.HRTeacherName + "(" + classRec.HRTeacherNickName + ")";
+        }
+      }
+
+      //   rec.TeacherName = caseRec.TeacherName;
 
       data.push(rec);
     });
@@ -194,6 +213,7 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CaseID = counselRec.CaseID;
       rec.Content = counselRec.Content;
       rec.CaseNo = counselRec.CaseNo;
+      rec.ClassID = counselRec.ClassID;
 
       // 如果只有認輔老師權限，認輔紀錄只能看到自己的。
       if (this.globalService.MyCounselTeacherRole === "認輔老師") {

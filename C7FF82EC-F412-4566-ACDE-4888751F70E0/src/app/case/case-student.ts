@@ -35,6 +35,7 @@ export class CaseStudent {
   ClosedByTeacherID: string; // 結案人員教師編號
   CloseDescription: string; // 結案說明
   StudentID: string; // 學生系統編號
+  ClassID: string; // 班級編號
   CaseSource: string; // 個案來源
   CaseCount: string; // 個案輔導次數
   PhotoUrl: string;
