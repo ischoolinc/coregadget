@@ -63,6 +63,10 @@ export class ComprehensiveFillComponent implements OnInit {
     if (this.loadingFillInData) return;
     this.loadingFillInData = true;
 
+    this.sectionInfo = null;
+    this.studentInfo = null;
+    this.questionSubject = [];
+
     try{
       var rsp = await this.send(this.dsns + "/1campus.counsel.public", "GetFillInData", { FillInKey: this.fillInKey });
       if (rsp.QuestionSubject) {
