@@ -516,6 +516,11 @@
         }
 
         $scope.GetClub_Detail = function (ClubRec) {
+
+            if ($scope.isLoading) { return ; }  // 若還在載入中，則不處理。
+            
+            $scope.isLoading = true ;
+            
             gadget.getContract('ischool.universal_club_v2.student').send({
                 service: "_.GetClubInfo",
                 body: '<Request><ClubID>' + ClubRec.ClubID + '</ClubID></Request>',
@@ -577,6 +582,9 @@
                         //    });                            
                         //});
                     }
+
+                    $scope.isLoading = false ;
+                    $scope.$apply();
                 }
             });
         }

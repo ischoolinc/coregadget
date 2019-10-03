@@ -62,9 +62,16 @@ export class AddCounselTeacherModalComponent implements OnInit {
       });
 
       [].concat(resp.Class || []).forEach(counselClass => {
-        let gryear: number = parseInt(counselClass.GradeYear);
+
+        let gryear: number;
+        gryear = 999; // 沒有年級
+        if (counselClass.GradeYear) {
+          gryear = parseInt(counselClass.GradeYear);
+        }
+
         let CClass: CounselClass = new CounselClass();
         CClass.GradeYear = gryear;
+
         CClass.id = 'class_' + counselClass.ClassID;
         CClass.ClassName = counselClass.ClassName;
         CClass.ClassID = counselClass.ClassID;
@@ -79,6 +86,11 @@ export class AddCounselTeacherModalComponent implements OnInit {
       this.tmpGradeYear.forEach(gr => {
         let grClass: GradeClassInfo = new GradeClassInfo();
         grClass.GradeYear = gr;
+        if (grClass.GradeYear === 999) {
+          grClass.GradeYearStr = '未分年級';
+        } else {
+          grClass.GradeYearStr = gr + ' 年級';
+        }
         grClass.id = 'grade_' + gr;
         grClass.Checked = false;
         grClass.ClassItems = this.tmpClass.filter(x => x.GradeYear === gr);

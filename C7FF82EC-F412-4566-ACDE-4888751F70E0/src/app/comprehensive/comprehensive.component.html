@@ -50,14 +50,14 @@
                       aria-haspopup="true"
                       aria-expanded="false">
                 <span *ngIf="currentClass">{{ currentClass.ClassName}}</span>
-                <span *ngIf="!currentClass">總攬</span>
+                <span *ngIf="!currentClass">總覽</span>
               </button>
               <div *ngIf="currentSection"
                    class="dropdown-menu dropdown-menu-scrollable">
                 <a class="dropdown-item"
                    [ngClass]="{ active: !currentClass }"
                    [routerLink]="['/comprehensive', 'view', 'all', 'section', currentSection.FillInSectionID]">
-                  <span>總攬</span>
+                  <span>總覽</span>
                 </a>
                 <hr />
                 <a class="dropdown-item"

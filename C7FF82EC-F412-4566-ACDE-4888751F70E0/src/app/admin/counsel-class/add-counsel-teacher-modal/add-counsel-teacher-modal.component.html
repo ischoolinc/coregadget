@@ -28,7 +28,7 @@
               </label>
             </span>
           </span>
-          <div class="d-flex flex-wrap pl-3" >
+          <div class="d-flex flex-wrap pl-3">
             <div class="custom-control custom-checkbox w-25"
                  *ngFor="let item of SelectGradeYearList">
               <input type="checkbox"
@@ -37,15 +37,14 @@
                      [checked]="item.Checked"
                      (click)="SetSelectGradeItem(item.GradeYear)" />
               <label class="custom-control-label"
-                     [for]="item.id">{{item.GradeYear}}年級
+                     [for]="item.id">{{item.GradeYearStr}}
               </label>
             </div>
           </div>
         </div>
 
         <ng-container *ngFor="let item of SelectGradeYearList">
-          <div class="form-group"
-               >
+          <div class="form-group">
 
             <span class="custom-control custom-checkbox w-25">
 
@@ -55,7 +54,7 @@
                      [checked]="item.Checked"
                      (click)="SetSelectGradeItem(item.GradeYear)" />
               <label class="custom-control-label"
-                     [for]="item.id"> 全選 {{item.GradeYear}}年級
+                     [for]="item.id"> 全選 {{item.GradeYearStr}}
               </label>
             </span>
 

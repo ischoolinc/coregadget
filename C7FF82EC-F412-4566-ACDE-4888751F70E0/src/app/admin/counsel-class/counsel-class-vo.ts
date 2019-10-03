@@ -32,7 +32,7 @@ export class CounselClass {
     id:string = '';
     ClassID: string;
     ClassName: string;
-    GradeYear: number;
+    GradeYear: number;    
     Checked: boolean = false;
 
     SetClassCheck() {
@@ -42,6 +42,7 @@ export class CounselClass {
 
 export class GradeClassInfo {
     GradeYear: number;
+    GradeYearStr: string;
     Checked: boolean = false;
     ClassItems: CounselClass[] = [];
     id: string ='';

@@ -126,7 +126,7 @@ export class CaseComponent implements OnInit {
 
     this.case_modal.loadData();
     this.case_modal.selectClassNameValue = item.ClassName;
-    this.case_modal.selectSeatNoValue = item.SeatNo;
+    this.case_modal.selectSeatNoValue = item.SeatNo;    
     this.case_modal.selectCaseSourceValue = item.CaseSource;
 
     this.case_modal.caseStudent.isCloseYes = false;

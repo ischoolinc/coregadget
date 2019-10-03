@@ -107,6 +107,7 @@ export class CounselStudentService {
             GradeYear: stuRec.GradeYear,
             ClassName: stuRec.ClassName,
             HRTeacherName: stuRec.HRTeacherName,
+            HRTeacherNickName: stuRec.HRTeacherNickName,
             Role: [],
             Student: []
           } as CounselClass);
@@ -156,6 +157,7 @@ export class CounselClass {
   GradeYear: string;
   ClassName: string;
   HRTeacherName: string;
+  HRTeacherNickName: string;
   Role: string[];
 
   Student: CounselStudent[];
