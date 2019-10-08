@@ -23,7 +23,7 @@ $(function() {
 					tr += "<td class='ereport-item'>" + this.Timestamp.substr(0, 16) + "</td>";
 					tr += "<td class='ereport-item'>" + (this.Name == "" ? "&nbsp;" : this.Name) + "</td>";
 					tr += "<td class='ereport-item'>" + (this.Format == "" ? "&nbsp;" : this.Format) + "</td>";
-					tr += "<td class='ereport-item'><a href='#' onclick='downloadPaper('" + this.ID + "')'>下載</a></td>";
+					tr += "<td class='ereport-item'><a href='#' onclick='downloadPaper(\"" + this.ID + "\")'>下載</a></td>";
 
 					_papers.personal.push("<tr>" + tr + "</tr>");
 				});
