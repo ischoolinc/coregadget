@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { DsaService } from "./dsa.service";
 import { stringify } from "@angular/compiler/src/util";
 import { async } from "@angular/core/testing";
+import { StudentSemesterScoreInfo } from './counsel/counsel-detail/semester-score-detail/semester-score-vo';
 
 @Injectable({
   providedIn: "root"
@@ -89,7 +90,15 @@ export class CounselStudentService {
             LastInterviewContactItem: stuRec.LastInterviewContactItem,
             LastInterviewReferral: stuRec.LastInterviewReferral,
             ReferralStatus: stuRec.ReferralStatus,
-            PhotoUrl: `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${stuRec.StudentID}`
+            PhotoUrl: `${this.dsaService.AccessPoint}/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID}&parser=spliter&content=StudentID:${stuRec.StudentID}`,
+            SchoolYearVG: parseInt(stuRec.SchoolYearVG),
+            SemesterVG: parseInt(stuRec.SemesterVG),
+            ContactNameVg: stuRec.ContactNameVg,
+            CounselTypeVg: stuRec.CounselTypeVg,
+            LastUpdateVg: stuRec.LastUpdateVg,
+            VGCount: stuRec.VGCount,
+            InterviewContentCount:stuRec.InterviewContentCount,
+            InterviewContactItemCount:stuRec.InterviewContactItemCount
           } as CounselStudent);
       }
       let stu = this.studentMap.get(stuRec.StudentID);
@@ -97,8 +106,8 @@ export class CounselStudentService {
         stu.Role.push(stuRec.Role);
       }
       //填入認輔名單
-      if (stu.Role.indexOf("認輔老師") > -1)
-        this.guidanceStudent.push(stu);
+      if (stuRec.Role === "認輔老師")
+        this.guidanceStudent.push(stuRec);
       //建立班級
       if (stuRec.ClassID) {
         if (!this.classMap.has(stuRec.ClassID)) {
@@ -117,7 +126,15 @@ export class CounselStudentService {
         if (cls.Role.indexOf(stuRec.Role) < 0) {
           cls.Role.push(stuRec.Role);
         }
-        cls.Student.push(stu);
+        let add:boolean = true;
+        cls.Student.forEach( x => {
+          if (x.StudentID === stu.StudentID)
+          {
+            add = false;
+          }
+        });
+        if (add)
+          cls.Student.push(stu);
       }
     });
 
@@ -159,7 +176,6 @@ export class CounselClass {
   HRTeacherName: string;
   HRTeacherNickName: string;
   Role: string[];
-
   Student: CounselStudent[];
 }
 
@@ -174,7 +190,6 @@ export class CounselStudent {
   StudentName: string;
   Status: string;
   Role: string[];
-
   InterviewCount: number;
   LastInterviewDate: string;
   LastInterviewContact: string;
@@ -185,8 +200,18 @@ export class CounselStudent {
   // 聯絡事項
   LastInterviewContactItem: string;
   LastInterviewReferral: boolean;
-  ReferralStatus:string;
+  ReferralStatus: string;
   PhotoUrl: string;
+  // 認輔資料
+  SchoolYearVG: number;
+  SemesterVG: number;
+  ContactNameVg: string;
+  CounselTypeVg: string;
+  LastUpdateVg: string;
+  VGCount: string;
+  InterviewContentCount: string;
+  InterviewContactItemCount: string;
+
   // lastCaseInterviewDate: string;
   // lastCaseInterviewContact: string;
   // lastCaseInterviewType: string;
