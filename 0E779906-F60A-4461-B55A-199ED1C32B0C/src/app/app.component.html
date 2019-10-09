@@ -13,7 +13,7 @@
           <li [ngClass]="{'active': currTab === 'sa03'}"><a href="javascript:;" (click)="toggleTab('sa03')">衝堂與限制複選課程</a></li>
           <li [ngClass]="{'active': currTab === 'sa04'}"><a href="javascript:;" (click)="toggleTab('sa04')">選課注意事項</a></li>
           <li [ngClass]="{'active': currTab === 'sa05'}"><a href="javascript:;" (click)="toggleTab('sa05')">選課問答集</a></li>
-          <li [ngClass]="{'active': currTab === 'sa08'}"><a href="javascript:;" (click)="toggleTab('sa08')">保證金</a></li>
+          <li [ngClass]="{'active': currTab === 'sa08'}"><a href="javascript:;" (click)="toggleTab('sa08')">保證金/雜費</a></li>
         </ul>
       </h1>
       <div class="tab-content">
@@ -51,7 +51,6 @@
                     <th>班次</th>
                     <th>課程名稱</th>
                     <th>授課教師</th>
-                    <th>學分</th>
                     <th>人數上限</th>
                     <th>教室</th>
                     <th>上課時間</th>
@@ -73,7 +72,6 @@
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
-                    <td>{{item.Credit}}</td>
                     <td>{{item.MumberOfElectives}}</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
@@ -104,7 +102,6 @@
                     <th>班次</th>
                     <th>課程名稱</th>
                     <th>授課教師</th>
-                    <th>學分</th>
                     <th>人數上限</th>
                     <th>教室</th>
                     <th>上課時間</th>
@@ -126,7 +123,6 @@
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
-                    <td>{{item.Credit}}</td>
                     <td>{{item.MumberOfElectives}}</td>
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
@@ -292,6 +288,10 @@
                 </tbody>
               </table>
             </div>
+            <div class="alert alert-waring">
+              <p>1. 因名額有限，成功選上者請於期限內完成繳費以確認選課(繳費說明已另函寄出)。</p>
+              <p>2. 未如期完成繳費者，視同放棄旁聽，將依序遞補其他校友。如有名額釋出，將個別通知可修課校友。</p>
+            </div>
           </div>
           <div [ngClass]="{'active': currTab === 'sa08', 'fade': currTab !== 'sa08'}" class="tab-pane sa08">
             <app-payment-list></app-payment-list>
@@ -314,14 +314,21 @@
 </div>
 
 <ng-template #tplDateRange let-course="course">
-  <div *ngIf="course.Status==='Choose'" class="text-right text-warning font-weight-lighter">
-    選課期間： {{course.StartDate}} 至 <span class="font-weight-bold">{{course.EndDate}}</span> 止
+  <div class="date-range-container text-warning font-weight-lighter">
+    <div>
+      保證金：{{(course.Margin | number) || 0}} / 雜費：{{(course.TuitionFees | number) || 0}}
+    </div>
+    <div>
+      <div *ngIf="course.Status==='Choose'">
+        選課期間： {{course.StartDate}} 至 <span class="font-weight-bold">{{course.EndDate}}</span> 止
+      </div>
+      <div *ngIf="course.Status==='Announcement'">
+        正取繳費期間： {{course.AnnouncementSDate}} 至 <span class="font-weight-bold">{{course.AnnouncementEDate}}</span> 止
+      </div>
+      <div *ngIf="course.Status==='Increment'">
+        備取繳費期間： {{course.IncrementSDate}} 至 <span class="font-weight-bold">{{course.IncrementEDate}}</span> 止
+      </div>
+      <div *ngIf="course.Status===''">&nbsp;</div>
+    </div>
   </div>
-  <div *ngIf="course.Status==='Announcement'" class="text-right text-warning font-weight-lighter">
-    正取繳費期間： {{course.AnnouncementSDate}} 至 <span class="font-weight-bold">{{course.AnnouncementEDate}}</span> 止
-  </div>
-  <div *ngIf="course.Status==='Increment'" class="text-right text-warning font-weight-lighter">
-    備取繳費期間： {{course.IncrementSDate}} 至 <span class="font-weight-bold">{{course.IncrementEDate}}</span> 止
-  </div>
-  <div *ngIf="course.Status===''">&nbsp;</div>
 </ng-template>

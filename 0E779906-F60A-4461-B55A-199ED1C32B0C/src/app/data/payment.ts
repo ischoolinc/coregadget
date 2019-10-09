@@ -102,7 +102,7 @@ export class Payment {
   /**勾選元件為 disabled */
   IsDisabled?: boolean;
 
-  /**勾選元件為 visible */
+  /**勾選元件為 visible，繳費期間+未淘汰+未入帳 */
   IsVisible?: boolean;
 }
 

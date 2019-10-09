@@ -18,6 +18,7 @@ import { FinialButtonsComponent } from './component/finial-buttons/finial-button
 import { AdmissionListComponent } from './component/admission-list/admission-list.component';
 import { MyAdmissionListComponent } from './component/my-admission-list/my-admission-list.component';
 import { PaymentFormModalComponent } from './component/payment-form-modal/payment-form-modal.component';
+import { RecordFormatPipe } from './pipes/record-format.pipe';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { PaymentFormModalComponent } from './component/payment-form-modal/paymen
     MapsToArrayPipe,
     SafeHtmlPipe,
     SemesterFormatPipe,
+    RecordFormatPipe,
     SimpleModalComponent,
     AddQuitButtonsComponent,
     FinialButtonsComponent,
@@ -45,6 +47,7 @@ import { PaymentFormModalComponent } from './component/payment-form-modal/paymen
     MapsToArrayPipe,
     SafeHtmlPipe,
     SemesterFormatPipe,
+    RecordFormatPipe,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,

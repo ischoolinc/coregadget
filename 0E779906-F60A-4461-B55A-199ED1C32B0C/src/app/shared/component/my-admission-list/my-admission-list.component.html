@@ -12,8 +12,8 @@
         </th>
         <th>課程編號</th>
         <th>課程名稱</th>
-        <th>學雜費</th>
         <th>保證金</th>
+        <th>雜費</th>
         <th>已入帳</th>
         <th>繳款資訊</th>
         <th style="max-width: 120px;">繳款說明</th>
@@ -38,12 +38,11 @@
               {{item.IsAdmitted === 't' ? '正取' : '備取遞補'}}
             </div>
           </td>
-          <td>{{item.TuitionFees | number}}</td>
           <td>{{item.Margin | number}}</td>
+          <td>{{item.TuitionFees | number}}</td>
           <td>
-            {{item.VerifyAccounting === 'f' ? '否' : ''}}
             <span *ngIf="item.VerifyAccounting !== 'f'" class="glyphicon glyphicon-ok"></span>
-            {{item.Cancel === 't' ? '(放棄)' : ''}}
+            <div>{{item | recordFormat}}</div>
           </td>
           <td>
             <ul>
