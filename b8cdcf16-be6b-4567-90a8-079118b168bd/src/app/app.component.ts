@@ -475,7 +475,7 @@ export class AppComponent implements OnInit {
     else{
       course.PointIsError = false;
       course.ErrorMsg = '';
-      
+
       // 衝堂判斷
       course[keyName] = !course[keyName];
       const checked = course[keyName];
@@ -886,7 +886,7 @@ export class AppComponent implements OnInit {
       let addPointTotal = 0;
       quitList.forEach((item) =>{
         if(item.NeedPoints == "t"){
-          quitPointTotal += Number(item.StudentSetPoints); 
+          quitPointTotal += Number(item.StudentSetPoints);
         }
       });
       addList.forEach((item) =>{
@@ -1337,7 +1337,7 @@ export class AppComponent implements OnInit {
         <html>
         <head>
           <title>加退選單</title>
-          <link type="text/css" rel="stylesheet" href="assets/css/default.css"/>
+          <link type="text/css" rel="stylesheet" href="../assets/css/default.css"/>
         </head>
         <body style="width:880px;padding:40px 20px" onload="window.print();">
           <div class="my-print-page">
@@ -1374,7 +1374,7 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * 投入點數 
+   * 投入點數
    * 0. 空字串忽略不做判斷
    * 1. 判斷使用者輸入是否為正整數
    * 2. 判斷投點點數是否大於剩餘點數
@@ -1390,7 +1390,7 @@ export class AppComponent implements OnInit {
       course.PointIsError = false;
       course.ErrorMsg = "";
       course.StudentSetPoints = null;
-      
+
       return;
     }
     if(!rgexp.test(points) && _points && points != "0"){
@@ -1424,7 +1424,7 @@ export class AppComponent implements OnInit {
 
   // 計算點數現況
   calcCurrentPoint(){
-    let spendPoints = 0;      
+    let spendPoints = 0;
         this.canChooseCourses.filter((course) => course.NeedPoints == "t" && course.WillAdd).forEach((item) => {
           spendPoints += Number(item.StudentSetPoints);
         });
