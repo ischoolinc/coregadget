@@ -149,7 +149,11 @@ export class CounselItemDetailComponent implements OnInit {
       rec.ProbleDescription = caseRec.ProbleDescription;
       rec.SpecialSituation = caseRec.SpecialSituation;
       rec.EvaluationResult = caseRec.EvaluationResult;
-      rec.IsClosed = caseRec.IsClosed;
+      if (caseRec.IsClosed === 't') {
+        rec.IsClosed = '是';
+      } else {
+        rec.IsClosed = '否';
+      }
       rec.CloseDate = caseRec.CloseDate;
       rec.ClosedByTeacherID = caseRec.ClosedByTeacherID;
       rec.CloseDescription = caseRec.CloseDescription;
@@ -214,6 +218,7 @@ export class CounselItemDetailComponent implements OnInit {
       rec.Content = counselRec.Content;
       rec.CaseNo = counselRec.CaseNo;
       rec.ClassID = counselRec.ClassID;
+      rec.CaseIsClosed = counselRec.CaseIsClosed;
 
       // 如果只有認輔老師權限，認輔紀錄只能看到自己的。
       if (this.globalService.MyCounselTeacherRole === "認輔老師") {
