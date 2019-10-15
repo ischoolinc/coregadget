@@ -275,6 +275,7 @@
                     [].concat(course.Scores.Score || []).forEach(function (template, index) {
                         template.Type = 'Number';
                         template.Permission = "Editor";
+                        template.IsSubScoreMode = false;
                         // 判斷此定期評量是否在成績輸入時間內
                         template.Lock = !(new Date(template.InputStartTime) < new Date() && new Date() < new Date(template.InputEndTime));
                         
@@ -285,7 +286,7 @@
                             Name: '定期評量',
                             Type: 'Number',
                             Permission: 'Editor',
-                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock,
+                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock
                         };
                         // 平時評量
                         var assignmentScore = {
@@ -344,7 +345,19 @@
                                 // 評量比重
                                 var p = Number(template.Percentage) || 0;
                                 // 定期評量成績
-                                var score = stu['Score_' + template.ExamID];
+                                // 如果有讀卡子成績設定：定期成績 = 試卷 + 讀卡
+                                // {
+                                //     $scope.templateList.findIndex(tp => tp.ExamID == template.ExamID);
+                                // }
+                                var score;
+                                if (template.isSubScoreMode) {
+                                    score = stu[`Score_PS_${template.ExamID}`] + stu[`Score_CS_${template.ExamID}`]; 
+                                } else {
+                                    score = stu['Score_' + template.ExamID];
+                                }
+                                
+
+
                                 // 平時評量成績
                                 var assignmentScore = stu['AssignmentScore_' + template.ExamID];
     
@@ -389,6 +402,7 @@
 
             /**取得小考資料 */
             $scope.getGradeItemList();
+            $scope.getTemplateSubItem();
         }
 
         /**
@@ -449,8 +463,66 @@
                                         Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
                                     };
                                     $scope.gradeItemList.splice(0, 0, quizResult);
+                                    console.log($scope.gradeItemList);
                                 });
                             });
+                        }
+                    }
+                }
+            });
+        }
+
+        /** 取得定期評量子成績項目 */
+        $scope.getTemplateSubItem = function() {
+            $scope.connection.send({
+                service: "TeacherAccess.GetCourseExtensions",
+                body: {
+                    Content: {
+                        ExtensionCondition: {
+                            '@CourseID': '' + $scope.current.Course.CourseID,
+                            Name: 'GradeItemExtension'
+                        }
+                    }
+                },
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert("TeacherAccess.GetCourseExtensions Error");
+                    } else {
+                        // 課程是否有設定定期評量子成績項目
+                        if (response.Response.CourseExtension.Extension.GradeItemExtension) {
+                            // mapping 定期評量子成績項目
+                            // 調整 exam list
+                            [].concat(response.Response.CourseExtension.Extension.GradeItemExtension || []).forEach(template => {
+
+                                var index = $scope.examList.findIndex(exam => exam.TemplateID == template.ExamID);
+                                var index2 = $scope.templateList.findIndex(tp => tp.ExamID == template.ExamID);
+
+                                if (index2 > -1) {
+                                    $scope.templateList[index2].isSubScoreMode = true;
+                                }
+                                
+                                if (index > -1) {
+                                    var exam = $scope.examList[index];
+
+                                    var tpSubExamPs = {
+                                        TemplateID: exam.TemplateID, // 定期評量ID
+                                        ExamID: 'Score_PS_' + exam.TemplateID,
+                                        Name: '定期評量_試卷',
+                                        Type: 'Number',
+                                        Permission: 'Editor',
+                                        Lock: exam.Lock
+                                    };
+                                    var tpSubExamCs = {
+                                        TemplateID: exam.TemplateID, // 定期評量ID
+                                        ExamID: 'Score_CS_' + exam.TemplateID,
+                                        Name: '定期評量_讀卡',
+                                        Type: 'Number',
+                                        Permission: 'Read',
+                                        Lock: exam.Lock
+                                    };
+                                    $scope.examList.splice(index, 1, tpSubExamCs, tpSubExamPs);
+                                }
+                            })
                         }
                     }
 
@@ -460,7 +532,6 @@
                     } else{
                         $scope.setCurrentTemplate($scope.templateList[0]);
                     }
-                    
                 }
             });
         }
@@ -536,6 +607,10 @@
                                             studentMapping[examScoreRec.StudentID]['AssignmentScore_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.AssignmentScore;
                                             // 文字評量
                                             studentMapping[examScoreRec.StudentID]['Text_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.Text;
+                                            // 定期評量：試卷成績
+                                            studentMapping[examScoreRec.StudentID]['Score_PS_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.PScore == undefined ? '' : examScoreRec.Extension.Extension.PScore;
+                                            // 定期評量：讀卡成績
+                                            studentMapping[examScoreRec.StudentID]['Score_CS_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.CScore == undefined ? '' : examScoreRec.Extension.Extension.CScore;
                                             
                                         });
                                         getCourseExamScoreFinish = true;
@@ -967,17 +1042,24 @@
                 Student: []
             };
             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
+
+                var examID = $scope.current.template.ExamID;
+
                 var obj = {
                     '@StudentID': studentRec.StudentID,
                     '@Score': 0,
                     Extension: {
                         Extension: {
                             /**定期評量 */
-                            Score: studentRec['Score_' + $scope.current.template.ExamID],
+                            Score: $scope.current.template.isSubScoreMode ? studentRec['Score_PS_' + examID] + studentRec['Score_CS_' + examID] : studentRec['Score_' + examID],
                             /**平時評量 */
-                            AssignmentScore: studentRec['AssignmentScore_' + $scope.current.template.ExamID],
+                            AssignmentScore: studentRec['AssignmentScore_' + examID],
                             /**文字評量 */
-                            Text: studentRec['Text_' + $scope.current.template.ExamID]
+                            Text: studentRec['Text_' + examID],
+                            /** 定期評量：試卷成績 */
+                            PScore: studentRec['Score_PS_' + examID],
+                            /** 定期評量：讀卡成績*/
+                            CScore: studentRec['Score_CS_' + examID]
                         }
                     }
                 };
