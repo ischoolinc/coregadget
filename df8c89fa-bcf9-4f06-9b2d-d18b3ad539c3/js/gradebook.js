@@ -346,17 +346,15 @@
                                 var p = Number(template.Percentage) || 0;
                                 // 定期評量成績
                                 // 如果有讀卡子成績設定：定期成績 = 試卷 + 讀卡
-                                // {
-                                //     $scope.templateList.findIndex(tp => tp.ExamID == template.ExamID);
+                                // var score;
+                                // if (template.isSubScoreMode) {
+                                //     var ps = stu[`Score_PS_${template.ExamID}`] * 1;
+                                //     var cs = stu[`Score_CS_${template.ExamID}`] * 1;
+                                //     score = ps + cs; 
+                                // } else {
+                                //     score = stu['Score_' + template.ExamID];
                                 // }
-                                var score;
-                                if (template.isSubScoreMode) {
-                                    score = stu[`Score_PS_${template.ExamID}`] + stu[`Score_CS_${template.ExamID}`]; 
-                                } else {
-                                    score = stu['Score_' + template.ExamID];
-                                }
-                                
-
+                                var score = stu['Score_' + template.ExamID];
 
                                 // 平時評量成績
                                 var assignmentScore = stu['AssignmentScore_' + template.ExamID];
@@ -463,7 +461,6 @@
                                         Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
                                     };
                                     $scope.gradeItemList.splice(0, 0, quizResult);
-                                    console.log($scope.gradeItemList);
                                 });
                             });
                         }
@@ -507,20 +504,28 @@
                                     var tpSubExamPs = {
                                         TemplateID: exam.TemplateID, // 定期評量ID
                                         ExamID: 'Score_PS_' + exam.TemplateID,
-                                        Name: '定期評量_試卷',
+                                        Name: '試卷',
                                         Type: 'Number',
                                         Permission: 'Editor',
+                                        isSubItem: true,
                                         Lock: exam.Lock
                                     };
                                     var tpSubExamCs = {
                                         TemplateID: exam.TemplateID, // 定期評量ID
                                         ExamID: 'Score_CS_' + exam.TemplateID,
-                                        Name: '定期評量_讀卡',
+                                        Name: '讀卡',
                                         Type: 'Number',
                                         Permission: 'Read',
+                                        isSubItem: true,
                                         Lock: exam.Lock
                                     };
-                                    $scope.examList.splice(index, 1, tpSubExamCs, tpSubExamPs);
+
+                                    // 如果有子成績項目：定期評量 = 試卷 + 評量
+                                    // 定期評量權限：唯讀
+                                    var targetExam = $scope.examList[index];
+                                    targetExam.Permission = 'Read';
+
+                                    $scope.examList.splice(index + 1, 0, tpSubExamCs, tpSubExamPs);
                                 }
                             })
                         }
@@ -902,6 +907,11 @@
         $scope.submitGrade = function (matchNext) {
             if ($scope.current.mode == '成績管理') {
                 $scope.current.Student[$scope.current.Exam.ExamID] = $scope.current.Value;
+                if ($scope.current.template.isSubScoreMode) {
+                    var ps = $scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
+                    var cs = $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
+                    $scope.current.Student['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                } 
                 // 資料同步
                 const targetStu = $scope.studentList.find(stu => stu.StudentID === $scope.current.Student.StudentID);
                 targetStu[$scope.current.Exam.ExamID] = $scope.current.Value;
@@ -1051,7 +1061,8 @@
                     Extension: {
                         Extension: {
                             /**定期評量 */
-                            Score: $scope.current.template.isSubScoreMode ? studentRec['Score_PS_' + examID] + studentRec['Score_CS_' + examID] : studentRec['Score_' + examID],
+                            // $scope.current.template.isSubScoreMode ? studentRec['Score_PS_' + examID] + studentRec['Score_CS_' + examID] : studentRec['Score_' + examID]
+                            Score: studentRec['Score_' + examID],
                             /**平時評量 */
                             AssignmentScore: studentRec['AssignmentScore_' + examID],
                             /**文字評量 */
