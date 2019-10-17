@@ -83,6 +83,7 @@
             return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
         }
 
+        $scope.isInit = true;
         $scope.connection = gadget.getContract("ta");
         $scope.params = gadget.params;
         // 成績計算取小數後第幾位
@@ -250,6 +251,7 @@
          * 設定目前課程資料： 整理試別
         */
         $scope.setCurrentCourse = function (course) {
+            $scope.isInit = true;
             if ($scope.studentList) {
                 var data_changed = !$scope.checkAllTable($scope.current.Table);
                 if (data_changed) {
@@ -400,6 +402,7 @@
                 } else{
                     $scope.setCurrentTemplate($scope.templateList[0]);
                 }
+                $scope.isInit = false;
             });
         }
 
@@ -407,7 +410,6 @@
          * 取得小考資料 gradeItemList
          */
         $scope.getGradeItemList = function() {
-            $scope.gradeItemList = [];
             return new Promise((r,j) => {
                 $scope.connection.send({
                     service: "TeacherAccess.GetCourseExtensions",
@@ -420,6 +422,7 @@
                         }
                     },
                     result: function (response, error, http) {
+                        $scope.gradeItemList = [];
                         if (error !== null) {
                             alert("TeacherAccess.GetCourseExtensions Error");
                             // promise 回傳錯誤
@@ -462,6 +465,9 @@
                                         };
                                         $scope.gradeItemList.splice(0, 0, quizResult);
                                     });
+                                    if (!$scope.isInit) {
+                                        $scope.setCurrentTemplate($scope.current.template);
+                                    }
                                 });
                             }
                             // promise 回傳結果成功
@@ -1634,11 +1640,9 @@
                         if (error) {
                             alert("TeacherAccess.SetCourseExtensions Error");
                         } else {
-                            $scope.$apply(function () {
-                                $('#GradeItemModal').modal('hide');
-                                // 重新取得評分項目(小考)資料
-                                $scope.getGradeItemList();
-                            });
+                            $('#GradeItemModal').modal('hide');
+                            // 重新取得評分項目(小考)資料
+                            $scope.getGradeItemList();
                         }
                     }
                 });
