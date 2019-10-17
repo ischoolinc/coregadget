@@ -386,42 +386,50 @@
         
                     $scope.examList.splice(0, 0, finalScore, finalScorePreview);
                 }
-                
             }
 
-            /** 取得定期評量子成績項目 & 取得小考資料 */
-            $scope.getGradeItemList();
+            /**
+             * 1. 取得定期評量子成績項目 $scope.getGradeItemList()
+             * 2. 取得定期評量子成績項目 $scope.getSubExamList()
+             * 3. 設定目前定期評量 $scope.setCurrentTemplate()
+             */
+            Promise.all([$scope.getGradeItemList(), $scope.getSubExamList()]).then(v => {
+                // 設定目前定期評量
+                if($scope.current.template) {
+                    $scope.setCurrentTemplate($scope.current.template);
+                } else{
+                    $scope.setCurrentTemplate($scope.templateList[0]);
+                }
+            });
         }
 
         /**
-         * 1. 取得小考資料 gradeItemList
-         * 2. 取得定期評量子成績項目 並加入到 examList
-         * 3. setCurrentTemplate
-         * 4. dataReload
+         * 取得小考資料 gradeItemList
          */
         $scope.getGradeItemList = function() {
             $scope.gradeItemList = [];
-
-            $scope.connection.send({
-                service: "TeacherAccess.GetCourseExtensions",
-                body: {
-                    Content: {
-                        ExtensionCondition: {
-                            '@CourseID': '' + $scope.current.Course.CourseID,
-                            Name:[ 'GradeItem', 'GradeItemExtension']
+            return new Promise((r,j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseExtensions",
+                    body: {
+                        Content: {
+                            ExtensionCondition: {
+                                '@CourseID': '' + $scope.current.Course.CourseID,
+                                Name: 'GradeItem'
+                            }
                         }
-                    }
-                },
-                result: function (response, error, http) {
-                    if (error !== null) {
-                        alert("TeacherAccess.GetCourseExtensions Error");
-                    } else {
-                        [].concat(response.Response.CourseExtension.Extension || []).forEach(ext => {
+                    },
+                    result: function (response, error, http) {
+                        if (error !== null) {
+                            alert("TeacherAccess.GetCourseExtensions Error");
+                            // promise 回傳錯誤
+                            j(error);
+                        } else {
                             // 課程是否有設定小考試別
-                            if (ext.GradeItem) {
+                            if (response.Response.CourseExtension.Extension.GradeItem) {
                                 $scope.$apply(function () {
                                     // 小考試別整理
-                                    [].concat(ext.GradeItem.Item || []).forEach(item => {
+                                    [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
         
                                         var gradeItem = {
                                             TemplateID: item.ExamID, // 定期評量ID
@@ -456,22 +464,49 @@
                                     });
                                 });
                             }
+                            // promise 回傳結果成功
+                            r(true);
+                        }
+                    }
+                });
+            });
+        }
+
+        /** 取得定期評量子成績項目 並加入到 examList */
+        $scope.getSubExamList = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseExtensions",
+                    body: {
+                        Content: {
+                            ExtensionCondition: {
+                                '@CourseID': '' + $scope.current.Course.CourseID,
+                                Name: 'GradeItemExtension'
+                            }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error !== null) {
+                            alert("TeacherAccess.GetCourseExtensions Error");
+                            // promise 回傳結果失敗
+                            j(error);
+                        } else {
                             // 課程是否有設定定期評量子成績項目
-                            if (ext.GradeItemExtension) {
+                            if (response.Response.CourseExtension.Extension.GradeItemExtension) {
                                 // mapping 定期評量子成績項目
                                 // 調整 exam list
-                                [].concat(ext.GradeItemExtension || []).forEach(template => {
-
+                                [].concat(response.Response.CourseExtension.Extension.GradeItemExtension || []).forEach(template => {
+    
                                     var index = $scope.examList.findIndex(exam => exam.TemplateID == template.ExamID);
                                     var index2 = $scope.templateList.findIndex(tp => tp.ExamID == template.ExamID);
-
+    
                                     if (index2 > -1) {
                                         $scope.templateList[index2].isSubScoreMode = true;
                                     }
                                     
                                     if (index > -1) {
                                         var exam = $scope.examList[index];
-
+    
                                         var tpSubExamPs = {
                                             TemplateID: exam.TemplateID, // 定期評量ID
                                             ExamID: 'Score_PS_' + exam.TemplateID,
@@ -490,25 +525,21 @@
                                             isSubItem: true,
                                             Lock: exam.Lock
                                         };
-
+    
                                         // 如果有子成績項目：定期評量 = 試卷 + 評量
                                         // 定期評量權限：唯讀
                                         var targetExam = $scope.examList[index];
                                         targetExam.Permission = 'Read';
-
+    
                                         $scope.examList.splice(index + 1, 0, tpSubExamCs, tpSubExamPs);
                                     }
                                 })
                             }
-                        })
+                            // promise 回傳結果成功
+                            r(true);
+                        }
                     }
-                    // 設定目前定期評量
-                    if($scope.current.template) {
-                        $scope.setCurrentTemplate($scope.current.template);
-                    } else{
-                        $scope.setCurrentTemplate($scope.templateList[0]);
-                    }
-                }
+                });
             });
         }
 
