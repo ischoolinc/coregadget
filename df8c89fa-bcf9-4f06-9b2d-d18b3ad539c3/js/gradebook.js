@@ -841,15 +841,17 @@
             },
             result: function (response, error, http) {
                 if (error !== null) {
-                    alert("TeacherAccess.GetExamTextScoreMappingTable Error");
+                    alert("取得「文字評量代碼表」出現錯誤。");
+                    $scope.examTextList = [];
+                    $scope.examCodeList = [];
                 } else {
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
 
                             // 資料替換用
-                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item);
+                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item || []);
                             // 資料顯示用
-                            $scope.examCodeList = [].concat(response.Response.TextMappingTable.Item);
+                            $scope.examCodeList = [].concat(response.Response.TextMappingTable.Item || []);
 
                             // 代碼排序 長度大到小
                             $scope.examTextList.sort(function (a, b) {
@@ -1692,7 +1694,6 @@
 
                 if (result > -1) {
                     valueList.push($scope.examTextList[result].Content);
-                    //$scope.current.Value = $scope.examTextList[result].Content;
                 }
                 else {
                     valueList.push(code);
