@@ -3,7 +3,7 @@
   <div class="tab-pane fade-in"
        id="listOne">
     <div class="d-md-flex align-items-center sub-title mb-3">
-      <h4 class="mb-0 mr-auto">認輔紀錄</h4>
+      <h4 class="mb-0 mr-auto">晤談紀錄</h4>
     </div>
 
     <ng-container *ngIf="caseList.length === 0">
@@ -36,7 +36,8 @@
                   <button class="btn btn-info"
                           data-toggle="modal"
                           data-backdrop="static"
-                          (click)="addInterviewModal(item)">
+                          (click)="addInterviewModal(item)"
+                          [disabled]="item.isEditDisable">
                     <i class="material-icons">add</i> 新增
                   </button>
                 </ng-container>
@@ -126,10 +127,11 @@
         <ul class="rwd-table">
           <li class="thead">
             <ol class="tr">
-              <li style="width: 20%">認輔日期</li>
-              <li style="width: 20%">認輔對象</li>
-              <li style="width: 20%">認輔方式</li>
-              <li style="width: 20%">記錄者</li>
+              <li style="width: 10%">晤談日期</li>
+              <li style="width: 10%">晤談對象</li>
+              <li style="width: 10%">晤談方式</li>
+              <li style="width: 10%">記錄者</li>
+              <li style="width: 40%">內容說明</li>
               <li style="width: 20%"></li>
             </ol>
           </li>
@@ -152,11 +154,13 @@
                   {{ casseitem.CounselType }}
                 </li>
                 <li data-title="記錄者">{{ casseitem.AuthorName }}</li>
+                <li data-title="內容說明">{{ casseitem.Content }}</li>
                 <li data-title="">
                   <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
                     <button class="btn btn-light"
                             data-toggle="modal"
-                            (click)="editInterviewModal(casseitem)">
+                            (click)="editInterviewModal(casseitem)"
+                            [disabled]="casseitem.isEditDisable">                            
                       修改
                     </button>
                     <button class="btn btn-danger"

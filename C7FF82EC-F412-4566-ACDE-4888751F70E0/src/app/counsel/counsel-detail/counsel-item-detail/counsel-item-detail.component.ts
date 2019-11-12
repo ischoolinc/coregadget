@@ -159,9 +159,13 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CloseDescription = caseRec.CloseDescription;
       rec.StudentID = caseRec.StudentID;
       rec.CaseSource = caseRec.CaseSource;
-      rec.MainTeacher = caseRec.MainTeacher;
-      rec.Role = caseRec.Role;
+      // rec.MainTeacher = caseRec.MainTeacher;
+      // rec.Role = caseRec.Role;
       rec.ClassID = caseRec.ClassID;
+      rec.isEditDisable = true;
+      if (caseRec.CanEditCase === 't') {
+        rec.isEditDisable = false;
+      }
 
       rec.PhotoUrl = `${
         this.dsaService.AccessPoint
@@ -219,6 +223,12 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CaseNo = counselRec.CaseNo;
       rec.ClassID = counselRec.ClassID;
       rec.CaseIsClosed = counselRec.CaseIsClosed;
+      this.caseList.forEach(item => {
+        if (item.UID === rec.CaseID) {
+          rec.isEditDisable = item.isEditDisable;
+        }
+      });
+
 
       // 如果只有認輔老師權限，認輔紀錄只能看到自己的。
       if (this.globalService.MyCounselTeacherRole === "認輔老師") {

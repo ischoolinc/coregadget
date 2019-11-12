@@ -27,6 +27,7 @@ export class CaseInterview {
   isCounselTypeOtherDisable: boolean = true;
   selectCounselType: string = "請選擇方式";
   isSaveDisable: boolean = true;
+  isEditDisable: boolean = true;
   CaseIsClosed: string = '';
   // 檢查是否有值
   checkValue() {
@@ -109,7 +110,7 @@ export class CaseInterview {
 
     if (d < 10) dStr = "0" + d;
 
-    return `${y}-${mStr}-${dStr}`;
+    return `${y}/${mStr}/${dStr}`;
   }
 }
 

@@ -12,7 +12,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addInterviewLabel">
-          {{ editModeString }}認輔紀錄 - {{ _studentName }}
+          {{ editModeString }}晤談紀錄 - {{ _studentName }}
         </h5>
         <button
           type="button"
@@ -68,13 +68,13 @@
                 *ngIf="!caseInterview.isOccurDateHasValue"
                 >*</span
               >
-              認輔日期
+              晤談日期
             </label>
             <input
               type="date"
               class="form-control"
               id="interviewDate"
-              placeholder="請輸入認輔日期"
+              placeholder="請輸入晤談日期"
               [(ngModel)]="caseInterview.OccurDate"
               (keyup)="caseInterview.checkValue()"
             />
