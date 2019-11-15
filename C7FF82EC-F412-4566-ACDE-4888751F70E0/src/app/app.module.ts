@@ -76,6 +76,7 @@ import { DelInterviewModalComponent } from './counsel/counsel-detail/interview-d
 import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/del-case-interview-modal/del-case-interview-modal.component';
 import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
 import { BaseInfoDetailComponent } from './counsel/counsel-detail/base-info-detail/base-info-detail.component';
+import { GenerateKeyAndSetTimeComponent } from './comprehensive/generate-key-and-set-time/generate-key-and-set-time.component';
 
 
 @NgModule({
@@ -139,7 +140,8 @@ import { BaseInfoDetailComponent } from './counsel/counsel-detail/base-info-deta
     DelInterviewModalComponent,
     DelCaseInterviewModalComponent,
     CounselHistoryComponent,
-    BaseInfoDetailComponent
+    BaseInfoDetailComponent,
+    GenerateKeyAndSetTimeComponent
   ],
   imports: [
     BrowserModule,

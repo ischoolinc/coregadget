@@ -1,10 +1,11 @@
-import { Component, OnInit, Optional, TemplateRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Optional, TemplateRef, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { AppComponent } from '../app.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DsaService } from '../dsa.service';
 import { timeout } from 'rxjs/operators';
 import { RoleService } from "../role.service";
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
+import { GenerateKeyAndSetTimeComponent } from './generate-key-and-set-time/generate-key-and-set-time.component';
 
 @Component({
   selector: 'app-comprehensive',
@@ -13,17 +14,19 @@ import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrie
 })
 export class ComprehensiveComponent implements OnInit {
 
+  @ViewChild("GenerateKeyAndSetTime") GenerateKeyAndSetTime: GenerateKeyAndSetTimeComponent;
+
   deny: boolean = false;
   isLoading: boolean = false;
   currentSemester: any;
   sectionList: any[];
   currentMode: string;
   currentSection: any;
-  currentClass:any;
+  currentClass: any;
   plugin: TemplateRef<any>;
   generater: any = {};
 
-  dsns:string;
+  dsns: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -39,7 +42,7 @@ export class ComprehensiveComponent implements OnInit {
 
   ngOnInit() {
     this.appComponent.currentComponent = "comprehensive";
-    this.currentMode="view";
+    this.currentMode = "view";
     this.dsns = gadget.getApplication().accessPoint;
     this.loadData();
   }
@@ -68,7 +71,7 @@ export class ComprehensiveComponent implements OnInit {
 
   async genSSNKey(fillInSectionID) {
     try {
-      await this.dsaService.send("GenerateFillInKeySSN", {FillInSectionID:fillInSectionID});
+      await this.dsaService.send("GenerateFillInKeySSN", { FillInSectionID: fillInSectionID });
       window.location.reload();
     }
     catch (err) {
@@ -78,7 +81,7 @@ export class ComprehensiveComponent implements OnInit {
 
   async genGUIDKey(fillInSectionID) {
     try {
-      await this.dsaService.send("GenerateFillInKeyGUID", {FillInSectionID:fillInSectionID});
+      await this.dsaService.send("GenerateFillInKeyGUID", { FillInSectionID: fillInSectionID });
       window.location.reload();
     }
     catch (err) {
@@ -134,6 +137,22 @@ export class ComprehensiveComponent implements OnInit {
       focus: true,
       keyboard: false,
       backdrop: 'static'
+    });
+  }
+
+  // 顯示設定代碼與設定開放時間 
+  async showGenerateKeyAndSetTime() {
+    // this.GenerateKeyAndSetTime.selectFillInSection = null;
+    // this.GenerateKeyAndSetTime.selectSchoolYear = "";
+    // this.GenerateKeyAndSetTime.selectSemester = "";
+    await this.GenerateKeyAndSetTime.loadData();
+    $("#GenerateKeyAndSetTime").modal("show");
+    // 關閉畫面
+    $("#GenerateKeyAndSetTime").on("hide.bs.modal", () => {
+      // 重整資料
+ //     this.loadData();
+      $("#GenerateKeyAndSetTime").off("hide.bs.modal");
+
     });
   }
 }
