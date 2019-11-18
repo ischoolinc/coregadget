@@ -5,6 +5,7 @@ import { CaseStudent, CaseTeacher, SelectCaseTeacher, CounselTeacher } from "./c
 import { DsaService } from "../dsa.service";
 import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.component";
 import { GlobalService } from "../global.service";
+import { DelCaseModalComponent } from "./del-case-modal/del-case-modal.component"
 
 @Component({
   selector: "app-case",
@@ -18,6 +19,8 @@ export class CaseComponent implements OnInit {
   itemClosedList: string[] = [];
   // 可選班級
   itemClassList: string[] = [];
+
+  isDeleteButtonDisable: boolean = true;
 
   // 判斷可以啟用個案資料功能
   enableCase: boolean = false;
@@ -43,7 +46,7 @@ export class CaseComponent implements OnInit {
   }
 
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
-
+  @ViewChild("del_case_modal") del_case_modal: DelCaseModalComponent;
   // 新增
   setNewCaseModal() {
     this.case_modal.isAddMode = true;
@@ -115,6 +118,21 @@ export class CaseComponent implements OnInit {
     });
   }
 
+  // 刪除
+  delCaseModal(caseStudent: CaseStudent) {
+
+    this.del_case_modal._CaseStudent = caseStudent;
+    $("#delCaseModal").modal("show");
+    // 關閉畫面
+    $("#delCaseModal").on("hide.bs.modal", () => {
+      if (!this.del_case_modal.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
+
+      $("#delCaseModal").off("hide.bs.modal");
+    });
+  }
 
   // 編輯
   setEditCaseModal(item: CaseStudent) {
@@ -126,7 +144,7 @@ export class CaseComponent implements OnInit {
 
     this.case_modal.loadData();
     this.case_modal.selectClassNameValue = item.ClassName;
-    this.case_modal.selectSeatNoValue = item.SeatNo;    
+    this.case_modal.selectSeatNoValue = item.SeatNo;
     this.case_modal.selectCaseSourceValue = item.CaseSource;
 
     this.case_modal.caseStudent.isCloseYes = false;
@@ -191,6 +209,7 @@ export class CaseComponent implements OnInit {
   }
 
   async loadData() {
+    this.isDeleteButtonDisable = true;
     this.enableCase = false;
     this.isLoading = true;
     this.caseList = [];
@@ -283,6 +302,7 @@ export class CaseComponent implements OnInit {
     }
 
     this.changeDisplay();
+    this.isDeleteButtonDisable = !this.roleService.enableAdmin;
     this.isLoading = false;
   }
 

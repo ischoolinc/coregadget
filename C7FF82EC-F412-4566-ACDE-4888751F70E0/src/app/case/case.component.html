@@ -1,68 +1,53 @@
 <div *ngIf="!isLoading; else tmpLoading">
   <div class="tab-content">
-    <app-permission-denied
-      *ngIf="!roleService.isLoading && !globalService.enableCase"
-    ></app-permission-denied>
+    <app-permission-denied *ngIf="!roleService.isLoading && !globalService.enableCase"></app-permission-denied>
     <!-- TAB 4 個案資料 -->
-    <div
-      *ngIf="!roleService.isLoading && globalService.enableCase"
-      class="tab-pane fade show active"
-    >
+    <div *ngIf="!roleService.isLoading && globalService.enableCase"
+         class="tab-pane fade show active">
 
       <div class="d-flex">
         <div class="dropdown">
-          <button
-            class="btn btn-light dropdown-toggle"
-            type="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
+          <button class="btn btn-light dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
             {{ selectItemClosed }}
           </button>
           <div class="dropdown-menu">
-            <a
-              class="dropdown-item"
-              *ngFor="let item of itemClosedList"
-              [ngClass]="{ active: selectItemClosed === item }"
-              (click)="SetSelectItemClosed(item)"
-              >{{ item }}</a
-            >
+            <a class="dropdown-item"
+               *ngFor="let item of itemClosedList"
+               [ngClass]="{ active: selectItemClosed === item }"
+               (click)="SetSelectItemClosed(item)">{{ item }}</a>
           </div>
         </div>
-        <div class="dropdown" style="margin-left: 20px">
-          <button
-            class="btn btn-light dropdown-toggle"
-            type="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
+        <div class="dropdown"
+             style="margin-left: 20px">
+          <button class="btn btn-light dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
             {{ selectItemClass }}
           </button>
           <div class="dropdown-menu scrollable-menu">
-            <a
-              class="dropdown-item"
-              *ngFor="let item of itemClassList"
-              [ngClass]="{ active: selectItemClass === item }"
-              (click)="SetSelectItemClass(item)"
-              >{{ item }}</a
-            >
+            <a class="dropdown-item"
+               *ngFor="let item of itemClassList"
+               [ngClass]="{ active: selectItemClass === item }"
+               (click)="SetSelectItemClass(item)">{{ item }}</a>
           </div>
         </div>
-        <button
-          class="btn btn-info ml-auto"
-          data-toggle="modal"
-          data-backdrop="static"
-          data-target="#newCase"
-          (click)="setNewCaseModal()"
-        >
+        <button class="btn btn-info ml-auto"
+                data-toggle="modal"
+                data-backdrop="static"
+                data-target="#newCase"
+                (click)="setNewCaseModal()">
           <i class="material-icons">add</i> 建立新個案
         </button>
       </div>
       <ul class="rwd-table">
         <li class="thead">
-          <ol class="tr">          
+          <ol class="tr">
             <li class="sticky-top">班級</li>
             <li class="sticky-top">座號</li>
             <li class="sticky-top">姓名</li>
@@ -70,42 +55,52 @@
             <li class="sticky-top">學生身份</li>
             <li class="sticky-top">個案編號</li>
             <li class="sticky-top">個案類別</li>
-            <li class="sticky-top"  style="white-space: pre-wrap;word-break: break-all;">認輔老師</li>
+            <li class="sticky-top"
+                style="white-space: pre-wrap;word-break: break-all;">認輔老師</li>
             <li class="sticky-top">輔導次數</li>
             <li class="sticky-top">結案</li>
             <li class="sticky-top"></li>
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr" *ngFor="let item of caseList">
+          <ol class="tr"
+              *ngFor="let item of caseList">
             <ng-container *ngIf="item.isDisplay === true">
-                <li data-title="班級">{{ item.ClassName }}</li>
-                <li data-title="座號">{{ item.SeatNo }}</li>
-                <li data-title="姓名">{{ item.Name }}</li>
-                <li data-title="性別">{{ item.Gender }}</li>
-                <li data-title="學生身份">{{ item.StudentIdentity }}</li>
-                <li data-title="個案編號">{{ item.CaseNo }}</li>
-                <li class="text-left text-normal" data-title="個案類別"  style="white-space: pre-wrap;word-break: break-all;">
-                  {{ item.getProblemCategoryCheckedValue() }}
-                </li>
-                <li data-title="認輔老師" style="white-space: pre-wrap;word-break: break-all;">
-                  {{ item.GetTeacherNames() }}
-                </li>
-                <li data-title="輔導次數">{{ item.CaseCount }}</li>
-                <li data-title="結案">{{item.GetClosedString()}}</li>
-                <li data-title="">
-                  <button
-                    class="btn btn-light"
-                    data-toggle="modal"
-                    data-backdrop="static"
-                    data-target="#newCase"
-                    (click)="setEditCaseModal(item)"
-                  >
-                    編輯
-                  </button>
-                </li>
-            </ng-container>         
-            
+              <li data-title="班級">{{ item.ClassName }}</li>
+              <li data-title="座號">{{ item.SeatNo }}</li>
+              <li data-title="姓名">{{ item.Name }}</li>
+              <li data-title="性別">{{ item.Gender }}</li>
+              <li data-title="學生身份">{{ item.StudentIdentity }}</li>
+              <li data-title="個案編號">{{ item.CaseNo }}</li>
+              <li class="text-left text-normal"
+                  data-title="個案類別"
+                  style="white-space: pre-wrap;word-break: break-all;">
+                {{ item.getProblemCategoryCheckedValue() }}
+              </li>
+              <li data-title="認輔老師"
+                  style="white-space: pre-wrap;word-break: break-all;">
+                {{ item.GetTeacherNames() }}
+              </li>
+              <li data-title="輔導次數">{{ item.CaseCount }}</li>
+              <li data-title="結案">{{item.GetClosedString()}}</li>
+              <li data-title="">
+                <button class="btn btn-light"
+                        data-toggle="modal"
+                        data-backdrop="static"
+                        data-target="#newCase"
+                        (click)="setEditCaseModal(item)">
+                  編輯
+                </button>
+                <button class="btn btn-danger"
+                        data-toggle="modal"
+                        style="margin-left: 10px"
+                        (click)="delCaseModal(item)"
+                        [disabled]="isDeleteButtonDisable">
+                  刪除
+                </button>
+              </li>
+            </ng-container>
+
           </ol>
         </li>
       </ul>
@@ -113,13 +108,13 @@
   </div>
 </div>
 
-<ng-template #tmpLoading class="container">
-  <div
-    class="row justify-content-center"
-    style="margin-top:250px;margin-bottom:200px;"
-  >
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>
 
 <app-new-case-modal #case_modal></app-new-case-modal>
+<app-del-case-modal #del_case_modal></app-del-case-modal>
