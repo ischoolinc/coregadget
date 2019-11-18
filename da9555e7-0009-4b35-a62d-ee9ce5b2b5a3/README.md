@@ -1,7 +1,7 @@
-Angular Gadget
+IEP成績標準設定
 ====
 
-## `da9555e7-0009-4b35-a62d-ee9ce5b2b5a3` IEP成績標準設定
+### GUID: da9555e7-0009-4b35-a62d-ee9ce5b2b5a3
 
 ### Contract: ischool.course.iep
 `Service List:`
