@@ -1,0 +1,112 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column">
+    <div id="index" class="h-100" page>
+        <nav aria-label="breadcrumb text-nowrap text-truncate">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">成績標準設定</li>
+            </ol>
+        </nav>
+        <ng-container *ngIf="!isLoading; else tplLoading">
+            <ng-container *ngIf="courseList.length > 0; else tplNoData">
+                <div class="d-flex flex-row">
+                    <div class="dropdown mb-3">
+                        <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{curCourse.name}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0)" *ngFor="let course of courseList"
+                                (click)="setCurCourse(course)">
+                                {{course.name}}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex-fill ml-5 align-self-end">
+                        <p class="text-start">成績輸入截止時間：{{deadline}}</p>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>學號</th>
+                            <th>座號</th>
+                            <th>學生</th>
+                            <th>及格標準</th>
+                            <th>補考標準</th>
+                            <th>備註</th>
+                        </tr>
+                    </thead>
+                    <tbody class="point">
+                        <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)">
+                            <td>{{stu.student_number}}</td>
+                            <td>{{stu.seat_no}}</td>
+                            <td>{{stu.name}}</td>
+                            <td>{{stu.passing_standard}}</td>
+                            <td>{{stu.makeup_standard}}</td>
+                            <td>
+                                <code *ngIf="stu.is_iep == 't'" class="badge badge-info">IEP學生</code>
+                                {{stu.remark}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #tplLoading>
+    <h4>資料載入中...</h4>
+</ng-template>
+
+<ng-template #tplNoData>
+    <h4>此學年度學期未有授課班級。</h4>
+</ng-template>
+
+<ng-template #tplEditForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">{{curStudent.name}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-form-label">
+                    及格標準
+                </label>
+                <input class="form-control" rows="1" placeholder="請輸入及格標準" [(ngModel)]="curStudent.passing_standard"
+                    (keyup)="validatePs()" [ngClass]="{'error': !curStudent.validate_ps}">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">
+                    補考標準
+                </label>
+                <input class="form-control" rows="1" placeholder="請輸入補考標準" [(ngModel)]="curStudent.makeup_standard"
+                    (keyup)="validateMs()" [ngClass]="{'error': !curStudent.validate_ms}">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">
+                    備註
+                </label>
+                <textarea class="form-control" rows="1" placeholder="請輸入備註" [(ngModel)]="curStudent.remark"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-dark" (click)="modalRef.hide()">取消</button>
+            <button type="button" class="btn btn-info" (click)="save()">儲存</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tplForbid>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">提醒</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-danger">
+        成績輸入時間已截止。
+    </div>
+</ng-template>
