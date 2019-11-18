@@ -1,17 +1,27 @@
 Angular Gadget
 ====
 
-## Gadget 清單
-* `25c70b56-4c70-4336-b74b-ef12d43064de` 線上點名
+## `da9555e7-0009-4b35-a62d-ee9ce5b2b5a3` IEP成績標準設定
 
-## 前置要求
-* 安裝 Node.js
-* 安裝 Yarn (建議安裝)
-* 安裝 VSCode
-* 安裝 Angular CLI (`yarn global add @angular/cli`)。
+### Contract: ischool.course.iep
+`Service List:`
+```
+    取得我的授課課程     GetMyCourse
+    取得成績輸入截止時間  GetDeadline
+    取得課程學生         GetCourseStudent
+    設定課程學生IEP      SetStudentIEP
+```
+### Table
+`Target column`
+```
+    passing_standard  及格標準
+    makeup_standard  補考標準
+    remark  備註
+```
+
+---
 
 ## 開始開發
-* `git clone https://github.com/gildarts/angulargadget mygadget`
 * `cd mygadget`
 * `yarn` #安裝套件
 * `yarn start` ＃啟動 angular server。
