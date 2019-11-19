@@ -151,6 +151,7 @@ export class GenerateKeyAndSetTimeComponent implements OnInit {
 
         let rspData = [].concat(resp || []);
         alert("儲存完成");
+        $("#GenerateKeyAndSetTime").modal("hide");
       } catch (err) {
         alert(err.dsaError.message);
       }

@@ -1,6 +1,6 @@
 // 認輔資料
 export class CaseInterview {
-  constructor() {}
+  constructor() { }
   UID: string;
   StudentName: string; // 姓名
   SchoolYear: number; //學年度
@@ -59,7 +59,7 @@ export class CaseInterview {
       this.isContactNameHasValue = true;
     } else {
       this.isContactNameHasValue = false;
-    }   
+    }
 
     if (this.Content) {
       this.isContentHasValue = true;
@@ -72,7 +72,7 @@ export class CaseInterview {
       this.isSemesterHasValue &&
       this.isOccurDateHasValue &&
       this.isCounselTypeHasValue &&
-      this.isContactNameHasValue &&      
+      this.isContactNameHasValue &&
       this.isContentHasValue
     ) {
       this.isSaveDisable = false;
@@ -81,8 +81,8 @@ export class CaseInterview {
     }
   }
 
-   // 設定方式
-   setCounselType(value: string) {
+  // 設定方式
+  setCounselType(value: string) {
     this.CounselType = value;
     this.selectCounselType = value;
     if (value === "其他") {
@@ -117,4 +117,5 @@ export class CaseInterview {
 export class SemesterInfo {
   SchoolYear: number;
   Semester: number;
+  CaseID: string;
 }

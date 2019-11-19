@@ -123,6 +123,7 @@ export class BaseInfoDetailComponent implements OnInit {
         studInfo.MotherNationality = item.MotherNationality;
         studInfo.CustodianName = item.CustodianName;
         studInfo.CustodianNationality = item.CustodianNationality;
+        studInfo.CustodianRelationship = item.CustodianRelationship;
         studInfo.ParseFatherMontherCXML(item.Father_otherInfo,item.MotherOtherInfo,item.CustodianOtherInfo);
         // 前級畢業資訊
         studInfo.ParseBeforeEnrollmentXML(item.BeforeEnrollment);

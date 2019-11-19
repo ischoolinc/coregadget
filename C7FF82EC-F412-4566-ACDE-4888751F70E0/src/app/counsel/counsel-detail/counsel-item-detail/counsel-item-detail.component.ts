@@ -11,7 +11,7 @@ import {
 } from "../../../counsel-student.service";
 import {
   CaseInterview,
-  SemesterInfo
+  SemesterInfo,
 } from "../counsel-item-detail/case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
 import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
@@ -24,6 +24,7 @@ import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-c
 export class CounselItemDetailComponent implements OnInit {
   _semesterInfo: SemesterInfo[] = [];
   caseInterview: CaseInterview[] = [];
+  caseViewInfoList: CaseViewInfo[] = [];
   _StudentID: string = "";
   isLoading = false;
   // 個案資料
@@ -119,7 +120,7 @@ export class CounselItemDetailComponent implements OnInit {
   async GetStudentCase() {
     this.isLoading = true;
     let data: CaseStudent[] = [];
-
+    this.caseViewInfoList = [];
     let ServiceName: string = "GetStudentCase";
 
 
@@ -133,7 +134,8 @@ export class CounselItemDetailComponent implements OnInit {
     [].concat(resp.Case || []).forEach(caseRec => {
       // 建立認輔資料
       let rec: CaseStudent = new CaseStudent();
-      rec.UID = caseRec.UID;
+      rec.UID = caseRec.UID;  
+
 
       let x = Number(caseRec.OccurDate);
       let dt = new Date(x);
@@ -186,6 +188,12 @@ export class CounselItemDetailComponent implements OnInit {
       }
 
       //   rec.TeacherName = caseRec.TeacherName;
+      let caseInfo: CaseViewInfo = new CaseViewInfo();
+      caseInfo.CaseID = caseRec.UID;
+      caseInfo.CaseStudentInfo = rec;
+      caseInfo.CaseInterviewList = [];
+      caseInfo.SemesterInfoList = [];
+      this.caseViewInfoList.push(caseInfo);
 
       data.push(rec);
     });
@@ -240,21 +248,50 @@ export class CounselItemDetailComponent implements OnInit {
       }
     });
     this.caseInterview = data;
+
+
     let tmp = [];
     this._semesterInfo = [];
     this.caseInterview.forEach(data => {
-      let key = `${data.SchoolYear}_${data.Semester}`;
+      let key = `${data.CaseID}_${data.SchoolYear}_${data.Semester}`;
       if (!tmp.includes(key)) {
         let sms: SemesterInfo = new SemesterInfo();
         sms.SchoolYear = data.SchoolYear;
         sms.Semester = data.Semester;
+        sms.CaseID = data.CaseID;
         this._semesterInfo.push(sms);
         tmp.push(key);
       }
     });
+    this._semesterInfo.forEach(sms => {
+      this.caseViewInfoList.forEach(caseV => {
+        if (sms.CaseID === caseV.CaseID) {
+          caseV.SemesterInfoList.push(sms);
+        }
+      });
+    });
+
+    // 整理資料
+    this.caseInterview.forEach(data => {
+      this.caseViewInfoList.forEach(caseV => {
+        if (data.CaseID === caseV.CaseID) {
+          caseV.CaseInterviewList.push(data);
+        }
+      });
+    });
+
+
     this.isLoading = false;
 
     this.isDeleteButtonDisable = !this.roleService.enableAdmin;
 
   }
+}
+
+// 個案檢視
+export class CaseViewInfo {
+  CaseID: string = "";
+  CaseStudentInfo: CaseStudent = new CaseStudent();
+  SemesterInfoList: SemesterInfo[] = [];
+  CaseInterviewList: CaseInterview[] = [];
 }
