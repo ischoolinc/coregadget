@@ -87,10 +87,11 @@ export class AppComponent implements OnInit {
       return;
     } else {
       try {
-        const rsp = await this.contract.send('GetCourseStudent', {CourseID: this.curCourse.id});
+        const rsp = await this.contract.send('GetCourseIEPStudent', {CourseID: this.curCourse.id});
         this.studentList = [].concat(rsp.Students || []).map((data: StudentRec) => {
           data.validate_ps = true;
           data.validate_ms = true;
+          data.remark = data.remark ? data.remark : 'IEP學生';
           return data;
         });
       } catch (error) {
@@ -142,7 +143,7 @@ export class AppComponent implements OnInit {
           MakeupStandard: this.curStudent.makeup_standard,
           Remark: this.curStudent.remark
         };
-        const rsp = await this.contract.send('SetStudentIEP', body)
+        const rsp = await this.contract.send('SetStudentStandard', body)
         
         this.getCourseStudent();
         this.modalRef.hide();
@@ -171,7 +172,6 @@ interface StudentRec {
   passing_standard: number;
   makeup_standard: number;
   remark: string;
-  is_iep: string;
 
   // 資料驗證
   validate_ps: boolean;

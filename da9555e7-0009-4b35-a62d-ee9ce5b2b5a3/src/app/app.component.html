@@ -36,17 +36,16 @@
                         </tr>
                     </thead>
                     <tbody class="point">
-                        <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)">
-                            <td>{{stu.student_number}}</td>
-                            <td>{{stu.seat_no}}</td>
-                            <td>{{stu.name}}</td>
-                            <td>{{stu.passing_standard}}</td>
-                            <td>{{stu.makeup_standard}}</td>
-                            <td>
-                                <code *ngIf="stu.is_iep == 't'" class="badge badge-info">IEP學生</code>
-                                {{stu.remark}}
-                            </td>
-                        </tr>
+                        <ng-container *ngIf="studentList.length > 0; else tplNostudent">
+                            <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)">
+                                <td>{{stu.student_number}}</td>
+                                <td>{{stu.seat_no}}</td>
+                                <td>{{stu.name}}</td>
+                                <td>{{stu.passing_standard}}</td>
+                                <td>{{stu.makeup_standard}}</td>
+                                <td>{{stu.remark}}</td>
+                            </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </ng-container>
@@ -60,6 +59,12 @@
 
 <ng-template #tplNoData>
     <h4>此學年度學期未有授課班級。</h4>
+</ng-template>
+
+<ng-template #tplNostudent>
+    <tr>
+        <td colspan="6">此課程無IEP學生</td>
+    </tr>
 </ng-template>
 
 <ng-template #tplEditForm>
