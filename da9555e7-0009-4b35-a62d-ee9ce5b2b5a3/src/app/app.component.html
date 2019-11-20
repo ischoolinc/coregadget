@@ -27,6 +27,7 @@
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
+                            <th>班級</th>
                             <th>學號</th>
                             <th>座號</th>
                             <th>學生</th>
@@ -38,6 +39,7 @@
                     <tbody class="point">
                         <ng-container *ngIf="studentList.length > 0; else tplNostudent">
                             <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)">
+                                <td>{{stu.class_name}}</td>
                                 <td>{{stu.student_number}}</td>
                                 <td>{{stu.seat_no}}</td>
                                 <td>{{stu.name}}</td>
