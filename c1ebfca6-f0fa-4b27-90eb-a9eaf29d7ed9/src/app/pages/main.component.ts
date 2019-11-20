@@ -84,6 +84,10 @@ export class MainComponent implements OnInit {
     this.router.navigate(['../sub']);
   }
 
+  async openClassSubstitute() {
+    this.router.navigate(['../class']);
+  }
+
   //開啟設定小幫手畫面
   async openTeacherHelper(course: CourseConf){
 
