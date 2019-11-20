@@ -109,8 +109,8 @@ export class CaseInterview {
     }
 
     if (d < 10) dStr = "0" + d;
-
-    return `${y}/${mStr}/${dStr}`;
+       return `${y}-${mStr}-${dStr}`;
+    //return `${y}/${mStr}/${dStr}`;
   }
 }
 

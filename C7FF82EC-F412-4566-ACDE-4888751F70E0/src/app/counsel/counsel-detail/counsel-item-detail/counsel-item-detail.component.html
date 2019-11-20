@@ -43,7 +43,7 @@
               <div class="col-8 col-md-4 mb-3">{{ item.CaseSource }}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案日期</div>
               <div class="col-8 col-md-4 mb-3">
-                {{ item.OccurDate | date: "yyyy-MM-dd" }}
+                {{ item.OccurDate | date: "yyyy/MM/dd" }}
               </div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">班導師</div>
               <div class="col-8 col-md-4 mb-3">{{ item.TeacherName }}</div>
@@ -53,7 +53,7 @@
               <div class="col-4 col-md-2 mb-3 font-weight-bold">是否結案</div>
               <div class="col-8 col-md-4 mb-3">{{item.IsClosed}}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">結案日期</div>
-              <div class="col-8 col-md-4 mb-3"> {{ item.CloseDate | date: "yyyy-MM-dd" }}</div>
+              <div class="col-8 col-md-4 mb-3"> {{ item.CloseDate | date: "yyyy/MM/dd" }}</div>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@
           semInfo.Semester === casseitem.Semester">
                   <ol class="tr"
                       data-toggle="modal">
-                    <li data-title="日期">{{ casseitem.OccurDate }}</li>
+                    <li data-title="日期">{{ casseitem.OccurDate| date: "yyyy/MM/dd" }}</li>
                     <li class="text-normal"
                         data-title="對象">
                       {{ casseitem.ContactName }}
