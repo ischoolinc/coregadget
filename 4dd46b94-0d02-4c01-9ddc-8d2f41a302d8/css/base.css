@@ -143,7 +143,7 @@ body {
 }
 /* 選擇學年度學期 */
 .my-schoolyear-semester-widget {
-  padding: 9px 0;
+  /* padding: 9px 0; */
   background-color: #ffffff;
 }
 /* 自訂表格，無 hover */
@@ -244,4 +244,24 @@ body {
 .my-well-table-striped tbody tr:nth-child(odd) td,
 .my-well-table-striped tbody tr:nth-child(odd) th {
   background-color: #f9f9f9;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.mr-2 {
+  margin-right: 2rem;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
 }
