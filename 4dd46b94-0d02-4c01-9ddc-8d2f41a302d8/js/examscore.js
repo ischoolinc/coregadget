@@ -14,15 +14,6 @@
       Exam.onChangeStudent($(this).attr("children-index"));
       return $('.tooltip').remove();
     });
-    // --
-    $("#MatrixMenu").on("click", "a", function(event) {
-      var matrix = $(this).text();
-
-      $("#Matrix").html("排名：" + matrix);
-
-      Exam.matrixChange(matrix);
-    });
-    // --
     return $("#Semester").on("click", ".btn", function (event) {
       var schoolYear = $(this).attr("school-year");
       var semester = $(this).attr("semester");
@@ -158,152 +149,93 @@
       return $("#ExamDropDown").find("ul").html("").end().find("a[data-toggle='dropdown']").html("");
     };
 
+    /** 載入資料 */
     loadScore = function (schoolYear, semester) {
-      var courseInterval
-        , getAllStudentScoreReady
-        , getCourseExamScoreReady
-        , isCurrSemester
-        , margeScore, request, request2;
+      var isCurrSemester  = schoolYear === _curr_schoolyear && semester === _curr_semester;
       _schoolYear = schoolYear;
       _semester = semester;
-      isCurrSemester = schoolYear === _curr_schoolyear && semester === _curr_semester;
-      getCourseExamScoreReady = false;
-      getAllStudentScoreReady = false;
-      courseInterval = [];
       rankList = [];
 
-      /** 資料合併 */
-      margeScore = function () {
-        // $(courseInterval).each(function (index, item) {
-        //   return $(_exam_score[schoolYear + semester]).each(function (index, course) {
-        //     if (course.Subject === item.Subject) {
-        //       item.ScoreDetail = [].concat(item.ScoreDetail || []);
-        //       course.Exam = [].concat(course.Exam || []);
-        //       $(item.ScoreDetail).each(function (index, scoreDetail) {
-        //         return $(course.Exam).each(function (index, exam) {
-        //           if (exam.ExamID === scoreDetail.ExamID) {
-        //             exam.Interval = scoreDetail;
-        //             return false;
-        //           }
-        //         });
-        //       });
-        //       return false;
-        //     }
-        //   });
-        // });
+      var request = {
+        Content: {
+          Condition: {
+            SchoolYear: schoolYear,
+            Semester: semester
+          }
+        }
+      };
+      var request2 = {
+        SchoolYear: schoolYear,
+        Semester: semester
+      };
+      if (_system_position === "parent") {
+        request.Content.Condition.StudentID = _student.StudentID;
+        request2.StudentID = _student.StudentID;
+      }
 
+      // 取得課程成績
+      const getCourseExamScore = new Promise((r, j) => {
+        _connection.send({
+          service: "_.GetCourseExamScore",
+          body: request,
+          result: function(response, error) {
+            if (error !== null) {
+              j(set_error_message("#mainMsg", "GetCourseExamScore", error));
+            } else {
+              if (response.ExamScoreList && response.ExamScoreList.Seme && response.ExamScoreList.Seme.Course) {
+                _exam_score[schoolYear + semester] = myHandleArray(response.ExamScoreList.Seme.Course).sort(Comparer);
+              } else {
+                _exam_score[schoolYear + semester] = null;
+              }
+
+              r(true);
+            }
+          }
+        });
+      });
+
+      // 取得固定排名資料
+      const getRank = new Promise((r, j) => {
+        _connection.send({
+          service: "_.GetRank",
+          body: request2,
+          result: function(response, error) {
+            if (error !== null) {
+              j(set_error_message("#mainMsg", "GetRank", error));
+            } else {
+              rankList = [].concat(response.RankMatrix || []);
+              r(true);
+            }
+          }
+        });
+      });
+
+      Promise.all([getCourseExamScore, getRank]).then(() => {
         if ($("#Semester button.active").attr("school-year") === schoolYear
-            && $("#Semester button.active").attr("semester") === semester) {
+          && $("#Semester button.active").attr("semester") === semester) {
 
           return showScore(_exam_score[schoolYear + semester], isCurrSemester);
         }
-      };
-      //if (_exam_score[schoolYear + semester]) {
-      if (false) { //不用快取，因為會讀取到同一個小孩的。
-        return showScore(_exam_score[schoolYear + semester], isCurrSemester);
-      } else {
-        request = {
-          Content: {
-            Condition: {
-              SchoolYear: schoolYear,
-              Semester: semester
-            }
-          }
-        };
-        request2 = {
-          SchoolYear: schoolYear,
-          Semester: semester
-        };
-        if (_system_position === "parent") {
-          request.Content.Condition.StudentID = _student.StudentID;
-          request2.StudentID = _student.StudentID;
-        }
-        const getCourseExamScore = new Promise((r, j) => {
-          _connection.send({
-            service: "_.GetCourseExamScore",
-            body: request,
-            result: function(response, error, http) {
-              var oCourse, oScore, _ref, _ref1;
-              if (error !== null) {
-                // return set_error_message("#mainMsg", "GetCourseExamScore", error);
-                j(set_error_message("#mainMsg", "GetCourseExamScore", error));
-              } else {
-                if ((_ref = response.ExamScoreList) != null ? (_ref1 = _ref.Seme) != null ? _ref1.Course : void 0 : void 0) {
-                  oCourse = myHandleArray(response.ExamScoreList.Seme.Course).sort(Comparer);
-                  oScore = _exam_score[schoolYear + semester] = oCourse;
-                } else {
-                  _exam_score[schoolYear + semester] = null;
-                }
-                // getCourseExamScoreReady = true;
-                // return margeScore();
-                r(true);
-              }
-            }
-          });
-        });
-        
-        const getAllStudentScore = new Promise((r, j) => {
-          _connection.send({
-            service: "_.GetAllStudentScore",
-            body: request2,
-            result: function(response, error, http) {
-              var _ref;
-              if (error !== null) {
-                j(set_error_message("#mainMsg", "GetAllStudentScore", error));
-              } else {
-                if ((_ref = response.ExamScoreList) != null ? _ref.Course : void 0) {
-                  courseInterval = [].concat(response.ExamScoreList.Course);
-                }
-                // getAllStudentScoreReady = true;
-                // return margeScore();
-                console.log(courseInterval);
-                r(true);
-              }
-            }
-          });
-        });
-
-        const getRank = new Promise((r, j) => {
-          _connection.send({
-            service: "_.GetRank",
-            body: request2,
-            result: function(response, error, http) {
-              var _ref;
-              if (error !== null) {
-                j(set_error_message("#mainMsg", "GetRank", error));
-              } else {
-                rankList = [].concat(response.RankMatrix || []);
-                r(true);
-              }
-            }
-          });
-        });
-
-        // getAllStudentScore
-        Promise.all([getCourseExamScore, getRank]).then(margeScore);
-        
-        return;
-      }
+      });
+      return;
     };
 
-    matrixChange = function(matrix) {
-      console.log(matrix);
-    }
-
+    /** 畫面呈現 */
     showScore = function(exam_data, isCurrSemester) {
       var dropdownList, exam_list, exam_process, getIndex, getNow, interval_process, levelList, now, switchLevel, thead1, thead2;
+      var curMatrix = '班級';
       now = new Date();
       exam_list = [];
       thead1 = [];
       thead2 = [];
       dropdownList = [];
-      levelList = ["Level0", "Level10", "Level20", "Level30", "Level40", "Level50", "Level60", "Level70", "Level80", "Level90", "Level100"];
-      
+      levelList = ["level_lt10", "level_10", "level_20", "level_30", "level_40", "level_50", "level_60", "level_70", "level_80", "level_90", "level_gte100"];
+
       if (exam_data) {
-        $(exam_data).each(function (index, course) {
-          return $(course.Exam).each(function (index, exam) {
+        [].concat(exam_data || []).forEach((course) => {
+          [].concat(course.Exam || []).forEach((exam) => {
             if (exam.ExamID) {
-              if ($.inArray(exam.ExamID, exam_list) === -1) {
+              if (exam_list.findIndex((id) => id == exam.ExamID) === -1) {
                 exam_list.push(exam.ExamID);
                 thead1.push("<th colspan=\"3\">" + exam.ExamName + "</th>");
                 thead2.push("<th colspan=\"2\">成績</th>");
@@ -315,10 +247,21 @@
         });
       }
 
+      // 切換定期評量
       $("#ExamDropDown").find("ul").html(dropdownList.join("")).end().find("a[data-toggle='dropdown']").html("");
       $("#ExamDropDown .dropdown-menu a").click(function () {
         $("#ScoreInterval tbody").html("<tr><td colspan=\"12\">載入中...</td></tr>");
         $("#ExamDropDown a[data-toggle='dropdown']").html($(this).text()).attr('my-examid', $(this).attr('my-examid'));
+        return interval_process();
+      });
+
+      // 切換排名母群
+      $("#MatrixMenu").on("click", "a", function(event) {
+        var matrix = $(this).text();
+        $("#Matrix").html("排名：" + matrix);
+
+        curMatrix = matrix;
+        exam_process();
         return interval_process();
       });
 
@@ -383,61 +326,63 @@
                   }
                 }
                 if (exam.ScoreDetail && show_data) {
-                  ext_score = exam.ScoreDetail.Score || "";
-                  if (ext_score === "缺") {
-                    avg_score = "";
-                    td_score = "缺";
-                  } else {
-                    avg_score = parseFloat(ext_score, 10);
-                    //td_score = ext_score ?  Number(avg_score).toFixed(_places) : "";
-                    td_score = ext_score ? FloatMath(Number(avg_score), _math_type, _places) : "";
-                  }
-                  if (avg_score && avg_score < 60) {
-                    tbody1.push("<td class=\"my-fail\" my-data=\"" + exam.ExamID + "\">" + td_score + "</td>");
-                  } else {
-                    tbody1.push("<td my-data=\"" + exam.ExamID + "\">" + td_score + "</td>");
-                  }
-                  if (course.Subject === "體育" || pre_score === -999) {
-                    tbody1.push("<td>&nbsp;</td>");
-                  } else {
-                    if (avg_score) {
-                      if (avg_score > pre_score) {
-                        tbody1.push("<td><span class=\"my-progress\">↑</span></td>");
-                      } else if (avg_score < pre_score) {
-                        tbody1.push("<td><span class=\"my-regress\">↓</span></td>");
+                  // 成績資料
+                  {
+                    ext_score = exam.ScoreDetail.Score || "";
+                    if (ext_score === "缺") {
+                      avg_score = "";
+                      td_score = "缺";
+                    } else {
+                      avg_score = parseFloat(ext_score, 10);
+                      //td_score = ext_score ?  Number(avg_score).toFixed(_places) : "";
+                      td_score = ext_score ? FloatMath(Number(avg_score), _math_type, _places) : "";
+                    }
+                    if (avg_score && avg_score < 60) {
+                      tbody1.push("<td class=\"my-fail\" my-data=\"" + exam.ExamID + "\">" + td_score + "</td>");
+                    } else {
+                      tbody1.push("<td my-data=\"" + exam.ExamID + "\">" + td_score + "</td>");
+                    }
+                    if (course.Subject === "體育" || pre_score === -999) {
+                      tbody1.push("<td>&nbsp;</td>");
+                    } else {
+                      if (avg_score) {
+                        if (avg_score > pre_score) {
+                          tbody1.push("<td><span class=\"my-progress\">↑</span></td>");
+                        } else if (avg_score < pre_score) {
+                          tbody1.push("<td><span class=\"my-regress\">↓</span></td>");
+                        } else {
+                          tbody1.push("<td>&nbsp;</td>");
+                        }
                       } else {
                         tbody1.push("<td>&nbsp;</td>");
                       }
-                    } else {
-                      tbody1.push("<td>&nbsp;</td>");
                     }
                   }
-
-                  // ------
+                  
+                  // 排名資料
                   {
+                    // 取得排名資料
                     const data = rankList.find((data) => data.school_year == _curr_schoolyear
                       && data.semester == _curr_semester && data.item_name == course.Subject
-                      && data.ref_exam_id == exam.ExamID && data.rank_type == '班排名');
+                      && data.ref_exam_id == exam.ExamID && data.rank_type == switchMatrix(curMatrix));
                     
                     if (data) {
                       tbody1.push("<td my-data=\"" + exam.ExamID + "\">" + data.rank + "</td>");
                     } else {
                       tbody1.push("<td my-data=\"" + exam.ExamID + "\"></td>");
                     }
-                    // tbody1.push("<td my-data=\"" + exam.ExamID + "\">" + rank[_curr_schoolyear + _curr_semester][course.Subject][exam.ExamID]['班排名'] + "</td>");
                   }
-                  // ------
 
                   if (avg_score) {
                     return pre_score = avg_score;
                   }
                 } else if (show_data === false) {
-                  return tbody1.push("<td colspan=\"2\" rel=\"tooltip\"\n  title=\"" + (endtime ? endtime + "後開放" : "尚未開放") + "\">\n  未開放</td>");
+                  return tbody1.push("<td colspan=\"3\" rel=\"tooltip\"\n  title=\"" + (endtime ? endtime + "後開放" : "尚未開放") + "\">\n  未開放</td>");
                 } else {
-                  return tbody1.push("<td></td><td></td>");
+                  return tbody1.push("<td></td> <td></td> <td></td>");
                 }
               } else {
-                return tbody1.push("<td></td><td></td>");
+                return tbody1.push("<td></td> <td></td> <td></td>");
               }
             });
             return tbody1.push("</tr>");
@@ -454,32 +399,50 @@
 
       switchLevel = function (score) {
         if (score >= 0 && score < 10) {
-          return "Level0";
+          return "level_lt10";
         } else if (score >= 10 && score < 20) {
-          return "Level10";
+          return "level_10";
         } else if (score >= 20 && score < 30) {
-          return "Level20";
+          return "level_20";
         } else if (score >= 30 && score < 40) {
-          return "Level30";
+          return "level_30";
         } else if (score >= 40 && score < 50) {
-          return "Level40";
+          return "level_40";
         } else if (score >= 50 && score < 60) {
-          return "Level50";
+          return "level_50";
         } else if (score >= 60 && score < 70) {
-          return "Level60";
+          return "level_60";
         } else if (score >= 70 && score < 80) {
-          return "Level70";
+          return "level_70";
         } else if (score >= 80 && score < 90) {
-          return "Level80";
+          return "level_80";
         } else if (score >= 90 && score < 100) {
-          return "Level90";
+          return "level_90";
         } else if (score >= 100) {
-          return "Level100";
+          return "level_gte100";
         } else {
           return "";
         }
       };
 
+      switchMatrix = (matrix) => {
+        switch (matrix) {
+          case '班級':
+            return '班排名';
+          case '年級':
+            return '年排名';
+          case '類一':
+            return '類一排名';
+          case '類二':
+            return '類二排名';
+          case '科系':
+            return '科排名';
+          default:
+            return '';
+        }
+      };
+
+      /** 試別 排名組距 */
       interval_process = function () {
         var curr_examid, tbody1, tbody_html;
         tbody1 = [];
@@ -488,45 +451,34 @@
         
         if (curr_examid) {
           exam_data.forEach((course) => {
-            var endtime, ext_score, my_level, show_data, td_score, _ref, _ref1, _results;
+            var endtime, ext_score, my_level;
+            var show_data = true;
             tbody1.push("<tr><th>" + course.Subject + "</th>");
             {
               // 檢查課程試別是否有排名資料 
-              var exam = course.Exam.find((data) => data.ExamID == curr_examid);
-              var rank = rankList.find((data) => data.item_name == course.Subject && data.ref_exam_id == curr_examid);
+              var exam = [].concat(course.Exam || []).find((data) => data.ExamID == curr_examid);
+              var rank = rankList.find((data) => data.item_name == course.Subject 
+                && data.ref_exam_id == curr_examid && data.rank_type == switchMatrix(curMatrix));
               if (rank) {
                 if (isCurrSemester) {
-                  if (_system_exam_must_enddate === 'true') {
-                    // --
-                    if (exam) {
-                      if (new Date(exam.ScoreDetail.EndTime) >= now) {
-                        show_data = false;
-                      }
-                      endtime = exam.ScoreDetail.EndTime;
+                  if (exam && _system_exam_must_enddate === 'true') {
+                    if (new Date(exam.ScoreDetail.EndTime) >= now) {
+                      show_data = false;
                     }
-                    // if (((_ref = exam.ScoreDetail) != null ? _ref.EndTime : void 0) != null) {
-                    //   if (new Date(exam.ScoreDetail.EndTime) >= now) {
-                    //     show_data = false;
-                    //   }
-                    //   endtime = exam.ScoreDetail.EndTime;
-                    // }
-                    // --
+                    endtime = exam.ScoreDetail.EndTime;
                   }
                 }
                 if (show_data) {
                   ext_score = rank.score || '';
                   if (ext_score && ext_score !== "缺") {
                     my_level = switchLevel(Number(ext_score));
-                    _results = [];
-                    for (key in levelList) {
-                      if (levelList[key] === my_level) {
-                        _results.push(tbody1.push("<td class=\"my-fail\">" + rank[key] + "</td>"));
-                        // _results.push(tbody1.push("<td class=\"my-fail\">" + exam.Interval[levelList[key]] + "</td>"));
+                    levelList.forEach((level) => {
+                      if (level == my_level) {
+                        tbody1.push("<td class=\"my-fail\">" + rank[level] + "</td>")
                       } else {
-                        // _results.push(tbody1.push("<td>" + exam.Interval[levelList[key]] + "</td>"));
-                        _results.push(tbody1.push("<td>" + rank[key] + "</td>"));
+                        tbody1.push("<td>" + rank[level] + "</td>")
                       }
-                    }
+                    });
                   }
                 } else {
                   tbody1.push("<td colspan=\"11\">\n  " + (endtime ? endtime + "後開放" : "尚未開放") + "\n</td>");
@@ -543,64 +495,6 @@
         } else {
           $("#ScoreInterval tbody").html("<tr><td colspan=\"12\">目前無資料</td></tr>");
         }
-
-        // 舊資料寫法 --
-        // if (exam_data && curr_examid) {
-        //   $(exam_data).each(function (index, course) {
-        //     tbody1.push("<tr><th>" + course.Subject + "</th>");
-            
-        //     $(exam_list).each(function (key, value) {
-        //       var endtime, exam, ext_score, my_level, show_data, td_score, _ref, _ref1, _results;
-        //       if (value === curr_examid) {
-        //         endtime = null;
-        //         show_data = true;
-        //         exam = getIndex(value, course.Exam);
-        //         ext_score = null;
-        //         my_level = null;
-        //         td_score = null;
-
-        //         if ((exam != null ? exam.Interval : void 0) != null) {
-        //           if (isCurrSemester) {
-        //             if (_system_exam_must_enddate === "true") {
-        //               if (((_ref = exam.ScoreDetail) != null ? _ref.EndTime : void 0) != null) {
-        //                 if (new Date(exam.ScoreDetail.EndTime) >= now) {
-        //                   show_data = false;
-        //                 }
-        //                 endtime = exam.ScoreDetail.EndTime;
-        //               }
-        //             }
-        //           }
-        //           if (show_data) {
-        //             if (((_ref1 = exam.ScoreDetail) != null ? _ref1.Score : void 0) != null) {
-        //               ext_score = exam.ScoreDetail.Score || '';
-        //             }
-        //             if (ext_score && ext_score !== "缺") {
-        //               my_level = switchLevel(Number(ext_score));
-        //             }
-        //             _results = [];
-        //             for (key in levelList) {
-        //               if (levelList[key] === my_level) {
-        //                 _results.push(tbody1.push("<td class=\"my-fail\">" + exam.Interval[levelList[key]] + "</td>"));
-        //               } else {
-        //                 _results.push(tbody1.push("<td>" + exam.Interval[levelList[key]] + "</td>"));
-        //               }
-        //             }
-        //             return _results;
-        //           } else {
-        //             return tbody1.push("<td colspan=\"11\">\n  " + (endtime ? endtime + "後開放" : "尚未開放") + "\n</td>");
-        //           }
-        //         } else {
-        //           return tbody1.push("<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>");
-        //         }
-        //       }
-        //     });
-        //     return tbody1.push("</tr>");
-        //   });
-        //   tbody_html = tbody1.join("");
-        //   return $("#ScoreInterval tbody").html(tbody_html);
-        // } else {
-        //   return $("#ScoreInterval tbody").html("<tr><td colspan=\"12\">目前無資料</td></tr>");
-        // }
       };
 
       if (isCurrSemester && _system_exam_must_enddate === "true") {
@@ -694,7 +588,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     };
 
-    var FloatMath = function (arg1, type, places) {
+    FloatMath = function (arg1, type, places) {
       places = places || 0;
       switch (type) {
         case "ceil":
@@ -791,11 +685,7 @@
     return {
       'score': function (schoolYear, semester) {
         return loadScore(schoolYear, semester);
-      },
-      'matrixChange': function(matrix) {
-        return matrixChange(matrix);
-      },
-      'onChangeStudent': function (index) {
+      }, 'onChangeStudent': function (index) {
         resetData();
         _student = _students[index];
         return getStudentRuleSeme();
