@@ -72,8 +72,13 @@ export class AppComponent implements OnInit {
       try {
         const rsp = await this.contract.send('GetDeadline', {CourseID: this.curCourse.id});
 
-        this.deadline = moment(rsp.Result.deadline).format('YYYY/MM/DD HH:mm');
-        this.isBeforeTheDeadline = moment(Date.now()).isBefore(this.deadline);
+        if (rsp.Result.deadline) {
+          this.deadline = moment(rsp.Result.deadline).format('YYYY/MM/DD HH:mm');
+          this.isBeforeTheDeadline = moment(Date.now()).isBefore(this.deadline);
+        } else {
+          this.deadline = '此課程未設定成績輸入時間！';
+          this.isBeforeTheDeadline = false;
+        }
 
       } catch (error) {
         alert(`Service GetDeadline: ${error}`)
