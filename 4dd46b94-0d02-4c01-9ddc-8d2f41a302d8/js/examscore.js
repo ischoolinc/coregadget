@@ -432,9 +432,9 @@
           case '年級':
             return '年排名';
           case '類一':
-            return '類一排名';
+            return '類別1排名';
           case '類二':
-            return '類二排名';
+            return '類別2排名';
           case '科系':
             return '科排名';
           default:
