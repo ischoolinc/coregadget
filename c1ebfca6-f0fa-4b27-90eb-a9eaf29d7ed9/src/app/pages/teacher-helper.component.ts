@@ -3,7 +3,6 @@ import { DSAService, Student, AttendanceItem, PeriodStatus, GroupType, RollCallC
 import { ActivatedRoute, Router } from '@angular/router';
 import { GadgetService } from '../service/gadget.service';
 import { AlertService } from './../service/alert.service';
-import { Console } from '@angular/core/src/console';
 
 @Component({
   selector: 'gd-teacher-helper',
@@ -34,7 +33,6 @@ export class TeacherHelperComponent implements OnInit {
   }
 
   async ngOnInit() {
-
 
     // 取得 setting  (是否取得照片)
     this.teacherSetting = await this.dsa.getTeacherSetting();
@@ -85,17 +83,7 @@ export class TeacherHelperComponent implements OnInit {
         this.teacherHelper.StudentName = item.StudentName;
         this.teacherHelper.StudentNumber = item.StudentNumber;
       }
-    });;
-    // const courseRecord = await this.dsa.getSchedule(this.today);
-    // courseRecord.CourseConf.forEach((course) => {
-    //   console.log(this.targetID);
-    //   if (course.CourseID == this.targetID) {
-    //     this.teacherHelper.StudentID = course.StudentID;
-    //     this.teacherHelper.StudentName = course.StudentName;
-    //     this.teacherHelper.StudentNumber = course.StudentNumber;
-    //   }
-    // });
-
+    });
   }
 
   getTeacherHelperText(stu: Student) {
@@ -119,9 +107,13 @@ export class TeacherHelperComponent implements OnInit {
   }
 
   changeTeacherHelper(stu: Student) {
-    this.teacherHelper.StudentID = stu.StudentID;
-    this.teacherHelper.StudentName = stu.Name;
-    this.teacherHelper.StudentNumber = stu.StudentNumber;
+    if (stu.StudentID == this.teacherHelper.StudentID ) {
+      this.teacherHelper = {} as TeacherHelper;
+    } else {
+      this.teacherHelper.StudentID = stu.StudentID;
+      this.teacherHelper.StudentName = stu.Name;
+      this.teacherHelper.StudentNumber = stu.StudentNumber;  
+    }
   }
 
   async saveTeacherHelper() {
