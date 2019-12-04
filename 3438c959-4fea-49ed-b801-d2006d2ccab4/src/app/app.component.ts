@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
     try {
       this.isLoading = true;
 
-      this.contract = await this.gadget.getContract('ischool.class.teacher');
+      this.contract = await this.gadget.getContract('ischool.exam.teacher');
       await this.getMyClass();
       await this.GetExamScoreSchoolYear();
       await this.GetAllExam();
