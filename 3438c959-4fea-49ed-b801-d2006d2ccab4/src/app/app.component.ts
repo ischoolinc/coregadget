@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   isLoading: boolean;
 
   curClass: ClassRec = {} as ClassRec;
-  classList: ClassRec[];
+  classList: ClassRec[] = [];
   ssList: SSRec[];
   curSS: SSRec = {} as SSRec;
   examList: ExamRec[];
