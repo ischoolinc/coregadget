@@ -82,17 +82,30 @@
           semInfo.Semester === casseitem.Semester">
                   <ol class="tr"
                       data-toggle="modal">
-                    <li data-title="日期">{{ casseitem.OccurDate| date: "yyyy/MM/dd" }}</li>
+                    <li data-title="日期"
+                        (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date: "yyyy/MM/dd" }}</li>
                     <li class="text-normal"
-                        data-title="對象">
+                        data-title="對象"
+                        (click)="viewInterviewModal(casseitem)">
                       {{ casseitem.ContactName }}
                     </li>
                     <li class="text-normal"
-                        data-title="方式">
+                        data-title="方式"
+                        (click)="viewInterviewModal(casseitem)">
                       {{ casseitem.CounselType }}
                     </li>
-                    <li data-title="記錄者">{{ casseitem.AuthorName }}</li>
-                    <li data-title="內容說明">{{ casseitem.Content }}</li>
+                    <li data-title="記錄者"
+                        (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
+                    <li data-title="內容說明"
+                        title="{{casseitem.Content}}"
+                        (click)="viewInterviewModal(casseitem)">
+                      <div style="width:100%;position: relative;">
+                        <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                             class="text-left">
+                          {{ casseitem.Content }}
+                        </div>
+                      </div>
+                    </li>
                     <li data-title="">
                       <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
                         <button class="btn btn-light"
@@ -117,7 +130,7 @@
           </ng-container>
         </ng-container>
       </ng-container>
-      <br/><br/><br/>
+      <br /><br /><br />
     </ng-container>
   </div>
 </div>

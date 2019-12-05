@@ -1,3 +1,110 @@
-<p>
- 
-</p>
+<!-- 新增／修改認輔 Modal -->
+
+<div class="modal fade"
+     id="viewCaseInterview"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addInterviewLabel"
+     aria-hidden="true">
+    <div class="modal-dialog"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="addInterviewLabel">
+                    檢視晤談紀錄 - {{ _studentName }}
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="schoolYear"
+                               class="col-form-label">
+                            學年度
+                        </label>
+                        <div>
+                            {{SchoolYear}}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="semester"
+                               class="col-form-label">
+                            學期
+                        </label>
+                        <div>
+                            {{Semester}}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="interviewDate"
+                               class="col-form-label">
+                            晤談日期
+                        </label>
+                        <div>
+                            {{OccurDate}}
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="col-form-label">
+                        <span class="text-samll text-danger"></span> 個案編號
+                        <!-- <span class="input-group mb-3"></span> -->
+                    </label>
+                    <div> {{ CaseNo }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-form-label">
+
+                        方式
+                    </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <div>
+                                    {{ CounselType }}
+                            </div>                            
+
+                        </div>
+                        <div>
+                                {{ CounselTypeOther }}
+                        </div>
+                       
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="interviewee"
+                               class="col-form-label">
+
+                            對象
+                        </label>
+                        <div>{{ContactName}}</div>                        
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description"
+                           class="col-form-label">
+
+                        內容說明
+                        <span class="text-muted"></span>
+                    </label>
+                    <textarea readonly class="form-control"
+                              id="description"
+                              rows="3"
+                              placeholder="請輸入內容說明"
+                              [(ngModel)]="Content"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>

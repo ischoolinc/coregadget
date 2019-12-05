@@ -15,6 +15,7 @@ import {
 } from "../counsel-item-detail/case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
 import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
+import { ViewCaseInterviewModalComponent } from "./view-case-interview-modal/view-case-interview-modal.component";
 
 @Component({
   selector: "app-counsel-item-detail",
@@ -33,6 +34,7 @@ export class CounselItemDetailComponent implements OnInit {
 
   @ViewChild("addCaseInterview") _addInterview: AddCaseInterviewModalComponent;
   @ViewChild("delCaseInterview") _delCaseInterview: DelCaseInterviewModalComponent;
+  @ViewChild("viewCaseInterview") _viewCaseInterview: ViewCaseInterviewModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -60,14 +62,27 @@ export class CounselItemDetailComponent implements OnInit {
   // 新增
   addInterviewModal(item: CaseStudent) {
     this._addInterview._editMode = "add";
-    let CaseInterviewAdd: CaseInterview = new CaseInterview();
-    CaseInterviewAdd.CaseID = item.UID;
-    CaseInterviewAdd.CaseNo = item.CaseNo;
-    CaseInterviewAdd.StudentID = item.StudentID;
-    CaseInterviewAdd.AuthorRole = this.globalService.MyCounselTeacherRole;
+    this._addInterview.CaseID = item.UID;
+    this._addInterview.CaseNo = item.CaseNo;
+    this._addInterview.StudentID = item.StudentID;
+    this._addInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
+    this._addInterview.editModeString = "新增";
+    this._addInterview._studentName = this.counselDetailComponent.currentStudent.StudentName;
+    this._addInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
+    this._addInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
+    this._addInterview.Semester = this.counselStudentService.currentSemester;
+    this._addInterview.UID = "";
+    this._addInterview.CounselType = "";
+    this._addInterview.CounselTypeOther = "";
+    this._addInterview.ContactName = "";
+    this._addInterview.Content = "";
+    this._addInterview.selectCounselType = "請選擇方式";
+    this._addInterview.AuthorName = "";
 
-    this._addInterview.caseInterview = CaseInterviewAdd;
-    this._addInterview.caseInterview.checkValue();
+
+    // 帶入日期與輸入者
+    let dt = new Date();
+    this._addInterview.OccurDate = this.parseDate(dt);
 
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
@@ -82,12 +97,67 @@ export class CounselItemDetailComponent implements OnInit {
     });
   }
 
+  public parseDate(dt: Date) {
+    let y = dt.getFullYear();
+    let m = dt.getMonth() + 1;
+    let d = dt.getDate();
+    let mStr = "" + m;
+    let dStr = "" + d;
+    if (m < 10) {
+      mStr = "0" + m;
+    }
+
+    if (d < 10) dStr = "0" + d;
+    return `${y}-${mStr}-${dStr}`;
+    //return `${y}/${mStr}/${dStr}`;
+  }
+
+  // 檢視
+  viewInterviewModal(caseInterview: CaseInterview) {
+    this._viewCaseInterview._studentName = caseInterview.StudentName;
+    this._viewCaseInterview.StudentID = caseInterview.StudentID;
+    this._viewCaseInterview.SchoolYear = caseInterview.SchoolYear;
+    this._viewCaseInterview.Semester = caseInterview.Semester;
+    this._viewCaseInterview.UID = caseInterview.UID;
+    this._viewCaseInterview.OccurDate = caseInterview.OccurDate;
+    this._viewCaseInterview.CaseNo = caseInterview.CaseNo;
+    this._viewCaseInterview.CounselType = caseInterview.CounselType;
+    this._viewCaseInterview.CounselTypeOther = caseInterview.CounselTypeOther;
+    this._viewCaseInterview.ContactName = caseInterview.ContactName;
+    this._viewCaseInterview.Content = caseInterview.Content;
+
+    this._viewCaseInterview.AuthorName = caseInterview.AuthorName;
+    this._viewCaseInterview.CaseID = caseInterview.CaseID;
+
+    $("#viewCaseInterview").modal("show");
+    // 關閉畫面
+    $("#viewCaseInterview").on("hide.bs.modal", () => {
+
+      $("#viewCaseInterview").off("hide.bs.modal");
+    });
+
+  }
+
   // 修改
-  editInterviewModal(counselView: CaseInterview) {
+  editInterviewModal(caseInterview: CaseInterview) {
     this._addInterview._editMode = "edit";
-    counselView.AuthorRole = this.globalService.MyCounselTeacherRole;
-    this._addInterview.caseInterview = counselView;
-    let obj = Object.assign({}, counselView);
+    this._addInterview.editModeString = "修改";
+    this._addInterview.AuthorRole = caseInterview.AuthorRole;
+    this._addInterview._studentName = caseInterview.StudentName;
+    this._addInterview.StudentID = caseInterview.StudentID;
+    this._addInterview.SchoolYear = caseInterview.SchoolYear;
+    this._addInterview.Semester = caseInterview.Semester;
+    this._addInterview.UID = caseInterview.UID;
+    this._addInterview.OccurDate = caseInterview.OccurDate;
+    this._addInterview.CaseNo = caseInterview.CaseNo;
+    this._addInterview.CounselType = caseInterview.CounselType;
+    this._addInterview.CounselTypeOther = caseInterview.CounselTypeOther;
+    this._addInterview.ContactName = caseInterview.ContactName;
+    this._addInterview.Content = caseInterview.Content;
+    this._addInterview.setCounselType(caseInterview.CounselType);
+    this._addInterview.AuthorName = caseInterview.AuthorName;
+    this._addInterview.CaseID = caseInterview.CaseID;
+
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
     // 關閉畫面
@@ -95,8 +165,6 @@ export class CounselItemDetailComponent implements OnInit {
       if (!this._addInterview.isCancel) {
         // 重整資料
         this.loadData();
-      } else {
-        Object.assign(this._addInterview.caseInterview, obj);
       }
       $("#addCaseInterview").off("hide.bs.modal");
     });
@@ -124,7 +192,6 @@ export class CounselItemDetailComponent implements OnInit {
     let ServiceName: string = "GetStudentCase";
 
 
-
     let resp = await this.dsaService.send(ServiceName, {
       Request: {
         StudentID: this.counselDetailComponent.currentStudent.StudentID
@@ -134,7 +201,7 @@ export class CounselItemDetailComponent implements OnInit {
     [].concat(resp.Case || []).forEach(caseRec => {
       // 建立認輔資料
       let rec: CaseStudent = new CaseStudent();
-      rec.UID = caseRec.UID;  
+      rec.UID = caseRec.UID;
 
 
       let x = Number(caseRec.OccurDate);
