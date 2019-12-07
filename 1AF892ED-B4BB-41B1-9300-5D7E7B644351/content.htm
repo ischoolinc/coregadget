@@ -22,13 +22,9 @@
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',                
                 account: 'bubu@debug.ischool.com.tw',
                 password:'1234'
-                // account: '',
-                // password:''
-                
             }
         });
     </script>
-
 
     <title>GradeBook</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -81,10 +77,15 @@
     </style>
 </head>
 
-
 <body ng-controller="MainCtrl">
-    <div ng-if="!(current && studentList && examList) && !HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
-    <div ng-if="HasNoCourse" style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有設定任何課程，請洽教務處行政人員。</div>
+    <div ng-if="!(current && studentList && examList) && !HasNoCourse" 
+        style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">
+        Loading...
+    </div>
+    <div ng-if="HasNoCourse" 
+        style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">
+        本學期沒有設定任何課程，請洽教務處行政人員。
+    </div>
     <div id="gadget" class="my-page" ng-if="current && studentList && examList">
         <h1 class="hidden-xs">成績管理</h1>
         <div>           
@@ -116,17 +117,6 @@
                 <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable('成績管理')}">
                     <i class="fa fa-floppy-o"></i>
                     儲存
-                </a>
-
-                <a ng-if="_HIDE_"
-                   ng-click="showCreateModal()" class="btn btn-default">
-                    <i class="fa fa-plus"></i>
-                    新增
-                </a>
-                <a ng-if="_HIDE_"
-                   ng-click="showManageModal()" class="btn btn-default">
-                    <i class="fa fa-list-alt"></i>
-                    編輯欄位
                 </a>
             </div>
             <!--平時評量模式: 編輯評分項目、批次、儲存-->
@@ -214,6 +204,7 @@
             </div>
         </div>
         <div ng-if="studentList" class="hidden-xs" style="margin-top:10px;">
+            <!-- 成績輸入介面 -->
             <div style="position:relative;float:right;width:260px;">
                 <table class="table table-bordered table-striped"
                        style="width:260px;"
@@ -256,7 +247,6 @@
                                         </a>
                                     </span>
                                 </div>
-
                                 <div ng-if="current.SelectMode=='Seq.'"
                                      class="btn-group btn-group-sm">
                                     <a class="btn btn-default"
@@ -306,7 +296,8 @@
                                         <span class="caret"></span>
                                     </a>
                                     <ul ng-if="current.mode == '成績管理'" class="dropdown-menu" style="width:100%; ">
-                                        <li ng-repeat="examItem in examList | filter: filterPermission" ng-class="{active:examItem==current.Exam}">
+                                        <li ng-repeat="examItem in examList | filter: filterPermission" 
+                                            ng-class="{active:examItem==current.Exam}">
                                             <a href="javascript:;" ng-click="setCurrent(current.Student, examItem, false, true)">
                                                 <i ng-if="examItem.Lock"
                                                    style="min-width: 14px;"
@@ -323,11 +314,6 @@
                                                 {{examItem.Name}}
                                             </a>
                                         </li>
-                                        <li ng-if="_HIDE_&&(examList | filter: filterPermission).length > 0"
-                                            class="divider"></li>
-                                        <li ng-if="_HIDE_">
-                                            <a href="javascript:;" ng-click="showCreateModal()"><i class="fa fa-plus"></i> 新增</a>
-                                        </li>
                                     </ul>
                                 </div>
                             </th>
@@ -338,8 +324,7 @@
                             <td style="position:relative;">
                                 <span>{{current.Exam?current.Exam.SubName||current.Exam.Name:''}}</span>
                                 <div ng-if="current.Student&&current.Student.StudentScoreTag"
-                                     style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -25px;"
-                                     >
+                                     style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -25px;">
                                     <small class="text-muted" style="width: 260px;">
                                         學生成績身分類別: {{current.Student.StudentScoreTag}}
                                     </small>
@@ -347,14 +332,14 @@
                                 <div ng-if="current.Exam.InputStartTime && current.Exam.SubName !='讀卡'"
                                      style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -65px;">
                                     <small class="text-muted" style="width: 260px;">
-                                        評量成績輸入開放時間: {{current.Exam.InputStartTime}} ~ {{current.Exam.InputEndTime}}
+                                        「{{current.Exam.Name}}」輸入開放時間: {{current.Exam.InputStartTime}} ~ {{current.Exam.InputEndTime}}
                                     </small>
                                 </div>
                                 <!--只有再點選學期成績才顯示-->
                                 <div ng-if="current.Course.InputStartTime && current.Exam.ExamID =='學期成績' "
                                      style="position: absolute;bottom: 0px;width: 260px;margin-bottom: -65px;">
                                     <small class="text-muted" style="width: 260px;">
-                                        學期總成績輸入開放時間: {{current.Course.InputStartTime}} ~ {{current.Course.InputEndTime}}
+                                        學期成績輸入開放時間: {{current.Course.InputStartTime}} ~ {{current.Course.InputEndTime}}
                                     </small>
                                 </div>
                                 <div ng-if="!current.Exam.SubName && current.mode == '成績管理'"
@@ -408,19 +393,6 @@
                                         </span>
                                     </div>                                   
                                 </div>
-
-                                <div ng-if="!current.Exam.Lock && current.Student && (current.Exam.Type == 'Enum') && current.Exam.Permission == 'Editor'"
-                                     class="btn-group">
-                                    <button ng-repeat="option in current.Exam.Option"
-                                            ng-click="selectValue(option.Label)"
-                                            ng-class="{active:current.Value==option.Label}"
-                                            type="button"
-                                            class="btn btn-default btn-sm"
-                                            style="width:51px;">
-                                        {{option.Label}}
-                                    </button>
-                                </div>
-                                
                             </td>
                             <td ng-if="!current.Exam || !current.Student"
                                 class="text-center">
@@ -430,41 +402,37 @@
                     </tbody>
                 </table>      
             </div>
-            
-            
             <!--成績管理Table-->
-            <div ng-if="current.mode == '成績管理'"
-                 style="margin-right:270px;">
+            <div ng-if="current.mode == '成績管理'"style="margin-right:270px;">
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th class="text-center"
-                                style="padding: 8px 2px;width: 95px;cursor:pointer;"
-                                ng-click="sortStuList('學號排序',true)"
-                                rowspan="2">
-                                學號
+                            <th rowspan="2" class="text-center" style="padding: 8px 2px;width: 95px;cursor:pointer;">
+                                班級
                             </th>
-                            <th class="text-center"
-                                style="padding: 8px 2px;width: 95px; cursor:pointer;"
-                                ng-click="sortStuList('班座排序',true)"
-                                rowspan="2">
+                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px; cursor:pointer;">
                                 學生
                             </th>
-                            <th ng-repeat="exam in examList | filter: filterPermission"
+                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;cursor:pointer;">
+                                學號
+                            </th>
+                            <th ng-if="!exam.Group || exam.SubVisible"
+                                ng-repeat="exam in examList | filter: filterPermission"
+                                ng-click="showSubExam(exam)"
                                 class="text-center"
                                 style="{{exam.Group?'padding: 8px 2px;border: none':'padding: 8px 2px;'}}"
-                                rowspan="{{exam.Group?1:2}}">
+                                rowspan="{{exam.Group ? 1 : 2}}">
                                 <span ng-if="!exam.Group"
-                                      style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
+                                    style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
                                     {{exam.Name}}
                                 </span>
                                 <span ng-if="exam.Group"></span>
-                            </th>                            
+                            </th>
                         </tr>
                         <tr>
                             <th ng-repeat="exam in examList | filter: filterPermission"
-                                ng-if="exam.Group"
+                                ng-if="exam.Group && exam.SubVisible"
                                 class="text-center"
                                 style="padding: 8px 2px;">
                                 <h6 style="max-height:40px;display:inline-block;overflow:hidden;text-overflow:ellipsis;margin: 0px;">
@@ -477,19 +445,25 @@
                         <tr ng-repeat="stuRec in studentList"
                             ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
                             style="cursor:pointer;">
-                            <td class="text-left"
+                            <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.StudentNumber}}</span>
+                                {{stuRec.ClassName}}
                             </td>
-                            <td class="text-left"
+                            <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span ng-if="stuRec.SeatNo"
-                                      style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                <span>{{stuRec.StudentName}}</span>
+                                <!-- <span style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
+                                <span>{{stuRec.StudentName}}</span> -->
+                                {{stuRec.StudentName}}({{stuRec.SeatNo}})
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <!-- <span>{{stuRec.StudentNumber}}</span> -->
+                                {{stuRec.StudentNumber}}
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
                                 style="position:relative;"
+                                ng-if="!exam.Group || exam.SubVisible"
                                 ng-click="setCurrent(stuRec, exam, true, true)">
                                 <div ng-if="!checkOneCell(stuRec, 'Exam'+exam.ExamID)"
                                      ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
@@ -560,7 +534,6 @@
             </div>
         </div>
     </div>
-
     <!--匯入畫面-->
     <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importModal">
         <div class="modal-dialog modal-lg" role="document">
@@ -778,7 +751,6 @@
             </div>
         </div>
     </div>
-
 </body>
 
 </html>
