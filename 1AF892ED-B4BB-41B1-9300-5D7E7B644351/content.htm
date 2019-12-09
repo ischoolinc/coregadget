@@ -408,20 +408,20 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th rowspan="2" class="text-center" style="padding: 8px 2px;width: 95px;cursor:pointer;">
+                            <th rowspan="2" class="text-center" style="padding: 8px 2px;width: 95px;">
                                 班級
                             </th>
-                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px; cursor:pointer;">
+                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;">
                                 學生
                             </th>
-                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;cursor:pointer;">
+                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;">
                                 學號
                             </th>
                             <th ng-if="!exam.Group || exam.SubVisible"
                                 ng-repeat="exam in examList | filter: filterPermission"
                                 ng-click="showSubExam(exam)"
                                 class="text-center"
-                                style="{{exam.Group?'padding: 8px 2px;border: none':'padding: 8px 2px;'}}"
+                                style="{{exam.Group?'padding: 8px 2px;border: none':'padding: 8px 2px;cursor:pointer;'}}"
                                 rowspan="{{exam.Group ? 1 : 2}}">
                                 <span ng-if="!exam.Group"
                                     style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">

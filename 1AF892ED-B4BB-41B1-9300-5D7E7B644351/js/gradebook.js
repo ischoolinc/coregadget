@@ -1594,7 +1594,7 @@
                     var importAssessmentScoreProcesses = [];
 
                     [].concat($scope.examList).forEach(function (examRec, index) {
-                        if (examRec.Type == 'Number' && examRec.Permission == "Editor" && examRec.Name != '學期成績') {
+                        if (examRec.Type == 'Number' && examRec.Permission == "Editor" && examRec.Name != '學期成績' && examRec.SubName != '試卷') {
                             var importProcess = {
                                 Name: '帶入' + examRec.Name + '平時成績',
                                 Type: 'Function',
