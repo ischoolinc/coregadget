@@ -158,6 +158,7 @@
             }
 
             $scope.current.Student = null;
+            $scope.current.Exam = null;
             $scope.studentList = null;
             $scope.current.VisibleExam = [];
             $scope.current.Course = course;
@@ -455,6 +456,11 @@
     
                                 return 0;
                             });
+                            // 學生清單排序後index更新
+                            $scope.studentList = $scope.studentList.map((stu, index) => {
+                                stu.index = index;
+                                return stu;
+                            });
     
                             // 取得定期評量成績
                             var getCourseExamScore = new Promise((r, j) => {
@@ -613,9 +619,16 @@
             $scope.setupCurrent();
         }
 
+
+        /**
+         * 設定目前畫面資料、學生、試別
+         * 執行setCurrent
+         */
         $scope.setupCurrent = function () {
             if ($scope.studentList && $scope.examList) {
+                // 計算：學期成績試算
                 $scope.calc();
+
                 if (!$scope.current.Student && !$scope.current.Exam) {
                     // 設定預設資料顯示
                     var ts, te;
