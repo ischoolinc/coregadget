@@ -123,3 +123,39 @@ export class ItemCount {
     Count: number;
     pst: number;
 }
+
+// 年級資訊
+export class GradeInfo {
+    GradeYear: number;
+    GradeYearStr: string;
+    Checked: boolean = false;   
+    id: string ='';
+    SetGradeYearCheck(){
+        this.Checked = !this.Checked;
+    }
+}
+
+
+export class CounselClass {
+    constructor() { }
+    id:string = '';
+    ClassID: string;
+    ClassName: string;
+    GradeYear: number;    
+    Checked: boolean = false;
+
+    SetClassCheck() {
+        this.Checked = !this.Checked;
+    }
+}
+
+export class GradeClassInfo {
+    GradeYear: number;
+    GradeYearStr: string;
+    Checked: boolean = false;
+    ClassItems: CounselClass[] = [];
+    id: string ='';
+    SetGradeYearCheck(){
+        this.Checked = !this.Checked;
+    }
+}

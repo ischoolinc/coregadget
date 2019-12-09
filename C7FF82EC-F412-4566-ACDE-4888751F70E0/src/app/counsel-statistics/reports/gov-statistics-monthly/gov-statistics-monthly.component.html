@@ -1,0 +1,44 @@
+<div style="height: 20px"></div>
+
+<div class="tab-content"
+     *ngIf="selectReportType ==='輔導工作月統計'">
+  <!-- TAB 2 輔導統計 -->
+  <div>
+    <label class="col-form-label"
+           style="width:40px">西元</label>
+    <input type="number"
+           min="2000"
+           max="3000"
+           [(ngModel)]="selectYear">
+    <label class="col-form-label"
+           style="width:30px">年</label>
+    <input type="number"
+           min="1"
+           max="12"
+           [(ngModel)]="selectMonth">
+    <label class="col-form-label"
+           style="width:30px">月</label>
+  </div>
+
+  <ul class="rwd-table">
+    <li class="thead">
+      <ol class="tr">
+        <li>統計報表名稱</li>
+        <li></li>
+      </ol>
+    </li>
+    <li class="tbody">
+      <ol class="tr"
+          *ngFor="let item of reportNameList">
+        <li data-title="報表名稱">{{ item }}</li>
+        <li data-title="">
+          <button class="btn btn-light"
+                  (click)="exportRepot(item)">
+            產生報表
+          </button>
+        </li>
+      </ol>
+    </li>
+  </ul>
+
+</div>
