@@ -5,11 +5,11 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 
 @Component({
-  selector: 'app-counsel-interview-report',
-  templateUrl: './counsel-interview-report.component.html',
-  styleUrls: ['./counsel-interview-report.component.css']
+  selector: 'app-case-interview-report',
+  templateUrl: './case-interview-report.component.html',
+  styleUrls: ['./case-interview-report.component.css']
 })
-export class CounselInterviewReportComponent implements OnInit {
+export class CaseInterviewReportComponent implements OnInit {
 
   tmpGradeYear: number[] = [];
   tmpClass: CounselClass[] = [];
@@ -78,9 +78,9 @@ export class CounselInterviewReportComponent implements OnInit {
       let StartDate = this.startDate.replace('T', ' ');
       let EndDate = this.endDate.replace('T', ' ');
 
-      let wsName: string = "導師輔導記錄報表";
+      let wsName: string = "晤談記錄報表";
       let fileName: string = wsName + ".xlsx";
-      let resp = await this.dsaService.send("GetCounselInterviewReport1", {
+      let resp = await this.dsaService.send("GetCaseInterviewReport1", {
         Request: {
           StartDate: StartDate,
           EndDate: EndDate,
@@ -88,28 +88,28 @@ export class CounselInterviewReportComponent implements OnInit {
         }
       });
 
-      let data = [].concat(resp.CounselInterview || []);
+      let data = [].concat(resp.CaseInterview || []);
 
       if (data.length > 0) {
         let data1: any[] = [];
         data.forEach(item => {
 
           let item1 = {
-            '輔導紀錄ID': item.CounselInterviewID,
+            '晤談紀錄ID': item.CaseInterviewID,
             '班級': item.ClassName,
             '座號': item.SeatNo,
             '學號': item.StudentNumber,
             '姓名': item.Name,
+            '個案編號': item.CaseNo,
             '學年度': item.SchoolYear,
             '學期': item.Semester,
-            '訪談日期': item.OccurDate,
-            '訪談對象': item.ContactName,
+            '晤談日期': item.OccurDate,
             '訪談者': item.AuthorName,
+            '訪談者身分': item.AuthorRole,
+            '訪談對象': item.ContactName,
             '訪談方式': item.CounselType,
             '內容': item.Content,
-            '聯絡事項': item.ContactItem,
             '登錄教師': item.TeacherName
-
           };
           data1.push(item1);
         });

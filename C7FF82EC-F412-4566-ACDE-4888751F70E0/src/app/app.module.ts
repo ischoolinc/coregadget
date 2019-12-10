@@ -80,6 +80,7 @@ import { GenerateKeyAndSetTimeComponent } from './comprehensive/generate-key-and
 import { DelCaseModalComponent } from './case/del-case-modal/del-case-modal.component';
 import { GovStatisticsMonthlyComponent } from './counsel-statistics/reports/gov-statistics-monthly/gov-statistics-monthly.component';
 import { CounselInterviewReportComponent } from './counsel-statistics/reports/counsel-interview-report/counsel-interview-report.component';
+import { CaseInterviewReportComponent } from './counsel-statistics/reports/case-interview-report/case-interview-report.component';
 
 
 @NgModule({
@@ -147,7 +148,8 @@ import { CounselInterviewReportComponent } from './counsel-statistics/reports/co
     GenerateKeyAndSetTimeComponent,
     DelCaseModalComponent,
     GovStatisticsMonthlyComponent,
-    CounselInterviewReportComponent
+    CounselInterviewReportComponent,
+    CaseInterviewReportComponent
   ],
   imports: [
     BrowserModule,
