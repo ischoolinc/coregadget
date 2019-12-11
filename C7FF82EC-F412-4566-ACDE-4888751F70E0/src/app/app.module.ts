@@ -81,6 +81,7 @@ import { DelCaseModalComponent } from './case/del-case-modal/del-case-modal.comp
 import { GovStatisticsMonthlyComponent } from './counsel-statistics/reports/gov-statistics-monthly/gov-statistics-monthly.component';
 import { CounselInterviewReportComponent } from './counsel-statistics/reports/counsel-interview-report/counsel-interview-report.component';
 import { CaseInterviewReportComponent } from './counsel-statistics/reports/case-interview-report/case-interview-report.component';
+import { ReferralReportComponent } from './counsel-statistics/reports/referral-report/referral-report.component';
 
 
 @NgModule({
@@ -149,7 +150,8 @@ import { CaseInterviewReportComponent } from './counsel-statistics/reports/case-
     DelCaseModalComponent,
     GovStatisticsMonthlyComponent,
     CounselInterviewReportComponent,
-    CaseInterviewReportComponent
+    CaseInterviewReportComponent,
+    ReferralReportComponent
   ],
   imports: [
     BrowserModule,

@@ -62,6 +62,13 @@ export class CounselInterviewReportComponent implements OnInit {
       chkDataPass = false;
     }
 
+    if (moment(this.startDate).isValid() && moment(this.endDate).isValid()) {
+      if (moment(this.startDate) > moment(this.endDate)) {
+        alert("開始日期需要小於結束日期！");
+        chkDataPass = false;
+      }
+    }
+
     if (this.selectClassIDs.length === 0) {
       alert("請勾選班級！");
       chkDataPass = false;

@@ -5,12 +5,11 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 
 @Component({
-  selector: 'app-case-interview-report',
-  templateUrl: './case-interview-report.component.html',
-  styleUrls: ['./case-interview-report.component.css']
+  selector: 'app-referral-report',
+  templateUrl: './referral-report.component.html',
+  styleUrls: ['./referral-report.component.css']
 })
-export class CaseInterviewReportComponent implements OnInit {
-
+export class ReferralReportComponent implements OnInit {
   tmpGradeYear: number[] = [];
   tmpClass: CounselClass[] = [];
   isSelectAllItem: boolean = false;
@@ -85,9 +84,9 @@ export class CaseInterviewReportComponent implements OnInit {
       let StartDate = this.startDate.replace('T', ' ');
       let EndDate = this.endDate.replace('T', ' ');
 
-      let wsName: string = "晤談記錄報表";
+      let wsName: string = "轉介學生清單";
       let fileName: string = wsName + ".xlsx";
-      let resp = await this.dsaService.send("GetCaseInterviewReport1", {
+      let resp = await this.dsaService.send("GetReferralReport1", {
         Request: {
           StartDate: StartDate,
           EndDate: EndDate,
@@ -95,28 +94,29 @@ export class CaseInterviewReportComponent implements OnInit {
         }
       });
 
-      let data = [].concat(resp.CaseInterview || []);
+      let data = [].concat(resp.Referral || []);
 
       if (data.length > 0) {
         let data1: any[] = [];
         data.forEach(item => {
 
+          let ReferralReplyDate = '';
+          if (moment(item.ReferralReplyDate, "YYYY/MM/DD hh:mm:ss").isValid()) {
+            ReferralReplyDate = moment(item.ReferralReplyDate, "YYYY/MM/DD hh:mm:ss").format('YYYY/MM/DD');
+          }
           let item1 = {
-            '晤談紀錄ID': item.CaseInterviewID,
+            '年級': item.GradeYear,
             '班級': item.ClassName,
             '座號': item.SeatNo,
             '學號': item.StudentNumber,
             '姓名': item.Name,
-            '個案編號': item.CaseNo,
-            '學年度': item.SchoolYear,
-            '學期': item.Semester,
-            '晤談日期': item.OccurDate,
-            '訪談者': item.AuthorName,
-            '訪談者身分': item.AuthorRole,
-            '訪談對象': item.ContactName,
-            '訪談方式': item.CounselType,
-            '內容': item.Content,
-            '登錄教師': item.TeacherName
+            '性別': item.Gender,
+            '班導師': item.TeacherName,
+            '轉介日期': item.OccurDate,
+            '轉介說明': item.ReferralDesc,
+            '授理狀況': item.ReferralStatus,
+            '授理日期': ReferralReplyDate,
+            '授理說明': item.ReferralReplyDesc
           };
           data1.push(item1);
         });
