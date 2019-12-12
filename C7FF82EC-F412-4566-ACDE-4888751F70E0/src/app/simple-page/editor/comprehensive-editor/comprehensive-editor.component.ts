@@ -28,10 +28,10 @@ export class ComprehensiveEditorComponent implements OnInit {
     '%TEXTAREA%': { element: 'textarea', style: { width: '100%' } }
   };
 
-  needSorting = false ;
+  needSorting = false;
   sortingTitle = "";
   sortingItems = [];  // 需要排序的選項清單
-  sortingType: string ;  // default
+  sortingType: string;  // default
 
   constructor() { }
 
@@ -137,11 +137,11 @@ export class ComprehensiveEditorComponent implements OnInit {
                   //建置預設的AnswerMatrix
                   if (option.AnswerMatrix.length < option.Template.length) {
                     option.Template.forEach((part, index) => {
-                      if(option.AnswerMatrix.length <= index){
-                        if(this.optionKey[part]){
+                      if (option.AnswerMatrix.length <= index) {
+                        if (this.optionKey[part]) {
                           option.AnswerMatrix.push("");
                         }
-                        else{
+                        else {
                           option.AnswerMatrix.push(part);
                         }
                       }
@@ -179,6 +179,11 @@ export class ComprehensiveEditorComponent implements OnInit {
                 option.Template.forEach((templateItem, index) => {
                   if (this.optionKey[templateItem]) {
                     if (!option.AnswerMatrix[index]) {
+                      // 完全沒有輸入
+                      option.AnswerComplete = false;
+                      hasAllComplete = false;
+                    } else if (!option.AnswerMatrix[index].trim()) {
+                      // 如果只輸入空白，當作沒有輸入
                       option.AnswerComplete = false;
                       hasAllComplete = false;
                     }
@@ -243,17 +248,19 @@ export class ComprehensiveEditorComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
     }
     // moveItemInArray(queries, event.previousIndex, event.currentIndex);
     // console.log(this.questionSubject);
 
     // 把 Json 轉回 XML
-    const objRoot = {"Template" : {
-      "QuestionSubject" : []
-    }};
+    const objRoot = {
+      "Template": {
+        "QuestionSubject": []
+      }
+    };
 
     this.questionSubject.forEach(subj => {
       objRoot.Template.QuestionSubject.push(subj);
@@ -271,16 +278,16 @@ export class ComprehensiveEditorComponent implements OnInit {
 
   sortQueryText(query) {
     console.log(query.QuestionText);
-    this.sortingTitle = query.Query ;
-    this.sortingType = "TEXT" ;
-    this.sortingItems = query.QuestionText ;
+    this.sortingTitle = query.Query;
+    this.sortingType = "TEXT";
+    this.sortingItems = query.QuestionText;
   }
 
   sortOptions(questionText, queryTitle) {
     console.log(questionText.Option);
     this.sortingTitle = `${queryTitle}/${questionText.Text}`;
-    this.sortingType = "OPTION" ;
-    this.sortingItems = questionText.Option ;
+    this.sortingType = "OPTION";
+    this.sortingItems = questionText.Option;
   }
 
   showSorting() {

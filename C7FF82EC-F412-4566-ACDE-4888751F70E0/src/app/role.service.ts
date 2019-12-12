@@ -73,8 +73,7 @@ export class RoleService {
       this._enableCounsel = true;
     }
     if (
-      this._role.indexOf("班導師") >= 0 ||
-      this._role.indexOf("輔導老師") >= 0
+      this._role.indexOf("管理者") >= 0 
     ) {
       this._enableCounselStatistics = true;
     }

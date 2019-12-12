@@ -213,6 +213,11 @@ export class ComprehensiveEditComponent implements OnInit {
                 option.Template.forEach((templateItem, index) => {
                   if (this.optionKey[templateItem]) {
                     if (!option.AnswerMatrix[index]) {
+                      // 完全沒有輸入
+                      option.AnswerComplete = false;
+                      hasAllComplete = false;
+                     } else if (!option.AnswerMatrix[index].trim()) {
+                      // 如果只輸入空白，當作沒有輸入
                       option.AnswerComplete = false;
                       hasAllComplete = false;
                     }
