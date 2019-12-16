@@ -162,6 +162,9 @@
             $scope.studentList = null;
             $scope.current.VisibleExam = [];
             $scope.current.Course = course;
+            // 是否開放課程成績輸入
+            $scope.current.Course.Lock = !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date() 
+                && new Date() < new Date(course.InputEndTime));
             // 課程評分樣板：定期評量清單
             $scope.templateList = [];
             $scope.examList = [];
@@ -183,8 +186,7 @@
                     Name: '學期成績',
                     Type: 'Number',
                     Permission: 'Editor',
-                    Lock: !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date() 
-                        && new Date() < new Date(course.InputEndTime)), 
+                    Lock: $scope.current.Course.Lock,
                     totalScore: 0, 
                     totalStudent: 0
                 };
@@ -771,95 +773,98 @@
          */
         $scope.saveAll = function () {
             // 儲存定期評量成績
-            var SetCourseExamScoreWithExtension = new Promise((r, j) => {
-                var body = {
-                    Content: {
-                        '@CourseID': $scope.current.Course.CourseID,
-                        Exam: []
-                    }
-                };
-                $scope.templateList.forEach(function (examRec, index) {
-                    if (!examRec.Lock) {
-                        var eItem = {
-                            '@ExamID': examRec.ExamID,
-                            Student: []
-                        };
-                        [].concat($scope.studentList || []).forEach(function (studentRec) {
-                            var data = {
-                                '@StudentID': studentRec.StudentID,
-                                '@Score': studentRec['Exam' + examRec.ExamID],
-                                Extension: {
-                                    Extension: {
-                                        Score: studentRec['Exam' + examRec.ExamID]
-                                        , Text: studentRec['Exam' + examRec.ExamID + '_文字評量']
-                                    }
-                                }
-                            };
-                            // 是否為讀卡子成績項目
-                            if (examRec.isSubScoreMode) {
-                                data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
-                                data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
-                            }
-                            eItem.Student.push(data);
-                        });
-                        body.Content.Exam.push(eItem);
-                    }
-                });
-                $scope.connection.send({
-                    service: 'TeacherAccess.SetCourseExamScoreWithExtension',
-                    autoRetry: true,
-                    body: body,
-                    result: function (response, error, http) {
-                        if (error) {
-                            alert('TeacherAccess.SetCourseExamScoreWithExtension Error');
-                            j(false);
-                        } else {
-                            r(true);
-                        }
-                    }
-                });
-            });
-            // 儲存學期成績(課程成績)
-            var SetCourseSemesterScore = new Promise((r, j) => {
-                var body = {
-                    Content: {
-                        Course: {
+            var SetCourseExamScoreWithExtension = function () {
+                return new Promise((r, j) => {
+                    var body = {
+                        Content: {
                             '@CourseID': $scope.current.Course.CourseID,
-                            Student: []
+                            Exam: []
                         }
-                    }
-                };
-                [].concat($scope.studentList || []).forEach(function (studentRec) {
-                    var obj = {
-                        '@StudentID': studentRec.StudentID,
-                        '@Score': studentRec["Exam" + '學期成績']
                     };
-                    body.Content.Course.Student.push(obj);
-                });
-                $scope.connection.send({
-                    service: "TeacherAccess.SetCourseSemesterScore",
-                    autoRetry: true,
-                    body: body,
-                    result: function (response, error, http) {
-                        if (error) {
-                            alert("TeacherAccess.SetCourseSemesterScore Error");
-                            j(false);
-                        } else {
-                            r(true);
+                    $scope.templateList.forEach(function (examRec, index) {
+                        if (!examRec.Lock) {
+                            var eItem = {
+                                '@ExamID': examRec.ExamID,
+                                Student: []
+                            };
+                            [].concat($scope.studentList || []).forEach(function (studentRec) {
+                                var data = {
+                                    '@StudentID': studentRec.StudentID,
+                                    '@Score': studentRec['Exam' + examRec.ExamID],
+                                    Extension: {
+                                        Extension: {
+                                            Score: studentRec['Exam' + examRec.ExamID]
+                                            , Text: studentRec['Exam' + examRec.ExamID + '_文字評量']
+                                        }
+                                    }
+                                };
+                                // 是否為讀卡子成績項目
+                                if (examRec.isSubScoreMode) {
+                                    data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
+                                    data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
+                                }
+                                eItem.Student.push(data);
+                            });
+                            body.Content.Exam.push(eItem);
                         }
-                    }
+                    });
+                    $scope.connection.send({
+                        service: 'TeacherAccess.SetCourseExamScoreWithExtension',
+                        autoRetry: true,
+                        body: body,
+                        result: function (response, error, http) {
+                            if (error) {
+                                alert('TeacherAccess.SetCourseExamScoreWithExtension Error');
+                                j(false);
+                            } else {
+                                r(true);
+                            }
+                        }
+                    });
                 });
-            });
+            }
+            
+            // 儲存學期成績(課程成績)
+            var SetCourseSemesterScore = function () {
+                return new Promise((r, j) => {
+                    var body = {
+                        Content: {
+                            Course: {
+                                '@CourseID': $scope.current.Course.CourseID,
+                                Student: []
+                            }
+                        }
+                    };
+                    [].concat($scope.studentList || []).forEach(function (studentRec) {
+                        var obj = {
+                            '@StudentID': studentRec.StudentID,
+                            '@Score': studentRec["Exam" + '學期成績']
+                        };
+                        body.Content.Course.Student.push(obj);
+                    });
+                    $scope.connection.send({
+                        service: "TeacherAccess.SetCourseSemesterScore",
+                        autoRetry: true,
+                        body: body,
+                        result: function (response, error, http) {
+                            if (error) {
+                                alert("TeacherAccess.SetCourseSemesterScore Error");
+                                j(false);
+                            } else {
+                                r(true);
+                            }
+                        }
+                    });
+                });
+            }
 
-            if ($scope.current.Course.AllowUpload == '是' 
-                && new Date($scope.current.Course.InputStartTime) < new Date() 
-                && new Date() < new Date($scope.current.Course.InputEndTime)) {
-                Promise.all([SetCourseSemesterScore, SetCourseExamScoreWithExtension]).then(() => {
+            if (!$scope.current.Course.Lock) {
+                Promise.all([SetCourseSemesterScore(), SetCourseExamScoreWithExtension()]).then(() => {
                     $scope.dataReload();
                     alert("儲存完成。");
                 });
             } else {
-                SetCourseExamScoreWithExtension.then(() => {
+                SetCourseExamScoreWithExtension().then(() => {
                     $scope.dataReload();
                     alert("儲存完成。");
                 });
