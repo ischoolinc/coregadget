@@ -224,6 +224,7 @@
             {
                 $scope.templateList = [].concat(course.Scores.Score || []).map((temp) => {
                     temp.isSubScoreMode = false;
+                    temp.Lock = !(new Date(temp.InputStartTime) < new Date() && new Date() < new Date(temp.InputEndTime));
                     return temp;
                 });
                 $scope.templateList.forEach(function (examRec) {
@@ -233,7 +234,7 @@
                         Name: examRec.Name,
                         Type: 'Number',
                         Permission: 'Editor',
-                        Lock: !(new Date(examRec.InputStartTime) < new Date() && new Date() < new Date(examRec.InputEndTime)),
+                        Lock: examRec.Lock,
                         totalStudent: 0,
                         totalScore: 0,
                         avgScore: '',
