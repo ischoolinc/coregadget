@@ -82,6 +82,7 @@ import { GovStatisticsMonthlyComponent } from './counsel-statistics/reports/gov-
 import { CounselInterviewReportComponent } from './counsel-statistics/reports/counsel-interview-report/counsel-interview-report.component';
 import { CaseInterviewReportComponent } from './counsel-statistics/reports/case-interview-report/case-interview-report.component';
 import { ReferralReportComponent } from './counsel-statistics/reports/referral-report/referral-report.component';
+import { HRCounselInterviewCountComponent } from './counsel-statistics/reports/hrcounsel-interview-count/hrcounsel-interview-count.component';
 
 
 @NgModule({
@@ -151,7 +152,8 @@ import { ReferralReportComponent } from './counsel-statistics/reports/referral-r
     GovStatisticsMonthlyComponent,
     CounselInterviewReportComponent,
     CaseInterviewReportComponent,
-    ReferralReportComponent
+    ReferralReportComponent,
+    HRCounselInterviewCountComponent
   ],
   imports: [
     BrowserModule,

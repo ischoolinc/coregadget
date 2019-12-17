@@ -38,6 +38,7 @@ export class CounselStatisticsComponent implements OnInit {
     this.reportTypeList.push('導師輔導記錄');
     this.reportTypeList.push('晤談記錄');
     this.reportTypeList.push('轉介學生清單');
+    this.reportTypeList.push('各班導師晤談次數');
 
     // this.reportTypeList.push('轉介學生名單');
     this.selectReportType = '請選擇..';
@@ -163,7 +164,7 @@ export class CounselStatisticsComponent implements OnInit {
 
   SetSelectReportType(name: string) {
     this.selectReportType = name;
-
+    
 
   }
 
