@@ -486,16 +486,18 @@
                                                 [].concat(response.Scores.Item || []).forEach(function (examScoreRec) {
                                                     // 評量分數
                                                     studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID] = examScoreRec.Score;
-                                                    // 文字評量
-                                                    studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + '_文字評量'] = examScoreRec.Extension.Extension.Text == undefined ? '' : examScoreRec.Extension.Extension.Text;
+                                                    if (examScoreRec.Extension.Extension) {
+                                                        // 文字評量
+                                                        studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + '_文字評量'] = examScoreRec.Extension.Extension.Text == undefined ? '' : examScoreRec.Extension.Extension.Text;
 
-                                                    // 子評量分數 (讀卡)
-                                                    $scope.examList.forEach(function (examRec) {
-                                                        if (examRec.ExamID == examScoreRec.ExamID) {
-                                                            studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'PScore'] = examScoreRec.Extension.Extension.PScore == undefined ? '' : examScoreRec.Extension.Extension.PScore;
-                                                            studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'CScore'] = examScoreRec.Extension.Extension.CScore == undefined ? '' : examScoreRec.Extension.Extension.CScore;
-                                                        }
-                                                    });
+                                                        // 子評量分數 (讀卡)
+                                                        $scope.examList.forEach(function (examRec) {
+                                                            if (examRec.ExamID == examScoreRec.ExamID) {
+                                                                studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'PScore'] = examScoreRec.Extension.Extension.PScore == undefined ? '' : examScoreRec.Extension.Extension.PScore;
+                                                                studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'CScore'] = examScoreRec.Extension.Extension.CScore == undefined ? '' : examScoreRec.Extension.Extension.CScore;
+                                                            }
+                                                        });
+                                                    }
                                                     // 分數加總、人數加總
                                                     var index = $scope.examList.findIndex((exam) => exam.ExamID == examScoreRec.ExamID);
                                                     if (index > -1) {
