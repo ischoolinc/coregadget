@@ -2,58 +2,46 @@
   <h1 class="d-none d-md-block">德行成績登錄</h1>
   <ng-container *ngIf="!isLoading;else tplLoading">
     <ng-container *ngIf="!loadError; else tplLoadError">
-      <ng-container *ngIf="studentList.length; else tplNoData">
-        <div class="d-flex flex-wrap">
-          <div class="dropdown mr-1">
-            學年度：<a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink4"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{curSchoolYear}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink4">
-              <a *ngFor="let item of schoolYearList"
-                class="dropdown-item"
-                [class.active]="curSchoolYear === item"
-                (click)="setSchoolYear(item)"
-                href="javascript:;">{{item}}</a>
-            </div>
+      <div class="d-flex flex-wrap">
+        <div class="dropdown mr-1">
+          學年度：<a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink4"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{curSchoolYear}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink4">
+            <a *ngFor="let item of schoolYearList" class="dropdown-item" [class.active]="curSchoolYear === item"
+              (click)="setSchoolYear(item)" href="javascript:;">{{item}}</a>
           </div>
-          <div class="dropdown mr-1">
-            學期：<a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink5"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{curSemester}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink5">
-              <a *ngFor="let item of ['1','2']"
-                class="dropdown-item"
-                [class.active]="curSemester === item"
-                (click)="setSemester(item)"
-                href="javascript:;">{{item}}</a>
-            </div>
+        </div>
+        <div class="dropdown mr-1">
+          學期：<a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink5"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{curSemester}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink5">
+            <a *ngFor="let item of ['1','2']" class="dropdown-item" [class.active]="curSemester === item"
+              (click)="setSemester(item)" href="javascript:;">{{item}}</a>
           </div>
-          <div class="dropdown mr-1">
-            班級：<a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink1"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{curClass.ClassName}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-              <a *ngFor="let item of classList"
-                class="dropdown-item"
-                [class.active]="curClass.ClassID === item.ClassID"
-                (click)="setCurrentClass(item)"
-                href="javascript:;">{{item.ClassName}}</a>
-            </div>
+        </div>
+        <div class="dropdown mr-1">
+          班級：<a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink1"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{curClass.ClassName}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+            <a *ngFor="let item of classList" class="dropdown-item" [class.active]="curClass.ClassID === item.ClassID"
+              (click)="setCurrentClass(item)" href="javascript:;">{{item.ClassName}}</a>
           </div>
+        </div>
+        <ng-container *ngIf="studentList.length > 0">
           <div class="dropdown mr-1">
             <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink2"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{curMode.Title}}
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
-              <a *ngFor="let item of modeList"
-                class="dropdown-item"
-                [class.active]="curMode === item"
-                (click)="setCurrentModel(item)"
-                href="javascript:;">{{item.Title}}</a>
+              <a *ngFor="let item of modeList" class="dropdown-item" [class.active]="curMode === item"
+                (click)="setCurrentModel(item)" href="javascript:;">{{item.Title}}</a>
             </div>
           </div>
           <a href="javascript:;" class="btn btn-outline-secondary mr-auto" (click)="exportExcel()">
@@ -66,37 +54,28 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink3">
               <ng-container *ngIf="curMode.Title==='文字評語'">
-                <h6 class="dropdown-header"
-                  href="javascript:;">匯入</h6>
-                <a class="dropdown-item" *ngFor="let grade of curMode.GradeItemList"
-                  href="javascript:;"
-                  [class.disabled]="!canEdit"
-                  (click)="openBatchImport(grade)">{{grade}}</a>
+                <h6 class="dropdown-header" href="javascript:;">匯入</h6>
+                <a class="dropdown-item" *ngFor="let grade of curMode.GradeItemList" href="javascript:;"
+                  [class.disabled]="!canEdit" (click)="openBatchImport(grade)">{{grade}}</a>
               </ng-container>
               <ng-container *ngIf="curMode.Title==='成績評量'">
-                <h6 class="dropdown-header"
-                  href="javascript:;">匯入</h6>
-                <a class="dropdown-item"
-                  href="javascript:;"
-                  [class.disabled]="!canEdit"
+                <h6 class="dropdown-header" href="javascript:;">匯入</h6>
+                <a class="dropdown-item" href="javascript:;" [class.disabled]="!canEdit"
                   (click)="openBatchImport('成績評量')">成績評量</a>
               </ng-container>
             </div>
           </div>
-          <button type="button" class="btn"
-            [class.btn-outline-secondary]="!hasChanged"
-            [class.btn-danger]="hasChanged"
+          <button type="button" class="btn" [class.btn-outline-secondary]="!hasChanged" [class.btn-danger]="hasChanged"
             (click)="save()">
             <i class="fas fa-save mr-2"></i> 儲存
           </button>
-        </div>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="studentList.length; else tplNoData">
         <div *ngIf="isOpening" class="mt-1">
           <span class="text-danger">開放輸入時間：{{config.StartTime || '未指定'}} ~ {{config.EndTime || '未指定'}}</span>
         </div>
-        <app-input-block
-          [moralList]="moralList || []"
-          [textScoreList]="textScoreList || []"
-        ></app-input-block>
+        <app-input-block [moralList]="moralList || []" [textScoreList]="textScoreList || []"></app-input-block>
         <ng-container *ngIf="!isMainLoading;else tplLoading">
           <ng-container *ngIf="!loadMainError; else tplLoadError">
             <div class="mainBlock">
