@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs
-      title="座位表管理">
+  <ModulePrefs title="座位表管理-2020/2/1卸載" description="座位表管理 /widgets/ischool/teacher/seattable">
+    <Title lang="zh-TW">座位表管理-2020/2/1卸載</Title>
     <Icon>src/icon.png</Icon>
+    <Title lang="zh-CN">座位表管理-2020/2/1卸载</Title>
+    <Title lang="en-US">
+    </Title>
   </ModulePrefs>
 </Module>
