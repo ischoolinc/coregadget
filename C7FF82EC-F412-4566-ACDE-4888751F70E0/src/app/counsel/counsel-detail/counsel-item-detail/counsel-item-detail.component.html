@@ -3,7 +3,7 @@
   <div class="tab-pane fade-in"
        id="listOne">
     <div class="d-md-flex align-items-center sub-title mb-3">
-      <h4 class="mb-0 mr-auto">認輔紀錄</h4>
+      <h4 class="mb-0 mr-auto">晤談紀錄</h4>
     </div>
 
     <ng-container *ngIf="caseList.length === 0">
@@ -22,28 +22,28 @@
           </div>
           <div class="col-md-10">
             <div class="row">
-              <!-- <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-                <div class="col-8 col-md-4 mb-3"></div>
-                <div class="col-11 col-md-2 mb-3 font-weight-bold"></div>
-                <div class="col-1 col-md-4 mb-3">  </div>   -->
-
               <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
               <div class="col-8 col-md-4 mb-3"></div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">
               </div>
-              <div class="col-8 col-md-4 mb-3"><button class="btn btn-info"
-                        data-toggle="modal"
-                        data-backdrop="static"
-                        (click)="addInterviewModal(item)">
-                  <i class="material-icons">add</i> 新增
-                </button></div>
+              <div class="col-8 col-md-4 mb-3">
+                <ng-container *ngIf="item.IsClosed ==='否'">
+                  <button class="btn btn-info"
+                          data-toggle="modal"
+                          data-backdrop="static"
+                          (click)="addInterviewModal(item)"
+                          [disabled]="item.isEditDisable">
+                    <i class="material-icons">add</i> 新增
+                  </button>
+                </ng-container>
+              </div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案編號</div>
               <div class="col-8 col-md-4 mb-3">{{ item.CaseNo }}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案來源</div>
               <div class="col-8 col-md-4 mb-3">{{ item.CaseSource }}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">個案日期</div>
               <div class="col-8 col-md-4 mb-3">
-                {{ item.OccurDate | date: "yyyy-MM-dd" }}
+                {{ item.OccurDate | date: "yyyy/MM/dd" }}
               </div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">班導師</div>
               <div class="col-8 col-md-4 mb-3">{{ item.TeacherName }}</div>
@@ -51,122 +51,86 @@
               <div class="col-8 col-md-4 mb-3">{{ item.StudentIdentity }}</div>
 
               <div class="col-4 col-md-2 mb-3 font-weight-bold">是否結案</div>
-              <div class="col-8 col-md-4 mb-3">否</div>
+              <div class="col-8 col-md-4 mb-3">{{item.IsClosed}}</div>
               <div class="col-4 col-md-2 mb-3 font-weight-bold">結案日期</div>
-              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-8 col-md-4 mb-3"> {{ item.CloseDate | date: "yyyy/MM/dd" }}</div>
             </div>
           </div>
         </div>
-        <!-- <ul class="list-group list-group-flush">
-        <div class="expansion-panel list-group-item">
-          <a aria-controls="collapseFour"
-             aria-expanded="false"
-             class="expansion-panel-toggler collapsed"
-             data-toggle="collapse"
-             href="#collapseFour"
-             id="headingFour">
-            <div>
-              <i class="material-icons">subject</i>
-              顯示更多詳細資料
-            </div>
-            <div class="expansion-panel-icon ml-3 text-black-secondary">
-              <i class="collapsed-show material-icons">keyboard_arrow_down</i>
-              <i class="collapsed-hide material-icons">keyboard_arrow_up</i>
-            </div>
-          </a>
-          <div aria-labelledby="headingFour"
-               class="collapse"
-               data-parent="#accordionTwo"
-               id="collapseFour">
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">偏差行為</span>
-              外向性攻擊行為、衝動行為、焦慮反應、適應性不良
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">問題類別</span>
-              家庭結構問題
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">問題描述</span>
-              案生容易與人衝突，在學校案生會去攻擊其他學生，在校外也會攻擊陌生人，案生的行為會被誤解成挑釁和攻擊，對方若在不了案生的情況下，將可能對案生發動更大的回擊。
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">特殊狀況</span>
-              已建檔之個案
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">評估結果</span>
-              轉介認輔教師
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">認輔老師</span>
-              蔡貞儀
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">結案人員</span>
-  
-            </li>
-            <li class="list-group-item d-flex align-items-stretch">
-              <span class="font-weight-bold text-nowrap mr-3">結案說明</span>
-  
-            </li>
-          </div>
-        </div>
-      </ul> -->
       </div>
+      <ng-container *ngFor="let caseView of caseViewInfoList">
+        <ng-container *ngIf="caseView.CaseID === item.UID">
+          <ng-container *ngFor="let semInfo of caseView.SemesterInfoList">
+            <div class="font-weight-bold mb-2">
+              {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
+            </div>
+            <ul class="rwd-table">
+              <li class="thead">
+                <ol class="tr">
+                  <li style="width: 10%">晤談日期</li>
+                  <li style="width: 10%">晤談對象</li>
+                  <li style="width: 10%">晤談方式</li>
+                  <li style="width: 10%">記錄者</li>
+                  <li style="width: 40%">內容說明</li>
+                  <li style="width: 20%"></li>
+                </ol>
+              </li>
 
-      <ng-container *ngFor="let semInfo of _semesterInfo">
-        <div class="font-weight-bold mb-2">
-          {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
-        </div>
-        <ul class="rwd-table">
-          <li class="thead">
-            <ol class="tr">
-              <li style="width: 20%">認輔日期</li>
-              <li style="width: 20%">認輔對象</li>
-              <li style="width: 20%">認輔方式</li>
-              <li style="width: 20%">記錄者</li>
-              <li style="width: 20%"></li>
-            </ol>
-          </li>
-          <li class="tbody point"
-              *ngFor="let casseitem of caseInterview">
-            <ng-container *ngIf="
-                casseitem.CaseNo === item.CaseNo &&
-                casseitem.SchoolYear === semInfo.SchoolYear &&
-                semInfo.Semester === casseitem.Semester
-              ">
-              <ol class="tr"
-                  data-toggle="modal">
-                <li data-title="日期">{{ casseitem.OccurDate }}</li>
-                <li class="text-normal"
-                    data-title="對象">
-                  {{ casseitem.ContactName }}
-                </li>
-                <li class="text-normal"
-                    data-title="方式">
-                  {{ casseitem.CounselType }}
-                </li>
-                <li data-title="記錄者">{{ casseitem.AuthorName }}</li>
-                <li data-title="">
-                  <button class="btn btn-light"
-                          data-toggle="modal"
-                          (click)="editInterviewModal(casseitem)">
-                    修改
-                  </button>
-                  <button class="btn btn-danger"
-                          data-toggle="modal"
-                          style="margin-left: 10px"
-                          (click)="deleteInterviewModal(casseitem)"
-                          [disabled]="isDeleteButtonDisable">
-                    刪除
-                  </button>
-                </li>
-              </ol>
-            </ng-container>
-          </li>
-        </ul>
+              <li class="tbody point"
+                  *ngFor="let casseitem of caseView.CaseInterviewList">
+                <ng-container *ngIf="casseitem.SchoolYear === semInfo.SchoolYear &&
+          semInfo.Semester === casseitem.Semester">
+                  <ol class="tr"
+                      data-toggle="modal">
+                    <li data-title="日期"
+                        (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date: "yyyy/MM/dd" }}</li>
+                    <li class="text-normal"
+                        data-title="對象"
+                        (click)="viewInterviewModal(casseitem)">
+                      {{ casseitem.ContactName }}
+                    </li>
+                    <li class="text-normal"
+                        data-title="方式"
+                        (click)="viewInterviewModal(casseitem)">
+                      {{ casseitem.CounselType }}
+                    </li>
+                    <li data-title="記錄者"
+                        (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
+                    <li data-title="內容說明"
+                        title="{{casseitem.Content}}"
+                        (click)="viewInterviewModal(casseitem)">
+                      <div style="width:100%;position: relative;">
+                        <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                             class="text-left">
+                          {{ casseitem.Content }}
+                        </div>
+                      </div>
+                    </li>
+                    <li data-title="">
+                      <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
+                        <button class="btn btn-light"
+                                data-toggle="modal"
+                                (click)="editInterviewModal(casseitem)"
+                                [disabled]="casseitem.isEditDisable">
+                          修改
+                        </button>
+                        <button class="btn btn-danger"
+                                data-toggle="modal"
+                                style="margin-left: 10px"
+                                (click)="deleteInterviewModal(casseitem)"
+                                [disabled]="isDeleteButtonDisable">
+                          刪除
+                        </button>
+                      </ng-container>
+                    </li>
+                  </ol>
+                </ng-container>
+              </li>
+            </ul>
+          </ng-container>
+        </ng-container>
       </ng-container>
+      <br /><br /><br />
     </ng-container>
   </div>
 </div>

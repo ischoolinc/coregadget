@@ -1,0 +1,114 @@
+<div class="modal fade"
+     id="GenerateKeyAndSetTime"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modal-title"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg"
+       style="width: 750px;"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="modal-title">填寫設定 ({{selectSchoolYear}}學年度 第{{selectSemester}}學期)</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <h6 class="modal-title"
+              id="modal-title">一。產生填寫代碼</h6>
+          <div class="d-flex">
+            <div class="dropdown"
+                 style="margin: 20px">
+              <button class="btn btn-light dropdown-toggle"
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                {{ selectSectionName }}
+              </button>
+              <div class="dropdown-menu scrollable-menu">
+                <a class="dropdown-item"
+                   *ngFor="let item of FillInSectionList"
+                   [ngClass]="{ active: selectFillInSection.SectionName === item.SectionName }"
+                   (click)="selectFillInSectionInfo(item)">{{ item.SectionName }}</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap justify-content-start">
+            請依開放填寫方式產生填寫代碼。<br />
+            開放方式為「學生輸入填寫代碼」，請選擇「依身分證號產生」。<br />
+            開放方式為「學生登入ischool填寫」，請選擇「依亂數產生」。<br />
+<span style="font-size: large;font-weight: bold;">＊ 在開放填寫時間內無法變更填寫代碼。
+</span>
+          </div>
+
+
+          <div class="d-flex flex-wrap justify-content-start">
+            <button type="button"
+                    class="btn btn-info"
+                    style="margin:20px"
+                    [disabled]="disableGenerateIDNumber"
+                    (click)="generateKeyByIDNumber()">依身分證號產生</button>
+
+            <button type="button"
+                    class="btn btn-info"
+                    style="margin:20px"
+                    [disabled]="disableGenerateGUID"
+                    (click)="generateKeyByGUID()">依亂數產生</button>
+
+            <button type="button"
+                    class="btn btn-info"
+                    style="margin:20px"
+                    [disabled]="disableGenerateNull"
+                    (click)="generateKeyNull()">清除代碼</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <h6 class="modal-title"
+              id="modal-title">二。設定開放時間</h6>
+
+          <div class="d-flex flex-wrap justify-content-start">
+            <div style="margin-left:20px"><label style="font-size: 18px;">開始時間</label>
+              <input type="datetime-local"
+                     class="form-control"
+                     id="StartTime"
+                     name="StartTime"
+                     required="true"
+                     [(ngModel)]="selectFillInSection.StartTime"
+                     placeholder="請輸入開始時間" />
+            </div>
+            <div style="margin-left:20px"><label style="font-size: 18px;">結束時間</label>
+              <input type="datetime-local"
+                     class="form-control"
+                     id="EndTime"
+                     name="EndTime"
+                     required="true"
+                     [(ngModel)]="selectFillInSection.EndTime"
+                     placeholder="請輸入結束時間" />
+            </div>
+            <div class="d-flex flex-wrap justify-content-end"
+                 style="margin-left:50px; margin-top: 20px;margin-bottom: 20px;">
+              <button type="button"
+                      class="btn btn-info"
+                      [disabled]="disableSaveFillInSectionTime"
+                      (click)="saveFillInSectionTime()">儲存</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -400,7 +400,6 @@ export class AppComponent implements OnInit {
               <td>${item.ClassName || ''}</td>
               <td>${item.CourseName || ''}</td>
               <td>${item.TeacherURLName || ''}</td>
-              <td>${item.Credit || ''}</td>
               <td>${item.MumberOfElectives || ''}</td>
               <td>${item.Classroom || ''}</td>
               <td>${item.CourseTimeInfo || ''}</td>
@@ -419,7 +418,6 @@ export class AppComponent implements OnInit {
               <th>班次</th>
               <th>課程名稱</th>
               <th>授課教師</th>
-              <th>學分</th>
               <th>人數上限</th>
               <th>教室</th>
               <th>上課時間</th>
@@ -442,7 +440,7 @@ export class AppComponent implements OnInit {
       content = content.replace(/\[\[退選堂數\]\]/g, quitListBackup.length.toString());
       content = content.replace(/\[\[加選課程\]\]/g, (addListBackup.length > 0) ? `<p>加選課程：</p>${getCourseHtml(addListBackup)}` : '');
       content = content.replace(/\[\[退選課程\]\]/g, (quitListBackup.length > 0) ? `<p>退選課程：</p>${getCourseHtml(quitListBackup)}` : '');
-      content = content.replace(/\[\[選課結果\]\]/g, `<p>選課結果：</p>${getCourseHtml(this.currAttends)}`);
+      content = content.replace(/\[\[選課結果\]\]/g, `<p>登記結果：</p>${getCourseHtml(this.currAttends)}`);
       return content;
     }
 

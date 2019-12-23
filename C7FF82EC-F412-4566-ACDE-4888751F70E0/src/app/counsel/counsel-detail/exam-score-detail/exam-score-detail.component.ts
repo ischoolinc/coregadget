@@ -67,9 +67,9 @@ export class ExamScoreDetailComponent implements OnInit {
       await this.GetExamScore();
     }
 
-    // 取得預設學年度學期
-    this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
-    this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
+    // // 取得預設學年度學期
+    // this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
+    // this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
   }
 
   // 高雄評量成績

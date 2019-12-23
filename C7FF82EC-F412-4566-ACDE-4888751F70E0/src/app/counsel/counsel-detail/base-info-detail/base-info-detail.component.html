@@ -1,0 +1,360 @@
+<div *ngIf="!isLoading; else tmpLoading">
+  <div class="tab-pane fade-in"
+       id="listTwo">
+    <div class="d-md-flex align-items-center sub-title mb-3">
+      <h4 class="mb-0 mr-auto">基本資料</h4>
+    </div>
+
+    <ng-container *ngIf="currentStudentBaseInfo.StudentID.length === 0">
+      <div class="row justify-content-center">沒有資料。</div>
+    </ng-container>
+
+    <ng-container *ngIf="currentStudentBaseInfo.StudentID.length > 0">
+
+      <div class="font-weight-bold mb-2">
+        基本資料
+      </div>
+      <div class="card mb-3">
+        <div class="card-body row">
+          <div class="col-md-2">
+            <img class="w-100 card-img-top"
+                 src="{{ currentStudentBaseInfo.PhotoUrl }}" />
+          </div>
+          <div class="col-md-10">
+            <div class="row">
+              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
+              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
+              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
+              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
+              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold">姓名</div>
+              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.Name }}</div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold">身分證號</div>
+              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.IDNumber }}</div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold">性別</div>
+              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.Gender }}</div>
+              <div class="col-4 col-md-2 mb-3 font-weight-bold">生日</div>
+              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.Birthdate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="font-weight-bold mb-2">
+        緊急聯絡資料
+      </div>
+      <div class="card mb-2">
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="10%">聯絡人</td>
+              <td class="text-left"
+                  scope="col"
+                  width="10%"> 稱謂</td>
+              <td class="text-left"
+                  scope="col"
+                  width="20%"> 姓名</td>
+              <td class="text-left"
+                  scope="col"
+                  width="20%"> 電話(H)</td>
+              <td class="text-left"
+                  scope="col"
+                  width="20%"> 電話(M)</td>
+              <td class="text-left"
+                  scope="col"
+                  width="20%"> 電話(O)</td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col">順位1</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ContactTitle}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ContactName}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ContactPhone}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ContactMobile}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ContactOffice}}</td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col">順位2</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.SecondContactTitle}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.SecondContactName}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.SecondContactPhone}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.SecondContactMobile}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.SecondContactOffice}}</td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col">順位3</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ThirdContactTitle}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ThirdContactName}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ThirdContactPhone}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ThirdContactMobile}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.ThirdContactOffice}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br>
+      <div class="font-weight-bold mb-2">
+        聯絡資料
+      </div>
+      <div class="card">
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"> 電話 </td>
+              <td class="text-left"
+                  scope="col"></td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="33%"> 戶籍電話：{{currentStudentBaseInfo.PermanentPhone}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="33%"> 聯絡電話：{{currentStudentBaseInfo.StudentContactPhone}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="33%"> 行動電話：{{currentStudentBaseInfo.SmsPhone}} </td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="33%"> 其它電話1：{{currentStudentBaseInfo.OtherPhone1}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="33%"> 其它電話2：{{currentStudentBaseInfo.OtherPhone2}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="33%"> 其它電話3：{{currentStudentBaseInfo.OtherPhone3}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"> 地址 </td>
+              <td class="text-left"
+                  scope="col"></td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="100%"> 戶籍地址：{{currentStudentBaseInfo.PermanentAddress}} </td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="100%"> 聯絡地址：{{currentStudentBaseInfo.MailingAddress}} </td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="100%"> 其它地址：{{currentStudentBaseInfo.OtherAddress}} </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <br>
+      <div class="font-weight-bold mb-2">
+        父、母、監護人資料
+      </div>
+      <div class="card mb-3">
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="10%"></td>
+              <td class="text-left"
+                  scope="col"
+                  width="20%"> 姓名</td>
+              <td class="text-left"
+                  scope="col"
+                  width="10%"> 稱謂</td>
+              <td class="text-left"
+                  scope="col"
+                  width="25%"> 電話</td>
+              <td class="text-left"
+                  scope="col"
+                  width="15%"> 國籍</td>
+              <td class="text-left"
+                  scope="col"
+                  width="20%"> 職業</td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col">父</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.FatherName}}</td>
+              <td class="text-left"
+                  scope="col">父親</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.FatherPhone}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.FatherNationality}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.FatherJob}}</td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col">母</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.MotherName}}</td>
+              <td class="text-left"
+                  scope="col">母親</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.MotherPhone}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.MotherNationality}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.MotherJob}}</td>
+            </tr>
+            <tr>
+              <td class="text-left"
+                  scope="col">監護人</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.CustodianName}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.CustodianRelationship}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.CustodianPhone}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.CustodianNationality}}</td>
+              <td class="text-left"
+                  scope="col">{{currentStudentBaseInfo.CustodianJob}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br>
+      <div class="font-weight-bold mb-2">
+        前籍畢業資訊
+      </div>
+      <div class="card mb-3">
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="50%"> 學校名稱：{{currentStudentBaseInfo.beSchool}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="50%"> 所在地：{{currentStudentBaseInfo.beSchoolLocation}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"
+                  width="35%"> 班級：{{currentStudentBaseInfo.beClassName}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="25%"> 座號：{{currentStudentBaseInfo.beSeatNo}} </td>
+              <td class="text-left"
+                  scope="col"
+                  width="40%"> 畢業學年度：{{currentStudentBaseInfo.beGraduateSchoolYear}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-left"
+                  scope="col"> 備註：{{currentStudentBaseInfo.beMemo}} </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <br>
+      <div class="font-weight-bold mb-2">
+        異動資料
+      </div>
+      <div class="card mb-3">
+        <ng-container *ngIf="UpdateRecordList.length > 0">
+          <table class="table table-sm table-bordered">
+            <tbody>
+              <tr>
+                <td class="text-left"
+                    scope="col"
+                    width="15%">異動日期
+                </td>
+
+                <td class="text-left"
+                    scope="col"
+                    width="50%">原因及事由
+                </td>
+                <td class="text-left"
+                    scope="col"
+                    width="15%">核准日期
+                </td>
+                <td class="text-left"
+                    scope="col"
+                    width="20%">核准文號
+                </td>
+              </tr>
+              <ng-container *ngFor="let itemUr of UpdateRecordList">
+                <tr>
+                  <td class="text-left"
+                      scope="col"
+                      width="15%">{{itemUr.UpdateDate}}
+                  </td>
+
+                  <td class="text-left"
+                      scope="col"
+                      width="50%">{{itemUr.UpdateDesc}}
+                  </td>
+                  <td class="text-left"
+                      scope="col"
+                      width="15%">{{itemUr.AdDate}}
+                  </td>
+                  <td class="text-left"
+                      scope="col"
+                      width="20%">{{itemUr.AdNumber}}
+                  </td>
+                </tr>
+              </ng-container>
+
+            </tbody>
+          </table>
+        </ng-container>
+
+      </div>
+    </ng-container>
+
+  </div>
+
+
+  <ng-template #tmpLoading
+               class="container">
+    <div class="row justify-content-center"
+         style="margin-top:250px;margin-bottom:200px;">
+      Loading...
+    </div>
+  </ng-template>

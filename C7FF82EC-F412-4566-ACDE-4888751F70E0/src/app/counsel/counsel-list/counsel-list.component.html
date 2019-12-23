@@ -24,8 +24,10 @@
                 style="width: 70px">座號</li>
             <li class="sticky-top"
                 style="width: 120px">姓名</li>
-            <li class="sticky-top"
-                style="width: 70px">筆數</li>
+            <!-- <li class="sticky-top"
+                style="width: 70px">聯絡事項筆數</li> -->
+                <li class="sticky-top"
+                style="width: 70px">輔導內容筆數</li>
             <li class="sticky-top"
                 style="width: 100px">最後日期</li>
             <li class="sticky-top"
@@ -58,8 +60,11 @@
                 </div>
               </div>
             </li>
-            <li data-title="筆數">
-              {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewCount }}
+            <!-- <li data-title="聯絡事項筆數">
+              {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewContactItemCount }}
+            </li> -->
+            <li data-title="輔導內容筆數">
+              {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewContentCount }}
             </li>
             <li data-title="最後日期">
               {{ stuRec.LastInterviewDate }}
@@ -105,22 +110,14 @@
             3.尚未在 input 內輸入搜尋條件
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
     <div *ngIf="mod === 'guidance'">
-      <!-- <div class="d-md-flex align-items-center pt-3">
-                <div class="custom-control custom-checkbox mb-0 ml-auto">
-                    <input type="checkbox"
-                           class="custom-control-input"
-                           id="customCheck1">
-                    <label class="custom-control-label"
-                           for="customCheck1">只顯示末完成之學生</label>
-                </div>
-            </div> -->
+    
       <ng-container *ngIf="_semesterInfo.length === 0">
         <div class="row justify-content-center">沒有資料。</div>
       </ng-container>
 
-      <ng-container *ngFor="let sems of _semesterInfo">
+
         <div class="font-weight-bold">
-          {{ sems.SchoolYear }}學年度 第{{ sems.Semester }}學期
+          <!-- {{ sems.SchoolYear }}學年度 第{{ sems.Semester }}學期 -->
         </div>
         <ul class="rwd-table">
           <li class="thead">
@@ -140,33 +137,28 @@
             <ol class="tr"
                 *ngFor="let item of targetList"
                 [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']">
-              <ng-container *ngIf="
-                  item.SchoolYear === sems.SchoolYear &&
-                  item.Semester === sems.Semester
-                ">
                 <li data-title="班級">{{ item.ClassName }}</li>
                 <li data-title="座號">{{ item.SeatNo }}</li>
                 <li data-title="姓名">{{ item.StudentName }}</li>
-                <li data-title="筆數">{{ item.InterviewCount }}</li>
+                <li data-title="筆數">{{ item.VGCount }}</li>
                 <li data-title="最後日期">
-                  {{ item.LastInterviewDate | date: "yyyy-MM-dd" }}
+                  {{ item.LastUpdateVg | date: "yyyy-MM-dd" }}
                 </li>
                 <li class="text-normal"
                     data-title="對象">
-                  {{ item.LastInterviewContact }}
+                  {{ item.ContactNameVg }}
                 </li>
                 <li class="text-normal"
                     data-title="方式">
-                  {{ item.LastInterviewType }}
+                  {{ item.CounselTypeVg }}
                 </li>
                 <!-- <li class="text-left text-normal"
                                         data-title="聯絡事項">邀請參加家長座談會</li>
                                     <li data-title="轉介"></li> -->
-              </ng-container>
             </ol>
           </li>
         </ul>
-      </ng-container>
+
     </div>
   </div>
 </div>

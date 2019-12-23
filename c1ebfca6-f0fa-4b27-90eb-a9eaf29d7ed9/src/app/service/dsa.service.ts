@@ -176,6 +176,18 @@ export class DSAService {
     return gradeYears;
   }
 
+  public async getAllClass() {
+    await this.ready;
+    const rsp = await this.contract.send('GetAllClass');
+    const gradeYears = [].concat(rsp && rsp.GradeYear || []) as GradeClassRecords[];
+
+    gradeYears.forEach(v => {
+      v.Class = [].concat(v.Class || []) as ClassRecord[];
+    });
+
+    return gradeYears;
+  }
+
   //取得設定
   public async getTeacherSetting() {
 
@@ -303,6 +315,7 @@ export interface Schedule {
 }
 
 export interface PeriodConf {
+  [x: string]: any;
   Actor: string;
   EndTime: string;
   Name: string;
@@ -343,5 +356,18 @@ export interface CourseObj {
   Credit: string;
   Subject: string;
   TeacherID: string;
+  TeacherName: string;
+}
+
+export interface GradeClassRecords {
+  GradeYear: string;
+  Class: ClassRecord[];
+}
+
+export interface ClassRecord {
+  ClassID: string;
+  ClassName: string;
+  DisplayOrder: string;
+  RefTeacherID: string;
   TeacherName: string;
 }

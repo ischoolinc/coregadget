@@ -71,6 +71,9 @@ export class CaseStudent {
   isCloseNo: boolean = false;
   isCloseDateHasValue = false;
 
+  // 不可編輯
+  isEditDisable: boolean = true;
+
   // 是否顯示
   isDisplay: boolean = false;
   isDeviantBehaviorHasValue: boolean = false;

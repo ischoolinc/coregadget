@@ -9,7 +9,7 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "test.hc.edu.tw",//"dev.jh_kh",
+            application: "demo.ischool.j",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
             },
@@ -79,10 +79,6 @@
 
 <body ng-controller="MainCtrl">
     <div id="mainMsg"></div>
-
-    <!-- <div ng-if="!(current && studentList && examList || haveNoCourse) "
-         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div> -->
-
     <div ng-if="errMsg !== ''"
          style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">{{errMsg}}</div>
     <div ng-if="haveNoCourse"
@@ -454,15 +450,16 @@
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
                     <thead>
+                        <tr>
                             <th colspan="3"></th>
-                            <th colspan="4">{{current.template.Name}}</th>
+                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}</th>
                         </tr>
                         <tr>
                             <th class="text-center">姓名</th>
                             <!--定期評量項目-->
                             <th ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center" colspan="{{exam.Name === '文字評量' ? 2 : 1}}">
-                                <span>
+                                <span ng-class="{'sub-item': exam.isSubItem}">
                                     {{exam.Name}}
                                 </span>
                             </th>

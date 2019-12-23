@@ -26,6 +26,7 @@ import { SettingComponent } from './pages/setting.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import {MatRadioModule} from '@angular/material/radio';
+import { ClassSubstituteComponent } from './pages/class-substitute.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import {MatRadioModule} from '@angular/material/radio';
     CourseSelcComponent,
     TeacherHelperComponent,
     SettingComponent,
+    ClassSubstituteComponent,
    
   ],
   imports: [

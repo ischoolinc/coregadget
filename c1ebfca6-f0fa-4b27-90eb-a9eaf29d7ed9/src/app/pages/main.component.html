@@ -79,10 +79,16 @@
         </ng-template>
         <li class="list-group-item active d-flex align-items-center py-2 ">
             <div>課程</div>
-            <button (click)=openSubstitute()
-                    type="button"
-                    style="float:right"
-                    class="btn btn-sm btn-info ml-auto">代課點名</button>
+            <div class="ml-auto">
+                <button (click)=openSubstitute()
+                        type="button"
+                        style="float:right"
+                        class="btn btn-sm btn-info">代課點名</button>
+                <button (click)=openClassSubstitute()
+                        type="button"
+                        style="float:right"
+                        class="btn btn-sm btn-info mr-1">代班導師點名</button>
+            </div>
         </li>
         <ng-container *ngIf="conf&&conf.CourseConf&&conf.CourseConf.length; else noCourse">
             <li class="list-group-item point"

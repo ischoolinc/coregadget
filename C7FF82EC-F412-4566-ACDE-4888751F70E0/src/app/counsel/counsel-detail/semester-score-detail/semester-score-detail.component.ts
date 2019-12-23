@@ -73,9 +73,9 @@ export class SemesterScoreDetailComponent implements OnInit {
       await this.GetSemesterScoreSH();
     }
 
-    // 取得預設學年度學期
-    this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
-    this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
+    // // 取得預設學年度學期
+    // this.selectSchoolYearSemester.SchoolYear = this.counselDetailComponent.counselStudentService.currentSchoolYear
+    // this.selectSchoolYearSemester.Semester = this.counselDetailComponent.counselStudentService.currentSemester;
 
   }
 

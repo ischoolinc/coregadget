@@ -175,11 +175,13 @@ export class AddS1Component implements OnInit {
       }
 
       if (this.weeklyData.addWeeklyReportEntry.EndDate === "") {
-        this.weeklyData.addWeeklyReportEntry.EndDate = moment().format("YYYY-MM-DD");
+        // 本周五
+        this.weeklyData.addWeeklyReportEntry.EndDate =  moment().add( -((moment().day()+6) %7),'day').add(4, 'day').format("YYYY-MM-DD");
       }
 
       if (this.weeklyData.addWeeklyReportEntry.BeginDate === "") {
-        this.weeklyData.addWeeklyReportEntry.BeginDate = moment().add(-7, 'day').format("YYYY-MM-DD");
+        // 本周一
+        this.weeklyData.addWeeklyReportEntry.BeginDate = moment().add( -((moment().day()+6) %7),'day').format("YYYY-MM-DD");
       }
       this.weeklyDataMain.BeginDate = moment(this.weeklyData.addWeeklyReportEntry.BeginDate).format("YYYY-MM-DD");
 
@@ -279,7 +281,8 @@ export class AddS1Component implements OnInit {
     for (const stud of this.weeklyData.studentWeeklyDataList) {
       let gList = checkedGradeBookList.filter(v => v.StudentID === stud.ID);
       // console.log(gList);
-      let bList = this.weeklyData.addBehavoirList.filter(v => v.ID === stud.ID);
+      // 只顯示本報表範圍時間的Behavoir
+      let bList = this.weeklyData.addBehavoirList.filter(v => v.ID === stud.ID && moment(v.CreateDate2, "YYYY-MM-DD") >= moment(this.weeklyData.addWeeklyReportEntry.BeginDate, "YYYY-MM-DD") && moment(v.CreateDate2, "YYYY-MM-DD") <= moment(this.weeklyData.addWeeklyReportEntry.EndDate,"YYYY-MM-DD") );
       // 放入評語可勾選資料
       for (const bb of bList) {
         bb.checked = true;

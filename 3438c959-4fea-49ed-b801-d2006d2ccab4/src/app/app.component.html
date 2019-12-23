@@ -1,0 +1,148 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column">
+    <div id="index" class="h-100" page>
+        <nav aria-label="breadcrumb text-nowrap text-truncate">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">成績查詢</li>
+            </ol>
+        </nav>
+
+        <ng-container *ngIf="classList.length > 0; else tplNoClass">
+            <div class="input-group my-3">
+                <!-- 班級 -->
+                <div class="input-group-prepend">
+                    <button class="btn btn-light dropdown-toggle" type="button" 
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        {{curClass.class_name}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                            *ngFor="let class of classList"
+                            href="javascript:void(0)"
+                            [ngClass]="{'active': curClass.id == class.id}"
+                            (click)="setClass(class)">
+                            {{class.class_name}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 學年度 學期 -->
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle mr-3" type="button" 
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{curSS.content}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                            *ngFor="let ss of ssList"
+                            href="javascript:void(0)"
+                            [ngClass]="{'active': ss.school_year == curSS.school_year && ss.semester == curSS.semester}"
+                            (click)="setSS(ss)">
+                            {{ss.content}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 試別 -->
+                <div class="input-group-prepend">
+                    <button class="btn btn-light dropdown-toggle" type="button"
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        {{curExam.exam_name}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                            *ngFor="let exam of examList"
+                            href="javascript:void(0)"
+                            [ngClass]="{'active': curExam.id == exam.id}"
+                            (click)="setExam(exam)">
+                            {{exam.exam_name}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 母群 -->
+                <div class="input-group-prepend">
+                    <button class="btn btn-light dropdown-toggle" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{curMatrix}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                            *ngFor="let matrix of matrixList"
+                            href="javascript:void(0)"
+                            [ngClass]="{'active': curMatrix == matrix}"
+                            (click)="setMatrix(matrix)">
+                            {{matrix}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="!isLoading; else tplLoading">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="colgroup" colspan="2"></th>
+                            <th scope="colgroup" colspan="2" *ngFor="let sub of subjectList">{{sub}}</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">座號</th>
+                            <th scope="col">姓名</th>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <th scope="col">成績</th>
+                                <th scope="col">排名</th>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let stu of studentList">
+                            <td>{{stu.seatNo}}</td>
+                            <td>{{stu.name}}</td>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <td *ngIf="stu.examScore[sub] && stu.examScore[sub][curExam.id]; else tplNoData">
+                                    {{stu.examScore[sub][curExam.id]}}
+                                </td>
+                                <td *ngIf="stu.examRank[sub] && stu.examRank[sub][curExam.id] && stu.examRank[sub][curExam.id][curMatrix]; else tplNoData">
+                                    {{stu.examRank[sub][curExam.id][curMatrix]}}
+                                </td>
+                            </ng-container>
+                        </tr>
+                        <tr *ngFor="let range of fiveRange">
+                            <td colspan="2">{{range.value}}</td>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <td *ngIf="examMatrix[sub]; else tplNoData2" 
+                                    colspan="2">
+                                    {{examMatrix[sub][range.key]}}
+                                </td>
+                            </ng-container>
+                        </tr>
+                        <tr *ngFor="let range of rangeList">
+                            <td colspan="2">{{range.value}}</td>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <td *ngIf="examMatrix[sub]; else tplNoData2"  
+                                    colspan="2">
+                                    {{examMatrix[sub][range.key]}}
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </ng-container>
+
+        
+    </div>
+</div>
+
+<ng-template #tplNoClass>
+    <h4>沒有班級資料</h4>
+</ng-template>
+
+<ng-template #tplNoData>
+    <td></td>
+</ng-template>
+
+<ng-template #tplNoData2>
+    <td colspan="2"></td>
+</ng-template>
+
+<ng-template #tplLoading>
+    <h4>資料載入中...</h4>
+</ng-template>

@@ -13,7 +13,7 @@ import {
 } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
-import { GlobalService} from "../../global.service";
+import { GlobalService } from "../../global.service";
 @Component({
   selector: "app-counsel-list",
   templateUrl: "./counsel-list.component.html",
@@ -37,7 +37,7 @@ export class CounselListComponent implements OnInit {
     private counselComponent: CounselComponent,
     @Optional()
     private appComponent: AppComponent
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(
@@ -105,13 +105,16 @@ export class CounselListComponent implements OnInit {
         }
         let tmp = [];
         this.counselStudentService.guidanceStudent.forEach(data => {
-          let key = `${data.SchoolYear}_${data.Semester}`;
+          let key = `${data.SchoolYearVG}_${data.SemesterVG}`;
           if (!tmp.includes(key)) {
             let sms: SemesterInfo = new SemesterInfo();
-            sms.SchoolYear = data.SchoolYear;
-            sms.Semester = data.Semester;
-            this._semesterInfo.push(sms);
-            tmp.push(key);
+            if (data.SchoolYearVG) {
+              sms.SchoolYear = data.SchoolYearVG;
+              sms.Semester = data.SemesterVG;
+              this._semesterInfo.push(sms);
+              tmp.push(key);
+            }
+
           }
         });
         this.targetList = this.counselStudentService.guidanceStudent;

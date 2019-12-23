@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CourseObj, GradeYearObj, ClassObj } from './dsa.service';
-import { GadgetService, Contract } from './gadget.service';
-import { Observable } from 'rxjs';
+import { ClassObj, ClassRecord } from './dsa.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,5 +10,6 @@ export class DataCacheService {
   }
 
   public selectedClass: ClassObj;
+
 }
 

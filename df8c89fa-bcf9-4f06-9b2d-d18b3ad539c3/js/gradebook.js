@@ -83,6 +83,7 @@
             return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
         }
 
+        $scope.isInit = true;
         $scope.connection = gadget.getContract("ta");
         $scope.params = gadget.params;
         // 成績計算取小數後第幾位
@@ -250,6 +251,7 @@
          * 設定目前課程資料： 整理試別
         */
         $scope.setCurrentCourse = function (course) {
+            $scope.isInit = true;
             if ($scope.studentList) {
                 var data_changed = !$scope.checkAllTable($scope.current.Table);
                 if (data_changed) {
@@ -275,6 +277,7 @@
                     [].concat(course.Scores.Score || []).forEach(function (template, index) {
                         template.Type = 'Number';
                         template.Permission = "Editor";
+                        template.IsSubScoreMode = false;
                         // 判斷此定期評量是否在成績輸入時間內
                         template.Lock = !(new Date(template.InputStartTime) < new Date() && new Date() < new Date(template.InputEndTime));
                         
@@ -285,7 +288,7 @@
                             Name: '定期評量',
                             Type: 'Number',
                             Permission: 'Editor',
-                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock,
+                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock
                         };
                         // 平時評量
                         var assignmentScore = {
@@ -345,6 +348,7 @@
                                 var p = Number(template.Percentage) || 0;
                                 // 定期評量成績
                                 var score = stu['Score_' + template.ExamID];
+
                                 // 平時評量成績
                                 var assignmentScore = stu['AssignmentScore_' + template.ExamID];
     
@@ -384,84 +388,164 @@
         
                     $scope.examList.splice(0, 0, finalScore, finalScorePreview);
                 }
-                
             }
 
-            /**取得小考資料 */
-            $scope.getGradeItemList();
+            /**
+             * 1. 取得定期評量子成績項目 $scope.getGradeItemList()
+             * 2. 取得定期評量子成績項目 $scope.getSubExamList()
+             * 3. 設定目前定期評量 $scope.setCurrentTemplate()
+             */
+            Promise.all([$scope.getGradeItemList(), $scope.getSubExamList()]).then(v => {
+                // 設定目前定期評量
+                if($scope.current.template) {
+                    $scope.setCurrentTemplate($scope.current.template);
+                } else{
+                    $scope.setCurrentTemplate($scope.templateList[0]);
+                }
+                $scope.isInit = false;
+            });
         }
 
         /**
          * 取得小考資料 gradeItemList
-         * setCurrentTemplate
-         * dataReload
          */
         $scope.getGradeItemList = function() {
-            $scope.gradeItemList = [];
-
-            $scope.connection.send({
-                service: "TeacherAccess.GetCourseExtensions",
-                body: {
-                    Content: {
-                        ExtensionCondition: {
-                            '@CourseID': '' + $scope.current.Course.CourseID,
-                            Name: 'GradeItem'
+            return new Promise((r,j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseExtensions",
+                    body: {
+                        Content: {
+                            ExtensionCondition: {
+                                '@CourseID': '' + $scope.current.Course.CourseID,
+                                Name: 'GradeItem'
+                            }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        $scope.gradeItemList = [];
+                        if (error !== null) {
+                            alert("TeacherAccess.GetCourseExtensions Error");
+                            // promise 回傳錯誤
+                            j(error);
+                        } else {
+                            // 課程是否有設定小考試別
+                            if (response.Response.CourseExtension.Extension.GradeItem) {
+                                $scope.$apply(function () {
+                                    // 小考試別整理
+                                    [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
+        
+                                        var gradeItem = {
+                                            TemplateID: item.ExamID, // 定期評量ID
+                                            ExamID: `${item.ExamID}_Quiz_${item.SubExamID}`,
+                                            SubExamID: item.SubExamID,
+                                            Name: item.Name,
+                                            Weight: item.Weight,
+                                            Type: 'Number',
+                                            Permission: 'Editor',
+                                            /**
+                                             * Lock條件
+                                             * 1. 平時評量是否在成績輸入時間內
+                                             * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
+                                             */
+                                            Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${item.ExamID}`)[0].Lock
+                                        };
+                                        
+                                        $scope.gradeItemList.push(gradeItem);
+                                    });
+                                    // 各定期評量的平時評量整理
+                                    [].concat($scope.templateList || []).forEach(template => {
+                                        var quizResult = { 
+                                            TemplateID: template.ExamID,
+                                            ExamID: 'QuizResult_' + template.ExamID,
+                                            Name: '平時評量',
+                                            Type: 'Number',
+                                            Permission: 'Program',
+                                            // 取得平時評量是否在成績輸入時間內，並且啟用
+                                            Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
+                                        };
+                                        $scope.gradeItemList.splice(0, 0, quizResult);
+                                    });
+                                    if (!$scope.isInit) {
+                                        $scope.setCurrentTemplate($scope.current.template);
+                                    }
+                                });
+                            }
+                            // promise 回傳結果成功
+                            r(true);
                         }
                     }
-                },
-                result: function (response, error, http) {
-                    if (error !== null) {
-                        alert("TeacherAccess.GetCourseExtensions Error");
-                    } else {
-                        // 課程是否有設定小考試別
-                        if (response.Response.CourseExtension.Extension.GradeItem) {
-                            $scope.$apply(function () {
-                                // 小考試別整理
-                                [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
+                });
+            });
+        }
+
+        /** 取得定期評量子成績項目 並加入到 examList */
+        $scope.getSubExamList = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseExtensions",
+                    body: {
+                        Content: {
+                            ExtensionCondition: {
+                                '@CourseID': '' + $scope.current.Course.CourseID,
+                                Name: 'GradeItemExtension'
+                            }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error !== null) {
+                            alert("TeacherAccess.GetCourseExtensions Error");
+                            // promise 回傳結果失敗
+                            j(error);
+                        } else {
+                            // 課程是否有設定定期評量子成績項目
+                            if (response.Response.CourseExtension.Extension.GradeItemExtension) {
+                                // mapping 定期評量子成績項目
+                                // 調整 exam list
+                                [].concat(response.Response.CourseExtension.Extension.GradeItemExtension || []).forEach(template => {
     
-                                    var gradeItem = {
-                                        TemplateID: item.ExamID, // 定期評量ID
-                                        ExamID: `${item.ExamID}_Quiz_${item.SubExamID}`,
-                                        SubExamID: item.SubExamID,
-                                        Name: item.Name,
-                                        Weight: item.Weight,
-                                        Type: 'Number',
-                                        Permission: 'Editor',
-                                        /**
-                                         * Lock條件
-                                         * 1. 平時評量是否在成績輸入時間內
-                                         * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
-                                         */
-                                        Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${item.ExamID}`)[0].Lock
-                                    };
+                                    var index = $scope.examList.findIndex(exam => exam.TemplateID == template.ExamID);
+                                    var index2 = $scope.templateList.findIndex(tp => tp.ExamID == template.ExamID);
+    
+                                    if (index2 > -1) {
+                                        $scope.templateList[index2].isSubScoreMode = true;
+                                    }
                                     
-                                    $scope.gradeItemList.push(gradeItem);
-                                });
-                                // 各定期評量的平時評量整理
-                                [].concat($scope.templateList || []).forEach(template => {
-                                    var quizResult = { 
-                                        TemplateID: template.ExamID,
-                                        ExamID: 'QuizResult_' + template.ExamID,
-                                        Name: '平時評量',
-                                        Type: 'Number',
-                                        Permission: 'Program',
-                                        // 取得平時評量是否在成績輸入時間內，並且啟用
-                                        Lock:  $scope.examList.filter(exam => exam.ExamID == `AssignmentScore_${template.ExamID}`)[0].Lock
-                                    };
-                                    $scope.gradeItemList.splice(0, 0, quizResult);
-                                });
-                            });
+                                    if (index > -1) {
+                                        var exam = $scope.examList[index];
+    
+                                        var tpSubExamPs = {
+                                            TemplateID: exam.TemplateID, // 定期評量ID
+                                            ExamID: 'Score_PS_' + exam.TemplateID,
+                                            Name: '試卷',
+                                            Type: 'Number',
+                                            Permission: 'Editor',
+                                            isSubItem: true,
+                                            Lock: exam.Lock
+                                        };
+                                        var tpSubExamCs = {
+                                            TemplateID: exam.TemplateID, // 定期評量ID
+                                            ExamID: 'Score_CS_' + exam.TemplateID,
+                                            Name: '讀卡',
+                                            Type: 'Number',
+                                            Permission: 'Read',
+                                            isSubItem: true,
+                                            Lock: exam.Lock
+                                        };
+    
+                                        // 如果有子成績項目：定期評量 = 試卷 + 評量
+                                        // 定期評量權限：唯讀
+                                        var targetExam = $scope.examList[index];
+                                        targetExam.Permission = 'Read';
+    
+                                        $scope.examList.splice(index + 1, 0, tpSubExamCs, tpSubExamPs);
+                                    }
+                                })
+                            }
+                            // promise 回傳結果成功
+                            r(true);
                         }
                     }
-
-                    // 設定目前定期評量
-                    if($scope.current.template) {
-                        $scope.setCurrentTemplate($scope.current.template);
-                    } else{
-                        $scope.setCurrentTemplate($scope.templateList[0]);
-                    }
-                    
-                }
+                });
             });
         }
 
@@ -536,6 +620,10 @@
                                             studentMapping[examScoreRec.StudentID]['AssignmentScore_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.AssignmentScore;
                                             // 文字評量
                                             studentMapping[examScoreRec.StudentID]['Text_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.Text;
+                                            // 定期評量：試卷成績
+                                            studentMapping[examScoreRec.StudentID]['Score_PS_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.PScore == undefined ? '' : examScoreRec.Extension.Extension.PScore;
+                                            // 定期評量：讀卡成績
+                                            studentMapping[examScoreRec.StudentID]['Score_CS_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.CScore == undefined ? '' : examScoreRec.Extension.Extension.CScore;
                                             
                                         });
                                         getCourseExamScoreFinish = true;
@@ -753,15 +841,17 @@
             },
             result: function (response, error, http) {
                 if (error !== null) {
-                    alert("TeacherAccess.GetExamTextScoreMappingTable Error");
+                    alert("取得「文字評量代碼表」出現錯誤。");
+                    $scope.examTextList = [];
+                    $scope.examCodeList = [];
                 } else {
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
 
                             // 資料替換用
-                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item);
+                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item || []);
                             // 資料顯示用
-                            $scope.examCodeList = [].concat(response.Response.TextMappingTable.Item);
+                            $scope.examCodeList = [].concat(response.Response.TextMappingTable.Item || []);
 
                             // 代碼排序 長度大到小
                             $scope.examTextList.sort(function (a, b) {
@@ -827,6 +917,11 @@
         $scope.submitGrade = function (matchNext) {
             if ($scope.current.mode == '成績管理') {
                 $scope.current.Student[$scope.current.Exam.ExamID] = $scope.current.Value;
+                if ($scope.current.template.isSubScoreMode) {
+                    var ps = $scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
+                    var cs = $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
+                    $scope.current.Student['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                } 
                 // 資料同步
                 const targetStu = $scope.studentList.find(stu => stu.StudentID === $scope.current.Student.StudentID);
                 targetStu[$scope.current.Exam.ExamID] = $scope.current.Value;
@@ -967,17 +1062,25 @@
                 Student: []
             };
             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
+
+                var examID = $scope.current.template.ExamID;
+
                 var obj = {
                     '@StudentID': studentRec.StudentID,
                     '@Score': 0,
                     Extension: {
                         Extension: {
                             /**定期評量 */
-                            Score: studentRec['Score_' + $scope.current.template.ExamID],
+                            // $scope.current.template.isSubScoreMode ? studentRec['Score_PS_' + examID] + studentRec['Score_CS_' + examID] : studentRec['Score_' + examID]
+                            Score: studentRec['Score_' + examID],
                             /**平時評量 */
-                            AssignmentScore: studentRec['AssignmentScore_' + $scope.current.template.ExamID],
+                            AssignmentScore: studentRec['AssignmentScore_' + examID],
                             /**文字評量 */
-                            Text: studentRec['Text_' + $scope.current.template.ExamID]
+                            Text: studentRec['Text_' + examID],
+                            /** 定期評量：試卷成績 */
+                            PScore: studentRec['Score_PS_' + examID],
+                            /** 定期評量：讀卡成績*/
+                            CScore: studentRec['Score_CS_' + examID]
                         }
                     }
                 };
@@ -1539,11 +1642,9 @@
                         if (error) {
                             alert("TeacherAccess.SetCourseExtensions Error");
                         } else {
-                            $scope.$apply(function () {
-                                $('#GradeItemModal').modal('hide');
-                                // 重新取得評分項目(小考)資料
-                                $scope.getGradeItemList();
-                            });
+                            $('#GradeItemModal').modal('hide');
+                            // 重新取得評分項目(小考)資料
+                            $scope.getGradeItemList();
                         }
                     }
                 });
@@ -1593,7 +1694,6 @@
 
                 if (result > -1) {
                     valueList.push($scope.examTextList[result].Content);
-                    //$scope.current.Value = $scope.examTextList[result].Content;
                 }
                 else {
                     valueList.push(code);

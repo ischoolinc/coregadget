@@ -21,7 +21,8 @@ export class DetailRoutingComponent implements OnInit {
   routing() {
     if (!this.roleService.isLoading) {
       if (this.roleService.role.indexOf('班導師') >= 0 || this.roleService.role.indexOf('輔導老師') >= 0) {
-        this.router.navigate(['interview'], {
+        // interview
+        this.router.navigate(['base_info_detail'], {
           relativeTo: this.activatedRoute
           , skipLocationChange: true
         });

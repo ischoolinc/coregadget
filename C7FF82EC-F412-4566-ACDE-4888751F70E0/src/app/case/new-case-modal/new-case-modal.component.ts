@@ -48,7 +48,7 @@ export class NewCaseModalComponent implements OnInit {
 
   ngOnInit() {
     this.caseStudent = new CaseStudent();
-   //  this.loadData();
+    //  this.loadData();
   }
 
   async loadData() {
@@ -345,12 +345,16 @@ export class NewCaseModalComponent implements OnInit {
       });
       this.CounselTeacherList = dataList;
 
-      // 加入自己當預設
-      dataList.forEach(item => {
-        if (this.counselStudentService.teacherInfo.ID === item.TeacherID) {
-          this.selectTeacherAdd(item);
-        }
-      });
+      // 新增時
+      if (this.isAddMode === true) {
+        // 加入自己當預設
+        dataList.forEach(item => {
+          if (this.counselStudentService.teacherInfo.ID === item.TeacherID) {
+            this.selectTeacherAdd(item);
+          }
+        });
+      }
+
 
       // 取得輔導班級
       this.canSelectClassList = [];
@@ -367,8 +371,8 @@ export class NewCaseModalComponent implements OnInit {
     if (this.caseStudent.UID && this.caseStudent.UID.length > 0)
       try {
         let rspCloseTeacher = await this.dsaService.send("GetCaseClosedTeacherName", {
-          Request:{
-            CaseID:this.caseStudent.UID
+          Request: {
+            CaseID: this.caseStudent.UID
           }
         });
         let dataCloseTeacher = [].concat(rspCloseTeacher.ClosedTeacher || []);

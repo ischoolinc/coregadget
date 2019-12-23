@@ -20,7 +20,6 @@
       </ng-template>
     </ol>
   </nav>
-  <!--  -->
   <ng-container *ngIf="!(students.length > 0) else elseTemplate">
     <div style="position:absolute;top:30%;left: 0px;right: 0px;text-align: center;">
       loading...
@@ -34,8 +33,6 @@
 
     <!--新樣板 -->
     <!-- 學生資料(no photo)-->
-
-
     <div class="row mt-3 mt-lg-1"
          *ngIf="!showPhoto">
       <div class=" col-12 col-sm-6 col-lg-4"
@@ -43,7 +40,7 @@
            *ngFor="let student of students">
         <div class="card">
           <div (click)="changeTeacherHelper(student)"
-               class="point row pr-2">
+            class="point row pr-2">
             <div class="col-9 card-body p-2 text-truncate ">
               <div class="text-gray text-truncate d-flex">
                 <strong class="mb-0 text-truncate">{{student.Name}}</strong>

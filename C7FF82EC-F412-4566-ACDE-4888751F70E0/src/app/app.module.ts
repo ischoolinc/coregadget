@@ -75,6 +75,14 @@ import { DelPsychologicalQuizDataComponent } from './admin/psychological-quiz-se
 import { DelInterviewModalComponent } from './counsel/counsel-detail/interview-detail/del-interview-modal/del-interview-modal.component';
 import { DelCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/del-case-interview-modal/del-case-interview-modal.component';
 import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
+import { BaseInfoDetailComponent } from './counsel/counsel-detail/base-info-detail/base-info-detail.component';
+import { GenerateKeyAndSetTimeComponent } from './comprehensive/generate-key-and-set-time/generate-key-and-set-time.component';
+import { DelCaseModalComponent } from './case/del-case-modal/del-case-modal.component';
+import { GovStatisticsMonthlyComponent } from './counsel-statistics/reports/gov-statistics-monthly/gov-statistics-monthly.component';
+import { CounselInterviewReportComponent } from './counsel-statistics/reports/counsel-interview-report/counsel-interview-report.component';
+import { CaseInterviewReportComponent } from './counsel-statistics/reports/case-interview-report/case-interview-report.component';
+import { ReferralReportComponent } from './counsel-statistics/reports/referral-report/referral-report.component';
+import { HRCounselInterviewCountComponent } from './counsel-statistics/reports/hrcounsel-interview-count/hrcounsel-interview-count.component';
 
 
 @NgModule({
@@ -137,7 +145,15 @@ import { CounselHistoryComponent } from './simple-page/print/counsel-history/cou
     DelPsychologicalQuizDataComponent,
     DelInterviewModalComponent,
     DelCaseInterviewModalComponent,
-    CounselHistoryComponent
+    CounselHistoryComponent,
+    BaseInfoDetailComponent,
+    GenerateKeyAndSetTimeComponent,
+    DelCaseModalComponent,
+    GovStatisticsMonthlyComponent,
+    CounselInterviewReportComponent,
+    CaseInterviewReportComponent,
+    ReferralReportComponent,
+    HRCounselInterviewCountComponent
   ],
   imports: [
     BrowserModule,

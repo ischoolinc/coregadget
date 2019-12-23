@@ -108,7 +108,7 @@
                   <i class="material-icons">add</i>
                   產生綜合紀錄表
                 </a>
-                <a class="dropdown-item"
+                <!-- <a class="dropdown-item"
                    (click)="genSSNKey(currentSection.FillInSectionID)">
                   <i style="display: inline-block;width: 27.42px;"></i>
                   產生填寫代碼(身分證號)
@@ -117,6 +117,11 @@
                    (click)="genGUIDKey(currentSection.FillInSectionID)">
                   <i style="display: inline-block;width: 27.42px;"></i>
                   產生填寫代碼(GUID)
+                </a> -->
+                <a class="dropdown-item"
+                   (click)="showGenerateKeyAndSetTime()">
+                  <i style="display: inline-block;width: 27.42px;"></i>
+                  填寫設定
                 </a>
                 <hr />
                 <a class="dropdown-item"
@@ -246,3 +251,5 @@
     </div>
   </div>
 </div>
+
+<app-generate-key-and-set-time #GenerateKeyAndSetTime></app-generate-key-and-set-time>

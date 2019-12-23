@@ -10,12 +10,12 @@ export class CounselStudentDataService {
 
   constructor(
     private dsaSrv: DsaService
-  ) { }
+  ) {}
 
   /**取得節次對照表 */
   async getPeriodList(): Promise<PeriodRecord[]> {
     const rsp = await this.dsaSrv.send('GetPeriodList', {});
-    const periodList: PeriodRecord[] = rsp.Periods || [];
+    const periodList: PeriodRecord[] = [].concat(rsp.Periods || []);
 
     return periodList;
   }
@@ -23,7 +23,7 @@ export class CounselStudentDataService {
   /**取得假別對照表 */
   async getAbsenceList(): Promise<AbsenceRecord[]> {
     const rsp = await this.dsaSrv.send('GetAbsenceList', {});
-    const absenceList: AbsenceRecord[] = rsp.Absences || [];
+    const absenceList: AbsenceRecord[] = [].concat(rsp.Absences || []);
 
     return absenceList;
   }
@@ -31,7 +31,7 @@ export class CounselStudentDataService {
   /**取得有缺曠資料的學年度學期 */
   async getSchoolYearSemester(body: any): Promise<SemesterInfo[]> {
     const rsp = await this.dsaSrv.send('GetStudentDataSS', body);
-    const ssList: SemesterInfo[] = rsp.SemesterInfo || [];
+    const ssList: SemesterInfo[] = [].concat(rsp.SemesterInfo || []);
 
     return ssList;
   }
@@ -55,7 +55,7 @@ export class CounselStudentDataService {
   /**取得獎懲資料 */
   async getDiscipline(body: any): Promise<DisciplineRecord[]> {
     const rsp = await this.dsaSrv.send('GetStudentDiscipline', body);
-    const disList: DisciplineRecord[] = rsp.Discipline || [] as DisciplineRecord[];
+    const disList: DisciplineRecord[] = [].concat(rsp.Discipline || []) as DisciplineRecord[];
 
     return disList;
   }
@@ -91,7 +91,7 @@ export class CounselStudentDataService {
   /**取得學生幹部紀錄 */
   async getStudentCadre(body: any) {
     const rsp = await this.dsaSrv.send('GetStudentCadre', body);
-    const dataList: CadreRecord[] = rsp.Cadres || [] as CadreRecord[];
+    const dataList: CadreRecord[] = [].concat(rsp.Cadres || []) as CadreRecord[];
 
     return dataList;
   }
@@ -99,7 +99,7 @@ export class CounselStudentDataService {
   /**取得學生服務學習紀錄 */
   async getStudentServiceLearning(body: any) {
     const rsp = await this.dsaSrv.send('GetStudentServiceLearning', body);
-    const dataList: ServiceLearningRecord[] = rsp.ServiceLearnings || [] as ServiceLearningRecord[];
+    const dataList: ServiceLearningRecord[] = [].concat(rsp.ServiceLearnings || []) as ServiceLearningRecord[];
 
     dataList.forEach((data: ServiceLearningRecord) => {
       // OccurDate
@@ -127,13 +127,13 @@ export class CounselStudentDataService {
 /** Record */
 
 /**假別名稱對照 */
-export class AbsenceRecord {
+export interface AbsenceRecord {
   Name: string;
   Abbr: string;
 }
 
 /**缺曠資料 */
-export class AttendanceRecord {
+export interface AttendanceRecord {
   /**日期 */
   OccurDate: string;
   /**缺曠類別 */
@@ -143,7 +143,7 @@ export class AttendanceRecord {
 }
 
 /**節次資料 */
-export class PeriodRecord {
+export interface PeriodRecord {
   /**節次名稱 */
   Name: string;
   /**類型 */
@@ -153,7 +153,7 @@ export class PeriodRecord {
 }
 
 /** 評量項目 */
-export class ExamTemplate {
+export interface ExamTemplate {
   ExamID: string;
   Name: string;
   HasItems: boolean;
@@ -161,7 +161,7 @@ export class ExamTemplate {
 }
 
 /**獎懲資料 */
-export class DisciplineRecord {
+export interface DisciplineRecord {
   /**日期 */
   Occurdate: string;
   /**類型 */
@@ -191,7 +191,7 @@ export class DisciplineRecord {
 }
 
 /**幹部資料 */
-export class CadreRecord {
+export interface CadreRecord {
   SchoolYear: string;
   Semester: string;
   CadreType: string;
@@ -200,7 +200,7 @@ export class CadreRecord {
 }
 
 /**服務學習資料 */
-export class ServiceLearningRecord {
+export interface ServiceLearningRecord {
   SchoolYear: string;
   Semester: string;
   OccurDate: string;

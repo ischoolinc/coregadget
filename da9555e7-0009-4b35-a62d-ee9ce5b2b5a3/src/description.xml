@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="IEP成績標準設定" description="授課老師-IEP成績標準設定">
+    <Title lang="zh-TW">IEP成績標準設定</Title>
+    <Icon>icon.png</Icon>
+    <Mobile />
+    <Title lang="zh-CN">
+    </Title>
+    <Title lang="en-US">
+    </Title>
+  </ModulePrefs>
+</Module>

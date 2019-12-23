@@ -1,5 +1,5 @@
 <div *ngIf="'' + loadState !== 'finish'">
-  {{['正備取名單載入中...', '正備取名單載入失敗！'][['loading', 'error'].indexOf(loadState)]}}
+  {{['正備取資料載入中...', '正備取資料載入失敗！'][['loading', 'error'].indexOf(loadState)]}}
 </div>
 <div *ngIf="'' + loadState === 'finish'" style="display: flex;">
   <div style="padding: 5px; width: 50%;">
@@ -19,7 +19,7 @@
     <div *ngIf="!admittedList.length">無資料</div>
   </div>
   <div style="padding: 5px; width: 50%;">
-    <div style="color: red;">備取名單：</div>
+    <div style="color: red;">備取次序：</div>
     <div *ngIf="waitingList.length">
       <div *ngFor="let item of waitingList">
         <span [ngClass]="{'my-highlight': item.Myself === 't'}">

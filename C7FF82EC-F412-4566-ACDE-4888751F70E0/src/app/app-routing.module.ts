@@ -45,6 +45,7 @@ import { PsychologicalTestRoutingComponent } from './psychological-test/psycholo
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
 import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
+import { BaseInfoDetailComponent } from './counsel/counsel-detail/base-info-detail/base-info-detail.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -61,6 +62,7 @@ const routes: Routes = [
         component: CounselDetailComponent,
         children: [
           { path: "", pathMatch: "full", component: DetailRoutingComponent },
+          { path: "base_info_detail", component: BaseInfoDetailComponent },
           { path: "counsel", component: CounselItemDetailComponent },
           { path: "interview", component: InterviewDetailComponent },
           {
@@ -97,6 +99,7 @@ const routes: Routes = [
         component: ReferralDetailComponent,
         children: [
           { path: "", pathMatch: "full", component: DetailRoutingComponent },
+          { path: "base_info_detail", component: BaseInfoDetailComponent },
           { path: "counsel", component: CounselItemDetailComponent },
           { path: "interview", component: InterviewDetailComponent },
           {
@@ -156,7 +159,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, { useHash: true,anchorScrolling: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
