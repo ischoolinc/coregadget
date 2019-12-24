@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.basicSrv.getCurrentDateTime(), // 0 主機時間
         this.basicSrv.getCurrentSemester(), // 1 目前學年期
         this.basicSrv.getTextScoreMappingTable(), // 2 取得文字評量代碼表(主項目>代碼 + 文字評量) 對應 mode = 文字評語
-        this.basicSrv.getMoralCommentMappingTable(), // 3 德行評語代碼表(評語代碼 + 評語內容) 對應 mode = 成績評量
+        this.basicSrv.getMoralCommentMappingTable(), // 3 德行評語代碼表(評語代碼 + 評語內容) 對應 mode = 德行評語
         this.basicSrv.getMoralUploadConfig(), // 4 開放期間等設定值
         this.basicSrv.getClass() // 5 班級清單
       ]);
@@ -107,7 +107,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // 處理評分項目，並下載學生成績
       const gradeItemList = this.textScoreList.map(item => item.Face);
       this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
-      this.modeList.push({ Title: '成績評量', GradeItemList: ['評語']});
+      this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
       await this.setCurrentModel(this.modeList[0]);
 
       // 指定第一個學生的第一項成績
@@ -205,7 +205,7 @@ export class AppComponent implements OnInit, OnDestroy {
           }
           if (hasChanged) { break; }
         }
-      } else if (this.curMode.Title === '成績評量') {
+      } else if (this.curMode.Title === '德行評語') {
         hasChanged = (this.studentList.find(stu => (stu.Comment || '') != (stu.Origin_Comment || ''))) ? true : false;
       }
     }
@@ -239,7 +239,7 @@ export class AppComponent implements OnInit, OnDestroy {
               }
             }
           });
-        } else if (this.curMode.Title === '成績評量') {
+        } else if (this.curMode.Title === '德行評語') {
           content.push({
             '@': ['StudentID'],
             StudentID: stu.StudentID,
@@ -279,7 +279,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   }
                 });
               });
-            } else if (this.curMode.Title === '成績評量') {
+            } else if (this.curMode.Title === '德行評語') {
               this.studentList.forEach((stu, idx) => {
                 stu.Comment = data[idx];
               });
@@ -334,7 +334,7 @@ export class AppComponent implements OnInit, OnDestroy {
             if (idx === 0) { header += `<td>${v.Face}</td>`; }
             body += `<td>${v.Text || ''}</td>`;
           });
-        } else if (this.curMode.Title === '成績評量') {
+        } else if (this.curMode.Title === '德行評語') {
           if (idx === 0)  { header += `<td>評語</td>`; }
           body += `<td>${stu.Comment || ''}</td>`;
         }

@@ -201,6 +201,11 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**設定試別 */
+  setExam(grade: string) {
+    this.curGrade = grade;
+    this.setTarget();
+  }
 
   /**取得成績內容 */
   getScoreText(student: StudentRecord): string {
