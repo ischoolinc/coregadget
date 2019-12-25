@@ -57,8 +57,9 @@ export class AppComponent implements OnInit, OnDestroy {
    * 切換儲存按鈕樣式
    */
   isChange: boolean = false;
-
   bsModalRef: BsModalRef;
+
+  isNoExam: boolean;
   
   constructor(
     private basicSrv: BasicService,
@@ -113,11 +114,15 @@ export class AppComponent implements OnInit, OnDestroy {
         this.degreeCodeList = rsp[5].degreeCode;
 
         this.setCurrentExam(rsp[5].examList[0] || {} as ExamRecord);
-        // this.curExam = rsp[5].examList[0] || {} as ExamRecord;
-        // this.targetDataSrv.setExam(this.curExam);
 
-        if (rsp[3].length) {
+        if (rsp[3].length > 0) {
           await this.setCurrentClass(rsp[3][0]);
+        }
+
+        if (this.examList[0].Item.length > 0) {
+          this.isNoExam = false;
+        } else {
+          this.isNoExam = true;
         }
       }
     } catch (error) {
@@ -206,38 +211,33 @@ export class AppComponent implements OnInit, OnDestroy {
   /** 重新取得學生成績資料 */
   async scoreDataReload() {
     // 成績資料清空
-    this.studentList.map((student: StudentRecord) => {
-      student.DailyLifeScore = new Map();
-    });
-    // 取得學生成績
+    this.studentList.map((student: StudentRecord) => {student.DailyLifeScore = new Map();});
+    // 預設資料
+    let defaultStuData: Map<string,string> = new Map();
     {
-      const defaultStuData: Map<string,string> = new Map();
-      // 預設資料
-      {
-        // 取得評量
-        const dailyBehavior = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyBehavior');
-        const dailyLifeRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyLifeRecommend');
-        const otherRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'OtherRecommend');
-
+      const dailyBehavior = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyBehavior');
+      if (dailyBehavior.Item.length > 0) {
         dailyBehavior.Item.forEach((item: any) => {
           defaultStuData.set(`DailyBehavior_${item.Name}`,'');
           defaultStuData.set(`Origin_DailyBehavior_${item.Name}`,'');
         });
-        defaultStuData.set(`DailyLifeRecommend_文字描述`,'');
-        defaultStuData.set(`Origin_DailyLifeRecommend_文字描述`,'');
-        defaultStuData.set(`OtherRecommend_文字描述`,'');
-        defaultStuData.set(`Origin_OtherRecommend_文字描述`,'');
       }
-      const scoreMapByStudentID = await this.basicSrv.getStudentDailyLifeScore(this.curClass.ClassID, this.curSchoolYear, this.curSemester);
-      [].concat(this.studentList || []).forEach((student: StudentRecord) => {
-        student.DailyLifeScore = scoreMapByStudentID.get(student.ID) || new Map(defaultStuData);
-      });
+      defaultStuData.set(`DailyLifeRecommend_文字描述`,'');
+      defaultStuData.set(`Origin_DailyLifeRecommend_文字描述`,'');
+      defaultStuData.set(`OtherRecommend_文字描述`,'');
+      defaultStuData.set(`Origin_OtherRecommend_文字描述`,'');
     }
-    // service 資料更新
+      
+    const scoreMapByStudentID = await this.basicSrv.getStudentDailyLifeScore(this.curClass.ClassID, this.curSchoolYear, this.curSemester);
+    [].concat(this.studentList || []).forEach((student: StudentRecord) => {
+      student.DailyLifeScore = scoreMapByStudentID.get(student.ID) || new Map(defaultStuData);
+    });
+
     this.targetDataSrv.setStudentList(this.studentList);
     this.targetDataSrv.setStudent(this.studentList[0]);
-    this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
-    // 資料reload isChange = flase
+    if (this.curExam.Item.length > 0) {
+      this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
+    }
     this.isChange = false;
   }
 
@@ -245,7 +245,10 @@ export class AppComponent implements OnInit, OnDestroy {
   setCurrentExam(exam: ExamRecord) {
     this.curExam = exam;
     this.targetDataSrv.setExam(this.curExam);
-    this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
+
+    if (this.curExam.Item.length > 0) {
+      this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
+    }
   }
 
   /** 判斷目前學年度、學期、班級 是否可編輯 */
