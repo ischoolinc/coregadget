@@ -178,7 +178,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
           }
         });
       }
-      if (this.mode.Title === '成績評量') {
+      if (this.mode.Title === '德行評語') {
         this.newValue = student.Comment || '';
 
         // 設定代碼表
@@ -217,7 +217,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       } else {
         return '';
       }
-    } else if (this.mode.Title === '成績評量') {
+    } else if (this.mode.Title === '德行評語') {
       return student.Comment || '';
     } else {
       return '';
@@ -267,7 +267,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
           Origin: '',
         });
       }
-    } else if (this.mode.Title === '成績評量') {
+    } else if (this.mode.Title === '德行評語') {
       student.Comment = newValue;
     }
     this.targetDataSrv.setStudent(student);
