@@ -158,6 +158,12 @@ export class PsychologicalTestListComponent implements OnInit {
   modalImport(data: Quiz) {
     this.import_quiz_data_modal.QuizData = data;
     this.import_quiz_data_modal.loadImportFieldName();
+    this.import_quiz_data_modal.selectImportStudentType = '班級座號';
+    this.import_quiz_data_modal.isSelectImportTypeClassSeatNo = true;
+    this.import_quiz_data_modal.isImportButtonDisable = true;
+    this.import_quiz_data_modal.isBtnClassSeatNo =false;
+    this.import_quiz_data_modal.isBtnIDNumber = false;
+    this.import_quiz_data_modal.isBtnStudentNumber = false;
     $("#psychological-import").modal("show");
     // 關閉畫面
     $("#psychological-import").on("hide.bs.modal", () => {

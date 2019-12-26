@@ -23,6 +23,7 @@ export class StudentQuizDataComponent implements OnInit {
   QuizItemNameList: string[] = [];
   StudentQuizDataSource: any[] = [];
   StudentQuizDataList: StudentQuizData[] = [];
+  StudentQuizDataListNew: StudentQuizData[] = [];
   selectClassName: string;
   selectQuizName: string;
   classList: ClassInfo[] = [];
@@ -55,7 +56,7 @@ export class StudentQuizDataComponent implements OnInit {
     this.ClassID = item.ClassID;
     this.selectClassName = item.ClassName;
     this.router.navigate(['../../../student-quiz-data', this.QuizID, this.ClassID], {
-      relativeTo: this.activatedRoute,       
+      relativeTo: this.activatedRoute,
     });
   }
 
@@ -64,7 +65,7 @@ export class StudentQuizDataComponent implements OnInit {
     this.selectQuizName = item.QuizName;
     this.QuizID = item.uid;
     this.router.navigate(['../../../student-quiz-data', this.QuizID, this.ClassID], {
-      relativeTo: this.activatedRoute,       
+      relativeTo: this.activatedRoute,
     });
   }
 
@@ -182,6 +183,7 @@ export class StudentQuizDataComponent implements OnInit {
         }
       });
       this.StudentQuizDataList = [];
+      this.StudentQuizDataListNew = [];
       this.StudentQuizDataSource = [].concat(resp.StudentQuizData || []);
 
       // 處理班級學生
@@ -209,30 +211,36 @@ export class StudentQuizDataComponent implements OnInit {
         if (item.QuizDataList) {
           let QuizDataList = [].concat(item.QuizDataList || []);
           if (QuizDataList.length > 0) {
-            QuizDataList.forEach(qItem => {
-              this.StudentQuizDataList.forEach(ssItem => {
+            let chk = [];
+            this.StudentQuizDataList.forEach(ssItem => {
+              QuizDataList.forEach(qItem => {
                 if (qItem.student_id === ssItem.StudentID) {
-                  if (this.QuizID === qItem.quiz_id)
-                  {
-                    ssItem.QuizUID = qItem.quiz_id; 
-                    ssItem.AnalysisDate = moment(qItem.analysis_date);
-                    ssItem.ImplementationDate = moment(qItem.implementation_date);
-                    ssItem.parseDT();
-  
-                    let xq = [].concat(node2json.xml2obj('<root>' + qItem.content + '</root>') || []);
-  
-                    if (xq.length > 0) {
-                      if (xq[0].root && xq[0].root.Item) {
-                        let items = [].concat(xq[0].root.Item || []);
-                        items.forEach(subItem => {
-                          let qi: QuizItem = new QuizItem();
-                          qi.QuizName = subItem.name;
-                          qi.Value = subItem.value;
-                          ssItem.QuizItemList.push(qi);
-                        });
+                  if (this.QuizID === qItem.quiz_id) {
+                    if (!chk.includes(ssItem.StudentID + qItem.quiz_id + qItem.analysis_date)) {
+
+                      ssItem.QuizUID = qItem.quiz_id;
+                      ssItem.AnalysisDate = moment(qItem.analysis_date);
+                      ssItem.ImplementationDate = moment(qItem.implementation_date);
+                      ssItem.parseDT();
+
+                      let xq = [].concat(node2json.xml2obj('<root>' + qItem.content + '</root>') || []);
+                      ssItem.QuizItemList = [];
+                      if (xq.length > 0) {
+                        if (xq[0].root && xq[0].root.Item) {
+                          let items = [].concat(xq[0].root.Item || []);
+                          items.forEach(subItem => {
+                            let qi: QuizItem = new QuizItem();
+                            qi.QuizName = subItem.name;
+                            qi.Value = subItem.value;
+                            ssItem.QuizItemList.push(qi);
+                          });
+                        }
                       }
+
+                      this.StudentQuizDataListNew.push(ssItem);
+                      chk.push(ssItem.StudentID + qItem.quiz_id + qItem.analysis_date);
                     }
-                  }                  
+                  }
                 }
               });
             });
