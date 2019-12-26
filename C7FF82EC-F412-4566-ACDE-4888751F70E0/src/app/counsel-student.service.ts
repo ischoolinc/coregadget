@@ -29,6 +29,8 @@ export class CounselStudentService {
   public currentSemester: number;
   // 認輔學生
   public guidanceStudent: CounselStudent[];
+  // 搜尋學生
+  public searchStudent: CounselStudent[];
 
   // public currentStudent: CounselStudent;
 
@@ -97,8 +99,8 @@ export class CounselStudentService {
             CounselTypeVg: stuRec.CounselTypeVg,
             LastUpdateVg: stuRec.LastUpdateVg,
             VGCount: stuRec.VGCount,
-            InterviewContentCount:stuRec.InterviewContentCount,
-            InterviewContactItemCount:stuRec.InterviewContactItemCount
+            InterviewContentCount: stuRec.InterviewContentCount,
+            InterviewContactItemCount: stuRec.InterviewContactItemCount
           } as CounselStudent);
       }
       let stu = this.studentMap.get(stuRec.StudentID);
@@ -126,10 +128,9 @@ export class CounselStudentService {
         if (cls.Role.indexOf(stuRec.Role) < 0) {
           cls.Role.push(stuRec.Role);
         }
-        let add:boolean = true;
-        cls.Student.forEach( x => {
-          if (x.StudentID === stu.StudentID)
-          {
+        let add: boolean = true;
+        cls.Student.forEach(x => {
+          if (x.StudentID === stu.StudentID) {
             add = false;
           }
         });
@@ -167,6 +168,24 @@ export class CounselStudentService {
 
     this.isLoading = false;
   }
+
+  // 搜尋學生
+  async SearchText(text: string) {
+    this.searchStudent = [];
+    let SearchStudent = await this.dsaService.send("SearchStudent", { Request: { SearchText: text } });
+    [].concat(SearchStudent.Student || []).forEach(stud => {
+      let Student: CounselStudent = new CounselStudent();
+      Student.StudentID = stud.StudentID;
+      Student.StudentNumber = stud.StudentNumber;
+      Student.StudentName = stud.Name;
+      Student.ClassName = stud.ClassName;
+      Student.SeatNo = stud.SeatNo;
+      Student.Status = stud.Status;
+      Student.IDNumber = stud.IDNumber;
+      this.searchStudent.push(Student);
+    });
+  }
+
 }
 
 export class CounselClass {
@@ -188,6 +207,7 @@ export class CounselStudent {
   Gender: string;
   StudentNumber: string;
   StudentName: string;
+  IDNumber: string;
   Status: string;
   Role: string[];
   InterviewCount: number;

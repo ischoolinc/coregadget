@@ -14,6 +14,7 @@ import {
 import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
 import { GlobalService } from "../../global.service";
+import { ThrowStmt } from '@angular/compiler';
 @Component({
   selector: "app-counsel-list",
   templateUrl: "./counsel-list.component.html",
@@ -26,6 +27,9 @@ export class CounselListComponent implements OnInit {
   public targetList: CounselStudent[];
   currentSchoolYear: number;
   currentSemester: number;
+
+  searchMessage: string = "";
+
 
   _semesterInfo: SemesterInfo[] = [];
 
@@ -51,7 +55,7 @@ export class CounselListComponent implements OnInit {
     );
   }
 
-  getList() {
+  async getList() {
     if (!this.counselStudentService.isLoading) {
       this.currentSchoolYear = this.counselStudentService.currentSchoolYear;
       this.currentSemester = this.counselStudentService.currentSemester;
@@ -122,21 +126,27 @@ export class CounselListComponent implements OnInit {
 
       if (this.mod === "search") {
         this.targetList = [];
-        this.counselStudentService.studentMap.forEach(
-          (value: CounselStudent, key: string) => {
-            //console.log(value.StudentName);
-
-            if (value.StudentName.indexOf(this.target) > -1) {
-              console.log(this.target, value.StudentName);
-              this.targetList.push(value);
-            }
+        this.searchMessage ="";
+        if (this.target.replace('/ /ig', "").length > 0) {
+          this.searchMessage = "搜尋中 ...";
+          await this.counselStudentService.SearchText(this.target);
+          this.targetList = this.counselStudentService.searchStudent;
+          if (this.targetList.length === 0) {
+            this.searchMessage = "沒有資料。";
+          }else
+          {
+            this.searchMessage = "";
           }
-        );
+        }
+
+
 
         if (this.counselComponent != null) {
           this.counselComponent.setSelectItem("搜尋");
         }
       }
+
+
     } else {
       if (this.counselComponent != null) {
         this.counselComponent.setSelectItem("");
