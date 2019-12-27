@@ -78,7 +78,7 @@ export class BasicService {
     const degreeCode: PerformanceDegree[] = [];
     // 資料整理
     if (rsp.Response) {
-      // DailyBehavior
+      // DailyBehavior 
       if (rsp.Response.DailyBehavior) {
         const exam: ExamRecord = {
           ExamID: 'DailyBehavior',

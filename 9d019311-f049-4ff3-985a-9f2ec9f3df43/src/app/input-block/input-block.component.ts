@@ -86,7 +86,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe((value: boolean) => {
       this.canEdit = value;
-      this.setPage();
+      // this.setPage();
     });
 
     this.targetDataSrv.studenList$.pipe(

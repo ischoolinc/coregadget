@@ -119,11 +119,10 @@ export class AppComponent implements OnInit {
         this.examList = rsp[6].examList;
         this.levelCodeList = rsp[6].degreeCode;
         // 設定目前評量
-        this.setCurrentExam(rsp[6].examList[0] || {} as ExamRecord);
-        // this.curExam = rsp[6].examList[0] || {} as ExamRecord;
+        this.setCurrentExam(this.examList[0] || {} as ExamRecord);
         // 設定目前班級
-        if (rsp[3].length) {
-          await this.setCurrentClass(rsp[3][0]);
+        if (this.classList.length) {
+          await this.setCurrentClass(this.classList[0]);
         }
         
       }
@@ -177,7 +176,7 @@ export class AppComponent implements OnInit {
    * 1. 取得班級學生清單
    * 2. 取得學生成績資料
   */
-  async setCurrentClass(cr: ClassReocrd) {
+  async setCurrentClass(classRec: ClassReocrd) {
     let execute: boolean = false;
     if (this.isChange) {
       if (window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
@@ -188,7 +187,7 @@ export class AppComponent implements OnInit {
     }
 
     if (execute) {
-      this.curClass = cr;
+      this.curClass = classRec;
       // 取得目前班級成績輸入時間
       {
         const time = this.dailyLifeInputConfig.Time.find(time => {
@@ -198,14 +197,14 @@ export class AppComponent implements OnInit {
       }
       
       this.isEditable();
-      await this.getClassStudent(cr.ClassID);
+      await this.getClassStudent();
       await this.scoreDataReload();
     }
   }
 
   /** 取得班級學生 */
-  async getClassStudent(classID: string) {
-    this.studentList = await this.basicSrv.getMyClassStudents(classID);
+  async getClassStudent() {
+    this.studentList = await this.basicSrv.getMyClassStudents(this.curClass.ClassID);
     this.curStudent = this.studentList[0];
   }
 
@@ -256,7 +255,9 @@ export class AppComponent implements OnInit {
 
     // service 資料更新
     this.targetDataSrv.setStudentList(this.studentList);
-    this.targetDataSrv.setStudent(this.studentList[0]);
+    if (this.studentList.length) {
+      this.targetDataSrv.setStudent(this.studentList[0]);
+    }
     this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
     // 資料reload isChange = flase
     this.isChange = false;
@@ -270,7 +271,7 @@ export class AppComponent implements OnInit {
     if (exam.ExamID === 'GroupActivity') {
       this.curQuizName = `${exam.Item[0].Name}_努力程度`;
       this.targetDataSrv.setQuizName(this.curQuizName);
-    } else{
+    } else {
       this.curQuizName = exam.Item[0].Name;
       this.targetDataSrv.setQuizName(this.curQuizName);
     }

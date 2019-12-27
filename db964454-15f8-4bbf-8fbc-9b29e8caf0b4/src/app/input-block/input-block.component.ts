@@ -91,7 +91,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe(value => {
       this.canEdit = value;
-      this.setPage();
+      // this.setPage();
     });
 
     this.targetDataSrv.studentList$.pipe(
@@ -113,7 +113,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe((exam: ExamRecord) => {
       this.curExam = exam;
-      this.setPage();
+      // this.setPage();
     });
 
     this.targetDataSrv.quizName$.pipe(
@@ -121,9 +121,8 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     ).subscribe((quiz: string) => {
       this.curQuizName = quiz;
       this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${quiz}`);
-      this.setPage();
+      // this.setPage();
     });
-
   }
 
   ngOnDestroy(): void {
@@ -159,7 +158,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     // GoupActivity 努力程度才需要顯示代碼表
     if (this.curExam.ExamID === 'GroupActivity') {
       this.showEffortCode = this.curQuizName.includes('努力程度');
-    } else{
+    } else {
       this.showEffortCode = false;
     }
   }
