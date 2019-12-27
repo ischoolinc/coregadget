@@ -9,7 +9,6 @@
           <th *ngFor="let item of curExam.Item" class="text-center">{{item.Name}}</th>
         </tr>
       </thead>
-
       <tbody>
         <tr *ngFor="let student of studentList"
           [class.table-warning]="student.ID === curStudent.ID">

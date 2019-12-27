@@ -58,8 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   isChange: boolean = false;
   bsModalRef: BsModalRef;
-
-  isNoExam: boolean;
+  isNoExam: boolean = false;
   
   constructor(
     private basicSrv: BasicService,
@@ -100,31 +99,28 @@ export class AppComponent implements OnInit, OnDestroy {
         this.basicSrv.getDailyLifeMappingTable(), // 5. 取得日常生活表現評量項目、評分項目、努力程度
       ]);
       // rsp 資料整理
-      {
-        this.curSchoolYear = rsp[0].curSchoolYear;
-        this.curSemester = rsp[0].curSemester;
-        for(let i = 4; i >= 0; i--) {
-          this.schoolYearList.push('' + (Number(this.curSchoolYear) - i));
-        }
-        this.sysDateTime = rsp[1];
-        this.dailyLifeInputConfig = rsp[2];
-        this.classList = rsp[3];
-        this.textCodeList = rsp[4];
-        this.examList = rsp[5].examList;
-        this.degreeCodeList = rsp[5].degreeCode;
-
-        this.setCurrentExam(rsp[5].examList[0] || {} as ExamRecord);
-
-        if (rsp[3].length > 0) {
-          await this.setCurrentClass(rsp[3][0]);
-        }
-
-        if (this.examList[0].Item.length > 0) {
-          this.isNoExam = false;
-        } else {
-          this.isNoExam = true;
-        }
+      this.curSchoolYear = rsp[0].curSchoolYear;
+      this.curSemester = rsp[0].curSemester;
+      for(let i = 4; i >= 0; i--) {
+        this.schoolYearList.push('' + (Number(this.curSchoolYear) - i));
       }
+      this.sysDateTime = rsp[1];
+      this.dailyLifeInputConfig = rsp[2];
+      this.classList = rsp[3];
+      this.textCodeList = rsp[4];
+      this.examList = rsp[5].examList;
+      this.degreeCodeList = rsp[5].degreeCode;
+      // 設定目前評量
+      if (this.examList.length > 0) {
+        this.setCurrentExam(this.examList[0] || {} as ExamRecord);
+      } else {
+        this.isNoExam = true;
+      }
+      // 設定目前班級
+      if (this.classList.length > 0) {
+        await this.setCurrentClass(this.classList[0]);
+      }
+
     } catch (error) {
       console.log(error);
       this.loadError = '發生錯誤！';
@@ -137,7 +133,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.dispose$.next();
   }
 
-  /** 設定目前學年 */
   setSchoolYear(schoolYear: string) {
     let execute: boolean = false;
     if (this.isChange) {
@@ -155,7 +150,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 設定目前學期 */
   setSemester(semester: string) {
     let execute: boolean = false;
     if (this.isChange) {
@@ -179,7 +173,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * 1. 取得班級學生清單
    * 2. 取得學生成績資料
   */
-  async setCurrentClass(cr: ClassReocrd) {
+  async setCurrentClass(classRec: ClassReocrd) {
     let execute: boolean = false;
     if (this.isChange) {
       if (window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
@@ -190,12 +184,13 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     if (execute) {
-      this.curClass = cr;
+      this.curClass = classRec;
       // 取得目前班級成績輸入時間
       {
         const time = this.dailyLifeInputConfig.Time.find(time => time.Grade === this.curClass.GradeYear);
         this.curClassTimeConfig = time || '';
       }
+
       this.isEditable();
       await this.getClassStudent();
       await this.scoreDataReload();
@@ -234,7 +229,10 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.targetDataSrv.setStudentList(this.studentList);
-    this.targetDataSrv.setStudent(this.studentList[0]);
+    if (this.studentList.length > 0) {
+      this.targetDataSrv.setStudent(this.studentList[0]);
+    }
+    // 檢查是否有評分項目，有的話才設定評分項目
     if (this.curExam.Item.length > 0) {
       this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
     }
@@ -246,6 +244,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.curExam = exam;
     this.targetDataSrv.setExam(this.curExam);
 
+    // 檢查日常生活表現評量是否有評分項目，有的話設定目前評分項目
     if (this.curExam.Item.length > 0) {
       this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
     }
@@ -286,7 +285,6 @@ export class AppComponent implements OnInit, OnDestroy {
         });
       }
     });
-    console.log('checkalltanle');
     this.isChange = change;
   }
 
