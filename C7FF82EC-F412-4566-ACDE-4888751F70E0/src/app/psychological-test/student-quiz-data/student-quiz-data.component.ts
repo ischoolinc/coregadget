@@ -23,7 +23,7 @@ export class StudentQuizDataComponent implements OnInit {
   QuizItemNameList: string[] = [];
   StudentQuizDataSource: any[] = [];
   StudentQuizDataList: StudentQuizData[] = [];
-  StudentQuizDataListNew: StudentQuizData[] = [];
+  
   selectClassName: string;
   selectQuizName: string;
   classList: ClassInfo[] = [];
@@ -176,80 +176,48 @@ export class StudentQuizDataComponent implements OnInit {
 
   async GetStudentQuizDataByClassID() {
     let resp: any;
+    this.StudentQuizDataList = [];
     try {
-      resp = await this.dsaService.send("GetStudentQuizDataByClassID", {
+      resp = await this.dsaService.send("GetStudentQuizDataByClassID1", {
         Request: {
           ClassID: this.ClassID
         }
       });
-      this.StudentQuizDataList = [];
-      this.StudentQuizDataListNew = [];
+
       this.StudentQuizDataSource = [].concat(resp.StudentQuizData || []);
 
       // 處理班級學生
       this.StudentQuizDataSource.forEach(item => {
-        if (item.StudentDataList) {
-          let StudentDataList = [].concat(item.StudentDataList || []);
-          if (StudentDataList.length > 0) {
-            StudentDataList.forEach(studItem => {
-              let studData: StudentQuizData = new StudentQuizData();
-              studData.ClassName = studItem.class_name;
-              studData.SeatNo = studItem.seat_no;
-              studData.StudentID = studItem.student_id;
-              studData.StudentName = studItem.student_name;
-              studData.StudentNumber = studItem.student_number;
-              this.StudentQuizDataList.push(studData);
+        let studData: StudentQuizData = new StudentQuizData();
+        studData.ClassName = item.ClassName;
+        studData.SeatNo = item.SeatNo;
+        studData.StudentID = item.StudentID;
+        studData.StudentName = item.StudentName;
+        studData.StudentNumber = item.StudentNumber;
+        studData.QuizUID = item.QuizID;
+        studData.AnalysisDate  = moment(item.AnalysisDate);
+        studData.ImplementationDate =  moment(item.ImplementationDate);
+        studData.parseDT();
+        // 處理 value 內容有 <,> xml 會被吃問題
+        let xxx = item.Content.replace(/</g,"&lt").replace(/&ltItem/g,"<Item");
+        let xx1 = xxx.replace(/>/g,"&gt").replace(/\/&gt/g,"/>");
+        let xq = [].concat(node2json.xml2obj('<root>' + xx1 + '</root>') || []);
+     
+        studData.QuizItemList = [];
+        if (xq.length > 0) {
+          if (xq[0].root && xq[0].root.Item) {
+            let items = [].concat(xq[0].root.Item || []);
+            items.forEach(subItem => {
+              let qi: QuizItem = new QuizItem();
+              qi.QuizName = subItem.name;
+              qi.Value = subItem.value.replace(/&lt/g,"<").replace(/&gt/g,">");
+              studData.QuizItemList.push(qi);
             });
           }
         }
 
+        this.StudentQuizDataList.push(studData);
       });
-
-      // 處理有測驗資料
-      this.StudentQuizDataSource.forEach(item => {
-
-        if (item.QuizDataList) {
-          let QuizDataList = [].concat(item.QuizDataList || []);
-          if (QuizDataList.length > 0) {
-            let chk = [];
-            this.StudentQuizDataList.forEach(ssItem => {
-              QuizDataList.forEach(qItem => {
-                if (qItem.student_id === ssItem.StudentID) {
-                  if (this.QuizID === qItem.quiz_id) {
-                    if (!chk.includes(ssItem.StudentID + qItem.quiz_id + qItem.analysis_date)) {
-
-                      ssItem.QuizUID = qItem.quiz_id;
-                      ssItem.AnalysisDate = moment(qItem.analysis_date);
-                      ssItem.ImplementationDate = moment(qItem.implementation_date);
-                      ssItem.parseDT();
-
-                      let xq = [].concat(node2json.xml2obj('<root>' + qItem.content + '</root>') || []);
-                      ssItem.QuizItemList = [];
-                      if (xq.length > 0) {
-                        if (xq[0].root && xq[0].root.Item) {
-                          let items = [].concat(xq[0].root.Item || []);
-                          items.forEach(subItem => {
-                            let qi: QuizItem = new QuizItem();
-                            qi.QuizName = subItem.name;
-                            qi.Value = subItem.value;
-                            ssItem.QuizItemList.push(qi);
-                          });
-                        }
-                      }
-
-                      this.StudentQuizDataListNew.push(ssItem);
-                      chk.push(ssItem.StudentID + qItem.quiz_id + qItem.analysis_date);
-                    }
-                  }
-                }
-              });
-            });
-          }
-        }
-
-      });
-
-
       this.isLoading = false;
     } catch (err) {
       alert(err);

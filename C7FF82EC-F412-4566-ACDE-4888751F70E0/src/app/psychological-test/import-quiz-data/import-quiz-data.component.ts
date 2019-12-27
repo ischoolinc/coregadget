@@ -309,9 +309,9 @@ export class ImportQuizDataComponent implements OnInit {
       alert("檔案內沒有資料。");
     }
 
-    this.wsColName.forEach(item => {
-      console.log(item);
-    });
+    // this.wsColName.forEach(item => {
+    //   console.log(item);
+    // });
 
 
 
