@@ -35,9 +35,9 @@ export class AppComponent implements OnInit {
   schoolYearList: string[];
   // 學期清單
   semesterList: string[];
-  // 文字代碼表
+  // 導師評語代碼表
   commentCodeList: CommentCode[] = [];
-  // 程度代碼表
+  // 表現程度代碼表
   levelCodeList: LevelCode[] =[]
   // 努力程度代碼表
   effortCodeList: EffortCode[] = [];

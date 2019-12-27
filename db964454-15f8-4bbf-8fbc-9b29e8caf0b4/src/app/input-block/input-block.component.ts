@@ -34,6 +34,8 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   curMode: 'SEAT' | 'SEQ' = 'SEQ';
   // 切換座號
   selectSeatNumber: string;
+  // 團體活動子成績項目
+  groupItemList: string[] = [];
 
   modalRef: BsModalRef;
   subscriptions: Subscription[] = [];
@@ -91,7 +93,6 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe(value => {
       this.canEdit = value;
-      // this.setPage();
     });
 
     this.targetDataSrv.studentList$.pipe(
@@ -113,15 +114,12 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe((exam: ExamRecord) => {
       this.curExam = exam;
-      // this.setPage();
     });
 
     this.targetDataSrv.quizName$.pipe(
       takeUntil(this.dispose$)
     ).subscribe((quiz: string) => {
-      this.curQuizName = quiz;
-      this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${quiz}`);
-      // this.setPage();
+      this.setCurQuiz(quiz);
     });
   }
 
@@ -155,6 +153,12 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     } else {
       this.displayPage = this.tplSourceNoData;
     }
+  }
+
+  setCurQuiz(quiz: string) {
+    this.curQuizName = quiz;
+    this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${quiz}`);
+
     // GoupActivity 努力程度才需要顯示代碼表
     if (this.curExam.ExamID === 'GroupActivity') {
       this.showEffortCode = this.curQuizName.includes('努力程度');
@@ -163,14 +167,14 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 程度代碼轉換 */
+  /** 表現程度代碼轉換 */
   switchLevelCode(code: string) {
     const result = this.levelCodeList.find((dg: LevelCode) => dg.Degree === code);
     if (result) {
       this.curValue = result.Desc;
     }
   }
-  /** 文字代碼轉換 */
+  /** 導師評語代碼轉換 */
   switchCommentCode(code: string) {
     const result = this.commentCodeList.find((txt: CommentCode) => txt.Code === code);
     if (result) {
