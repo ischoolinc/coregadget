@@ -40,7 +40,6 @@ export class StudentsBlockComponent implements OnInit, OnDestroy {
     ).subscribe((stuList: StudentRecord[]) => {
       this.studentList = stuList;
     });
-
   }
 
   ngOnDestroy() {

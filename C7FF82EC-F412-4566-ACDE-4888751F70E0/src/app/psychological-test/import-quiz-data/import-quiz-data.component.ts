@@ -20,12 +20,22 @@ export class ImportQuizDataComponent implements OnInit {
   isSelectImportTypeClassSeatNo: boolean = false;
   isSelectImportTypeStudentNumber: boolean = false;
   isSelectImportTypeIDNumber: boolean = false;
+  isBtnClassSeatNo: boolean = false;
+  isBtnStudentNumber: boolean = false;
+  isBtnIDNumber: boolean = false;
   importFieldNameList: string[] = [];
   importFieldName: string = "";
+
+  // 解析日期發生錯誤
+  isAnalysisDatePassError: boolean = false;
+  // 實施日期發生錯誤
+  isImplementationDateError: boolean = false;
+
 
   StudentQuizDataList: StudentQuizData[] = [];
   rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
   sheet1 = [];
+  wsColName: any[] = [];
   constructor(
     private dsaService: DsaService
   ) { }
@@ -152,7 +162,22 @@ export class ImportQuizDataComponent implements OnInit {
       this.importFieldNameList.push(item.QuizName);
     });
 
-    this.importFieldName = this.importFieldNameList.join(',');
+    if (this.QuizData.UseMappingTable) {
+      // 使用常模轉換
+      let xFieldList = [];
+      this.importFieldNameList.forEach(item => {
+        if (item === '常模分數' || item === '年齡' || item === '性別') {
+          // 不加入畫面顯示
+        } else {
+          xFieldList.push(item);
+          this.importFieldName = xFieldList.join(',');
+        }
+      });
+
+    } else {
+      this.importFieldName = this.importFieldNameList.join(',');
+    }
+
   }
 
 
@@ -186,6 +211,15 @@ export class ImportQuizDataComponent implements OnInit {
 
           // 取得資料範圍，轉換為 s: {c: 0, r: 0} e: {c: 3, r: 3}
           //        console.log('range => ', XLSX.utils.decode_range(ws['!ref']));
+          this.wsColName = [];
+          var range = XLSX.utils.decode_range(ws['!ref']);
+          for (var C = range.s.c; C <= range.e.c; ++C) {
+            var address = XLSX.utils.encode_col(C) + "1"; // <-- first row, column number C
+            if (!ws[address]) continue;
+
+            this.wsColName.push(ws[address].v);
+            console.log(ws[address].v);
+          }
 
           // now change to A1:A3 變更查看的範圍
           // ws['!ref'] = 'A1:A3';
@@ -194,6 +228,9 @@ export class ImportQuizDataComponent implements OnInit {
           //   console.log('json => ', XLSX.utils.sheet_to_json(ws));
           this.sheet1 = XLSX.utils.sheet_to_json(ws, { dateNF: "YYYY-MM-DD" });
           this.StudentQuizDataList = [];
+          this.isAnalysisDatePassError = false;
+          this.isImplementationDateError = false;
+
           this.sheet1.forEach(item => {
             let studQ: StudentQuizData = new StudentQuizData();
             studQ.QuizUID = this.QuizData.uid;
@@ -209,13 +246,35 @@ export class ImportQuizDataComponent implements OnInit {
             if (item["身分證號"])
               studQ.IDNumber = item["身分證號"];
 
+            let chkD1: boolean = false;
             if (item["解析日期"]) {
-              //  let dts:string = moment(item["解析日期"]).format('YYYY-MM-DD');
-              studQ.AnalysisDate = moment(item["解析日期"]);
+              if (moment(item["解析日期"]).isValid) {
+                let xx = moment(item["解析日期"]);
+                // 檢查是否西元年
+                if (xx.year() > 1910 && xx.year() < 3000) {
+                  studQ.AnalysisDate = moment(item["解析日期"]);
+                  chkD1 = true;
+                }
+              }
+            }
+            let chkD2: boolean = false;
+            // 加入日期是否正確與是否西元年檢查
+            if (item["實施日期"]) {
+              if (moment(item["實施日期"])) {
+                let yy = moment(item["實施日期"]);
+                if (yy.year() > 1910 && yy.year() < 3000) {
+                  studQ.ImplementationDate = moment(item["實施日期"]);
+                  chkD2 = true;
+                }
+              }
             }
 
-            if (item["實施日期"]) {
-              studQ.ImplementationDate = moment(item["實施日期"]);
+            if (chkD1 === false) {
+              this.isAnalysisDatePassError = true;
+            }
+
+            if (chkD2 === false) {
+              this.isImplementationDateError = true;
             }
 
             this.QuizData.QuizItemList.forEach(qItem => {
@@ -237,7 +296,7 @@ export class ImportQuizDataComponent implements OnInit {
 
   async onFileChange(event) {
     this.StudentQuizDataList = [];
-
+    this.isImportButtonDisable = true;
     await this.readSpreadsheet(event);
     let checkPass: boolean = true;
     //   console.log(this.sheet1);
@@ -250,6 +309,12 @@ export class ImportQuizDataComponent implements OnInit {
       alert("檔案內沒有資料。");
     }
 
+    // this.wsColName.forEach(item => {
+    //   console.log(item);
+    // });
+
+
+
     let lostField: string[] = [];
     // 驗證欄位是否缺少
     if (this.sheet1.length > 0) {
@@ -260,7 +325,8 @@ export class ImportQuizDataComponent implements OnInit {
             lostField.push('原始分數');
           }
         } else {
-          if (!this.sheet1[0][item]) {
+          // 檢查是否有在欄位內
+          if (!this.wsColName.includes(item)) {
             lostField.push(item);
           }
         }
@@ -270,7 +336,16 @@ export class ImportQuizDataComponent implements OnInit {
     if (lostField.length > 0) {
       checkPass = false;
       alert("檔案內缺少欄位：" + lostField.join(','));
+    }
 
+    if (this.isAnalysisDatePassError) {
+      checkPass = false;
+      alert("解析日期內容無法解析，格式為:西元年/月/日。");
+    }
+
+    if (this.isImplementationDateError) {
+      checkPass = false;
+      alert("實施日期內容無法解析，格式為:西元年/月/日。");
     }
 
     if (checkPass) {
@@ -319,7 +394,9 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Birthday = moment(item.birthdate);
               sItem.parseAge();
               sItem.Gender = item.gender;
-              if (sItem.QuizItemList[0].QuizName === "原始分數") {
+
+              // if (sItem.QuizItemList[0].QuizName === "原始分數") {
+              if (this.QuizData.UseMappingTable) {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
 
                 sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age, sItem.Gender);
@@ -344,18 +421,19 @@ export class ImportQuizDataComponent implements OnInit {
             }
           });
         });
-
+        let id: number = 2;
         this.StudentQuizDataList.forEach(sItem => {
           if (sItem.StudentID && sItem.StudentID.length > 0) {
           } else {
-            let str = `班級：${sItem.ClassName}, 座號：${sItem.SeatNo}`;
+            let str = `第${id}筆，班級：${sItem.ClassName}, 座號：${sItem.SeatNo}`;
             noStudentIDList.push(str);
           }
+          id++;
         });
 
         if (noStudentIDList.length > 0) {
           this.isImportButtonDisable = true;
-          alert("班級,座號 無法比對：\n" + noStudentIDList.join('\n'));
+          alert("班級,座號 無法比對，無法匯入：\n" + noStudentIDList.join('\n'));
         } else {
           this.isImportButtonDisable = false;
         }
@@ -400,7 +478,10 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Birthday = moment(item.birthdate);
               sItem.parseAge();
               sItem.Gender = item.gender;
-              if (sItem.QuizItemList[0].QuizName === "原始分數") {
+
+
+              //if (sItem.QuizItemList[0].QuizName === "原始分數") {
+              if (this.QuizData.UseMappingTable) {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
                 sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age, sItem.Gender);
                 let qi: QuizItem = new QuizItem();
@@ -425,18 +506,19 @@ export class ImportQuizDataComponent implements OnInit {
           });
         });
 
-
+        let id: number = 2;
         this.StudentQuizDataList.forEach(sItem => {
           if (sItem.StudentID && sItem.StudentID.length > 0) {
           } else {
-            let str = `學號：${sItem.StudentNumber}}`;
+            let str = `第${id}筆，學號：${sItem.StudentNumber}}`;
             noStudentIDList.push(str);
           }
+          id++;
         });
 
         if (noStudentIDList.length > 0) {
           this.isImportButtonDisable = true;
-          alert("學號無法比對：\n" + noStudentIDList.join('\n'));
+          alert("學號無法比對，無法匯入：\n" + noStudentIDList.join('\n'));
         } else {
           this.isImportButtonDisable = false;
         }
@@ -482,7 +564,8 @@ export class ImportQuizDataComponent implements OnInit {
               sItem.Birthday = moment(item.birthdate);
               sItem.parseAge();
               sItem.Gender = item.gender;
-              if (sItem.QuizItemList[0].QuizName === "原始分數") {
+              // if (sItem.QuizItemList[0].QuizName === "原始分數") {
+              if (this.QuizData.UseMappingTable) {
                 sItem.NormSource = parseFloat(sItem.QuizItemList[0].Value);
                 sItem.NormScore = n.GetScore(sItem.NormSource, sItem.Age, sItem.Gender);
 
@@ -508,12 +591,14 @@ export class ImportQuizDataComponent implements OnInit {
           });
         });
 
+        let id: number = 2;
         this.StudentQuizDataList.forEach(sItem => {
           if (sItem.StudentID && sItem.StudentID.length > 0) {
           } else {
-            let str = `身分證號：${sItem.IDNumber}}`;
+            let str = `第${id}筆，身分證號：${sItem.IDNumber}}`;
             noStudentIDList.push(str);
           }
+          id++;
         });
 
         if (noStudentIDList.length > 0) {
@@ -525,7 +610,29 @@ export class ImportQuizDataComponent implements OnInit {
 
       }
 
-      await this.checkHasData();
+      if (this.isImportButtonDisable === false) {
+        await this.checkHasData();
+
+        // 當驗證過不能再換驗證類型
+        if (this.isSelectImportTypeClassSeatNo) {
+          this.isBtnClassSeatNo = false;
+          this.isBtnIDNumber = true;
+          this.isBtnStudentNumber = true;
+        }
+
+        if (this.isSelectImportTypeIDNumber) {
+          this.isBtnClassSeatNo = true;
+          this.isBtnIDNumber = false;
+          this.isBtnStudentNumber = true;
+        }
+
+        if (this.isSelectImportTypeStudentNumber) {
+          this.isBtnClassSeatNo = true;
+          this.isBtnIDNumber = true;
+          this.isBtnStudentNumber = false;
+        }
+      }
+
     } else {
       this.isImportButtonDisable = true;
     }

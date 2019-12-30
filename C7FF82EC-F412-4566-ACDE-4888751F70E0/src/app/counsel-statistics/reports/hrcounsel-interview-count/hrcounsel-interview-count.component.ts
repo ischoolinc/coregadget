@@ -68,8 +68,9 @@ export class HRCounselInterviewCountComponent implements OnInit {
           let item1 = {
             '班級': item.ClassName,
             '導師': item.TeacherName,
-            '人數': item.StudentCount,
+            '班級人數': item.StudentCount,
             '導師訪談(次)': item.CounselInterviewCount,
+            '訪談人數': item.InterviewStudentCount,
             '未訪談人數': noCounselCount
           };
           data1.push(item1);

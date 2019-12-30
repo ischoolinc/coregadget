@@ -31,7 +31,8 @@
                      name="grantradio"
                      class="custom-control-input"
                      (click)="SetSelectImportType('班級座號')"
-                     [checked]="isSelectImportTypeClassSeatNo" />
+                     [checked]="isSelectImportTypeClassSeatNo"
+                     [disabled]="isBtnClassSeatNo" />
               <label class="custom-control-label"
                      for="r1">班級座號</label>
             </div>
@@ -41,7 +42,8 @@
                      name="grantradio"
                      class="custom-control-input"
                      (click)="SetSelectImportType('學號')"
-                     [checked]="isSelectImportTypeStudentNumber" />
+                     [checked]="isSelectImportTypeStudentNumber"
+                     [disabled]="isBtnStudentNumber" />
               <label class="custom-control-label"
                      for="r2">學號</label>
             </div>
@@ -51,7 +53,8 @@
                      name="grantradio"
                      class="custom-control-input"
                      (click)="SetSelectImportType('身分證號')"
-                     [checked]="isSelectImportTypeIDNumber" />
+                     [checked]="isSelectImportTypeIDNumber"
+                     [disabled]="isBtnIDNumber" />
               <label class="custom-control-label"
                      for="r3">身分證號</label>
             </div>

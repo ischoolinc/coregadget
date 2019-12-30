@@ -67,13 +67,33 @@
                   {{curQuizName || '請選擇'}}
               </a>
                 <div class="dropdown-menu" aria-labelledby="dropdownExamScore">
-                  <a class="dropdown-item" href="javascript:;"
-                    *ngFor="let item of curExam.Item"
-                    (click)="setQuiz(item.Name)"
-                    [ngClass]="{'active': curQuizName == item.Name}">
-                    <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
-                    {{item.Name}}
-                  </a>
+                  <ng-container *ngIf="curExam.IsGroup">
+                    <ng-container *ngFor="let item of curExam.Item">
+                      <a class="dropdown-item" 
+                        href="javascript:void(0);"
+                        (click)="setQuiz(item.Name + '_努力程度')"
+                        [ngClass]="{'active': curQuizName == item.Name}">
+                        <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                        {{item.Name}}_努力程度
+                      </a>
+                      <a class="dropdown-item" 
+                        href="javascript:void(0);"
+                        (click)="setQuiz(item.Name + '_文字評量')"
+                        [ngClass]="{'active': curQuizName == item.Name}">
+                        <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                        {{item.Name}}_文字評量
+                      </a>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="!curExam.IsGroup">
+                    <a class="dropdown-item" href="javascript:void(0);"
+                      *ngFor="let item of curExam.Item"
+                      (click)="setQuiz(item.Name)"
+                      [ngClass]="{'active': curQuizName == item.Name}">
+                      <i *ngIf="!canEdit" style="min-width: 14px;" class="fa fa-lock"></i>
+                      {{item.Name}}
+                    </a>
+                  </ng-container>
                 </div>
               </div>
             </div>
@@ -88,7 +108,6 @@
     </table>
   </div>
 </div>
-
 
 <ng-template #tplSourceNoData>
   <td colspan="2">
@@ -116,27 +135,27 @@
     </textarea>
     <div class="btn-group mt-1 d-flx align-items-center justify-content-center">
       <a *ngIf="curExam.ExamID === 'DailyBehavior'" 
-        href="javascript:;" 
+        href="javascript:void(0);" 
         class="btn btn-outline-secondary"
         (click)="openCodeModal(tplLevelCode)">
         <i class="far fa-file-code">
-          文字代碼表
+          表現程度代碼表
         </i>
       </a>
       <a *ngIf="curExam.ExamID === 'DailyLifeRecommend'" 
-        href="javascript:;" 
+        href="javascript:void(0);" 
         class="btn btn-outline-secondary"
         (click)="openCodeModal(tplCommentCode)">
         <i class="far fa-file-code">
-          文字代碼表
+          導師評語代碼表
         </i>
       </a>
       <a *ngIf="showEffortCode"
-        href="javascript:;"
+        href="javascript:void(0);"
         class="btn btn-outline-secondary"
         (click)="openCodeModal(tplEfforCode)">
         <i class="far fa-file-code">
-          文字代碼表
+          努力程度代碼表
         </i>
       </a>
       <a href="javascript:;" (click)="enterGrade()" class="btn btn-outline-secondary">
@@ -146,10 +165,10 @@
   </td>
 </ng-template>
 
-<!--程度代碼表-->
+<!--表現程度代碼表-->
 <ng-template #tplLevelCode>
   <div class="modal-header">
-    <h4 class="modal-title pull-left">程度代碼表</h4>
+    <h4 class="modal-title pull-left">表現程度代碼表</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -159,8 +178,8 @@
       style="table-layout:fixed;">
       <thead>
         <tr>
-          <th>程度</th>
-          <th>文字描述</th>
+          <th>代碼</th>
+          <th>符合程度</th>
         </tr>
       </thead>
       <tbody>
@@ -175,10 +194,10 @@
   </div>
 </ng-template>
 
-<!--文字代碼表-->
+<!--導師評語代碼表-->
 <ng-template #tplCommentCode>
   <div class="modal-header">
-    <h4 class="modal-title pull-left">文字代碼表</h4>
+    <h4 class="modal-title pull-left">導師評語代碼表</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -188,8 +207,8 @@
       style="table-layout: fixed;">
       <thead>
         <tr>
-          <th>代碼</th>
-          <th>文字描述</th>
+          <th>評語代碼</th>
+          <th>評語內容</th>
         </tr>
       </thead>
       <tbody>
@@ -217,18 +236,18 @@
     style="table-layout: fixed;">
       <thead>
         <tr>
-          <th>分數</th>
-          <th>程度</th>
-          <th>文字描述</th>
+          <th>代碼</th>
+          <th>名稱</th>
+          <th>最低分</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let code of effortCodeList"
           style="cursor: pointer;"
           (click)="selectEffortCode(code)">
-          <td>{{code.Score}}</td>
           <td>{{code.Code}}</td>
           <td>{{code.Name}}</td>
+          <td>{{code.Score}}</td>
         </tr>
       </tbody>
     </table>

@@ -85,21 +85,25 @@ export class StudentQuizData {
     // var str = node2json.obj2xml(x1);
     parseXML() {
         if (this.QuizItemList.length > 0) {
-            let dataList = [];
-            this.QuizItemList.forEach(item => {
-                let data = { '@name': item.QuizName, '@value': item.Value };
-                dataList.push(data);
-            });
-            let x1 = { Item: dataList }
-            let d1 = node2json.obj2xml(x1, "");
-            let dr1 = d1.split('\n')
-            let dr2 = [];
-            this.ContentXML = '';
-            if (dr1.length > 2) {
-                for (let x = 1; x < dr1.length - 1; x++) {
-                    dr2.push(dr1[x]);
+            try {
+                let dataList = [];
+                this.QuizItemList.forEach(item => {
+                    let data = { '@name': item.QuizName, '@value': item.Value };
+                    dataList.push(data);
+                });
+                let x1 = { Item: dataList }
+                let d1 = node2json.obj2xml(x1, "");
+                let dr1 = d1.split('\n')
+                let dr2 = [];
+                this.ContentXML = '';
+                if (dr1.length > 2) {
+                    for (let x = 1; x < dr1.length - 1; x++) {
+                        dr2.push(dr1[x]);
+                    }
+                    this.ContentXML = dr2.join('');
                 }
-                this.ContentXML = dr2.join('');
+            } catch (err) {
+                alert(err);
             }
         }
     }
@@ -120,13 +124,13 @@ export class StudentQuizData {
     // 解析日期
     parseDT() {
         if (this.AnalysisDate.isValid()) {
-            this.AnalysisDateStr = this.AnalysisDate.format('YYYY-MM-DD');
+            this.AnalysisDateStr = this.AnalysisDate.format('YYYY/MM/DD');
         } else {
             this.AnalysisDateStr = '';
         }
 
         if (this.ImplementationDate.isValid()) {
-            this.ImplementationDateStr = this.ImplementationDate.format('YYYY-MM-DD');
+            this.ImplementationDateStr = this.ImplementationDate.format('YYYY/MM/DD');
         } else {
             this.ImplementationDateStr = '';
         }

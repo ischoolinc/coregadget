@@ -78,12 +78,12 @@ export class BasicService {
     const degreeCode: PerformanceDegree[] = [];
     // 資料整理
     if (rsp.Response) {
-      // DailyBehavior
+      // DailyBehavior 
       if (rsp.Response.DailyBehavior) {
         const exam: ExamRecord = {
           ExamID: 'DailyBehavior',
           Name: rsp.Response.DailyBehavior.Name,
-          Item: rsp.Response.DailyBehavior.Item
+          Item: [].concat(rsp.Response.DailyBehavior.Item || [])
         };
         examList.push(exam);
       }
