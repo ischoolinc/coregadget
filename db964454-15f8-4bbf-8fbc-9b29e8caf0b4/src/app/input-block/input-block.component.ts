@@ -107,13 +107,13 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       this.curStudent = stu;
       this.selectSeatNumber = stu.SeatNumber;
       this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${this.targetDataSrv.quizName$.value}`);
-      this.setPage();
     });
 
     this.targetDataSrv.exam$.pipe(
       takeUntil(this.dispose$)
     ).subscribe((exam: ExamRecord) => {
       this.curExam = exam;
+      this.setPage();
     });
 
     this.targetDataSrv.quizName$.pipe(
@@ -142,7 +142,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
 
   /** 根據資料以及成績是否可編輯來切換樣板 */
   setPage() {
-    if(this.curStudent && this.curStudent.DailyLifeScore) {
+    if(this.curStudent && this.curExam.Item.length) {
       if (!this.canEdit) {
         this.displayPage = this.tplSourceLock;
       } else {

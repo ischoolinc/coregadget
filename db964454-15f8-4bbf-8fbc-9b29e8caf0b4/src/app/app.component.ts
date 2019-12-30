@@ -258,7 +258,9 @@ export class AppComponent implements OnInit {
     if (this.studentList.length) {
       this.targetDataSrv.setStudent(this.studentList[0]);
     }
-    this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
+    if (this.curExam.Item.length > 0) {
+      this.targetDataSrv.setQuizName(this.curExam.Item[0].Name);
+    }
     // 資料reload isChange = flase
     this.isChange = false;
   }
@@ -268,12 +270,14 @@ export class AppComponent implements OnInit {
     this.curExam = exam;
     this.targetDataSrv.setExam(this.curExam);
 
-    if (exam.ExamID === 'GroupActivity') {
-      this.curQuizName = `${exam.Item[0].Name}_努力程度`;
-      this.targetDataSrv.setQuizName(this.curQuizName);
-    } else {
-      this.curQuizName = exam.Item[0].Name;
-      this.targetDataSrv.setQuizName(this.curQuizName);
+    if (exam.Item && exam.Item.length > 0) {
+      if (exam.ExamID === 'GroupActivity') {
+        this.curQuizName = `${exam.Item[0].Name}_努力程度`;
+        this.targetDataSrv.setQuizName(this.curQuizName);
+      } else {
+        this.curQuizName = exam.Item[0].Name;
+        this.targetDataSrv.setQuizName(this.curQuizName);
+      }
     }
   }
 
