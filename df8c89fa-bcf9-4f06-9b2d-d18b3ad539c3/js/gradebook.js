@@ -857,6 +857,9 @@
                             $scope.examTextList.sort(function (a, b) {
                                 return a.Code.length < b.Code.length ? 1 : -1;
                             });
+                        } else {
+                            $scope.examTextList = [];
+                            $scope.examCodeList = [];
                         }
                     });
                 }
