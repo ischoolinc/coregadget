@@ -1590,7 +1590,6 @@
                     var data = {
                         Extension: {
                             Extension: {
-                                Text: '',
                                 OrdinarilyEffort: stuRec['QuizResult_努力程度'],
                                 OrdinarilyScore: stuRec['QuizResult'],
                             }
