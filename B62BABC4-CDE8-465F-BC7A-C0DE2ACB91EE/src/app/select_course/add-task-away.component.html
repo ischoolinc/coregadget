@@ -30,7 +30,7 @@
                     <div class="text-right">
                         <button class="btn btn-danger"
                             [disabled]="stuAttend.Lock === 'true'"
-                            (click)="openConfirmDialog()">
+                            (click)="openCancelConfirmDialog()">
                             退選
                         </button>
                     </div>
@@ -76,7 +76,7 @@
                         </span>
                     </ng-template>
                 </div>
-                <button (click)="joinCourse(subject)"
+                <button (click)="confirmJoinCourse(subject)"
                         class="btn btn-info"
                         [disabled]="subject.BlockReason 
                             || subject.TimeSelect === 't' 
@@ -98,7 +98,7 @@
     </li>
 </ng-template>
 
-<ng-template #tplConfirm>
+<ng-template #tplCancelConfirm>
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">退選</h5>
@@ -113,6 +113,30 @@
             <li class="list-group-item d-flex justify-content-end">
                 <button class="btn btn-light btn-sm mr-2"
                     (click)="leaveCourse(stuAttend)">確定</button>
+                <button class="btn btn-info btn-sm"
+                    [mat-dialog-close]="true" 
+                    data-dismiss="modal">取消</button>
+            </li>
+        </ul>
+    </div>
+</ng-template>
+
+<ng-template #tplAddConfirm>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">提醒</h5>
+            <button type="button" class="close" [mat-dialog-close]="true">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-light font-weight-bold">
+                加選「{{selectedSubject.SubjectName}}{{selectedSubject.Level}}」此課程，
+                會退選原先課程「 {{stuAttend.SubjectName}}{{basicSrv.getLevel(stuAttend)}} 」
+            </li>
+            <li class="list-group-item d-flex justify-content-end">
+                <button class="btn btn-light btn-sm mr-2"
+                    (click)="dialogConfirm.close({subject: true})">確定</button>
                 <button class="btn btn-info btn-sm"
                     [mat-dialog-close]="true" 
                     data-dismiss="modal">取消</button>
