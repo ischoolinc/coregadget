@@ -663,66 +663,6 @@
          */
         $scope.setupCurrent = function () {
             if ($scope.studentList && $scope.examList) {
-                // // 計算：學期成績試算
-                // $scope.calc();
-
-                // if (!$scope.current.Student && !$scope.current.Exam) {
-                //     // 設定預設資料顯示
-                //     var ts, te;
-                //     if ($scope.studentList) {
-                //         ts = $scope.studentList[0];
-                //     }
-
-                //     /**
-                //      * 設定目前試別 
-                //      * 1. 成績管理模式 試別來自 examList
-                //      * 2. 平時評量模式 試別來自 gradeItemList
-                //      */
-                //     // 成績管理模式
-                //     if ($scope.current.mode == '成績管理') {
-                //         $scope.examList.forEach(function (e) {
-                //             if (!te && !e.Lock && e.Permission == "Editor" && e.Type !== 'Program') {
-                //                 te = e;
-                //             }
-                //         });
-                //     }
-                //     // 平時評量模式
-                //     else if ($scope.current.mode == '平時評量') {
-                //         $scope.current.gradeItemList.forEach(function (e) {
-                //             if (!te && !e.Lock && e.Permission == "Editor" && e.Type !== 'Program') {
-                //                 te = e;
-                //             }
-                //         });
-                //     }
-
-                //     if (ts && te) {
-                //         $scope.setCurrent(ts, te, true, true);
-                //     }
-                // }
-                // else {
-                //     var ts = $scope.current.Student;
-                //     var te;
-                //     if (!ts && $scope.studentList && $scope.studentList.length > 0) {
-                //         ts = $scope.studentList[0];
-                //     }
-
-                //     te = $scope.current.Exam;
-                //     $scope.setCurrent(ts, te, true, true);
-                // }
-
-                // $(function () {
-                //     $("#affixPanel").affix({
-                //         offset: {
-                //             top: 100,
-                //             bottom: function () {
-                //                 return (this.bottom = $('.footer').outerHeight(true));
-                //             }
-                //         }
-                //     });
-                // });
-
-
-                // --------
                 // 計算：學期成績試算
                 $scope.calc();
                 var student, exam;
@@ -740,22 +680,14 @@
                  */
                 if ($scope.current.mode == '成績管理') {
                     if (!$scope.current.Exam) {
-                        $scope.examList.filter(exam => exam.ExamID == $scope.current.template.ExamID).forEach(e => {
-                            if (!exam && !e.Lock && e.Permission == 'Editor' && e.Type !== 'Program') {
-                                exam = e;
-                            }
-                        });
+                        exam = $scope.examList[0];
                     } else {
                         exam = $scope.current.Exam;
                     }
                 }
                 else if ($scope.current.mode == '平時評量') {
                     if (!$scope.current.Exam) {
-                        [].concat($scope.current.gradeItemList || []).forEach(gradeItem => {
-                            if (!exam && !gradeItem.Lock && gradeItem.Permission == 'Editor' && gradeItem.Type !== 'Program') {
-                                exam = gradeItem;
-                            }
-                        });
+                        exam = $scope.current.gradeItemList[0];
                     } else {
                         exam = $scope.current.Exam;
                     }
@@ -1116,7 +1048,6 @@
                         });
 
                         // 資料Reload
-                        // $scope.setCurrentCourse($scope.current.Course);
                         $scope.dataReload();
 
                         alert('儲存完成。');
@@ -1388,7 +1319,6 @@
             }
         }
 
-
         // -------- *
 
         $scope.changeSelectMode = function (mode) {
@@ -1477,7 +1407,9 @@
         }
 
         $scope.filterPermission = function (examItem) {
-            return (examItem.Permission == "Read" || examItem.Permission == "Editor") && ($scope.current.VisibleExam && $scope.current.VisibleExam.indexOf(examItem.Name) >= 0);
+            return (examItem.Permission == "Read" || examItem.Permission == "Editor") 
+                && ($scope.current.VisibleExam 
+                && $scope.current.VisibleExam.indexOf(examItem.Name) >= 0);
         }
 
         $scope.getProcess = function () {

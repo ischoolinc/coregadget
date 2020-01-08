@@ -301,7 +301,7 @@
                                         </li>
                                     </ul>
                                     <ul ng-if="current.mode == '平時評量'" class="dropdown-menu" style="width:100%;">
-                                        <li ng-repeat="gradeItem in current.gradeItemList | filter: filterPermission" 
+                                        <li ng-repeat="gradeItem in current.gradeItemList" 
                                             ng-class="{active: gradeItem == current.Exam }">
                                             <a href="javascript:;" ng-click="setCurrent(current.Student, gradeItem, false, true)">
                                                 <i ng-if="gradeItem.Lock"
@@ -456,13 +456,10 @@
                             </td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <!-- <span style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                <span>{{stuRec.StudentName}}</span> -->
                                 {{stuRec.StudentName}}({{stuRec.SeatNo}})
                             </td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <!-- <span>{{stuRec.StudentNumber}}</span> -->
                                 {{stuRec.StudentNumber}}
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
