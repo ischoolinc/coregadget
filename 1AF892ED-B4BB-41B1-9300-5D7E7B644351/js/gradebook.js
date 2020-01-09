@@ -1257,16 +1257,16 @@
 
                 [].concat($scope.templateList || []).forEach(template => {
                     if (template.Extension) {
-                        if (template.Extension.Extension.UseText) {
-                            thList1.push(`<td colspan='2'>${template.Name}</td>`);
+                        if (template.Extension.Extension.UseText == '是') {
+                            thList1.push(`<td colspan='2'>${template.Name}(${template.Percentage})</td>`);
                             thList2.push(`<td>定期<br/>評量</td>`);
                             thList2.push(`<td>文字<br/>評量</td>`);
                         } else {
-                            thList1.push(`<td colspan='1'>${template.Name}</td>`);
+                            thList1.push(`<td colspan='1'>${template.Name}(${template.Percentage})</td>`);
                             thList2.push(`<td>定期<br/>評量</td>`);
                         }
                     } else {
-                        thList1.push(`<td colspan='1'>${template.Name}</td>`);
+                        thList1.push(`<td colspan='1'>${template.Name}(${template.Percentage})</td>`);
                         thList2.push(`<td>定期<br/>評量</td>`);
                     }
                 });
@@ -1286,7 +1286,7 @@
                     studentData.push(`<td>${student['Exam學期成績']}</td>`);
                     [].concat($scope.templateList || []).forEach(template => {
                         if (template.Extension) {
-                            if (template.Extension.Extension.UseText) {
+                            if (template.Extension.Extension.UseText == '是') {
                                 studentData.push(`<td>${student[`Exam${template.ExamID}`]}</td>`);
                                 studentData.push(`<td>${student[`Exam${template.ExamID}_文字評量`]}</td>`);        
                             } else {
@@ -1314,7 +1314,7 @@
             <br/>教師簽名：
         </body>
     </html>`;
-                
+
                 saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xls');
             }
         }
