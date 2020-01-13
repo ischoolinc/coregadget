@@ -80,6 +80,7 @@ export class ReferralListComponent implements OnInit {
   setNewCaseMmodal(refStudent: ReferralStudent) {
     this.case_modal.loadData();
     this.case_modal.setCaseFromReferral(refStudent);
+    this.case_modal.isAddMode = true;
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
