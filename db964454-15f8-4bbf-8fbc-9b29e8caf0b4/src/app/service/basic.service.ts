@@ -89,8 +89,8 @@ export class BasicService {
         const exam: ExamRecord = {
           ExamID: 'DailyBehavior',
           Name: rsp.Response.DailyBehavior.Name,
-          Item: rsp.Response.DailyBehavior.Item,
-          
+          Item: [].concat(rsp.Response.DailyBehavior.Item || []),
+          IsGroup: false
         };
         examList.push(exam);
       }
@@ -99,7 +99,8 @@ export class BasicService {
         const exam: ExamRecord = {
           ExamID: 'GroupActivity',
           Name: rsp.Response.GroupActivity.Name,
-          Item: rsp.Response.GroupActivity.Item,
+          Item: [].concat(rsp.Response.GroupActivity.Item || []),
+          IsGroup: true
         };
         examList.push(exam);
       }
@@ -108,7 +109,8 @@ export class BasicService {
         const exam: ExamRecord = {
           ExamID: 'PublicService',
           Name: rsp.Response.PublicService.Name,
-          Item: rsp.Response.PublicService.Item
+          Item: [].concat(rsp.Response.PublicService.Item || []),
+          IsGroup: false
         };
         examList.push(exam);
       }
@@ -117,7 +119,8 @@ export class BasicService {
         const exam: ExamRecord = {
           ExamID: 'SchoolSpecial',
           Name: rsp.Response.SchoolSpecial.Name,
-          Item: rsp.Response.SchoolSpecial.Item
+          Item: [].concat(rsp.Response.SchoolSpecial.Item || []),
+          IsGroup: false
         };
         examList.push(exam);
       }
@@ -126,7 +129,8 @@ export class BasicService {
         const exam: ExamRecord = {
           ExamID: 'DailyLifeRecommend',
           Name: rsp.Response.DailyLifeRecommend.Name,
-          Item: [{Name: '文字描述', Index: ''}]
+          Item: [{Name: '文字描述', Index: ''}],
+          IsGroup: false
         };
         examList.push(exam);
       }

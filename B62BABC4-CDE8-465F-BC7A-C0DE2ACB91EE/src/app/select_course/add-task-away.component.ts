@@ -22,9 +22,12 @@ export class AddTaskAwayComponent implements OnInit {
   // 學生目前修課資料
   stuAttendList: AttendRecord[] = [];
 
+  selectedSubject: SubjectRecord;
+
   dialogConfirm: MatDialogRef<any>;
 
-  @ViewChild('tplConfirm') tplConfirm: TemplateRef<any>;
+  @ViewChild('tplAddConfirm') tplAddConfirm: TemplateRef<any>;
+  @ViewChild('tplCancelConfirm') tplCancelConfirm: TemplateRef<any>;
 
   constructor (
     private route: ActivatedRoute, 
@@ -52,7 +55,29 @@ export class AddTaskAwayComponent implements OnInit {
     this.stuAttend = rsp.Attend;
   }
 
-  /**加選 */
+  /** 加選確認 */
+  confirmJoinCourse(subject: SubjectRecord) {
+
+    this.selectedSubject = subject;
+
+    if (this.stuAttend) {
+
+      this.dialogConfirm = this.dialog.open(this.tplAddConfirm, {
+        width: '450px'
+      });
+
+      this.dialogConfirm.afterClosed().subscribe((v) => {
+        if (v && v.subject) {
+          this.joinCourse(subject);
+        }
+      });
+
+    } else {
+      this.joinCourse(subject);
+    }
+  }
+
+  /** 加選 */
   async joinCourse(subject: SubjectRecord) {
     const rsp = await this.basicSrv.setTakeAway({ SubjectType: this.subjectType, SubjectID: subject.SubjectID });
     if (rsp.status === 'success') {
@@ -63,20 +88,7 @@ export class AddTaskAwayComponent implements OnInit {
     }
   }
 
-  /**退選 */
-  async leaveCourse(subject: AttendRecord){
-    const rsp = await this.basicSrv.leaveTakeAway({ SubjectID: subject.SubjectID });
-    if (rsp.status === 'success') {
-      // 重新取得資料
-      this.getData();
-      // 關閉退選確認畫面
-      this.dialogConfirm.close();
-    } else {
-      alert(`LeaveTakeAway error:\n ${rsp.message}`);
-    }
-  }
-
-  /**顯示科目資訊 */
+  /** 顯示科目資訊 */
   showDialog(subject: SubjectRecord, mode: string) {
     const dig = this.dialog.open(AddDialogComponent, {
       data: { subject: subject, mode: mode , countMode:'先搶先贏'}
@@ -89,11 +101,24 @@ export class AddTaskAwayComponent implements OnInit {
     });
   }
 
-  /**退選確認畫面 */
-  openConfirmDialog() {
-    this.dialogConfirm = this.dialog.open(this.tplConfirm, {
+  /** 退選確認畫面 */
+  openCancelConfirmDialog() {
+    this.dialogConfirm = this.dialog.open(this.tplCancelConfirm, {
       width: '450px'
     });
   }
 
+  /** 退選 */
+  async leaveCourse(subject: AttendRecord){
+    const rsp = await this.basicSrv.leaveTakeAway({ SubjectID: subject.SubjectID });
+    if (rsp.status === 'success') {
+      // 重新取得資料
+      this.getData();
+      // 關閉退選確認畫面
+      this.dialogConfirm.close();
+    } else {
+      alert(`LeaveTakeAway error:\n ${rsp.message}`);
+    }
+  }
+  
 }

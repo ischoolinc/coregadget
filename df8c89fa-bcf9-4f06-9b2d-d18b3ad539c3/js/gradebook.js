@@ -296,7 +296,7 @@
                             ExamID: 'AssignmentScore_' + template.ExamID,
                             Name: '平時評量',
                             Type: 'Number',
-                            Permission: 'Read', // 平時評量分數 調整為小考成績結算後帶入分數
+                            Permission: 'Editor', // 平時評量分數 可直接輸入或手動帶入小考結算成績
                             Lock: template.Extension.Extension.UseAssignmentScore !== '是' || template.Lock,
                         };
                         // 文字評量
@@ -857,6 +857,9 @@
                             $scope.examTextList.sort(function (a, b) {
                                 return a.Code.length < b.Code.length ? 1 : -1;
                             });
+                        } else {
+                            $scope.examTextList = [];
+                            $scope.examCodeList = [];
                         }
                     });
                 }
@@ -1178,20 +1181,18 @@
                             });
                         });
 
-                        /**
-                         * 將平時評量分數結算至定期評量
-                         * 條件：
-                         * 1. 成績輸入時間內
-                         * 2. 是否啟用平時評量 => 依照教務做作業評分樣板設定
-                         */
-                        {
-                            $scope.studentList.forEach(student => {
-                                student['AssignmentScore_' + $scope.current.template.ExamID] =  student['QuizResult_' + $scope.current.template.ExamID];
-                            });
-                            $scope.saveAll();
-                        }
+                        // 資料Reload
+                        $scope.dataReload();
+                        alert('儲存完成。');
                     }
                 }
+            });
+        }
+
+        // 帶入小考成績
+        $scope.ImportCourseExtensions = function() {
+            $scope.studentList.forEach(student => {
+                student['AssignmentScore_' + $scope.current.template.ExamID] =  student['QuizResult_' + $scope.current.template.ExamID];
             });
         }
 

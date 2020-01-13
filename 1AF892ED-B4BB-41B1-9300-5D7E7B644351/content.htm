@@ -171,26 +171,11 @@
                     </li>
                 </ul>
             </div>
-            <!--成績管理：匯出報表 (只有在 mode『成績管理』可以匯出)-->
             <div class="btn btn-default" ng-if="current.mode == '成績管理'">
-                <i class="far fa-file-excel" ng-click="exportExcel()">
+                <i class="far fa-file-excel" ng-click="exportGradeBook()">
                     匯出報表
                 </i>
             </div>
-            <!--成績管理：帶入平時成績 (只有在 mode『成績管理』可以匯出)(由於放在這裡對於使用者不明確是帶入哪一個試別的平常成績，後來統一到右邊的批次功能作業)-->
-            <!--<div class="btn btn-default" ng-if="current.mode == '成績管理'">
-                <i ng-if="current.Exam && current.Exam.Lock || current.Exam.SubName"
-                   ng-class="{'disabled':current.Exam.Lock}"
-                   style="min-width: 14px; color:gray"
-                   class="fa fa-lock">
-                    帶入平時成績</i>
-                <i ng-if="current.Exam && !current.Exam.Lock && !current.Exam.SubName"
-                   class="far fa-arrow-alt-circle-down" 
-                   ng-click="importAssessmentScore()">
-                    帶入平時成績
-                </i>
-            </div>-->
-            <!--目前試別 (只有在mode『平時評量』會顯示，用來輸入各個評量子項目成績用)-->
             <div class="btn-group" ng-if="current.mode == '平時評量'">
                 <a class="btn btn-default dropdown-toggle"
                    data-toggle="dropdown">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
@@ -315,6 +300,26 @@
                                             </a>
                                         </li>
                                     </ul>
+                                    <ul ng-if="current.mode == '平時評量'" class="dropdown-menu" style="width:100%;">
+                                        <li ng-repeat="gradeItem in current.gradeItemList" 
+                                            ng-class="{active: gradeItem == current.Exam }">
+                                            <a href="javascript:;" ng-click="setCurrent(current.Student, gradeItem, false, true)">
+                                                <i ng-if="gradeItem.Lock"
+                                                   style="min-width: 14px;"
+                                                   class="fa fa-lock"></i>
+                                                <i ng-if="gradeItem.Permission == 'Read' && !gradeItem.Lock"
+                                                   style="min-width: 14px;"
+                                                   class="fa fa-ban"></i>
+                                                <i ng-if="gradeItem.Permission == 'Editor' && !gradeItem.Lock && gradeItem.Type == 'Program'"
+                                                   style="min-width: 14px;"
+                                                   class="fa fa-cogs"></i>
+                                                <i ng-if="gradeItem.Permission == 'Editor' && !gradeItem.Lock && gradeItem.Type !== 'Program'"
+                                                   style="min-width: 14px;"
+                                                   class="fa fa-edit"></i>
+                                                {{gradeItem.Name}}
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </th>
                         </tr>
@@ -412,7 +417,7 @@
                                 班級
                             </th>
                             <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;">
-                                學生
+                                姓名
                             </th>
                             <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;">
                                 學號
@@ -451,13 +456,10 @@
                             </td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <!-- <span style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                <span>{{stuRec.StudentName}}</span> -->
                                 {{stuRec.StudentName}}({{stuRec.SeatNo}})
                             </td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <!-- <span>{{stuRec.StudentNumber}}</span> -->
                                 {{stuRec.StudentNumber}}
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"

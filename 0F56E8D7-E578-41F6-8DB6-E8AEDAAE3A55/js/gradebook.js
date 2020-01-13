@@ -1590,7 +1590,6 @@
                     var data = {
                         Extension: {
                             Extension: {
-                                Text: '',
                                 OrdinarilyEffort: stuRec['QuizResult_努力程度'],
                                 OrdinarilyScore: stuRec['QuizResult'],
                             }
@@ -1873,7 +1872,7 @@
                     }
                     data['學期成績'] = stuRec['Exam_學期成績'];
                     if ($scope.current.Course.Scores.Score) {
-                        $scope.current.Course.Scores.Score.forEach(function (exam) {
+                        [].concat($scope.current.Course.Scores.Score || []).forEach(function (exam) {
                             data[exam.Name] = stuRec['Exam_' + exam.ExamID];
                             wscols.push({ wch: 15 });
                         });
