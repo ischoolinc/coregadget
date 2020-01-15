@@ -114,7 +114,9 @@
                         </li>
                     </ul>
                 </div>
-                <a ng-click="saveAll()" class="btn btn-default" ng-class="{'btn-danger':!checkAllTable('成績管理')}">
+                <a class="btn btn-default" 
+                    ng-class="{'btn-danger':!checkAllTable('成績管理')}" 
+                    ng-click="saveAll()">
                     <i class="fa fa-floppy-o"></i>
                     儲存
                 </a>

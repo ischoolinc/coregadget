@@ -198,6 +198,7 @@
                     Permission: 'Editor',
                     Lock: false,
                     Group: finalScore,
+                    SubVisible: true,
                     Fn: function (stu) {
                         var total = 0, base = 0, seed = 10000;
                         [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
@@ -242,7 +243,8 @@
                         avgScore: '',
                         InputStartTime: examRec.InputStartTime,
                         InputEndTime: examRec.InputEndTime,
-                        isSubScoreMode: false
+                        isSubScoreMode: false,
+                        SubVisible: true
                     };
                     $scope.examList.push(exam);
                     $scope.current.VisibleExam.push(examRec.Name);
@@ -257,23 +259,13 @@
                                 Type: 'Text',
                                 Group: examRec,
                                 Permission: 'Editor',
-                                Lock: examRec.Lock
+                                Lock: examRec.Lock,
+                                SubVisible: true
                             };
                             $scope.examList.push(subExamRec);
                             $scope.current.VisibleExam.push(subExamRec.Name);
                         }
                     }
-
-                    // 平時評量
-                    var quizResult = {
-                        RefExamID: examRec.ExamID,
-                        ExamID: 'QuizResult_' + examRec.ExamID,
-                        Name: '平時評量_試算',
-                        Type: 'Number',
-                        Permission: 'Program',
-                        Lock: false
-                    };
-                    $scope.gradeItemList.push(quizResult);
                 });
             }
 
@@ -286,6 +278,27 @@
          * 高中讀卡模組設定 Name="GradeItemExtension"
          */
         $scope.getGradeItemList = function () {
+            
+            // 重新取得平時評量項目
+            $scope.gradeItemList = [];
+            $scope.templateList.forEach((examRec) => {
+                // 各定期平時評量_試算
+                var quizResult = {
+                    RefExamID: examRec.ExamID,
+                    ExamID: 'QuizResult_' + examRec.ExamID,
+                    Name: '平時評量_試算',
+                    Type: 'Number',
+                    Permission: 'Program',
+                    Lock: false,
+                    SubVisible: true
+                };
+
+                $scope.gradeItemList.push(quizResult);
+            });
+
+            // 重新取得子成績項目
+            $scope.examList = $scope.examList.filter(examRec => examRec.SubName != '讀卡' && examRec.SubName != '試卷');
+            
             $scope.connection.send({
                 service: "TeacherAccess.GetCourseExtensions",
                 autoRetry: true,
@@ -301,8 +314,6 @@
                     if (error) {
                         alert("TeacherAccess.GetCourseExtensions Error");
                     } else {
-                        $scope.gradeItemList = [];
-
                         [].concat(response.Response.CourseExtension.Extension || []).forEach(function (extensionRec) {
                             // 平時評量項目 gradeItemList
                             if (extensionRec.Name == 'GradeItem') {
@@ -319,7 +330,8 @@
                                             Weight: item.Weight,
                                             Type: 'Number',
                                             Permission: 'Editor',
-                                            Lock: targetExam ? targetExam.Lock : false
+                                            Lock: targetExam ? targetExam.Lock : false,
+                                            SubVisible: true
                                         };
 
                                         $scope.gradeItemList.push(gradeItem);
@@ -334,6 +346,8 @@
                                     if (index > -1) {
 
                                         var targetExam = $scope.examList[index];
+                                        targetExam.Permission = 'Read';
+
                                         var examCScore = {
                                             ExamID: targetExam.ExamID + 'CScore',
                                             Name: targetExam.Name + '讀卡',
@@ -341,7 +355,8 @@
                                             Group: targetExam,
                                             Type: 'Number',
                                             Permission: 'Read',
-                                            Lock: targetExam.Lock
+                                            Lock: targetExam.Lock,
+                                            SubVisible: true
                                         };
                                         var examPScore = {
                                             ExamID: targetExam.ExamID + 'PScore',
@@ -350,7 +365,8 @@
                                             Group: targetExam,
                                             Type: 'Number',
                                             Permission: 'Editor',
-                                            Lock: targetExam.Lock
+                                            Lock: targetExam.Lock,
+                                            SubVisible: true
                                         };
 
                                         $scope.examList.splice(index + 1, 0, examCScore, examPScore);
@@ -787,7 +803,7 @@
             }
         }
 
-        /** 顯示子成績項目 */
+        /** 顯示子成績項目,屏除此設計預設展開 */
         $scope.showSubExam = function (exam) {
             $scope.examList.forEach((examRec) => {
                 if (examRec.Group) {
@@ -839,9 +855,10 @@
                     // 取得定期評量
                     var template = $scope.templateList.find((temp) => temp.ExamID == examRec.ExamID) || {};
                     if (template && template.isSubScoreMode) {
-                        var ps = $scope.current.Student['Exam' + template.ExamID + 'PScore'] * 1;
-                        var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'] * 1;
-                        $scope.current.Student['Exam' + template.ExamID] = ps + cs;
+                        var ps = $scope.current.Student['Exam' + template.ExamID + 'PScore'];
+                        var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
+                        var score =( ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                        $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
 
@@ -952,7 +969,7 @@
                     [].concat($scope.studentList || []).forEach(function (studentRec) {
                         var obj = {
                             '@StudentID': studentRec.StudentID,
-                            '@Score': studentRec["Exam" + '學期成績']
+                            '@Score': studentRec['Exam學期成績']
                         };
                         body.Content.Course.Student.push(obj);
                     });
@@ -1253,6 +1270,7 @@
                     `<td rowspan='2' width='40px'>姓名</td>`,
                     `<td rowspan='2' width='70px'>學號</td>`,
                     `<td rowspan='2' width='70px'>學期成績</td>`,
+                    `<td rowspan='2' width='70px'>學期成績_試算</td>`
                 ];
 
                 [].concat($scope.templateList || []).forEach(template => {
@@ -1284,6 +1302,7 @@
                     ];
 
                     studentData.push(`<td>${student['Exam學期成績']}</td>`);
+                    studentData.push(`<td>${student['Exam學期成績_試算']}</td>`);
                     [].concat($scope.templateList || []).forEach(template => {
                         if (template.Extension) {
                             if (template.Extension.Extension.UseText == '是') {
@@ -1424,7 +1443,7 @@
                         Type: 'Function',
                         Fn: function () {
                             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
-                                studentRec["Exam" + '學期成績'] = studentRec["Exam" + '學期成績_試算'];
+                                studentRec['Exam學期成績'] = studentRec['Exam學期成績_試算'];
                             });
                             alert('學期成績已代入');
                         },
@@ -1491,10 +1510,15 @@
                                 if (importProcess.HasError == true)
                                     return;
                                 $scope.studentList.forEach(function (stuRec, index) {
-                                    if (!importProcess.ParseValues[index] && importProcess.ParseValues[index] !== 0)
+                                    if (!importProcess.ParseValues[index] && importProcess.ParseValues[index] !== 0) {
                                         stuRec['Exam' + examRec.ExamID] = '';
-                                    else
+                                    } else {
                                         stuRec['Exam' + examRec.ExamID] = importProcess.ParseValues[index];
+
+                                        if (examRec.Group) {
+                                            stuRec['Exam' + examRec.Group.ExamID] = stuRec['Exam' + examRec.Group.ExamID + 'CScore'] * 1 + stuRec['Exam' + examRec.Group.ExamID + 'PScore'] * 1;
+                                        }
+                                    }
                                 });
                                 $scope.calc();
                                 $('#importModal').modal('hide');
@@ -1503,6 +1527,9 @@
                         };
 
                         importProcesses.push(importProcess);
+                    }
+                    if (examRec.Type == 'Number' && examRec.Permission == 'Read') {
+
                     }
                 });
                 if (importProcesses.length > 0) {
@@ -1602,15 +1629,37 @@
                     var importAssessmentScoreProcesses = [];
 
                     [].concat($scope.examList).forEach(function (examRec, index) {
-                        if (examRec.Type == 'Number' && examRec.Permission == "Editor" && examRec.Name != '學期成績' && examRec.SubName != '試卷') {
+                        // 定期評量 帶入小考成績
+                        if (examRec.Type == 'Number' && examRec.Permission == 'Editor' && examRec.Name != '學期成績' && examRec.SubName != '試卷') {
                             var importProcess = {
                                 Name: '帶入' + examRec.Name + '平時成績',
                                 Type: 'Function',
                                 ExamID: examRec.ExamID,
                                 Fn: function () {
-                                    // 將入目標exam 的 分數 通通換成之前試算出來儲存的
                                     $scope.studentList.forEach(function (stuRec) {
-                                        stuRec["Exam" + importProcess.ExamID] = stuRec['QuizResult_' + importProcess.ExamID]
+                                        stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.ExamID]
+                                    });
+                                },
+                                Disabled: examRec.Lock
+                            };
+
+                            importAssessmentScoreProcesses.push(importProcess);
+                        }
+                        // 定期評量試卷 帶入小考成績
+                        if (examRec.Type == 'Number' && examRec.Permission == 'Editor' && examRec.SubName == '試卷') {
+                            var importProcess = {
+                                Name: '帶入' + examRec.Name + '平時成績',
+                                Type: 'Function',
+                                ExamID: examRec.ExamID,
+                                Fn: function () {
+                                    $scope.studentList.forEach(function (stuRec) {
+                                        var cs = stuRec['Exam' + examRec.Group.ExamID + 'CScore'];
+                                        var ps = stuRec['Exam' + examRec.Group.ExamID + 'PScore'];
+                                        var score =( ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                                        // 更新試卷成績：試卷成績 = 小考結算成績
+                                        stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.Group.ExamID];
+                                        // 更新定期評量成績：定期評量成績 = 讀卡 + 試卷
+                                        stuRec['Exam' + examRec.Group.ExamID] = score;
                                     });
                                 },
                                 Disabled: examRec.Lock
