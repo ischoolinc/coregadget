@@ -945,7 +945,8 @@
                         body: body,
                         result: function (response, error, http) {
                             if (error) {
-                                alert('TeacherAccess.SetCourseExamScoreWithExtension Error');
+                                alert('TeacherAccess.SetCourseExamScoreWithExtension Error:' + error);
+                                console.log(error);
                                 j(false);
                             } else {
                                 r(true);
@@ -979,7 +980,8 @@
                         body: body,
                         result: function (response, error, http) {
                             if (error) {
-                                alert("TeacherAccess.SetCourseSemesterScore Error");
+                                alert("TeacherAccess.SetCourseSemesterScore Error:" + error);
+                                console.log(error);
                                 j(false);
                             } else {
                                 r(true);
@@ -1326,7 +1328,7 @@
         </head>
         <body>
             <table border='1' cellspacing='0' cellpadding='2'>
-                <tbody align='center'>${$scope.current.Course.CourseName}
+                <tbody align='center'>${$scope.current.Course.SchoolYear}學年度 第${$scope.current.Course.Semester}學期 ${$scope.current.Course.CourseName}
                         ${trList.join('')}
                 </tbody>
             </table>
