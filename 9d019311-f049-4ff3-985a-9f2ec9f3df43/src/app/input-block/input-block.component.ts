@@ -100,7 +100,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     ).subscribe((stu: StudentRecord) => {
       this.curStudent = stu;
       this.selectSeatNumber = this.curStudent.SeatNumber;
-      this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${this.targetDataSrv.quizName$.value}`);
+      // this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${this.targetDataSrv.quizName$.value}`);
       this.setPage();
     });
 
@@ -114,7 +114,8 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe((quiz: string) => {
       this.curQuizName = quiz;
-      this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${quiz}`);
+      // this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${quiz}`);
+      this.setPage();
     });
   }
 
@@ -137,7 +138,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
 
   /** 根據資料以及成績是否可編輯來切換樣板 */
   setPage() {
-    if (this.curStudent && this.curStudent.DailyLifeScore) {
+    if (this.curStudent.ID && this.curStudent.DailyLifeScore && this.curQuizName) {
       if (!this.canEdit) {
         this.displayPage = this.tplSourceLock;
       } else {
@@ -145,6 +146,8 @@ export class InputBlockComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
         this.focusAndSelect(this.inputTextScore);
       }
+
+      this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${this.curQuizName}`);
     } else {
       this.displayPage = this.tplSourceNoData;
     }
