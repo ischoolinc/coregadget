@@ -495,8 +495,18 @@
                             <td>{{student.ClassName}}</td>
                             <td>{{student.SeatNumber}}</td>
                             <td>{{student.StudentName}}</td>
-                            <td>{{student['QuizResult']}}</td>
-                            <td>{{student['QuizResult_努力程度']}}</td>
+                            <td class="text-center" style="position:relative;">
+                                <div ng-if="!checkOneCell(student, 'QuizResult')"
+                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
+                                </div>
+                                {{student['QuizResult']}}
+                            </td>
+                            <td class="text-center" style="position:relative;">
+                                <div ng-if="!checkOneCell(student, 'QuizResult_努力程度')"
+                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
+                                </div>
+                                {{student['QuizResult_努力程度']}}
+                            </td>
                             <td ng-repeat="item in gradeItemList"
                                 class="text-center"
                                 style="position:relative;"
@@ -727,19 +737,17 @@
                 <div class="modal-footer">
                     <a ng-if="gradeItemConfig.Mode=='Editor'"
                        ng-click="gradeItemConfig.JSONMode()"
-                       class="btn btn-link pull-left ng-scope"
-                       ng-class="{'btn-danger':!checkAllTable()}">
+                       class="btn btn-link pull-left ng-scope">
                        編輯子評量樣版
                     </a>
                     <a ng-if="gradeItemConfig.Mode=='JSON'"
                        ng-click="gradeItemConfig.CommitJSON()"
-                       class="btn btn-link pull-left ng-scope"
-                       ng-class="{'btn-danger':!checkAllTable()}">
+                       class="btn btn-link pull-left ng-scope">
                        預灠編輯結果
                     </a>
                     <a ng-click="saveGradeItemConfig()"
                        class="btn btn-default ng-scope"
-                       ng-class="{'btn-danger':!checkAllTable()}">
+                       ng-class="{'btn-danger': !gradeItemConfig.CheckConfig()}">
                         <i class="fa fa-floppy-o"></i>
                         儲存
                     </a>
