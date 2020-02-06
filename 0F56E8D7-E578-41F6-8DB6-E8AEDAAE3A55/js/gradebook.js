@@ -126,6 +126,7 @@
                                     // 取得目前學年度學期課程
                                     [].concat(response.Courses.Course || []).forEach(function (course, index) {
                                         if ($scope.current.schoolYear == course.SchoolYear && $scope.current.semester == course.Semester) {
+                                            course["Selected"] = false;
                                             $scope.courseList.push(course);
                                         }
                                     });
@@ -1123,13 +1124,6 @@
             return pass;
         }
 
-        $scope.checkGradeItemConfig = function() {
-            if ($scope.gradeItemConfig) {
-                console.log($scope.gradeItemConfig.Item);
-            }
-            return false;
-        }
-
         /**
           * 成績輸入
           * 1. 資料驗證
@@ -1615,6 +1609,74 @@
             // });
         }
 
+        $scope.openCopyModal = function() {
+            $('#copyModal').modal('show');
+        }
+
+        $scope.closeCopyModal = function() {
+            this.courseList.forEach(function(course) {
+                course.Selected = false;
+            });
+            $('#copyModal').modal('hide');
+        }
+
+        $scope.copyGradeItemConfig = function() {
+            var selectedCourse = [];
+            // 取得勾選的課程清單
+            [].concat($scope.courseList || []).forEach(function(course) {
+                if (course.Selected) {
+                    selectedCourse.push(course.CourseID);
+                }
+            });
+
+            selectedCourse.forEach(function(courseID) {
+                // 資料整理
+                var body = {
+                    Content: {
+                        CourseExtension: {
+                            '@CourseID': courseID
+                            , Extension: {
+                                '@Name': 'GradeItem'
+                                , GradeItem: {
+                                    Item: []
+                                }
+                            }
+                        }
+                    }
+                };
+                $scope.gradeItemList.forEach(function (item) {
+                    body.Content.CourseExtension.Extension.GradeItem.Item.push({
+                        '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
+                        '@Name': item.Name,
+                        '@Weight': item.Weight,
+                        '@Index': item.Index
+                    });
+                });
+                saveGradeItem(body).then();
+            });
+
+            $scope.closeCopyModal();
+            $('#saveSuccessModal').modal('show');
+        }
+
+        saveGradeItem = function(body) {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.SetCourseExtensions",
+                    autoRetry: true,
+                    body: body,
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.SetCourseExtensions Error");
+                            j(false);
+                        } else {
+                            r(true);
+                        }
+                    }
+                });
+            });
+        }
+
         /**
          * 選擇文字代碼
          * 1. 代碼轉換
@@ -1720,7 +1782,6 @@
          * 儲存評分項目
          */
         $scope.saveGradeItemConfig = function () {
-            
             var body = {
                 Content: {
                     CourseExtension: {
