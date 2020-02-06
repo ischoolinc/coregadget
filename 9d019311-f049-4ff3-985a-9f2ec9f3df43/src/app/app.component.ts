@@ -293,6 +293,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * 儲存成功的話 dataReload
    */
   async saveAll() {
+    this.isLoading = true;
     const body = {
       Content: {
         Student: []
@@ -340,9 +341,12 @@ export class AppComponent implements OnInit, OnDestroy {
     const result = await this.basicSrv.saveDailyLifeScore(body);
     if (result.Response.EffectRows) {
       // 重新取的學生成績資料
-      this.scoreDataReload();
+      await this.scoreDataReload();
+      this.isLoading = false;  
+      $('#saveSuccess').modal('show')
     } else {
       console.log(result);
+      this.isLoading = false;
     }
   }
 
