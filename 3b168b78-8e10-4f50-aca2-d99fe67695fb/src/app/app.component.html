@@ -67,7 +67,7 @@
               </div>
             </div>
             <button type="button" class="btn" [class.btn-outline-secondary]="!hasChanged"
-              [class.btn-danger]="hasChanged" (click)="save()">
+              [class.btn-danger]="hasChanged" (click)="save()" [disabled]="isLoading">
               <i class="fas fa-save mr-2"></i> 儲存
             </button>
           </ng-container>
@@ -88,6 +88,25 @@
       </ng-container>
     </ng-container>
   </ng-container>
+</div>
+
+<div class="modal fade" id="saveSuccess" tabindex="-1" role="dialog" aria-labelledby="successLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successLabel">{{curMode.Title}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        儲存成功。
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <ng-template #tplLoading>
