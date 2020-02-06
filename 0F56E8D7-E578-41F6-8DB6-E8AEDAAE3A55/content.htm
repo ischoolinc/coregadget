@@ -664,7 +664,7 @@
                        預灠編輯結果
                     </a> -->
                     <a class="btn btn-link pull-left ng-scope" ng-click="openCopyModal()">
-                        複製評量
+                        複製評量至其他課程
                     </a>
                     <a ng-click="saveGradeItemConfig()" class="btn btn-default ng-scope"
                         ng-class="{'btn-danger': !gradeItemConfig.CheckConfig()}">
@@ -717,13 +717,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="copyLabel">選擇要複製評量的課程</h4>
+                    <h4 class="modal-title" id="copyLabel">將複製評量項目至下列勾選課程</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-check" ng-repeat="course in courseList">
                         <input class="form-check-input" type="checkbox" ng-model="course.Selected"
-                            ng-disabled="current.Course.CourseID == course.CourseID" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">
+                            ng-disabled="current.Course.CourseID == course.CourseID" value="" id="{{course.CourseID}}">
+                        <label class="form-check-label" for="{{course.CourseID}}">
                             {{course.CourseName}}
                         </label>
                     </div>
