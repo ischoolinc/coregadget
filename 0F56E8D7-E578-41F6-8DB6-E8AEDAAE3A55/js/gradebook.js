@@ -505,22 +505,24 @@
          * 4. 取得平時評量、文字評量
          * 5. 取得評分項目成績(小考成績)
          */
-        $scope.scoreDataReload = async function () {
+        $scope.scoreDataReload = function () {
 
             $scope.studentMapping = {};
 
-            await $scope.getCourseStudents();
-            await $scope.getCourseExamScore();
-            await $scope.getCourseSemesterScore();
-            await $scope.getSCAttendExtension();
-            await $scope.getSCAttendExtensions();
+            $scope.getCourseStudents().then(function() {
+                Promise.all([
+                    $scope.getCourseExamScore()
+                    , $scope.getCourseSemesterScore()
+                    , $scope.getSCAttendExtension()
+                    , $scope.getSCAttendExtensions()
+                ]).then(function() {
+                    // 原始資料備份
+                    $scope.setupOrigin();
 
-            // 原始資料備份
-            $scope.setupOrigin();
-
-            // 設定目前學生、目前試別
-            $scope.setupCurrent();
-
+                    // 設定目前學生、目前試別
+                    $scope.setupCurrent();
+                });
+            });
         }
 
         // 取得課程學生
