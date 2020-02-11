@@ -1349,6 +1349,16 @@
                                 }
                             });
 
+                            // 匯入試卷成績 更新定期評量成績
+                            if ($scope.current.template.isSubScoreMode && exam.Name === '試卷') {
+                                $scope.studentList.forEach(function(stuRec) {
+                                    var ps = stuRec['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
+                                    var cs = stuRec['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
+                                    stuRec['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                                });
+                            } 
+
+                            // 學期成績試算
                             $scope.calc();
                             $('#importModal').modal('hide');
                         },
