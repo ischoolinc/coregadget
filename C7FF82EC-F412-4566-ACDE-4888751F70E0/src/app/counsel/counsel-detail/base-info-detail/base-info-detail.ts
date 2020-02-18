@@ -5,6 +5,7 @@ export class StudentBaseInfo {
     Name: string = "";
     Birthdate: string = "";
     IDNumber: string = "";
+    StudentNumber: string = "";
     Gender: string = "";
     MailingAddress: string = "";
     PermanentAddress: string = "";
