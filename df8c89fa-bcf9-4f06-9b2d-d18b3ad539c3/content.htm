@@ -16,8 +16,8 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'bubu@debug.ischool.com.tw',
-                password: '1234'//window.prompt('password:')
+                account: '',
+                password: ''//window.prompt('password:')
             }
         });
     </script>
@@ -131,6 +131,18 @@
                    ng-click="exportGradeBook()">
                     匯出報表
                 </i>
+            </div>
+            <!-- 排序功能 -->
+            <div ng-if="studentList.length > 0" class="btn-group">
+                <a class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown">排序：{{curSort.name}}&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="sort in sortList"
+                            ng-class="{active: curSort.code == sort.code}">
+                            <a href="javascript:;"
+                            ng-click="setSortMode(sort)">{{sort.name}}</a>
+                        </li>
+                    </ul>
             </div>
             <!-- 成績管理模式： 批次、儲存 -->
             <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn-group pull-right">
@@ -448,10 +460,11 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th colspan="3"></th>
+                            <th colspan="4"></th>
                             <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}</th>
                         </tr>
                         <tr>
+                            <th class="text-center">學號</th>
                             <th class="text-center">姓名</th>
                             <!--定期評量項目-->
                             <th ng-repeat="exam in examList | filter: filterPermission"
@@ -467,6 +480,7 @@
                             ng-class="{'warning':stuRec.StudentID==current.Student.StudentID}"
                             style="cursor:pointer;">
                             <!-- ng-class="{'boy':stuRec.Gender == '男' ,'girl': stuRec.Gender == '女'}" -->
+                            <td class="text-center">{{stuRec.StudentNumber}}</td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 <span>{{stuRec.ClassName}} {{stuRec.StudentName}}({{stuRec.SeatNumber}})</span>
@@ -496,21 +510,24 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
+                            <th class="text-center"colspan="3"></th>
                             <th class="text-center"
-                                colspan="2"></th>
-                            <th class="text-center"
-                                colspan="{{current.gradeItemList.length -1}}">評分項目</th>
+                                colspan="{{current.gradeItemList.length -1}}">
+                                評分項目
+                            </th>
                         </tr>
                         <tr>
-                            <th class="text-center">
-                                姓名
-                            </th>
+                            <th class="text-center">學號</th>
+                            <th class="text-center">姓名</th>
                             <th class="text-center"
-                                ng-repeat="item in current.gradeItemList">{{item.Name}}</th>
+                                ng-repeat="item in current.gradeItemList">
+                                {{item.Name}}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="student in studentList">
+                            <td>{{student.StudentNumber}}</td>
                             <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 {{student.ClassName}} {{student.StudentName}}({{student.SeatNumber}})
                             </td>
