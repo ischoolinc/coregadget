@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { Pipe, PipeTransform,NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -27,7 +27,7 @@ import { ReferralComponent } from './referral/referral.component';
 import { CounselRoutingComponent } from './counsel/counsel-routing/counsel-routing.component';
 import { DetailRoutingComponent } from './counsel/counsel-detail/detail-routing/detail-routing.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material';
+import { MatDialogModule, MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material';
 import { ReferralListComponent } from './referral/referral-list/referral-list.component';
 import { ReferralDetailComponent } from './referral/referral-detail/referral-detail.component';
 import { AddCaseInterviewModalComponent } from './counsel/counsel-detail/counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
@@ -83,6 +83,11 @@ import { CounselInterviewReportComponent } from './counsel-statistics/reports/co
 import { CaseInterviewReportComponent } from './counsel-statistics/reports/case-interview-report/case-interview-report.component';
 import { ReferralReportComponent } from './counsel-statistics/reports/referral-report/referral-report.component';
 import { HRCounselInterviewCountComponent } from './counsel-statistics/reports/hrcounsel-interview-count/hrcounsel-interview-count.component';
+import { GroupAnalysisReportComponent } from './counsel-statistics/reports/group-analysis-report/group-analysis-report.component';
+import { HttpClientModule } from '@angular/common/http';
+import {OverlayModule} from '@angular/cdk/overlay';
+import { PortalModule } from '@angular/cdk/portal';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 
 @NgModule({
@@ -153,7 +158,9 @@ import { HRCounselInterviewCountComponent } from './counsel-statistics/reports/h
     CounselInterviewReportComponent,
     CaseInterviewReportComponent,
     ReferralReportComponent,
-    HRCounselInterviewCountComponent
+    HRCounselInterviewCountComponent,
+    GroupAnalysisReportComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -168,9 +175,14 @@ import { HRCounselInterviewCountComponent } from './counsel-statistics/reports/h
     MatInputModule,
     MatCheckboxModule,
     ReactiveFormsModule,
-    DragDropModule
+    DragDropModule,
+    HttpClientModule,
+    OverlayModule,
+    PortalModule,
+    MatProgressBarModule
+    
   ],
-  providers: [],
+  providers: [ ],
   bootstrap: [AppComponent]
 
 })

@@ -1,0 +1,187 @@
+
+<div class="container-fluid">
+<!-- <div class="d-flex flex-row justify-content-start" >
+
+</div> -->
+
+<div class="row m-2">
+
+<div class="col-sm-3 ">
+  <div>
+  <label style="color:black;font-size:16px;">選組單發放日期：</label>
+  </div>
+    <input required
+           type="text"
+           class="form-control"
+           id="privideDate"
+           name="privideDate"
+           placeholder=""
+           [(ngModel)]="privideDate"/>
+  
+      </div>
+  <div class="col-sm-3">
+    <label style="color:black;font-size:16px;">家長簽名期限：</label>
+  
+      <input required
+             type="text"
+             class="form-control"
+             id="signLimitData"
+             name="signLimitData"
+             placeholder=""
+             [(ngModel)]="signLimitData"/>
+    </div>
+    <div class="col-sm-3">
+      <label style="color:black ;font-size:16px;">導師交回期限：</label>
+      <div style="margin-left: 10px;font-size: 18px">
+        <input required
+               type="text"
+               class="form-control"
+               id="homeTeacherReturn"
+               name="homeTeacherReturn"
+               placeholder=""
+               [(ngModel)]="homeTeacherReturn"/>
+            
+      </div>
+</div>
+      <!-- 產生報表按鈕 -->
+      <div class="col-sm-3">
+
+        <button type="button"
+                class="btn btn-info float-right"
+                (click)="report()"
+                [disabled]="isSaveButtonDisable">
+          產生報表
+        </button>
+      </div>
+
+
+    </div>
+
+    <br>
+  <div>請勾選班級:</div>
+    <div class="form-group">
+      <div class="d-flex flex-wrap pl-3">
+        <div class="custom-control custom-checkbox w-25"
+             *ngFor="let ClassItem of allClassesGrade1">
+              <input type="checkbox"
+                 class="custom-control-input"
+                 [id]="ClassItem.ClassID"
+                 [checked]="ClassItem.Checked"
+                 (click)="ClassItem.SetClassCheck()" />
+               <label class="custom-control-label"
+                 [for]="ClassItem.ClassID"> {{ClassItem.ClassName}}
+               </label>
+        </div>
+      </div>
+</div>
+
+</div>
+
+
+
+<!-- 點下 button <產生報表> 後的彈出視窗 -->
+
+<div  style="font-family: Microsoft JhengHei;"  class="modal fade bd-example-modal-xl" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">請選擇列印試別</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" >
+
+  <div cdkDropListGroup>
+    <div class="example-container">
+      <h3>試別</h3> 
+  <div
+  cdkDropList
+  [cdkDropListData]="ExamInfos"
+  class="example-list"
+  cdkDropListSortingDisabled
+  (cdkDropListDropped)="drop($event)">
+  <div class="example-box" *ngFor="let item of ExamInfos" cdkDrag>{{item.ExamName}}</div>
+  </div>
+  </div>
+  
+  <div class="example-container">
+  <h3>列印試別(請選擇三項)</h3>
+  
+  <div
+  id="selected"
+  cdkDropList
+  [cdkDropListData]="SelectedExams"
+  class="example-list"
+  (cdkDropListDropped)="drop($event)"
+  (dblclick)="dblclickMove($event)">
+  <div cdkDrag  class="example-box" *ngFor= "let item of SelectedExams;let i = index "> {{item.ExamName }}<span float-right >({{mapingExam[i]}})</span></div>
+  </div>
+  </div>
+  </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary"  (click)="reportStep2()">產生報表</button>
+      </div>
+    </div>
+  </div>
+<!-- </ng-template> -->
+</div>
+
+
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"  id ="progressaAndDown" aria-labelledby="myExtraLargeModalLabel"  data-keyboard="false" data-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{zipComplete?"選組分析表已完成":"報表產生中..."}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <mat-progress-bar   *ngIf="!zipComplete"  mode="determinate" [value]="progress"></mat-progress-bar>
+  
+      <a *ngIf="zipComplete"  mat-stroked-button [href]="downLoadURL">下載</a>
+      <!-- <a [href]="downLoadURL" *ngIf="zipComplete"><button type="button" class="btn btn-outline-dark" style="border-color: initial;">下載</button></a> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- end  -->
+
+<!-- test drap and drop  -->
+<!-- <div cdkDropListGroup>
+  <div class="example-container">
+    <h2>試別</h2>
+<div
+cdkDropList
+[cdkDropListData]="ExamInfos"
+class="example-list"
+(cdkDropListDropped)="drop($event)">
+<div class="example-box" *ngFor="let item of ExamInfos" cdkDrag>{{item.ExamName }}</div>
+</div>
+</div>
+
+<div class="example-container">
+<h2>列印試別</h2>
+
+<div
+cdkDropList
+[cdkDropListData]="SelectedExams"
+class="example-list"
+(cdkDropListDropped)="drop($event)">
+<div cdkDrag  class="example-box" *ngFor= "let item of SelectedExams;let i = index "> {{item.ExamName }}<span float-right >{{mapingExam[i]}}</span></div>
+</div>
+</div>
+</div> -->
+<!-- TOAST -->

@@ -19,6 +19,7 @@ export class CounselInterviewReportComponent implements OnInit {
   isSaveButtonDisable: boolean = false;
   startDate: string = "";
   endDate: string = "";
+  
 
   constructor(private dsaService: DsaService) { }
 

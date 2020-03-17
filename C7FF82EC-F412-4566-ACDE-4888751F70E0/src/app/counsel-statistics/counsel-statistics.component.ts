@@ -40,17 +40,23 @@ export class CounselStatisticsComponent implements OnInit {
     this.reportTypeList.push('轉介學生清單');
     this.reportTypeList.push('各班導師晤談次數');
 
+    if (gadget.params.groupAanalysisEnabled) {
+      this.reportTypeList.push('選組分析表');
+    }
+
     // this.reportTypeList.push('轉介學生名單');
     this.selectReportType = '請選擇..';
     // this.reportTypeList.push('心理測驗結果分析');
-    if (this.appComponent) this.appComponent.currentComponent = "counsel_statistics";
-   
+    if (this.appComponent) {
+      this.appComponent.currentComponent = "counsel_statistics";
+    }
+
     this.ImplementationDate_Begin = moment().format('YYYY-MM-DD');
     this.ImplementationDate_End = moment().format('YYYY-MM-DD');
     //this.reportNameList.push("新北市國民中小輔導當月個案");
   }
 
-  
+
 
 
 
@@ -86,7 +92,44 @@ export class CounselStatisticsComponent implements OnInit {
         csr.GradeYear = parseInt(classItem.grade_year);
         this.ClassStudentCountReportList.push(csr);
       });
+
+      // const stus1 = new Map<number, any>();
+      // stus1.set(123, {});
+      // stus1.get(123).name = 'xxx';
+      // stus1.
+      // let stus: any = {};
+
+      // if (!stus['123']) {
+      //   stus['123'] = {};
+      //   stus['123'].id = 123;
+      //   stus['123'].name = 'yyy';
+      //   stus['123'].subjects = [];
+      // };
+
+      // let stu: any = stus['123'];
+
+
+      // stu.subjects.push({
+      //   name: '',
+      //   score: 90
+      // });
+
+      // stus.123.name
+
+      // stu.456.name
+
+      // const output = [];
+      // for(const id of Object.getOwnPropertyNames(stus)) {
+      //   output.push(stus[id]);
+      // }
+
+
+      // stu[0].name 
+      // stu[1].name 
+
     }
+
+
 
     // 讀取這次測驗資料用來分析
     let respStud = await this.dsaService.send("GetQuizStudentDataByQuizID", {
@@ -164,7 +207,7 @@ export class CounselStatisticsComponent implements OnInit {
 
   SetSelectReportType(name: string) {
     this.selectReportType = name;
-    
+
 
   }
 
