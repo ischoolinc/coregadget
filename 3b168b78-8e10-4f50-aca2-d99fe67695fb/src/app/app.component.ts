@@ -256,6 +256,7 @@ export class AppComponent implements OnInit, OnDestroy {
       alert(this.saveError);
     } finally {
       this.isSaving = false;
+      $('#saveSuccess').modal('show');
     }
   }
 

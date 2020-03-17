@@ -72,6 +72,7 @@ export class BaseInfoDetailComponent implements OnInit {
         studInfo.Name = item.Name;
         studInfo.Birthdate = item.Birthdate;
         studInfo.IDNumber = item.IDNumber;
+        studInfo.StudentNumber = item.StudentNumber;
         studInfo.Gender = item.Gender;
         studInfo.ParseAddressXML(item.PermanentAddress, item.MailingAddress, item.OtherAddress);
         studInfo.PermanentPhone = item.PermanentPhone;
@@ -174,7 +175,7 @@ export class BaseInfoDetailComponent implements OnInit {
         }
       });
 
-      console.log('UpdateRecordRsp'+UpdateRecordRsp.length);
+      //console.log('UpdateRecordRsp'+UpdateRecordRsp.length);
     } catch (err) {
       alert('無法取得異動資料：' + err.dsaError.message);
     }

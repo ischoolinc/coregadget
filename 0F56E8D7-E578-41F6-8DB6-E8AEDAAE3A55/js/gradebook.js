@@ -90,37 +90,6 @@
         $scope.current.mode = $scope.modeList[0];
 
         /**
-         * 模式切換
-         */
-        $scope.setCurrentMode = function (_mode) {
-            var execute = false;
-            // 檢查資料是否更動
-            var data_changed = !$scope.checkAllTable($scope.current.mode);
-            if (data_changed) { 
-                if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
-                    return;
-                }
-                else {
-                    execute = true;
-                }
-            } else {
-                execute = true;
-            }
-            if (execute) {
-                $scope.current.mode = _mode;
-                
-                // 目前選擇的試別清空
-                $scope.current.Exam = null;
-                // 資料Reload
-                $scope.scoreDataReload();
-                // 設定批次項目
-                $scope.setBatchItem();
-                // 設定目前學生與目前試別
-                $scope.setupCurrent();
-            }
-        }
-
-        /**
          * 1.取得目前學年度學期
          * 2.取得課程清單
          * courseList
@@ -157,6 +126,7 @@
                                     // 取得目前學年度學期課程
                                     [].concat(response.Courses.Course || []).forEach(function (course, index) {
                                         if ($scope.current.schoolYear == course.SchoolYear && $scope.current.semester == course.Semester) {
+                                            course["Selected"] = false;
                                             $scope.courseList.push(course);
                                         }
                                     });
@@ -418,78 +388,113 @@
                 }
             }
             
-            /**取得小考資料 */
-            $scope.getGradeItemList();
+            // 取得小考資料
+            $scope.getGradeItemList().then(value => {
+                // 模式切換： 1.目前選擇的試別清空 2.資料Reload 3.設定批次項目 4.設定目前學生與目前試別
+                $scope.setCurrentMode($scope.current.mode);
+            });
+
         }
 
         /**
          * 取得小考資料
          */
         $scope.getGradeItemList = function () {
-            
             var course = $scope.current.Course;
             $scope.gradeItemList = [];
-            $scope.connection.send({
-                service: "TeacherAccess.GetCourseExtensions",
-                body: {
-                    Content: {
-                        ExtensionCondition: {
-                            '@CourseID': $scope.current.Course.CourseID,
-                            Name: 'GradeItem'
+
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseExtensions",
+                    body: {
+                        Content: {
+                            ExtensionCondition: {
+                                '@CourseID': $scope.current.Course.CourseID,
+                                Name: 'GradeItem'
+                            }
                         }
-                    }
-                },
-                result: function (response, error, http) {
-                    if (error !== null) {
-                        alert("TeacherAccess.GetCourseExtensions Error");
-                    } else {
-                        $scope.$apply(function () {
-                            if (response !== null && response.Response !== null && response.Response !== '' && response.Response.CourseExtension.Extension.GradeItem) {
-
-                                // var quizResult = {
-                                //     ExamID: 'QuizResult', 
-                                //     Name: '平時評量', 
-                                //     Type: 'Number', 
-                                //     Permission: 'Read',
-                                //     Lock: true
-                                // };
-                    
-                                // var quizResultEffort = {
-                                //     ExamID: 'QuizResult_努力程度',
-                                //     Name: '努力程度',
-                                //     Type: 'Number',
-                                //     Permission: 'Read',
-                                //     Lock: true
-                                //     // Group: usualScore,
-                                //     // SubVisible: false,
-                                // };
-                                // $scope.gradeItemList.push(quizResult,quizResultEffort);
-
-                                [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
-                                    var gradeItem = {
-                                        ExamID: 'Quiz_' + item.SubExamID, 
-                                        SubExamID: item.SubExamID,
-                                        Name: item.Name, 
-                                        Index: item.Index,
-                                        Weight: item.Weight,
-                                        Type: 'Number', 
+                    },
+                    result: function (response, error, http) {
+                        if (error !== null) {
+                            alert("TeacherAccess.GetCourseExtensions Error");
+                            j(false);
+                        } else {
+                            $scope.$apply(function () {
+                                if (response !== null && response.Response !== null && response.Response !== '' && response.Response.CourseExtension.Extension.GradeItem) {
+    
+                                    // *註記：只能結算上來，不列入gradeItemList
+                                    //     ExamID: 'QuizResult', 
+                                    //     Name: '平時評量', 
+                                    //     ExamID: 'QuizResult_努力程度',
+                                    //     Name: '努力程度',  
+    
+                                    [].concat(response.Response.CourseExtension.Extension.GradeItem.Item || []).forEach(item => {
+                                        var gradeItem = {
+                                            Index: item.Index,
+                                            Name: item.Name,
+                                            ExamID: 'Quiz_' + item.SubExamID,
+                                            SubExamID: item.SubExamID,
+                                            Weight: item.Weight,
+                                            Type: 'Number',
+                                            Permission: 'Editor',
+                                            //  小考輸入開放與否，與平時評量相同
+                                            Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime))
+                                        };
+    
+                                        $scope.gradeItemList.push(gradeItem);
+                                    });
+                                } else {
+                                    var defaultItem = {
+                                        Index: '1',
+                                        Name: '成績_1',
+                                        ExamID: 'Quiz_成績_1',
+                                        SubExamID: '成績_1',
+                                        Weight: '1',
+                                        Type: 'Number',
                                         Permission: 'Editor',
-                                        //  小考輸入開放與否，與平時評量相同
                                         Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime))
                                     };
+                                    
+                                    $scope.gradeItemList.push(defaultItem);
+                                }
 
-                                    $scope.gradeItemList.push(gradeItem);
-                                });
-
-                                // 取得課程學生以及學生成績資料
-                                //$scope.scoreDataReload();
-                                // 設定目前模式
-                            }
-                            $scope.setCurrentMode($scope.current.mode);
-                        });
+                                r(true);
+                            });
+                        }
                     }
-                }
+                });
             });
+        }
+
+        /**
+         * 模式切換
+         */
+        $scope.setCurrentMode = function (_mode) {
+            var execute = false;
+            // 檢查資料是否更動
+            var data_changed = !$scope.checkAllTable($scope.current.mode);
+            if (data_changed) { 
+                if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
+                    return;
+                }
+                else {
+                    execute = true;
+                }
+            } else {
+                execute = true;
+            }
+            if (execute) {
+                $scope.current.mode = _mode;
+                
+                // 目前選擇的試別清空
+                $scope.current.Exam = null;
+                // 資料Reload
+                $scope.scoreDataReload();
+                // 設定批次項目
+                $scope.setBatchItem();
+                // 設定目前學生與目前試別
+                $scope.setupCurrent();
+            }
         }
 
         /**
@@ -501,235 +506,212 @@
          * 5. 取得評分項目成績(小考成績)
          */
         $scope.scoreDataReload = function () {
-            $scope.connection.send({
-                service: "TeacherAccess.GetCourseStudents",
-                autoRetry: true,
-                body: {
-                    Content: {
-                        Field: { All: '' },
-                        Condition: { CourseID: $scope.current.Course.CourseID },
-                        Order: { SeatNumber: '' }
-                    }
-                },
-                result: function (response, error, http) {
-                    if (error) {
-                        alert("TeacherAccess.GetCourseStudents Error");
-                    } else {
-                        var studentMapping = {};
-                        $scope.$apply(function () {
-                            $scope.studentList = [];
-                            // 學生試別資料初始化
-                            [].concat(response.Students.Student || []).forEach(function (studentRec, index) {
-                                studentRec.SeatNo = studentRec.SeatNumber;
-                                studentRec.index = index;
-                                $scope.examList.forEach(function (examRec) {
-                                    studentRec[examRec.ExamID] = '';
+
+            $scope.studentMapping = {};
+
+            $scope.getCourseStudents().then(function() {
+                Promise.all([
+                    $scope.getCourseExamScore()
+                    , $scope.getCourseSemesterScore()
+                    , $scope.getSCAttendExtension()
+                    , $scope.getSCAttendExtensions()
+                ]).then(function() {
+                    // 原始資料備份
+                    $scope.setupOrigin();
+
+                    // 設定目前學生、目前試別
+                    $scope.setupCurrent();
+                });
+            });
+        }
+
+        // 取得課程學生
+        $scope.getCourseStudents = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseStudents",
+                    autoRetry: true,
+                    body: {
+                        Content: {
+                            Field: { All: '' },
+                            Condition: { CourseID: $scope.current.Course.CourseID },
+                            Order: { SeatNumber: '' }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.GetCourseStudents Error");
+                            j(false);
+                        } else {
+                            $scope.$apply(function () {
+                                $scope.studentList = [];
+                                // 學生試別資料初始化
+                                [].concat(response.Students.Student || []).forEach(function (studentRec, index) {
+                                    studentRec.SeatNo = studentRec.SeatNumber;
+                                    studentRec.index = index;
+                                    $scope.examList.forEach(function (examRec) {
+                                        studentRec[examRec.ExamID] = '';
+                                    });
+                                    $scope.gradeItemList.forEach(function(gradeItem) {
+                                        studentRec[gradeItem.ExamID] = '';
+                                    });
+                                    studentRec['QuizResult'] = '';
+                                    studentRec['QuizResult_努力程度'] = '';
+                                    $scope.studentList.push(studentRec);
+                                    $scope.studentMapping[studentRec.StudentID] = studentRec;
                                 });
-                                $scope.gradeItemList.forEach(function(gradeItem) {
-                                    studentRec[gradeItem.ExamID] = '';
-                                });
-                                studentRec['QuizResult'] = '';
-                                studentRec['QuizResult_努力程度'] = '';
-                                $scope.studentList.push(studentRec);
-                                studentMapping[studentRec.StudentID] = studentRec;
+                                r(true);
                             });
-                        });
-
-                        var getExamScoreFinish = false; 
-                        var getSemesterScoreFinish = false;
-                        var getExtensionScoreFinish = false;
-                        var getGradeItemScoreFinsih = false;
-
-                        /**
-                         * 取得定期評量成績
-                         */
-                        $scope.connection.send({
-                            service: "TeacherAccess.GetCourseExamScore",
-                            autoRetry: true,
-                            body: {
-                                Content: {
-                                    Field: { All: '' },
-                                    Condition: { CourseID: $scope.current.Course.CourseID },
-                                    Order: { SeatNumber: '' }
-                                }
-                            },
-                            result: function (response, error, http) {
-                                if (error) {
-                                    alert("TeacherAccess.GetCourseExamScore Error");
-                                } else {
-                                    $scope.$apply(function () {
-                                        [].concat(response.Scores.Item || []).forEach(function (examScoreRec, index) {
-
-                                            studentMapping[examScoreRec.StudentID]['Exam_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.Score;
-                                            studentMapping[examScoreRec.StudentID]['Exam_' + examScoreRec.ExamID + '_努力程度'] = examScoreRec.Extension.Extension.Effort;
-
-                                            // $scope.examList.forEach(function (examRec) {
-                                            //     if (examRec.ExamID == examScoreRec.ExamID) {
-                                            //         [].concat(examRec.SubExamList || []).forEach(function (subExamRec) {
-                                            //             if (subExamRec.ExtName && examScoreRec.Extension && examScoreRec.Extension.Extension && examScoreRec.Extension.Extension[subExamRec.ExtName]) {
-                                            //                 studentMapping[examScoreRec.StudentID]['Exam' + subExamRec.ExamID] = examScoreRec.Extension.Extension[subExamRec.ExtName];
-                                            //             }
-                                            //         });
-
-                                            //         // 2017/7/31 穎驊註解， 新增努力程度取得
-                                            //         studentMapping[examScoreRec.StudentID]['Exam' + examRec.Name + '_' + "努力程度"] = examScoreRec.Extension.Extension.Effort;
-                                            //     }
-                                            // });
-                                        });
-
-                                        getExamScoreFinish = true;
-                                        /**
-                                         * 資料取得完成後
-                                         * 1. 原始資料備份
-                                         * 2. 設定目前學生、目前試別
-                                         */
-                                        if (getExamScoreFinish && getSemesterScoreFinish && getExtensionScoreFinish && getGradeItemScoreFinsih) {
-                                            $scope.setupOrigin();
-                                            $scope.setupCurrent();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-                        /**
-                         * 取得課程學期成績
-                         */
-                        $scope.connection.send({
-                            service: "TeacherAccess.GetCourseSemesterScore",
-                            autoRetry: true,
-                            body: {
-                                Content: {
-                                    Field: {
-                                        All: ''
-                                    },
-                                    Condition: {
-                                        CourseID: $scope.current.Course.CourseID
-                                    },
-                                    Order: {
-                                        SeatNumber: ''
-                                    }
-                                }
-                            },
-                            result: function (response, error, http) {
-                                if (error) {
-                                    alert("TeacherAccess.GetCourseSemesterScore Error");
-                                } else {
-                                    $scope.$apply(function () {
-                                        [].concat(response.Scores.Item || []).forEach(function (finalScoreRec, index) {
-                                            studentMapping[finalScoreRec.StudentID]['Exam_學期成績'] = finalScoreRec.Score;
-                                        });
-
-                                        getSemesterScoreFinish = true;
-                                        /**
-                                         * 資料取得完成後
-                                         * 1. 原始資料備份
-                                         * 2. 設定目前學生、目前試別
-                                         */
-                                        if (getExamScoreFinish && getSemesterScoreFinish && getExtensionScoreFinish && getGradeItemScoreFinsih) {
-                                            $scope.setupOrigin();
-                                            $scope.setupCurrent();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-                        /**
-                         * 取得平時評量、文字評量
-                         */
-                        $scope.connection.send({
-                            service: "TeacherAccess.GetSCAttendExtension",
-                            autoRetry: true,
-                            body: {
-                                Content: {
-                                    Field: {
-                                        All: ''
-                                    },
-                                    Condition: {
-                                        CourseID: $scope.current.Course.CourseID
-                                    }
-                                }
-                            },
-                            result: function (response, error, http) {
-                                if (error) {
-                                    alert("TeacherAccess.GetSCAttendExtension Error");
-                                } else {
-                                    $scope.$apply(function () {
-
-                                        [].concat(response.AttendExtensionList.AttendExtension || []).forEach(function (AttendExtensionRec, index) {
-                                            if (AttendExtensionRec.Extension.Extension) {
-                                                studentMapping[AttendExtensionRec.StudentID]['Exam_文字評量'] = AttendExtensionRec.Extension.Extension.Text;
-                                                studentMapping[AttendExtensionRec.StudentID]['Exam_平時評量'] = AttendExtensionRec.Extension.Extension.OrdinarilyScore;
-                                                studentMapping[AttendExtensionRec.StudentID]['Exam_平時評量_努力程度'] = AttendExtensionRec.Extension.Extension.OrdinarilyEffort;
-                                            }
-                                        });
-                                        
-                                        getExtensionScoreFinish = true;
-                                        /**
-                                         * 資料取得完成後
-                                         * 1. 原始資料備份
-                                         * 2. 設定目前學生、目前試別
-                                         */
-                                        if (getExamScoreFinish && getSemesterScoreFinish && getExtensionScoreFinish && getGradeItemScoreFinsih) {
-                                            $scope.setupOrigin();
-                                            $scope.setupCurrent();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-                        /**
-                         * 取得評分項目成績
-                         */
-                        $scope.connection.send({
-                            service: "TeacherAccess.GetSCAttendExtensions",
-                            autoRetry: true,
-                            body: {
-                                Content: {
-                                    ExtensionCondition: {
-                                        '@CourseID': $scope.current.Course.CourseID,
-                                        Name: 'GradeBook'
-                                    }
-                                }
-                            },
-                            result: function (response, error, http) {
-                                if (error) {
-                                    alert("TeacherAccess.GetSCAttendExtensions Error");
-                                } else {
-                                    $scope.$apply(function () {
-                                        [].concat(response.Response.SCAttendExtension || []).forEach(function (item, index) {
-                                            if (item.Extension.Exam) {
-                                                // 平時評量成績
-                                                studentMapping[item.StudentID]['QuizResult'] = item.Extension.Exam.Score;
-                                                studentMapping[item.StudentID]['QuizResult_努力程度'] = item.Extension.Exam.Degree;
-
-                                                // 小考成績
-                                                if (item.Extension.Exam.Item) {
-                                                    [].concat(item.Extension.Exam.Item || []).forEach(function (data, index) {
-                                                        studentMapping[item.StudentID]['Quiz_' + data.SubExamID] = data.Score;
-                                                    });
-                                                }
-                                            } 
-                                        });
-                                        getGradeItemScoreFinsih = true;
-                                        /**
-                                         * 資料取得完成後
-                                         * 1. 原始資料備份
-                                         * 2. 設定目前學生、目前試別
-                                         */
-                                        if (getExamScoreFinish && getSemesterScoreFinish && getExtensionScoreFinish && getGradeItemScoreFinsih) {
-                                            $scope.setupOrigin();
-                                            $scope.setupCurrent();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
+                        }
                     }
-                }
+                });
+            });
+        }
+
+        // 取得定期評量成績
+        $scope.getCourseExamScore = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseExamScore",
+                    autoRetry: true,
+                    body: {
+                        Content: {
+                            Field: { All: '' },
+                            Condition: { CourseID: $scope.current.Course.CourseID },
+                            Order: { SeatNumber: '' }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.GetCourseExamScore Error");
+                            j(false);
+                        } else {
+                            $scope.$apply(function () {
+                                [].concat(response.Scores.Item || []).forEach(function (examScoreRec, index) {
+
+                                    $scope.studentMapping[examScoreRec.StudentID]['Exam_' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.Score;
+                                    $scope.studentMapping[examScoreRec.StudentID]['Exam_' + examScoreRec.ExamID + '_努力程度'] = examScoreRec.Extension.Extension.Effort;
+                                });
+                                r(true);
+                            });
+                        }
+                    }
+                });
+            });
+        }
+
+        // 取得課程學期成績
+        $scope.getCourseSemesterScore = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetCourseSemesterScore",
+                    autoRetry: true,
+                    body: {
+                        Content: {
+                            Field: {
+                                All: ''
+                            },
+                            Condition: {
+                                CourseID: $scope.current.Course.CourseID
+                            },
+                            Order: {
+                                SeatNumber: ''
+                            }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.GetCourseSemesterScore Error");
+                            j(false);
+                        } else {
+                            $scope.$apply(function () {
+                                [].concat(response.Scores.Item || []).forEach(function (finalScoreRec, index) {
+                                    $scope.studentMapping[finalScoreRec.StudentID]['Exam_學期成績'] = finalScoreRec.Score;
+                                });
+                                r(true);
+                            });
+                        }
+                    }
+                });
+            });
+        }
+
+        // 取得平時評量、文字評量
+        $scope.getSCAttendExtension = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetSCAttendExtension",
+                    autoRetry: true,
+                    body: {
+                        Content: {
+                            Field: {
+                                All: ''
+                            },
+                            Condition: {
+                                CourseID: $scope.current.Course.CourseID
+                            }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.GetSCAttendExtension Error");
+                            j(false);
+                        } else {
+                            $scope.$apply(function () {
+                                [].concat(response.AttendExtensionList.AttendExtension || []).forEach(function (AttendExtensionRec, index) {
+                                    if (AttendExtensionRec.Extension.Extension) {
+                                        $scope.studentMapping[AttendExtensionRec.StudentID]['Exam_文字評量'] = AttendExtensionRec.Extension.Extension.Text;
+                                        $scope.studentMapping[AttendExtensionRec.StudentID]['Exam_平時評量'] = AttendExtensionRec.Extension.Extension.OrdinarilyScore;
+                                        $scope.studentMapping[AttendExtensionRec.StudentID]['Exam_平時評量_努力程度'] = AttendExtensionRec.Extension.Extension.OrdinarilyEffort;
+                                    }
+                                });
+                                r(true);
+                            });
+                        }
+                    }
+                });
+            });
+        }
+
+        // 取得評分項目成績
+        $scope.getSCAttendExtensions = function() {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.GetSCAttendExtensions",
+                    autoRetry: true,
+                    body: {
+                        Content: {
+                            ExtensionCondition: {
+                                '@CourseID': $scope.current.Course.CourseID,
+                                Name: 'GradeBook'
+                            }
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.GetSCAttendExtensions Error");
+                            j(false);
+                        } else {
+                            $scope.$apply(function () {
+                                [].concat(response.Response.SCAttendExtension || []).forEach(function (item, index) {
+                                    if (item.Extension.Exam) {
+                                        // 平時評量成績
+                                        $scope.studentMapping[item.StudentID]['QuizResult'] = item.Extension.Exam.Score;
+                                        $scope.studentMapping[item.StudentID]['QuizResult_努力程度'] = item.Extension.Exam.Degree;
+
+                                        // 小考成績
+                                        if (item.Extension.Exam.Item) {
+                                            [].concat(item.Extension.Exam.Item || []).forEach(function (data, index) {
+                                                $scope.studentMapping[item.StudentID]['Quiz_' + data.SubExamID] = data.Score;
+                                            });
+                                        }
+                                    } 
+                                });
+                                r(true);
+                            });
+                        }
+                    }
+                });
             });
         }
 
@@ -1062,23 +1044,9 @@
          * 設定目前學生、試別
          */
         $scope.setCurrent = function (student, exam, setCondition, setFocus) {
-
             $scope.current.Exam = exam;
             $scope.current.Student = student;
-           
             var val = student[exam.ExamID];
-            // var val = '';
-            // switch ($scope.current.mode) {
-            //     case '成績管理':
-            //         val = student['Exam_' + exam.ExamID];
-            //         break;
-            //     case '平時評量':
-            //         val = student['Quiz_' + exam.ExamID];
-            //         break;
-            //     default:
-            //         val = '';
-            //         break;
-            // }
 
             $scope.current.Value = (angular.isNumber(val) ? val : (val || ''));
             if (setCondition && student) {
@@ -1094,7 +1062,6 @@
 
         /**顯示子成績項目 */
         $scope.showSubExam = function (exam) {
-            
             $scope.examList.forEach(function (examRec, index) {
                 if (examRec.Group && exam.Name != '努力程度') {
 
@@ -1122,7 +1089,6 @@
          * 平時評量
          */
         $scope.checkAllTable = function () {
-
             var pass = true;
             var targetExamList = [];
 
@@ -1143,6 +1109,7 @@
             });
             return pass;
         }
+
         /**
          * 檢查資料是否更動
          */
@@ -1247,7 +1214,6 @@
          * 文字評量 代碼轉換
          */
         $scope.textChangeEvent = function () {
-
             var codeList = $scope.current.Value.split(",")
             var valueList = [];
 
@@ -1296,7 +1262,6 @@
                     // 學期成績試算
                     $scope.calc();
                 }
-                
             } 
             // 平時評量
             else { 
@@ -1316,8 +1281,7 @@
             
             if ($scope.current.SelectMode != 'Seq.'){
                 $('.pg-seatno-textbox:visible').select().focus();
-            }
-            else {
+            } else {
                 $('.pg-grade-textbox:visible').select().focus();
             }
             $timeout(function () {
@@ -1367,6 +1331,9 @@
                 }
             });
             if (totalWeight) {
+                // $scope.$apply(function() {
+                    
+                // });
                 // 四捨五入取小數第二位
                 var round = Math.pow(10, $scope.params.DefaultRound); 
                 student['QuizResult'] = Math.round((Math.floor(totalWeightScore / totalWeight) / 100000) * round) / round;
@@ -1378,7 +1345,6 @@
                     }
                 });
             }
-            
         }
 
         /**
@@ -1399,7 +1365,6 @@
          * 2.儲存文字評量 
         */
         $scope.saveAll = function () {
-            
             var saveScoreFinish = false;
             var saveTextFinish = false;
 
@@ -1447,7 +1412,6 @@
                         if (error) {
                             alert("TeacherAccess.SetCourseExamScoreWithExtension Error");
                         } else {
-                            
                             saveScoreFinish = true;
 
                             if (saveScoreFinish && saveTextFinish) {
@@ -1508,7 +1472,6 @@
                     }
                 });
             }
-            
         }
 
         /**
@@ -1517,12 +1480,10 @@
          * 2. 儲存小考成績
          */
         $scope.saveGradeItemScore = function () {
-
             $scope.SetSCAttendExtensions().then(function (result1) {
                 return $scope.SetSCAttendExtensionKH().then(function (result2) {
                     // 資料Reload
                     $scope.scoreDataReload();
-
                     alert("儲存成功。");
                 });
             }).catch((reason) => {
@@ -1650,12 +1611,79 @@
             // });
         }
 
+        $scope.openCopyModal = function() {
+            $('#copyModal').modal('show');
+        }
+
+        $scope.closeCopyModal = function() {
+            this.courseList.forEach(function(course) {
+                course.Selected = false;
+            });
+            $('#copyModal').modal('hide');
+        }
+
+        $scope.copyGradeItemConfig = function() {
+            var selectedCourse = [];
+            // 取得勾選的課程清單
+            [].concat($scope.courseList || []).forEach(function(course) {
+                if (course.Selected) {
+                    selectedCourse.push(course.CourseID);
+                }
+            });
+
+            selectedCourse.forEach(function(courseID) {
+                // 資料整理
+                var body = {
+                    Content: {
+                        CourseExtension: {
+                            '@CourseID': courseID
+                            , Extension: {
+                                '@Name': 'GradeItem'
+                                , GradeItem: {
+                                    Item: []
+                                }
+                            }
+                        }
+                    }
+                };
+                $scope.gradeItemList.forEach(function (item) {
+                    body.Content.CourseExtension.Extension.GradeItem.Item.push({
+                        '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
+                        '@Name': item.Name,
+                        '@Weight': item.Weight,
+                        '@Index': item.Index
+                    });
+                });
+                saveGradeItem(body).then();
+            });
+
+            $scope.closeCopyModal();
+            $('#saveSuccessModal').modal('show');
+        }
+
+        saveGradeItem = function(body) {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.SetCourseExtensions",
+                    autoRetry: true,
+                    body: body,
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.SetCourseExtensions Error");
+                            j(false);
+                        } else {
+                            r(true);
+                        }
+                    }
+                });
+            });
+        }
+
         /**
          * 選擇文字代碼
          * 1. 代碼轉換
         */
         $scope.selectCode = function (ext) {
-            
             ext.Selected = true;
             if ($scope.current.Value) {
                 $scope.current.Value += `,${ext.Code}`;
@@ -1678,6 +1706,7 @@
         $scope.showGradeItemConfig = function () {
             $scope.gradeItemConfig = {
                 Item: []
+                , OriginItem: []
                 , Mode: 'Editor'
                 , JSONCode: ''
                 , DeleteItem: function (item) {
@@ -1735,16 +1764,18 @@
                     });
                     $scope.gradeItemConfig.Mode = 'Editor';
                 }
+                , CheckConfig: function() {
+                    var jsonCode = angular.toJson($scope.gradeItemConfig.Item);
+                    var originJsonCode = angular.toJson($scope.gradeItemConfig.OriginItem);
+
+                    return jsonCode === originJsonCode;
+                }
             };
-            // 如果沒有評分項目的話，初始化。
-            var item = {
-                Index: '1',
-                Name: '成績_1',
-                SubExamID: '成績_1',
-                Weight: '1'
-            };
-            [].concat($scope.gradeItemList || item).forEach(function (item) {
+            
+            // 整理小考資料
+            [].concat($scope.gradeItemList || []).forEach(function (item) {
                 $scope.gradeItemConfig.Item.push(angular.copy(item));
+                $scope.gradeItemConfig.OriginItem.push(angular.copy(item));
             });
             $('#editScoreItemModal').modal('show');
         }
@@ -1753,7 +1784,6 @@
          * 儲存評分項目
          */
         $scope.saveGradeItemConfig = function () {
-            
             var body = {
                 Content: {
                     CourseExtension: {
@@ -1812,13 +1842,31 @@
                         } else {
                             $scope.$apply(function () {
                                 $('#editScoreItemModal').modal('hide');
-                                // 資料Reload
-                                $scope.getGradeItemList();
-                                //$scope.setAssessment("CustomAssessment", $scope.current.Assessment);
+                                // 重新取得平時評量項目，並重新結算平時評量成績
+                                $scope.getGradeItemList().then(value => {
+                                    $scope.$apply(function() {
+                                        $scope.studentList.forEach(stuRec => {
+                                            $scope.calcQuizResult(stuRec);
+                                        });
+                                    });
+                                });
                             });
                         }
                     }
                 });
+                // var saveGradeItemConfig = new Promise((r, j) => {
+                    
+                // });
+                // saveGradeItemConfig.then(value => {
+                //     // 重新取得平時評量項目，並重新結算平時評量成績
+                //     $scope.getGradeItemList().then(value => {
+                //         $scope.$apply(function() {
+                //             $scope.studentList.forEach(stuRec => {
+                //                 $scope.calcQuizResult(stuRec);
+                //             });
+                //         });
+                //     });
+                // });
             }
             else {
                 var errMsg = '';

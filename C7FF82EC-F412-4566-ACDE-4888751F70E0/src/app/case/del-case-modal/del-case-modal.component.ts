@@ -11,7 +11,7 @@ import { CaseStudent } from "../case-student";
 // 刪除個案記錄
 export class DelCaseModalComponent implements OnInit {
 
-  _CaseStudent: CaseStudent;
+  _CaseStudent: CaseStudent = new CaseStudent();
   isCancel: boolean = false;
 
   constructor(private dsaService: DsaService) { }

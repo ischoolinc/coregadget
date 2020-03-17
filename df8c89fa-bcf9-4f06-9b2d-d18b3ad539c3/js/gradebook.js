@@ -89,7 +89,11 @@
         // 成績計算取小數後第幾位
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
         $scope.isMobile = navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/gi) ? true : false;
-
+        $scope.sortList = [
+            {name: '班座排序', code: 'cs'}
+            , {name: '學號排序', code: 'sn'}
+        ];
+        $scope.curSort = $scope.sortList[0];
         // Init Current 物件
         $scope.current = {
             /** */
@@ -135,6 +139,47 @@
                 $scope.setupCurrent();
                 // 取得課程學生以及學生成績資料
                 $scope.dataReload();
+                
+                $scope.setSortMode($scpe.curSort);
+            }
+        }
+
+        $scope.setSortMode = function(sort) {
+            $scope.curSort = sort;
+            switch(sort.code) {
+                case 'cs':
+                    $scope.studentList.sort((a, b) => {
+                        if (Number(a.SeatNo) > Number(b.SeatNo)) {
+                            return 1;
+                        }
+                        if (Number(a.SeatNo) < Number(b.SeatNo)) {
+                            return -1;
+                        }
+                        return 0;
+                    });
+                    $scope.studentList.sort((a, b) => {
+                        if (a.ClassName > b.ClassName) {
+                            return -1;
+                        }
+                        if (a.ClassName < b.ClassName) {
+                            return 1;
+                        }
+
+                        return 0;
+                    });
+                    break;
+                case 'sn':
+                    $scope.studentList.sort((a, b) => {
+                        if (a.StudentNumber > b.StudentNumber) {
+                            return 1
+                        }
+                        if (a.StudentNumber < b.StudentNumber) {
+                            return -1;
+                        }
+                    });
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -745,6 +790,8 @@
                                 $scope.errMsg += ' 此課程無修課學生';
                             }
                         }
+
+                        $scope.setSortMode($scope.curSort);
                     }
                 }
             });
@@ -1349,6 +1396,16 @@
                                 }
                             });
 
+                            // 匯入試卷成績 更新定期評量成績
+                            if ($scope.current.template.isSubScoreMode && exam.Name === '試卷') {
+                                $scope.studentList.forEach(function(stuRec) {
+                                    var ps = stuRec['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
+                                    var cs = stuRec['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
+                                    stuRec['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                                });
+                            } 
+
+                            // 學期成績試算
                             $scope.calc();
                             $('#importModal').modal('hide');
                         },
