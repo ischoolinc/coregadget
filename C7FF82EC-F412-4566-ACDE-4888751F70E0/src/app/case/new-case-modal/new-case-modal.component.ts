@@ -212,12 +212,15 @@ export class NewCaseModalComponent implements OnInit {
 
   async save() {
     this.isCancel = false;
-    let chk = await this.checkCaseNoPass();
 
-    if (!chk) {
-      alert("個案編號重複。");
-      return;
-    }
+    // 經過討論不檢查個案編號
+
+    // let chk = await this.checkCaseNoPass();
+
+    // if (!chk) {
+    //   alert("個案編號重複。");
+    //   return;
+    // }
 
     this.caseStudent.CaseSource = this.selectCaseSourceValue;
 

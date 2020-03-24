@@ -61,7 +61,7 @@ export class CaseStudent {
   evaluation_result: QOption[]; //	評估結果
 
   isOccurDateHasValue: boolean = false;
-  isCaseNoHasValue: boolean = false;
+  // isCaseNoHasValue: boolean = false;
   isGuidanceTeacherHasValue: boolean = false;
   isCaseSourceHasValue: boolean = false;
   isSaveButtonDisable: boolean = true;
@@ -361,11 +361,11 @@ export class CaseStudent {
       this.isOccurDateHasValue = false;
     }
 
-    if (this.CaseNo) {
-      this.isCaseNoHasValue = true;
-    } else {
-      this.isCaseNoHasValue = false;
-    }
+    // if (this.CaseNo) {
+    //   this.isCaseNoHasValue = true;
+    // } else {
+    //   this.isCaseNoHasValue = false;
+    // }
 
     if (this.CaseSource) {
       this.isCaseSourceHasValue = true;
@@ -421,7 +421,7 @@ export class CaseStudent {
 
     if (
       this.isOccurDateHasValue &&
-      this.isCaseNoHasValue &&
+      // this.isCaseNoHasValue &&
       this.isGuidanceTeacherHasValue &&
       this.isCaseSourceHasValue &&
       this.isDeviantBehaviorHasValue &&
