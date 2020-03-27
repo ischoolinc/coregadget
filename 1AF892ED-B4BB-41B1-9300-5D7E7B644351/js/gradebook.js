@@ -278,7 +278,7 @@
          * 高中讀卡模組設定 Name="GradeItemExtension"
          */
         $scope.getGradeItemList = function () {
-            
+
             // 重新取得平時評量項目
             $scope.gradeItemList = [];
             $scope.templateList.forEach((examRec) => {
@@ -298,7 +298,7 @@
 
             // 重新取得子成績項目
             $scope.examList = $scope.examList.filter(examRec => examRec.SubName != '讀卡' && examRec.SubName != '試卷');
-            
+
             $scope.connection.send({
                 service: "TeacherAccess.GetCourseExtensions",
                 autoRetry: true,
@@ -408,13 +408,15 @@
             });
             // 取得課程學生
             $scope.connection.send({
-                service: "TeacherAccess.GetCourseStudents",
+                service: "TeacherAccess.GetCourseStudents2020",
                 autoRetry: true,
                 body: {
                     Content: {
                         Field: { All: '' },
                         Condition: { CourseID: $scope.current.Course.CourseID },
-                        Order: { SeatNumber: '' }
+                        Order: {
+                            GradeYear: 'asc', DisplayOrder: 'asc', ClassName: 'asc', SeatNo: 'asc', StudentNumber: 'asc'
+                        }
                     }
                 },
                 result: function (response, error, http) {
@@ -438,6 +440,11 @@
                                         // 列出所有類別(沒道理...)
                                         //studentRec.StudentScoreTag += tag.Name;
                                     });
+                                }
+
+                                // 2020/3/27 因需求提供及格標準
+                                if (!studentRec.PassingStandard) {
+                                    studentRec.PassingStandard = 60; // 預設
                                 }
 
                                 studentRec.index = index;
@@ -483,7 +490,7 @@
                             // 取得定期評量成績
                             var getCourseExamScore = new Promise((r, j) => {
                                 $scope.connection.send({
-                                    service: "TeacherAccess.GetCourseExamScore",
+                                    service: "TeacherAccess.GetCourseExamScore2020",
                                     autoRetry: true,
                                     body: {
                                         Content: {
@@ -494,13 +501,21 @@
                                     },
                                     result: function (response, error, http) {
                                         if (error) {
-                                            alert("TeacherAccess.GetCourseExamScore Error");
+                                            alert("TeacherAccess.GetCourseExamScore2020 Error");
                                             j(false);
                                         } else {
                                             $scope.$apply(function () {
                                                 [].concat(response.Scores.Item || []).forEach(function (examScoreRec) {
                                                     // 評量分數
                                                     studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID] = examScoreRec.Score;
+
+                                                    // 2020/3/27 新增學生及格標準，如果沒有以60分算
+                                                    if (!examScoreRec.PassingStandard) {
+                                                        examScoreRec.PassingStandard = 60;
+                                                    }
+                                                    // 及格標準
+                                                    studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'PassingStandard'] = examScoreRec.PassingStandard;
+
                                                     if (examScoreRec.Extension.Extension) {
                                                         // 文字評量
                                                         studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + '_文字評量'] = examScoreRec.Extension.Extension.Text == undefined ? '' : examScoreRec.Extension.Extension.Text;
@@ -553,6 +568,14 @@
                                             $scope.$apply(function () {
                                                 [].concat(response.Scores.Item || []).forEach(function (finalScoreRec) {
                                                     studentMapping[finalScoreRec.StudentID]['Exam學期成績'] = finalScoreRec.Score;
+
+                                                    // 2020/3/27 新增取得學生及格標準
+                                                    if (studentMapping[finalScoreRec.StudentID].PassingStandard) {
+                                                        studentMapping[finalScoreRec.StudentID]['Exam學期成績' + 'PassingStandard'] = studentMapping[finalScoreRec.StudentID].PassingStandard;
+                                                    } else {
+                                                        studentMapping[finalScoreRec.StudentID]['Exam學期成績' + 'PassingStandard'] = 60;
+                                                    }
+
                                                     // 分數加總、人數加總
                                                     var index = $scope.examList.findIndex((exam) => exam.ExamID == '學期成績');
                                                     if (index > -1) {
@@ -857,7 +880,7 @@
                     if (template && template.isSubScoreMode) {
                         var ps = $scope.current.Student['Exam' + template.ExamID + 'PScore'];
                         var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
-                        var score =( ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                        var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
                         $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
@@ -1258,7 +1281,7 @@
         }
 
         /**匯出成績單 */
-        $scope.exportGradeBook = function() {
+        $scope.exportGradeBook = function () {
             var data_changed = !$scope.checkAllTable($scope.current.mode);
             if (data_changed) {
                 alert("資料尚未儲存，無法匯出報表。");
@@ -1309,7 +1332,7 @@
                         if (template.Extension) {
                             if (template.Extension.Extension.UseText == '是') {
                                 studentData.push(`<td>${student[`Exam${template.ExamID}`]}</td>`);
-                                studentData.push(`<td>${student[`Exam${template.ExamID}_文字評量`]}</td>`);        
+                                studentData.push(`<td>${student[`Exam${template.ExamID}_文字評量`]}</td>`);
                             } else {
                                 studentData.push(`<td>${student[`Exam${template.ExamID}`]}</td>`);
                             }
@@ -1341,6 +1364,64 @@
         }
 
         // -------- *
+
+        // -- 匯出評量成績單 begin
+        $scope.exportGradeBookA = function () {
+            var data_changed = !$scope.checkAllTable($scope.current.mode);
+
+
+            if (data_changed) {
+                alert("資料尚未儲存，無法匯出報表。");
+            } else {
+                var trList = [];
+                var thList1 = [];
+                thList1 = [
+                    `<td rowspan='1' width='40px'>姓名</td>`
+                ];
+
+                [].concat($scope.current.gradeItemList || []).forEach(template => {
+                    thList1.push(`<td>${template.Name}</td>`);
+                });
+
+                trList.push(`<tr>${thList1.join('')}</tr>`);
+
+                // 學生資料整理
+                [].concat($scope.studentList || []).forEach(student => {
+                    var studentData = [
+                        `<td>${student.StudentName}(${student.SeatNo})</td>`,
+                    ];
+
+                    [].concat($scope.current.gradeItemList || []).forEach(template => {
+
+
+                        studentData.push(`<td>${student[`${template.ExamID}`]}</td>`);
+
+                    });
+
+                    trList.push(`<tr>${studentData.join('')}</tr>`);
+                });
+
+
+
+                var html = `
+            <html>
+                <head>
+                    <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
+                </head>
+                <body>
+                    <table border='1' cellspacing='0' cellpadding='2'>
+                        <tbody align='center'>${$scope.current.Course.SchoolYear}學年度 第${$scope.current.Course.Semester}學期 ${$scope.current.Course.CourseName}
+                                ${trList.join('')}
+                        </tbody>
+                    </table>
+                    <br/>教師簽名：
+                </body>
+            </html>`;
+
+                saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xls');
+            }
+        }
+        // -- 匯出評量成績單 end
 
         $scope.changeSelectMode = function (mode) {
             $scope.current.SelectMode = mode;
@@ -1428,9 +1509,9 @@
         }
 
         $scope.filterPermission = function (examItem) {
-            return (examItem.Permission == "Read" || examItem.Permission == "Editor") 
-                && ($scope.current.VisibleExam 
-                && $scope.current.VisibleExam.indexOf(examItem.Name) >= 0);
+            return (examItem.Permission == "Read" || examItem.Permission == "Editor")
+                && ($scope.current.VisibleExam
+                    && $scope.current.VisibleExam.indexOf(examItem.Name) >= 0);
         }
 
         $scope.getProcess = function () {
@@ -1657,7 +1738,7 @@
                                     $scope.studentList.forEach(function (stuRec) {
                                         var cs = stuRec['Exam' + examRec.Group.ExamID + 'CScore'];
                                         var ps = stuRec['Exam' + examRec.Group.ExamID + 'PScore'];
-                                        var score =( ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                                        var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
                                         // 更新試卷成績：試卷成績 = 小考結算成績
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.Group.ExamID];
                                         // 更新定期評量成績：定期評量成績 = 讀卡 + 試卷
