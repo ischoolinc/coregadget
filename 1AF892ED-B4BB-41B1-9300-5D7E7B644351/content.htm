@@ -846,12 +846,61 @@
                        ng-class="{'btn-danger':!checkAllTable()}">
                         預灠編輯結果
                     </a>
+                    <a class="btn btn-link pull-left ng-scope" ng-click="openCopyModal()">
+                        複製評量至其他課程
+                    </a>
                     <a ng-click="saveGradeItemConfig()"
                        class="btn btn-default ng-scope"
                        ng-class="{'btn-danger':!checkAllTable()}">
                         <i class="fa fa-floppy-o"></i>
                         儲存
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- 複製評量 -->
+     <div class="modal fade" id="copyModal" tabindex="-1" role="dialog" aria-labelledby="copyLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="copyLabel">將複製評量項目至下列勾選課程</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check" ng-repeat="course in courseList">
+                        <input class="form-check-input" type="checkbox" ng-model="course.Selected"
+                            ng-disabled="current.Course.CourseID == course.CourseID" value="" id="{{course.CourseID}}">
+                        <label class="form-check-label" for="{{course.CourseID}}">
+                            {{course.CourseName}}
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- data-dismiss="modal" -->
+                    <button type="button" class="btn btn-secondary" ng-click="closeCopyModal()">關閉</button>
+                    <button type="button" class="btn btn-primary" ng-click="copyGradeItemConfig()">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 複製評量儲存成功 -->
+    <div class="modal fade" id="saveSuccessModal" tabindex="-1" role="dialog" aria-labelledby="successLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="successLabel">複製成功</h4>
+                </div>
+                <div class="modal-body">
+                    已將「{{current.Course.CourseName}}」此課程平時評量項目複製到選擇的課程。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                 </div>
             </div>
         </div>
