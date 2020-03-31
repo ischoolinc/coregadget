@@ -6,9 +6,6 @@ import { BasicService } from './service';
 import { SemesterFormatPipe, CourseTypeFormatPipe, SimpleModalComponent } from './shared';
 import { ConflictCourse, Course, OpeningInfo, Student, Configuration } from './data';
 import { GadgetService } from './gadget.service';
-import { isNgTemplate } from '@angular/compiler';
-import { createPureExpression } from '@angular/core/src/view/pure_expression';
-import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -366,12 +363,12 @@ export class AppComponent implements OnInit {
   }
 
   /**取得學生點數 */
-  async getPoints(){
-    try{
-      let result = await this.basicSrv.getPoints()
-      this.orignPoints = (result.Total == '') ? 0 : Number(result.Total);
-      this.currentPoints = (result.Total == '') ? 0 : Number(result.Total);
-    }catch(error){
+  async getPoints() {
+    try {
+      let result = await this.basicSrv.getPoints();
+      this.orignPoints = result.Total ? Number(result.Total) : 0;
+      this.currentPoints = result.Total ? Number(result.Total) : 0;
+    } catch (error) {
       console.log(error);
     }
   }
@@ -380,19 +377,18 @@ export class AppComponent implements OnInit {
    * 取得該梯次課程投點點數排行
    * 取得課程已選人數
    */
-  async getCourseInfo(){
+  async getCourseInfo() {
     try{
       const rsp: any[] = await this.basicSrv.getCourseInfo();
 
       rsp.forEach((item) =>{
-        if(this.allCourse.has(item.CourseID)){
+        if (this.allCourse.has(item.CourseID)) {
           const course:Course = this.allCourse.get(item.CourseID);
           course.Ranks = {};
           course.Item1StudentCount = item.Item1Count;
           course.Item2StudentCount = item.Item2Count;
-          /**剩餘名額：顯示在第二階段人數上限
-           * 剩餘名額 = 人數上限 - 第一階段選課人數
-           */
+          // 剩餘名額：顯示在第二階段人數上限
+          // 剩餘名額 = 人數上限 - 第一階段選課人數
           course.RemainderCapacity = course.Capacity ? '' + (Number(course.Capacity) - Number(item.Item1Count || '0')) : course.Capacity;
           course.TotalStudentCount = '' + (Number(item.Item1Count || '0') + Number(item.Item2Count));
           // 整理點數排行資料
@@ -401,7 +397,7 @@ export class AppComponent implements OnInit {
           });
         }
       });
-    }catch(error){
+    }catch(error) {
       console.log(error);
     }
   }
@@ -414,7 +410,7 @@ export class AppComponent implements OnInit {
       const rsp = await this.basicSrv.getCSAttend(this.currSchoolYear, this.currSemester);
 
       // 清空學生投點資料
-      for(const key of this.allCourse.keys()){
+      for(const key of this.allCourse.keys()) {
         this.allCourse.get(key).StudentSetPoints = null;
       }
       for (const item of rsp) {
@@ -425,6 +421,8 @@ export class AppComponent implements OnInit {
           course.ChooseItem = item.Item;
           // 學生選課投點點數
           course.StudentSetPoints = item.Points;
+          // 投點歷程編號
+          course.RefConsumeID = item.RefConsumeID;
           this.currAttends.push(course);
         }
       }
@@ -458,84 +456,90 @@ export class AppComponent implements OnInit {
    *    state = false。比對可加選課程中，所有 WillAdd = true 的所有突衝課程，將其視為不衝突
   */
   clickCourseCheckbox(course: Course, keyName: string, checkBox: any) {
+    // 因為使用 click 事件，所以 checkBox 的值會是變更前的狀態。例：要勾選，值會得到 false
 
-    // 如果投點點數有誤
-    if(course.PointIsError){
-      checkBox.checked = false;
-      course.WillAdd = false;
-      return;
-    }// 如果課程為投點課程必須輸入投點點數
-    else if(course.NeedPoints == 't' && !course.StudentSetPoints && course.StudentSetPoints != 0){
-      course.PointIsError = true;
-      course.ErrorMsg = '請輸入投點點數';
-      checkBox.checked = false;
-      course.WillAdd = false;
-      return;
+    if (keyName === 'WillAdd' && !course.WillAdd) {
+      // 重新驗證投點數
+      this.checkPoints('' + course.StudentSetPoints, course);
+
+      // 如果投點點數有誤
+      if (course.PointIsError) {
+        checkBox.checked = false;
+        course.WillAdd = false;
+        return;
+      }// 如果課程為投點課程必須輸入投點點數
+      else if (course.NeedPoints == 't' && !course.StudentSetPoints && course.StudentSetPoints != 0) {
+        course.PointIsError = true;
+        course.ErrorMsg = '請輸入投點點數';
+        checkBox.checked = false;
+        course.WillAdd = false;
+        return;
+      }
+      else {
+        course.PointIsError = false;
+        course.ErrorMsg = '';
+      }
     }
-    else{
-      course.PointIsError = false;
-      course.ErrorMsg = '';
 
-      // 衝堂判斷
-      course[keyName] = !course[keyName];
-      const checked = course[keyName];
-      let status = false;
-      if (keyName === 'WillQuit') { status = !checked; }
-      if (keyName === 'WillAdd') { status = checked; }
+    // 衝堂判斷
+    course[keyName] = !course[keyName];
+    const checked = course[keyName];
+    let status = false;
+    if (keyName === 'WillQuit') { status = !checked; }
+    if (keyName === 'WillAdd') { status = checked; }
 
-      if (this.conflictCourseMap.has(course.CourseID)) {
-        // 取得本課程的衝突清單
-        const conflictIds = this.conflictCourseMap.get(course.CourseID).conflictCourseIds;
+    if (this.conflictCourseMap.has(course.CourseID)) {
+      // 取得本課程的衝突清單
+      const conflictIds = this.conflictCourseMap.get(course.CourseID).conflictCourseIds;
 
-        for (const courseId of conflictIds) {
-          // 與已預選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
-          for (const item of this.scAttends) {
-            if (item.CourseID === courseId && !item.WillQuit) {
-              if (status) {
-                course.HaveConflict.push(item.CourseID);
-                item.HaveConflict.push(course.CourseID);
-              } else {
-                item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
-              }
+      for (const courseId of conflictIds) {
+        // 與已預選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
+        for (const item of this.scAttends) {
+          if (item.CourseID === courseId && !item.WillQuit) {
+            if (status) {
+              course.HaveConflict.push(item.CourseID);
+              item.HaveConflict.push(course.CourseID);
+            } else {
+              item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
             }
           }
+        }
 
-          // 與已選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
-          for (const item of this.currAttends) {
-            if (item.CourseID === courseId && !item.WillQuit) {
-              if (status) {
-                course.HaveConflict.push(item.CourseID);
-                item.HaveConflict.push(course.CourseID);
-              } else {
-                item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
-              }
+        // 與已選課程比較，找出已選且衝突的課程，將其衝突清單異動，之後要用 tooltip 顯示
+        for (const item of this.currAttends) {
+          if (item.CourseID === courseId && !item.WillQuit) {
+            if (status) {
+              course.HaveConflict.push(item.CourseID);
+              item.HaveConflict.push(course.CourseID);
+            } else {
+              item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
             }
           }
+        }
 
-          // 與加選課程比較，將其衝突清單異動，之後要用 tooltip 顯示
-          for (const item of this.canChooseCourses) {
-            if (item.CourseID === courseId && item.WillAdd) {
-              if (status) {
-                course.HaveConflict.push(item.CourseID);
-                item.HaveConflict.push(course.CourseID);
-              } else {
-                item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
-              }
+        // 與加選課程比較，將其衝突清單異動，之後要用 tooltip 顯示
+        for (const item of this.canChooseCourses) {
+          if (item.CourseID === courseId && item.WillAdd) {
+            if (status) {
+              course.HaveConflict.push(item.CourseID);
+              item.HaveConflict.push(course.CourseID);
+            } else {
+              item.HaveConflict = item.HaveConflict.filter((v: string) => v !== course.CourseID);
             }
           }
         }
       }
-
-      // 幫自己清除衝堂
-      // 如果為「已選 + 勾選退選 => 退選」，將全部的衝突資料移除
-      // 如果為「加選 + 取消勾選 => 不加選」，將全部的衝突資料移除
-      if (!status) course.HaveConflict = [];
-
-      // 計算點數現況
-      this.calcCurrentPoint();
-
-      this.checkAddQuitBtn();
     }
+
+    // 幫自己清除衝堂
+    // 如果為「已選 + 勾選退選 => 退選」，將全部的衝突資料移除
+    // 如果為「加選 + 取消勾選 => 不加選」，將全部的衝突資料移除
+    if (!status) course.HaveConflict = [];
+
+    // 計算點數現況
+    this.calcCurrentPoint();
+
+    this.checkAddQuitBtn();
   }
 
   /**退選課程的勾選 及 取消勾選 */
@@ -827,10 +831,10 @@ export class AppComponent implements OnInit {
               this.isSaving = true;
               try {
                 await this.basicSrv.delSCAttendExt([course.CourseID]);
-                if(course.StudentSetPoints){
+                if (course.StudentSetPoints) {
                   await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}`);
                 }
-                else{
+                else {
                   await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}，退回投點點數：${course.StudentSetPoints}`);
                 }
 
@@ -875,22 +879,22 @@ export class AppComponent implements OnInit {
       // 資料整理
       // -- 退選課程
       const quitCourseNames = quitList.map(item => item.CourseName);
-      const quitPointCourse = quitList.filter(item => item.NeedPoints == "t");
+      const quitPointCourse = quitList.filter(item => item.NeedPoints == 't');
       const quitCourseDetail = quitPointCourse.map(item => `${item.CourseName} (${item.StudentSetPoints}點)`);
       // -- 加選課程
       const addCourseNames = addList.map(item => item.CourseName);
-      const addPointCourse = addList.filter(item => item.NeedPoints == "t");
+      const addPointCourse = addList.filter(item => item.NeedPoints == 't');
       const addCourseDetail = addPointCourse.map(item => `${item.CourseName} (${item.StudentSetPoints}點)`);
       // 點數加總
       let quitPointTotal = 0;
       let addPointTotal = 0;
       quitList.forEach((item) =>{
-        if(item.NeedPoints == "t"){
+        if (item.NeedPoints == 't') {
           quitPointTotal += Number(item.StudentSetPoints);
         }
       });
       addList.forEach((item) =>{
-        if(item.NeedPoints == "t"){
+        if (item.NeedPoints == 't') {
           addPointTotal += Number(item.StudentSetPoints);
         }
       });
@@ -978,7 +982,7 @@ export class AppComponent implements OnInit {
         txt.push('<tr><td colspan="8">無課程</td>');
       } else {
         for (const item of courses) {
-          if(item.NeedPoints == 't'){
+          if (item.NeedPoints == 't') {
             txt.push(`
             <tr>
               <td>${item.NewSubjectCode || ''}</td>
@@ -998,7 +1002,7 @@ export class AppComponent implements OnInit {
               <td colspan="5">${item.Memo || ''}</td>
             </tr>
           `);
-          }else{
+          }else {
             txt.push(`
             <tr>
               <td>${item.NewSubjectCode || ''}</td>
@@ -1119,18 +1123,19 @@ export class AppComponent implements OnInit {
 
   /**儲存加退選課 */
   async saveQuitAdd(quitList: Course[] = [], addList: Course[] = []) {
-    const reqList = [];
+    const reqListA = []; // 先執行
+    const reqListB = []; // 後執行
 
     if (quitList.length) {
-      reqList.push([
+      reqListA.push([
         this.basicSrv.delCSAttend(quitList.map((item: Course) => {
           return { CourseID: item.CourseID };
         })),
         this.basicSrv.addCSAttendLog(quitList.map((item: Course) => {
-          return { CourseID: item.CourseID, Action: 'delete', ActionBy: 'student', Points: item.StudentSetPoints ? null : item.StudentSetPoints};
+          return { CourseID: item.CourseID, Action: 'delete', ActionBy: 'student', Points: item.StudentSetPoints ? null : item.StudentSetPoints };
         })),
         this.basicSrv.addPointsLog(quitList.map((item: Course) => {
-          return { Type: 'refund', Points: item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints};
+          return { Type: 'refund', Points: item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints, CourseID: item.CourseID, RefConsumeID: item.RefConsumeID };
         })),
         this.basicSrv.addLog(
           '退選',
@@ -1140,25 +1145,30 @@ export class AppComponent implements OnInit {
       ]);
     }
     if (addList.length) {
-      reqList.push([
+      reqListA.push([
         this.basicSrv.addCSAttend(
           addList.map((item:Course) => {
             return { CourseID: item.CourseID, Points: item.StudentSetPoints };
         })),
         this.basicSrv.addCSAttendLog(addList.map((item: Course) => {
-          return { CourseID: item.CourseID, Action: 'insert', ActionBy: 'student', Points: item.StudentSetPoints ? item.StudentSetPoints : null};
-        })),
-        // 篩選需要點數選課的資料 寫入點數歷程
-        this.basicSrv.addPointsLog(addList.filter((data: Course) => data.NeedPoints === 't').map((item: Course) => {
-          return { Type: 'consume', Points: (item.StudentSetPoints == undefined) ? '' : item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints};
+          return { CourseID: item.CourseID, Action: 'insert', ActionBy: 'student', Points: item.StudentSetPoints ? item.StudentSetPoints : null };
         })),
         this.basicSrv.addLog(
           '加選',
           '加選課程',
           addList.map((item: Course) => `學生「${this.student.StudentName}」加選課程：${item.CourseName}，投點點數：${item.StudentSetPoints}`).join(','))
       ]);
+
+      reqListB.push([
+        // 篩選需要點數且有投點選課的資料 寫入點數歷程。
+        // 注意：必需要在 CSAttend 產出後才能對新增的結果加 ref_consume_id，所以不可以和 CSAttend 的 Promise.all 一起執行
+        this.basicSrv.addPointsLog(addList.filter((data: Course) => (data.NeedPoints === 't' && data.StudentSetPoints)).map((item: Course) => {
+          return { Type: 'consume', Points: item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints, CourseID: item.CourseID };
+        })),
+      ]);
     }
-    await Promise.all(reqList.reduce((acc, val) => acc.concat(val), []));
+    await Promise.all(reqListA.reduce((acc, val) => acc.concat(val), []));
+    await Promise.all(reqListB.reduce((acc, val) => acc.concat(val), []));
 
     // 1、備份原始加選課程及退選課程(送出前狀態)
     var addListBackup = this.getAddList();
@@ -1167,8 +1177,8 @@ export class AppComponent implements OnInit {
     // 2、重新取得已選課程。(送出後狀態)
     await this.getAttend();
 
-    // 3、寄送郵件通知
-    await this.sendMail(addListBackup, quitListBackup);
+    // 3、寄送郵件通知 TODO:
+    // await this.sendMail(addListBackup, quitListBackup);
 
     // 4、重新取得課程已選人數、投點點數排名
     this.getCourseInfo();
@@ -1380,55 +1390,53 @@ export class AppComponent implements OnInit {
    * 2. 判斷投點點數是否大於剩餘點數
    * 3. 判斷投點點數是否超過點數選課最大最小值
    * */
-  checkPoints(points: string, course: Course){
+  checkPoints(points: string, course: Course) {
     const _points = points == '' ? null : Number(points);
     const maxPoint = Number(course.MaxPoints);
     const minPoint = Number(course.MinPoints);
+    course.StudentSetPoints = _points;
+
     // 正整數 正則表達式
-    const rgexp = new RegExp("^[0-9]*[1-9][0-9]*$");
-    if(_points == null){
+    const rgexp = new RegExp('^[0-9]*[1-9][0-9]*$');
+    if (_points == null) {
       course.PointIsError = false;
-      course.ErrorMsg = "";
-      course.StudentSetPoints = null;
-
+      course.ErrorMsg = '';
       return;
     }
-    if(!rgexp.test(points) && _points && points != "0"){
+    if (!rgexp.test(points) && _points && points != '0') {
       course.PointIsError = true;
-      course.ErrorMsg = "請輸入正整數！";
+      course.ErrorMsg = '請輸入正整數！';
       return;
     }
-    else if(_points > this.currentPoints){
+    else if (_points > this.currentPoints) {
       course.PointIsError = true;
-      course.ErrorMsg = "點數不足！";
+      course.ErrorMsg = '點數不足！';
       return;
     }
-    else if(_points > maxPoint){
+    else if (_points > maxPoint) {
       course.PointIsError = true;
-      course.ErrorMsg = "投點點數不可超過課程點數限制！";
+      course.ErrorMsg = '投點點數不可"超過"課程點數限制！';
       return;
     }
-    else if(_points < minPoint){
+    else if (_points < minPoint) {
       course.PointIsError = true;
-      course.ErrorMsg = "投點點數不可\"低於\"課程點數限制！";
+      course.ErrorMsg = '投點點數不可"低於"課程點數限制！';
       return;
     }
-    else{
+    else {
       course.PointIsError = false;
-      course.ErrorMsg = "";
-      course.StudentSetPoints = _points;
-
+      course.ErrorMsg = '';
       return;
     }
   }
 
   // 計算點數現況
-  calcCurrentPoint(){
+  calcCurrentPoint() {
     let spendPoints = 0;
-        this.canChooseCourses.filter((course) => course.NeedPoints == "t" && course.WillAdd).forEach((item) => {
-          spendPoints += Number(item.StudentSetPoints);
-        });
-        this.currentPoints = this.orignPoints - spendPoints;
+    this.canChooseCourses.filter((course) => course.NeedPoints == 't' && course.WillAdd).forEach((item) => {
+      spendPoints += Number(item.StudentSetPoints);
+    });
+    this.currentPoints = this.orignPoints - spendPoints;
   }
 }
 
