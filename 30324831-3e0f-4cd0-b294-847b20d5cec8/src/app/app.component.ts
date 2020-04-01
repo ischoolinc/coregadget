@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
   curSS: SSRec = {} as SSRec;
   examList: ExamRec[];
   curExam: ExamRec = {} as ExamRec;
-  matrixList = ['年排名', '班排名', '類別1排名', '類別2排名', '科排名']; 
+  // '年排名', 中港高中不希望看到
+  matrixList = ['班排名', '類別1排名', '類別2排名', '科排名']; 
   curMatrix = this.matrixList[0];
 
   studentExamRankList: ExamRankRec[];
