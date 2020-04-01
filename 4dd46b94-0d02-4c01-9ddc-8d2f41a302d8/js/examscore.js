@@ -310,6 +310,7 @@
       exam_process = function () {
         var thead_html = "";
         var tbody1 = [];
+        var subBody = [];
         var tbody_html = "";
 
         if (exam_data) {
@@ -374,12 +375,12 @@
                       }
                     }
                   }
-                  
                   // 排名資料
                   {
+                    // data.school_year == _curr_schoolyear
+                    //   && data.semester == _curr_semester && 
                     // 取得排名資料
-                    const data = rankList.find((data) => data.school_year == _curr_schoolyear
-                      && data.semester == _curr_semester && data.item_name == course.Subject
+                    const data = rankList.find((data) => data.item_name == course.Subject
                       && data.ref_exam_id == exam.ExamID && data.rank_type == switchMatrix(curMatrix));
                     
                     if (data) {
@@ -388,7 +389,6 @@
                       tbody1.push("<td my-data=\"" + exam.ExamID + "\"></td>");
                     }
                   }
-
                   if (avg_score) {
                     return pre_score = avg_score;
                   }
@@ -403,9 +403,31 @@
             });
             return tbody1.push("</tr>");
           });
+          //--
+          subBody.push(`<tr><td></td>`)
+          
+          exam_list.forEach(examID => {
+            // 固定排名：算數平均＆排名
+            {
+              const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均' 
+                && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
+
+              if (data) {
+                subBody.push(`<td colspan="2">${data.score}</td><td colspan="1">${data.rank}</td>`);
+              } else {
+                subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
+              }
+            }
+          });
+          subBody.push(`</tr>`)
+          //--
           thead_html = "<tr class=\"my-nofill\"><th rowspan=\"2\">科目名稱</th>" + (thead1.join("")) + "</tr>\n<tr class=\"my-nofill\">" + (thead2.join("")) + "</tr>";
           tbody_html = tbody1.join("");
-          $("#ExamScore").find("thead").html(thead_html).end().find("tbody").html(tbody_html).end().find("td[rel='tooltip']").tooltip();
+          $("#ExamScore")
+            .find("thead").html(thead_html).end()
+            .find("#BodyOne").html(tbody_html).end()
+            .find("#BodyTwo").html(subBody.join("")).end()
+            .find("td[rel='tooltip']").tooltip();
           return $("#ExamDropDown .dropdown-menu a:first").trigger("click");
         } else {
           $("#ExamScore").find("thead").html("").end().find("tbody").html("<tr><td>目前無資料</td></tr>");
