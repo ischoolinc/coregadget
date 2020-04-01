@@ -467,11 +467,13 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th colspan="4"></th>
+                            <th colspan="6"></th>
                             <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}</th>
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
+                            <th class="text-center">班級</th>
+                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <!--定期評量項目-->
                             <th ng-repeat="exam in examList | filter: filterPermission"
@@ -490,7 +492,15 @@
                             <td class="text-center">{{stuRec.StudentNumber}}</td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.ClassName}} {{stuRec.StudentName}}({{stuRec.SeatNumber}})</span>
+                                <span>{{stuRec.ClassName}}</span>
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.SeatNumber}}</span>
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.StudentName}}</span>
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
@@ -517,7 +527,7 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th class="text-center"colspan="3"></th>
+                            <th class="text-center" colspan="5"></th>
                             <th class="text-center"
                                 colspan="{{current.gradeItemList.length -1}}">
                                 評分項目
@@ -525,6 +535,8 @@
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
+                            <th class="text-center">班級</th>
+                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <th class="text-center"
                                 ng-repeat="item in current.gradeItemList">
@@ -536,7 +548,13 @@
                         <tr ng-repeat="student in studentList">
                             <td>{{student.StudentNumber}}</td>
                             <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                {{student.ClassName}} {{student.StudentName}}({{student.SeatNumber}})
+                                {{student.ClassName}}
+                            </td>
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.SeatNumber}}
+                            </td>
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.StudentName}}
                             </td>
                             <td class="text-center"
                                 style="position:relative"
