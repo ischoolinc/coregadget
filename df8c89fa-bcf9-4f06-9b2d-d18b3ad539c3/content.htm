@@ -359,7 +359,7 @@
                                 </td>
                                 <td ng-if="current.Exam && current.Student">
                                     <div ng-if="current.Exam.Lock || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                         ng-class="{'text-danger':current.Student[current.Exam.ExamID] < 60}"
+                                         score-stress="{{current.Student[current.Exam.ExamID]}}"
                                          class="text-center">
                                         {{current.Student[current.Exam.ExamID]=='0'?('0'):(current.Student[current.Exam.ExamID]||'&nbsp;')}}
                                     </div>
@@ -501,7 +501,7 @@
                                      ng-attr-title="資料已修改，尚未儲存! {{stuRec['Origin_'+ exam.ExamID]?'原值為：'+stuRec['Origin_' + exam.ExamID]:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':stuRec[exam.ExamID] < 60 && current.Exam.Type != 'Text'}"
+                                <span score-stress="{{stuRec[exam.ExamID]}}" data-score-type="{{current.Exam.Type}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[exam.ExamID]}}
                                 </span>
@@ -546,7 +546,7 @@
                                 <div ng-if="!checkOneCell(student, item.ExamID, true, true)"
                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':student[item.ExamID] < 60}"
+                                <span score-stress="{{student[item.ExamID]}}"
                                     style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{student[item.ExamID]}}
                                 </span>
@@ -627,7 +627,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -650,7 +650,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -673,7 +673,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
