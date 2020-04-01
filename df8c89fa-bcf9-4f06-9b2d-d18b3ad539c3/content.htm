@@ -90,7 +90,7 @@
         <div>
            <!--課程按鈕-->
             <div ng-if="!haveNoCourse" class="btn-group">
-                <a href=""
+                <a href="javascript:;"
                 class="btn btn-default dropdown-toggle"
                 data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -147,7 +147,7 @@
             <!-- 成績管理模式： 批次、儲存 -->
             <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn-group pull-right">
                 <div class="btn-group" ng-if="importExamList">
-                    <a href=""
+                    <a href="javascript:;"
                        class="btn btn-default dropdown-toggle"
                        data-toggle="dropdown">
                         <i class="fa fa-cog" aria-hidden="true"></i>
@@ -166,7 +166,7 @@
                             </a>
                         </li>
                         <li ng-class="{'disabled':current.template.Extension.Extension.UseAssignmentScore !== '是' || current.template.Lock}">
-                            <a href="javascript:void(0)" 
+                            <a href="javascript:void(0)"
                                 ng-click="ImportCourseExtensions()">
                                 帶入_平時評量
                             </a>
@@ -235,7 +235,7 @@
                             <tr>
                                 <td style="width:95px;">
                                     <div class="btn-group btn-block">
-                                        <a href=""
+                                        <a href="javascript:;"
                                            class="btn btn-link btn-block dropdown-toggle"
                                            data-toggle="dropdown"
                                            style="padding:0; color:#333; text-align:left;">
@@ -431,7 +431,7 @@
                         </tbody>
                     </table>
                     <!--文字評量代碼表-->
-                    <table class="table table-bordered table-striped" style="width:260px;" 
+                    <table class="table table-bordered table-striped" style="width:260px;"
                             ng-if="current.mode == modeList[0]">
                         <thead>
                             <tr>
