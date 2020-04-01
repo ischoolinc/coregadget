@@ -530,13 +530,15 @@
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
                                 style="position:relative;"
-                                ng-style="stuRec['Exam'+exam.ExamID] != '' && stuRec['Exam'+exam.ExamID] < current.Student.PassingStandard && {'background-color':'yellow'} ||stuRec['Exam'+exam.ExamID] > 100 && {'background-color':'yellow'} "
+                                ng-style="checkPass(stuRec['Exam'+exam.ExamID], stuRec.PassingStandard)"
                                 ng-if="!exam.Group || exam.SubVisible"
-                                ng-click="setCurrent(stuRec, exam, true, true)">
+                                ng-click="setCurrent(stuRec, exam, true, true)">                             
                                 <div ng-if="!checkOneCell(stuRec, 'Exam'+exam.ExamID)"
                                      ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
+                                <!-- {{stuRec['Exam'+exam.ExamID]}}-{{stuRec.PassingStandard}}
+                                {{checkPass(stuRec['Exam'+exam.ExamID], stuRec.PassingStandard)}} -->
                                 <h6 ng-if="exam.Group"
                                     style="margin:0px;">
                                     <small>
@@ -547,7 +549,7 @@
                                 </h6>
                                 <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap"
                                       ng-if="!exam.Group"
-                                      ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < current.Student.PassingStandard}">
+                                      ng-class="{'text-danger':stuRec['Exam'+exam.ExamID] < stuRec.PassingStandard}">
                                     {{stuRec['Exam'+exam.ExamID]}}
                                 </span>
                             </td>
@@ -592,7 +594,7 @@
                                 <div ng-if="!checkOneCell(stuRec, item.ExamID, true, true)"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':stuRec[item.ExamID] < current.Student.PassingStandard}"
+                                <span ng-class="{'text-danger':stuRec[item.ExamID] < stuRec.PassingStandard}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[item.ExamID]}}
                                 </span>
@@ -671,7 +673,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < current.Student.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
+                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < stuRec.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -694,7 +696,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < current.Student.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
+                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < stuRec.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -717,7 +719,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < current.Student.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
+                                             ng-class="{'text-danger':importProcess.ParseValues[$index] < stuRec.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>

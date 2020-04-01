@@ -653,6 +653,25 @@
             });
         }
 
+        // 檢查及格標準變色
+        $scope.checkPass = function (score, standard) {
+            var pStandard = +standard;
+
+            if (score ==='' || score === '缺') {
+                return { 'background-color': 'unset' };
+            }
+
+            if (+score < pStandard || +score > 100) {
+                return { 'background-color': 'yellow' };
+            }
+
+            if (score === "0") {
+                return { 'background-color': 'yellow' };
+            }
+
+         //   return { 'background-color': 'unset' };
+        }
+
         /** 
          * 1. 備份學生原始資料
          * 2. setupCurrent 
