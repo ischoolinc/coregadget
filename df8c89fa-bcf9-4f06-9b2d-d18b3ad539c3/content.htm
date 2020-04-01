@@ -213,6 +213,13 @@
                 </a>
             </div>
         </div>
+        <div style="clear: both;">
+            開放時間：
+            <span style="color: red" ng-show="current.template.InputStartTime && current.template.InputEndTime">
+                {{current.template.InputStartTime || '未指定'}} ~ {{current.template.InputEndTime || '未指定'}}
+            </span>
+            <span ng-show="!current.template.InputStartTime && !current.template.InputEndTime">未開放</span>
+        </div>
         <!--資料表-->
         <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
