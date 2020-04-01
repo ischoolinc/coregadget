@@ -405,7 +405,6 @@
           });
           //--
           subBody.push(`<tr><td></td>`)
-          
           exam_list.forEach(examID => {
             // 固定排名：算數平均＆排名
             {
@@ -413,7 +412,7 @@
                 && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
 
               if (data) {
-                subBody.push(`<td colspan="2">${data.score}</td><td colspan="1">${data.rank}</td>`);
+                subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
               } else {
                 subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
               }
