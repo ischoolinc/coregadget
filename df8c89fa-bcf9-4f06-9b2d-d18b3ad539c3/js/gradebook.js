@@ -1811,13 +1811,13 @@
             var thList2 = [];
             // 欄位資料整理
             thList1 = [
-                `<td rowspan='2' width='40px'>班級</td>`,
-                `<td rowspan='2' width='40px'>座號</td>`,
-                `<td rowspan='2' width='70px'>姓名</td>`,
+                `<td rowspan="2" width="40px">班級</td>`,
+                `<td rowspan="2" width="40px">座號</td>`,
+                `<td rowspan="2" width="70px">姓名</td>`,
             ];
 
             [].concat($scope.templateList || []).forEach(template => {
-                thList1.push(`<td colspan='3'>${template.Name}</td>`);
+                thList1.push(`<td colspan="3">${template.Name}</td>`);
                 thList2.push(`<td>定期<br/>評量</td>`);
                 thList2.push(`<td>平時<br/>評量</td>`);
                 thList2.push(`<td>文字<br/>評量</td>`);
@@ -1847,11 +1847,12 @@
             var html = `
 <html>
     <head>
-        <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     </head>
     <body>
-        <table border='1' cellspacing='0' cellpadding='2'>
-            <tbody align='center'>${$scope.current.Course.CourseName}
+        <table border="1" cellspacing="0" cellpadding="2">
+            <tbody align="center">
+                ${crrSchoolYear}學年度第${crrSemester}學期 ${$scope.current.Course.CourseName}
                 ${trList.join('')}
             </tbody>
         </table>
