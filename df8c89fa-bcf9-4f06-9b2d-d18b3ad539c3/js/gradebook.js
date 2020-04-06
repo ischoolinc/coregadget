@@ -139,48 +139,12 @@
                 $scope.setupCurrent();
                 // 取得課程學生以及學生成績資料
                 $scope.dataReload();
-
-                $scope.setSortMode($scpe.curSort);
             }
         }
 
         $scope.setSortMode = function(sort) {
             $scope.curSort = sort;
-            switch(sort.code) {
-                case 'cs':
-                    $scope.studentList.sort((a, b) => {
-                        if (Number(a.SeatNo) > Number(b.SeatNo)) {
-                            return 1;
-                        }
-                        if (Number(a.SeatNo) < Number(b.SeatNo)) {
-                            return -1;
-                        }
-                        return 0;
-                    });
-                    $scope.studentList.sort((a, b) => {
-                        if (a.ClassName > b.ClassName) {
-                            return -1;
-                        }
-                        if (a.ClassName < b.ClassName) {
-                            return 1;
-                        }
-
-                        return 0;
-                    });
-                    break;
-                case 'sn':
-                    $scope.studentList.sort((a, b) => {
-                        if (a.StudentNumber > b.StudentNumber) {
-                            return 1
-                        }
-                        if (a.StudentNumber < b.StudentNumber) {
-                            return -1;
-                        }
-                    });
-                    break;
-                default:
-                    break;
-            }
+            $scope.dataReload();
         }
 
         /**
@@ -603,19 +567,20 @@
          * 執行setupCurrent
          */
         $scope.dataReload = function() {
+            const optionOrder = ($scope.curSort.code === 'sn' ? { StudentNumber: '' } : { GradeYear: '', ClassName: '',  SeatNo: '' });
             $scope.connection.send({
-                service: "TeacherAccess.GetCourseStudents",
+                service: "TeacherAccess.GetCourseStudents2020",
                 autoRetry: true,
                 body: {
                     Content: {
                         Field: { All: '' },
                         Condition: { CourseID: $scope.current.Course.CourseID },
-                        Order: { SeatNumber: '' }
+                        Order: optionOrder
                     }
                 },
                 result: function (response, error, http) {
                     if (error) {
-                        alert("TeacherAccess.GetCourseStudents Error");
+                        alert("TeacherAccess.GetCourseStudents2020 Error");
                     } else {
                         var studentMapping = {};
                         // studentList 學生試別資料初始化
@@ -791,7 +756,6 @@
                             }
                         }
 
-                        $scope.setSortMode($scope.curSort);
                     }
                 }
             });
@@ -1888,7 +1852,7 @@
     <body>
         <table border='1' cellspacing='0' cellpadding='2'>
             <tbody align='center'>${$scope.current.Course.CourseName}
-                    ${trList.join('')}
+                ${trList.join('')}
             </tbody>
         </table>
         <br/>教師簽名：
