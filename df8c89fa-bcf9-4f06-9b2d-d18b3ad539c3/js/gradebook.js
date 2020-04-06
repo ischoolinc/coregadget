@@ -887,7 +887,6 @@
           * 執行submitGrade
           */
          $scope.enterGrade = function (event) {
-            if ($scope.current.mode == '成績管理') {
             if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
             var flag = false;
             if ($scope.current.Exam.Type == 'Number') {
@@ -913,17 +912,6 @@
             }
             if (flag) {
                 $scope.submitGrade();
-            }
-        }
-            else { // 平時評量成績
-                if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
-                if ($scope.current.Exam.Type == 'Number') {
-                    var temp = $scope.current.Value == '' ? '' : Number($scope.current.Value);
-                    if (!isNaN(temp) && temp <= 100 && temp >= 0) {
-                        $scope.current.Value = temp;
-                        $scope.submitGrade();
-                    }
-                }
             }
         }
 
@@ -1257,6 +1245,11 @@
                                         flag = true;
                                         importExam.ParseValues[i] = '';
                                     }
+                                    // 缺
+                                    if (importExam.ParseValues[i] == '缺') {
+                                        flag = true;
+                                        importExam.ParseValues[i] = '缺';
+                                    }
                                     if (flag) {
                                         if (!isNaN(temp) && importExam.ParseValues[i] != '') {
                                             importExam.ParseValues[i] = temp;
@@ -1421,6 +1414,11 @@
                                 if (importItem.ParseValues[i] == '-') {
                                     flag = true;
                                     importItem.ParseValues[i] = '';
+                                }
+                                // 缺
+                                if (importExam.ParseValues[i] == '缺') {
+                                    flag = true;
+                                    importExam.ParseValues[i] = '缺';
                                 }
                                 if (flag) {
                                     if (!isNaN(temp) && importItem.ParseValues[i] != '') {
