@@ -71,7 +71,7 @@
             ],
             process: [{
             }],
-            haveNoCourse: true
+            haveNoCourse: true,
         };
         // 目前學年度
         var crrSchoolYear;
@@ -275,6 +275,9 @@
             /**課程評分樣板：定期評量清單 */
             $scope.templateList = [];
             $scope.examList = [];
+            /**定期、平時比例 */
+            course.courseScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage || 0);
+            course.courseAssignmentPercentage = 100 - course.courseScorePercentage;
 
             /**
              * 定期評量資料整理
@@ -297,7 +300,7 @@
                             Name: '定期評量',
                             Type: 'Number',
                             Permission: 'Editor',
-                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock
+                            Lock: template.Extension.Extension.UseScore !== '是' || template.Lock,
                         };
                         // 平時評量
                         var assignmentScore = {
@@ -321,6 +324,7 @@
                         $scope.templateList.push(template);
                         $scope.examList.push(score, assignmentScore, text);
                     });
+                    // console.log($scope.examList);
 
                     // 設定目前定期評量
                     $scope.current.template = $scope.templateList[0];
@@ -1817,9 +1821,9 @@
             ];
 
             [].concat($scope.templateList || []).forEach(template => {
-                thList1.push(`<td colspan="3">${template.Name}</td>`);
-                thList2.push(`<td>定期<br/>評量</td>`);
-                thList2.push(`<td>平時<br/>評量</td>`);
+                thList1.push(`<td colspan="3">${template.Name} <span style="color: #ff0000">(${template.Percentage})</span></td>`);
+                thList2.push(`<td>定期<br/>評量<br/><span style="color: #ff0000">${$scope.current.Course.courseScorePercentage}%</span></td>`);
+                thList2.push(`<td>平時<br/>評量<br/><span style="color: #ff0000">${$scope.current.Course.courseAssignmentPercentage}%</span></td>`);
                 thList2.push(`<td>文字<br/>評量</td>`);
             });
 

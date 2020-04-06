@@ -396,3 +396,7 @@ li .active {
   left: 0;
   position: absolute;
 }
+
+.text-red {
+  color: #f00;
+}

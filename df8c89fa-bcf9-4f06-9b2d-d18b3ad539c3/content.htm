@@ -468,7 +468,9 @@
                     <thead>
                         <tr>
                             <th colspan="6"></th>
-                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}</th>
+                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}
+                                <span class="text-red">({{current.template.Percentage}})</span>
+                            </th>
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
@@ -480,6 +482,8 @@
                                 class="text-center" colspan="{{exam.Name === '文字評量' ? 2 : 1}}">
                                 <span ng-class="{'sub-item': exam.isSubItem}">
                                     {{exam.Name}}
+                                    <span ng-if="exam.Name === '定期評量'" class="text-red">{{current.Course.courseScorePercentage}}%</span>
+                                    <span ng-if="exam.Name === '平時評量'" class="text-red">{{current.Course.courseAssignmentPercentage}}%</span>
                                 </span>
                             </th>
                         </tr>
