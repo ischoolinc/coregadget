@@ -402,5 +402,14 @@ li .active {
 }
 
 .importStudentPreview {
+  padding: 5px 10px;
+  border-radius: .25em;
+  border: solid 1px lightgray;
+  margin: 3px 0px;
   position: relative;
+}
+
+.dropdown-header {
+  padding: 3px 10px;
+  font-size: 14px;
 }
