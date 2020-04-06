@@ -400,3 +400,7 @@ li .active {
 .text-red {
   color: #f00;
 }
+
+.importStudentPreview {
+  position: relative;
+}

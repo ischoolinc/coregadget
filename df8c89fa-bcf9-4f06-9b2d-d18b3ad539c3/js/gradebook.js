@@ -888,33 +888,33 @@
           */
          $scope.enterGrade = function (event) {
             if ($scope.current.mode == '成績管理') {
-                if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
-                var flag = false;
-                if ($scope.current.Exam.Type == 'Number') {
-                    var temp = Number($scope.current.Value);
-                    if (!isNaN(temp) && temp <= 100 && temp >= 0) {
+            if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
+            var flag = false;
+            if ($scope.current.Exam.Type == 'Number') {
+                var temp = Number($scope.current.Value);
+                if (!isNaN(temp) && temp <= 100 && temp >= 0) {
 
-                        flag = true;
-                        var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
-                        temp = Math.round(temp * round) / round;
-                    }
-                    if ($scope.current.Value == "缺") {
-                        flag = true;
-                    }
-                    if (flag) {
-                        if ($scope.current.Value != "" && $scope.current.Value != "缺"){
-                            $scope.current.Value = temp;
-                        }
-                    }
-                }
-                else {
                     flag = true;
-                    $scope.textChangeEvent();
+                    var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
+                    temp = Math.round(temp * round) / round;
+                }
+                if ($scope.current.Value == "缺") {
+                    flag = true;
                 }
                 if (flag) {
-                    $scope.submitGrade();
+                    if ($scope.current.Value != "" && $scope.current.Value != "缺"){
+                        $scope.current.Value = temp;
+                    }
                 }
             }
+            else {
+                flag = true;
+                $scope.textChangeEvent();
+            }
+            if (flag) {
+                $scope.submitGrade();
+            }
+        }
             else { // 平時評量成績
                 if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
                 if ($scope.current.Exam.Type == 'Number') {
@@ -2112,8 +2112,8 @@
             },
             link: function(scope, element, attrs) {
                 const funChangeCSS = function() {
-                    if (attrs.scoreType == 'Number') {
-                        element.removeClass('score-red');
+                    element.removeClass('score-red');
+                    if (attrs.scoreType !== 'Text') {
                         if ($.isNumeric(attrs.scoreStress)) {
                             if (Number(attrs.scoreStress) < 60 || Number(attrs.scoreStress) > 100) {
                                 element.addClass('score-red');
