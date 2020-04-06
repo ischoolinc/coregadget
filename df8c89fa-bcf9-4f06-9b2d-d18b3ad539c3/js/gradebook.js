@@ -404,7 +404,7 @@
             }
 
             /**
-             * 1. 取得定期評量子成績項目 $scope.getGradeItemList()
+             * 1. 取得小考資料 $scope.getGradeItemList()
              * 2. 取得定期評量子成績項目 $scope.getSubExamList()
              * 3. 設定目前定期評量 $scope.setCurrentTemplate()
              */
@@ -1670,7 +1670,14 @@
                         } else {
                             $('#GradeItemModal').modal('hide');
                             // 重新取得評分項目(小考)資料
-                            $scope.getGradeItemList();
+                            $scope.getGradeItemList().then(function() {
+                                // 重算平時評量成績
+                                $scope.studentList.forEach(student => {
+                                    $scope.calcQuizResult(student);
+                                });
+                                // 儲存平時評量成績
+                                $scope.saveGradeItemScore();
+                            });
                         }
                     }
                 });
