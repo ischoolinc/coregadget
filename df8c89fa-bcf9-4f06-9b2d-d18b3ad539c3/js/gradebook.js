@@ -21,7 +21,8 @@
                 },
                 Course: {},
                 VisibleExam: [],
-                Table: '成績管理 or 平時評量'
+                Table: '成績管理 or 平時評量',
+                TextCatalog: '分類',
             },
             studentList: [
                 {
@@ -108,6 +109,8 @@
             Exam: null,
             /**目前課程 */
             Course: null,
+            /**文字評量分類 */
+            TextCatalog: '分類',
         };
 
         /**模式清單 */
@@ -146,6 +149,9 @@
             $scope.curSort = sort;
             $scope.dataReload();
         }
+
+        /**文字評量分類清單 */
+        $scope.examCatalogList = ['分類'];
 
         /**
          * 設定目前定期評量
@@ -859,6 +865,7 @@
                     alert("取得「文字評量代碼表」出現錯誤。");
                     $scope.examTextList = [];
                     $scope.examCodeList = [];
+                    $scope.examCatalogList = ['分類'];
                 } else {
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
@@ -872,14 +879,31 @@
                             $scope.examTextList.sort(function (a, b) {
                                 return a.Code.length < b.Code.length ? 1 : -1;
                             });
+
+                            // 分類清單
+                            $scope.examTextList.forEach(function(item) {
+                                if ($scope.examCatalogList.indexOf(item.Catalog) === -1) {
+                                    $scope.examCatalogList.push(item.Catalog);
+                                }
+                            });
                         } else {
                             $scope.examTextList = [];
                             $scope.examCodeList = [];
+                            $scope.examCatalogList = ['分類'];
                         }
                     });
                 }
             }
         });
+
+        // 篩選文字評量分類
+        $scope.filterTextCatalog = function (text) {
+            if ($scope.current.TextCatalog === '分類') {
+                return text;
+            } else {
+                return (text.Catalog === $scope.current.TextCatalog);
+            }
+        }
 
          /**
           * 成績輸入

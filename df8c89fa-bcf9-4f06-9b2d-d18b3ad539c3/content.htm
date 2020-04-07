@@ -440,14 +440,34 @@
                             </tr>
                             <tr>
                                 <th class="text-center"
-                                    style="width:50px;">分類</th>
+                                        style="width:50px;">
+                                        <div class="btn-group btn-block">
+                                            <a href="javascript:void(0)"
+                                                class="btn btn-link btn-block dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                style="padding:0; color:#333; text-align:left;">
+
+                                                {{current.TextCatalog?current.TextCatalog:'分類'}}
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" style="width:100%;">
+                                                <li ng-repeat="catalogItem in examCatalogList"
+                                                    ng-class="{active:catalogItem==current.TextCatalog}">
+                                                    <a href="javascript:;"
+                                                        ng-click="current.TextCatalog=catalogItem">
+                                                        {{catalogItem}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </th>
                                 <th class="text-center"
                                     style="width:50px;">代碼</th>
                                 <th class="text-center">詳細內容</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="text in examCodeList">
+                                <tr ng-repeat="text in examCodeList | filter: filterTextCatalog">
                                 <td class="text-center"
                                     style="padding:0px;">{{text.Catalog}} </td>
                                 <td class="text-center"
