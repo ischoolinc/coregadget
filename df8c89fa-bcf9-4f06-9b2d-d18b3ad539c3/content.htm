@@ -536,7 +536,7 @@
                                      ng-attr-title="資料已修改，尚未儲存! {{stuRec['Origin_'+ exam.ExamID]?'原值為：'+stuRec['Origin_' + exam.ExamID]:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span score-stress="{{stuRec[exam.ExamID]}}" data-score-type="{{current.Exam.Type}}"
+                                <span score-stress="{{stuRec[exam.ExamID]}}" data-score-type="{{exam.Type}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[exam.ExamID]}}
                                 </span>
