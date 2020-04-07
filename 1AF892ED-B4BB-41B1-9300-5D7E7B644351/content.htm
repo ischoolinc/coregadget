@@ -765,7 +765,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h1>平時評量設定</h1>
-                    <h4>{{current.Course.CourseName}}</h4>
+                    <h4>{{current.Course.CourseName}}  {{current.template.Name}}</h4>
                 </div>
                 <div class="modal-body">
                     <table ng-if="gradeItemConfig.Mode == 'Editor'"
@@ -853,7 +853,7 @@
                     </a>
                     <a ng-click="saveGradeItemConfig()"
                        class="btn btn-default ng-scope"
-                       ng-class="{'btn-danger':!checkAllTable()}">
+                       ng-class="{'btn-danger': !gradeItemConfig.CheckConfig()}">
                         <i class="fa fa-floppy-o"></i>
                         儲存
                     </a>
@@ -869,14 +869,14 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="copyLabel">將複製評量項目至下列勾選課程</h4>
+                    <h4 class="modal-title" id="copyLabel">{{current.Course.CourseName}}  {{current.template.Name}} 將複製評量項目至下列勾選課程</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="form-check" ng-repeat="course in courseList">
+                <div class="modal-body">                    
+                    <div class="form-check" ng-repeat="course in CourseExamList">                
                         <input class="form-check-input" type="checkbox" ng-model="course.Selected"
-                            ng-disabled="current.Course.CourseID == course.CourseID" value="" id="{{course.CourseID}}">
-                        <label class="form-check-label" for="{{course.CourseID}}">
-                            {{course.CourseName}}
+                            value="" id="{{course.id}}">
+                        <label class="form-check-label" for="{{course.id}}">
+                            課程：{{course.CourseName}}, 評量：{{course.ExamName}}
                         </label>
                     </div>
                 </div>
