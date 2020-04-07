@@ -41,9 +41,25 @@
         $(function () {
             var newEditor = $("#gadget .hidden-xs").find("div").eq(0).clone();
             newEditor.css({ position: "", float: "", width: "" }).addClass('visible-xs');
-            newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+            // newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+            newEditor.find("table").removeAttr("style");
+            // 將目前學生換至第一個 tr
             newEditor.find("table").eq(0).find("tbody").eq(0).prepend(newEditor.find("table").eq(0).find("tbody").eq(0).find("tr").eq(1));
             $("#gadget").append(newEditor);
+
+            $(window).bind('scroll resize', function() {
+                if ($(this).scrollTop() > 165)  {          /* 要滑動到選單的距離 */
+                    $('#scoreContainer').addClass('navFixed');   /* 幫選單加上固定效果 */
+                    $('#examCodeContainer').height($(this).height() - 400);
+                } else {
+                    $('#scoreContainer').removeClass('navFixed'); /* 移除選單固定效果 */
+                }
+            }).scroll();
+
+            $(window).bind('load resize', function() {
+                $('#examCodeContainer').height($(this).height() / 3);
+            }).resize();
+
         });
     </script>
     <script src="js/angular.min.js"></script>
@@ -204,9 +220,10 @@
         <!--資料表-->
         <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
-                <div data-offset-top="145" bs-affix>
+                <div id="scoreContainer">
                     <!-- 成績輸入 -->
-                    <table class="table table-bordered table-striped" style="width:260px;">
+                    <div id="examScoreContainer">
+                        <table class="table table-bordered table-striped" style="width:260px;">
                         <thead>
                             <tr>
                                 <th colspan="2">成績輸入</th>
@@ -411,9 +428,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                     <!--文字評量代碼表-->
-                    <table class="table table-bordered table-striped" style="width:260px;"
-                            ng-if="current.mode == modeList[0]">
+                    <div id="examCodeContainer">
+                        <table class="table table-bordered table-striped" style="width:260px;"
+                                ng-show="current.mode == modeList[0]">
                         <thead>
                             <tr>
                                 <th class="text-center"
@@ -440,6 +459,7 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
             </div>
             <!--成績管理Table-->
             <div ng-if="current.mode == modeList[0]"

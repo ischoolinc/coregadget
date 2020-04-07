@@ -413,3 +413,12 @@ li .active {
   padding: 3px 10px;
   font-size: 14px;
 }
+
+.navFixed {
+  position: fixed;
+  top: 0px;
+}
+
+#examCodeContainer {
+  overflow: auto;
+}
