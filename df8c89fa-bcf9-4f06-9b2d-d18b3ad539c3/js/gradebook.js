@@ -1836,8 +1836,8 @@
             }
         });
 
-        /**匯出成績單 */
-        $scope.exportGradeBook = function() {
+        /**匯出定期評量成績單 */
+        const exportGradeBookA = function() {
 
             var trList = [];
             var thList1 = [];
@@ -1893,8 +1893,85 @@
     </body>
 </html>`;
 
-            saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xls');
+            saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '_定期評量.xls');
         }
+
+        /**匯出平時評量成績單 */
+        const exportGradeBookB = function() {
+
+            var trList = [];
+            var thList1 = [];
+            var thList2 = [];
+            var thList3 = [];
+            // 欄位資料整理
+            thList1 = [
+                `<td rowspan="3" width="40px">班級</td>`,
+                `<td rowspan="3" width="40px">座號</td>`,
+                `<td rowspan="3" width="70px">姓名</td>`,
+            ];
+
+            [].concat($scope.templateList || []).forEach(template => {
+                let itemCount = 0;
+                [].concat($scope.gradeItemList || []).forEach(item => {
+                    if (item.TemplateID == template.ExamID && item.Name !== '平時評量') {
+                        itemCount += 1;
+                        thList3.push(`<td>${item.Name}</td>`);
+                    }
+                });
+                thList1.push(`<td colspan="${Math.max(itemCount, 1)}">${template.Name}</td>`);
+                thList2.push(`<td colspan="${Math.max(itemCount, 1)}">評分項目</td>`);
+                if (itemCount == 0) { thList3.push(`<td></td>`); }
+            });
+
+            trList.push(`<tr>${thList1.join('')}</tr>`);
+            trList.push(`<tr>${thList2.join('')}</tr>`);
+            trList.push(`<tr>${thList3.join('')}</tr>`);
+
+
+            // 學生資料整理
+            [].concat($scope.studentList || []).forEach(student => {
+                var studentData = [
+                    `<td>${student.ClassName}</td>`,
+                    `<td>${student.SeatNumber}</td>`,
+                    `<td>${student.StudentName}</td>`,
+                ];
+
+                [].concat($scope.templateList || []).forEach(template => {
+                    let itemCount = 0;
+                    [].concat($scope.gradeItemList || []).forEach(item => {
+                        if (item.TemplateID == template.ExamID && item.Name !== '平時評量') {
+                            itemCount += 1;
+                            studentData.push(`<td>${student[item.ExamID]}</td>`);
+                        }
+                    });
+                    if (itemCount == 0) { studentData.push(`<td></td>`); }
+                });
+                trList.push(`<tr>${studentData.join('')}</tr>`);
+            });
+
+            var html = `
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    </head>
+    <body>
+        <table border="1" cellspacing="0" cellpadding="2">
+            <tbody align="center">
+                ${crrSchoolYear}學年度第${crrSemester}學期 ${$scope.current.Course.CourseName}
+                ${trList.join('')}
+            </tbody>
+        </table>
+        <br/>教師簽名：
+    </body>
+</html>`;
+
+            saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '_平時評量.xls');
+        }
+
+        /**匯出成績單 */
+        $scope.exportGradeBook = function() {
+            ($scope.current.mode === '成績管理') ? exportGradeBookA() : exportGradeBookB();
+        };
 
     }
     ])
