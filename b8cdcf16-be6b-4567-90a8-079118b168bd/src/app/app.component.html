@@ -47,7 +47,7 @@
                 <div *ngIf="currLevel === '2'" style="color:black; background-color:white;" [innerHTML]="configuration.cs_content2_template | safeHtml"></div>
               </div>
 
-              <div *ngIf="currLevel == '1' || currLevel == '2'" class='memb-list'>
+              <div *ngIf="currLevel == '1' || currLevel == '2'" class="memb-list">
                 <app-add-quit-buttons
                   [conflicted]="conflicted"
                   (onConfirmSave)="confirmQuitAddCourse()"
@@ -182,20 +182,18 @@
                   </tr>
                   <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3">
-                      <div class="points">
-                          投入點數：{{item.StudentSetPoints}} 點
-                      </div>
+                      <div class="points">投入點數：{{item.StudentSetPoints}} 點</div>
                       <ng-template #popTemplate>
                         <p *ngFor="let i of ['1','2','3','4','5']">
                           第{{i}}名 {{item.Ranks[i] || '0'}} 點
                         </p>
                       </ng-template>
-                      <button 
-                        *ngIf="item.NeedPoints == 't'"
+                      <button
+                        *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'"
                         type="button" class="btn btn-light"
                         style="margin-left: 10px;"
                         [popover]="popTemplate"
-                        popoverTitle="點數投入排行"
+                        popoverTitle="點數投入高點排行榜"
                         placement="auto"
                         triggers="focus">
                         查看排行
@@ -263,12 +261,12 @@
                           第{{i}}名 {{item.Ranks[i] || '0'}} 點
                         </p>
                       </ng-template>
-                      <button 
-                        *ngIf="item.NeedPoints == 't'"
+                      <button
+                        *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'"
                         type="button" class="btn btn-light"
                         style="margin-left: 10px;"
                         [popover]="popTemplate"
-                        popoverTitle="點數投入排行"
+                        popoverTitle="點數投入高點排行榜"
                         placement="auto"
                         triggers="focus">
                         查看排行
@@ -334,25 +332,25 @@
                   </tr>
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3" class="d-flex flex-row">
-                        <input type="number" 
+                        <input type="number"
                           #inputBox
-                          *ngIf="item.NeedPoints == 't' " 
+                          *ngIf="item.NeedPoints == 't' "
                           [ngClass]="{'error':item.PointIsError}"
                           [disabled]="item.WillAdd"
                           class="points"
                           (change)="checkPoints(inputBox.value,item)"
                           placeholder="投入點數">
-                          
+
                         <ng-template #popTemplate>
                           <p *ngFor="let i of ['1','2','3','4','5']">
                             第{{i}}名 {{item.Ranks[i] || '0'}} 點
                           </p>
                         </ng-template>
-                        <button 
-                          *ngIf="item.NeedPoints == 't'"
+                        <button
+                          *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'"
                           type="button" class="btn btn-light"
                           [popover]="popTemplate"
-                          popoverTitle="點數投入排行"
+                          popoverTitle="點數投入高點排行榜"
                           placement="auto"
                           triggers="focus">
                           查看排行
@@ -375,7 +373,7 @@
                 </tbody>
               </table>
 
-              <div *ngIf="currLevel == '1' || currLevel == '2'" class='memb-list'>
+              <div *ngIf="currLevel == '1' || currLevel == '2'" class="memb-list">
                 <app-add-quit-buttons
                   [conflicted]="conflicted"
                   (onConfirmSave)="confirmQuitAddCourse()"

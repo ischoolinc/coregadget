@@ -9,7 +9,8 @@ import { PointHistories } from './data/pointHistories';
   styleUrls: []
 })
 export class AppComponent implements OnInit {
-  point: Point = new Point();
+  isLoading = false;
+  currPoint: Point = new Point();
   pointHistories: PointHistories [] = [];
   startDate: Date;
   endDate: Date;
@@ -23,21 +24,14 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      // 取得點數
-      this.point = await this.basicService.getPoints();
+      // 取得目前點數
+      this.currPoint = await this.basicService.getPoints();
       // 取得點數歷程資料
-      this.pointHistories = await this.basicService.getPointsLog('', '', this.targetRange);
-      // 資料整理
-      this.pointHistories.forEach(data => {
-        const editDate = new Date(data.OccurDate);
-        const year = editDate.getFullYear();
-        const month = ((editDate.getMonth() + 1) < 10) ? '0' + editDate.getMonth() : '' + editDate.getMonth() ;
-        const day = (editDate.getDate() < 10) ? '0' + editDate.getDate() : '' + editDate.getDate();
-
-        data.OccurDate = `${year}/${month}/${day}`;
-      });
+      await this.getPointsLog('', '');
     } catch (error) {
       console.log(error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
@@ -48,16 +42,24 @@ export class AppComponent implements OnInit {
   async searchPointsLog() {
     const _startDate = this.startDate ? `${this.startDate.getFullYear()}/${this.startDate.getMonth() + 1 }/${this.startDate.getDate()}` : '';
     const _endDate = this.endDate ? `${this.endDate.getFullYear()}/${this.endDate.getMonth() + 1 }/${this.endDate.getDate()}` : '';
-    // 取得點數歷程資料
-    this.pointHistories = await this.basicService.getPointsLog(_startDate, _endDate, this.targetRange);
-    // 資料整理
-    this.pointHistories.forEach(data => {
-      const editDate = new Date(data.OccurDate);
-      const year = editDate.getFullYear();
-      const month = ((editDate.getMonth() + 1) < 10) ? '0' + (editDate.getMonth() + 1) : '' + editDate.getMonth() ;
-      const day = (editDate.getDate() < 10) ? '0' + editDate.getDate() : '' + editDate.getDate();
 
-      data.OccurDate = `${year}/${month}/${day}`;
-    });
+    try {
+      // 取得點數歷程資料
+      await this.getPointsLog(_startDate, _endDate);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async getPointsLog(startDate, endDate) {
+    if (this.isLoading) { return; }
+    this.isLoading = true;
+
+    // 取得點數歷程資料
+    const rsp = await this.basicService.getPointsLog(startDate, endDate, this.targetRange);
+    // 資料整理
+    this.pointHistories = [].concat(rsp || []);
   }
 }

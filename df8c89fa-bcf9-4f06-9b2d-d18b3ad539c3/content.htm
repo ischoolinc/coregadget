@@ -41,9 +41,25 @@
         $(function () {
             var newEditor = $("#gadget .hidden-xs").find("div").eq(0).clone();
             newEditor.css({ position: "", float: "", width: "" }).addClass('visible-xs');
-            newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+            // newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+            newEditor.find("table").removeAttr("style");
+            // 將目前學生換至第一個 tr
             newEditor.find("table").eq(0).find("tbody").eq(0).prepend(newEditor.find("table").eq(0).find("tbody").eq(0).find("tr").eq(1));
             $("#gadget").append(newEditor);
+
+            $(window).bind('scroll resize', function() {
+                if ($(this).scrollTop() > 165)  {          /* 要滑動到選單的距離 */
+                    $('#scoreContainer').addClass('navFixed');   /* 幫選單加上固定效果 */
+                    $('#examCodeContainer').height($(this).height() - 400);
+                } else {
+                    $('#scoreContainer').removeClass('navFixed'); /* 移除選單固定效果 */
+                }
+            }).scroll();
+
+            $(window).bind('load resize', function() {
+                $('#examCodeContainer').height($(this).height() / 3);
+            }).resize();
+
         });
     </script>
     <script src="js/angular.min.js"></script>
@@ -56,25 +72,6 @@
     <script src="js/xlsx.full.min.js"></script>
     <script src="js/FileSaver.js"></script>
     <script src="js/polyfill.min.js"></script>
-    <style>
-        .dropdown-header {
-            padding: 3px 10px;
-            font-size: 14px;
-        }
-
-        .importStudentPreview {
-            padding: 5px 10px;
-            border-radius: .25em;
-            border: solid 1px lightgray;
-            margin: 3px 0px;
-        }
-
-        .importStudentPreview .studentInfo {
-        }
-
-        .my-page {
-        }
-    </style>
 </head>
 
 <body ng-controller="MainCtrl">
@@ -90,7 +87,7 @@
         <div>
            <!--課程按鈕-->
             <div ng-if="!haveNoCourse" class="btn-group">
-                <a href=""
+                <a href="javascript:;"
                 class="btn btn-default dropdown-toggle"
                 data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -126,7 +123,7 @@
                 </ul>
             </div>
             <!--成績管理模式: 匯出報表-->
-            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn btn-default">
+            <div ng-if="examList.length > 0 && studentList.length > 0" class="btn btn-default">
                 <i class="far fa-file-excel"
                    ng-click="exportGradeBook()">
                     匯出報表
@@ -147,7 +144,7 @@
             <!-- 成績管理模式： 批次、儲存 -->
             <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn-group pull-right">
                 <div class="btn-group" ng-if="importExamList">
-                    <a href=""
+                    <a href="javascript:;"
                        class="btn btn-default dropdown-toggle"
                        data-toggle="dropdown">
                         <i class="fa fa-cog" aria-hidden="true"></i>
@@ -166,7 +163,7 @@
                             </a>
                         </li>
                         <li ng-class="{'disabled':current.template.Extension.Extension.UseAssignmentScore !== '是' || current.template.Lock}">
-                            <a href="javascript:void(0)" 
+                            <a href="javascript:void(0)"
                                 ng-click="ImportCourseExtensions()">
                                 帶入_平時評量
                             </a>
@@ -213,12 +210,20 @@
                 </a>
             </div>
         </div>
+        <div style="clear: both;">
+            開放時間：
+            <span style="color: red" ng-show="current.template.InputStartTime && current.template.InputEndTime">
+                {{current.template.InputStartTime || '未指定'}} ~ {{current.template.InputEndTime || '未指定'}}
+            </span>
+            <span ng-show="!current.template.InputStartTime && !current.template.InputEndTime">未開放</span>
+        </div>
         <!--資料表-->
         <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
-                <div data-offset-top="145" bs-affix>
+                <div id="scoreContainer">
                     <!-- 成績輸入 -->
-                    <table class="table table-bordered table-striped" style="width:260px;">
+                    <div id="examScoreContainer">
+                        <table class="table table-bordered table-striped" style="width:260px;">
                         <thead>
                             <tr>
                                 <th colspan="2">成績輸入</th>
@@ -228,7 +233,7 @@
                             <tr>
                                 <td style="width:95px;">
                                     <div class="btn-group btn-block">
-                                        <a href=""
+                                        <a href="javascript:;"
                                            class="btn btn-link btn-block dropdown-toggle"
                                            data-toggle="dropdown"
                                            style="padding:0; color:#333; text-align:left;">
@@ -352,7 +357,7 @@
                                 </td>
                                 <td ng-if="current.Exam && current.Student">
                                     <div ng-if="current.Exam.Lock || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                         ng-class="{'text-danger':current.Student[current.Exam.ExamID] < 60}"
+                                         score-stress="{{current.Student[current.Exam.ExamID]}}"
                                          class="text-center">
                                         {{current.Student[current.Exam.ExamID]=='0'?('0'):(current.Student[current.Exam.ExamID]||'&nbsp;')}}
                                     </div>
@@ -423,9 +428,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                     <!--文字評量代碼表-->
-                    <table class="table table-bordered table-striped" style="width:260px;" 
-                            ng-if="current.mode == modeList[0]">
+                    <div id="examCodeContainer">
+                        <table class="table table-bordered table-striped" style="width:260px;"
+                                ng-show="current.mode == modeList[0]">
                         <thead>
                             <tr>
                                 <th class="text-center"
@@ -433,14 +440,34 @@
                             </tr>
                             <tr>
                                 <th class="text-center"
-                                    style="width:50px;">分類</th>
+                                        style="width:50px;">
+                                        <div class="btn-group btn-block">
+                                            <a href="javascript:void(0)"
+                                                class="btn btn-link btn-block dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                style="padding:0; color:#333; text-align:left;">
+
+                                                {{current.TextCatalog?current.TextCatalog:'分類'}}
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" style="width:100%;">
+                                                <li ng-repeat="catalogItem in examCatalogList"
+                                                    ng-class="{active:catalogItem==current.TextCatalog}">
+                                                    <a href="javascript:;"
+                                                        ng-click="current.TextCatalog=catalogItem">
+                                                        {{catalogItem}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </th>
                                 <th class="text-center"
                                     style="width:50px;">代碼</th>
                                 <th class="text-center">詳細內容</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="text in examCodeList">
+                                <tr ng-repeat="text in examCodeList | filter: filterTextCatalog">
                                 <td class="text-center"
                                     style="padding:0px;">{{text.Catalog}} </td>
                                 <td class="text-center"
@@ -453,6 +480,7 @@
                     </table>
                 </div>
             </div>
+            </div>
             <!--成績管理Table-->
             <div ng-if="current.mode == modeList[0]"
                  style="margin-right:270px;">
@@ -460,17 +488,23 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th colspan="4"></th>
-                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}</th>
+                            <th colspan="6"></th>
+                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}
+                                <span class="text-red">({{current.template.Percentage}})</span>
+                            </th>
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
+                            <th class="text-center">班級</th>
+                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <!--定期評量項目-->
                             <th ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center" colspan="{{exam.Name === '文字評量' ? 2 : 1}}">
                                 <span ng-class="{'sub-item': exam.isSubItem}">
                                     {{exam.Name}}
+                                    <span ng-if="exam.Name === '定期評量'" class="text-red">{{current.Course.courseScorePercentage}}%</span>
+                                    <span ng-if="exam.Name === '平時評量'" class="text-red">{{current.Course.courseAssignmentPercentage}}%</span>
                                 </span>
                             </th>
                         </tr>
@@ -483,7 +517,15 @@
                             <td class="text-center">{{stuRec.StudentNumber}}</td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.ClassName}} {{stuRec.StudentName}}({{stuRec.SeatNumber}})</span>
+                                <span>{{stuRec.ClassName}}</span>
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.SeatNumber}}</span>
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.StudentName}}</span>
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
@@ -494,7 +536,7 @@
                                      ng-attr-title="資料已修改，尚未儲存! {{stuRec['Origin_'+ exam.ExamID]?'原值為：'+stuRec['Origin_' + exam.ExamID]:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':stuRec[exam.ExamID] < 60 && current.Exam.Type != 'Text'}"
+                                <span score-stress="{{stuRec[exam.ExamID]}}" data-score-type="{{current.Exam.Type}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[exam.ExamID]}}
                                 </span>
@@ -510,7 +552,7 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th class="text-center"colspan="3"></th>
+                            <th class="text-center" colspan="5"></th>
                             <th class="text-center"
                                 colspan="{{current.gradeItemList.length -1}}">
                                 評分項目
@@ -518,6 +560,8 @@
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
+                            <th class="text-center">班級</th>
+                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <th class="text-center"
                                 ng-repeat="item in current.gradeItemList">
@@ -529,7 +573,13 @@
                         <tr ng-repeat="student in studentList">
                             <td>{{student.StudentNumber}}</td>
                             <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                {{student.ClassName}} {{student.StudentName}}({{student.SeatNumber}})
+                                {{student.ClassName}}
+                            </td>
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.SeatNumber}}
+                            </td>
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.StudentName}}
                             </td>
                             <td class="text-center"
                                 style="position:relative"
@@ -539,7 +589,7 @@
                                 <div ng-if="!checkOneCell(student, item.ExamID, true, true)"
                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':student[item.ExamID] < 60}"
+                                <span score-stress="{{student[item.ExamID]}}"
                                     style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{student[item.ExamID]}}
                                 </span>
@@ -620,7 +670,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -643,7 +693,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -666,7 +716,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -788,7 +838,7 @@
                     <a ng-if="gradeItemConfig.Mode=='JSON'"
                        ng-click="gradeItemConfig.CommitJSON()"
                        class="btn btn-link pull-left ng-scope">
-                       預灠編輯結果
+                       預覽編輯結果
                     </a>
                     <a ng-click="saveGradeItemConfig()"
                        class="btn btn-default ng-scope"
