@@ -73,6 +73,9 @@
             process: [{
             }],
             haveNoCourse: true,
+            examCatalogList: ['分類'],
+            copyGradeItemSaving: false,
+            copyGradeItemError: '',
         };
         // 目前學年度
         var crrSchoolYear;
@@ -152,6 +155,10 @@
 
         /**文字評量分類清單 */
         $scope.examCatalogList = ['分類'];
+
+        /**複製評分項目用 */
+        copyGradeItemSaving = false;
+        copyGradeItemError = '';
 
         /**代碼替換對照表 */
         $scope.examTextList = {};
@@ -1496,6 +1503,101 @@
                 });
             }
 
+        }
+
+        /**顯示複製評量至其他課程的視窗 */
+        $scope.openCopyModal = function() {
+            $scope.copyGradeItemSaving = false;
+            $scope.copyGradeItemError = '';
+            $('#copyModal').modal('show');
+        }
+
+        /**關閉複製評量至其他課程的視窗 */
+        $scope.closeCopyModal = function() {
+            this.courseList.forEach(function(course) {
+                course.Selected = false;
+            });
+            $('#copyModal').modal('hide');
+        }
+
+        /**整理要複製評量的課程 */
+        $scope.copyGradeItemConfig = function() {
+            if ($scope.copyGradeItemSaving) return;
+            $scope.copyGradeItemError = '';
+
+            var selectedCourse = [];
+            // 取得勾選的課程清單
+            [].concat($scope.courseList || []).forEach(function(course) {
+                if (course.Selected) {
+                    selectedCourse.push({ id: course.CourseID, name: course.CourseName });
+                }
+            });
+
+            const promiseList = [];
+            selectedCourse.forEach(function(course) {
+                const courseID = course.id;
+                const courseName = course.name;
+
+                // 資料整理
+                var body = {
+                    Content: {
+                        CourseExtension: {
+                            '@CourseID': courseID
+                            , Extension: {
+                                '@Name': 'GradeItem'
+                                , GradeItem: {
+                                    Item: []
+                                }
+                            }
+                        }
+                    }
+                };
+                $scope.gradeItemConfig.Item.forEach(function (item) {
+                    if($scope.current.template.ExamID == item.ExamID) {
+                        body.Content.CourseExtension.Extension.GradeItem.Item.push({
+                            '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
+                            '@Name': item.Name,
+                            '@Weight': item.Weight,
+                            '@ExamID': item.ExamID
+                        });
+                    }
+                });
+                promiseList.push(saveGradeItem(body, courseName));
+            });
+
+            if (promiseList.length) {
+                $scope.copyGradeItemSaving = true;
+                Promise.all(promiseList).then(values => {
+                    console.log(values);
+                    $scope.copyGradeItemSaving = false;
+                    $scope.closeCopyModal();
+                    $('#saveSuccessModal').modal('show');
+                }, errCourseNames => {
+                    $scope.$apply(function() {
+                        $scope.copyGradeItemError = errCourseNames;
+                        $scope.copyGradeItemSaving = false;
+                    });
+                });
+            }
+        }
+
+        /**複製評量至其他課程中 */
+        const saveGradeItem = function(body, courseName) {
+            return new Promise((r, j) => {
+                $scope.connection.send({
+                    service: "TeacherAccess.SetCourseExtensions",
+                    autoRetry: true,
+                    body: body,
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.SetCourseExtensions Error");
+                            j(courseName);
+                        } else {
+                            r(courseName);
+                        }
+                    }
+                });
+            });
         }
 
         /**
