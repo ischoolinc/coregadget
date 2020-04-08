@@ -377,3 +377,44 @@ li .active {
     color: #08c;
     background: #f3f5f7;
 }
+
+
+.score-red {
+  color: #f00;
+}
+
+.score-red:before {
+  content: '';
+  background: rgba(255, 193, 7, .3);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.text-red {
+  color: #f00;
+}
+
+.importStudentPreview {
+  padding: 5px 10px;
+  border-radius: .25em;
+  border: solid 1px lightgray;
+  margin: 3px 0px;
+  position: relative;
+}
+
+.dropdown-header {
+  padding: 3px 10px;
+  font-size: 14px;
+}
+
+.navFixed {
+  position: fixed;
+  top: 0px;
+}
+
+#examCodeContainer {
+  overflow: auto;
+}
