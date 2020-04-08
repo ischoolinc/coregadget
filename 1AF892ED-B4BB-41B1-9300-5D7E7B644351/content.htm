@@ -532,7 +532,7 @@
                                 style="position:relative;"
                                 ng-style="checkPass(stuRec['Exam'+exam.ExamID], stuRec.PassingStandard)"
                                 ng-if="!exam.Group || exam.SubVisible"
-                                ng-click="setCurrent(stuRec, exam, true, true)">                             
+                                ng-click="setCurrent(stuRec, exam, true, true)">
                                 <div ng-if="!checkOneCell(stuRec, 'Exam'+exam.ExamID)"
                                      ng-attr-title="{{stuRec['Exam'+exam.ExamID+'Origin']?'原值為：'+stuRec['Exam'+exam.ExamID+'Origin']:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
@@ -765,7 +765,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h1>平時評量設定</h1>
-                    <h4>{{current.Course.CourseName}}  {{current.template.Name}}</h4>
+                    <h4>{{current.Course.CourseName}} {{current.template.Name}}</h4>
                 </div>
                 <div class="modal-body">
                     <table ng-if="gradeItemConfig.Mode == 'Editor'"
@@ -848,7 +848,9 @@
                        ng-class="{'btn-danger':!checkAllTable()}">
                         預灠編輯結果
                     </a>
-                    <a class="btn btn-link pull-left ng-scope" ng-click="openCopyModal()">
+                    <a class="btn btn-link pull-left ng-scope"
+                       ng-click="openCopyModal()"
+                       ng-disabled="current.gradeItemList.length < 2">
                         複製評量至其他課程
                     </a>
                     <a ng-click="saveGradeItemConfig()"
@@ -861,48 +863,81 @@
             </div>
         </div>
     </div>
-     <!-- 複製評量 -->
-     <div class="modal fade" id="copyModal" tabindex="-1" role="dialog" aria-labelledby="copyLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- 複製評量 -->
+    <div class="modal fade"
+         id="copyModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="copyLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="copyLabel">{{current.Course.CourseName}}  {{current.template.Name}} 將複製評量項目至下列勾選課程</h4>
+                    <h4 class="modal-title"
+                        id="copyLabel">{{current.Course.CourseName}} {{current.template.Name}} 將複製評量項目至下列勾選課程</h4>
+                        <h6>已有評分項目無法勾選</h6>
                 </div>
-                <div class="modal-body">                    
-                    <div class="form-check" ng-repeat="course in CourseExamList">                
-                        <input class="form-check-input" type="checkbox" ng-model="course.Selected"
-                            value="" id="{{course.id}}">
-                        <label class="form-check-label" for="{{course.id}}">
+                <div class="modal-body">
+                    <div class="form-check"
+                         ng-repeat="course in CourseExamList">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               ng-model="course.Selected"
+                               ng-disabled="course.ItemDisable"
+                               value=""
+                               id="{{course.id}}">
+                        <label class="form-check-label"
+                               for="{{course.id}}">
                             課程：{{course.CourseName}}, 評量：{{course.ExamName}}
                         </label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <!-- data-dismiss="modal" -->
-                    <button type="button" class="btn btn-secondary" ng-click="closeCopyModal()">關閉</button>
-                    <button type="button" class="btn btn-primary" ng-click="copyGradeItemConfig()">儲存</button>
+                    <button type="button"
+                            class="btn btn-secondary"
+                            ng-click="closeCopyModal()">關閉</button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            ng-click="copyGradeItemConfig()">儲存</button>
                 </div>
             </div>
         </div>
     </div>
     <!-- 複製評量儲存成功 -->
-    <div class="modal fade" id="saveSuccessModal" tabindex="-1" role="dialog" aria-labelledby="successLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade"
+         id="saveSuccessModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="successLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="successLabel">複製成功</h4>
+                    <h4 class="modal-title"
+                        id="successLabel">複製成功</h4>
                 </div>
                 <div class="modal-body">
                     已將「{{current.Course.CourseName}}」此課程平時評量項目複製到選擇的課程。
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal">關閉</button>
                 </div>
             </div>
         </div>
