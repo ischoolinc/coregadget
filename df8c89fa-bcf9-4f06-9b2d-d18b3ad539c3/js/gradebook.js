@@ -153,6 +153,9 @@
         /**文字評量分類清單 */
         $scope.examCatalogList = ['分類'];
 
+        /**代碼替換對照表 */
+        $scope.examTextList = {};
+
         /**
          * 設定目前定期評量
          */
@@ -863,32 +866,30 @@
             result: function (response, error, http) {
                 if (error !== null) {
                     alert("取得「文字評量代碼表」出現錯誤。");
-                    $scope.examTextList = [];
+                    $scope.examTextList = {};
                     $scope.examCodeList = [];
                     $scope.examCatalogList = ['分類'];
                 } else {
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
 
-                            // 資料替換用
-                            $scope.examTextList = [].concat(response.Response.TextMappingTable.Item || []);
                             // 資料顯示用
                             $scope.examCodeList = [].concat(response.Response.TextMappingTable.Item || []);
 
-                            // 代碼排序 長度大到小
-                            $scope.examTextList.sort(function (a, b) {
-                                return a.Code.length < b.Code.length ? 1 : -1;
+                            // 資料替換用
+                            $scope.examCodeList.forEach(function(item) {
+                                if (item.Code) { $scope.examTextList[item.Code] = item.Content || ''; }
                             });
 
                             // 分類清單
-                            $scope.examTextList.forEach(function(item) {
+                            $scope.examCodeList.forEach(function(item) {
                                 if ($scope.examCatalogList.indexOf(item.Catalog) === -1) {
                                     $scope.examCatalogList.push(item.Catalog);
                                 }
                             });
                         } else {
                             $scope.examTextList = [];
-                            $scope.examCodeList = [];
+                            $scope.examCodeList = {};
                             $scope.examCatalogList = ['分類'];
                         }
                     });
@@ -1239,6 +1240,7 @@
                     var importExam = {
                         Name: '匯入_' + exam.Name,
                         Type: 'Function',
+                        ScoreType: exam.Type,
                         Fn: function() {
                             delete importExam.ParseString;
                             delete importExam.ParseValues;
@@ -1393,6 +1395,10 @@
                             // 學期成績試算
                             $scope.calc();
                             $('#importModal').modal('hide');
+                        },
+                        Code2Text: function() {
+                            // 找出符合規則的字串，進行取代
+                            importExam.ParseString = $scope.codeConvertText(importExam.ParseString || '');
                         },
                         Disabled: exam.Lock || exam.Permission === 'Read'
                     };
@@ -1738,24 +1744,7 @@
 
         // 文字評量輸入
         $scope.textChangeEvent = function () {
-
-            var codeList = $scope.current.Value.split(",")
-            var valueList = [];
-
-            codeList.forEach(function (code) {
-                var result = $.map($scope.examTextList, function (item, index) {
-                    return item.Code;
-                }).indexOf(code);
-
-                if (result > -1) {
-                    valueList.push($scope.examTextList[result].Content);
-                }
-                else {
-                    valueList.push(code);
-                }
-
-                $scope.current.Value = valueList.join();
-            });
+            $scope.current.Value = $scope.codeConvertText($scope.current.Value);
         }
 
         $scope.changeSelectMode = function (mode) {
@@ -1971,6 +1960,13 @@
         /**匯出成績單 */
         $scope.exportGradeBook = function() {
             ($scope.current.mode === '成績管理') ? exportGradeBookA() : exportGradeBookB();
+        };
+
+
+        // 找出符合規則的字串，將文字代碼取代成文字
+        $scope.codeConvertText = function(value) {
+            const re = new RegExp(/([\d\w]+)/, 'g');
+            return (value || '').replace(re, function(match, g1) { return $scope.examTextList[g1] || g1 });
         };
 
     }

@@ -670,7 +670,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -693,7 +693,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -716,7 +716,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             score-stress="{{importTarget.ParseValues[$index]}}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -724,6 +724,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default btn-sm pull-left"
+                            ng-if="!importTarget.ParseValues && importTarget.ScoreType === 'Text'"
+                            ng-click="importTarget.Code2Text()">代碼轉文字</button>
                     <button type="button"
                             class="btn btn-default btn-sm"
                             ng-if="!importTarget.ParseValues"
