@@ -125,6 +125,15 @@
                     匯出報表
                 </i>
             </div>
+
+             <!--成績管理：匯出報表-->
+             <div class="btn btn-default"
+             ng-if="current.mode === '平時評量'">
+            <i class="far fa-file-excel"
+               ng-click="exportExcelA()">
+                匯出報表
+            </i>
+        </div>
             <!--批次 儲存-->
             <div class="btn-group pull-right">
                 <div class="btn-group"

@@ -2022,6 +2022,86 @@
         }
 
         /**
+ * 匯出成績單(平時評量)
+ */
+        $scope.exportExcelA = function () {
+            // 檢查資料是否更動
+            var data_changed = !$scope.checkAllTable($scope.current.mode);
+            if (data_changed) {
+                alert("資料尚未儲存，無法匯出報表。");
+            }
+            else {
+
+                var trList = [];
+                var thList1 = [];
+                // 欄位資料整理
+                thList1 = [
+                    `<td rowspan="1" width="40px">班級</td>`,
+                    `<td rowspan="1" width="40px">座號</td>`,
+                    `<td rowspan="1" width="70px">姓名</td>`,
+                    `<td rowspan="1" width="70px">平時評量成績</td>`,
+                ];
+
+                // 平時評量項目
+                if ($scope.gradeItemList) {
+                    [].concat($scope.gradeItemList || []).forEach(function (exam) {
+
+                        var str = `<td rowspan="1" width="70px">${exam.Name}</td>`
+                        thList1.push(str)
+                    });
+                }
+
+                trList.push(`<tr>${thList1.join('')}</tr>`);
+
+
+                // 學生資料整理
+                [].concat($scope.studentList || []).forEach(student => {
+                    var studentData = [
+                        `<td>${student.ClassName}</td>`,
+                        `<td>${student.SeatNo}</td>`,
+                        `<td>${student.StudentName}</td>`
+                    ];
+
+                    if (student['QuizResult']) {
+                        studentData.push(`<td>${student['QuizResult']}</td>`);
+                    } else {
+                        studentData.push(`<td></td>`);
+                    }
+
+                    if ($scope.gradeItemList) {
+                        [].concat($scope.gradeItemList || []).forEach(function (exam) {
+                            var score = `<td></td>`;
+                            if (student[exam.ExamID]) {
+                                score = `<td>${student[exam.ExamID]}</td>`;
+                            }
+                            studentData.push(score);
+                        });
+                    }
+
+                    trList.push(`<tr>${studentData.join('')}</tr>`);
+                });
+
+                var html = `
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    </head>
+    <body>
+        <table border="1" cellspacing="0" cellpadding="2">
+            <tbody align="center">
+                ${$scope.current.Course.SchoolYear}學年度第${$scope.current.Course.Semester}學期 ${$scope.current.Course.CourseName}
+                ${trList.join('')}
+            </tbody>
+        </table>
+        <br/>教師簽名：
+    </body>
+</html>`;
+
+                saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '_平時評量.xls');
+            }
+        }
+
+        /**
          * convert the binary data into octet
          */
         var s2ab = function (s) {
