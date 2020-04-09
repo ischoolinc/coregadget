@@ -1968,8 +1968,16 @@
                                 $scope.studentList.forEach(student => {
                                     $scope.calcQuizResult(student);
                                 });
+
                                 // 儲存平時評量成績
                                 $scope.saveGradeItemScore();
+
+                                // 設定目前定期評量
+                                if($scope.current.template) {
+                                    $scope.setCurrentTemplate($scope.current.template);
+                                } else{
+                                    $scope.setCurrentTemplate($scope.templateList[0]);
+                                }
                             });
                         }
                     }
