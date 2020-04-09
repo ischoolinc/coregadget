@@ -430,20 +430,14 @@
                 <table class="table table-bordered table-striped table-hover text-center"
                        style="table-layout:fixed;">
                     <thead>
-                        <tr>
-                            <!-- <th class="text-center"
-                                style="padding: 8px 2px;"
-                                rowspan="2">
-                                學生
-                            </th> -->
-
-                            <th class="text-center">
+                        <tr>                            
+                            <th class="text-center" rowspan="2">
                                 班級
                             </th>
-                            <th class="text-center">
+                            <th class="text-center" rowspan="2">
                                 座號
                             </th>
-                            <th class="text-center">
+                            <th class="text-center" rowspan="2">
                                 姓名
                             </th>
                             <th ng-if="!exam.Group || exam.SubVisible"
@@ -454,7 +448,7 @@
                                 rowspan="{{exam.Group?1:2}}">
                                 <span ng-if="!exam.Group"
                                       style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
-                                    {{exam.Name}}
+                                      {{exam.Name}} <span ng-if="exam.Percentage.length > 0" class="text-red">({{exam.Percentage}})</span>
                                 </span>
                                 <span ng-if="exam.Name == '平時評量'"
                                       style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis; padding-left:5px;">

@@ -332,7 +332,8 @@
                             Permission: 'Editor',
                             Lock: examRec.Lock,
                             InputStartTime: examRec.InputStartTime,
-                            InputEndTime: examRec.InputEndTime
+                            InputEndTime: examRec.InputEndTime,
+                            Percentage:examRec.Percentage
                         };
                         // 努力程度 
                         var examScoreEffort = {
@@ -1940,7 +1941,7 @@
                     Subject: '',
                     Author: 'ischool',
                 };
-                wb.SheetNames.push('成績單');
+                wb.SheetNames.push($scope.current.Course.CourseName + '_成績單');
 
                 // 資料整理
                 var ws_data = [];
@@ -1953,6 +1954,11 @@
                     { wch: 15 },
                     { wch: 15 }
                 ];
+
+                var d ={
+                    test:'data'
+                }
+                ws_data.push(d);
                 $scope.studentList.forEach(function (stuRec) {
                     var data = {
                         班級: stuRec.ClassName,
@@ -2307,8 +2313,8 @@
             scope: {
                 'score-type': '=',
             },
-            link: function(scope, element, attrs) {
-                const funChangeCSS = function() {
+            link: function (scope, element, attrs) {
+                const funChangeCSS = function () {
                     element.removeClass('score-red');
                     if (attrs.scoreType !== 'Text') {
                         if ($.isNumeric(attrs.scoreStress)) {
@@ -2327,4 +2333,4 @@
             }
         };
     });
-    
+
