@@ -333,7 +333,7 @@
                             Lock: examRec.Lock,
                             InputStartTime: examRec.InputStartTime,
                             InputEndTime: examRec.InputEndTime,
-                            Percentage:examRec.Percentage
+                            Percentage: examRec.Percentage
                         };
                         // 努力程度 
                         var examScoreEffort = {
@@ -1935,57 +1935,89 @@
                 alert("資料尚未儲存，無法匯出報表。");
             }
             else {
-                var wb = XLSX.utils.book_new();
-                wb.Props = {
-                    Title: '成績單',
-                    Subject: '',
-                    Author: 'ischool',
-                };
-                wb.SheetNames.push($scope.current.Course.CourseName + '_成績單');
 
-                // 資料整理
-                var ws_data = [];
-                // 自訂欄寬
-                var wscols = [
-                    { wch: 10 },
-                    { wch: 8 },
-                    { wch: 15 },
-                    { wch: 15 },
-                    { wch: 15 },
-                    { wch: 15 }
+                var trList = [];
+                var thList1 = [];
+                // 欄位資料整理
+                thList1 = [
+                    `<td rowspan="1" width="40px">班級</td>`,
+                    `<td rowspan="1" width="40px">座號</td>`,
+                    `<td rowspan="1" width="70px">姓名</td>`,
+                    `<td rowspan="1" width="70px">學期成績</td>`,
                 ];
 
-                var d ={
-                    test:'data'
+                // 評量名稱
+                if ($scope.current.Course.Scores.Score) {
+                    [].concat($scope.current.Course.Scores.Score || []).forEach(function (exam) {
+
+                        var str = `<td rowspan="1" width="70px">${exam.Name}<span style="color: #ff0000">(${exam.Percentage})</span></td>`
+                        thList1.push(str)
+                    });
                 }
-                ws_data.push(d);
-                $scope.studentList.forEach(function (stuRec) {
-                    var data = {
-                        班級: stuRec.ClassName,
-                        座號: stuRec.SeatNo,
-                        姓名: stuRec.StudentName
+
+                thList1.push(`<td rowspan="1" width="70px">平時評量</td>`);
+                thList1.push(`<td rowspan="1" width="70px">文字評量</td>`);
+
+
+                trList.push(`<tr>${thList1.join('')}</tr>`);
+
+
+                // 學生資料整理
+                [].concat($scope.studentList || []).forEach(student => {
+                    var studentData = [
+                        `<td>${student.ClassName}</td>`,
+                        `<td>${student.SeatNo}</td>`,
+                        `<td>${student.StudentName}</td>`
+                    ];
+
+                    if (student['Exam_學期成績']) {
+                        studentData.push(`<td>${student['Exam_學期成績']}</td>`);
+                    } else {
+                        studentData.push(`<td></td>`);
                     }
-                    data['學期成績'] = stuRec['Exam_學期成績'];
+
                     if ($scope.current.Course.Scores.Score) {
                         [].concat($scope.current.Course.Scores.Score || []).forEach(function (exam) {
-                            data[exam.Name] = stuRec['Exam_' + exam.ExamID];
-                            wscols.push({ wch: 15 });
+                            var score = `<td></td>`;
+                            if (student['Exam_' + exam.ExamID]) {
+                                score = `<td>${student['Exam_' + exam.ExamID]}</td>`;
+                            }
+                            studentData.push(score);
                         });
                     }
-                    data['平時評量'] = stuRec['Exam_平時評量'];
-                    data['文字評量'] = stuRec['Exam_文字評量'];
 
-                    ws_data.push(data);
+                    if (student['Exam_平時評量']) {
+                        studentData.push(`<td>${student['Exam_平時評量']}</td>`);
+                    } else {
+                        studentData.push(`<td></td>`);
+                    }
+
+                    if (student['Exam_文字評量']) {
+                        studentData.push(`<td>${student['Exam_文字評量']}</td>`);
+                    } else {
+                        studentData.push(`<td></td>`);
+                    }
+
+                    trList.push(`<tr>${studentData.join('')}</tr>`);
                 });
 
-                var ws = XLSX.utils.json_to_sheet(ws_data);
+                var html = `
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    </head>
+    <body>
+        <table border="1" cellspacing="0" cellpadding="2">
+            <tbody align="center">
+                ${$scope.current.Course.SchoolYear}學年度第${$scope.current.Course.Semester}學期 ${$scope.current.Course.CourseName}
+                ${trList.join('')}
+            </tbody>
+        </table>
+        <br/>教師簽名：
+    </body>
+</html>`;
 
-                ws['!cols'] = wscols;
-
-                wb.Sheets[wb.SheetNames[0]] = ws;
-                // export the workbook as xlsx binary
-                var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-                saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '.xlsx');
+                saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '_定期評量.xls');
             }
         }
 
