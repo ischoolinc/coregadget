@@ -422,3 +422,7 @@ li .active {
 #examCodeContainer {
   overflow: auto;
 }
+
+.my-page {
+  overflow-y: auto;
+}
