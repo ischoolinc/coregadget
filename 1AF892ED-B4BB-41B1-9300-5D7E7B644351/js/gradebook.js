@@ -2088,7 +2088,18 @@
             });
 
             var SendData = [];
+
+            // 整理 select 
+            var selectedCourseID = [];
+            var selectedCourse = [];
             selectedCourseExam.forEach(function (course) {
+                if (!selectedCourseID.includes(course.CourseID)) {
+                    selectedCourseID.push(course.CourseID);
+                    selectedCourse.push(course);
+                }
+            });
+
+            selectedCourse.forEach(function (course) {
                 // 資料整理
                 var body = {
                     Content: {
@@ -2105,13 +2116,17 @@
                 };
 
                 // 複製到所選新的
-                $scope.current.gradeItemList.forEach(function (item) {
-                    if (item.SubExamID) {
-                        body.Content.CourseExtension.Extension.GradeItem.Item.push({
-                            '@ExamID': course.ExamID,
-                            '@SubExamID': item.Name,
-                            '@Name': item.Name,
-                            '@Weight': item.Weight
+                selectedCourseExam.forEach(function (selCourse) {
+                    if (selCourse.CourseID === course.CourseID) {
+                        $scope.current.gradeItemList.forEach(function (item) {
+                            if (item.SubExamID) {
+                                body.Content.CourseExtension.Extension.GradeItem.Item.push({
+                                    '@ExamID': selCourse.ExamID,
+                                    '@SubExamID': item.Name,
+                                    '@Name': item.Name,
+                                    '@Weight': item.Weight
+                                });
+                            }
                         });
                     }
                 });
