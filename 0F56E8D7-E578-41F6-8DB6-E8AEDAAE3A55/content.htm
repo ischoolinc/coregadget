@@ -869,7 +869,8 @@
                        預灠編輯結果
                     </a> -->
                     <a class="btn btn-link pull-left ng-scope"
-                       ng-click="openCopyModal()">
+                       ng-click="openCopyModal()"
+                       ng-disabled="current.gradeItemList.length < 2">
                         複製評量至其他課程
                     </a>
                     <a ng-click="saveGradeItemConfig()"
@@ -945,14 +946,15 @@
                     </button>
                     <h4 class="modal-title"
                         id="copyLabel">將複製評量項目至下列勾選課程</h4>
+                        <h6>已有評分項目無法勾選</h6>
                 </div>
                 <div class="modal-body">
                     <div class="form-check"
-                         ng-repeat="course in courseList">
+                         ng-repeat="course in CanSelectCourseExamList">
                         <input class="form-check-input"
                                type="checkbox"
                                ng-model="course.Selected"
-                               ng-disabled="current.Course.CourseID == course.CourseID"
+                               ng-disabled="course.ItemDisable"
                                value=""
                                id="{{course.CourseID}}">
                         <label class="form-check-label"
