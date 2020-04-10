@@ -585,7 +585,7 @@
          * 執行setupCurrent
          */
         $scope.dataReload = function() {
-            const optionOrder = ($scope.curSort.code === 'sn' ? { StudentNumber: '' } : { GradeYear: '', ClassName: '',  SeatNo: '' });
+            const optionOrder = ($scope.curSort.code === 'sn' ? { StudentNumber: '' } : { GradeYear: '', DisplayOrder: '', ClassName: '',  SeatNo: '' });
             $scope.connection.send({
                 service: "TeacherAccess.GetCourseStudents2020",
                 autoRetry: true,
@@ -1742,15 +1742,23 @@
                     // console.log(val);
 
                     $scope.$apply(function () {
-                        // // 重新取得平時評量項目
-                        $scope.getGradeItemList().then(value => {
-                            $scope.current.gradeItemList = [];
-                            // 篩選出目前定期的平時評量項目
-                            $scope.gradeItemList.forEach(item => {
-                                if (item.RefExamID == $scope.current.template.ExamID) {
-                                    $scope.current.gradeItemList.push(item);
-                                }
+
+                        // 重新取得評分項目(小考)資料
+                        $scope.getGradeItemList().then(function() {
+                            // 重算平時評量成績
+                            $scope.studentList.forEach(student => {
+                                $scope.calcQuizResult(student);
                             });
+
+                            // 儲存平時評量成績
+                            $scope.saveGradeItemScore();
+
+                            // 設定目前定期評量
+                            if($scope.current.template) {
+                                $scope.setCurrentTemplate($scope.current.template);
+                            } else{
+                                $scope.setCurrentTemplate($scope.templateList[0]);
+                            }
                         });
 
                         $scope.copyGradeItemSaving = false;
@@ -2106,6 +2114,7 @@
             var thList2 = [];
             // 欄位資料整理
             thList1 = [
+                `<td rowspan="2" width="40px">學號</td>`,
                 `<td rowspan="2" width="40px">班級</td>`,
                 `<td rowspan="2" width="40px">座號</td>`,
                 `<td rowspan="2" width="70px">姓名</td>`,
@@ -2125,6 +2134,7 @@
             // 學生資料整理
             [].concat($scope.studentList || []).forEach(student => {
                 var studentData = [
+                    `<td>${student.StudentNumber}</td>`,
                     `<td>${student.ClassName}</td>`,
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,
@@ -2167,6 +2177,7 @@
             var thList3 = [];
             // 欄位資料整理
             thList1 = [
+                `<td rowspan="3" width="40px">學號</td>`,
                 `<td rowspan="3" width="40px">班級</td>`,
                 `<td rowspan="3" width="40px">座號</td>`,
                 `<td rowspan="3" width="70px">姓名</td>`,
@@ -2193,6 +2204,7 @@
             // 學生資料整理
             [].concat($scope.studentList || []).forEach(student => {
                 var studentData = [
+                    `<td>${student.StudentNumber}</td>`,
                     `<td>${student.ClassName}</td>`,
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,

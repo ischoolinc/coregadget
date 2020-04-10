@@ -108,6 +108,14 @@
                   <i class="material-icons">add</i>
                   產生綜合紀錄表
                 </a>
+
+                <a class="dropdown-item"
+                (click)="showSystemAsyncModal()">
+                <span class="material-icons">
+                  swap_vert
+                 </span>
+               轉入系統欄位
+             </a>
                 <!-- <a class="dropdown-item"
                    (click)="genSSNKey(currentSection.FillInSectionID)">
                   <i style="display: inline-block;width: 27.42px;"></i>
@@ -165,10 +173,10 @@
                 <i class="material-icons">add</i>
                 產生綜合紀錄表
               </a>
-              <a class="dropdown-item disabled">
+              <!-- <a class="dropdown-item disabled">
                 <i style="display: inline-block;width: 27.42px;"></i>
                 產生填寫代碼(身分證號)
-              </a>
+              </a> -->
               <hr />
               <a class="dropdown-item"
                  target="_blank"
@@ -252,4 +260,59 @@
   </div>
 </div>
 
+
+
+<!-- 系統欄位轉入A表  Modal-->
+<div class="modal fade"
+     id="genSystemCoreColtoAFrom"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="newCaseLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="newCaseLabel">
+          校務系統欄位轉入綜合紀錄表
+        </h5>
+        <button *ngIf="!generater.isSaving"
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body pb-0">
+        <ng-container *ngIf="this.isLoading">
+          資料轉入中...
+        </ng-container>
+        <ng-container *ngIf="!this.isLoading&&!this.transferSuccess">
+          <p> {{this.currentSemester.SchoolYear}}學年度 第{{this.currentSemester.Semester}}學期 校務系統核心欄位轉入輔導A表。</p>
+        </ng-container>
+        <ng-container *ngIf="true">
+          <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
+            <mat-progress-bar *ngIf ="isLoading" mode="indeterminate"></mat-progress-bar>
+        </ng-container>
+        <ng-container *ngIf ="this.transferSuccess">
+          <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
+        <p *ngIf ="this.transferSuccess" >轉入完成!</p>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <h6 *ngIf="generater.isSaving"
+            class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
+        <button *ngIf="!this.isLoading&&!this.transferSuccess" type="button"
+                class="btn btn-info"
+                (click)="transferSystemCoreColToAFrom()"
+                [disabled]="generater.isLoading || generater.isSaving">
+          轉入
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 系統欄位轉入A表  Modal End-->
 <app-generate-key-and-set-time #GenerateKeyAndSetTime></app-generate-key-and-set-time>
