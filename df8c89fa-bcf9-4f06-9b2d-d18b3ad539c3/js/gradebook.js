@@ -1742,15 +1742,23 @@
                     // console.log(val);
 
                     $scope.$apply(function () {
-                        // // 重新取得平時評量項目
-                        $scope.getGradeItemList().then(value => {
-                            $scope.current.gradeItemList = [];
-                            // 篩選出目前定期的平時評量項目
-                            $scope.gradeItemList.forEach(item => {
-                                if (item.RefExamID == $scope.current.template.ExamID) {
-                                    $scope.current.gradeItemList.push(item);
-                                }
+
+                        // 重新取得評分項目(小考)資料
+                        $scope.getGradeItemList().then(function() {
+                            // 重算平時評量成績
+                            $scope.studentList.forEach(student => {
+                                $scope.calcQuizResult(student);
                             });
+
+                            // 儲存平時評量成績
+                            $scope.saveGradeItemScore();
+
+                            // 設定目前定期評量
+                            if($scope.current.template) {
+                                $scope.setCurrentTemplate($scope.current.template);
+                            } else{
+                                $scope.setCurrentTemplate($scope.templateList[0]);
+                            }
                         });
 
                         $scope.copyGradeItemSaving = false;
