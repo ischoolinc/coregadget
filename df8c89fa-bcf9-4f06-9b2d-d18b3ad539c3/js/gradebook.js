@@ -2106,6 +2106,7 @@
             var thList2 = [];
             // 欄位資料整理
             thList1 = [
+                `<td rowspan="2" width="40px">學號</td>`,
                 `<td rowspan="2" width="40px">班級</td>`,
                 `<td rowspan="2" width="40px">座號</td>`,
                 `<td rowspan="2" width="70px">姓名</td>`,
@@ -2125,6 +2126,7 @@
             // 學生資料整理
             [].concat($scope.studentList || []).forEach(student => {
                 var studentData = [
+                    `<td>${student.StudentNumber}</td>`,
                     `<td>${student.ClassName}</td>`,
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,
@@ -2167,6 +2169,7 @@
             var thList3 = [];
             // 欄位資料整理
             thList1 = [
+                `<td rowspan="3" width="40px">學號</td>`,
                 `<td rowspan="3" width="40px">班級</td>`,
                 `<td rowspan="3" width="40px">座號</td>`,
                 `<td rowspan="3" width="70px">姓名</td>`,
@@ -2193,6 +2196,7 @@
             // 學生資料整理
             [].concat($scope.studentList || []).forEach(student => {
                 var studentData = [
+                    `<td>${student.StudentNumber}</td>`,
                     `<td>${student.ClassName}</td>`,
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,
