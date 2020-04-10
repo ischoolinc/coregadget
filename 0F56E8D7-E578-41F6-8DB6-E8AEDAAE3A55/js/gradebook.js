@@ -1990,18 +1990,18 @@
                             $scope.$apply(function () {
                                 // 重新取得平時評量項目，並重新結算平時評量成績                                
                                 $scope.getGradeItemList().then(value => {
-                                    console.log(value);
+                                 //   console.log(value);
                                     $scope.$apply(function () {
                                         $scope.studentList.forEach(stuRec => {
-                                            $scope.calcQuizResult(stuRec);
+                                            $scope.calcQuizResult(stuRec);                                           
                                         });
                                     });
                                 });
 
-                                 // 儲存平時評量成績
-                                 $scope.saveGradeItemScore();
-
-                                 
+                                // // 儲存平時評量成績
+                                // $scope.saveGradeItemScore();
+                                // $scope.setCurrentMode($scope.current.mode);
+                               
                                 $scope.batchItemList = [];
                                 $scope.gradeItemConfig.Item.forEach(function (gradeItem) {
 
@@ -2023,7 +2023,7 @@
                                                 var flag = false;
                                                 var temp = Number(importItem.ParseValues[i]);
                                                 if (!isNaN(temp) && temp <= 100 && temp >= 0) {
-                
+
                                                     if (importItem.ParseValues[i] != '') {
                                                         flag = true;
                                                     }
@@ -2070,11 +2070,11 @@
                                                 // 平時評量成績結算
                                                 $scope.calcQuizResult(stuRec);
                                             });
-                
+
                                             $('#importModal').modal('hide');
                                         }
                                     };
-                
+
                                     $scope.batchItemList.push(importItem);
                                 });
 
@@ -2119,6 +2119,7 @@
                     `<td rowspan="1" width="40px">座號</td>`,
                     `<td rowspan="1" width="70px">姓名</td>`,
                     `<td rowspan="1" width="70px">學期成績</td>`,
+                    `<td rowspan="1" width="70px">學期成績_試算</td>`,
                 ];
 
                 // 評量名稱
@@ -2147,6 +2148,11 @@
 
                     if (student['Exam_學期成績']) {
                         studentData.push(`<td>${student['Exam_學期成績']}</td>`);
+                    } else {
+                        studentData.push(`<td></td>`);
+                    }
+                    if (student['Exam_學期成績_試算']) {
+                        studentData.push(`<td>${student['Exam_學期成績_試算']}</td>`);
                     } else {
                         studentData.push(`<td></td>`);
                     }

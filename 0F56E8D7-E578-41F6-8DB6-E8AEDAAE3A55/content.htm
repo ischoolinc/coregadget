@@ -194,7 +194,8 @@
                 </a>
             </div>
         </div>
-        <div style="clear: both;">
+        <div style="clear: both;"
+             ng-if="current.mode !=='平時評量'">
             開放時間：
             <span style="color: red"
                   ng-show="current.Exam.InputStartTime && current.Exam.InputEndTime">
@@ -202,6 +203,17 @@
             </span>
             <span ng-show="!current.Exam.InputStartTime && !current.Exam.InputEndTime">未開放</span>
         </div>
+
+        <div style="clear: both;"
+             ng-if="current.mode ==='平時評量'">
+            開放時間：
+            <span style="color: red"
+                  ng-show="current.Course.TemplateExtension.Extension.OrdinarilyStartTime && current.Course.TemplateExtension.Extension.OrdinarilyEndTime">
+                {{current.Course.TemplateExtension.Extension.OrdinarilyStartTime || '未指定'}} ~ {{current.Course.TemplateExtension.Extension.OrdinarilyEndTime || '未指定'}}
+            </span>
+            <span ng-show="!current.Course.TemplateExtension.Extension.OrdinarilyStartTime && !current.Course.TemplateExtension.Extension.OrdinarilyEndTime">未開放</span>
+        </div>
+
         <div class="hidden-xs"
              ng-if="studentList"
              style="margin-top:10px;">
@@ -342,8 +354,9 @@
                                 </td>
                                 <td ng-if="current.Exam && current.Student">
                                     <div ng-if="current.Exam.Lock || !current.Student || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                         ng-class="{'text-danger':current.Student['Exam_' + current.Exam.Name] < 60}"
-                                         class="text-center">
+                                         
+                                         class="text-center"
+                                         score-stress="{{current.Student[current.Exam.ExamID]}}">
                                         {{current.Student[current.Exam.ExamID] == '0' ? ('0') : (current.Student[current.Exam.ExamID] || '&nbsp;')}}
                                     </div>
                                     <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Number' && current.Exam.Permission == 'Editor'"
@@ -529,14 +542,16 @@
                                 <h6 ng-if="exam.Group"
                                     style="margin:0px;display:inline-block;">
                                     <small>
-                                        <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
+                                        <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap"
+                                              score-stress="{{stuRec[exam.ExamID]}}"
+                                              data-score-type="{{exam.Type}}">
                                             {{stuRec[exam.ExamID]}}
                                         </span>
                                     </small>
                                 </h6>
                                 <span ng-if="!exam.Group"
                                       score-stress="{{stuRec[exam.ExamID]}}"
-                                      data-score-type="{{current.Exam.Type}}"
+                                      data-score-type="{{exam.Type}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[exam.ExamID]}}
                                 </span>
@@ -585,7 +600,9 @@
                             <td>{{student.SeatNumber}}</td>
                             <td>{{student.StudentName}}</td>
                             <td class="text-center"
-                                style="position:relative;">
+                                style="position:relative;"
+                                score-stress="{{student['QuizResult']}}"
+                                data-score-type="{{current.Exam.Type}}">
                                 <div ng-if="!checkOneCell(student, 'QuizResult')"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
@@ -946,7 +963,7 @@
                     </button>
                     <h4 class="modal-title"
                         id="copyLabel">將複製評量項目至下列勾選課程</h4>
-                        <h6>已有評分項目無法勾選</h6>
+                    <h6>已有評分項目無法勾選</h6>
                 </div>
                 <div class="modal-body">
                     <div class="form-check"
