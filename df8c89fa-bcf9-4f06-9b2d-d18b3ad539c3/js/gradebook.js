@@ -2118,6 +2118,9 @@
                 `<td rowspan="2" width="40px">班級</td>`,
                 `<td rowspan="2" width="40px">座號</td>`,
                 `<td rowspan="2" width="70px">姓名</td>`,
+                `<td rowspan="2">學期成績</td>`,
+                `<td rowspan="2">學期成績_試算</td>`,
+
             ];
 
             [].concat($scope.templateList || []).forEach(template => {
@@ -2139,6 +2142,9 @@
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,
                 ];
+
+                studentData.push(`<td>${student['學期成績']}</td>`);
+                studentData.push(`<td>${student['學期成績_試算']}</td>`);
 
                 [].concat($scope.templateList || []).forEach(template => {
                     studentData.push(`<td>${student['Score_' + template.ExamID]}</td>`);
@@ -2191,7 +2197,8 @@
                         thList3.push(`<td>${item.Name}</td>`);
                     }
                 });
-                thList1.push(`<td colspan="${Math.max(itemCount, 1)}">${template.Name}</td>`);
+                thList1.push(`<td colspan="${Math.max(itemCount + 1, 2)}">${template.Name}</td>`);
+                thList2.push(`<td rowspan="2">平時評量</td>`);
                 thList2.push(`<td colspan="${Math.max(itemCount, 1)}">評分項目</td>`);
                 if (itemCount == 0) { thList3.push(`<td></td>`); }
             });
@@ -2212,6 +2219,11 @@
 
                 [].concat($scope.templateList || []).forEach(template => {
                     let itemCount = 0;
+                    [].concat($scope.gradeItemList || []).forEach(item => {
+                        if (item.TemplateID == template.ExamID && item.Name === '平時評量') {
+                            studentData.push(`<td>${student[item.ExamID]}</td>`); // 平時評量成績
+                        }
+                    });
                     [].concat($scope.gradeItemList || []).forEach(item => {
                         if (item.TemplateID == template.ExamID && item.Name !== '平時評量') {
                             itemCount += 1;
