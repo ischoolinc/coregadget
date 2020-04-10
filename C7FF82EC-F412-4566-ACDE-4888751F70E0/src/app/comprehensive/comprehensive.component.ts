@@ -18,6 +18,7 @@ export class ComprehensiveComponent implements OnInit {
 
   deny: boolean = false;
   isLoading: boolean = false;
+  transferSuccess: Boolean = false;
   currentSemester: any;
   sectionList: any[];
   currentMode: string;
@@ -140,7 +141,42 @@ export class ComprehensiveComponent implements OnInit {
     });
   }
 
-  // 顯示設定代碼與設定開放時間 
+
+/**
+ * Modal彈出(轉入系統核心欄位)
+ */
+  async showSystemAsyncModal() {
+
+    $("#genSystemCoreColtoAFrom").modal({
+      show: true,
+      focus: true,
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+/**
+ * 轉入系統核心欄位
+ */
+  async  transferSystemCoreColToAFrom() {
+    this.isLoading = true;
+  try {
+  const resp = await this.dsaService.send("TranferAdminSystem.TranferAdminSysToAform", {
+    SchoolYear: this.currentSemester.SchoolYear
+    , Semester: this.currentSemester.Semester
+  });
+  console.log("resp",resp);
+  this.isLoading = false ;
+  this.transferSuccess = true;
+
+
+  // $("#genSystemCoreColtoAFrom").modal('hide');
+} catch (ex) {
+  alert(`發生錯誤:${ex}`);
+}
+  }
+
+  // 顯示設定代碼與設定開放時間
   async showGenerateKeyAndSetTime() {
     // this.GenerateKeyAndSetTime.selectFillInSection = null;
     // this.GenerateKeyAndSetTime.selectSchoolYear = "";
