@@ -53,4 +53,10 @@ export class Course {
 
   /**投點點數排行 */
   Ranks: any;
+
+  /**顯示排名 */
+  InvestmentRank: string;
+
+  /**投點歷程編號 */
+  RefConsumeID: string;
 }

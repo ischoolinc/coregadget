@@ -2,17 +2,9 @@
   <h1>點數歷程</h1>
 
   <div class="container">
-    <div class="row" style="margin-top: 20px;">
-      <div class="col col-md-3 mr-auto my-card alert alert-info">
-        <div class="my-card-point">{{point.Success || 0}}</div>
-        <div class="my-card-text">已取得點數</div>
-      </div>
-      <div class="col col-md-3 mr-auto my-card alert alert-danger">
-        <div class="my-card-point">{{point.Consume || 0}}</div>
-        <div class="my-card-text">已使用點數</div>
-      </div>
-      <div class="col col-md-5 my-card alert alert-success">
-        <div class="my-card-point">{{point.Total || 0}}</div>
+    <div style="margin-top: 20px;">
+      <div class="my-card alert alert-success">
+        <div class="my-card-point">{{currPoint.Total || '計算中'}}</div>
         <div class="my-card-text">可用點數</div>
       </div>
     </div>
@@ -20,30 +12,26 @@
       <!--開始日期-->
       <input
         [(ngModel)]="startDate"
-        type='text'
+        type="text"
         placeholder="年 / 月 / 日"
         class="form-control col-3 mr-3"
         style="height: 30px;"
         bsDatepicker
-        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }"/>
+        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }" />
       <span class="mr-3"> ~ </span>
       <!--結束日期-->
       <input
         [(ngModel)]="endDate"
-        type='text'
+        type="text"
         placeholder="年 / 月 / 日"
         class="form-control col-3 mr-3"
         style="height: 30px;"
         bsDatepicker
-        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }"/>
+        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }" />
       <!--下拉按鈕-->
       <div class="dropdown mr-3">
-        <button
-          class="btn btn-outline-secondary dropdown-toggle"
-          type="button" id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{targetRange}}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -54,38 +42,34 @@
             (click)="selectRange(range)">{{range}}</a>
         </div>
       </div>
-      <button
-        type="button"
-        class="btn btn-primary col-md-2"
-        style="height: 30px;"
-        (click)="searchPointsLog()">
+      <button type="button" class="btn btn-primary col-md-2" style="height: 30px;" (click)="searchPointsLog()">
         <i class="fas fa-search"></i>
         查詢
       </button>
     </div>
     <div class="row" style="margin-top: 30px;">
+      <ng-container *ngIf="isLoading">載入中...</ng-container>
+      <ng-container *ngIf="!isLoading">
         <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>時間</th>
-                <th>狀態</th>
-                <th>來源</th>
-                <th>點數</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of pointHistories" [ngClass]="{'text-danger': data.Point < 0}">
-                <td>{{data.OccurDate}}</td>
-                <td>{{data.Type}}</td>
-                <td>{{data.Source}}</td>
-                <td style="text-align: right;">{{data.Point}} 點</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>狀態</th>
+              <th>來源</th>
+              <th>點數</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of pointHistories" [ngClass]="{'text-danger': data.Point < 0}">
+              <td>{{data.OccurDate | date: 'yyyy/MM/dd'}}</td>
+              <td>{{data.Type}}</td>
+              <td>{{data.Source}}</td>
+              <td style="text-align: right;">{{data.Point}} 點</td>
+            </tr>
+            <tr *ngIf="!pointHistories.length"><td colspan="4">無資料</td></tr>
+          </tbody>
+        </table>
+      </ng-container>
     </div>
   </div>
-  <table>
-
-  </table>
 </div>
-

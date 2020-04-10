@@ -41,9 +41,25 @@
         $(function () {
             var newEditor = $("#gadget .hidden-xs").find("div").eq(0).clone();
             newEditor.css({ position: "", float: "", width: "" }).addClass('visible-xs');
-            newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+            // newEditor.find("table").eq(0).removeAttr("bs-affix").removeAttr("data-offset-top").removeAttr("style");
+            newEditor.find("table").removeAttr("style");
+            // 將目前學生換至第一個 tr
             newEditor.find("table").eq(0).find("tbody").eq(0).prepend(newEditor.find("table").eq(0).find("tbody").eq(0).find("tr").eq(1));
             $("#gadget").append(newEditor);
+
+            $(window).bind('scroll resize', function() {
+                if ($(this).scrollTop() > 165)  {          /* 要滑動到選單的距離 */
+                    $('#scoreContainer').addClass('navFixed');   /* 幫選單加上固定效果 */
+                    $('#examCodeContainer').height($(this).height() - 400);
+                } else {
+                    $('#scoreContainer').removeClass('navFixed'); /* 移除選單固定效果 */
+                }
+            }).scroll();
+
+            $(window).bind('load resize', function() {
+                $('#examCodeContainer').height($(this).height() / 3);
+            }).resize();
+
         });
     </script>
     <script src="js/angular.min.js"></script>
@@ -56,25 +72,6 @@
     <script src="js/xlsx.full.min.js"></script>
     <script src="js/FileSaver.js"></script>
     <script src="js/polyfill.min.js"></script>
-    <style>
-        .dropdown-header {
-            padding: 3px 10px;
-            font-size: 14px;
-        }
-
-        .importStudentPreview {
-            padding: 5px 10px;
-            border-radius: .25em;
-            border: solid 1px lightgray;
-            margin: 3px 0px;
-        }
-
-        .importStudentPreview .studentInfo {
-        }
-
-        .my-page {
-        }
-    </style>
 </head>
 
 <body ng-controller="MainCtrl">
@@ -90,7 +87,7 @@
         <div>
            <!--課程按鈕-->
             <div ng-if="!haveNoCourse" class="btn-group">
-                <a href=""
+                <a href="javascript:;"
                 class="btn btn-default dropdown-toggle"
                 data-toggle="dropdown">{{current.Course.CourseName}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -126,7 +123,7 @@
                 </ul>
             </div>
             <!--成績管理模式: 匯出報表-->
-            <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn btn-default">
+            <div ng-if="examList.length > 0 && studentList.length > 0" class="btn btn-default">
                 <i class="far fa-file-excel"
                    ng-click="exportGradeBook()">
                     匯出報表
@@ -147,7 +144,7 @@
             <!-- 成績管理模式： 批次、儲存 -->
             <div ng-if="examList.length > 0 && studentList.length > 0 && current.mode == modeList[0]" class="btn-group pull-right">
                 <div class="btn-group" ng-if="importExamList">
-                    <a href=""
+                    <a href="javascript:;"
                        class="btn btn-default dropdown-toggle"
                        data-toggle="dropdown">
                         <i class="fa fa-cog" aria-hidden="true"></i>
@@ -166,7 +163,7 @@
                             </a>
                         </li>
                         <li ng-class="{'disabled':current.template.Extension.Extension.UseAssignmentScore !== '是' || current.template.Lock}">
-                            <a href="javascript:void(0)" 
+                            <a href="javascript:void(0)"
                                 ng-click="ImportCourseExtensions()">
                                 帶入_平時評量
                             </a>
@@ -213,244 +210,275 @@
                 </a>
             </div>
         </div>
+        <div style="clear: both;">
+            開放時間：
+            <span style="color: red" ng-show="current.template.InputStartTime && current.template.InputEndTime">
+                {{current.template.InputStartTime || '未指定'}} ~ {{current.template.InputEndTime || '未指定'}}
+            </span>
+            <span ng-show="!current.template.InputStartTime && !current.template.InputEndTime">未開放</span>
+        </div>
         <!--資料表-->
         <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
-                <div data-offset-top="145" bs-affix>
+                <div id="scoreContainer">
                     <!-- 成績輸入 -->
-                    <table class="table table-bordered table-striped" style="width:260px;">
-                        <thead>
-                            <tr>
-                                <th colspan="2">成績輸入</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="width:95px;">
-                                    <div class="btn-group btn-block">
-                                        <a href=""
-                                           class="btn btn-link btn-block dropdown-toggle"
-                                           data-toggle="dropdown"
-                                           style="padding:0; color:#333; text-align:left;">
-                                            {{current.SelectMode=='No.'?"座號搜尋":"切換學生"}}
-                                            <span class="caret"></span>
-                                        </a>
-                                        <ul class="dropdown-menu" style="width:100%;">
-                                            <li ng-class="{active:current.SelectMode=='No.'}">
-                                                <a href="javascript:;"
-                                                   ng-click="changeSelectMode('No.')">座號搜尋</a>
-                                            </li>
-                                            <li ng-class="{active:current.SelectMode=='Seq.'}">
-                                                <a href="javascript:;"
-                                                   ng-click="changeSelectMode('Seq.')">切換學生</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td class="text-center" style="padding:0px;">
-                                    <div ng-if="current.SelectMode=='No.'"
-                                         class="input-group">
-                                        <input ng-model="current.SelectSeatNo"
-                                               ng-keydown="submitStudentNo($event)"
-                                               ng-change="typeStudentNo()"
-                                               ng-class="{disabled:!current.Student}"
-                                               type="text"
-                                               placeholder="{{isMobile?'':'Enter送出'}}"
-                                               class="form-control pg-seatno-textbox"
-                                               select-on-click />
-                                        <span class="input-group-btn">
-                                            <a ng-click="submitStudentNo()"
-                                               class="btn btn-default">
-                                                送出
+                    <div id="examScoreContainer">
+                        <table class="table table-bordered table-striped" style="width:260px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">成績輸入</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width:95px;">
+                                        <div class="btn-group btn-block">
+                                            <a href="javascript:;"
+                                                class="btn btn-link btn-block dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                style="padding:0; color:#333; text-align:left;">
+                                                {{current.SelectMode=='No.'?"座號搜尋":"切換學生"}}
+                                                <span class="caret"></span>
                                             </a>
-                                        </span>
-                                    </div>
-                                    <div ng-if="current.SelectMode=='Seq.'"
-                                         class="btn-group btn-group-sm">
-                                        <a class="btn btn-default" ng-click="goPrev()">
-                                            &nbsp;&nbsp;&nbsp; << &nbsp;&nbsp;&nbsp;
-                                        </a>
-                                        <a class="btn btn-default" ng-click="goNext()">
-                                            &nbsp;&nbsp;&nbsp; >> &nbsp;&nbsp;&nbsp;
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>目前學生</td>
-                                <td>
-                                    <span ng-if="current.Student.ClassName">
-                                        {{current.Student.ClassName}}
-                                        <span ng-if="current.Student.SeatNo">({{current.Student.SeatNo}})</span>
-                                    </span>
-                                    <span>{{current.Student.StudentName}}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <thead>
-                            <tr>
-                                <th colspan="2">
-                                    <div class="btn-group btn-block">
-                                        <a href="javascript:void(0)"
-                                           class="btn btn-link btn-block dropdown-toggle"
-                                           data-toggle="dropdown"
-                                           style="padding:0; color:#333; text-align:left;">
-
-                                            <i ng-if="current.Exam && current.Exam.Lock"
-                                               style="min-width: 14px;"
-                                               class="fa fa-lock"></i>
-                                            <i ng-if="current.Exam && current.Exam.Permission == 'Read' && !current.Exam.Lock"
-                                               style="min-width: 14px;"
-                                               class="fa fa-ban"></i>
-                                            <i ng-if="current.Exam && current.Exam.Permission == 'Editor' && !current.Exam.Lock && current.Exam.Type == 'Program'"
-                                               style="min-width: 14px;"
-                                               class="fa fa-cogs"></i>
-                                            <i ng-if="current.Exam && current.Exam.Permission == 'Editor' && !current.Exam.Lock && current.Exam.Type !== 'Program'"
-                                               style="min-width: 14px;"
-                                               class="fa fa-edit"></i>
-                                            {{current.Exam?current.Exam.Name:'請選擇'}}
-                                            <span ng-if="current.mode == modeList[0]"
-                                                  class="caret"></span>
-                                        </a>
-                                        <ul ng-if="current.mode == modeList[0]"
-                                            class="dropdown-menu"
-                                            style="width:100%;">
-                                            <li ng-repeat="examItem in examList | filter: filterPermission"
-                                                ng-class="{active:examItem==current.Exam}">
-                                                <a href="javascript:;"
-                                                   ng-click="setCurrent(current.Student, examItem, false, true)">
-                                                    <i ng-if="examItem.Lock"
-                                                       style="min-width: 14px;"
-                                                       class="fa fa-lock"></i>
-                                                    <i ng-if="examItem.Permission == 'Read' && !examItem.Lock"
-                                                       style="min-width: 14px;"
-                                                       class="fa fa-ban"></i>
-                                                    <i ng-if="examItem.Permission == 'Editor' && !examItem.Lock && examItem.Type == 'Program'"
-                                                       style="min-width: 14px;"
-                                                       class="fa fa-cogs"></i>
-                                                    <i ng-if="examItem.Permission == 'Editor' && !examItem.Lock && examItem.Type !== 'Program'"
-                                                       style="min-width: 14px;"
-                                                       class="fa fa-edit"></i>
-                                                    {{examItem.Name}}
-                                                </a>
-                                            </li>
-                                            <li ng-if="_HIDE_&&(examList | filter: filterPermission).length > 0"
-                                                class="divider"></li>
-                                            <li ng-if="_HIDE_">
-                                                <a href="javascript:;"
-                                                   ng-click="showCreateModal()"><i class="fa fa-plus"></i> 新增</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-if="current.Exam.Type != 'Text'">
-                                <td style="position:relative;">
-                                    <span>{{current.Exam?current.Exam.SubName||current.Exam.Name:''}}</span>
-                                </td>
-                                <td ng-if="current.Exam && current.Student">
-                                    <div ng-if="current.Exam.Lock || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                         ng-class="{'text-danger':current.Student[current.Exam.ExamID] < 60}"
-                                         class="text-center">
-                                        {{current.Student[current.Exam.ExamID]=='0'?('0'):(current.Student[current.Exam.ExamID]||'&nbsp;')}}
-                                    </div>
-                                    <div ng-if="!current.Exam.Lock && current.Exam.Type == 'Number' && current.Exam.Permission == 'Editor'"
-                                         class="input-group">
-                                         <!-- ng-keydown="enterGrade($event)" -->
-                                        <input ng-model="current.Value"
-                                               ng-keyup="$event.keyCode == 13 ? enterGrade($event) : null"
-                                               type="text"
-                                               class="form-control pg-grade-textbox"
-                                               placeholder="{{isMobile?'':'Enter送出'}}"
-                                               select-on-click />
-                                        <span class="input-group-btn">
-                                            <a ng-click="enterGrade()"
-                                               class="btn btn-default">
-                                                送出
-                                            </a>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td ng-if="!current.Exam || !current.Student"
-                                    class="text-center">
-                                    --
-                                </td>
-                            </tr>
-                            <!--文字評量輸入-->
-                            <tr ng-if="current.Exam.Type == 'Text'">
-                                <td ng-if="current.Exam && current.Student"
-                                    colspan="2">
-                                    <div ng-if="!current.Exam.Lock && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
-                                         class="input-group">
-                                        <!--文字輸入區域-->
-                                        <textarea ng-model="current.Value"
-                                                  ng-keydown="enterGrade($event)"
-                                                  maxlength="200"
-                                                  placeholder="{{isMobile?'':'Enter送出'}}"
-                                                  style="min-height: 60px;height:120px;resize: vertical;"
-                                                  type="text"
-                                                  class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid"
-                                                  select-on-click>
-                                        </textarea>
-                                        <div class="pull-right">
-                                            <!-- <span class="input-group-btn">
-                                                <a ng-click="openCommentCode()"
-                                                   class="btn btn-default">
-                                                    <i class="far fa-file-code">
-                                                        文字代碼表
-                                                    </i>
-                                                </a>
-                                            </span> -->
+                                            <ul class="dropdown-menu" style="width:100%;">
+                                                <li ng-class="{active:current.SelectMode=='No.'}">
+                                                    <a href="javascript:;"
+                                                        ng-click="changeSelectMode('No.')">座號搜尋</a>
+                                                </li>
+                                                <li ng-class="{active:current.SelectMode=='Seq.'}">
+                                                    <a href="javascript:;"
+                                                        ng-click="changeSelectMode('Seq.')">切換學生</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td class="text-center" style="padding:0px;">
+                                        <div ng-if="current.SelectMode=='No.'"
+                                                class="input-group">
+                                            <input ng-model="current.SelectSeatNo"
+                                                    ng-keydown="submitStudentNo($event)"
+                                                    ng-change="typeStudentNo()"
+                                                    ng-class="{disabled:!current.Student}"
+                                                    type="text"
+                                                    placeholder="{{isMobile?'':'Enter送出'}}"
+                                                    class="form-control pg-seatno-textbox"
+                                                    select-on-click />
                                             <span class="input-group-btn">
-                                                <a ng-click="enterGrade()"
-                                                   class="btn btn-default">
+                                                <a ng-click="submitStudentNo()"
+                                                    class="btn btn-default">
                                                     送出
                                                 </a>
                                             </span>
                                         </div>
-                                    </div>
-                                    <div ng-if="current.Exam.Lock && current.Exam.Permission == 'Editor'">
-                                        &nbsp
-                                    </div>
-                                </td>
-                                <td ng-if="!current.Exam || !current.Student"
-                                    colspan="2"
-                                    class="text-center">
-                                    --
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <!--文字評量代碼表-->
-                    <table class="table table-bordered table-striped" style="width:260px;" 
-                            ng-if="current.mode == modeList[0]">
-                        <thead>
-                            <tr>
-                                <th class="text-center"
-                                    colspan="3">文字評量代碼表</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center"
-                                    style="width:50px;">分類</th>
-                                <th class="text-center"
-                                    style="width:50px;">代碼</th>
-                                <th class="text-center">詳細內容</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="text in examCodeList">
-                                <td class="text-center"
-                                    style="padding:0px;">{{text.Catalog}} </td>
-                                <td class="text-center"
-                                    style="padding:0px;">{{text.Code}}</td>
-                                <td class="text-center"
-                                    style="padding:0px;">{{text.Content}}</td>
+                                        <div ng-if="current.SelectMode=='Seq.'"
+                                                class="btn-group btn-group-sm">
+                                            <a class="btn btn-default" ng-click="goPrev()">
+                                                &nbsp;&nbsp;&nbsp; << &nbsp;&nbsp;&nbsp;
+                                            </a>
+                                            <a class="btn btn-default" ng-click="goNext()">
+                                                &nbsp;&nbsp;&nbsp; >> &nbsp;&nbsp;&nbsp;
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>目前學生</td>
+                                    <td>
+                                        <span ng-if="current.Student.ClassName">
+                                            {{current.Student.ClassName}}
+                                            <span ng-if="current.Student.SeatNo">({{current.Student.SeatNo}})</span>
+                                        </span>
+                                        <span>{{current.Student.StudentName}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        <div class="btn-group btn-block">
+                                            <a href="javascript:void(0)"
+                                                class="btn btn-link btn-block dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                style="padding:0; color:#333; text-align:left;">
 
-                            </tr>
-                        </tbody>
-                    </table>
+                                                <i ng-if="current.Exam && current.Exam.Lock"
+                                                    style="min-width: 14px;"
+                                                    class="fa fa-lock"></i>
+                                                <i ng-if="current.Exam && current.Exam.Permission == 'Read' && !current.Exam.Lock"
+                                                    style="min-width: 14px;"
+                                                    class="fa fa-ban"></i>
+                                                <i ng-if="current.Exam && current.Exam.Permission == 'Editor' && !current.Exam.Lock && current.Exam.Type == 'Program'"
+                                                    style="min-width: 14px;"
+                                                    class="fa fa-cogs"></i>
+                                                <i ng-if="current.Exam && current.Exam.Permission == 'Editor' && !current.Exam.Lock && current.Exam.Type !== 'Program'"
+                                                    style="min-width: 14px;"
+                                                    class="fa fa-edit"></i>
+                                                {{current.Exam?current.Exam.Name:'請選擇'}}
+                                                <span ng-if="current.mode == modeList[0]"
+                                                        class="caret"></span>
+                                            </a>
+                                            <ul ng-if="current.mode == modeList[0]"
+                                                class="dropdown-menu"
+                                                style="width:100%;">
+                                                <li ng-repeat="examItem in examList | filter: filterPermission"
+                                                    ng-class="{active:examItem==current.Exam}">
+                                                    <a href="javascript:;"
+                                                        ng-click="setCurrent(current.Student, examItem, false, true)">
+                                                        <i ng-if="examItem.Lock"
+                                                            style="min-width: 14px;"
+                                                            class="fa fa-lock"></i>
+                                                        <i ng-if="examItem.Permission == 'Read' && !examItem.Lock"
+                                                            style="min-width: 14px;"
+                                                            class="fa fa-ban"></i>
+                                                        <i ng-if="examItem.Permission == 'Editor' && !examItem.Lock && examItem.Type == 'Program'"
+                                                            style="min-width: 14px;"
+                                                            class="fa fa-cogs"></i>
+                                                        <i ng-if="examItem.Permission == 'Editor' && !examItem.Lock && examItem.Type !== 'Program'"
+                                                            style="min-width: 14px;"
+                                                            class="fa fa-edit"></i>
+                                                        {{examItem.Name}}
+                                                    </a>
+                                                </li>
+                                                <li ng-if="_HIDE_&&(examList | filter: filterPermission).length > 0"
+                                                    class="divider"></li>
+                                                <li ng-if="_HIDE_">
+                                                    <a href="javascript:;"
+                                                        ng-click="showCreateModal()"><i class="fa fa-plus"></i> 新增</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="current.Exam.Type != 'Text'">
+                                    <td style="position:relative;">
+                                        <span>{{current.Exam?current.Exam.SubName||current.Exam.Name:''}}</span>
+                                    </td>
+                                    <td ng-if="current.Exam && current.Student">
+                                        <div ng-if="current.Exam.Lock || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
+                                                score-stress="{{current.Student[current.Exam.ExamID]}}"
+                                                class="text-center">
+                                            {{current.Student[current.Exam.ExamID]=='0'?('0'):(current.Student[current.Exam.ExamID]||'&nbsp;')}}
+                                        </div>
+                                        <div ng-if="!current.Exam.Lock && current.Exam.Type == 'Number' && current.Exam.Permission == 'Editor'"
+                                                class="input-group">
+                                                <!-- ng-keydown="enterGrade($event)" -->
+                                            <input ng-model="current.Value"
+                                                    ng-keyup="$event.keyCode == 13 ? enterGrade($event) : null"
+                                                    type="text"
+                                                    class="form-control pg-grade-textbox"
+                                                    placeholder="{{isMobile?'':'Enter送出'}}"
+                                                    select-on-click />
+                                            <span class="input-group-btn">
+                                                <a ng-click="enterGrade()"
+                                                    class="btn btn-default">
+                                                    送出
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td ng-if="!current.Exam || !current.Student"
+                                        class="text-center">
+                                        --
+                                    </td>
+                                </tr>
+                                <!--文字評量輸入-->
+                                <tr ng-if="current.Exam.Type == 'Text'">
+                                    <td ng-if="current.Exam && current.Student"
+                                        colspan="2">
+                                        <div ng-if="!current.Exam.Lock && current.Exam.Type == 'Text' && current.Exam.Permission == 'Editor'"
+                                                class="input-group">
+                                            <!--文字輸入區域-->
+                                            <textarea ng-model="current.Value"
+                                                        ng-keydown="enterGrade($event)"
+                                                        maxlength="200"
+                                                        placeholder="{{isMobile?'':'Enter送出'}}"
+                                                        style="min-height: 60px;height:120px;resize: vertical;"
+                                                        type="text"
+                                                        class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid"
+                                                        select-on-click>
+                                            </textarea>
+                                            <div class="pull-right">
+                                                <!-- <span class="input-group-btn">
+                                                    <a ng-click="openCommentCode()"
+                                                        class="btn btn-default">
+                                                        <i class="far fa-file-code">
+                                                            文字代碼表
+                                                        </i>
+                                                    </a>
+                                                </span> -->
+                                                <span class="input-group-btn">
+                                                    <a ng-click="enterGrade()"
+                                                        class="btn btn-default">
+                                                        送出
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div ng-if="current.Exam.Lock && current.Exam.Permission == 'Editor'">
+                                            &nbsp
+                                        </div>
+                                    </td>
+                                    <td ng-if="!current.Exam || !current.Student"
+                                        colspan="2"
+                                        class="text-center">
+                                        --
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--文字評量代碼表-->
+                    <div id="examCodeContainer">
+                        <table class="table table-bordered table-striped" style="width:260px;"
+                                ng-show="current.mode == modeList[0]">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"
+                                        colspan="3">文字評量代碼表</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center"
+                                        style="width:50px;">
+                                        <div class="btn-group btn-block">
+                                            <a href="javascript:void(0)"
+                                                class="btn btn-link btn-block dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                style="padding:0; color:#333; text-align:left;">
+
+                                                {{current.TextCatalog?current.TextCatalog:'分類'}}
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" style="width:100%;">
+                                                <li ng-repeat="catalogItem in examCatalogList"
+                                                    ng-class="{active:catalogItem==current.TextCatalog}">
+                                                    <a href="javascript:;"
+                                                        ng-click="current.TextCatalog=catalogItem">
+                                                        {{catalogItem}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </th>
+                                    <th class="text-center"
+                                        style="width:50px;">代碼</th>
+                                    <th class="text-center">詳細內容</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="text in examCodeList | filter: filterTextCatalog">
+                                    <td class="text-center"
+                                        style="padding:0px;">{{text.Catalog}} </td>
+                                    <td class="text-center"
+                                        style="padding:0px;">{{text.Code}}</td>
+                                    <td class="text-center"
+                                        style="padding:0px;">{{text.Content}}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <!--成績管理Table-->
@@ -460,17 +488,23 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th colspan="4"></th>
-                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}</th>
+                            <th colspan="6"></th>
+                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}
+                                <span class="text-red">({{current.template.Percentage}})</span>
+                            </th>
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
+                            <th class="text-center">班級</th>
+                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <!--定期評量項目-->
                             <th ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center" colspan="{{exam.Name === '文字評量' ? 2 : 1}}">
                                 <span ng-class="{'sub-item': exam.isSubItem}">
                                     {{exam.Name}}
+                                    <span ng-if="exam.Name === '定期評量'" class="text-red">{{current.Course.courseScorePercentage}}%</span>
+                                    <span ng-if="exam.Name === '平時評量'" class="text-red">{{current.Course.courseAssignmentPercentage}}%</span>
                                 </span>
                             </th>
                         </tr>
@@ -483,7 +517,15 @@
                             <td class="text-center">{{stuRec.StudentNumber}}</td>
                             <td class="text-center"
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                <span>{{stuRec.ClassName}} {{stuRec.StudentName}}({{stuRec.SeatNumber}})</span>
+                                <span>{{stuRec.ClassName}}</span>
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.SeatNumber}}</span>
+                            </td>
+                            <td class="text-center"
+                                ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span>{{stuRec.StudentName}}</span>
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
@@ -494,7 +536,7 @@
                                      ng-attr-title="資料已修改，尚未儲存! {{stuRec['Origin_'+ exam.ExamID]?'原值為：'+stuRec['Origin_' + exam.ExamID]:''}}"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':stuRec[exam.ExamID] < 60 && current.Exam.Type != 'Text'}"
+                                <span score-stress="{{stuRec[exam.ExamID]}}" data-score-type="{{exam.Type}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[exam.ExamID]}}
                                 </span>
@@ -510,7 +552,7 @@
                        style="table-layout:fixed;">
                     <thead>
                         <tr>
-                            <th class="text-center"colspan="3"></th>
+                            <th class="text-center" colspan="5"></th>
                             <th class="text-center"
                                 colspan="{{current.gradeItemList.length -1}}">
                                 評分項目
@@ -518,6 +560,8 @@
                         </tr>
                         <tr>
                             <th class="text-center">學號</th>
+                            <th class="text-center">班級</th>
+                            <th class="text-center">座號</th>
                             <th class="text-center">姓名</th>
                             <th class="text-center"
                                 ng-repeat="item in current.gradeItemList">
@@ -529,7 +573,13 @@
                         <tr ng-repeat="student in studentList">
                             <td>{{student.StudentNumber}}</td>
                             <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                {{student.ClassName}} {{student.StudentName}}({{student.SeatNumber}})
+                                {{student.ClassName}}
+                            </td>
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.SeatNumber}}
+                            </td>
+                            <td ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                {{student.StudentName}}
                             </td>
                             <td class="text-center"
                                 style="position:relative"
@@ -539,7 +589,7 @@
                                 <div ng-if="!checkOneCell(student, item.ExamID, true, true)"
                                     style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
-                                <span ng-class="{'text-danger':student[item.ExamID] < 60}"
+                                <span score-stress="{{student[item.ExamID]}}"
                                     style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{student[item.ExamID]}}
                                 </span>
@@ -620,7 +670,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -643,7 +693,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -666,7 +716,7 @@
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
                                              class="pull-right"
-                                             ng-class="{'text-danger':importTarget.ParseValues[$index] < 60}">{{importTarget.ParseValues[$index]}}</div>
+                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -674,6 +724,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default btn-sm pull-left"
+                            ng-if="!importTarget.ParseValues && importTarget.ScoreType === 'Text'"
+                            ng-click="importTarget.Code2Text()">代碼轉文字</button>
                     <button type="button"
                             class="btn btn-default btn-sm"
                             ng-if="!importTarget.ParseValues"
@@ -780,22 +834,76 @@
                     </textarea>
                 </div>
                 <div class="modal-footer">
-                    <a ng-if="gradeItemConfig.Mode=='Editor'"
+                    <a href="javascript:;" ng-if="gradeItemConfig.Mode=='Editor'"
                        ng-click="gradeItemConfig.JSONMode()"
                        class="btn btn-link pull-left ng-scope">
-                       編輯子評量樣版
+                        編輯子評量樣版
                     </a>
-                    <a ng-if="gradeItemConfig.Mode=='JSON'"
+                    <a href="javascript:;" ng-if="gradeItemConfig.Mode=='JSON'"
                        ng-click="gradeItemConfig.CommitJSON()"
                        class="btn btn-link pull-left ng-scope">
-                       預灠編輯結果
+                        預覽編輯結果
                     </a>
-                    <a ng-click="saveGradeItemConfig()"
+                    <a href="javascript:;" class="btn btn-link pull-left ng-scope" ng-click="openCopyModal()">
+                        複製評量至其他課程
+                    </a>
+                    <a href="javascript:;" ng-click="saveGradeItemConfig()"
                        class="btn btn-default ng-scope"
                        ng-class="{'btn-danger':!gradeItemConfig.CheckConfig()}">
                         <i class="fa fa-floppy-o"></i>
                         儲存
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 複製評量 -->
+    <div class="modal fade" id="copyModal" tabindex="-1" role="dialog" aria-labelledby="copyLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="copyLabel">{{current.Course.CourseName}} {{current.template.Name}} 將複製評量項目至下列勾選課程</h4>
+                    <h6>已有評分項目的評量，將無法勾選</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check" ng-repeat="course in CourseExamList">
+                        <input class="form-check-input"
+                            type="checkbox"
+                            ng-model="course.Selected"
+                            ng-disabled="course.ItemDisable"
+                            value=""
+                            id="{{course.id}}">
+                        <label class="form-check-label" for="{{course.id}}" ng-class="{'text-muted': course.ItemDisable}">
+                            課程：{{course.CourseName}}, 評量：{{course.ExamName}}
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- data-dismiss="modal" -->
+                    <button type="button" class="btn btn-secondary" ng-click="closeCopyModal()">關閉</button>
+                    <button type="button" class="btn btn-primary" ng-click="copyGradeItemConfig()">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 複製評量儲存成功 -->
+    <div class="modal fade" id="saveSuccessModal" tabindex="-1" role="dialog" aria-labelledby="successLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="successLabel">複製成功</h4>
+                </div>
+                <div class="modal-body">
+                    已將「{{current.Course.CourseName}}」此課程平時評量項目複製到選擇的課程。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                 </div>
             </div>
         </div>

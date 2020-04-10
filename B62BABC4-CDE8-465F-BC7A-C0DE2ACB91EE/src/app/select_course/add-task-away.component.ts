@@ -12,7 +12,7 @@ import { SubjectRecord, AttendRecord } from '../data/index';
 })
 export class AddTaskAwayComponent implements OnInit {
 
-  loading: boolean = true;
+  isLoading: boolean = true;
   // 課程時段
   subjectType: string;
   // 選課清單
@@ -37,6 +37,7 @@ export class AddTaskAwayComponent implements OnInit {
   
   async ngOnInit() {
     try {
+      this.isLoading = true;
       // 取得課程時段
       this.subjectType = this.route.snapshot.paramMap.get('subjectType');
       await this.getData();
@@ -44,7 +45,7 @@ export class AddTaskAwayComponent implements OnInit {
       alert('GetSubjectList error:\n' + JSON.stringify(err));
       console.log(err);
     } finally {
-      this.loading = false;
+      this.isLoading = false;
     }
   }
 
@@ -79,6 +80,7 @@ export class AddTaskAwayComponent implements OnInit {
 
   /** 加選 */
   async joinCourse(subject: SubjectRecord) {
+    this.isLoading = true;
     const rsp = await this.basicSrv.setTakeAway({ SubjectType: this.subjectType, SubjectID: subject.SubjectID });
     if (rsp.status === 'success') {
       // 重新取得資料
@@ -86,6 +88,7 @@ export class AddTaskAwayComponent implements OnInit {
     } else {
       alert(`SetTakeAway error:\n ${rsp.message}`);
     }
+    this.isLoading = false;
   }
 
   /** 顯示科目資訊 */
@@ -110,6 +113,7 @@ export class AddTaskAwayComponent implements OnInit {
 
   /** 退選 */
   async leaveCourse(subject: AttendRecord){
+    this.isLoading = true;
     const rsp = await this.basicSrv.leaveTakeAway({ SubjectID: subject.SubjectID });
     if (rsp.status === 'success') {
       // 重新取得資料
@@ -119,6 +123,7 @@ export class AddTaskAwayComponent implements OnInit {
     } else {
       alert(`LeaveTakeAway error:\n ${rsp.message}`);
     }
+    this.isLoading = false;
   }
   
 }
