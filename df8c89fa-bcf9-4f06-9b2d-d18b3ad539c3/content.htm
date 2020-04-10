@@ -106,7 +106,7 @@
                     <li ng-repeat="template in templateList"
                         ng-class="{active: template == current.template}">
                         <a href="javascript:;"
-                        ng-click="setCurrentTemplate(template)">{{template.Name}}</a>
+                        ng-click="setCurrentTemplate(template, true)">{{template.Name}}</a>
                     </li>
                 </ul>
             </div>
@@ -202,7 +202,7 @@
                         </li>
                     </ul>
                 </div>
-                <a ng-click="saveGradeItemScore()"
+                <a ng-click="saveGradeItemScore(true)"
                    class="btn btn-default"
                    ng-class="{'btn-danger':!checkAllTable('平時評量')}">
                     <i class="fa fa-floppy-o"></i>

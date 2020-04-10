@@ -164,19 +164,17 @@
         /**
          * 設定目前定期評量
          */
-        $scope.setCurrentTemplate = function (template) {
-            var execute = false;
-            // 檢查資料是否更動
-            var data_changed = !$scope.checkAllTable($scope.current.mode);
-            if (data_changed) {
-                if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
-                    return;
+        $scope.setCurrentTemplate = function (template, needCheckChanged) {
+            var execute = true;
+            if (needCheckChanged) {
+                // 檢查資料是否更動
+                var data_changed = !$scope.checkAllTable($scope.current.mode);
+                if (data_changed) {
+                    if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
+                        execute = false;
+                        return;
+                    }
                 }
-                else {
-                    execute = true;
-                }
-            } else {
-                execute = true;
             }
             if (execute) {
                 $scope.current.template = template;
@@ -425,9 +423,9 @@
             Promise.all([$scope.getGradeItemList(), $scope.getSubExamList()]).then(v => {
                 // 設定目前定期評量
                 if($scope.current.template) {
-                    $scope.setCurrentTemplate($scope.current.template);
+                    $scope.setCurrentTemplate($scope.current.template, true);
                 } else{
-                    $scope.setCurrentTemplate($scope.templateList[0]);
+                    $scope.setCurrentTemplate($scope.templateList[0], true);
                 }
                 $scope.isInit = false;
             });
@@ -493,7 +491,7 @@
                                         $scope.gradeItemList.splice(0, 0, quizResult);
                                     });
                                     if (!$scope.isInit) {
-                                        $scope.setCurrentTemplate($scope.current.template);
+                                        $scope.setCurrentTemplate($scope.current.template, true);
                                     }
                                 });
                             }
@@ -1154,7 +1152,7 @@
         }
 
         /**儲存平時評量 */
-        $scope.saveGradeItemScore = function () {
+        $scope.saveGradeItemScore = function (showFinishMsg) {
 
             var body = {
                 Request: {
@@ -1216,7 +1214,7 @@
 
                         // 資料Reload
                         $scope.dataReload();
-                        alert('儲存完成。');
+                        if (showFinishMsg) { alert('儲存完成。'); }
                     }
                 }
             });
@@ -1743,29 +1741,17 @@
 
                     $scope.$apply(function () {
 
-                        // 重新取得評分項目(小考)資料
+                        $scope.isInit = true; // 不要觸發 setCurrentTemplate，改為手動
+
                         $scope.getGradeItemList().then(function() {
-                            // 重算平時評量成績
-                            $scope.studentList.forEach(student => {
-                                $scope.calcQuizResult(student);
-                            });
+                            $scope.isInit = false; // 要改回 false
 
-                            // 儲存平時評量成績
-                            $scope.saveGradeItemScore();
-
-                            // 設定目前定期評量
-                            if($scope.current.template) {
-                                $scope.setCurrentTemplate($scope.current.template);
-                            } else{
-                                $scope.setCurrentTemplate($scope.templateList[0]);
+                            $scope.copyGradeItemSaving = false;
+                            $scope.closeCopyModal();
+                            if (selectedCourseExam.length > 0) {
+                                $('#saveSuccessModal').modal('show');
                             }
                         });
-
-                        $scope.copyGradeItemSaving = false;
-                        $scope.closeCopyModal();
-                        if (selectedCourseExam.length > 0) {
-                            $('#saveSuccessModal').modal('show');
-                        }
                     });
                 });
             }
@@ -1961,35 +1947,53 @@
                 }
             });
             if (namePass && weightPass && !dataRepeat) {
-                $scope.connection.send({
-                    service: "TeacherAccess.SetCourseExtensions",
-                    autoRetry: true,
-                    body: body,
-                    result: function (response, error, http) {
-                        if (error) {
-                            alert("TeacherAccess.SetCourseExtensions Error");
-                        } else {
-                            $('#GradeItemModal').modal('hide');
-                            // 重新取得評分項目(小考)資料
-                            $scope.getGradeItemList().then(function() {
-                                // 重算平時評量成績
-                                $scope.studentList.forEach(student => {
-                                    $scope.calcQuizResult(student);
-                                });
-
-                                // 儲存平時評量成績
-                                $scope.saveGradeItemScore();
-
-                                // 設定目前定期評量
-                                if($scope.current.template) {
-                                    $scope.setCurrentTemplate($scope.current.template);
-                                } else{
-                                    $scope.setCurrentTemplate($scope.templateList[0]);
-                                }
-                            });
-                        }
+                // 先確認是否有未儲存的成績
+                var data_changed = !$scope.checkAllTable($scope.current.mode);
+                if (data_changed) {
+                    if (!window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
+                        return;
                     }
-                });
+                    else {
+                        execute = true;
+                    }
+                } else {
+                    execute = true;
+                }
+                if (execute) {
+                    $scope.connection.send({
+                        service: "TeacherAccess.SetCourseExtensions",
+                        autoRetry: true,
+                        body: body,
+                        result: function (response, error, http) {
+                            if (error) {
+                                alert("TeacherAccess.SetCourseExtensions Error");
+                            } else {
+                                $('#GradeItemModal').modal('hide');
+
+                                $scope.isInit = true; // 不要觸發 setCurrentTemplate，改為手動
+                                // 重新取得評分項目(小考)資料
+                                $scope.getGradeItemList().then(function() {
+                                    // 重算平時評量成績
+                                    $scope.studentList.forEach(student => {
+                                        $scope.calcQuizResult(student);
+                                    });
+
+                                    // 強迫儲存平時評量成績
+                                    $scope.saveGradeItemScore(false);
+
+                                    // 重算後，成績來源已不同，不要讀取異動驗證，直接重整資料
+                                    // 設定目前定期評量
+                                    if($scope.current.template) {
+                                        $scope.setCurrentTemplate($scope.current.template, false);
+                                    } else{
+                                        $scope.setCurrentTemplate($scope.templateList[0], false);
+                                    }
+                                    $scope.isInit = false; // 要改回 false
+                                });
+                            }
+                        }
+                    });
+                }
             }
             else {
                 var errMsg = "";
