@@ -585,7 +585,7 @@
          * 執行setupCurrent
          */
         $scope.dataReload = function() {
-            const optionOrder = ($scope.curSort.code === 'sn' ? { StudentNumber: '' } : { GradeYear: '', ClassName: '',  SeatNo: '' });
+            const optionOrder = ($scope.curSort.code === 'sn' ? { StudentNumber: '' } : { GradeYear: '', DisplayOrder: '', ClassName: '',  SeatNo: '' });
             $scope.connection.send({
                 service: "TeacherAccess.GetCourseStudents2020",
                 autoRetry: true,
