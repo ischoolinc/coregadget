@@ -2146,7 +2146,7 @@
             // 學生資料整理
             [].concat($scope.studentList || []).forEach(student => {
                 var studentData = [
-                    `<td>${student.StudentNumber}</td>`,
+                    `<td class="text">${student.StudentNumber} </td>`,
                     `<td>${student.ClassName}</td>`,
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,
@@ -2168,6 +2168,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style type="text/css">
+            .text {
+                mso-number-format:"\@"
+            }
+        </style>
     </head>
     <body>
         <table border="1" cellspacing="0" cellpadding="2">
@@ -2220,7 +2225,7 @@
             // 學生資料整理
             [].concat($scope.studentList || []).forEach(student => {
                 var studentData = [
-                    `<td>${student.StudentNumber}</td>`,
+                    `<td class="text">${student.StudentNumber} </td>`,
                     `<td>${student.ClassName}</td>`,
                     `<td>${student.SeatNumber}</td>`,
                     `<td>${student.StudentName}</td>`,
@@ -2248,6 +2253,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style type="text/css">
+            .text {
+                mso-number-format:"\@"
+            }
+        </style>
     </head>
     <body>
         <table border="1" cellspacing="0" cellpadding="2">
