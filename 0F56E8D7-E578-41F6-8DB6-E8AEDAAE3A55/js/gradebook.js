@@ -74,6 +74,8 @@
             return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
         }
 
+        $scope.checkItemChange = false;
+
         // 目前物件
         $scope.current = {
             SelectMode: "Seq.",
@@ -1134,6 +1136,7 @@
                     });
                 }
             });
+
             return pass;
         }
 
@@ -1526,6 +1529,7 @@
                 return $scope.SetSCAttendExtensionKH().then(function (result2) {
                     // 資料Reload
                     $scope.scoreDataReload();
+                    $scope.checkItemChange = false;
                     alert("儲存成功。");
                 });
             }).catch((reason) => {
@@ -1990,18 +1994,17 @@
                             $scope.$apply(function () {
                                 // 重新取得平時評量項目，並重新結算平時評量成績                                
                                 $scope.getGradeItemList().then(value => {
-                                 //   console.log(value);
+                                    //   console.log(value);
                                     $scope.$apply(function () {
                                         $scope.studentList.forEach(stuRec => {
-                                            $scope.calcQuizResult(stuRec);                                           
+                                            $scope.calcQuizResult(stuRec);
                                         });
                                     });
                                 });
 
-                                // // 儲存平時評量成績
-                                // $scope.saveGradeItemScore();
-                                // $scope.setCurrentMode($scope.current.mode);
-                               
+                                // 檢查小考項目是否有變動
+                                $scope.checkItemChange = !$scope.gradeItemConfig.CheckConfig();
+
                                 $scope.batchItemList = [];
                                 $scope.gradeItemConfig.Item.forEach(function (gradeItem) {
 
@@ -2077,7 +2080,7 @@
 
                                     $scope.batchItemList.push(importItem);
                                 });
-
+                                $scope.checkAllTable();
                                 $('#editScoreItemModal').modal('hide');
                             });
                         }
@@ -2280,6 +2283,20 @@
 
                 saveAs(new Blob([html], { type: "application/octet-stream" }), $scope.current.Course.CourseName + '_平時評量.xls');
             }
+        }
+
+        $scope.checkSaveD = function () {
+            var value = $scope.checkAllTable();
+            if ($scope.current.mode === '平時評量') {
+                // 需要再檢查評分項目
+                if (value) {
+                    value = !$scope.checkItemChange;
+                }
+
+              //  console.log($scope.checkItemChange);
+            }
+
+            return value;
         }
 
         /**
