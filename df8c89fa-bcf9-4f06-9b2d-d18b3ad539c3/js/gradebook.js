@@ -1071,7 +1071,12 @@
         // 檢查資料是否變更
         $scope.checkOneCell = function (studentRec, examID) {
             var pass = true;
-            pass = (studentRec[examID] == studentRec['Origin_' + examID]) || (studentRec['Origin_' + examID] === undefined) || (examID == "學期成績_試算");
+            if (studentRec[examID] === 0) {
+                pass = ('' + studentRec[examID] === '' + studentRec['Origin_' + examID]) || (studentRec['Origin_' + examID] === undefined) || (examID == "學期成績_試算");
+            } else {
+                pass = (studentRec[examID] == studentRec['Origin_' + examID]) || (studentRec['Origin_' + examID] === undefined) || (examID == "學期成績_試算");
+            }
+            // console.log(studentRec[examID] + '===' + studentRec['Origin_' + examID] + ' ==> ' + pass);
             return pass;
 
         }
