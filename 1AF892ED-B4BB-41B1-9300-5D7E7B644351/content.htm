@@ -202,7 +202,7 @@
             <div class="btn-group"
                  ng-if="current.mode == '平時評量'">
                 <a class="btn btn-default dropdown-toggle"
-                   data-toggle="dropdown">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
+                   data-toggle="dropdown" ng-if="templateList.length > 0">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li ng-repeat="template in templateList"
                         ng-class="{active: template == current.template}">

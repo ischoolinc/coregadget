@@ -689,17 +689,24 @@
                 var chk = false;
 
                 $scope.templateList.forEach(function (rec) {
-                    if ($scope.current.template.Name === rec.Name) {
-                        chk = true;
+                    if ($scope.current.template)
+                    {
+                        if ($scope.current.template.Name === rec.Name) {
+                            chk = true;
+                        }    
                     }
                 });
 
                 if (chk) {
                     $scope.setCurrentTemplate($scope.current.template);
-                } else {
+                } else {                  
                     $scope.setCurrentTemplate($scope.templateList[0]);
+                                       
                 }
+            } else {
+                $scope.setCurrentTemplate($scope.current.template || $scope.templateList[0]);
             }
+           
         }
 
         // 目前試別的切換
@@ -1432,7 +1439,7 @@
                     var studentData = [
                         `<td>${student.ClassName}</td>`,
                         `<td>${student.StudentName}(${student.SeatNo})</td>`,
-                        `<td>${student.StudentNumber}</td>`,
+                        `<td class="text">${student.StudentNumber}</td>`,
                     ];
 
                     studentData.push(`<td>${student['Exam學期成績']}</td>`);
@@ -1457,6 +1464,12 @@
     <html>
         <head>
             <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
+            <style type="text/css">
+            .text {
+                mso-number-format:"\@"
+            }
+        </style>
+
         </head>
         <body>
             <table border='1' cellspacing='0' cellpadding='2'>
@@ -1503,7 +1516,7 @@
                 [].concat($scope.studentList || []).forEach(student => {
                     var studentData = [
                         `<td>${student.ClassName}</td>`, `<td>${student.StudentName}(${student.SeatNo})</td>`,
-                        `<td>${student.StudentNumber}</td>`,
+                        `<td class="text">${student.StudentNumber}</td>`,
                     ];
 
                     [].concat($scope.current.gradeItemList || []).forEach(template => {
@@ -1524,6 +1537,11 @@
             <html>
                 <head>
                     <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
+                    <style type="text/css">
+                    .text {
+                        mso-number-format:"\@"
+                    }
+                </style>
                 </head>
                 <body>
                     <table border='1' cellspacing='0' cellpadding='2'>
