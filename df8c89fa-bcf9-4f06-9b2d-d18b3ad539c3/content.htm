@@ -357,7 +357,7 @@
                                     </td>
                                     <td ng-if="current.Exam && current.Student">
                                         <div ng-if="current.Exam.Lock || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                                score-stress="{{current.Student[current.Exam.ExamID]}}"
+                                                score-stress="{{current.Student[current.Exam.ExamID]}}" score-background="none"
                                                 class="text-center">
                                             {{current.Student[current.Exam.ExamID]=='0'?('0'):(current.Student[current.Exam.ExamID]||'&nbsp;')}}
                                         </div>
