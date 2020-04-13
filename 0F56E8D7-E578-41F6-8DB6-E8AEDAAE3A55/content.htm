@@ -356,7 +356,8 @@
                                     <div ng-if="current.Exam.Lock || !current.Student || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
                                          
                                          class="text-center"
-                                         score-stress="{{current.Student[current.Exam.ExamID]}}">
+                                         score-stress="{{current.Student[current.Exam.ExamID]}}"
+                                         score-background="none" >
                                         {{current.Student[current.Exam.ExamID] == '0' ? ('0') : (current.Student[current.Exam.ExamID] || '&nbsp;')}}
                                     </div>
                                     <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Number' && current.Exam.Permission == 'Editor'"

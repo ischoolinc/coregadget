@@ -2622,14 +2622,21 @@
             restrict: 'A',
             scope: {
                 'score-type': '=',
+                'score-background': '='
             },
-            link: function (scope, element, attrs) {
-                const funChangeCSS = function () {
+            link: function(scope, element, attrs) {
+                const funChangeCSS = function() {
                     element.removeClass('score-red');
+                    element.removeClass('text-red');
+
                     if (attrs.scoreType !== 'Text') {
                         if ($.isNumeric(attrs.scoreStress)) {
                             if (Number(attrs.scoreStress) < 60 || Number(attrs.scoreStress) > 100) {
-                                element.addClass('score-red');
+                                if (attrs.scoreBackground === 'none') {
+                                    element.addClass('text-red');
+                                } else {
+                                    element.addClass('score-red');
+                                }
                             }
                         }
                     }
@@ -2638,6 +2645,9 @@
                     funChangeCSS();
                 });
                 attrs.$observe('scoreStress', function (newValue) {
+                    funChangeCSS();
+                });
+                attrs.$observe('scoreBackground', function (newValue) {
                     funChangeCSS();
                 });
             }
