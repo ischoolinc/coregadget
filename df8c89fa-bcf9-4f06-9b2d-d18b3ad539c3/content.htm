@@ -648,7 +648,7 @@
                     </div>
                 </div>
                 <div class="modal-body"
-                     ng-if="importTarget.ParseValues">
+                     ng-if="!!importTarget.ParseValues">
                     <p>預覽</p>
                     <div class="row">
                         <div class="visible-md visible-lg">
@@ -666,9 +666,9 @@
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]==''"
+                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
+                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                              class="pull-right"
                                              score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
@@ -689,9 +689,9 @@
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]==''"
+                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
+                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                              class="pull-right"
                                              score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
@@ -712,9 +712,9 @@
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]==''"
+                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
+                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                              class="pull-right"
                                              score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
@@ -738,11 +738,11 @@
                             ng-click="importTarget.Parse()">解析</button>
                     <button type="button"
                             class="btn btn-default btn-sm"
-                            ng-if="importTarget.ParseValues"
+                            ng-if="!!importTarget.ParseValues"
                             ng-click="importTarget.Clear()">返回</button>
                     <button type="button"
                             class="btn btn-primary btn-sm"
-                            ng-if="importTarget.ParseValues"
+                            ng-if="!!importTarget.ParseValues"
                             ng-click="importTarget.Import()"
                             ng-class="{disabled:importTarget.HasError}">匯入</button>
                 </div>
