@@ -23,14 +23,16 @@
                 負責輔導班級
               </a>
             </ng-container>
-            <ng-container *ngIf="isClassEnable">
-              <a class="list-group-item list-group-item-action d-flex"
-                 data-toggle="list"
-                 [ngClass]="{ 'active show': currentItem == 'psychological_quiz_setup' }"
-                 
-                 (click)="routeTo('psychological_quiz_setup')">
-                設定心理測驗題目
-              </a>
+            <ng-container *ngIf="counselVisible === true">
+              <ng-container *ngIf="isClassEnable">
+                <a class="list-group-item list-group-item-action d-flex"
+                   data-toggle="list"
+                   [ngClass]="{ 'active show': currentItem == 'psychological_quiz_setup' }"
+                   
+                   (click)="routeTo('psychological_quiz_setup')">
+                  設定心理測驗題目
+                </a>
+              </ng-container>
             </ng-container>
           </div>
         </div>

@@ -16,6 +16,8 @@ import { QuizInfoReport, ClassStudentCountReport } from './CounselStatistics-vo'
 })
 export class CounselStatisticsComponent implements OnInit {
 
+  public coubselReferralVisible: boolean = false;
+
   ImplementationDate_Begin: string;
   ImplementationDate_End: string;
   reportNameList: string[];
@@ -31,14 +33,24 @@ export class CounselStatisticsComponent implements OnInit {
     private appComponent: AppComponent, private dsaService: DsaService, ) { }
 
   ngOnInit() {
+    this.coubselReferralVisible = false;
+
+    if (gadget.params.system_counsel_position === 'referral') {
+      this.coubselReferralVisible = true;
+    }
+
     let dt = new Date();
     this.selectYear = dt.getFullYear();
     this.selectMonth = dt.getMonth() + 1;
     this.reportTypeList.push('輔導工作月統計');
     this.reportTypeList.push('導師輔導記錄');
     this.reportTypeList.push('晤談記錄');
-    this.reportTypeList.push('轉介學生清單');
+    if (this.coubselReferralVisible) {
+      this.reportTypeList.push('轉介學生清單');
+    }
+
     this.reportTypeList.push('各班導師晤談次數');
+
 
     if (gadget.params.groupAanalysisEnabled) {
       this.reportTypeList.push('選組分析表');

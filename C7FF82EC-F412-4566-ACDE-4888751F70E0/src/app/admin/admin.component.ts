@@ -16,6 +16,8 @@ export class AdminComponent implements OnInit {
   isRoleEnable: boolean = false;
   isClassEnable: boolean = false;
   isPsyEnable: boolean = false;
+  public counselVisible: boolean = false;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -31,6 +33,11 @@ export class AdminComponent implements OnInit {
     this.isRoleEnable = false;
     this.isClassEnable = false;
     this.isPsyEnable = false;
+    this.counselVisible = false;
+
+    if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor') {
+      this.counselVisible = true;
+    }
 
     await this.appComponent.GetMyCounselTeacherRole();
     if (this.globalService.MyCounselTeacherRole === '輔導主任') {
@@ -38,12 +45,12 @@ export class AdminComponent implements OnInit {
       this.isRoleEnable = true;
       this.isClassEnable = true;
       this.isPsyEnable = true;
-    } 
+    }
     if (this.globalService.MyCounselTeacherRole === '輔導組長') {
       this.currentItem = 'counsel_class';
       this.isClassEnable = true;
       this.isPsyEnable = true;
-    } 
+    }
   }
 
   routeTo(to) {
