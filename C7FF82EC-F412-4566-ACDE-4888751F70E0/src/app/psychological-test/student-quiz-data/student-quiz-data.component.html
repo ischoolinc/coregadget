@@ -64,18 +64,19 @@
         </li>
         <li class="tbody">
           <ng-container *ngFor="let studItem of StudentQuizDataList">
-            <ol class="tr">
-              <li data-title="班級">{{studItem.ClassName}}</li>
-              <li data-title="座號">{{studItem.SeatNo}}</li>
-              <li data-title="姓名">{{studItem.StudentName}}</li>
-              <li data-title="學號">{{studItem.StudentNumber}}</li>
-              <li data-title="實施日期">{{studItem.ImplementationDateStr}}</li>
-              <li data-title="解析日期">{{studItem.AnalysisDateStr}}</li>
-              <ng-container *ngFor="let itemName of QuizItemNameList">
-                <li data-title="">{{studItem.getQuizItemValue(QuizID,itemName)}}</li>
-              </ng-container>
-
-            </ol>
+            <ng-container *ngIf="QuizID === studItem.QuizUID">
+              <ol class="tr">
+                <li data-title="班級">{{studItem.ClassName}}</li>
+                <li data-title="座號">{{studItem.SeatNo}}</li>
+                <li data-title="姓名">{{studItem.StudentName}}</li>
+                <li data-title="學號">{{studItem.StudentNumber}}</li>
+                <li data-title="實施日期">{{studItem.ImplementationDateStr}}</li>
+                <li data-title="解析日期">{{studItem.AnalysisDateStr}}</li>
+                <ng-container *ngFor="let itemName of QuizItemNameList">
+                  <li data-title="">{{studItem.getQuizItemValue(QuizID,itemName)}}</li>
+                </ng-container>
+              </ol>
+            </ng-container>
           </ng-container>
         </li>
       </ul>
