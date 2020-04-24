@@ -404,21 +404,23 @@
             return tbody1.push("</tr>");
           });
           //--
-          subBody.push(`<tr><td></td>`)
-          exam_list.forEach(examID => {
-            // 固定排名：算數平均＆排名
-            {
-              const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均' 
-                && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
+          if (gadget.params.is_new_rank === 'true') {
+            subBody.push(`<tr><td></td>`)
+            exam_list.forEach(examID => {
+              // 固定排名：算數平均＆排名
+              {
+                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均' 
+                  && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
 
-              if (data) {
-                subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
-              } else {
-                subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
+                if (data) {
+                  subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                } else {
+                  subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
+                }
               }
-            }
-          });
-          subBody.push(`</tr>`)
+            });
+            subBody.push(`</tr>`)
+          }
           //--
           thead_html = "<tr class=\"my-nofill\"><th rowspan=\"2\">科目名稱</th>" + (thead1.join("")) + "</tr>\n<tr class=\"my-nofill\">" + (thead2.join("")) + "</tr>";
           tbody_html = tbody1.join("");
