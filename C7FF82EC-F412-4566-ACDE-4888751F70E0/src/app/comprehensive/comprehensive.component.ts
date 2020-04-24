@@ -16,6 +16,7 @@ export class ComprehensiveComponent implements OnInit {
 
   @ViewChild("GenerateKeyAndSetTime") GenerateKeyAndSetTime: GenerateKeyAndSetTimeComponent;
 
+  public counselVisible: boolean = false;
   deny: boolean = false;
   isLoading: boolean = false;
   transferSuccess: Boolean = false;
@@ -45,6 +46,11 @@ export class ComprehensiveComponent implements OnInit {
     this.appComponent.currentComponent = "comprehensive";
     this.currentMode = "view";
     this.dsns = gadget.getApplication().accessPoint;
+    this.counselVisible = false;
+    if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor') {
+      this.counselVisible = true;
+    }
+
     this.loadData();
   }
 
