@@ -1,4 +1,4 @@
-﻿angular.module('gradebook', ['ui.sortable', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.helpers.debounce'])
+﻿angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.helpers.debounce'])
 
     .controller('MainCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
         var $scope長這個樣子 = {
