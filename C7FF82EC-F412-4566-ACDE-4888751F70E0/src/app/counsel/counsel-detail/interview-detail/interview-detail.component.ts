@@ -27,6 +27,9 @@ export class InterviewDetailComponent implements OnInit {
   _StudentID: string = "";
   isLoading = false;
   isDeleteButtonDisable: boolean = true;
+
+  public referralVisible: boolean = false;
+
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
   @ViewChild("delInterview") _delInterview: DelInterviewModalComponent;
@@ -42,6 +45,12 @@ export class InterviewDetailComponent implements OnInit {
 
   ngOnInit() {
     this._StudentID = "";
+
+    this.referralVisible = false;
+    if (gadget.params.system_counsel_position === 'referral') {
+      this.referralVisible = true;
+    }
+
     this.counselDetailComponent.setCurrentItem("interview");
     if (
       this.counselDetailComponent.currentStudent.Role &&

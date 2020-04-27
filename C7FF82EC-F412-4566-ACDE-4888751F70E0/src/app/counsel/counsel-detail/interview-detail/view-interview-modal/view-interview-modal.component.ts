@@ -10,11 +10,17 @@ import { CounselInterview } from "../../../counsel-vo";
 })
 export class ViewInterviewModalComponent implements OnInit {
 
+  public referralVisible: boolean = false;
+
   _CounselInterview: CounselInterview;
   _id = "viewInterview";
   constructor(private counselStudentService: CounselStudentService) {}
 
   ngOnInit() {
+    this.referralVisible = false;
+    if (gadget.params.system_counsel_position === 'referral') {
+      this.referralVisible = true;
+    }
     this._CounselInterview = new CounselInterview();
   }
 

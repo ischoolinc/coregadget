@@ -108,14 +108,15 @@
                   <i class="material-icons">add</i>
                   產生綜合紀錄表
                 </a>
-
-                <a class="dropdown-item"
-                (click)="showSystemAsyncModal()">
-                <span class="material-icons">
-                  swap_vert
-                 </span>
-               轉入系統欄位
-             </a>
+                <ng-container *ngIf="counselVisible === true">
+                  <a class="dropdown-item"
+                     (click)="showSystemAsyncModal()">
+                    <span class="material-icons">
+                      swap_vert
+                    </span>
+                    轉入系統欄位
+                  </a>
+                </ng-container>
                 <!-- <a class="dropdown-item"
                    (click)="genSSNKey(currentSection.FillInSectionID)">
                   <i style="display: inline-block;width: 27.42px;"></i>
@@ -294,17 +295,19 @@
         </ng-container>
         <ng-container *ngIf="true">
           <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
-            <mat-progress-bar *ngIf ="isLoading" mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar *ngIf="isLoading"
+                            mode="indeterminate"></mat-progress-bar>
         </ng-container>
-        <ng-container *ngIf ="this.transferSuccess">
+        <ng-container *ngIf="this.transferSuccess">
           <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
-        <p *ngIf ="this.transferSuccess" >轉入完成!</p>
+          <p *ngIf="this.transferSuccess">轉入完成!</p>
         </ng-container>
       </div>
       <div class="modal-footer">
         <h6 *ngIf="generater.isSaving"
             class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
-        <button *ngIf="!this.isLoading&&!this.transferSuccess" type="button"
+        <button *ngIf="!this.isLoading&&!this.transferSuccess"
+                type="button"
                 class="btn btn-info"
                 (click)="transferSystemCoreColToAFrom()"
                 [disabled]="generater.isLoading || generater.isSaving">

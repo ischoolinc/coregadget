@@ -157,24 +157,28 @@
                     [(ngModel)]="_CounselInterview.Content"
                     (keyup)="_CounselInterview.checkValue()"></textarea>
         </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox"
-                 class="custom-control-input"
-                 id="referral"
-                 [(ngModel)]="_CounselInterview.isReferralValue" />
-          <label class="custom-control-label"
-                 for="referral">轉介輔導室</label>
-        </div>
-        <div class="form-group"
-             *ngIf="_CounselInterview.isReferralValue">
-          <label for="referralDescription"
-                 class="col-form-label">轉介說明(學生問題概述，轉介原因及希望協助的事項)</label>
-          <textarea class="form-control"
-                    id="referralDescription"
-                    rows="3"
-                    placeholder="請輸入轉介說明"
-                    [(ngModel)]="_CounselInterview.ReferralDesc"></textarea>
-        </div>
+
+        <ng-container *ngIf="referralVisible === true">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="referral"
+                   [(ngModel)]="_CounselInterview.isReferralValue" />
+            <label class="custom-control-label"
+                   for="referral">轉介輔導室</label>
+          </div>
+          <div class="form-group"
+               *ngIf="_CounselInterview.isReferralValue">
+            <label for="referralDescription"
+                   class="col-form-label">轉介說明(學生問題概述，轉介原因及希望協助的事項)</label>
+            <textarea class="form-control"
+                      id="referralDescription"
+                      rows="3"
+                      placeholder="請輸入轉介說明"
+                      [(ngModel)]="_CounselInterview.ReferralDesc"></textarea>
+          </div>
+        </ng-container>
+
       </div>
       <div class="modal-footer">
         <button type="button"

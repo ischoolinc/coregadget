@@ -72,16 +72,20 @@
           <label class="form-control"
                  style="white-space: pre-wrap;word-break: break-all;">{{ _CounselInterview.Content || ' ' }}</label>
         </div>
-        <div *ngIf="_CounselInterview.getIsReferralString()"
-             class="form-group">
-          <label class="col-form-label">轉介輔導室</label>
-          <label class="form-control">{{ _CounselInterview.getIsReferralString() }}</label>
-        </div>
-        <div *ngIf="_CounselInterview.getIsReferralString()"
-             class="form-group">
-          <label class="col-form-label">轉介說明</label>
-          <label class="form-control">{{ _CounselInterview.ReferralDesc }}</label>
-        </div>
+
+        <ng-container *ngIf="referralVisible === true">
+          <div *ngIf="_CounselInterview.getIsReferralString()"
+               class="form-group">
+            <label class="col-form-label">轉介輔導室</label>
+            <label class="form-control">{{ _CounselInterview.getIsReferralString() }}</label>
+          </div>
+          <div *ngIf="_CounselInterview.getIsReferralString()"
+               class="form-group">
+            <label class="col-form-label">轉介說明</label>
+            <label class="form-control">{{ _CounselInterview.ReferralDesc }}</label>
+          </div>
+
+        </ng-container>
       </div>
       <div class="modal-footer">
         <div class="dropdown">
