@@ -196,6 +196,7 @@
         </div>
         <div style="clear: both;"
              ng-if="current.mode !=='平時評量'">
+            <span>{{current.Course.SchoolYear}}學年度 第{{current.Course.Semester}}學期 </span>
             開放時間：
             <span style="color: red"
                   ng-show="current.Exam.InputStartTime && current.Exam.InputEndTime">
@@ -206,6 +207,7 @@
 
         <div style="clear: both;"
              ng-if="current.mode ==='平時評量'">
+            <span>{{current.Course.SchoolYear}}學年度 第{{current.Course.Semester}}學期 </span>
             開放時間：
             <span style="color: red"
                   ng-show="current.Course.TemplateExtension.Extension.OrdinarilyStartTime && current.Course.TemplateExtension.Extension.OrdinarilyEndTime">
@@ -354,10 +356,9 @@
                                 </td>
                                 <td ng-if="current.Exam && current.Student">
                                     <div ng-if="current.Exam.Lock || !current.Student || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                         
                                          class="text-center"
                                          score-stress="{{current.Student[current.Exam.ExamID]}}"
-                                         score-background="none" >
+                                         score-background="none">
                                         {{current.Student[current.Exam.ExamID] == '0' ? ('0') : (current.Student[current.Exam.ExamID] || '&nbsp;')}}
                                     </div>
                                     <div ng-if="!current.Exam.Lock && current.Student && current.Exam.Type == 'Number' && current.Exam.Permission == 'Editor'"
@@ -704,10 +705,10 @@
                                         <div ng-if="batchItem.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="batchItem.ParseValues[$index]==''"
+                                        <div ng-if="batchItem.ParseValues[$index]===''"
                                              class="pull-right text-danger">--
                                         </div>
-                                        <div ng-if="batchItem.ParseValues[$index]!='錯誤' && batchItem.ParseValues[$index]!=''"
+                                        <div ng-if="batchItem.ParseValues[$index]!='錯誤' && batchItem.ParseValues[$index]!==''"
                                              class="pull-right"
                                              ng-class="{'text-danger':batchItem.ParseValues[$index] < 60}">
                                             {{batchItem.ParseValues[$index]}}</div>
@@ -729,10 +730,10 @@
                                         <div ng-if="batchItem.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="batchItem.ParseValues[$index]==''"
+                                        <div ng-if="batchItem.ParseValues[$index]===''"
                                              class="pull-right text-danger">--
                                         </div>
-                                        <div ng-if="batchItem.ParseValues[$index]!='錯誤' && batchItem.ParseValues[$index]!=''"
+                                        <div ng-if="batchItem.ParseValues[$index]!='錯誤' && batchItem.ParseValues[$index]!==''"
                                              class="pull-right"
                                              ng-class="{'text-danger':batchItem.ParseValues[$index] < 60}">
                                             {{batchItem.ParseValues[$index]}}</div>
@@ -754,10 +755,10 @@
                                         <div ng-if="batchItem.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="batchItem.ParseValues[$index]==''"
+                                        <div ng-if="batchItem.ParseValues[$index]===''"
                                              class="pull-right text-danger">--
                                         </div>
-                                        <div ng-if="batchItem.ParseValues[$index]!='錯誤' && batchItem.ParseValues[$index]!=''"
+                                        <div ng-if="batchItem.ParseValues[$index]!='錯誤' && batchItem.ParseValues[$index]!==''"
                                              class="pull-right"
                                              ng-class="{'text-danger':batchItem.ParseValues[$index] < 60}">
                                             {{batchItem.ParseValues[$index]}}</div>
@@ -964,7 +965,7 @@
                     </button>
                     <h4 class="modal-title"
                         id="copyLabel">將複製評量項目至下列勾選課程</h4>
-                    <h6>已有評分項目無法勾選</h6>
+                    <h6 style="color: red;">已有評分項目無法勾選</h6>
                 </div>
                 <div class="modal-body">
                     <div class="form-check"

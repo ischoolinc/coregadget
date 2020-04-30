@@ -357,6 +357,18 @@
 
                 // 平時評量
                 {
+                    var usualScoreOrdinarilyStartTime = "";
+                    var usualScoreOrdinarilyOrdinarilyEndTime = "";
+
+                    if (course.TemplateExtension != "") {
+                        if (course.TemplateExtension.Extension.OrdinarilyStartTime)
+                            usualScoreOrdinarilyStartTime = course.TemplateExtension.Extension.OrdinarilyStartTime;
+
+                        if (course.TemplateExtension.Extension.OrdinarilyEndTime)
+                            usualScoreOrdinarilyOrdinarilyEndTime = course.TemplateExtension.Extension.OrdinarilyEndTime;
+
+                    }
+
                     var usualScore = {
                         ExamID: 'Exam_平時評量',
                         Name: '平時評量',
@@ -364,9 +376,22 @@
                         Permission: 'Read',
                         //  平時評量入時間為評分樣板設定
                         Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)),
-                        InputStartTime: course.TemplateExtension.Extension.OrdinarilyStartTime,
-                        InputEndTime: course.TemplateExtension.Extension.OrdinarilyEndTime
+                        InputStartTime: usualScoreOrdinarilyStartTime,//course.TemplateExtension.Extension.OrdinarilyStartTime,
+                        InputEndTime: usualScoreOrdinarilyOrdinarilyEndTime//course.TemplateExtension.Extension.OrdinarilyEndTime
                     };
+
+                    var usualSScoreOrdinarilyStartTime = "";
+                    var usualSScoreOrdinarilyEndTime = "";
+
+                    if (course.TemplateExtension != "") {
+                        if (course.TemplateExtension.Extension.OrdinarilyStartTime) {
+                            usualSScoreOrdinarilyStartTime = course.TemplateExtension.Extension.OrdinarilyStartTime
+                        }
+
+                        if (course.TemplateExtension.Extension.OrdinarilyEndTime) {
+                            usualSScoreOrdinarilyEndTime = course.TemplateExtension.Extension.OrdinarilyEndTime
+                        }
+                    }
 
                     var usualScoreEffort = {
                         ExamID: 'Exam_平時評量_努力程度',
@@ -376,8 +401,8 @@
                         Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime)),
                         Group: usualScore,
                         SubVisible: false,
-                        InputStartTime: course.TemplateExtension.Extension.OrdinarilyStartTime,
-                        InputEndTime: course.TemplateExtension.Extension.OrdinarilyEndTime
+                        InputStartTime: usualSScoreOrdinarilyStartTime, //course.TemplateExtension.Extension.OrdinarilyStartTime,
+                        InputEndTime: usualSScoreOrdinarilyEndTime //course.TemplateExtension.Extension.OrdinarilyEndTime
                     };
 
                     //usualScore.SubExamList = [usualScoreEffort];
@@ -388,6 +413,17 @@
 
                 // 文字評量
                 {
+                    var textTextStartTime = "";
+                    var textTextEndTime = "";
+
+                    if (course.TemplateExtension != "") {
+                        if (course.TemplateExtension.Extension.TextStartTime)
+                            textTextStartTime = course.TemplateExtension.Extension.TextStartTime;
+
+                        if (course.TemplateExtension.Extension.TextEndTime)
+                            textTextEndTime = course.TemplateExtension.Extension.TextEndTime;
+                    }
+
                     var textScore = {
                         ExamID: 'Exam_文字評量',
                         Name: '文字評量',
@@ -395,8 +431,8 @@
                         Permission: 'Editor',
                         //  文字評量的 輸入開放與否，依照系統 評量設定的 開放時間為基準。
                         Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.TextStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.TextEndTime)),
-                        InputStartTime: course.TemplateExtension.Extension.TextStartTime,
-                        InputEndTime: course.TemplateExtension.Extension.TextEndTime
+                        InputStartTime: textTextStartTime,//course.TemplateExtension.Extension.TextStartTime,
+                        InputEndTime: textTextEndTime //course.TemplateExtension.Extension.TextEndTime
                     };
 
                     $scope.examList.push(textScore);
@@ -407,6 +443,21 @@
 
             // 取得小考資料
             $scope.getGradeItemList().then(value => {
+
+                // 當畫面與預設成績_1，如果有需要回存資料，不然desktop小考輸入檢查無法檢查到。                                
+                if ($scope.checkHasDefaultItem === 't') {
+
+
+                    $scope.GradeItemConfigInit();
+
+                    $scope.gradeItemList.forEach(function (data) {
+                        $scope.gradeItemConfig.Item.push(data);
+                    });
+
+                    $scope.saveGradeItemConfig();
+                    $scope.checkHasDefaultItem = "f";
+                }
+
                 // 模式切換： 1.目前選擇的試別清空 2.資料Reload 3.設定批次項目 4.設定目前學生與目前試別
                 $scope.setCurrentMode($scope.current.mode);
             });
@@ -419,6 +470,9 @@
         $scope.getGradeItemList = function () {
             var course = $scope.current.Course;
             $scope.gradeItemList = [];
+
+            // 高雄特例評分樣板一調要有成績_1
+            $scope.checkHasDefaultItem = "f";
 
             return new Promise((r, j) => {
                 $scope.connection.send({
@@ -471,6 +525,8 @@
                                         Permission: 'Editor',
                                         Lock: course.TemplateExtension == '' ? true : !(new Date(course.TemplateExtension.Extension.OrdinarilyStartTime) < new Date() && new Date() < new Date(course.TemplateExtension.Extension.OrdinarilyEndTime))
                                     };
+                                    // 之後儲存預設使用
+                                    $scope.checkHasDefaultItem = 't';
 
                                     $scope.gradeItemList.push(defaultItem);
                                 }
@@ -779,14 +835,21 @@
                                         flag = true;
                                         item.ParseValues[i] = '';
                                     } else if (item.ParseValues[i] == '缺') {
+                                        item.ParseValues[i] = '缺';
                                         flag = true;
                                     }
-
 
                                     if (!flag) {
                                         item.ParseValues[i] = '錯誤';
                                         item.HasError = true;
+                                    }else{
+                                        if (!isNaN(temp) && item.ParseValues[i] != '') {
+                                            item.ParseValues[i] = temp;
+                                        }
                                     }
+
+                                    console.log(item.ParseValues[i]);
+                                    // debugger;
                                 }
                             },
                             Clear: function () {
@@ -1851,10 +1914,8 @@
             return (examItem.Permission == 'Read' || examItem.Permission == 'Editor') && ($scope.current.VisibleExam && $scope.current.VisibleExam.indexOf(examItem.Name) >= 0);
         }
 
-        /**
-         * 顯示編輯評分項目
-         */
-        $scope.showGradeItemConfig = function () {
+        // 小考選項初始化
+        $scope.GradeItemConfigInit = function () {
             $scope.gradeItemConfig = {
                 Item: []
                 , OriginItem: []
@@ -1922,6 +1983,81 @@
                     return jsonCode === originJsonCode;
                 }
             };
+        }
+        /**
+         * 顯示編輯評分項目
+         */
+        $scope.showGradeItemConfig = function () {
+
+            $scope.GradeItemConfigInit();
+
+            // $scope.gradeItemConfig = {
+            //     Item: []
+            //     , OriginItem: []
+            //     , Mode: 'Editor'
+            //     , JSONCode: ''
+            //     , DeleteItem: function (item) {
+            //         var index = $scope.gradeItemConfig.Item.indexOf(item);
+            //         if (index > -1) {
+            //             $scope.gradeItemConfig.Item.splice(index, 1);
+            //         }
+            //     }
+            //     , AddItem: function () {
+            //         $scope.gradeItemConfig.Item.push({
+            //             Name: ''
+            //             , Weight: '1'
+            //             , SubExamID: ''
+            //             , Index: $scope.gradeItemConfig.Item.length + 1
+            //         });
+            //     }
+            //     , JSONMode: function () {
+            //         $scope.gradeItemConfig.Mode = 'JSON';
+            //         var jsonList = [];
+            //         $scope.gradeItemConfig.Item.forEach(function (item) {
+            //             jsonList.push({
+            //                 Name: item.Name
+            //                 , Weight: item.Weight
+            //                 , SubExamID: item.SubExamID
+            //                 , Index: item.Index
+            //             });
+            //         });
+            //         $scope.gradeItemConfig.JSONCode = JSON.stringify(jsonList, null, '    ');
+            //     }
+            //     , CommitJSON: function () {
+            //         var jsonParse;
+            //         var jsonList = [];
+            //         try {
+            //             jsonParse = JSON.parse($scope.gradeItemConfig.JSONCode);
+            //         }
+            //         catch (error) {
+            //             alert('Syntax Error' + error);
+            //             return;
+            //         }
+            //         if (jsonParse.length || jsonParse.length === 0) {
+            //             jsonList = [].concat(jsonParse);
+            //         }
+            //         else {
+            //             alert('Parse Error');
+            //             return;
+            //         }
+            //         $scope.gradeItemConfig.Item = [];
+            //         jsonList.forEach(function (item) {
+            //             $scope.gradeItemConfig.Item.push({
+            //                 Name: item.Name
+            //                 , Weight: item.Weight
+            //                 , SubExamID: item.SubExamID
+            //                 , Index: item.Index
+            //             });
+            //         });
+            //         $scope.gradeItemConfig.Mode = 'Editor';
+            //     }
+            //     , CheckConfig: function () {
+            //         var jsonCode = angular.toJson($scope.gradeItemConfig.Item);
+            //         var originJsonCode = angular.toJson($scope.gradeItemConfig.OriginItem);
+
+            //         return jsonCode === originJsonCode;
+            //     }
+            // };
 
             // 整理小考資料
             [].concat($scope.gradeItemList || []).forEach(function (item) {
@@ -2293,7 +2429,7 @@
                     value = !$scope.checkItemChange;
                 }
 
-              //  console.log($scope.checkItemChange);
+                //  console.log($scope.checkItemChange);
             }
 
             return value;
@@ -2624,8 +2760,8 @@
                 'score-type': '=',
                 'score-background': '='
             },
-            link: function(scope, element, attrs) {
-                const funChangeCSS = function() {
+            link: function (scope, element, attrs) {
+                const funChangeCSS = function () {
                     element.removeClass('score-red');
                     element.removeClass('text-red');
 
