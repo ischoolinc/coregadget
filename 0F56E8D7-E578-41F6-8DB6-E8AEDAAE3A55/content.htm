@@ -546,17 +546,21 @@
                                     <small>
                                         <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap"
                                               score-stress="{{stuRec[exam.ExamID]}}"
-                                              data-score-type="{{exam.Type}}">
+                                              data-score-type="{{exam.Type}}"
+                                              data-score-name="{{exam.Name}}">
                                             {{stuRec[exam.ExamID]}}
                                         </span>
                                     </small>
                                 </h6>
+
                                 <span ng-if="!exam.Group"
                                       score-stress="{{stuRec[exam.ExamID]}}"
                                       data-score-type="{{exam.Type}}"
+                                      data-score-name="{{exam.Name}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{stuRec[exam.ExamID]}}
                                 </span>
+
                             </td>
                         </tr>
                     </tbody>
@@ -604,7 +608,10 @@
                             <td class="text-center"
                                 style="position:relative;"
                                 score-stress="{{student['QuizResult']}}"
-                                data-score-type="{{current.Exam.Type}}">
+                                data-score-type="{{current.Exam.Type}}"
+                                data-score-name="{{current.Exam.Name}}"
+                                >
+                                
                                 <div ng-if="!checkOneCell(student, 'QuizResult')"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
@@ -626,8 +633,8 @@
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
                                 <span score-stress="{{student[item.ExamID]}}"
-                                      data-score-type="{{current.Exam.Type}}"
-                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
+                                      data-score-type="{{current.Exam.Type}}"                                      
+                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">                                    
                                     {{student[item.ExamID]}}
                                 </span>
                             </td>

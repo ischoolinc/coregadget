@@ -396,6 +396,18 @@ li .active {
 .text-red {
   color: #f00;
 }
+.backgroud-pink: {
+  
+}
+.backgroud-pink:before {
+  content: '';
+  background:rgba(255,192,203,.3);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
 
 .importStudentPreview {
   padding: 5px 10px;

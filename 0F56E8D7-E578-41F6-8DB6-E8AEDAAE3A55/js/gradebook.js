@@ -842,7 +842,7 @@
                                     if (!flag) {
                                         item.ParseValues[i] = '錯誤';
                                         item.HasError = true;
-                                    }else{
+                                    } else {
                                         if (!isNaN(temp) && item.ParseValues[i] != '') {
                                             item.ParseValues[i] = temp;
                                         }
@@ -2758,16 +2758,22 @@
             restrict: 'A',
             scope: {
                 'score-type': '=',
-                'score-background': '='
+                'score-background': '=',
+                'score-name': '='
             },
             link: function (scope, element, attrs) {
                 const funChangeCSS = function () {
                     element.removeClass('score-red');
                     element.removeClass('text-red');
+                    element.removeClass('backgroud-pink');
 
+                    if (attrs.scoreName === '學期成績' || attrs.scoreName === '學期成績_試算' || (attrs.scoreName === '成績_1' && attrs.scoreType ==='Number')) {
+                        element.addClass('backgroud-pink');
+                    }
                     if (attrs.scoreType !== 'Text') {
                         if ($.isNumeric(attrs.scoreStress)) {
                             if (Number(attrs.scoreStress) < 60 || Number(attrs.scoreStress) > 100) {
+                                element.removeClass('backgroud-pink');
                                 if (attrs.scoreBackground === 'none') {
                                     element.addClass('text-red');
                                 } else {
@@ -2777,6 +2783,7 @@
                         }
                     }
                 };
+
                 attrs.$observe('scoreType', function (newValue) {
                     funChangeCSS();
                 });
@@ -2784,6 +2791,9 @@
                     funChangeCSS();
                 });
                 attrs.$observe('scoreBackground', function (newValue) {
+                    funChangeCSS();
+                });
+                attrs.$observe('scoreName', function (newValue) {
                     funChangeCSS();
                 });
             }
