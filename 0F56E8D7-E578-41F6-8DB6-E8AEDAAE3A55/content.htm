@@ -21,8 +21,8 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'bubu@debug.ischool.com.tw',
-                password: '1234'//window.prompt('password:')
+                account: '',
+                password: ''//window.prompt('password:')
             }
         });
     </script>
@@ -601,12 +601,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="student in studentList">
+                        <tr ng-repeat="student in studentList"
+                            ng-class="{'warning':student.StudentID == current.Student.StudentID}"
+                            style="cursor:pointer;">
                             <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.ClassName}}</td>
                             <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.SeatNumber}}</td>
                             <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.StudentName}}</td>
                             <td class="text-center"
                                 style="position:relative;"
+                                ng-click="setCurrent(student, item, true, true)"
                                 score-stress="{{student['QuizResult']}}"
                                 data-score-type="{{current.Exam.Type}}"
                                 data-score-name="{{current.Exam.Name}}">
@@ -617,7 +620,8 @@
                                 {{student['QuizResult']}}
                             </td>
                             <td class="text-center"
-                                style="position:relative;">
+                                style="position:relative;"
+                                ng-click="setCurrent(student, item, true, true)">
                                 <div ng-if="!checkOneCell(student, 'QuizResult_努力程度')"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
@@ -955,8 +959,8 @@
                                     </div>
                                 </th>
                                 <th class="text-center"
-                                style="width:100px;">代碼</th>
-                            <th class="text-center">詳細內容</th>
+                                    style="width:100px;">代碼</th>
+                                <th class="text-center">詳細內容</th>
                                 <!-- <th>代碼</th>
                                 <th>詳細內容</th> -->
                             </tr>
