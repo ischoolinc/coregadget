@@ -602,9 +602,9 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="student in studentList">
-                            <td>{{student.ClassName}}</td>
-                            <td>{{student.SeatNumber}}</td>
-                            <td>{{student.StudentName}}</td>
+                            <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.ClassName}}</td>
+                            <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.SeatNumber}}</td>
+                            <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.StudentName}}</td>
                             <td class="text-center"
                                 style="position:relative;"
                                 score-stress="{{student['QuizResult']}}"
