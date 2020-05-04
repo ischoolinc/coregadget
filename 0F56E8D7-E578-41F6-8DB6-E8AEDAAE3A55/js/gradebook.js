@@ -62,7 +62,8 @@
             ],
             process: [{
             }],
-            haveNoCourse: true
+            haveNoCourse: true,
+            examCatalogList: ['分類']
         };
 
         $scope.connection = gadget.getContract("ta");
@@ -84,6 +85,8 @@
             Student: null,
             Exam: null,
             Course: null,
+            /**文字評量分類 */
+            TextCatalog: '分類'
         };
 
         // 模式清單
@@ -161,6 +164,9 @@
             }
         });
 
+        /**文字評量分類清單 */
+        $scope.examCatalogList = ['分類'];
+
         /**
          * 取得文字評量代碼表
          * examTextList
@@ -173,6 +179,9 @@
             result: function (response, error, http) {
                 if (error !== null) {
                     alert("TeacherAccess.GetExamTextScoreMappingTable Error");
+                    $scope.examTextList = {};
+                    $scope.textCodeList = [];
+                    $scope.examCatalogList = ['分類'];
                 } else {
                     $scope.$apply(function () {
                         if (response !== null && response.Response !== null && response.Response !== '') {
@@ -182,10 +191,21 @@
                             // 代碼替換用
                             $scope.textCodeList = [].concat(response.Response.TextMappingTable.Item || []);
 
+                            // 分類清單
+                            $scope.textCodeList.forEach(function (item) {
+                                if ($scope.examCatalogList.indexOf(item.Catalog) === -1) {
+                                    $scope.examCatalogList.push(item.Catalog);
+                                }
+                            });
+
                             // 資料排序
                             $scope.textCodeList.sort(function (a, b) {
                                 return a.Code.length < b.Code.length ? 1 : -1;
                             });
+                        } else {
+                            $scope.examTextList = [];
+                            $scope.textCodeList = {};
+                            $scope.examCatalogList = ['分類'];
                         }
                     });
                 }
@@ -1059,6 +1079,15 @@
             }
 
             // $scope.process = batchItemList;
+        }
+
+        // 篩選文字評量分類
+        $scope.filterTextCatalog = function (text) {
+            if ($scope.current.TextCatalog === '分類') {
+                return text;
+            } else {
+                return (text.Catalog === $scope.current.TextCatalog);
+            }
         }
 
         /**
@@ -2767,7 +2796,7 @@
                     element.removeClass('text-red');
                     element.removeClass('backgroud-pink');
 
-                    if (attrs.scoreName === '學期成績' || attrs.scoreName === '學期成績_試算' || (attrs.scoreName === '成績_1' && attrs.scoreType ==='Number')) {
+                    if (attrs.scoreName === '學期成績' || attrs.scoreName === '學期成績_試算' || (attrs.scoreName === '成績_1' && attrs.scoreType === 'Number')) {
                         element.addClass('backgroud-pink');
                     }
                     if (attrs.scoreType !== 'Text') {

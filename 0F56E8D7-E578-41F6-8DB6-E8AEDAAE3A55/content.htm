@@ -9,7 +9,7 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "dev.jh_kh",//"test.kh.edu.tw",//
+            application: "test.kh.edu.tw", // "dev.jh_kh",//"test.kh.edu.tw",//
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
                 //"第一次期中考Round": "1",
@@ -609,9 +609,8 @@
                                 style="position:relative;"
                                 score-stress="{{student['QuizResult']}}"
                                 data-score-type="{{current.Exam.Type}}"
-                                data-score-name="{{current.Exam.Name}}"
-                                >
-                                
+                                data-score-name="{{current.Exam.Name}}">
+
                                 <div ng-if="!checkOneCell(student, 'QuizResult')"
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
@@ -633,8 +632,8 @@
                                      style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;">
                                 </div>
                                 <span score-stress="{{student[item.ExamID]}}"
-                                      data-score-type="{{current.Exam.Type}}"                                      
-                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">                                    
+                                      data-score-type="{{current.Exam.Type}}"
+                                      style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{student[item.ExamID]}}
                                 </span>
                             </td>
@@ -932,13 +931,38 @@
                            style="table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th>分類</th>
-                                <th>代碼</th>
-                                <th>詳細內容</th>
+                                <th class="text-center"
+                                    style="width:120px;">
+                                    <div class="btn-group btn-block">
+                                        <a href="javascript:void(0)"
+                                           class="btn btn-link btn-block dropdown-toggle"
+                                           data-toggle="dropdown"
+                                           style="padding:0; color:#333; text-align:left;">
+
+                                            {{current.TextCatalog?current.TextCatalog:'分類'}}
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu"
+                                            style="width:100%;">
+                                            <li ng-repeat="catalogItem in examCatalogList"
+                                                ng-class="{active:catalogItem==current.TextCatalog}">
+                                                <a href="javascript:;"
+                                                   ng-click="current.TextCatalog=catalogItem">
+                                                    {{catalogItem}}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </th>
+                                <th class="text-center"
+                                style="width:100px;">代碼</th>
+                            <th class="text-center">詳細內容</th>
+                                <!-- <th>代碼</th>
+                                <th>詳細內容</th> -->
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="ext in examTextList"
+                            <tr ng-repeat="ext in examTextList | filter: filterTextCatalog"
                                 style="cursor:pointer;"
                                 ng-click="selectCode(ext)"
                                 ng-class="{'text-danger': ext.Selected}">
