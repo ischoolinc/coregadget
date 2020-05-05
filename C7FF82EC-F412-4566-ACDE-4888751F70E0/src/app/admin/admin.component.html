@@ -12,7 +12,7 @@
                  data-toggle="list"
                  [ngClass]="{ 'active show': currentItem == 'counsel_teacher_role'}"
                  (click)="routeTo('counsel_teacher_role')">
-                教師輔導身分
+                {{teacherTypeStr}}
               </a>
             </ng-container>
             <ng-container *ngIf="isPsyEnable">
@@ -20,7 +20,7 @@
                  data-toggle="list"
                  [ngClass]="{ 'active show': currentItem == 'counsel_class' }"
                  (click)="routeTo('counsel_class')">
-                負責輔導班級
+                {{classTypeStr}}
               </a>
             </ng-container>
             <ng-container *ngIf="counselVisible === true">

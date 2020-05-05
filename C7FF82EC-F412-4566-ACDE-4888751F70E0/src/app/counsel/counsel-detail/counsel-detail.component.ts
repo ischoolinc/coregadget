@@ -18,7 +18,7 @@ export class CounselDetailComponent implements OnInit {
   public baseVisible: boolean = false;
   public counselVisible: boolean = false;
   public coubselReferralVisible: boolean = false;
-
+  public comprehensiveStr: string = "綜合紀錄表";
 
   // 顯示輔導紀錄
   _interviewEnable: boolean = false;
@@ -43,6 +43,9 @@ export class CounselDetailComponent implements OnInit {
     this.counselVisible = false;
     this.coubselReferralVisible = false;
 
+    // 預設
+    this.comprehensiveStr = "綜合紀錄表";
+
     if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor' || gadget.params.system_counsel_position === 'freshman') {
       this.baseVisible = true;
     }
@@ -53,6 +56,11 @@ export class CounselDetailComponent implements OnInit {
 
     if (gadget.params.system_counsel_position === 'referral') {
       this.coubselReferralVisible = true;
+    }
+
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有
+      this.comprehensiveStr = "填報資料";
     }
 
     this.activatedRoute.paramMap.subscribe(

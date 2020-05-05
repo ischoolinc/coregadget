@@ -28,6 +28,8 @@ export class ComprehensiveComponent implements OnInit {
   plugin: TemplateRef<any>;
   generater: any = {};
 
+  public comprehensiveStr: string = "產生綜合紀錄表";
+  public comprehensiveStr1: string = "綜合紀錄表資料";
   dsns: string;
 
   constructor(
@@ -43,6 +45,9 @@ export class ComprehensiveComponent implements OnInit {
   }
 
   ngOnInit() {
+    // 預設
+    this.comprehensiveStr = "產生綜合紀錄表";
+    this.comprehensiveStr1 = "綜合紀錄表資料";
     this.appComponent.currentComponent = "comprehensive";
     this.currentMode = "view";
     this.dsns = gadget.getApplication().accessPoint;
@@ -51,6 +56,11 @@ export class ComprehensiveComponent implements OnInit {
       this.counselVisible = true;
     }
 
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有
+      this.comprehensiveStr = "產生填報資料";
+      this.comprehensiveStr1 = "填報資料";
+    }
     this.loadData();
   }
 
@@ -148,9 +158,9 @@ export class ComprehensiveComponent implements OnInit {
   }
 
 
-/**
- * Modal彈出(轉入系統核心欄位)
- */
+  /**
+   * Modal彈出(轉入系統核心欄位)
+   */
   async showSystemAsyncModal() {
 
     $("#genSystemCoreColtoAFrom").modal({
@@ -161,25 +171,25 @@ export class ComprehensiveComponent implements OnInit {
     });
   }
 
-/**
- * 轉入系統核心欄位
- */
+  /**
+   * 轉入系統核心欄位
+   */
   async  transferSystemCoreColToAFrom() {
     this.isLoading = true;
-  try {
-  const resp = await this.dsaService.send("TranferAdminSystem.TranferAdminSysToAform", {
-    SchoolYear: this.currentSemester.SchoolYear
-    , Semester: this.currentSemester.Semester
-  });
-  console.log("resp",resp);
-  this.isLoading = false ;
-  this.transferSuccess = true;
+    try {
+      const resp = await this.dsaService.send("TranferAdminSystem.TranferAdminSysToAform", {
+        SchoolYear: this.currentSemester.SchoolYear
+        , Semester: this.currentSemester.Semester
+      });
+      console.log("resp", resp);
+      this.isLoading = false;
+      this.transferSuccess = true;
 
 
-  // $("#genSystemCoreColtoAFrom").modal('hide');
-} catch (ex) {
-  alert(`發生錯誤:${ex}`);
-}
+      // $("#genSystemCoreColtoAFrom").modal('hide');
+    } catch (ex) {
+      alert(`發生錯誤:${ex}`);
+    }
   }
 
   // 顯示設定代碼與設定開放時間
@@ -192,7 +202,7 @@ export class ComprehensiveComponent implements OnInit {
     // 關閉畫面
     $("#GenerateKeyAndSetTime").on("hide.bs.modal", () => {
       // 重整資料
- //     this.loadData();
+      //     this.loadData();
       $("#GenerateKeyAndSetTime").off("hide.bs.modal");
 
     });

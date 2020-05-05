@@ -18,7 +18,7 @@
              [attr.data-toggle]="roleService.enableCounsel?'tab':null"
              (click)="!roleService.enableCounsel || routeTo('/counsel')"
              [ngClass]="{'active': currentComponent == 'counsel', 'disabled': !roleService.enableCounsel}">
-            輔導學生</a>
+            {{counselStudentStr}}</a>
         </li>
       </ng-container>
       <ng-container *ngIf="counsel_statisticsVisable === true">
@@ -64,7 +64,7 @@
              [attr.data-toggle]="roleService.enableComprehensive?'tab':null"
              (click)="!roleService.enableComprehensive || routeTo('/comprehensive')"
              [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
-            綜合紀錄表</a>
+            {{comprehensiveStr}}</a>
         </li>
       </ng-container>
 

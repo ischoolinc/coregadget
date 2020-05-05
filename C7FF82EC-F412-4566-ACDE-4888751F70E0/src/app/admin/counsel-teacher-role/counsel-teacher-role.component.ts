@@ -13,7 +13,7 @@ import { DelCounselTeacherRoleModalComponent } from "./del-counsel-teacher-role-
   styleUrls: ['./counsel-teacher-role.component.css']
 })
 export class CounselTeacherRoleComponent implements OnInit {
-
+  public teacherTypeStr: string = "教師輔導身分";
   isLoading = false;
   teachersCounselRole: TeacherCounselRole[] = [];
   notTeachersCounselRole: TeacherCounselRole[] = [];
@@ -30,9 +30,12 @@ export class CounselTeacherRoleComponent implements OnInit {
   @ViewChild("delCounselTeacherRole") _delCounselTeacherRole: DelCounselTeacherRoleModalComponent;
 
   ngOnInit() {
-
+    this.teacherTypeStr = "教師輔導身分";
     setTimeout(() => { this.adminComponent.currentItem = "counsel_teacher_role"; });
 
+    if (gadget.params.system_counsel_position === 'freshman') {
+      this.teacherTypeStr = "教師身分";
+    }
 
     this.counselRole = [];
     // 目前輔導身分counselRole    

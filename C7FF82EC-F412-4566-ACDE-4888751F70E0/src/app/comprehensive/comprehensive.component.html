@@ -106,7 +106,7 @@
                 <a class="dropdown-item"
                    (click)="shoModal()">
                   <i class="material-icons">add</i>
-                  產生綜合紀錄表
+                  {{comprehensiveStr}}
                 </a>
                 <ng-container *ngIf="counselVisible === true">
                   <a class="dropdown-item"
@@ -172,7 +172,7 @@
               <a class="dropdown-item"
                  (click)="shoModal()">
                 <i class="material-icons">add</i>
-                產生綜合紀錄表
+                {{comprehensiveStr}}
               </a>
               <!-- <a class="dropdown-item disabled">
                 <i style="display: inline-block;width: 27.42px;"></i>
@@ -219,7 +219,7 @@
       <div class="modal-header">
         <h5 class="modal-title"
             id="newCaseLabel">
-          產生綜合紀錄表
+          {{comprehensiveStr}}
         </h5>
         <button *ngIf="!generater.isSaving"
                 type="button"
@@ -234,7 +234,7 @@
           資料讀取中...
         </ng-container>
         <ng-container *ngIf="!generater.isLoading">
-          <p>產生{{generater.schoolYear}}學年度 第{{generater.semester}}學期 在校學生的綜合紀錄表資料，將花費較多時間，請耐心等候。</p>
+          <p>產生{{generater.schoolYear}}學年度 第{{generater.semester}}學期 在校學生的{{comprehensiveStr1}}，將花費較多時間，請耐心等候。</p>
         </ng-container>
         <ng-container *ngIf="generater.isSaving">
           <div class="progress">
