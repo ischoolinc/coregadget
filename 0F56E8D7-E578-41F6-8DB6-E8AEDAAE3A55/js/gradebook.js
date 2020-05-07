@@ -908,7 +908,7 @@
                             },
                             Disabled: exam.Lock
                         };
-                        $scope.batchItemList.push(item);
+                        $scope.batchItemList.push(item);                 
                     }
                     // 文字評量
                     if (exam.Type == 'Text' && exam.Permission == 'Editor') {
@@ -1071,10 +1071,11 @@
                             });
 
                             $('#importModal').modal('hide');
-                        }
+                        },
+                        Disabled: gradeItem.Lock
                     };
-
                     $scope.batchItemList.push(importItem);
+               //     debugger;
                 });
             }
 

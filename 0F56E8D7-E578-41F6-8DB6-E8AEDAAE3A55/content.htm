@@ -161,11 +161,11 @@
                             ng-style="item.Type=='Header'?'padding-left:10px;':''">
                             <span ng-if="item.Type=='Header'">
                                 {{item.Name}}
-                            </span>
+                            </span>                           
                             <a ng-if="item.Type=='Function'"
                                href="javascript:;"
                                ng-click="(item.Type!='Function'||item.Disabled)?'':item.Fn()">
-                                {{item.Name}}
+                                {{item.Name}} 
                             </a>
                             <a ng-if="item.Type=='Function_Effort'"
                                href="javascript:;"
