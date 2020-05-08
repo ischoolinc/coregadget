@@ -908,7 +908,7 @@
                             },
                             Disabled: exam.Lock
                         };
-                        $scope.batchItemList.push(item);                 
+                        $scope.batchItemList.push(item);
                     }
                     // 文字評量
                     if (exam.Type == 'Text' && exam.Permission == 'Editor') {
@@ -1075,7 +1075,7 @@
                         Disabled: gradeItem.Lock
                     };
                     $scope.batchItemList.push(importItem);
-               //     debugger;
+                    //     debugger;
                 });
             }
 
@@ -1963,6 +1963,7 @@
                         , Weight: '1'
                         , SubExamID: ''
                         , Index: $scope.gradeItemConfig.Item.length + 1
+                        , ExamID: ''
                     });
                 }
                 , JSONMode: function () {
@@ -2120,7 +2121,28 @@
             var examNameList = [];
             var dataRepeat = false;
             var repeatExamName = '';
+
+            // 當都沒有資料，預設成績1
+            if ( $scope.gradeItemConfig.Item.length === 0)
+            {
+                var item = {
+                    ExamID: "Quiz_成績_1",
+                    Index: "1",
+                    Lock: false,
+                    Name: "成績_1",
+                    Permission: "Editor",
+                    SubExamID: "成績_1",
+                    Type: "Number",
+                    Weight: "1"
+                };
+                $scope.gradeItemConfig.Item.push(item);
+            }
+
             $scope.gradeItemConfig.Item.forEach(function (item) {
+
+                if (item.ExamID == '') {
+                    item.ExamID = "Quiz_" + item.Name;
+                }
 
                 var pass = true;
                 if (!item.Name) {
@@ -2144,7 +2166,8 @@
                         '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
                         '@Name': item.Name,
                         '@Weight': item.Weight,
-                        '@Index': item.Index
+                        '@Index': item.Index,
+                        '@ExamID': item.ExamID
                     });
                 }
             });
@@ -2245,6 +2268,7 @@
                                     };
 
                                     $scope.batchItemList.push(importItem);
+
                                 });
                                 $scope.checkAllTable();
                                 $('#editScoreItemModal').modal('hide');
