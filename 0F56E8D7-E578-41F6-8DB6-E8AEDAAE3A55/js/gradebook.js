@@ -1620,8 +1620,16 @@
         $scope.saveGradeItemScore = function () {
             $scope.SetSCAttendExtensions().then(function (result1) {
                 return $scope.SetSCAttendExtensionKH().then(function (result2) {
+                        // 處理小考不一致
+                        if ($scope.checkItemChange)
+                        $scope.saveGradeItemConfigA();
+                   
                     // 資料Reload
                     $scope.scoreDataReload();
+
+               
+
+
                     $scope.checkItemChange = false;
                     alert("儲存成功。");
                 });
@@ -1654,7 +1662,7 @@
                     };
                     [].concat($scope.gradeItemList || []).forEach(function (item) {
                         var obj = {
-                            '@SubExamID': item.SubExamID,
+                            '@SubExamID': item.Name,
                             '@Score': stuRec[item.ExamID] == undefined ? '' : stuRec[item.ExamID]
                         }
 
@@ -1973,7 +1981,7 @@
                         jsonList.push({
                             Name: item.Name
                             , Weight: item.Weight
-                            , SubExamID: item.SubExamID
+                            , SubExamID: item.Name
                             , Index: item.Index
                         });
                     });
@@ -2099,6 +2107,119 @@
         }
 
         /**
+         * 儲存評分項目A
+         */
+        $scope.saveGradeItemConfigA = function () {
+            var body = {
+                Content: {
+                    CourseExtension: {
+                        '@CourseID': '' + $scope.current.Course.CourseID
+                        , Extension: {
+                            '@Name': 'GradeItem'
+                            , GradeItem: {
+                                Item: []
+                            }
+                        }
+                    }
+                }
+            };
+
+            var namePass = true;
+            var weightPass = true;
+            var examNameList = [];
+            var dataRepeat = false;
+            var repeatExamName = '';
+
+            // 當都沒有資料，預設成績1
+            if ($scope.gradeItemConfig.Item.length === 0) {
+                var item = {
+                    ExamID: "Quiz_成績_1",
+                    Index: "1",
+                    Lock: false,
+                    Name: "成績_1",
+                    Permission: "Editor",
+                    SubExamID: "成績_1",
+                    Type: "Number",
+                    Weight: "1"
+                };
+                $scope.gradeItemConfig.Item.push(item);
+            }
+
+            $scope.gradeItemConfig.Item.forEach(function (item) {
+
+                if (item.ExamID == '') {
+                    item.ExamID = "Quiz_" + item.Name;
+                }
+
+                var pass = true;
+                if (!item.Name) {
+                    namePass = false;
+                    pass = false;
+                }
+                if (!item.Weight || Number.isNaN(+item.Weight)) {
+                    weightPass = false;
+                    pass = false;
+                }
+
+                if (pass && !dataRepeat) {
+
+                    if (examNameList.indexOf(item.Name) > -1) {
+                        dataRepeat = true;
+                        repeatExamName = item.Name;
+                    }
+                    examNameList.push(item.Name);
+
+                    body.Content.CourseExtension.Extension.GradeItem.Item.push({
+                        '@SubExamID': item.Name,
+                        '@Name': item.Name,
+                        '@Weight': item.Weight,
+                        '@Index': item.Index,
+                        '@ExamID': 'Quiz_' + item.Name
+                    });
+                }
+            });
+            if (namePass && weightPass && !dataRepeat) {
+                $scope.connection.send({
+                    service: "TeacherAccess.SetCourseExtensions",
+                    autoRetry: true,
+                    body: body,
+                    result: function (response, error, http) {
+                        if (error) {
+                            alert("TeacherAccess.SetCourseExtensions Error");
+                        } else {
+                            $scope.$apply(function () {
+                                // 重新取得平時評量項目，並重新結算平時評量成績                                
+                                $scope.getGradeItemList().then(value => {
+                                    //   console.log(value);
+                                    $scope.$apply(function () {
+                                        $scope.studentList.forEach(stuRec => {
+                                            $scope.calcQuizResult(stuRec);
+                                        });
+                                    });
+                                });                                
+                            });
+                        }
+                    }
+                });
+
+            }
+            else {
+                var errMsg = '';
+                if (!namePass) {
+                    errMsg += (errMsg ? '\n' : '') + '評分名稱不可空白。';
+                }
+                if (!weightPass) {
+                    errMsg += (errMsg ? '\n' : '') + '權重不可空白且必須為數值。';
+                }
+                if (dataRepeat) {
+                    errMsg += (errMsg ? '\n' : '') + `評分項目名稱：「 ${repeatExamName}」重複! 資料無法儲存。`;
+                }
+                alert(errMsg);
+            }
+        }
+
+
+        /**
          * 儲存評分項目
          */
         $scope.saveGradeItemConfig = function () {
@@ -2123,8 +2244,7 @@
             var repeatExamName = '';
 
             // 當都沒有資料，預設成績1
-            if ( $scope.gradeItemConfig.Item.length === 0)
-            {
+            if ($scope.gradeItemConfig.Item.length === 0) {
                 var item = {
                     ExamID: "Quiz_成績_1",
                     Index: "1",
