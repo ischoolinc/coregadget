@@ -1396,7 +1396,8 @@ export class AppComponent implements OnInit {
    * 3. 判斷投點點數是否超過點數選課最大最小值
    * */
   checkPoints(points: string, course: Course) {
-    const _points = points == '' ? null : Number(points);
+    const _points = points == '' ? null : (isNaN(Number(points)) ? null : Number(points));
+    // console.log(points + ',' + _points);
     const maxPoint = Number(course.MaxPoints);
     const minPoint = Number(course.MinPoints);
     course.StudentSetPoints = _points;
