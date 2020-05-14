@@ -1662,7 +1662,7 @@
                     };
                     [].concat($scope.gradeItemList || []).forEach(function (item) {
                         var obj = {
-                            '@SubExamID': item.Name,
+                            '@SubExamID': item.SubExamID,
                             '@Score': stuRec[item.ExamID] == undefined ? '' : stuRec[item.ExamID]
                         }
 
@@ -2170,7 +2170,7 @@
                     examNameList.push(item.Name);
 
                     body.Content.CourseExtension.Extension.GradeItem.Item.push({
-                        '@SubExamID': item.Name,
+                        '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
                         '@Name': item.Name,
                         '@Weight': item.Weight,
                         '@Index': item.Index,
