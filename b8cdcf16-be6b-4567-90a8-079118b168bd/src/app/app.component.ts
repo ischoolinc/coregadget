@@ -1123,11 +1123,10 @@ export class AppComponent implements OnInit {
 
   /**儲存加退選課 */
   async saveQuitAdd(quitList: Course[] = [], addList: Course[] = []) {
-    const reqListA = []; // 先執行
-    const reqListB = []; // 後執行
 
     if (quitList.length) {
-      reqListA.push([
+      const reqListQ1 = [];
+      reqListQ1.push([
         this.basicSrv.delCSAttend(quitList.map((item: Course) => {
           return { CourseID: item.CourseID };
         })),
@@ -1143,9 +1142,13 @@ export class AppComponent implements OnInit {
           quitList.map((item: Course) => `學生「${this.student.StudentName}」退選課程：${item.CourseName}，退回投點點數：${item.StudentSetPoints}`).join(',')
         )
       ]);
+      await Promise.all(reqListQ1.reduce((acc, val) => acc.concat(val), []));
     }
+
     if (addList.length) {
-      reqListA.push([
+      const reqListA1 = []; // 先執行
+      const reqListA2 = []; // 後執行
+      reqListA1.push([
         this.basicSrv.addCSAttend(
           addList.map((item:Course) => {
             return { CourseID: item.CourseID, Points: item.StudentSetPoints };
@@ -1158,17 +1161,19 @@ export class AppComponent implements OnInit {
           '加選課程',
           addList.map((item: Course) => `學生「${this.student.StudentName}」加選課程：${item.CourseName}，投點點數：${item.StudentSetPoints}`).join(','))
       ]);
+      await Promise.all(reqListA1.reduce((acc, val) => acc.concat(val), []));
 
-      reqListB.push([
+      reqListA2.push([
         // 篩選需要點數且有投點選課的資料 寫入點數歷程。
         // 注意：必需要在 CSAttend 產出後才能對新增的結果加 ref_consume_id，所以不可以和 CSAttend 的 Promise.all 一起執行
         this.basicSrv.addPointsLog(addList.filter((data: Course) => (data.NeedPoints === 't' && data.StudentSetPoints)).map((item: Course) => {
           return { Type: 'consume', Points: item.StudentSetPoints, CourseName: item.CourseName, NeedPoints: item.NeedPoints, CourseID: item.CourseID };
         })),
       ]);
+      await Promise.all(reqListA2.reduce((acc, val) => acc.concat(val), []));
     }
-    await Promise.all(reqListA.reduce((acc, val) => acc.concat(val), []));
-    await Promise.all(reqListB.reduce((acc, val) => acc.concat(val), []));
+
+
 
     // 1、備份原始加選課程及退選課程(送出前狀態)
     var addListBackup = this.getAddList();
@@ -1391,7 +1396,8 @@ export class AppComponent implements OnInit {
    * 3. 判斷投點點數是否超過點數選課最大最小值
    * */
   checkPoints(points: string, course: Course) {
-    const _points = points == '' ? null : Number(points);
+    const _points = points == '' ? null : (isNaN(Number(points)) ? null : Number(points));
+    // console.log(points + ',' + _points);
     const maxPoint = Number(course.MaxPoints);
     const minPoint = Number(course.MinPoints);
     course.StudentSetPoints = _points;
