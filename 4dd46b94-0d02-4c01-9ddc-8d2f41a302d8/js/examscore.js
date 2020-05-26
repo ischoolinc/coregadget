@@ -24,7 +24,7 @@
       return $(".tooltip").remove();
     });
   });
-
+  //測試push
   Exam = (function() {
     var Comparer, FloatAdd, FloatDiv, FloatMath, FloatMul, getCurrSemester, getStudentInfo, getStudentRuleSeme, loadScore, myHandleArray, resetData, set_error_message, showScore, _connection, _curr_schoolyear, _curr_semester, _exam_score, _keys, _math_type, _places, _schoolYear, _semester, _student, _students, _system_exam_must_enddate, _system_position;
     _system_exam_must_enddate = gadget.params.system_exam_must_enddate || "true";
