@@ -33,6 +33,9 @@ export class AppComponent implements OnInit, OnDestroy {
   curSemester: string;
   // 學年度清單
   schoolYearList: string[];
+  schoolYearList1: string[];
+  schoolYearList2: string[];
+  schoolYearList3: string[];
   // 學期清單
   semesterList: string[];
   // 文字代碼表
@@ -51,6 +54,10 @@ export class AppComponent implements OnInit, OnDestroy {
   curClassTimeConfig: any;
   // 目前學生
   curStudent: StudentRecord;
+  //按鈕狀態及title
+  btnState: string;
+  saveBtnTitle: string; 
+
 
   /**
    * 判斷成績資料是否變更
@@ -88,6 +95,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       this.loadError = '';
       this.schoolYearList = [];
+      this.schoolYearList1 = [];
+      this.schoolYearList2 = [];
+      this.schoolYearList3 = [];
       this.semesterList = [];
 
       const rsp = await Promise.all([
@@ -104,6 +114,15 @@ export class AppComponent implements OnInit, OnDestroy {
       for(let i = 4; i >= 0; i--) {
         this.schoolYearList.push('' + (Number(this.curSchoolYear) - i));
       }
+      this.schoolYearList1.push('' + (Number(this.curSchoolYear))); 
+      for(let i = 1; i >= 0; i--) {
+        this.schoolYearList2.push('' + (Number(this.curSchoolYear) - i));
+      }
+      debugger
+      for(let i = 2; i >= 0; i--) {
+        this.schoolYearList3.push('' + (Number(this.curSchoolYear) - i));
+      }
+
       this.sysDateTime = rsp[1];
       this.dailyLifeInputConfig = rsp[2];
       this.classList = rsp[3];
@@ -119,6 +138,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // 設定目前班級
       if (this.classList.length > 0) {
         await this.setCurrentClass(this.classList[0]);
+
       }
 
     } catch (error) {
@@ -190,10 +210,20 @@ export class AppComponent implements OnInit, OnDestroy {
         const time = this.dailyLifeInputConfig.Time.find(time => time.Grade === this.curClass.GradeYear);
         this.curClassTimeConfig = time || '';
       }
-
+      //取得目前班級可輸入或查看的學年度範圍
+      switch(this.curClass.GradeYear)
+      {
+          case '1'||'7': this.schoolYearList = this.schoolYearList1;
+          break;
+          case '2'||'8': this.schoolYearList = this.schoolYearList2;
+          break;
+          case '3'||'9': this.schoolYearList = this.schoolYearList3;
+          break;
+      }
       this.isEditable();
       await this.getClassStudent();
       await this.scoreDataReload();
+
     }
   }
 
@@ -250,7 +280,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 判斷目前學年度、學期、班級 是否可編輯 */
+  /** 判斷目前學年度、學期、班級 是否可編輯及儲存 */
   isEditable() {
     if (this.curSchoolYear === this.dailyLifeInputConfig.SchoolYear && this.curSemester === this.dailyLifeInputConfig.Semester) {
       // 系統時間
@@ -259,9 +289,13 @@ export class AppComponent implements OnInit, OnDestroy {
         this.canEdit = true;
       } else {
         this.canEdit = false;
+        this.btnState = "disabled";
+        this.saveBtnTitle = "不在輸入時間內";
       }
     } else{
       this.canEdit = false;
+      this.btnState = "disabled";
+      this.saveBtnTitle = "非現學年度學期，僅供查看";
     }
     this.targetDataSrv.setCanEdit(this.canEdit);
   }
@@ -419,4 +453,5 @@ export class AppComponent implements OnInit, OnDestroy {
       this.bsModalRef = this.modalService.show(BatchImportComponent, config);
     }
   }
+  
 }
