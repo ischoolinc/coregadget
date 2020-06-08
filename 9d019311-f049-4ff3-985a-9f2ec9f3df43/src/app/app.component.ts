@@ -57,7 +57,9 @@ export class AppComponent implements OnInit, OnDestroy {
   //按鈕狀態及title
   btnState: string;
   saveBtnTitle: string; 
-
+  
+  //匯出學期格式轉換成國字（比照成績單格式）
+  expocurSemester: string;
 
   /**
    * 判斷成績資料是否變更
@@ -66,6 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isChange: boolean = false;
   bsModalRef: BsModalRef;
   isNoExam: boolean = false;
+  
   
   constructor(
     private basicSrv: BasicService,
@@ -118,7 +121,6 @@ export class AppComponent implements OnInit, OnDestroy {
       for(let i = 1; i >= 0; i--) {
         this.schoolYearList2.push('' + (Number(this.curSchoolYear) - i));
       }
-      debugger
       for(let i = 2; i >= 0; i--) {
         this.schoolYearList3.push('' + (Number(this.curSchoolYear) - i));
       }
@@ -418,14 +420,18 @@ export class AppComponent implements OnInit, OnDestroy {
           dataList.push(data);
         });
       }
-
+    if(this.curSemester === '1'){
+      this.expocurSemester = '一';
+    }else{
+      this.expocurSemester = '二';
+    }
     const html: string = `
 <html>
     <head>
       <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
     </head>
     <body onLoad='self.print()'>
-      <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
+      <table border='1' cellspacing='0' cellpadding='2'>${this.curSchoolYear}學年度 第${this.expocurSemester}學期 ${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
         <tr>
           ${titleList.join('')}
         </tr>
