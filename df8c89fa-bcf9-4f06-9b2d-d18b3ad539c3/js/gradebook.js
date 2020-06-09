@@ -2281,6 +2281,7 @@
 
         // 找出符合規則的字串，將文字代碼取代成文字
         $scope.codeConvertText = function(value) {
+            debugger
             const re = new RegExp(/([\d\w]+)/, 'g');
             return (value || '').replace(re, function(match, g1) { return $scope.examTextList[g1] || g1 });
         };

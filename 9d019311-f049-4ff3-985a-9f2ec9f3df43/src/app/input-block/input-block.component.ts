@@ -39,6 +39,10 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   affixTop = false;
   isMobile = false;
 
+  //資料比對用
+  textCodeListT = {};
+  degreeCodeListT: PerformanceDegree[] = [];
+
   private inputSeatNo: ElementRef;
   private inputTextScore: ElementRef;
 
@@ -81,6 +85,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    
     // 訂閱資料
     this.targetDataSrv.canEdit$.pipe(
       takeUntil(this.dispose$)
@@ -117,6 +122,14 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       // this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${quiz}`);
       this.setPage();
     });
+
+    //產出兩張比對用的代碼對照表
+    this.textCodeList.forEach(item => {
+      if (item.Code) { this.textCodeListT[item.Code] = item.Comment || ''; }
+  });
+        this.degreeCodeList.forEach(item => {
+          if (item.Degree) { this.degreeCodeListT[item.Degree] = item.Desc || ''; }
+      });
   }
 
   ngOnDestroy() {
@@ -177,7 +190,8 @@ export class InputBlockComponent implements OnInit, OnDestroy {
         this.switchDegreeCode(this.curValue);
         break;
       case 'DailyLifeRecommend':
-        this.switchTextCode(this.curValue);
+        // this.switchTextCode(this.curValue);
+        this.code2Text();
         break;
       default:
         break;
@@ -310,5 +324,22 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       this.affixTop = false;
     }
   }
-  
+      // 找出符合規則的字串，將文字代碼取代成文字
+      code2Text()
+    {
+      const re = new RegExp(/([\d\w]+)/, 'g');
+      this.curValue = (this.curValue  || '').replace(re, (match, g1) => { 
+        return this.textCodeListT[g1] || g1 
+      });
+     }
+     
+     // 找出符合規則的字串，將程度代碼取代成文字
+     code2DegreeCode(){
+      const re = new RegExp(/([\d\w]+)/, 'g');
+      this.curValue = (this.curValue  || '').replace(re, (match, g1) => { 
+        return this.degreeCodeListT[g1] || g1 
+      });
+     }
+
+          
 }
