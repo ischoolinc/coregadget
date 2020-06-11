@@ -51,11 +51,15 @@
       </div>
       <div class="modal-footer">
         <ng-container *ngIf="!parseValues.length">
+            <button type="button"
+            class="btn btn-outline-secondary mr-auto mx-3"
+            (click)="doTransfer()">代碼轉文字</button>
           <button type="button"
             class="btn btn-outline-secondary"
             (click)="modalRef.hide()">取消</button>
           <button type="button"
             class="btn btn-primary"
+            style="margin-right: 1rem"
             (click)="parse()">解析</button>
         </ng-container>
         <ng-container *ngIf="parseValues.length">

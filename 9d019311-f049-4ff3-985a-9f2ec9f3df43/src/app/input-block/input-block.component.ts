@@ -39,10 +39,6 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   affixTop = false;
   isMobile = false;
 
-  //資料比對用
-  textCodeListT = {};
-  degreeCodeListT: PerformanceDegree[] = [];
-
   private inputSeatNo: ElementRef;
   private inputTextScore: ElementRef;
 
@@ -50,7 +46,11 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   degreeCodeList: PerformanceDegree[] = [];
 
   @Input()
-  textCodeList: CommentRecord[] = []
+  textCodeList: CommentRecord[] = [];
+
+    //資料比對用
+  textCodeListT = {};
+  degreeCodeListT = {};
 
   @ViewChild('inputSeatNo') set _inputSeatNo(content: ElementRef) {
     this.inputSeatNo = content;
@@ -129,7 +129,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   });
         this.degreeCodeList.forEach(item => {
           if (item.Degree) { this.degreeCodeListT[item.Degree] = item.Desc || ''; }
-      });
+  });
   }
 
   ngOnDestroy() {

@@ -41,7 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // 文字代碼表
   textCodeList: CommentRecord[] = [];
   // 程度代碼表
-  degreeCodeList: PerformanceDegree[] =[]
+  degreeCodeList: PerformanceDegree[] =[];
   // 目前評量
   curExam: ExamRecord;
   // 日常生活表現評量項目
@@ -140,7 +140,6 @@ export class AppComponent implements OnInit, OnDestroy {
       // 設定目前班級
       if (this.classList.length > 0) {
         await this.setCurrentClass(this.classList[0]);
-
       }
 
     } catch (error) {
@@ -453,7 +452,10 @@ export class AppComponent implements OnInit, OnDestroy {
       const config = {
         class: 'modal-lg',
         initialState: {
-          title: quizName
+          title: quizName,
+          textCodeList: this.textCodeList,
+          degreeCodeList: this.degreeCodeList,
+          curExam:this.curExam,
         }
       }; 
       this.bsModalRef = this.modalService.show(BatchImportComponent, config);
