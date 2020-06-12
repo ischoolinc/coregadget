@@ -283,6 +283,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /** 判斷目前學年度、學期、班級 是否可編輯及儲存 */
   isEditable() {
+    
     if (this.curSchoolYear === this.dailyLifeInputConfig.SchoolYear && this.curSemester === this.dailyLifeInputConfig.Semester) {
       // 系統時間
       if ( Date.parse(this.sysDateTime).valueOf() >= Date.parse(this.curClassTimeConfig.Start).valueOf()
@@ -352,10 +353,11 @@ export class AppComponent implements OnInit, OnDestroy {
       const dailyBehavior = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyBehavior');
       const dailyLifeRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyLifeRecommend');
       const otherRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'OtherRecommend');
-
+      debugger
       dailyBehavior.Item.forEach((item: {Index: string, Name: string}) => {
         const itemData = {
           '@Name': item.Name,
+          '@Index': item.Index,
           '@Degree': student.DailyLifeScore.get(`DailyBehavior_${item.Name}`) || ''
         };
         stuData.DailyLifeScore.TextScore.DailyBehavior.Item.push(itemData);
@@ -455,7 +457,7 @@ export class AppComponent implements OnInit, OnDestroy {
           title: quizName,
           textCodeList: this.textCodeList,
           degreeCodeList: this.degreeCodeList,
-          curExam:this.curExam,
+          curExam:this.curExam
         }
       }; 
       this.bsModalRef = this.modalService.show(BatchImportComponent, config);

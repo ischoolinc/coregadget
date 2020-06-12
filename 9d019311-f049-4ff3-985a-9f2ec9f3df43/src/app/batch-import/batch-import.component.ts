@@ -86,9 +86,9 @@ export class BatchImportComponent implements OnInit, OnDestroy {
     //     return this.degreeCodeListT[g1] || g1 
     //   });
     // }
-
-    let parseText = this.sourceText || '';
-
+    
+    //將空白換行轉換成'-'符號，讓使者可以不用特地在excel輸入字元來表示
+    let parseText = (this.sourceText || '').replace(/^$/gm, '-');
     // 由於 Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
     // parseText = parseText.replace(/""/g, '');
 
