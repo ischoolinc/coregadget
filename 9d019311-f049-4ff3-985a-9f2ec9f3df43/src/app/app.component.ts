@@ -353,7 +353,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const dailyBehavior = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyBehavior');
       const dailyLifeRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyLifeRecommend');
       const otherRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'OtherRecommend');
-      debugger
+      
       dailyBehavior.Item.forEach((item: {Index: string, Name: string}) => {
         const itemData = {
           '@Name': item.Name,
