@@ -57,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
   //按鈕狀態及title
   btnState: string;
   saveBtnTitle: string; 
+  dropdowndisplay: boolean = true;
   
   //匯出學期格式轉換成國字（比照成績單格式）
   expocurSemester: string;
@@ -214,11 +215,17 @@ export class AppComponent implements OnInit, OnDestroy {
       //取得目前班級可輸入或查看的學年度範圍
       switch(this.curClass.GradeYear)
       {
-          case '1'||'7': this.schoolYearList = this.schoolYearList1;
+          case '1'||'7': 
+          this.schoolYearList = this.schoolYearList1;
+          this.setSchoolYear(this.schoolYearList1[this.schoolYearList1.length-1]); 
           break;
-          case '2'||'8': this.schoolYearList = this.schoolYearList2;
+          case '2'||'8': 
+          this.schoolYearList = this.schoolYearList2;
+          this.setSchoolYear(this.schoolYearList1[this.schoolYearList1.length-1]); 
           break;
-          case '3'||'9': this.schoolYearList = this.schoolYearList3;
+          case '3'||'9': 
+          this.schoolYearList = this.schoolYearList3;
+          this.setSchoolYear(this.schoolYearList1[this.schoolYearList1.length-1]); 
           break;
       }
       this.isEditable();
@@ -289,13 +296,18 @@ export class AppComponent implements OnInit, OnDestroy {
       if ( Date.parse(this.sysDateTime).valueOf() >= Date.parse(this.curClassTimeConfig.Start).valueOf()
         && Date.parse(this.sysDateTime).valueOf() <= Date.parse(this.curClassTimeConfig.End).valueOf()) {
         this.canEdit = true;
+        this.dropdowndisplay = true;
+        this.btnState = "";
+        this.saveBtnTitle = "";
       } else {
         this.canEdit = false;
+        this.dropdowndisplay = false;
         this.btnState = "disabled";
         this.saveBtnTitle = "不在輸入時間內";
       }
     } else{
       this.canEdit = false;
+      this.dropdowndisplay = false;
       this.btnState = "disabled";
       this.saveBtnTitle = "非現學年度學期，僅供查看";
     }
@@ -353,7 +365,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const dailyBehavior = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyBehavior');
       const dailyLifeRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'DailyLifeRecommend');
       const otherRecommend = this.examList.find((exam: ExamRecord) => exam.ExamID === 'OtherRecommend');
-      
+
       dailyBehavior.Item.forEach((item: {Index: string, Name: string}) => {
         const itemData = {
           '@Name': item.Name,
