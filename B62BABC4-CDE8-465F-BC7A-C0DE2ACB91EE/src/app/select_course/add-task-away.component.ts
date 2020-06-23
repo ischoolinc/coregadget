@@ -16,14 +16,12 @@ export class AddTaskAwayComponent implements OnInit {
   // 課程時段
   subjectType: string;
   // 選課清單
-  subjectList: SubjectRecord[] = [];
+  subjectList: SubjectExRec[] = [];
   // 學生選課資料
   stuAttend: AttendRecord;
   // 學生目前修課資料
   stuAttendList: AttendRecord[] = [];
-
   selectedSubject: SubjectRecord;
-
   dialogConfirm: MatDialogRef<any>;
 
   @ViewChild('tplAddConfirm') tplAddConfirm: TemplateRef<any>;
@@ -49,10 +47,37 @@ export class AddTaskAwayComponent implements OnInit {
     }
   }
 
-  /**取得該課程時段選課資料 */
+  /** 取得該課程時段選課資料 */
   async getData() {
     const rsp = await this.basicSrv.getSubjectListByType({ SubjectType: this.subjectType });
-    this.subjectList = rsp.SubjectList;
+    this.subjectList = [].concat(rsp.SubjectList || []).map((sub: SubjectExRec) => {
+      
+      sub.AttendCount = +sub.AttendCount;
+      sub.Limit = +sub.Limit;
+
+      sub.isCanSelected = !sub.BlockReason && sub.TimeSelect !== 't' 
+        && sub.RepeatSelect !== 't' && sub.AttendCount < sub.Limit;
+
+      const blockList: string[] = [];
+
+      if (sub.BlockReason) {
+        blockList.push(sub.BlockReason);
+      }
+      if (sub.TimeSelect === 't') {
+        blockList.push('該課程時段已選修課程');
+      }
+      if (sub.RepeatSelect === 't') {
+        blockList.push('已選修此課程');
+      }
+      if (sub.AttendCount >= sub.Limit) {
+        blockList.push('選課人數已額滿');
+      }
+
+      sub.forbidReason = blockList.join(',');
+      console.log(sub.isCanSelected);
+
+      return sub;
+    });
     this.stuAttend = rsp.Attend;
   }
 
@@ -111,7 +136,7 @@ export class AddTaskAwayComponent implements OnInit {
     });
   }
 
-  /** 退選 */
+  /** unselect the subject */
   async leaveCourse(subject: AttendRecord){
     this.isLoading = true;
     const rsp = await this.basicSrv.leaveTakeAway({ SubjectID: subject.SubjectID });
@@ -126,4 +151,9 @@ export class AddTaskAwayComponent implements OnInit {
     this.isLoading = false;
   }
   
+}
+
+interface SubjectExRec extends SubjectRecord {
+  isCanSelected: boolean;
+  forbidReason: string;
 }
