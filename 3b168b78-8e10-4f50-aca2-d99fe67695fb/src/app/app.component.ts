@@ -137,28 +137,28 @@ export class AppComponent implements OnInit, OnDestroy {
       }
 
       // 處理評分項目，並下載學生成績
-      const gradeItemList = this.textScoreList.map(item => item.Face);
-      switch(gadget.params.enabled){
-        case true:
-        this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
-        await this.setCurrentModel(this.modeList[0]);
-        break;
-        case false: 
-        this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
-        this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
-        await this.setCurrentModel(this.modeList[0]);
-        break;
-      }
-      // if(gadget.params.enabled === true){
-      //   const gradeItemList = this.textScoreList.map(item => item.Face);
+      // const gradeItemList = this.textScoreList.map(item => item.Face);
+      // switch(gadget?.params?.enabled){
+      //   case true:
       //   this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
       //   await this.setCurrentModel(this.modeList[0]);
-      // }else{
-      //   const gradeItemList = this.textScoreList.map(item => item.Face);
+      //   break;
+      //   case false: 
       //   this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
       //   this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
       //   await this.setCurrentModel(this.modeList[0]);
+      //   break;
       // }
+      const gradeItemList = this.textScoreList.map(item => item.Face);
+      if (gadget.params && gadget.params.enabled) {
+        this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList });
+        await this.setCurrentModel(this.modeList[0]);
+      } else {
+        // const gradeItemList = this.textScoreList.map(item => item.Face);
+        this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList });
+        this.modeList.push({ Title: '德行評語', GradeItemList: ['評語'] });
+        await this.setCurrentModel(this.modeList[0]);
+      }
       // 指定第一個學生的第一項成績
       this.targetDataSrv.setStudent(this.studentList[0]);
       this.targetDataSrv.setGrade(this.curMode.GradeItemList[0]);
