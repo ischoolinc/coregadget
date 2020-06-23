@@ -26,7 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   saveError = '';
   isOpening = false;
   canEdit = false;
-  curMode: ModeRecord;
+  curMode: ModeRecord = {} as any;
   modeList: ModeRecord[] = [];
   modalRef: BsModalRef;
 
@@ -34,6 +34,10 @@ export class AppComponent implements OnInit, OnDestroy {
   classList: ClassReocrd[] = [];
   sysDateTime: moment.Moment;
   sysSchoolYear: string;
+  schoolYearList1: string[];
+  schoolYearList2: string[];
+  schoolYearList3: string[];
+
   sysSemester: string;
   curSchoolYear: string;
   schoolYearList: string[] = [];
@@ -43,6 +47,14 @@ export class AppComponent implements OnInit, OnDestroy {
   config: Configuration = {} as Configuration; // 開放輸入時間
   studentList: StudentRecord[] = [];
   hasChanged = false;
+
+  btnState: string;
+  dropdowndisplay: boolean = true;
+  saveBtnTitle: string;
+
+    //匯出學期格式轉換成國字（比照成績單格式）
+    expocurSemester: string;
+  
 
   constructor(
     private basicSrv: BasicService,
@@ -65,6 +77,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
+      this.schoolYearList1 = [];
+      this.schoolYearList2 = [];
+      this.schoolYearList3 = [];
+
       this.targetDataSrv.student$.pipe(
         takeUntil(this.dispose$)
       ).subscribe(stu => {
@@ -99,17 +115,50 @@ export class AppComponent implements OnInit, OnDestroy {
       this.classList = rsp[5];
       this.curClass = (rsp[5].length) ? rsp[5][0] : {};
 
-      // 建立學年度清單
-      for (let ii = 0; ii <= 5; ii ++) {
-        this.schoolYearList.push(((parseInt(this.sysSchoolYear, 10) - ii)).toString());
+      /**建立與年級相對應的學年度清單 */
+      this.schoolYearList1.push('' + (Number(this.curSchoolYear))); 
+      for(let i = 1; i >= 0; i--) {
+        this.schoolYearList2.push('' + (Number(this.curSchoolYear) - i));
+      }
+      for(let i = 2; i >= 0; i--) {
+        this.schoolYearList3.push('' + (Number(this.curSchoolYear) - i));
+      }
+      switch(this.curClass.GradeYear)
+      {
+          case '1'||'7': 
+          this.schoolYearList = this.schoolYearList1;
+          break;
+          case '2'||'8': 
+          this.schoolYearList = this.schoolYearList2;
+          break;
+          case '3'||'9': 
+          this.schoolYearList = this.schoolYearList3;
+          break;
       }
 
       // 處理評分項目，並下載學生成績
       const gradeItemList = this.textScoreList.map(item => item.Face);
-      this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
-      this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
-      await this.setCurrentModel(this.modeList[0]);
-
+      switch(gadget.params.enabled){
+        case true:
+        this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
+        await this.setCurrentModel(this.modeList[0]);
+        break;
+        case false: 
+        this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
+        this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
+        await this.setCurrentModel(this.modeList[0]);
+        break;
+      }
+      // if(gadget.params.enabled === true){
+      //   const gradeItemList = this.textScoreList.map(item => item.Face);
+      //   this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
+      //   await this.setCurrentModel(this.modeList[0]);
+      // }else{
+      //   const gradeItemList = this.textScoreList.map(item => item.Face);
+      //   this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
+      //   this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
+      //   await this.setCurrentModel(this.modeList[0]);
+      // }
       // 指定第一個學生的第一項成績
       this.targetDataSrv.setStudent(this.studentList[0]);
       this.targetDataSrv.setGrade(this.curMode.GradeItemList[0]);
@@ -132,7 +181,18 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.sysSchoolYear === this.curSchoolYear && this.sysSemester === this.curSemester) {
       if (this.isOpening) {
         ret = true;
+        this.dropdowndisplay = true;
+        this.btnState = "";
+        this.saveBtnTitle = "";
+      }else{
+        this.dropdowndisplay = false;
+        this.btnState = "disabled";
+        this.saveBtnTitle = "不在輸入時間內";
       }
+    }else{
+      this.dropdowndisplay = false;
+      this.btnState = "disabled";
+      this.saveBtnTitle = "非現學年度學期，僅供查看";
     }
     this.canEdit = ret;
     this.targetDataSrv.setCanEdit(ret);
@@ -154,16 +214,34 @@ export class AppComponent implements OnInit, OnDestroy {
   /**切換學年度 */
   async setSchoolYear(item: string) {
     await this.confirmDiscardChangedAndReload(() => this.curSchoolYear = item);
+    this.checkCanEdit();
   }
 
   /**切換學期 */
   async setSemester(item: string) {
     await this.confirmDiscardChangedAndReload(() => this.curSemester = item);
+    this.checkCanEdit();
   }
 
   /**切換班級 */
   async setCurrentClass(item: ClassReocrd) {
     await this.confirmDiscardChangedAndReload(() => this.curClass = item);
+    switch(this.curClass.GradeYear)
+    {
+        case '1'||'7': 
+        this.schoolYearList = this.schoolYearList1;
+        this.curSchoolYear = this.schoolYearList1[this.schoolYearList1.length-1]; 
+        break;
+        case '2'||'8': 
+        this.schoolYearList = this.schoolYearList2;
+        this.curSchoolYear = this.schoolYearList1[this.schoolYearList1.length-1];  
+        break;
+        case '3'||'9': 
+        this.schoolYearList = this.schoolYearList3;
+        this.curSchoolYear = this.schoolYearList1[this.schoolYearList1.length-1]; 
+        break;
+    }
+    this.checkCanEdit();
   }
 
   /**切換主要評分項目 */
@@ -268,6 +346,8 @@ export class AppComponent implements OnInit, OnDestroy {
         data: {
           title: face,
           studentList: this.studentList,
+          textScoreList: this.textScoreList,
+          moralList: this.moralList
         },
         callback: (data: any) => {
           // console.log(data);
@@ -342,6 +422,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
         body += `</tr>`;
       });
+      if(this.curSemester === '1'){
+        this.expocurSemester = '一';
+      }else{
+        this.expocurSemester = '二';
+      }
 
       header = `<tr>${header}</tr>`;
 
@@ -365,7 +450,7 @@ export class AppComponent implements OnInit, OnDestroy {
           </head>
           <body>
             <table border="1" cellspacing="0" cellpadding="2">
-              <tbody>${title}${header}${body}</tbody>
+              <tbody>${this.curSchoolYear}學年度 第${this.expocurSemester}學期 ${title}${header}${body}</tbody>
             </table>
             <br/>教師簽名：
           </body>
