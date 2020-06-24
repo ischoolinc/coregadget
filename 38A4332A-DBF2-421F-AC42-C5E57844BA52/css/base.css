@@ -303,8 +303,8 @@ body {
 }
 
 .my-page {
-  max-width:2000px;
-  width : 1400px;
+  max-width:1280px;
+  /* width : 1400px; */
   margin:20px auto;
   background:#fff;
   padding:10px;
