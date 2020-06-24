@@ -43,6 +43,45 @@ export class TeacherService {
     );
   }
 
+  public getCurrentSemester() {
+    return this.contract.pipe(
+      concatMap((conn) => conn.send<GetCurrentSemesterResponse>('GetCurrentSemester')),
+      map(rsp => {
+        return rsp.Response;
+      })
+    );
+  }
+
+  public getMyCourses(schoolYear: string, semester: string) {
+    return this.contract.pipe(
+      concatMap((conn) => conn.send<MyCourseResponse>('GetMyCourses', {
+        Request: {
+          All: '',
+          SchoolYear: schoolYear,
+          Semester: semester
+        }
+      })),
+      map(rsp => {
+        return [].concat(!!rsp && !!rsp.ClassList && rsp.ClassList.Class || []) as CourseRecord[];
+      })
+    );
+  }
+
+
+  public getCourseStudentV2(courseIds: string[]) {
+
+    return this.contract.pipe(
+      concatMap((conn) => conn.send<StudentResponse>('GetCourseStudentV2', {
+        Request: {
+          CourseID: courseIds
+        }
+      })),
+      map(rsp => {
+        return [].concat(!!rsp && !!rsp.Response && rsp.Response.Student || []) as CourseStudentRecord[];
+      })
+    );
+  }
+
   //   <Request>
   //   <Title><![CDATA[測試訊息]]></Title>
   //   <Message><![CDATA[測試訊息內容]]></Message>
@@ -233,6 +272,9 @@ interface StudentData {
 }
 
 export interface CourseStudentRecord {
+  CourseID: string;
+  CourseName: string;
+  CourseSubject: string;
   StudentID: string;
   StudentName: string;
   StudentNumber: string;
@@ -348,41 +390,3 @@ export interface ReadLogRecord {
   //   );
   // }
 
-  // public getCurrentSemester() {
-  //   return this.contract.pipe(
-  //     concatMap((conn) => conn.send<GetCurrentSemesterResponse>('GetCurrentSemester')),
-  //     map(rsp => {
-  //       return rsp.Response;
-  //     })
-  //   );
-  // }
-
-  // public getMyCourses(schoolYear: number, semester: 1 | 2) {
-  //   return this.contract.pipe(
-  //     concatMap((conn) => conn.send<MyCourseResponse>('GetMyCourses', {
-  //       Request: {
-  //         All: '',
-  //         SchoolYear: schoolYear,
-  //         Semester: semester
-  //       }
-  //     })),
-  //     map(rsp => {
-  //       return [].concat(!!rsp && !!rsp.ClassList && rsp.ClassList.Class || []) as CourseRecord[];
-  //     })
-  //   );
-  // }
-
-
-  // public getCourseStudentV2(courseId: string) {
-
-  //   return this.contract.pipe(
-  //     concatMap((conn) => conn.send<StudentResponse>('GetCourseStudentV2', {
-  //       Request: {
-  //         CourseID: courseId
-  //       }
-  //     })),
-  //     map(rsp => {
-  //       return [].concat(!!rsp && !!rsp.Response && rsp.Response.Student || []) as CourseStudentRecord[];
-  //     })
-  //   );
-  // }

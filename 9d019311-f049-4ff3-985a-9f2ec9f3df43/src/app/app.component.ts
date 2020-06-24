@@ -33,12 +33,15 @@ export class AppComponent implements OnInit, OnDestroy {
   curSemester: string;
   // 學年度清單
   schoolYearList: string[];
+  schoolYearList1: string[];
+  schoolYearList2: string[];
+  schoolYearList3: string[];
   // 學期清單
   semesterList: string[];
   // 文字代碼表
   textCodeList: CommentRecord[] = [];
   // 程度代碼表
-  degreeCodeList: PerformanceDegree[] =[]
+  degreeCodeList: PerformanceDegree[] =[];
   // 目前評量
   curExam: ExamRecord;
   // 日常生活表現評量項目
@@ -51,6 +54,13 @@ export class AppComponent implements OnInit, OnDestroy {
   curClassTimeConfig: any;
   // 目前學生
   curStudent: StudentRecord;
+  //按鈕狀態及title
+  btnState: string;
+  saveBtnTitle: string; 
+  dropdowndisplay: boolean = true;
+  
+  //匯出學期格式轉換成國字（比照成績單格式）
+  expocurSemester: string;
 
   /**
    * 判斷成績資料是否變更
@@ -59,6 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isChange: boolean = false;
   bsModalRef: BsModalRef;
   isNoExam: boolean = false;
+  
   
   constructor(
     private basicSrv: BasicService,
@@ -88,6 +99,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       this.loadError = '';
       this.schoolYearList = [];
+      this.schoolYearList1 = [];
+      this.schoolYearList2 = [];
+      this.schoolYearList3 = [];
       this.semesterList = [];
 
       const rsp = await Promise.all([
@@ -104,6 +118,14 @@ export class AppComponent implements OnInit, OnDestroy {
       for(let i = 4; i >= 0; i--) {
         this.schoolYearList.push('' + (Number(this.curSchoolYear) - i));
       }
+      this.schoolYearList1.push('' + (Number(this.curSchoolYear))); 
+      for(let i = 1; i >= 0; i--) {
+        this.schoolYearList2.push('' + (Number(this.curSchoolYear) - i));
+      }
+      for(let i = 2; i >= 0; i--) {
+        this.schoolYearList3.push('' + (Number(this.curSchoolYear) - i));
+      }
+
       this.sysDateTime = rsp[1];
       this.dailyLifeInputConfig = rsp[2];
       this.classList = rsp[3];
@@ -190,10 +212,26 @@ export class AppComponent implements OnInit, OnDestroy {
         const time = this.dailyLifeInputConfig.Time.find(time => time.Grade === this.curClass.GradeYear);
         this.curClassTimeConfig = time || '';
       }
-
+      //取得目前班級可輸入或查看的學年度範圍
+      switch(this.curClass.GradeYear)
+      {
+          case '1'||'7': 
+          this.schoolYearList = this.schoolYearList1;
+          this.setSchoolYear(this.schoolYearList1[this.schoolYearList1.length-1]); 
+          break;
+          case '2'||'8': 
+          this.schoolYearList = this.schoolYearList2;
+          this.setSchoolYear(this.schoolYearList1[this.schoolYearList1.length-1]); 
+          break;
+          case '3'||'9': 
+          this.schoolYearList = this.schoolYearList3;
+          this.setSchoolYear(this.schoolYearList1[this.schoolYearList1.length-1]); 
+          break;
+      }
       this.isEditable();
       await this.getClassStudent();
       await this.scoreDataReload();
+
     }
   }
 
@@ -250,18 +288,28 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 判斷目前學年度、學期、班級 是否可編輯 */
+  /** 判斷目前學年度、學期、班級 是否可編輯及儲存 */
   isEditable() {
+    
     if (this.curSchoolYear === this.dailyLifeInputConfig.SchoolYear && this.curSemester === this.dailyLifeInputConfig.Semester) {
       // 系統時間
       if ( Date.parse(this.sysDateTime).valueOf() >= Date.parse(this.curClassTimeConfig.Start).valueOf()
         && Date.parse(this.sysDateTime).valueOf() <= Date.parse(this.curClassTimeConfig.End).valueOf()) {
         this.canEdit = true;
+        this.dropdowndisplay = true;
+        this.btnState = "";
+        this.saveBtnTitle = "";
       } else {
         this.canEdit = false;
+        this.dropdowndisplay = false;
+        this.btnState = "disabled";
+        this.saveBtnTitle = "不在輸入時間內";
       }
     } else{
       this.canEdit = false;
+      this.dropdowndisplay = false;
+      this.btnState = "disabled";
+      this.saveBtnTitle = "非現學年度學期，僅供查看";
     }
     this.targetDataSrv.setCanEdit(this.canEdit);
   }
@@ -321,6 +369,7 @@ export class AppComponent implements OnInit, OnDestroy {
       dailyBehavior.Item.forEach((item: {Index: string, Name: string}) => {
         const itemData = {
           '@Name': item.Name,
+          '@Index': item.Index,
           '@Degree': student.DailyLifeScore.get(`DailyBehavior_${item.Name}`) || ''
         };
         stuData.DailyLifeScore.TextScore.DailyBehavior.Item.push(itemData);
@@ -384,14 +433,18 @@ export class AppComponent implements OnInit, OnDestroy {
           dataList.push(data);
         });
       }
-
+    if(this.curSemester === '1'){
+      this.expocurSemester = '一';
+    }else{
+      this.expocurSemester = '二';
+    }
     const html: string = `
 <html>
     <head>
       <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
     </head>
     <body onLoad='self.print()'>
-      <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
+      <table border='1' cellspacing='0' cellpadding='2'>${this.curSchoolYear}學年度 第${this.expocurSemester}學期 ${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
         <tr>
           ${titleList.join('')}
         </tr>
@@ -413,10 +466,14 @@ export class AppComponent implements OnInit, OnDestroy {
       const config = {
         class: 'modal-lg',
         initialState: {
-          title: quizName
+          title: quizName,
+          textCodeList: this.textCodeList,
+          degreeCodeList: this.degreeCodeList,
+          curExam:this.curExam
         }
       }; 
       this.bsModalRef = this.modalService.show(BatchImportComponent, config);
     }
   }
+  
 }
