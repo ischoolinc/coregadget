@@ -71,18 +71,20 @@
 </head>
 
 <body ng-controller="MainCtrl">
-    <div ng-if="!(current && studentList) && !HasNoCourse"
+    <div ng-if="!(current) && !HasNoCourse"
          style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
     <div ng-if="HasNoCourse"
          style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有任何監考補考群組，請洽教務處行政人員。</div>
+         <div ng-if="studentList.length === 0"
+         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">補考梯次沒有學生資料，請洽教務處行政人員。</div>
     <div id="gadget"
          class="my-page"
-         ng-if="current && studentList">
+         ng-if="current">
         <h1 class="hidden-xs">高中補考成績輸入</h1>
         <div class="alert alert-info"
              role="alert">
-            <div>補考梯次說明：{{current.Batch.BatchDescription}}</div>
-            <div><b>輸入開放時間:</b> {{current.Batch.BatchStartTime}} ~ {{current.Batch.BatchEndTime}} </div>
+            <div><b>補考梯次說明：</b> {{current.Batch.BatchDescription}}</div>
+            <div><b>輸入開放時間：</b> {{current.Batch.BatchStartTime}} ~ {{current.Batch.BatchEndTime}} </div>
 
         </div>
         <div>

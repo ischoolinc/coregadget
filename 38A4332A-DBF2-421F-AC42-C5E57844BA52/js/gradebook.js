@@ -159,6 +159,7 @@
                         MakeUpScores: []
                     }
                 };
+               
 
                 [].concat($scope.studentList || []).forEach(function (studentRec, index) {
 
@@ -198,7 +199,7 @@
                     body: body,
                     result: function (response, error, http) {
                         if (error) {
-                            alert("SetMakeUpStudentReocrd Error");
+                            alert("儲存失敗：SetMakeUpStudentReocrd Error");
                         } else {
 
                             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
