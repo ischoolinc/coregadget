@@ -1,0 +1,110 @@
+
+*{
+  font-family: "微軟正黑體";
+
+}
+.hover-a:hover
+{
+   letter-spacing: 1.3px;
+   font-weight: bold;
+   cursor: pointer;
+   color :#869923
+}
+.IsChecked{
+    color :#869923;
+    font-weight: bold;
+   
+}
+
+.detailInfoPin
+{
+    position: absolute ;
+  
+}
+
+.detailInfo
+{
+width: 300px;
+height: 200px;
+position: relative ;
+top :30px;
+left :50px;
+z-index: 10;
+
+}
+.tabText{
+font-size: 30px;
+
+}
+
+.whole  
+{
+width: 100%;
+height: 100%;
+background: black;
+z-index: 100;
+opacity: 0.1;
+position: fixed;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+}
+
+.look{
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    z-index: 101;
+    width: 80%;
+    height: 30%;
+     margin :330px auto ;
+    
+  
+}
+
+
+
+.mat-tab-label {
+    min-width: 25px !important;
+    padding: 5px;
+    background-color: transparent;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: "微軟正黑體";
+}
+
+
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+    background-color: #869923 !important;
+}
+
+
+
+
+.mat-form-field.mat-focused .mat-form-field-ripple{
+    background: #869923;
+}
+/* loading的spinner */
+.mat-progress-spinner circle, .mat-spinner circle {
+    stroke:
+    /* #A24B1F; */
+     /* #4A4B2F; */
+     #4C6F17;
+     /* #5D9D0E; */
+     /* #C3CCA9; */
+    /* #304C53 */
+    }
+
+
+    .questionSheet
+    {
+        font-size: 16px;
+    }
+
+    .can_click
+    {
+        display: inline;
+        cursor: pointer;
+    }

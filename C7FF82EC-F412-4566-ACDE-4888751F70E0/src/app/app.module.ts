@@ -88,6 +88,16 @@ import { HttpClientModule } from '@angular/common/http';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { ComprehensiveDataExportComponent } from './counsel-statistics/reports/comprehensive-data-export/comprehensive-data-export.component';
+import {MatTreeModule} from '@angular/material/tree';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatSelectModule} from '@angular/material/select';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 
 
 @NgModule({
@@ -160,6 +170,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     ReferralReportComponent,
     HRCounselInterviewCountComponent,
     GroupAnalysisReportComponent,
+    ComprehensiveDataExportComponent,
+  
     
   ],
   imports: [
@@ -179,7 +191,18 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     HttpClientModule,
     OverlayModule,
     PortalModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatTreeModule,
+    MatIconModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatDividerModule,
+    MatListModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatProgressSpinnerModule
+    
+    
     
   ],
   providers: [ ],

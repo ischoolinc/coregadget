@@ -25,3 +25,9 @@ ul.rwd-table .tr li.sticky-top {
 .dropdown-menu-scrollable::before{
     box-shadow: inherit !important;
 }
+
+
+/* 修改字體 採用微軟正黑體 */
+*{
+    font-family: "微軟正黑體";
+}
