@@ -89,3 +89,8 @@ table.table-hover tbody tr:hover {
     min-height: auto;
   }
 }
+
+.unEditbtn{
+  color: #A1A6AA;
+  border-color: #A1A6AA;
+}
