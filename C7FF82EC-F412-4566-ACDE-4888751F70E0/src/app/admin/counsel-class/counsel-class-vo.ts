@@ -3,7 +3,7 @@ export class CounselTeacherClass {
     TeacherID: string;
     TeacherName: string;
     Role: string;
-    Order: number;    
+    Order: number;
     ClassNames: string []= [];
     SetClassButtonDisable: boolean = true;
     parseOrder() {
@@ -29,11 +29,11 @@ export class CounselTeacherClass {
 
 export class CounselClass {
     constructor() { }
-    id:string = '';
+    id: string = '';
     ClassID: string;
     ClassName: string;
-    GradeYear: number;    
-    Checked: boolean = false;
+    GradeYear: number;
+    Checked: Boolean = false;
 
     SetClassCheck() {
         this.Checked = !this.Checked;
@@ -45,8 +45,8 @@ export class GradeClassInfo {
     GradeYearStr: string;
     Checked: boolean = false;
     ClassItems: CounselClass[] = [];
-    id: string ='';
-    SetGradeYearCheck(){
+    id: string = '';
+    SetGradeYearCheck() {
         this.Checked = !this.Checked;
     }
 }

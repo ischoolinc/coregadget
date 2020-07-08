@@ -1,0 +1,244 @@
+
+<div>
+<div style="height: 20px">
+
+</div>
+
+<div *ngIf="IsWorking" class="whole">
+
+</div>
+<div *ngIf="IsWorking" class="look">
+
+  <mat-spinner></mat-spinner>
+  <!-- <mat-progress-bar mode="buffer" [bufferValue]=50> </mat-progress-bar>
+    <span>資料處理中 ...</span>   -->
+</div>
+<div class="float-right">
+  <button (click)="MakeReport()" type="button" class="btn btn-info ">
+    產生報表
+  </button></div>
+<div class="container-xl mx-5 align-items-center" style="width: 95%;">
+  <mat-tab-group dynamicHeight>
+    <mat-tab class="tabText" label="step1 基本選項 >">
+      <div class="row">
+        <div class="col-sm">
+
+
+          
+
+          <label style="font-size: 18px; padding-top: 8px;"> 學年度</label>
+          <div style="margin-left: 10px;font-size: 18px">
+            <mat-form-field>
+              <mat-label></mat-label>
+              <mat-select [(value)]="SelectSchoolYear" (selectionChange)="reloadSectionInfo()">
+                <mat-option *ngFor="let schoolYear of SchoolYears" [value]="schoolYear">{{schoolYear}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+ 
+
+
+      
+          </div>
+
+
+          <label style="font-size: 18px; padding-top: 8px;"> 學期</label>
+          <div style="margin-left: 10px;font-size: 18px">
+            <mat-form-field>
+              <mat-label></mat-label>
+              <mat-select [(value)]="SelectSemester" (selectionChange)="reloadSectionInfo()">
+                <mat-option [value]="1">1</mat-option>
+                <mat-option [value]="2">2 </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="ml-auto align-self-center p-2  float-right">
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="step2 選擇班級 >">
+
+
+      <ng-container>
+        <div class="form-group">
+          <span class="custom-control custom-checkbox w-25">
+            <input type="checkbox" class="custom-control-input" [id]="0" [checked]="isSelectAllItem"
+              (click)="SetSelectAllItem()" />
+
+            <label class="custom-control-label" [for]="0">全選 年級
+            </label>
+          </span>
+
+          <div class="d-flex flex-wrap pl-3">
+
+            <div class="custom-control custom-checkbox w-25" *ngFor="let item of SelectGradeYearList">
+              <input type="checkbox" class="custom-control-input" [id]="item.id" [checked]="item.Checked"
+                (click)="SetSelectGradeItem(item.GradeYear)" />
+              <label class="custom-control-label" [for]="item.id">{{item.GradeYearStr}}
+              </label>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div style="height: 20px ; width: 200px; ;display :block">
+
+      </div>
+
+
+      <ng-container *ngFor="let item of SelectGradeYearList">
+        <div class="form-group">
+
+          <span class="custom-control custom-checkbox w-25  ">
+
+            <input type="checkbox" class="custom-control-input" [id]="item.id" [checked]="item.Checked"
+              (click)="SetSelectGradeItem(item.GradeYear)" />
+            <label class="custom-control-label" [for]="item.id"> 全選 {{item.GradeYearStr}}
+            </label>
+          </span>
+
+          <div class="d-flex flex-wrap pl-3">
+            <div class="custom-control custom-checkbox w-25" *ngFor="let ClassItem of item.ClassItems">
+              <input type="checkbox" class="custom-control-input" [id]="ClassItem.id" [checked]="ClassItem.Checked"
+                (click)="ClassItem.SetClassCheck()" />
+              <label class="custom-control-label" [for]="ClassItem.id"> {{ClassItem.ClassName}}
+              </label>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
+    </mat-tab>
+
+    <mat-tab label="step3 選擇題目 >" disabled="false">
+
+
+      <div mx-3>
+
+        <div *ngIf="SelectSections.length>0 && SelectSection">
+          <label class="m-3" style="font-size: 18px; padding-top: 8px;">表單名稱 :</label>
+          <mat-form-field class="m-3">
+            <!-- <mat-label>{{SelectSection.SectionName}}</mat-label> -->
+            <mat-select [(value)]="SelectSection" (selectionChange)="LoadngQuestionData()">
+              <mat-option *ngFor="let selectSection of SelectSections" [value]="selectSection">
+                {{selectSection.SectionName||""}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <span class="m-1 float-right d-flex flex-row" style="display: inline-block;"><b class="my-3"
+              style=" font-size: 18px; color:#869923  ; ">
+              <span class="material-icons" style=" font-size: 22px; color:#869923 ">
+                touch_app
+              </span>
+              請點擊題目或標題。</b> <b class="my-3 " style=" font-size: 18px; color:#869923  ; ">題數上限：10題 。</b> </span>
+        </div>     
+        <mat-divider></mat-divider>
+        <ng-container>
+     
+
+          <div class="" *ngIf="this.GetQuestionSubjectMapValue().length>0; else tmpLoading">
+            <ng-container *ngFor="let subject of this.GetQuestionSubjectMapValue() ">
+              <div class=" mb-2 px-3 mt-2 questionSheet">
+                <h4 (click)="selectSubject(subject)" class="hover-a" [ngClass]="{'IsChecked':subject.IsChecked }">
+                  {{subject.SubjectText}}</h4>
+                <table class="table table-sm table-bordered">
+                  <ng-container *ngFor="let group of subject.GetQuestionGroups()">
+                    <tr>
+                      <th colspan="2" (click)="selectGroup(group)" class=" text-left hover-a"
+                       >
+                      <span  [ngClass]="{'IsChecked':group.IsChecked }">
+                        {{group.GroupText}} 
+                      </span>
+                      </th>
+                    </tr>
+                    <ng-container *ngFor="let query of group.GetQuestionQuerys()">
+                      <tr>
+                        <td class="text-left pl-4 " style="width:221px ;"
+                        
+                        scope="col">
+                      
+                          <span *ngIf="!query.ShowChecked" style="color:transparent" class="material-icons">
+                            check_circle_outline
+                          </span>
+
+                          <div   (click)="selectQuery(query)"  class="can_click ">
+                          <span *ngIf="query.ShowChecked"   
+                            class=" material-icons posit"  style="color: #ccc">
+                            check_circle_outline
+                          </span>
+                          <span  class ="hover-a" [ngClass]="{'IsChecked':query.IsChecked }">
+                          {{query.QueryText}} :
+                        </span>
+                        </div>
+                        </td>
+                        <td class="text-left" scope="col">
+                          <ng-container
+                            *ngFor="let questionText of query.GetQuestionText();let questionTextIndex = index">
+                            <span [attr.questionCode]=questionText.QuestionCode>
+                              <!-- <span class="ml-2 mr-3"></span> -->
+
+                              <span *ngIf="questionText.QuestionText">
+                                <span *ngIf="!questionText.IsChecked" style="color:transparent"
+                                class="material-icons  posit">
+                                check_circle_outline
+                              </span>
+                                
+                                
+                              
+                                <div class ="can_click" style="display: inline;" (click)="selectQuestionText(questionText)" >
+                                  <span *ngIf="questionText.IsChecked" style="color: #ccc"
+                                  class="material-icons posit">
+                                  check_circle_outline
+                                </span>
+                                <span class="hover-a"
+                                  id="{{questionText.QuestionCode}}"
+                                  [ngClass]="{'IsChecked':questionText.IsChecked }">{{questionText.QuestionText}}</span>
+                                </div>
+                                <span class="ml-1 mr-2">:<span class=" ml-3"> ---</span></span>
+                              </span>
+                              <span *ngIf="!questionText.QuestionText">
+                                <span  style="color:transparent"
+                                  class="material-icons  posit">
+                                  check_circle_outline
+                                </span>
+                                <span *ngIf="" style="color:transparent" class="material-icons ">
+                                  check_circle_outline
+                                </span>
+                                ---</span>
+                            </span>
+
+                          </ng-container>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                </table>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-template #tmpLoading class="container">
+          <div *ngIf="this.QuestionSubjectMap.size ===0" class="row justify-content-center"
+            style=" font-size:18px;margin-top:250px;margin-bottom:200px;">
+
+            {{SelectSchoolYear}}學年度 第{{SelectSemester}}學期 無資料
+          </div>
+        </ng-template>
+      </div>
+
+    </mat-tab>
+
+    s
+  </mat-tab-group>
+
+  <!-- 年級班級顯示section -->
+  <div class="ml-auto align-self-center p-2  float-right">
+  </div>
+</div>
+  <!-- 測試tab -->
