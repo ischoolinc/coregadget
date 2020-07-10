@@ -896,7 +896,7 @@
                                 // 資料匯入
                                 [].concat($scope.studentList || []).forEach(function (studentRec, index) {
                                     // 成績
-                                    if (!item.ParseValues[index] && item.ParseValues[index] > -1) {
+                                    if (!item.ParseValues[index] && item.ParseValues[index] !== 0) {
                                         studentRec[exam.ExamID] = '';
                                     } else if (item.ParseValues[index] == '缺') {
                                         studentRec[exam.ExamID] = '缺';
@@ -907,12 +907,21 @@
                                     // 努力程度
                                     var done = false;
                                     $scope.effortPairList.forEach(function (effortItem) {
+                                        if (effortItem.Score == "") {
+                                            effortItem.Score = "0";
+                                        }
 
-                                        if (!done && studentRec[exam.ExamID] != '' && studentRec[exam.ExamID] >= effortItem.Score) {
-
-                                            studentRec[exam.ExamID + '_努力程度'] = effortItem.Code;
-
+                                        if (studentRec[exam.ExamID] === '缺') {
+                                            studentRec[exam.ExamID + '_努力程度'] = '';
                                             done = true;
+                                        }
+
+
+                                        if (!done && studentRec[exam.ExamID] !== '') {
+                                            if (Number(studentRec[exam.ExamID]) >= Number(effortItem.Score)) {
+                                                studentRec[exam.ExamID + '_努力程度'] = effortItem.Code;
+                                                done = true;
+                                            }
                                         }
                                     });
                                 });
@@ -1096,7 +1105,7 @@
                             if (importItem.HasError == true)
                                 return;
                             $scope.studentList.forEach(function (stuRec, index) {
-                                if (!importItem.ParseValues[index] && importItem.ParseValues[index] > -1) {
+                                if (!importItem.ParseValues[index] && importItem.ParseValues[index] !== 0) {
                                     stuRec[gradeItem.ExamID] = '';
                                 } else if (importItem.ParseValues[index] === '缺') {
                                     stuRec[gradeItem.ExamID] = '缺';
