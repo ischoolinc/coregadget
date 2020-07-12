@@ -911,7 +911,7 @@
                                             effortItem.Score = "0";
                                         }
 
-                                        if (studentRec[exam.ExamID] === '缺') {
+                                        if (studentRec[exam.ExamID] === '缺' || studentRec[exam.ExamID] === '') {
                                             studentRec[exam.ExamID + '_努力程度'] = '';
                                             done = true;
                                         }
