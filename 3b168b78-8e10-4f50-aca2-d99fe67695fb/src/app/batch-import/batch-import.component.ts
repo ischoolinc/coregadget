@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { StudentRecord } from '../data';
+import { StudentRecord, MoralityRecord, CommentRecord } from '../data';
 import * as Papa from 'papaparse';
 
 export interface InitialState {
   title: string;
   studentList: StudentRecord[];
+  textScoreList: MoralityRecord[];
+  moralList: CommentRecord[];
   callback: () => void;
 }
 
@@ -22,6 +24,11 @@ export class BatchImportComponent implements OnInit {
   parseValues: string[] = [];
   hasError = false;
 
+  grade: string;
+  codeList: {} = {}
+  codeListArry: {} = {};
+  moralListArry: {} = {};
+
   constructor(public modalRef: BsModalRef) {
   }
 
@@ -37,8 +44,8 @@ export class BatchImportComponent implements OnInit {
   }
 
   parse() {
-    let parseText = this.sourceText || '';
-
+    // let parseText = this.sourceText || '';
+    let parseText = (this.sourceText || '').replace(/^$/gm, '-');
     // 由於 Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
     // parseText = parseText.replace(/""/g, '');
 
@@ -76,6 +83,30 @@ export class BatchImportComponent implements OnInit {
       this.callback(this.parseValues);
     } else {
       this.modalRef.hide();
+    }
+  }
+
+  /**代碼轉文字*/
+  doTransfer(){
+    const re = new RegExp(/([\d\w]+)/, 'g');
+    if(this.data.title === '德行評語'){
+      this.data.moralList.forEach(item => {
+        if(item.Code){ this.moralListArry[item.Code] = item.Comment || '';}
+      });
+      this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
+        return this.moralListArry[g1] || g1 });      
+    }else{
+      if(this.data.title){
+        this.codeList = this.data.textScoreList.filter((item)=>{
+          return item.Face === this.data.title
+        });
+        this.codeList[0].Item.forEach(item => {
+        if (item.Code) { this.codeListArry[item.Code] = item.Comment || ''; };
+
+        this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
+          return this.codeListArry[g1] || g1 });
+      });
+      }
     }
   }
 }

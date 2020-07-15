@@ -14,6 +14,8 @@ export class ComprehensiveDetailComponent implements OnInit {
   isSaving = false;
   studentID: string;
 
+  public comprehensiveStr: string = "綜合紀錄表";
+
   fillInSemester: any[];
   currentFillInSemester: any;
 
@@ -30,6 +32,15 @@ export class ComprehensiveDetailComponent implements OnInit {
   async ngOnInit() {
     this.counselDetailComponent.setCurrentItem("comprehensive");
     this.studentID = this.counselDetailComponent.currentStudent.StudentID;
+
+    // 預設
+    this.comprehensiveStr = "綜合紀錄表";
+
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有
+      this.comprehensiveStr = "填報資料";
+    }
+
 
     this.isLoading = true;
     this.fillInSemester = [];

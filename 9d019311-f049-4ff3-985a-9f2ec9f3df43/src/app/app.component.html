@@ -57,7 +57,7 @@
               <i class="fas fa-file-excel mr-2"></i> 匯出報表
             </a>
             <!--批次-->
-            <div class="dropdown mr-1">
+            <div class="dropdown mr-1" *ngIf="dropdowndisplay">
               <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink3"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-cog mr-2"></i> 批次
@@ -67,18 +67,25 @@
                   (click)="openBatchModal(item.Name)">{{item.Name}}</a>
               </div>
             </div>
+            <div class="dropdown mr-1" *ngIf="!dropdowndisplay" style="pointer-events: none;">
+              <a class="btn btn-outline-secondary dropdown-toggle unEditbtn" href="#" role="button" id="dropdownMenuLink3"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-cog mr-2"></i> 批次
+              </a>
+            </div>
             <!--儲存-->
             <button type="button" class="btn" [ngClass]="{
                 'btn-outline-secondary': !isChange,
                 'btn-danger': isChange
-              }" (click)="saveAll()" [disabled]="isLoading">
+              }" 
+              (click)="saveAll()" [disabled]="btnState" [title]="saveBtnTitle">
               <i class="fas fa-save mr-2"></i> 儲存
             </button>
           </ng-container>
         </div>
         <div class="mt-1">
           <span class="text-danger">{{curClassTimeConfig.Grade || ''}}年級 開放輸入時間：{{curClassTimeConfig.Start || '未指定'}} ~
-            {{curClassTimeConfig.End || '未指定'}}</span>
+            {{curClassTimeConfig.End || '未指定'}} {{saveBtnTitle}}</span>
         </div>
         <div class="mainBlock" *ngIf="studentList.length > 0; else tplNoStudent">
           <app-input-block *ngIf="!isNoExam" [degreeCodeList]="degreeCodeList" [textCodeList]="textCodeList"></app-input-block>

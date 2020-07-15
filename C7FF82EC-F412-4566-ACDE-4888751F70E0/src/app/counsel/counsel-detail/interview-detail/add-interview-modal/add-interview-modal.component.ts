@@ -35,10 +35,15 @@ export class AddInterviewModalComponent implements OnInit {
   _editMode: string = "add";
   editModeString: string = "新增";
   _studentName: string;
+  public referralVisible: boolean = false;
   // 輔導紀錄
   _CounselInterview: CounselInterview;
 
   ngOnInit() {
+    this.referralVisible = false;
+    if (gadget.params.system_counsel_position === 'referral') {
+      this.referralVisible = true;
+    }
     this._CounselInterview = new CounselInterview();
     this.loadDefaultData();
   }

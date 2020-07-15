@@ -21,13 +21,16 @@
                     {{doc.Name}}&nbsp;(&nbsp;{{doc.DocumentName}}&nbsp;)
                   </a>
                 </ng-container>
-                <div class="dropdown-divider"></div>
+               
               </ng-container>
-              <a class="dropdown-item"
-                 target="_blank"
-                 [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_history/'+currentStudent.StudentID+')'">
-                輔導紀錄表B表 ( 輔導紀錄表 )
-              </a>
+              <ng-container *ngIf="counselVisible === true">
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item"
+                   target="_blank"
+                   [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_history/'+currentStudent.StudentID+')'">
+                  輔導紀錄表B表 ( 輔導紀錄表 )
+                </a>
+              </ng-container>
             </div>
           </div>
           <h4 class="mt-1 mb-3">
@@ -35,84 +38,96 @@
             {{ currentStudent.StudentName }}
           </h4>
           <div class="list-group nav-list">
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('base_info_detail')"
-               data-toggle="list"
-               [ngClass]="{ 'active show': currentItem == 'base_info_detail','disabled': !_interviewEnable }">
-              基本資料
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('interview')"
-               data-toggle="list"
-               ___ngIf="_interviewEnable"
-               [ngClass]="{ 'active show': currentItem == 'interview', 'disabled': !_interviewEnable }">
-              班導師輔導紀錄
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_counselEnable||routeTo('counsel')"
-               data-toggle="list"
-               ___ngIf="_counselEnable"
-               [ngClass]="{ 'active show': currentItem == 'counsel', 'disabled': !_counselEnable }">
-              晤談紀錄
-            </a>
+            <ng-container *ngIf="baseVisible === true">
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('base_info_detail')"
+                 data-toggle="list"
+                 [ngClass]="{ 'active show': currentItem == 'base_info_detail','disabled': !_interviewEnable }">
+                基本資料
+              </a>
+            </ng-container>
+            <ng-container *ngIf="counselVisible === true">
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('interview')"
+                 data-toggle="list"
+                 ___ngIf="_interviewEnable"
+                 [ngClass]="{ 'active show': currentItem == 'interview', 'disabled': !_interviewEnable }">
+                班導師輔導紀錄
+              </a>
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_counselEnable||routeTo('counsel')"
+                 data-toggle="list"
+                 ___ngIf="_counselEnable"
+                 [ngClass]="{ 'active show': currentItem == 'counsel', 'disabled': !_counselEnable }">
+                晤談紀錄
+              </a>
+            </ng-container>
             <!-- <a href="javascript:void(0);"
              class="list-group-item list-group-item-action d-flex disabled"
              data-toggle="list">
             綜合紀錄表
           </a> -->
-            <a href="javascript:;"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('comprehensive')"
-               data-toggle="list"
-               [ngClass]="{ 'active show': currentItem == 'comprehensive', 'disabled': !_interviewEnable  }">
-              綜合紀錄表
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_psychological_testEnable||routeTo('psychological_test')"
-               data-toggle="list"
-               ___ngIf="_psychological_testEnable"
-               [ngClass]="{ 'active show': currentItem == 'psychological_test', 'disabled': !_psychological_testEnable }">
-              心理測驗
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('absent')"
-               data-toggle="list"
-               [ngClass]="{ 'disabled': !_interviewEnable }">
-              缺曠獎懲
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('cadre')"
-               data-toggle="list"
-               [ngClass]="{ 'disabled': !_interviewEnable }">
-              幹部紀錄
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('service_learning')"
-               data-toggle="list"
-               [ngClass]="{ 'disabled': !_interviewEnable }">
-              服務學習
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('exam_score')"
-               data-toggle="list"
-               [ngClass]="{ 'disabled': !_interviewEnable }">
-              評量成績
-            </a>
-            <a href="javascript:void(0);"
-               class="list-group-item list-group-item-action d-flex"
-               (click)="!_interviewEnable||routeTo('semester_score')"
-               data-toggle="list"
-               [ngClass]="{ 'disabled': !_interviewEnable }">
-              學期成績
-            </a>
+            <ng-container *ngIf="baseVisible === true">
+              <a href="javascript:;"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('comprehensive')"
+                 data-toggle="list"
+                 [ngClass]="{ 'active show': currentItem == 'comprehensive', 'disabled': !_interviewEnable  }">
+                {{comprehensiveStr}}
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf=" counselVisible === true">
+
+
+
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_psychological_testEnable||routeTo('psychological_test')"
+                 data-toggle="list"
+                 ___ngIf="_psychological_testEnable"
+                 [ngClass]="{ 'active show': currentItem == 'psychological_test', 'disabled': !_psychological_testEnable }">
+                心理測驗
+              </a>
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('absent')"
+                 data-toggle="list"
+                 [ngClass]="{ 'disabled': !_interviewEnable }">
+                缺曠獎懲
+              </a>
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('cadre')"
+                 data-toggle="list"
+                 [ngClass]="{ 'disabled': !_interviewEnable }">
+                幹部紀錄
+              </a>
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('service_learning')"
+                 data-toggle="list"
+                 [ngClass]="{ 'disabled': !_interviewEnable }">
+                服務學習
+              </a>
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('exam_score')"
+                 data-toggle="list"
+                 [ngClass]="{ 'disabled': !_interviewEnable }">
+                評量成績
+              </a>
+              <a href="javascript:void(0);"
+                 class="list-group-item list-group-item-action d-flex"
+                 (click)="!_interviewEnable||routeTo('semester_score')"
+                 data-toggle="list"
+                 [ngClass]="{ 'disabled': !_interviewEnable }">
+                學期成績
+              </a>
+            </ng-container>
           </div>
         </div>
       </div>

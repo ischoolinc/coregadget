@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { StudentRecord } from '../data';
+import { StudentRecord, PerformanceDegree, CommentRecord, ExamRecord } from '../data';
 import * as Papa from 'papaparse';
 import { TargetDataService } from '../service/target-data.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { BasicService } from '../service';
 
 @Component({
   selector: 'app-batch-import',
@@ -13,6 +14,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BatchImportComponent implements OnInit, OnDestroy {
 
+  
   // 標題
   title: string;
   // 學生清單
@@ -24,18 +26,38 @@ export class BatchImportComponent implements OnInit, OnDestroy {
   hasError = false;
   dispose$ = new Subject();
 
+  // 文字代碼表
+  textCodeList: CommentRecord[] = [];
+  // 程度代碼表
+  degreeCodeList: PerformanceDegree[] =[];
+  // 目前評量
+  curExam: ExamRecord;
+
+  //代碼資料比對用清單
+  textCodeListT = {};
+  degreeCodeListT = {};
+
+  isLoading = true;
+ 
   constructor(
     public modalRef: BsModalRef,
-    private targetDataSrv: TargetDataService
+    private targetDataSrv: TargetDataService,
     ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // 訂閱資料
     this.targetDataSrv.studenList$.pipe(
       takeUntil(this.dispose$)
     ).subscribe((stuList: StudentRecord[]) => {
       this.studentList = stuList;
+    });
+    //產出兩張比對用的代碼對照表
+      this.textCodeList.forEach(item => {
+        if (item.Code) { this.textCodeListT[item.Code] = item.Comment || ''; }
+    });
+      this.degreeCodeList.forEach(item => {
+        if (item.Degree) { this.degreeCodeListT[item.Degree] = item.Desc || ''; }
     });
   }
 
@@ -52,8 +74,21 @@ export class BatchImportComponent implements OnInit, OnDestroy {
   }
 
   parse() {
-    let parseText = this.sourceText || '';
-
+    
+    //點選解析時一併轉換（先保留）
+    // if(this.curExam.ExamID === 'DailyLifeRecommend'){
+    //   const re = new RegExp(/([\d\w]+)/, 'g');
+    //   this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
+    //     return this.textCodeListT[g1] || g1 });
+    // }else{
+    //   const re = new RegExp(/([\d\w]+)/, 'g');
+    //   this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
+    //     return this.degreeCodeListT[g1] || g1 
+    //   });
+    // }
+    
+    //將空白換行轉換成'-'符號，讓使者可以不用特地在excel輸入字元來表示
+    let parseText = (this.sourceText || '').replace(/^$/gm, '-');
     // 由於 Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
     // parseText = parseText.replace(/""/g, '');
 
@@ -99,6 +134,20 @@ export class BatchImportComponent implements OnInit, OnDestroy {
       this.targetDataSrv.setStudentList(this.studentList);
       this.targetDataSrv.setStudent(curStudent);
       this.modalRef.hide();
+    }
+  }
+  
+  //代碼轉文字
+  doTransfer(){
+    if(this.curExam.ExamID === 'DailyLifeRecommend'){
+      const re = new RegExp(/([\d\w]+)/, 'g');
+      this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
+        return this.textCodeListT[g1] || g1 });
+    }else{
+      const re = new RegExp(/([\d\w]+)/, 'g');
+      this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
+        return this.degreeCodeListT[g1] || g1 
+      });
     }
   }
 }

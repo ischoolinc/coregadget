@@ -16,6 +16,11 @@ export class AdminComponent implements OnInit {
   isRoleEnable: boolean = false;
   isClassEnable: boolean = false;
   isPsyEnable: boolean = false;
+  public counselVisible: boolean = false;
+
+  public teacherTypeStr: string = "教師輔導身分";
+  public classTypeStr: string = "負責輔導班級";
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -27,10 +32,24 @@ export class AdminComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.teacherTypeStr = "教師輔導身分";
+    this.classTypeStr = "負責輔導班級";
     this.appComponent.currentComponent = "admin";
     this.isRoleEnable = false;
     this.isClassEnable = false;
     this.isPsyEnable = false;
+    this.counselVisible = false;
+
+    if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor') {
+      this.counselVisible = true;
+    }
+
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有
+      this.teacherTypeStr = "教師身分";
+      this.classTypeStr = "負責班級";
+
+    }
 
     await this.appComponent.GetMyCounselTeacherRole();
     if (this.globalService.MyCounselTeacherRole === '輔導主任') {
@@ -38,12 +57,12 @@ export class AdminComponent implements OnInit {
       this.isRoleEnable = true;
       this.isClassEnable = true;
       this.isPsyEnable = true;
-    } 
+    }
     if (this.globalService.MyCounselTeacherRole === '輔導組長') {
       this.currentItem = 'counsel_class';
       this.isClassEnable = true;
       this.isPsyEnable = true;
-    } 
+    }
   }
 
   routeTo(to) {

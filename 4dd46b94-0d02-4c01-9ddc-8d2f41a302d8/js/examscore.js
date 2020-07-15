@@ -41,7 +41,12 @@
     var _schoolYear = null;
     // 介面目前學期
     var _semester = null;
-    var _connection = null;
+    var _connection = null; 
+
+    //目前排名顯示設定
+    var _curr_arithmeticaveset = null;
+    var _curr_weightedaveset = null;
+
     
     if (_system_position === "parent") {
       _connection = gadget.getContract("ischool.exam.parent");
@@ -67,6 +72,27 @@
       });
     };
 
+    /**取得設定檔 */
+    getRankViewerConfig = function(){
+      return _connection.send({
+        service: "_.GetViewerConfig",
+        body: {},
+        result: function (response, error, http) {
+          if (error !== null) {
+            return set_error_message('#mainMsg', 'GetViewerConfig', error);
+          } else {
+            if(response.Item){
+              _curr_arithmeticaveset = response.Item.ArithmeticAveSet || "";
+              _curr_weightedaveset = response.Item.WeightedAveSet || "";
+              _system_exam_must_enddate = response.Item.EndDataSet || _system_exam_must_enddate.toLowerCase();
+              _system_exam_must_enddate = _system_exam_must_enddate.toLowerCase();
+              
+            }
+        }
+      }
+    });
+    };
+    getRankViewerConfig();
     /** 取得小孩學生資訊(家長用) */
     getStudentInfo = function () {
       return _connection.send({
@@ -404,24 +430,50 @@
             return tbody1.push("</tr>");
           });
           //--
-          subBody.push(`<tr><td></td>`)
-          exam_list.forEach(examID => {
-            // 固定排名：算數平均＆排名
-            {
-              const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均' 
-                && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
+          if ( _curr_arithmeticaveset === 'True') {
+        
+            subBody.push("<tr><th>" + "算術平均及排名" + "</th>");
+            
+            exam_list.forEach(examID => {
+              // 固定排名：算數平均＆排名
+              {
+                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均' 
+                  && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
+                  
+                if (data) {
+                  subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                } else {
 
-              if (data) {
-                subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
-              } else {
-                subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
+                  subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
+                }
               }
-            }
-          });
-          subBody.push(`</tr>`)
+            });
+            subBody.push(`</tr>`)
+          }else if(_curr_weightedaveset === 'True'){
+            subBody.push("<tr><th>" + "加權平均及排名" + "</th>");
+            
+            exam_list.forEach(examID => {
+              // 固定排名：加權平均＆排名
+              {
+                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '加權平均' 
+                  && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
+                  
+                if (data) {
+                  subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                } else {
+
+                  subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
+                }
+              }
+            });
+            subBody.push(`</tr>`)
+          }
+
+
           //--
           thead_html = "<tr class=\"my-nofill\"><th rowspan=\"2\">科目名稱</th>" + (thead1.join("")) + "</tr>\n<tr class=\"my-nofill\">" + (thead2.join("")) + "</tr>";
           tbody_html = tbody1.join("");
+          
           $("#ExamScore")
             .find("thead").html(thead_html).end()
             .find("#BodyOne").html(tbody_html).end()

@@ -53,7 +53,9 @@
             <li style="width:10%">記錄者</li>
             <li style="width:40%">聯絡事項及內容</li>
             <!-- <li style="width:40%">內容</li> -->
-            <li style="width:10%">轉介狀況</li>
+            <ng-container *ngIf="referralVisible === true">
+              <li style="width:10%">轉介狀況</li>
+            </ng-container>
             <li style="width:10%"></li>
           </ol>
         </li>
@@ -95,8 +97,10 @@
                   <span>{{ counselRec.Content }}</span>
                 </p>
               </li>
-              <li data-title="轉介狀況"
-                  (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
+              <ng-container *ngIf="referralVisible === true">
+                <li data-title="轉介狀況"
+                    (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
+              </ng-container>
 
               <li data-title="">
                 <button class="btn btn-light"

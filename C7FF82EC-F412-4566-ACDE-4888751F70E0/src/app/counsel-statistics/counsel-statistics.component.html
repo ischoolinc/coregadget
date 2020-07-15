@@ -20,7 +20,7 @@
 
 
 <div [ngSwitch]="selectReportType">
-  
+
   <ng-container *ngSwitchCase="'輔導工作月統計'">
     <app-gov-statistics-monthly></app-gov-statistics-monthly>
   </ng-container>
@@ -33,16 +33,18 @@
     <app-case-interview-report></app-case-interview-report>
   </ng-container>
 
-
-  <ng-container *ngSwitchCase="'轉介學生清單'">
-    <app-case-interview-report></app-case-interview-report>
+  <ng-container *ngIf="coubselReferralVisible === true">
+    <ng-container *ngSwitchCase="'轉介學生清單'">
+      <app-case-interview-report></app-case-interview-report>
+    </ng-container>
   </ng-container>
-
   <ng-container *ngSwitchCase="'各班導師晤談次數'">
     <app-hrcounsel-interview-count></app-hrcounsel-interview-count>
   </ng-container>
- 
-  <app-group-analysis-report *ngSwitchCase="'選組分析表'" > </app-group-analysis-report>
+  <app-comprehensive-data-export *ngSwitchCase="'匯出填寫內容'"> </app-comprehensive-data-export>
+  <ng-container *ngSwitchDefault></ng-container>
+
+  <app-group-analysis-report *ngSwitchCase="'選組分析表'"> </app-group-analysis-report>
   <ng-container *ngSwitchDefault></ng-container>
 </div>
 

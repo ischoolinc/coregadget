@@ -17,7 +17,7 @@ export class ComprehensiveDetailRoutingComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.router.navigate(["view", this.comprehensiveComponent.fillInSemester[0].SchoolYear, this.comprehensiveComponent.fillInSemester[0].Semester], {
+    this.router.navigate(["view", this.comprehensiveComponent.fillInSemester[0].SchoolYear, this.comprehensiveComponent.fillInSemester[0].Semester],{
       relativeTo: this.route,
       skipLocationChange: true
     });

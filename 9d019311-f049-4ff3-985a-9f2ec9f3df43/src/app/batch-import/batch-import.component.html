@@ -15,7 +15,7 @@
               <ul>
                 <li class="text-danger">請先確認excel中學生的人數及順序皆與系統相符</li>
                 <li class="text-danger">複製成績時，僅需圈選成績的部分，不含學生姓名及表頭</li>
-                <li class="text-danger">如有學生沒有成績資料，請輸入"-"，表示無資料，否則系統將認定錯誤</li>
+                <li class="text-danger">如有學生沒有成績資料，請輸入"-"或換行留空白，表示無資料，否則系統將認定錯誤</li>
               </ul>
             </li>
             <li>於下方文字方塊中貼上</li>
@@ -51,11 +51,15 @@
       </div>
       <div class="modal-footer">
         <ng-container *ngIf="!parseValues.length">
+            <button type="button"
+            class="btn btn-outline-secondary mr-auto mx-3"
+            (click)="doTransfer()">代碼轉文字</button>
           <button type="button"
             class="btn btn-outline-secondary"
             (click)="modalRef.hide()">取消</button>
           <button type="button"
             class="btn btn-primary"
+            style="margin-right: 1rem"
             (click)="parse()">解析</button>
         </ng-container>
         <ng-container *ngIf="parseValues.length">

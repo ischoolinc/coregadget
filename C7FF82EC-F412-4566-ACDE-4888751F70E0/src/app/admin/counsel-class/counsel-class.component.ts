@@ -11,6 +11,8 @@ import { CounselTeacherClass } from './counsel-class-vo';
 })
 export class CounselClassComponent implements OnInit {
   isLoading = false;
+  public teacherTypeStr: string = "輔導身分";
+  public classTypeStr: string = "輔導班級";
   counselTeacherClassList: CounselTeacherClass[] = [];
   @ViewChild("addCounselTeacher") _addCounselTeacher: AddCounselTeacherModalComponent;
 
@@ -22,6 +24,17 @@ export class CounselClassComponent implements OnInit {
     public adminComponent: AdminComponent) { }
 
   ngOnInit() {
+
+    this.teacherTypeStr = "輔導身分";
+    this.classTypeStr = "輔導班級";
+
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有
+
+      this.teacherTypeStr = "教師身分";
+      this.classTypeStr = "負責班級";
+
+    }
 
     setTimeout(() => { this.adminComponent.currentItem = "counsel_class"; });
     this.loadData();

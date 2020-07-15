@@ -29,11 +29,43 @@
         <div class="mb-2" *ngFor="let stud of class.students">
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input"
-                   [attr.id]="'stud_check_' + stud.StudentID"
+                   [attr.id]="'cls_' + class.classId + '_stud_check_' + stud.StudentID"
                    [(ngModel)]="stud.checked"
-                   (ngModelChange)="reflectClassSelection(class)">
+                   (ngModelChange)="reflectColSelection(class)">
             <label class="custom-control-label"
-                   [attr.for]="'stud_check_' + stud.StudentID"
+                   [attr.for]="'cls_' + class.classId + '_stud_check_' + stud.StudentID"
+                   >{{stud.StudentName}}（{{stud.StudentNumber}}）</label>
+                   <!-- {{stud | json}} -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let course of courses">
+      <div style="display: flex;">
+        <h5 class="mt-2">{{course.courseName}}
+          <div class="mt-2">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input"
+                     [attr.id]="'course_check_' + course.courseId"
+                     [(ngModel)]="course.checked"
+                     (ngModelChange)="toggleAll(course)">
+
+              <label class="custom-control-label"
+                     [attr.for]="'course_check_' + course.courseId">
+                     全選「{{course.courseName}}」所有學生 (共 {{course.students.length}} 人)</label>
+            </div>
+          </div>
+        </h5>
+      </div>
+      <div class="student-container">
+        <div class="mb-2" *ngFor="let stud of course.students">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"
+                   [attr.id]="'course_' + course.courseId + '_stud_check_' + stud.StudentID"
+                   [(ngModel)]="stud.checked"
+                   (ngModelChange)="reflectColSelection(course)">
+            <label class="custom-control-label"
+                   [attr.for]="'course_' + course.courseId + '_stud_check_' + stud.StudentID"
                    >{{stud.StudentName}}（{{stud.StudentNumber}}）</label>
                    <!-- {{stud | json}} -->
           </div>

@@ -15,6 +15,11 @@ export class CounselDetailComponent implements OnInit {
   private currentItem: string;
   currentStudent: CounselStudent;
 
+  public baseVisible: boolean = false;
+  public counselVisible: boolean = false;
+  public coubselReferralVisible: boolean = false;
+  public comprehensiveStr: string = "綜合紀錄表";
+
   // 顯示輔導紀錄
   _interviewEnable: boolean = false;
   // 顯示認輔紀錄
@@ -34,6 +39,30 @@ export class CounselDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.baseVisible = false;
+    this.counselVisible = false;
+    this.coubselReferralVisible = false;
+
+    // 預設
+    this.comprehensiveStr = "綜合紀錄表";
+
+    if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor' || gadget.params.system_counsel_position === 'freshman') {
+      this.baseVisible = true;
+    }
+
+    if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor') {
+      this.counselVisible = true;
+    }
+
+    if (gadget.params.system_counsel_position === 'referral') {
+      this.coubselReferralVisible = true;
+    }
+
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有
+      this.comprehensiveStr = "填報資料";
+    }
+
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.studentID = params.get("studentID");

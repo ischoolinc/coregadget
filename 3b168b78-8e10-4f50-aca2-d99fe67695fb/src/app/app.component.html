@@ -48,7 +48,7 @@
             <a href="javascript:;" class="btn btn-outline-secondary mr-auto" (click)="exportExcel()">
               <i class="fas fa-file-excel mr-2"></i> 匯出報表
             </a>
-            <div class="dropdown mr-1">
+            <div class="dropdown mr-1" *ngIf="dropdowndisplay">
               <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink3"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-cog mr-2"></i> 批次
@@ -66,15 +66,21 @@
                 </ng-container>
               </div>
             </div>
+            <div class="dropdown mr-1" *ngIf="!dropdowndisplay" style="pointer-events: none;">
+              <a class="btn btn-outline-secondary dropdown-toggle  unEditbtn" href="#" role="button" id="dropdownMenuLink3"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-cog mr-2"></i> 批次
+              </a>
+            </div>
             <button type="button" class="btn" [class.btn-outline-secondary]="!hasChanged"
-              [class.btn-danger]="hasChanged" (click)="save()" [disabled]="isLoading">
+              [class.btn-danger]="hasChanged" (click)="save()" [disabled]="btnState" [title]="saveBtnTitle">
               <i class="fas fa-save mr-2"></i> 儲存
             </button>
           </ng-container>
         </div>
         <ng-container *ngIf="studentList.length; else tplNoData">
-          <div *ngIf="isOpening" class="mt-1">
-            <span class="text-danger">開放輸入時間：{{config.StartTime || '未指定'}} ~ {{config.EndTime || '未指定'}}</span>
+          <div class="mt-1">
+            <span class="text-danger">開放輸入時間：{{config.StartTime || '未指定'}} ~ {{config.EndTime || '未指定'}} {{saveBtnTitle}}</span>
           </div>
           <app-input-block [moralList]="moralList || []" [textScoreList]="textScoreList || []"></app-input-block>
           <ng-container *ngIf="!isMainLoading;else tplLoading">

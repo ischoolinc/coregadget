@@ -99,6 +99,7 @@
                 Level: ""
             },
             CurrentView: "",
+            
         };
 
         var dicClub = {};
@@ -141,6 +142,15 @@
             }
             $scope.FilterClub = ClubList;
         };
+        
+        //因應新竹高中需求，不顯示部分標籤
+        $scope.HCHstyle=function(){
+            if(gadget.params.enabled == true){
+                return {display: "none"};
+            }else{
+                return ""; 
+            }
+        } ;
 
         $scope.BeforeSetCurrent = function (ClubRec) {
 

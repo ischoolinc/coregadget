@@ -11,7 +11,8 @@ import { timeout } from 'q';
   styleUrls: ['./counsel.component.css']
 })
 export class CounselComponent implements OnInit {
-   public selectItem: string;
+  public selectItem: string;
+  public baseVisible = false;
 
   // 搜尋文字
   searchText: string = '';
@@ -27,20 +28,23 @@ export class CounselComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.baseVisible = false;
     // console.log(this.searchText);
+    if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor' || gadget.params.system_counsel_position === 'freshman') {
+      this.baseVisible = true;
+    }
   }
 
 
-  search(){
+  search() {
     //console.log(this.searchText);
-    this.router.navigate(['list','search', this.searchText], {
+    this.router.navigate(['list', 'search', this.searchText], {
       relativeTo: this.activatedRoute
     });
   }
 
   public setSelectItem(item: string) {
-    if (item != '搜尋')
-    {
+    if (item != '搜尋') {
       this.searchText = '';
     }
     setTimeout(() => {

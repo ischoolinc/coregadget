@@ -7,7 +7,7 @@ import { DsaService } from "../../../dsa.service";
   styleUrls: ['./add-counsel-teacher-modal.component.css']
 })
 export class AddCounselTeacherModalComponent implements OnInit {
-
+  public classTypeStr: string = "輔導班級";
   _CounselTeacherClass: CounselTeacherClass = new CounselTeacherClass();
   tmpGradeYear: number[] = [];
   tmpClass: CounselClass[] = [];
@@ -17,7 +17,13 @@ export class AddCounselTeacherModalComponent implements OnInit {
   constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
+    this.classTypeStr = "輔導班級";
+    if (gadget.params.system_counsel_position === 'freshman') {
+      // 新生特有    
 
+      this.classTypeStr = "負責班級";
+
+    }
     this.loadData();
 
   }

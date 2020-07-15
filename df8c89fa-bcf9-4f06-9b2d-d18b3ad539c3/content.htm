@@ -16,8 +16,8 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: '',
-                password: ''//window.prompt('password:')
+                account: 'bubu@debug.ischool.com.tw',
+                password: '1234'//window.prompt('password:')
             }
         });
     </script>
@@ -106,7 +106,7 @@
                     <li ng-repeat="template in templateList"
                         ng-class="{active: template == current.template}">
                         <a href="javascript:;"
-                        ng-click="setCurrentTemplate(template)">{{template.Name}}</a>
+                        ng-click="setCurrentTemplate(template, true)">{{template.Name}}</a>
                     </li>
                 </ul>
             </div>
@@ -202,7 +202,7 @@
                         </li>
                     </ul>
                 </div>
-                <a ng-click="saveGradeItemScore()"
+                <a ng-click="saveGradeItemScore(true)"
                    class="btn btn-default"
                    ng-class="{'btn-danger':!checkAllTable('平時評量')}">
                     <i class="fa fa-floppy-o"></i>
@@ -357,7 +357,7 @@
                                     </td>
                                     <td ng-if="current.Exam && current.Student">
                                         <div ng-if="current.Exam.Lock || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
-                                                score-stress="{{current.Student[current.Exam.ExamID]}}"
+                                                score-stress="{{current.Student[current.Exam.ExamID]}}" score-background="none"
                                                 class="text-center">
                                             {{current.Student[current.Exam.ExamID]=='0'?('0'):(current.Student[current.Exam.ExamID]||'&nbsp;')}}
                                         </div>
@@ -648,7 +648,7 @@
                     </div>
                 </div>
                 <div class="modal-body"
-                     ng-if="importTarget.ParseValues">
+                     ng-if="!!importTarget.ParseValues">
                     <p>預覽</p>
                     <div class="row">
                         <div class="visible-md visible-lg">
@@ -666,9 +666,9 @@
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]==''"
+                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
+                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                              class="pull-right"
                                              score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
@@ -689,9 +689,9 @@
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]==''"
+                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
+                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                              class="pull-right"
                                              score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
@@ -712,9 +712,9 @@
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]==''"
+                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!=''"
+                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                              class="pull-right"
                                              score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
                                     </div>
@@ -738,11 +738,11 @@
                             ng-click="importTarget.Parse()">解析</button>
                     <button type="button"
                             class="btn btn-default btn-sm"
-                            ng-if="importTarget.ParseValues"
+                            ng-if="!!importTarget.ParseValues"
                             ng-click="importTarget.Clear()">返回</button>
                     <button type="button"
                             class="btn btn-primary btn-sm"
-                            ng-if="importTarget.ParseValues"
+                            ng-if="!!importTarget.ParseValues"
                             ng-click="importTarget.Import()"
                             ng-class="{disabled:importTarget.HasError}">匯入</button>
                 </div>
@@ -865,20 +865,24 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="copyLabel">將複製評量項目至下列勾選課程</h4>
+                    <h4 class="modal-title" id="copyLabel">{{current.Course.CourseName}} {{current.template.Name}} 將複製評量項目至下列勾選課程</h4>
+                    <h6>已有評分項目的評量，將無法勾選</h6>
                 </div>
                 <div class="modal-body">
-                    <div class="form-check" ng-repeat="course in courseList">
-                        <input class="form-check-input" type="checkbox" ng-model="course.Selected"
-                            ng-disabled="current.Course.CourseID == course.CourseID" value="" id="{{course.CourseID}}">
-                        <label class="form-check-label" for="{{course.CourseID}}">
-                            {{course.CourseName}}
+                    <div class="form-check" ng-repeat="course in CourseExamList">
+                        <input class="form-check-input"
+                            type="checkbox"
+                            ng-model="course.Selected"
+                            ng-disabled="course.ItemDisable"
+                            value=""
+                            id="{{course.id}}">
+                        <label class="form-check-label" for="{{course.id}}" ng-class="{'text-muted': course.ItemDisable}">
+                            課程：{{course.CourseName}}, 評量：{{course.ExamName}}
                         </label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <!-- data-dismiss="modal" -->
-                    <span class="text-danger" ng-show="copyGradeItemError">{{copyGradeItemError}} 複製失敗！</span>
                     <button type="button" class="btn btn-secondary" ng-click="closeCopyModal()">關閉</button>
                     <button type="button" class="btn btn-primary" ng-click="copyGradeItemConfig()">儲存</button>
                 </div>
