@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ReferralStudent } from "../referral-student";
 import { DsaService } from "../../dsa.service";
 import {

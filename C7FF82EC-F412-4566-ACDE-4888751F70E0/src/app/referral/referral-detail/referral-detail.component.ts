@@ -1,20 +1,12 @@
-import { Component, OnInit, Optional, ViewChild } from "@angular/core";
-import {
-  ActivatedRoute,
-  Router,
-  ParamMap,
-  RoutesRecognized
-} from "@angular/router";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { ReferralStudent } from "../referral-student";
 import { DsaService } from "../../dsa.service";
 import { GrantModalComponent } from "../grant-modal/grant-modal.component";
 import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
-import { ViewInterviewModalComponent } from "../../counsel/counsel-detail/interview-detail/view-interview-modal/view-interview-modal.component";
-import {
-  CounselStudentService,
-  CounselClass
-} from "../../counsel-student.service";
-import { CounselInterview } from "../../counsel/counsel-vo";
+import { ViewInterviewModalComponent } from '../../shared-counsel-detail';
+import { CounselStudentService } from '../../counsel-student.service';
+import { CounselInterview } from '../../shared-counsel-detail/counsel-vo';
 
 @Component({
   selector: "app-referral-detail",
@@ -80,7 +72,7 @@ export class ReferralDetailComponent implements OnInit {
   }
 
   setGrantModal(refStudent: ReferralStudent) {
-    this.grant_modal.referralStudent = refStudent;    
+    this.grant_modal.referralStudent = refStudent;
     this.grant_modal.loadDefault();
 
     if (this.grant_modal.referralStudent.ReferralStatus == "") {

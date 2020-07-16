@@ -1,19 +1,13 @@
 import { Component, OnInit, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
 import {
-  CounselClass, ExamInfo, GroupSelectAnyls, GroupSeleVariableGen, ScoreInfoByStud,
+  CounselClass, ExamInfo, GroupSelectAnyls, ScoreInfoByStud,
   ScoreInfo, ScoreInfoBySeme, QuizFieldInfos
 } from '../../CounselStatistics-vo';
 import { DsaService } from "../../../dsa.service";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { throwMatDialogContentAlreadyAttachedError, MatDialog } from '@angular/material';
-import { forEach } from '@angular/router/src/utils/collection';
+import { MatDialog } from '@angular/material';
 import { ReportEngineService } from 'src/app/report-engine.service';
-import { zip } from 'rxjs';
-import { QuizData } from 'src/app/counsel/counsel-detail/psychological-test-detail/quiz-data-vo';
 import { Overlay } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
-import { TeacherCounselRole } from 'src/app/admin/counsel-teacher-role/counsel-teacher-role-vo';
 
 @Component({
   selector: 'app-group-analysis-report',
@@ -352,7 +346,7 @@ export class GroupAnalysisReportComponent implements OnInit {
         } catch {
           console.log("有錯誤", x);
         }
-       
+
 
       } else {
       }
