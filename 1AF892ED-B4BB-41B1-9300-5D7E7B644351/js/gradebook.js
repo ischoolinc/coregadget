@@ -82,6 +82,23 @@
             return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
         }
 
+        // 加法
+        function add(arg1,arg2){ 
+            var r1, r2, m; 
+            try {
+                r1 = arg1.toString().split(".")[1].length;
+            } catch (e) {
+                r1 = 0;
+            } 
+            try { 
+                r2 = arg2.toString().split(".")[1].length
+            } catch (e) { 
+                r2 = 0;
+            } 
+            m = Math.pow( 10, Math.max(r1, r2));
+            return (arg1 * m + arg2 * m) / m;
+        }
+
         /** 
          * 1. 取得目前學年度學期 GetCurrentSemester
          * 2. 取得授課課程 GetMyCourses
@@ -929,7 +946,9 @@
                     if (template && template.isSubScoreMode) {
                         var ps = $scope.current.Student['Exam' + template.ExamID + 'PScore'];
                         var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
-                        var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+
+                        // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                        var score = (ps == '' && cs == '') ? '' : add(+ps, +cs);
                         $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
@@ -1739,7 +1758,8 @@
                                         stuRec['Exam' + examRec.ExamID] = importProcess.ParseValues[index];
 
                                         if (examRec.Group) {
-                                            stuRec['Exam' + examRec.Group.ExamID] = stuRec['Exam' + examRec.Group.ExamID + 'CScore'] * 1 + stuRec['Exam' + examRec.Group.ExamID + 'PScore'] * 1;
+                                            // stuRec['Exam' + examRec.Group.ExamID] = stuRec['Exam' + examRec.Group.ExamID + 'CScore'] * 1 + stuRec['Exam' + examRec.Group.ExamID + 'PScore'] * 1;
+                                            stuRec['Exam' + examRec.Group.ExamID] = add(+stuRec['Exam' + examRec.Group.ExamID + 'CScore'], +stuRec['Exam' + examRec.Group.ExamID + 'PScore']);
                                         }
                                     }
                                 });
@@ -1884,7 +1904,8 @@
                                     $scope.studentList.forEach(function (stuRec) {
                                         var cs = stuRec['Exam' + examRec.Group.ExamID + 'CScore'];
                                         var ps = stuRec['Exam' + examRec.Group.ExamID + 'PScore'];
-                                        var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                                        // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
+                                        var score = (ps == '' && cs == '') ? '' : add(+ps, +cs);
                                         // 更新試卷成績：試卷成績 = 小考結算成績
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.Group.ExamID];
                                         // 更新定期評量成績：定期評量成績 = 讀卡 + 試卷
