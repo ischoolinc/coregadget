@@ -1,51 +1,33 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { CounselComponent } from "./counsel/counsel.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { CounselComponent } from './counsel/counsel.component';
 import { CaseComponent } from "./case/case.component";
-import { CounselDetailComponent } from "./counsel/counsel-detail/counsel-detail.component";
-import { CounselItemDetailComponent } from "./counsel/counsel-detail/counsel-item-detail/counsel-item-detail.component";
-import { InterviewDetailComponent } from "./counsel/counsel-detail/interview-detail/interview-detail.component";
-import { PsychologicalTestDetailComponent } from "./counsel/counsel-detail/psychological-test-detail/psychological-test-detail.component";
-import { AbsentDetailComponent } from "./counsel/counsel-detail/absent-detail/absent-detail.component";
-import { ExamScoreDetailComponent } from "./counsel/counsel-detail/exam-score-detail/exam-score-detail.component";
-import { SemesterScoreDetailComponent } from "./counsel/counsel-detail/semester-score-detail/semester-score-detail.component";
-import { CounselListComponent } from "./counsel/counsel-list/counsel-list.component";
-import { ReferralComponent } from "./referral/referral.component";
-import { CounselStatisticsComponent } from "./counsel-statistics/counsel-statistics.component";
-import { InterviewStatisticsComponent } from "./interview-statistics/interview-statistics.component";
-import { PermissionDeniedComponent } from "./permission-denied/permission-denied.component";
-import { CounselRoutingComponent } from "./counsel/counsel-routing/counsel-routing.component";
-import { DetailRoutingComponent } from "./counsel/counsel-detail/detail-routing/detail-routing.component";
-import { ReferralListComponent } from "./referral/referral-list/referral-list.component";
-import { ReferralDetailComponent } from "./referral/referral-detail/referral-detail.component";
-import { ComprehensiveDetailComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive.component";
-import { ComprehensiveDetailRoutingComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-detail-routing/comprehensive-detail-routing.component";
-import { ComprehensiveViewComponent } from "./counsel/counsel-detail/comprehensive-detail/comprehensive-view/comprehensive-view.component";
-import { ComprehensiveEditComponent } from './counsel/counsel-detail/comprehensive-detail/comprehensive-edit/comprehensive-edit.component';
-// import { CaseRoleGuard, CounselRoleGuard, CounselStatisticsRoleGuard, ReferralRoleGuard, InterviewStatisticsRoleGuard } from "./role.guard";
-import { AdminComponent } from "./admin/admin.component";
-import { AdminRoutingComponent } from "./admin/admin-routing/admin-routing.component";
-import { CounselTeacherRoleComponent } from "./admin/counsel-teacher-role/counsel-teacher-role.component";
-import { CounselClassComponent } from "./admin/counsel-class/counsel-class.component";
-import { ComprehensiveComponent } from "./comprehensive/comprehensive.component";
-import { ComprehensiveRoutingComponent } from "./comprehensive/comprehensive-routing/comprehensive-routing.component";
-import { ComprehensiveSectionComponent } from "./comprehensive/comprehensive-section/comprehensive-section.component";
-import { ComprehensiveClassViewComponent } from "./comprehensive/comprehensive-class-view/comprehensive-class-view.component";
-import { ComprehensiveStatisticsComponent } from "./comprehensive/comprehensive-statistics/comprehensive-statistics.component";
-import { PsychologicalTestComponent } from "./psychological-test/psychological-test.component";
-import { SimplePageComponent } from "./simple-page/simple-page.component";
-import { CounselDocComponent } from "./simple-page/print/counsel-doc/counsel-doc.component";
-import { CounselDocEditorComponent } from "./simple-page/editor/counsel-doc-editor/counsel-doc-editor.component";
-import { ComprehensiveEditorComponent } from "./simple-page/editor/comprehensive-editor/comprehensive-editor.component";
-import { ComprehensiveFillComponent } from "./simple-page/comprehensive-fill/comprehensive-fill.component";
-import { CadreDetailComponent } from './counsel/counsel-detail/cadre-detail/cadre-detail.component';
-import { ServiceLearningDetailComponent } from './counsel/counsel-detail/service-learning-detail/service-learning-detail.component';
+import { CounselListComponent } from './counsel/counsel-list/counsel-list.component';
+import { CounselStatisticsComponent } from './counsel-statistics/counsel-statistics.component';
+import { InterviewStatisticsComponent } from './interview-statistics/interview-statistics.component';
+import { PermissionDeniedComponent } from './shared';
+import { CounselRoutingComponent } from './counsel/counsel-routing/counsel-routing.component';
+// tslint:disable-next-line: max-line-length
+import { AdminComponent } from './admin/admin.component';
+import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
+import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counsel-teacher-role.component';
+import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
+import { ComprehensiveComponent } from './comprehensive/comprehensive.component';
+import { ComprehensiveRoutingComponent } from './comprehensive/comprehensive-routing/comprehensive-routing.component';
+import { ComprehensiveSectionComponent } from './comprehensive/comprehensive-section/comprehensive-section.component';
+import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-class-view/comprehensive-class-view.component';
+import { ComprehensiveStatisticsComponent } from './comprehensive/comprehensive-statistics/comprehensive-statistics.component';
+import { PsychologicalTestComponent } from './psychological-test/psychological-test.component';
+import { SimplePageComponent } from './simple-page/simple-page.component';
+import { CounselDocComponent } from './simple-page/print/counsel-doc/counsel-doc.component';
+import { CounselDocEditorComponent } from './simple-page/editor/counsel-doc-editor/counsel-doc-editor.component';
+import { ComprehensiveEditorComponent } from './simple-page/editor/comprehensive-editor/comprehensive-editor.component';
+import { ComprehensiveFillComponent } from './simple-page/comprehensive-fill/comprehensive-fill.component';
 import { StudentQuizDataComponent } from './psychological-test/student-quiz-data/student-quiz-data.component';
 import { PsychologicalTestRoutingComponent } from './psychological-test/psychological-test-routing/psychological-test-routing.component';
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
 import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
-import { BaseInfoDetailComponent } from './counsel/counsel-detail/base-info-detail/base-info-detail.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -59,60 +41,12 @@ const routes: Routes = [
       { path: "list/:mod/:target", component: CounselListComponent },
       {
         path: "detail/:studentID",
-        component: CounselDetailComponent,
-        children: [
-          { path: "", pathMatch: "full", component: DetailRoutingComponent },
-          { path: "base_info_detail", component: BaseInfoDetailComponent },
-          { path: "counsel", component: CounselItemDetailComponent },
-          { path: "interview", component: InterviewDetailComponent },
-          {
-            path: "psychological_test",
-            component: PsychologicalTestDetailComponent
-          },
-          { path: "absent", component: AbsentDetailComponent },
-          { path: 'cadre', component: CadreDetailComponent },
-          { path: 'service_learning', component: ServiceLearningDetailComponent },
-          { path: "exam_score", component: ExamScoreDetailComponent },
-          { path: "semester_score", component: SemesterScoreDetailComponent },
-          {
-            path: "comprehensive",
-            component: ComprehensiveDetailComponent,
-            children: [
-              { path: "", pathMatch: "full", component: ComprehensiveDetailRoutingComponent },
-              { path: "view/:schoolYear/:semester", component: ComprehensiveViewComponent },
-              { path: "edit/:sectionID", component: ComprehensiveEditComponent }
-            ]
-          }
-        ]
+        loadChildren: './counsel/counsel-detail/counsel-detail.module#CounselDetailModule'
       }
     ]
   },
   { path: "counsel_statistics", component: CounselStatisticsComponent },
-  {
-    path: "referral",
-    component: ReferralComponent,
-    children: [
-      { path: "", pathMatch: "full", component: ReferralComponent },
-      { path: "list/:target", component: ReferralListComponent },
-      {
-        path: "detail/:studentID/:interviewID",
-        component: ReferralDetailComponent,
-        children: [
-          { path: "", pathMatch: "full", component: DetailRoutingComponent },
-          { path: "base_info_detail", component: BaseInfoDetailComponent },
-          { path: "counsel", component: CounselItemDetailComponent },
-          { path: "interview", component: InterviewDetailComponent },
-          {
-            path: "psychological_test",
-            component: PsychologicalTestDetailComponent
-          },
-          { path: "absent", component: AbsentDetailComponent },
-          { path: "exam_score", component: ExamScoreDetailComponent },
-          { path: "semester_score", component: SemesterScoreDetailComponent }
-        ]
-      }
-    ]
-  },
+  { path: "referral", loadChildren: './referral/referral.module#ReferralModule' },
   { path: "case", component: CaseComponent },
   { path: "interview_statistics", component: InterviewStatisticsComponent },
   {
@@ -159,7 +93,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true,anchorScrolling: 'enabled' })],
+  imports: [RouterModule.forRoot(routes, { useHash: true, anchorScrolling: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

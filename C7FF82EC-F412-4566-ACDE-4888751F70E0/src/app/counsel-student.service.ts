@@ -1,8 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DsaService } from "./dsa.service";
-import { stringify } from "@angular/compiler/src/util";
-import { async } from "@angular/core/testing";
-import { StudentSemesterScoreInfo } from './counsel/counsel-detail/semester-score-detail/semester-score-vo';
+import { DsaService } from './dsa.service';
 
 @Injectable({
   providedIn: "root"

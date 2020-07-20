@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CounselStudentDataService, ServiceLearningRecord } from '../../../counsel-student-data.service';
-import { CounselDetailComponent } from '../../counsel-detail/counsel-detail.component';
+import { CounselDetailComponent } from '../../../shared-counsel-detail';
+
 
 @Component({
   selector: 'app-service-learning-detail',

@@ -1,20 +1,10 @@
 import { Component, OnInit, Optional } from "@angular/core";
-import {
-  ActivatedRoute,
-  ParamMap,
-  Router,
-  RoutesRecognized
-} from "@angular/router";
-import {
-  CounselStudentService,
-  CounselClass,
-  CounselStudent,
-  SemesterInfo
-} from "../../counsel-student.service";
+import { ActivatedRoute, ParamMap } from "@angular/router";
+import { CounselStudentService, CounselStudent, SemesterInfo } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
 import { GlobalService } from "../../global.service";
-import { ThrowStmt } from '@angular/compiler';
+
 @Component({
   selector: "app-counsel-list",
   templateUrl: "./counsel-list.component.html",

@@ -258,7 +258,7 @@ export class NewCaseModalComponent implements OnInit {
     let Order: number = itemOrder + 1;
     let hasTeacherID: string[] = [];
 
-    // 更新自己  
+    // 更新自己
     this.caseStudent.selectCaseTeacers.forEach(teacher => {
       if (teacher.CounselTeacher.TeacherID) {
         hasTeacherID.push(teacher.CounselTeacher.TeacherID);
