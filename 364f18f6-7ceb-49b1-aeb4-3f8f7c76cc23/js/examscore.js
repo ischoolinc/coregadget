@@ -49,6 +49,11 @@
     _semester = null;
     _connection = null;
     _now = null;
+
+    //目前排名顯示設定
+    var _curr_arithmeticaveset = null;
+    var _curr_weightedaveset = null;
+
     if (_system_position === "parent") {
       _connection = gadget.getContract("ischool.exam.parent");
     } else {
@@ -85,6 +90,26 @@
         }
       });
     };
+        /**取得設定檔 */
+        getRankViewerConfig = function(){
+          return _connection.send({
+            service: "_.GetViewerConfig",
+            body: {},
+            result: function (response, error, http) {
+              if (error !== null) {
+                return set_error_message('#mainMsg', 'GetViewerConfig', error);
+              } else {
+                if(response.Item){
+                  _curr_arithmeticaveset = response.Item.ArithmeticAveSet || "";
+                  _curr_weightedaveset = response.Item.WeightedAveSet || "";
+                  _system_exam_must_enddate = response.Item.EndDataSet || _system_exam_must_enddate.toLowerCase();
+                  _system_exam_must_enddate = _system_exam_must_enddate.toLowerCase();
+                }
+            }
+          }
+        });
+        };
+        getRankViewerConfig();
     getStudentInfo = function() {
       if (_system_position === "student") {
         _exam_score[0] = [];
