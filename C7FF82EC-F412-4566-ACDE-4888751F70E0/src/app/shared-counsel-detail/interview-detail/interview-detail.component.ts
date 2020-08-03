@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Optional } from "@angular/core";
 import { CounselStudentService, SemesterInfo } from "../../counsel-student.service";
-import { CounselInterview } from "../counsel-vo";
+import { CounselInterview, QOption } from "../counsel-vo";
 import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-modal.component";
 import { DsaService } from "../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
@@ -117,10 +117,11 @@ export class InterviewDetailComponent implements OnInit {
   // 修改
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
-    let obj =Object.assign({},counselView);
+    let obj = Object.assign({}, counselView);
     this._addInterview._CounselInterview = counselView;
     this._addInterview._CounselInterview.selectCounselType =
       counselView.CounselType;
+    this._addInterview._CounselInterview.selectContactName = counselView.ContactName;
     this._addInterview.loadDefaultData();
     $("#addInterview").modal("show");
     // 關閉畫面
@@ -129,8 +130,8 @@ export class InterviewDetailComponent implements OnInit {
         // 重整資料
         this.counselStudentService.reload();
         this.loadCounselInterview(this._StudentID);
-      }else {
-        Object.assign(this._addInterview._CounselInterview,obj)
+      } else {
+        Object.assign(this._addInterview._CounselInterview, obj)
         //this._addInterview._CounselInterview = obj;
       }
 
@@ -180,6 +181,12 @@ export class InterviewDetailComponent implements OnInit {
         rec.CounselType = counselRec.CounselType;
         rec.CounselTypeOther = counselRec.CounselTypeOther;
         rec.isPrivate = counselRec.isPrivate;
+        rec.isPublic = false;
+
+        if (rec.isPrivate === "f") {
+          rec.isPublic = true;
+        }
+
         rec.StudentID = counselRec.StudentID;
         rec.isReferral = counselRec.isReferral;
         rec.ReferralDesc = counselRec.ReferralDesc;
@@ -189,6 +196,12 @@ export class InterviewDetailComponent implements OnInit {
         rec.Content = counselRec.Content;
         rec.ContactItem = counselRec.ContactItem;
         rec.RefTeacherID = counselRec.RefTeacherID;
+        rec.ContactNameOther = counselRec.ContactNameOther;
+        rec.Category = counselRec.Category;
+
+        // 類別題目轉換
+        rec.LoadQuestionOptionStringToList();
+
         // 判斷是否是自己新增才可以修改
         if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
           rec.isEditDisable = false;
@@ -203,4 +216,5 @@ export class InterviewDetailComponent implements OnInit {
 
     return data;
   }
+
 }

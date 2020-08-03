@@ -95,15 +95,53 @@
                    (click)="_CounselInterview.setCounselType('其他')">其他</a>
               </div>
             </div>
-            <input type="text"
-                   id="CounselType"
-                   class="form-control"
-                   [disabled]="_CounselInterview.isCounselTypeOtherDisable"
-                   [(ngModel)]="_CounselInterview.CounselTypeOther" />
+            <ng-container *ngIf="_CounselInterview.isCounselTypeOtherDisable === false">
+              <input type="text"
+                     id="CounselType"
+                     class="form-control"
+                     [(ngModel)]="_CounselInterview.CounselTypeOther" />
+            </ng-container>
           </div>
         </div>
+
+        <div class="form-group">
+          <label class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!_CounselInterview.isContactNameHasValue">*</span> 對象
+          </label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <button class="btn btn-light dropdown-toggle"
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                {{ _CounselInterview.selectContactName }}
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item"
+                   (click)="_CounselInterview.setContactName('學生')">學生</a>
+                <a class="dropdown-item"
+                   (click)="_CounselInterview.setContactName('教職員')">教職員</a>
+                <a class="dropdown-item"
+                   (click)="_CounselInterview.setContactName('家長')">家長</a>
+                <a class="dropdown-item"
+                   (click)="_CounselInterview.setContactName('專業人員')">專業人員</a>
+                <a class="dropdown-item"
+                   (click)="_CounselInterview.setContactName('其他')">其他</a>
+              </div>
+            </div>
+            <ng-container *ngIf="_CounselInterview.isContactNameOtherDisable === false">
+              <input type="text"
+                     id="CounselType"
+                     class="form-control"
+                     [(ngModel)]="_CounselInterview.ContactNameOther" />
+            </ng-container>
+          </div>
+        </div>
+
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <!-- <div class="form-group col-md-6">
             <label for="interviewee"
                    class="col-form-label">
               <span class="text-samll text-danger"
@@ -116,7 +154,18 @@
                    placeholder="請輸入對象"
                    [(ngModel)]="_CounselInterview.ContactName"
                    (keyup)="_CounselInterview.checkValue()" />
+          </div> -->
+          <div class="form-group col-md-6">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     id="isPublic"
+                     [(ngModel)]="_CounselInterview.isPublic" />
+              <label class="custom-control-label"
+                     for="isPublic">是否公開</label>
+            </div>
           </div>
+
           <div class="form-group col-md-6">
             <label for="recorder"
                    class="col-form-label">
@@ -156,6 +205,31 @@
                     placeholder="請輸入輔導內容"
                     [(ngModel)]="_CounselInterview.Content"
                     (keyup)="_CounselInterview.checkValue()"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="semester"
+                 class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!_CounselInterview.isCategoryHasValue">*</span>
+            類別
+          </label>
+          <div class="d-flex flex-wrap">
+            <div class="custom-control custom-checkbox w-25"
+                 *ngFor="let item of _CounselInterview._category">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="item.answer_code"
+                     [checked]="item.answer_checked"
+                     (click)="item.setAnswerCheck()"
+                     (change)="checkChange(item,_CounselInterview)" />
+              <label class="custom-control-label"
+                     [for]="item.answer_code">
+                <app-sentence [text]="item.answer_text"
+                              [(ngModel)]="item.answer_martix"></app-sentence>
+              </label>
+            </div>
+          </div>
         </div>
 
         <ng-container *ngIf="referralVisible === true">

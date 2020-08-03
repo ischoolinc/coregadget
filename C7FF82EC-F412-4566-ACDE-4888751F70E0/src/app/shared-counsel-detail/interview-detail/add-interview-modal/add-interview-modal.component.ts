@@ -1,8 +1,9 @@
 import { Component, OnInit, Optional } from "@angular/core";
 import { CounselStudentService } from '../../../counsel-student.service';
 import { DsaService } from '../../../dsa.service';
-import { CounselInterview } from '../../counsel-vo';
+import { CounselInterview, QOption } from '../../counsel-vo';
 import { CounselDetailComponent } from "../../counsel-detail.component";
+import { SentenceService } from '../../../render/dissector.service';
 
 @Component({
   selector: "app-add-interview-modal",
@@ -13,6 +14,7 @@ export class AddInterviewModalComponent implements OnInit {
   constructor(
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
+    private dissector: SentenceService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
   ) { }
@@ -53,15 +55,18 @@ export class AddInterviewModalComponent implements OnInit {
         // 帶入日期與輸入者
         let dt = new Date();
         this._CounselInterview.OccurDate = this._CounselInterview.parseDate(dt);
-        // 班導師
-        if (
-          this.counselDetailComponent.currentStudent.Role.indexOf("班導師") >=
-          0 ||
-          this.counselDetailComponent.currentStudent.Role.indexOf("輔導老師") >=
-          0
-        ) {
-          this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
-        }
+        // // 班導師
+        // if (
+        //   this.counselDetailComponent.currentStudent.Role.indexOf("班導師") >=
+        //   0 ||
+        //   this.counselDetailComponent.currentStudent.Role.indexOf("輔導老師") >=
+        //   0
+        // ) {
+        //   this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
+        // }
+
+        this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
+        this._CounselInterview.useQuestionOptionTemplate();
       }
       // console.log(this._CounselInterview);
       // 檢查是否有值
@@ -82,6 +87,8 @@ export class AddInterviewModalComponent implements OnInit {
       if (this._CounselInterview.isReferralValue)
         this._CounselInterview.isReferral = "t";
       else this._CounselInterview.isReferral = "f";
+      this._CounselInterview.Category = JSON.stringify(this._CounselInterview._category);
+
       await this.SetCounselInterview(this._CounselInterview);
       $("#addInterview").modal("hide");
       this._CounselInterview.isSaveDisable = false;
@@ -94,7 +101,12 @@ export class AddInterviewModalComponent implements OnInit {
 
   // 新增/更新輔導資料，Service 使用UID是否有值判斷新增或更新
   async SetCounselInterview(data: CounselInterview) {
-    if (!data.isPrivate) data.isPrivate = "true";
+    if (data.isPublic) {
+      data.isPrivate = "false";
+    } else {
+      data.isPrivate = "true";
+    }
+
     if (!data.isReferral) data.isReferral = "false";
     if (data.isReferral == "t") {
       data.ReferralStatus = "未處理";
@@ -116,7 +128,9 @@ export class AddInterviewModalComponent implements OnInit {
       ReferralStatus: data.ReferralStatus,
       ReferralReplyDate: data.ReferralReplyDate,
       Content: data.Content,
-      ContactItem: data.ContactItem
+      ContactItem: data.ContactItem,
+      ContactNameOther: data.ContactNameOther,
+      Category: data.Category
     };
     // console.log(req);
 
@@ -128,5 +142,16 @@ export class AddInterviewModalComponent implements OnInit {
       alert('無法新增：' + err.dsaError.message);
     }
     // console.log(resp);
+  }
+
+  checkChange(qq, item: CounselInterview) {
+    // console.log(qq);
+
+    if (qq.value == "") {
+      item.isCategoryHasValue = false;
+    } else {
+      item.isCategoryHasValue = true;
+    }
+    item.checkValue();
   }
 }

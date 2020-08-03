@@ -16,6 +16,7 @@ import { DelInterviewModalComponent } from './interview-detail/del-interview-mod
 import { PsychologicalTestDetailComponent } from './psychological-test-detail/psychological-test-detail.component';
 import { SemesterScoreDetailComponent } from './semester-score-detail/semester-score-detail.component';
 import { SharedModule } from '../shared/shared.module';
+import { RenderModule } from '../render';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     RouterModule,
     SharedModule,
+    RenderModule,
   ],
   exports: [
     CounselDetailComponent,

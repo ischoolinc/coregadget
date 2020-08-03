@@ -48,13 +48,21 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   checkValue() {
     if (this.SchoolYear) {
-      this.isSchoolYearHasValue = true;
+      if (this.SchoolYear > 0) {
+        this.isSchoolYearHasValue = true;
+      } else {
+        this.isSchoolYearHasValue = false;
+      }
     } else {
       this.isSchoolYearHasValue = false;
     }
 
     if (this.Semester) {
-      this.isSemesterHasValue = true;
+      if (this.Semester > 0) {
+        this.isSemesterHasValue = true;
+      } else {
+        this.isSemesterHasValue = false;
+      }
     } else {
       this.isSemesterHasValue = false;
     }
