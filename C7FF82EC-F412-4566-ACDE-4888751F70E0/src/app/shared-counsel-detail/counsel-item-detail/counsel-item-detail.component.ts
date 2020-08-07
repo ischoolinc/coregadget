@@ -77,7 +77,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.AuthorName = "";
     // 預設不公開
     this._addInterview._CaseInterview.isPublic = false;
-
+    this._addInterview._CaseInterview.isSaveDisable = true;
     // 帶入日期與輸入者
     let dt = new Date();
     this._addInterview._CaseInterview.OccurDate = this.parseDate(dt);
@@ -144,7 +144,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview = caseInterview;
     this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
     this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
-
+    this._addInterview._CaseInterview.isSaveDisable = true;
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
     // 關閉畫面

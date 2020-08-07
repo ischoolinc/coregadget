@@ -222,6 +222,8 @@ export class InterviewDetailComponent implements OnInit {
           if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
             rec.isCanView = true;
           }
+        } else {
+          rec.isCanView = true;
         }
 
         // 類別題目轉換

@@ -103,11 +103,11 @@
             </div>
             <ng-container *ngIf="_CaseInterview.isCounselTypeOtherDisable === false">
               <input type="text"
-              id="CounselType"
-              class="form-control"
-              [(ngModel)]="_CaseInterview.CounselTypeOther"
-              [disabled]="_CaseInterview.isCounselTypeOtherDisable" />
-            </ng-container>          
+                     id="CounselType"
+                     class="form-control"
+                     [(ngModel)]="_CaseInterview.CounselTypeOther"
+                     [disabled]="_CaseInterview.isCounselTypeOtherDisable" />
+            </ng-container>
           </div>
         </div>
 
@@ -168,6 +168,8 @@
             <input type="checkbox"
                    class="custom-control-input"
                    id="isPublic"
+                   (click)="_CaseInterview.checkValue()"
+                   (keyup)="_CaseInterview.checkValue()"
                    [(ngModel)]="_CaseInterview.isPublic" />
             <label class="custom-control-label"
                    for="isPublic">公開</label>
@@ -198,7 +200,7 @@
           </label>
           <div class="d-flex flex-wrap">
             <div class="custom-control custom-checkbox w-25"
-                 *ngFor="let item of _CaseInterview._category"> 
+                 *ngFor="let item of _CaseInterview._category">
               <input type="checkbox"
                      class="custom-control-input"
                      [id]="item.answer_code"

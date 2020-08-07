@@ -34,7 +34,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
     });
     // 
-    this._CaseInterview.checkValue();
+   // this._CaseInterview.checkValue();
 
   }
 
