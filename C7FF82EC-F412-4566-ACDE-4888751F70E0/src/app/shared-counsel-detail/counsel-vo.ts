@@ -41,7 +41,8 @@ export class CounselInterview {
   Category: string = ""; // 類別
   isCategoryHasValue: boolean = false;
   _category: QOption[]; // 	類別
-
+  // 是否可以看到
+  isCanView: boolean = false;
 
   public loadCategoryTemplate() {
     let num: number = 1;
@@ -129,7 +130,7 @@ export class CounselInterview {
         answer_checked: false
       },
       {
-        answer_text: "高風險家庭",
+        answer_text: "脆弱家庭",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,
@@ -219,8 +220,10 @@ export class CounselInterview {
       this.isSchoolYearHasValue = false;
     }
 
+
+    // 檢查只允許1或2的半形數字
     if (this.Semester) {
-      if (this.Semester > 0) {
+      if (this.Semester > 0 && this.Semester < 3) {
         this.isSemesterHasValue = true;
       } else {
         this.isSemesterHasValue = false;
@@ -294,7 +297,7 @@ export class CounselInterview {
     } else {
       this.isCounselTypeOtherDisable = true;
     }
-
+   
   }
 
   // 設定訪談方式
@@ -312,6 +315,7 @@ export class CounselInterview {
     } else {
       this.isCounselTypeHasValue = false;
     }
+    this.checkValue();
   }
 
   public parseQuestioOptionToArray(data: string) {
@@ -356,6 +360,7 @@ export class CounselInterview {
     } else {
       this.isContactNameHasValue = false;
     }
+    this.checkValue();
   }
 
   // 使用預設題目項目樣版

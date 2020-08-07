@@ -7,6 +7,7 @@ import { ViewInterviewModalComponent } from "./view-interview-modal/view-intervi
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { DelInterviewModalComponent } from "./del-interview-modal/del-interview-modal.component";
 import { RoleService } from "../../role.service";
+import { GlobalService } from "../../global.service";
 
 @Component({
   selector: "app-interview-detail",
@@ -32,6 +33,7 @@ export class InterviewDetailComponent implements OnInit {
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     public roleService: RoleService,
+    public globalService: GlobalService,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
   ) { }
@@ -101,6 +103,17 @@ export class InterviewDetailComponent implements OnInit {
   addInterviewModal() {
     this._addInterview._editMode = "add";
     this._addInterview.loadDefaultData();
+    this._addInterview._CounselInterview.useQuestionOptionTemplate();
+    this._addInterview._CounselInterview.selectCounselType = "請選擇方式";
+    this._addInterview._CounselInterview.selectContactName = "請選擇對象";
+
+    // 其他清空
+    this._addInterview._CounselInterview.ContactNameOther = '';
+    this._addInterview._CounselInterview.CounselTypeOther = '';
+
+    // 新增預設不公開
+    this._addInterview._CounselInterview.isPublic = false;
+    this._addInterview._CounselInterview.isSaveDisable = true;
     $("#addInterview").modal("show");
 
     // 關閉畫面
@@ -123,6 +136,7 @@ export class InterviewDetailComponent implements OnInit {
       counselView.CounselType;
     this._addInterview._CounselInterview.selectContactName = counselView.ContactName;
     this._addInterview.loadDefaultData();
+    this._addInterview._CounselInterview.isSaveDisable = true;
     $("#addInterview").modal("show");
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
@@ -198,6 +212,17 @@ export class InterviewDetailComponent implements OnInit {
         rec.RefTeacherID = counselRec.RefTeacherID;
         rec.ContactNameOther = counselRec.ContactNameOther;
         rec.Category = counselRec.Category;
+        rec.isCanView = false;
+
+        // 判斷當非公開，有輔導老師權限又是自己，可以到該筆
+        if (rec.isPublic === false) {
+          if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師') {
+            rec.isCanView = true;
+          }
+          if (this.counselStudentService.teacherInfo.ID === rec.RefTeacherID) {
+            rec.isCanView = true;
+          }
+        }
 
         // 類別題目轉換
         rec.LoadQuestionOptionStringToList();
@@ -208,7 +233,11 @@ export class InterviewDetailComponent implements OnInit {
         } else {
           rec.isEditDisable = true;
         }
-        data.push(rec);
+
+        if (rec.isCanView) {
+          data.push(rec);
+        }
+
       });
     } catch (err) {
       alert('取得透過學生系統編號取得學生輔導資料:' + err.dsaError.message);

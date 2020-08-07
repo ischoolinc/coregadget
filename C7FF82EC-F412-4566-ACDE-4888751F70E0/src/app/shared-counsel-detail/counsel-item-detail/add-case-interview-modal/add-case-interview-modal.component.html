@@ -12,7 +12,7 @@
       <div class="modal-header">
         <h5 class="modal-title"
             id="addInterviewLabel">
-          {{ editModeString }}晤談紀錄 - {{ _studentName }}
+          {{ editModeString }}晤談紀錄 - {{ _CaseInterview.StudentName }}
         </h5>
         <button type="button"
                 class="close"
@@ -27,48 +27,48 @@
             <label for="schoolYear"
                    class="col-form-label">
               <span class="text-samll text-danger"
-                    *ngIf="!isSchoolYearHasValue">*</span>
+                    *ngIf="!_CaseInterview.isSchoolYearHasValue">*</span>
               學年度
             </label>
             <input type="text"
                    class="form-control"
                    id="schoolYear"
                    placeholder="請輸入學年度"
-                   [(ngModel)]="SchoolYear"
-                   (keyup)="checkValue()" />
+                   [(ngModel)]="_CaseInterview.SchoolYear"
+                   (keyup)="_CaseInterview.checkValue()" />
           </div>
           <div class="form-group col-md-4">
             <label for="semester"
                    class="col-form-label">
               <span class="text-samll text-danger"
-                    *ngIf="!isSemesterHasValue">*</span>
+                    *ngIf="!_CaseInterview.isSemesterHasValue">*</span>
               學期
             </label>
             <input type="text"
                    class="form-control"
                    id="semester"
                    placeholder="請輸入學期"
-                   [(ngModel)]="Semester"
-                   (keyup)="checkValue()" />
+                   [(ngModel)]="_CaseInterview.Semester"
+                   (keyup)="_CaseInterview.checkValue()" />
           </div>
           <div class="form-group col-md-4">
             <label for="interviewDate"
                    class="col-form-label">
               <span class="text-samll text-danger"
-                    *ngIf="!isOccurDateHasValue">*</span>
+                    *ngIf="!_CaseInterview.isOccurDateHasValue">*</span>
               晤談日期
             </label>
             <input type="date"
                    class="form-control"
                    id="interviewDate"
                    placeholder="請輸入晤談日期"
-                   [(ngModel)]="OccurDate"
-                   (keyup)="checkValue()" />
+                   [(ngModel)]="_CaseInterview.OccurDate"
+                   (keyup)="_CaseInterview.checkValue()" />
           </div>
         </div>
         <div class="form-group col-md-4">
           <label class="col-form-label">
-            <span class="text-samll text-danger"></span> 個案編號 {{ CaseNo }}
+            <span class="text-samll text-danger"></span> 個案編號 {{ _CaseInterview.CaseNo }}
             <!-- <span class="input-group mb-3"></span> -->
           </label>
         </div>
@@ -76,7 +76,7 @@
         <div class="form-group">
           <label class="col-form-label">
             <span class="text-samll text-danger"
-                  *ngIf="!isCounselTypeHasValue">*</span>
+                  *ngIf="!_CaseInterview.isCounselTypeHasValue">*</span>
             方式
           </label>
           <div class="input-group mb-3">
@@ -86,29 +86,32 @@
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false">
-                {{ selectCounselType }}
+                {{ _CaseInterview.selectCounselType }}
               </button>
               <div class="dropdown-menu">
                 <a class="dropdown-item"
-                   (click)="setCounselType('面談')">面談</a>
+                   (click)="_CaseInterview.setCounselType('面談')">面談</a>
                 <a class="dropdown-item"
-                   (click)="setCounselType('電話')">電話</a>
+                   (click)="_CaseInterview.setCounselType('電話')">電話</a>
                 <a class="dropdown-item"
-                   (click)="setCounselType('聯絡簿')">聯絡簿</a>
+                   (click)="_CaseInterview.setCounselType('聯絡簿')">聯絡簿</a>
                 <a class="dropdown-item"
-                   (click)="setCounselType('個別約談家長')">個別約談家長</a>
+                   (click)="_CaseInterview.setCounselType('個別約談家長')">個別約談家長</a>
                 <a class="dropdown-item"
-                   (click)="setCounselType('其他')">其他</a>
+                   (click)="_CaseInterview.setCounselType('其他')">其他</a>
               </div>
             </div>
-            <input type="text"
-                   id="CounselType"
-                   class="form-control"
-                   [(ngModel)]="CounselTypeOther"
-                   [disabled]="isCounselTypeOtherDisable" />
+            <ng-container *ngIf="_CaseInterview.isCounselTypeOtherDisable === false">
+              <input type="text"
+              id="CounselType"
+              class="form-control"
+              [(ngModel)]="_CaseInterview.CounselTypeOther"
+              [disabled]="_CaseInterview.isCounselTypeOtherDisable" />
+            </ng-container>          
           </div>
         </div>
-        <div class="form-row">
+
+        <!-- <div class="form-row">
           <div class="form-group col-md-6">
             <label for="interviewee"
                    class="col-form-label">
@@ -123,12 +126,58 @@
                    [(ngModel)]="ContactName"
                    (keyup)="checkValue()" />
           </div>
+        </div> -->
+        <div class="form-group">
+          <label class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!_CaseInterview.isContactNameHasValue">*</span> 對象
+          </label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <button class="btn btn-light dropdown-toggle"
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                {{ _CaseInterview.selectContactName }}
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item"
+                   (click)="_CaseInterview.setContactName('學生')">學生</a>
+                <a class="dropdown-item"
+                   (click)="_CaseInterview.setContactName('教職員')">教職員</a>
+                <a class="dropdown-item"
+                   (click)="_CaseInterview.setContactName('家長')">家長</a>
+                <a class="dropdown-item"
+                   (click)="_CaseInterview.setContactName('專業人員')">專業人員</a>
+                <a class="dropdown-item"
+                   (click)="_CaseInterview.setContactName('其他')">其他</a>
+              </div>
+            </div>
+            <ng-container *ngIf="_CaseInterview.isContactNameOtherDisable === false">
+              <input type="text"
+                     id="CounselType"
+                     class="form-control"
+                     [(ngModel)]="_CaseInterview.ContactNameOther" />
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="isPublic"
+                   [(ngModel)]="_CaseInterview.isPublic" />
+            <label class="custom-control-label"
+                   for="isPublic">公開</label>
+          </div>
         </div>
         <div class="form-group">
           <label for="description"
                  class="col-form-label">
             <span class="text-samll text-danger"
-                  *ngIf="!isContentHasValue">*</span>
+                  *ngIf="!_CaseInterview.isContentHasValue">*</span>
             內容說明
             <span class="text-muted"></span>
           </label>
@@ -136,10 +185,36 @@
                     id="description"
                     rows="3"
                     placeholder="請輸入內容說明"
-                    [(ngModel)]="Content"
-                    (keyup)="checkValue()"></textarea>
+                    [(ngModel)]="_CaseInterview.Content"
+                    (keyup)="_CaseInterview.checkValue()"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="semester"
+                 class="col-form-label">
+            <span class="text-samll text-danger"
+                  *ngIf="!_CaseInterview.isCategoryHasValue">*</span>
+            類別
+          </label>
+          <div class="d-flex flex-wrap">
+            <div class="custom-control custom-checkbox w-25"
+                 *ngFor="let item of _CaseInterview._category"> 
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="item.answer_code"
+                     [checked]="item.answer_checked"
+                     (click)="item.setAnswerCheck()"
+                     (change)="checkChange(item,_CaseInterview)" />
+              <label class="custom-control-label"
+                     [for]="item.answer_code">
+                <app-sentence [text]="item.answer_text"
+                              [(ngModel)]="item.answer_martix"></app-sentence>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="modal-footer">
         <button type="button"
                 class="btn btn-dark"
@@ -148,7 +223,7 @@
         </button>
         <button type="button"
                 class="btn btn-info"
-                [disabled]="isSaveDisable"
+                [disabled]="_CaseInterview.isSaveDisable"
                 (click)="save()">
           儲存
         </button>

@@ -107,6 +107,16 @@ export class AddInterviewModalComponent implements OnInit {
       data.isPrivate = "true";
     }
 
+    // 當方式,對象 非其他，其他內容應該被清空
+    if (data.CounselType !== "其他") {
+      data.CounselTypeOther = '';
+    }
+
+    if (data.ContactName !== "其他") {
+      data.ContactNameOther = '';
+    }
+
+
     if (!data.isReferral) data.isReferral = "false";
     if (data.isReferral == "t") {
       data.ReferralStatus = "未處理";

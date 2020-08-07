@@ -44,6 +44,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._StudentID = "";
     this.isDeleteButtonDisable = true;
     this._StudentID = this.counselDetailComponent.currentStudent.StudentID;
+
     await this.loadData();
   }
 
@@ -55,29 +56,34 @@ export class CounselItemDetailComponent implements OnInit {
   // 新增
   addInterviewModal(item: CaseStudent) {
     this._addInterview._editMode = "add";
-    this._addInterview.CaseID = item.UID;
-    this._addInterview.CaseNo = item.CaseNo;
-    this._addInterview.StudentID = item.StudentID;
-    this._addInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview.editModeString = "新增";
-    this._addInterview._studentName = this.counselDetailComponent.currentStudent.StudentName;
-    this._addInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
-    this._addInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
-    this._addInterview.Semester = this.counselStudentService.currentSemester;
-    this._addInterview.UID = "";
-    this._addInterview.CounselType = "";
-    this._addInterview.CounselTypeOther = "";
-    this._addInterview.ContactName = "";
-    this._addInterview.Content = "";
-    this._addInterview.selectCounselType = "請選擇方式";
-    this._addInterview.AuthorName = "";
 
+    this._addInterview._CaseInterview.CaseID = item.UID;
+    this._addInterview._CaseInterview.CaseNo = item.CaseNo;
+    this._addInterview._CaseInterview.StudentID = item.StudentID;
+    this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
+    this._addInterview._CaseInterview.StudentName = this.counselDetailComponent.currentStudent.StudentName;
+    this._addInterview._CaseInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
+    this._addInterview._CaseInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
+    this._addInterview._CaseInterview.Semester = this.counselStudentService.currentSemester;
+    this._addInterview._CaseInterview.UID = "";
+    this._addInterview._CaseInterview.CounselType = "";
+    this._addInterview._CaseInterview.CounselTypeOther = "";
+    this._addInterview._CaseInterview.ContactName = "";
+    this._addInterview._CaseInterview.ContactNameOther = "";
+    this._addInterview._CaseInterview.Content = "";
+    this._addInterview._CaseInterview.selectCounselType = "請選擇方式";
+    this._addInterview._CaseInterview.selectContactName = "請選擇對象";
+    this._addInterview._CaseInterview.AuthorName = "";
+    // 預設不公開
+    this._addInterview._CaseInterview.isPublic = false;
 
     // 帶入日期與輸入者
     let dt = new Date();
-    this._addInterview.OccurDate = this.parseDate(dt);
-
+    this._addInterview._CaseInterview.OccurDate = this.parseDate(dt);
+    this._addInterview._CaseInterview.useQuestionOptionTemplate();
     this._addInterview.loadDefaultData();
+
     $("#addCaseInterview").modal("show");
 
     // 關閉畫面
@@ -135,21 +141,9 @@ export class CounselItemDetailComponent implements OnInit {
   editInterviewModal(caseInterview: CaseInterview) {
     this._addInterview._editMode = "edit";
     this._addInterview.editModeString = "修改";
-    this._addInterview.AuthorRole = caseInterview.AuthorRole;
-    this._addInterview._studentName = caseInterview.StudentName;
-    this._addInterview.StudentID = caseInterview.StudentID;
-    this._addInterview.SchoolYear = caseInterview.SchoolYear;
-    this._addInterview.Semester = caseInterview.Semester;
-    this._addInterview.UID = caseInterview.UID;
-    this._addInterview.OccurDate = caseInterview.OccurDate;
-    this._addInterview.CaseNo = caseInterview.CaseNo;
-    this._addInterview.CounselType = caseInterview.CounselType;
-    this._addInterview.CounselTypeOther = caseInterview.CounselTypeOther;
-    this._addInterview.ContactName = caseInterview.ContactName;
-    this._addInterview.Content = caseInterview.Content;
-    this._addInterview.setCounselType(caseInterview.CounselType);
-    this._addInterview.AuthorName = caseInterview.AuthorName;
-    this._addInterview.CaseID = caseInterview.CaseID;
+    this._addInterview._CaseInterview = caseInterview;
+    this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
+    this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
 
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");
@@ -280,6 +274,7 @@ export class CounselItemDetailComponent implements OnInit {
       let x = new Date(dN);
       rec.OccurDate = rec.parseDate(x);
       rec.ContactName = counselRec.ContactName;
+      rec.ContactNameOther = counselRec.ContactNameOther;
       rec.AuthorName = counselRec.AuthorName;
       rec.CounselType = counselRec.CounselType;
       rec.CounselTypeOther = counselRec.CounselTypeOther;
@@ -291,11 +286,36 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CaseNo = counselRec.CaseNo;
       rec.ClassID = counselRec.ClassID;
       rec.CaseIsClosed = counselRec.CaseIsClosed;
+
       this.caseList.forEach(item => {
         if (item.UID === rec.CaseID) {
           rec.isEditDisable = item.isEditDisable;
         }
       });
+
+      rec.RefTeacherID = counselRec.AuthorTeacherID;
+      // 公開
+      rec.isPublic = false;
+      // 明確定義非 private
+      if (rec.isPrivate === 'f') {
+        rec.isPublic = true;
+      }
+
+      // 預設該筆記錄可以看到
+      rec.isCanView = true;
+      //  console.log("tid"+ this.counselStudentService.teacherInfo.ID);
+      // 當非公開, teacher id 不是自己，就無法看見
+      if (rec.isPublic === false) {
+        if (rec.RefTeacherID !== this.counselStudentService.teacherInfo.ID)
+          rec.isCanView = false;
+      }
+
+      // 填入類別
+      rec.Category = counselRec.Category;
+      // 類別題目轉換
+      rec.LoadQuestionOptionStringToList();
+      // rec.useQuestionOptionTemplate();
+
 
 
       // 如果只有認輔老師權限，認輔紀錄只能看到自己的。
@@ -304,7 +324,9 @@ export class CounselItemDetailComponent implements OnInit {
           data.push(rec);
         }
       } else {
-        data.push(rec);
+        if (rec.isCanView) {
+          data.push(rec);
+        }
       }
     });
     this.caseInterview = data;

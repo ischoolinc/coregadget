@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { DsaService } from '../../../dsa.service';
-
+import { CaseInterview, QOption } from '../case-interview-vo';
 
 @Component({
   selector: "app-add-case-interview-modal",
@@ -15,110 +15,13 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   _editMode: string = "add";
   editModeString: string = "新增";
-  _studentName: string;
+  // _studentName: string;
 
-  SchoolYear: number;
-  Semester: number;
-  OccurDate: string = "";
-  CaseNo: string = "";
-  CounselType: string = "";
-  CounselTypeOther: string = "";
-  ContactName: string = "";
-  Content: string = "";
-  StudentID: string = "";
-  selectCounselType: string = "";
-  UID: string = "";
-  AuthorName: string = "";
-  CaseID: string = "";
-  AuthorRole: string = "";
-
-  isSchoolYearHasValue: boolean = false;
-  isSemesterHasValue: boolean = false;
-  isOccurDateHasValue: boolean = false;
-  isCounselTypeHasValue: boolean = false;
-  isCounselTypeOtherDisable: boolean = true;
-  isContactNameHasValue: boolean = false;
-  isContentHasValue: boolean = false;
-  isSaveDisable: boolean = false;
+  _CaseInterview: CaseInterview;
 
   ngOnInit() {
-
     this.isCancel = true;
-  }
-
-  checkValue() {
-    if (this.SchoolYear) {
-      if (this.SchoolYear > 0) {
-        this.isSchoolYearHasValue = true;
-      } else {
-        this.isSchoolYearHasValue = false;
-      }
-    } else {
-      this.isSchoolYearHasValue = false;
-    }
-
-    if (this.Semester) {
-      if (this.Semester > 0) {
-        this.isSemesterHasValue = true;
-      } else {
-        this.isSemesterHasValue = false;
-      }
-    } else {
-      this.isSemesterHasValue = false;
-    }
-
-    if (this.OccurDate) {
-      this.isOccurDateHasValue = true;
-    } else {
-      this.isOccurDateHasValue = false;
-    }
-
-    if (this.CounselType) {
-      this.isCounselTypeHasValue = true;
-    } else {
-      this.isCounselTypeHasValue = false;
-    }
-
-    if (this.ContactName) {
-      this.isContactNameHasValue = true;
-    } else {
-      this.isContactNameHasValue = false;
-    }
-
-    if (this.Content) {
-      this.isContentHasValue = true;
-    } else {
-      this.isContentHasValue = false;
-    }
-
-    if (
-      this.isSchoolYearHasValue &&
-      this.isSemesterHasValue &&
-      this.isOccurDateHasValue &&
-      this.isCounselTypeHasValue &&
-      this.isContactNameHasValue &&
-      this.isContentHasValue
-    ) {
-      this.isSaveDisable = false;
-    } else {
-      this.isSaveDisable = true;
-    }
-  }
-
-  setCounselType(value: string) {
-    this.CounselType = value;
-    this.selectCounselType = value;
-    if (value === "其他") {
-      this.isCounselTypeOtherDisable = false;
-    } else {
-      this.isCounselTypeOtherDisable = true;
-      this.CounselTypeOther = '';
-    }
-    if (this.CounselType) {
-      this.isCounselTypeHasValue = true;
-    } else {
-      this.isCounselTypeHasValue = false;
-    }
+    this._CaseInterview = new CaseInterview();
   }
 
   // 載入預設資料
@@ -127,10 +30,11 @@ export class AddCaseInterviewModalComponent implements OnInit {
     // 取得登入教師名稱
     let teacher = await this.dsaService.send("GetTeacher", {});
     [].concat(teacher.Teacher || []).forEach(tea => {
-      this.AuthorName = tea.Name;
+      this._CaseInterview.AuthorName = tea.Name;
 
     });
-    this.checkValue();
+    // 
+    this._CaseInterview.checkValue();
 
   }
 
@@ -143,37 +47,67 @@ export class AddCaseInterviewModalComponent implements OnInit {
   async save() {
     this.isCancel = false;
     try {
-      this.isSaveDisable = true;
-      await this.SetCaseInterview();
+      this._CaseInterview.isSaveDisable = true;
+      this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
+      await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
-      this.isSaveDisable = false;
+      this._CaseInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
-      this.isSaveDisable = false;
+      this._CaseInterview.isSaveDisable = false;
     }
   }
 
-  // 新增/更新認輔資料，Service 使用UID是否有值判斷新增或更新
-  async SetCaseInterview() {
+  checkChange(qq, item: CaseInterview) {
+    // console.log(qq);
 
-    if (!this.CounselTypeOther) {
-      this.CounselTypeOther = "";
+    if (qq.value == "") {
+      item.isCategoryHasValue = false;
+    } else {
+      item.isCategoryHasValue = true;
     }
+    item.checkValue();
+  }
+
+  // 新增/更新認輔資料，Service 使用UID是否有值判斷新增或更新
+  async SetCaseInterview(data: CaseInterview) {
+
+    if (!data.CounselTypeOther) {
+      data.CounselTypeOther = "";
+    }
+
+    if (data.isPublic) {
+      data.isPrivate = "false";
+    } else {
+      data.isPrivate = "true";
+    }
+
+    // 方式,對象 不是選其他，其他內容需要被清空
+    if (data.CounselType !== "其他") {
+      data.CounselTypeOther = '';
+    }
+
+    if (data.ContactName !== "其他") {
+      data.ContactNameOther = '';
+    }
+
     let req = {
-      UID: this.UID,
-      SchoolYear: this.SchoolYear,
-      Semester: this.Semester,
-      OccurDate: this.OccurDate,
-      ContactName: this.ContactName,
-      AuthorName: this.AuthorName,
-      CounselType: this.CounselType,
-      CounselTypeOther: this.CounselTypeOther,
-      isPrivate: "true",
-      StudentID: this.StudentID,
+      UID: data.UID,
+      SchoolYear: data.SchoolYear,
+      Semester: data.Semester,
+      OccurDate: data.OccurDate,
+      ContactName: data.ContactName,
+      AuthorName: data.AuthorName,
+      CounselType: data.CounselType,
+      CounselTypeOther: data.CounselTypeOther,
+      isPrivate: data.isPrivate,
+      StudentID: data.StudentID,
       Attachment: "",
-      Content: this.Content,
-      CaseID: this.CaseID,
-      AuthorRole: this.AuthorRole
+      Content: data.Content,
+      CaseID: data.CaseID,
+      AuthorRole: data.AuthorRole,
+      Category: data.Category,
+      ContactNameOther: data.ContactNameOther
     };
     // console.log(req);
 
