@@ -1,9 +1,10 @@
-import { Component, OnInit,Optional } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 import { DsaService } from "../../../dsa.service";
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import { AppComponent } from "../../../app.component";
-import { CaseMonthlyStatistics, CaseMonthlyItemCount } from '../../../case/case-student';
+import { CaseMonthlyStatistics, CaseMonthlyStatistics2 } from '../gov-statistics-monthly/gov-statistics-vo';
+import { MapOperator } from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-gov-statistics-monthly',
@@ -17,10 +18,15 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   selectMonth: number;
   selectReportType: string = '輔導工作月統計';
   reportTypeList: string[] = [];
-  constructor( @Optional()
+  constructor(@Optional()
   private appComponent: AppComponent, private dsaService: DsaService) { }
 
   ngOnInit() {
+
+    // 年,月 初始化
+    this.selectYear = new Date().getFullYear();
+    this.selectMonth = new Date().getMonth() + 1;
+
     this.reportNameList = [
       "輔導工作月統計報表-教育部版",
       "輔導工作月統計報表-新北市版",
@@ -30,22 +36,37 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   }
 
   exportRepot(item) {
-    if (item === '輔導工作月統計報表-教育部版') {
-      this.GetCaseMonthlyStatistics1();
+
+    // 檢查年,月
+    var selYear = Number(this.selectYear);
+    var selMonth = Number(this.selectMonth);
+    var chkPass = false;
+
+    if (selYear && selMonth) {
+      if (selYear > 0 && (selMonth > 0 && selMonth < 13)) {
+        chkPass = true;
+      }
     }
 
-    if (item === '輔導工作月統計報表-新北市版') {
-      this.GetCaseMonthlyStatistics2();
-    }
+    if (chkPass) {
+      if (item === '輔導工作月統計報表-教育部版') {
+        this.GetCaseMonthlyStatistics1();
+      }
 
-    if (item === '輔導工作月統計報表-新竹國中版') {
-      this.GetCaseMonthlyStatistics3();
-    }
+      if (item === '輔導工作月統計報表-新北市版') {
+        this.GetCaseMonthlyStatistics2();
+      }
 
-    if (item === '輔導工作月統計報表-新竹國小版') {
-      this.GetCaseMonthlyStatistics4();
-    }
+      if (item === '輔導工作月統計報表-新竹國中版') {
+        this.GetCaseMonthlyStatistics3();
+      }
 
+      if (item === '輔導工作月統計報表-新竹國小版') {
+        this.GetCaseMonthlyStatistics4();
+      }
+    } else {
+      alert('西元年或月，輸入格式有問題。');
+    }
   }
 
   // 輔導工作月統計報表-教育部版
@@ -57,63 +78,145 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-教育部版";
     let fileName: string = wsName + ".xlsx";
     let data: CaseMonthlyStatistics[] = [];
+    let data2: CaseMonthlyStatistics2[] = [];
 
-    let resp = await this.dsaService.send("GetCaseMonthlyStatistics1", {
+    let resp = await this.dsaService.send("GetCaseMonthlyStatistics1_1", {
       Request: {
         Year: this.selectYear,
         Month: this.selectMonth
       }
     });
 
+    let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics1_2", {
+      Request: {
+        Year: this.selectYear,
+        Month: this.selectMonth
+      }
+    });
+
+    // 當月個案
     [].concat(resp.Statistics || []).forEach(rspRec => {
       // 輔導當月個案
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
-      rec.CaseNo = rspRec.CaseNo;
+      rec.TeacherID = rspRec.TeacherID;
+      rec.TeacherNickName = rspRec.TeacherNickName;
       rec.OccurDate = rspRec.OccurDate;
-      rec.ProblemCategory = rspRec.ProblemCategory;
+      rec.Category = rspRec.Category;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
-      let ProblemCategory = JSON.parse(rspRec.ProblemCategory);
-      ProblemCategory.forEach(proRec => {
-        if (proRec.answer_checked) {
-          rec.ProblemCategoryValue.push(this.parseProblemCategoryNoT1(proRec.answer_value));
-        }
-      });
+      rec.CLevel = rspRec.CLevel;
+      if (rspRec.Category != "") {
+        let Category = JSON.parse(rspRec.Category);
+        Category.forEach(proRec => {
+          if (proRec.answer_checked) {
+            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+          }
+        });
+
+      }
 
       data.push(rec);
     });
 
-    if (data.length > 0) {
+
+    let map = new Map<string, CaseMonthlyStatistics2>();
+
+
+    // 相關服務
+    [].concat(resp2.Statistics || []).forEach(rspRec => {
+      // 輔導相關服務
+      let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
+
+      if (!map.has(key)) {
+        let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
+        rec.TeacherID = rspRec.TeacherID;
+        rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.OccurDate = rspRec.OccurDate;
+        rec.StudentID = rspRec.StudentID;
+        rec.TeacherName = rspRec.TeacherName;
+        rec.ContactItem = rspRec.ContactItem;
+        rec.ContactName = rspRec.ContactName;
+        rec.CLevel = rspRec.CLevel;
+        map.set(key, rec);
+      }
+
+
+      if (rspRec.StudentGender === '男') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.BoyCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+
+      if (rspRec.StudentGender === '女') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.GirlCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+    });
+
+    map.forEach((values, keys) => {
+      data2.push(values);
+    });
+
+
+
+    if (data.length > 0 || data2.length > 0) {
       let data1: any[] = [];
+      let data2_d: any[] = [];
       data.forEach(da => {
+        let tno = da.TeacherName;
+        if (da.TeacherNickName != '')
+          tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '教師編碼': da.TeacherName,
+          '教師編碼': tno,
           '學生年級': da.GradeYear,
           '學生性別': da.StudentGender,
-          '個案類別': da.ProblemCategoryValue.join(','),
+          '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count        
+          '晤談次數': da.Count
         };
         data1.push(item);
       })
 
+      data2.forEach(da => {
+        let tno = da.TeacherName;
+        if (da.TeacherNickName != '')
+          tno = da.TeacherName + "(" + da.TeacherNickName + ")";
+        let item = {
+          '教師編碼': tno,
+          '服務項目': da.ContactItem,
+          '對象': da.ContactName,
+          '日期': da.OccurDate,
+          '服務人次(男)': da.BoyCount,
+          '服務人次(女)': da.GirlCount
+        };
+        data2_d.push(item);
+      })
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
-      XLSX.utils.book_append_sheet(wb, ws, wsName);
+      const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+      XLSX.utils.book_append_sheet(wb, ws, "1.當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
+
+
     } else {
       alert("沒有資料");
     }
   }
 
   // 名稱與代碼轉換(教育部)
-  parseProblemCategoryNoT1(item: string) {
-    let value: number = 0;
+  parseCategoryNoT1(item: string) {
+    let value: number = 19; // 預設其他
     switch (item) {
       case '人際困擾': value = 1; break;
       case '師生關係': value = 2; break;
@@ -124,7 +227,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       case '創傷反應': value = 7; break;
       case '自我傷害': value = 8; break;
       case '性別議題': value = 9; break;
-      case '脆弱家庭': value = 10; break;
+      case '高風險家庭': value = 10; break;
       case '兒少保議題': value = 11; break;
       case '學習困擾': value = 12; break;
       case '生涯輔導': value = 13; break;
@@ -146,6 +249,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-新北市版";
     let fileName: string = wsName + ".xlsx";
     let data: CaseMonthlyStatistics[] = [];
+    let data2: CaseMonthlyStatistics2[] = [];
+
     // 其他項目需要統計名稱
     let detailItemnNameList: string[] = [];
     detailItemnNameList.push('個案會議');
@@ -157,7 +262,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     detailItemnNameList.push('通訊軟體');
     detailItemnNameList.push('資源聯繫');
 
-    let resp = await this.dsaService.send("GetCaseMonthlyStatistics2", {
+    let resp = await this.dsaService.send("GetCaseMonthlyStatistics2_1", {
+      Request: {
+        Year: this.selectYear,
+        Month: this.selectMonth
+      }
+    });
+
+    let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics2_2", {
       Request: {
         Year: this.selectYear,
         Month: this.selectMonth
@@ -167,16 +279,25 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     [].concat(resp.Statistics || []).forEach(rspRec => {
       // 輔導當月個案
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
-      rec.CaseNo = rspRec.CaseNo;
+      rec.TeacherID = rspRec.TeacherID;
+      rec.TeacherNickName = rspRec.TeacherNickName;
       rec.OccurDate = rspRec.OccurDate;
-      rec.ProblemCategory = rspRec.ProblemCategory;
+      rec.Category = rspRec.Category;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
-      let ProblemCategory = JSON.parse(rspRec.ProblemCategory);
+      if (rspRec.Category != "") {
+        let Category = JSON.parse(rspRec.Category);
+        Category.forEach(proRec => {
+          if (proRec.answer_checked) {
+            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+          }
+        });
+
+      }
 
       // 統計資料
       let detail = [].concat(rspRec.Detail || []);
@@ -189,25 +310,66 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         });
       });
 
-      ProblemCategory.forEach(proRec => {
-        if (proRec.answer_checked) {
-          // 檢查目前和教育部版相同，先用T1，不同再用分支
-          rec.ProblemCategoryValue.push(this.parseProblemCategoryNoT1(proRec.answer_value));
-        }
-      });
-
       data.push(rec);
     });
 
-    if (data.length > 0) {
+
+    let map = new Map<string, CaseMonthlyStatistics2>();
+
+    // 相關服務
+    [].concat(resp2.Statistics || []).forEach(rspRec => {
+      // 輔導相關服務
+      let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
+
+      if (!map.has(key)) {
+        let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
+        rec.TeacherID = rspRec.TeacherID;
+        rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.OccurDate = rspRec.OccurDate;
+        rec.StudentID = rspRec.StudentID;
+        rec.TeacherName = rspRec.TeacherName;
+        rec.ContactItem = rspRec.ContactItem;
+        rec.ContactName = rspRec.ContactName;
+        rec.CLevel = rspRec.CLevel;
+        map.set(key, rec);
+      }
+
+
+      if (rspRec.StudentGender === '男') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.BoyCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+
+      if (rspRec.StudentGender === '女') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.GirlCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+    });
+
+    map.forEach((values, keys) => {
+      data2.push(values);
+    });
+
+
+    if (data.length > 0 || data2.length > 0) {
       let data1: any[] = [];
+      let data2_d: any[] = [];
       data.forEach(da => {
+        let tno = da.TeacherName;
+        if (da.TeacherNickName != '')
+          tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         da.OtherCount = da.SumOtherDetailCount();
         let item = {
           '教師編碼': da.TeacherName,
           '學生年級': da.GradeYear,
           '學生性別': da.StudentGender,
-          '個案類別': da.ProblemCategoryValue.join(','),
+          '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
           '晤談次數': da.Count,
           '其他服務次數': da.OtherCount,
@@ -224,9 +386,36 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         data1.push(item);
       })
 
+      data2.forEach(da => {
+        let tno = da.TeacherName;
+        if (da.TeacherNickName != '')
+          tno = da.TeacherName + "(" + da.TeacherNickName + ")";
+        let item = {
+          '教師編碼': tno,
+          '服務項目': da.ContactItem,
+          '對象': da.ContactName,
+          '日期': da.OccurDate,
+          '服務人次(男)': da.BoyCount,
+          '服務人次(女)': da.GirlCount
+        };
+        data2_d.push(item);
+      })
+
+      data2.forEach(da => {
+        let tno = da.TeacherName; if (da.TeacherNickName
+          != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
+          {
+            '教師編碼': tno, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+              da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
+          };
+        data2_d.push(item);
+      })
+
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
-      XLSX.utils.book_append_sheet(wb, ws, wsName);
+      const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+      XLSX.utils.book_append_sheet(wb, ws, "1.當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
     } else {
@@ -242,8 +431,15 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-新竹國中版";
     let fileName: string = wsName + ".xlsx";
     let data: CaseMonthlyStatistics[] = [];
+    let data2: CaseMonthlyStatistics2[] = [];
+    let resp = await this.dsaService.send("GetCaseMonthlyStatistics3_1", {
+      Request: {
+        Year: this.selectYear,
+        Month: this.selectMonth
+      }
+    });
 
-    let resp = await this.dsaService.send("GetCaseMonthlyStatistics3", {
+    let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics3_2", {
       Request: {
         Year: this.selectYear,
         Month: this.selectMonth
@@ -253,43 +449,104 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     [].concat(resp.Statistics || []).forEach(rspRec => {
       // 輔導當月個案
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
-      rec.CaseNo = rspRec.CaseNo;
+      rec.TeacherID = rspRec.TeacherID;
+      rec.TeacherNickName = rspRec.TeacherNickName;
+      rec.TeacherRole = rspRec.TeacherRole;
       rec.OccurDate = rspRec.OccurDate;
-      rec.ProblemCategory = rspRec.ProblemCategory;
+      rec.Category = rspRec.Category;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
-      rec.Status = rspRec.CaseStatus;
+      rec.Status = rspRec.CaseStatus;      
       rec.Count = parseInt(rspRec.Count);
-      let ProblemCategory = JSON.parse(rspRec.ProblemCategory);
-      ProblemCategory.forEach(proRec => {
-        if (proRec.answer_checked) {
-          // 檢查目前和教育部版相同，先用T1，不同再用分支          
-          rec.ProblemCategoryValue.push(this.parseProblemCategoryNoT1(proRec.answer_value));
-        }
-      });
+      if (rspRec.Category != "") {
+        let Category = JSON.parse(rspRec.Category);
+        Category.forEach(proRec => {
+          if (proRec.answer_checked) {
+            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+          }
+        });
+
+      }
 
       data.push(rec);
     });
 
-    if (data.length > 0) {
+    let map = new Map<string, CaseMonthlyStatistics2>();
+
+    // 相關服務
+    [].concat(resp2.Statistics || []).forEach(rspRec => {
+      // 輔導相關服務
+      let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
+
+      if (!map.has(key)) {
+        let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
+        rec.TeacherID = rspRec.TeacherID;
+        rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.TeacherRole = rspRec.TeacherRole;
+        rec.OccurDate = rspRec.OccurDate;
+        rec.StudentID = rspRec.StudentID;
+        rec.TeacherName = rspRec.TeacherName;
+        rec.ContactItem = rspRec.ContactItem;
+        rec.ContactName = rspRec.ContactName;
+        rec.CLevel = rspRec.CLevel;
+        map.set(key, rec);
+      }
+
+
+      if (rspRec.StudentGender === '男') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.BoyCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+
+      if (rspRec.StudentGender === '女') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.GirlCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+    });
+
+    map.forEach((values, keys) => {
+      data2.push(values);
+    });
+
+    if (data.length > 0 || data2.length > 0) {
       let data1: any[] = [];
+      let data2_d: any[] = [];
       data.forEach(da => {
         let item = {
-          '教師編碼': da.TeacherName,
+          '職司編碼': da.TeacherName,
+          '身份':da.TeacherRole,
           '學生年級': da.GradeYear,
           '學生性別': da.StudentGender,
-          '個案類別': da.ProblemCategoryValue.join(','),
+          '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count        
+          '晤談次數': da.Count
         };
         data1.push(item);
       })
 
+      data2.forEach(da => {
+        let tno = da.TeacherName; if (da.TeacherNickName
+          != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
+          {
+            '職司編碼': tno,'身份':da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+              da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
+          };
+        data2_d.push(item);
+      })
+
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
-      XLSX.utils.book_append_sheet(wb, ws, wsName);
+      const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+      XLSX.utils.book_append_sheet(wb, ws, "1.當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
     } else {
@@ -306,8 +563,15 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-新竹國小版";
     let fileName: string = wsName + ".xlsx";
     let data: CaseMonthlyStatistics[] = [];
+    let data2: CaseMonthlyStatistics2[] = [];
+    let resp = await this.dsaService.send("GetCaseMonthlyStatistics4_1", {
+      Request: {
+        Year: this.selectYear,
+        Month: this.selectMonth
+      }
+    });
 
-    let resp = await this.dsaService.send("GetCaseMonthlyStatistics4", {
+    let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics4_2", {
       Request: {
         Year: this.selectYear,
         Month: this.selectMonth
@@ -317,43 +581,104 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     [].concat(resp.Statistics || []).forEach(rspRec => {
       // 輔導當月個案
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
-      rec.CaseNo = rspRec.CaseNo;
+      rec.TeacherID = rspRec.TeacherID;
+      rec.TeacherNickName = rspRec.TeacherNickName;
+      rec.TeacherRole = rspRec.TeacherRole;
       rec.OccurDate = rspRec.OccurDate;
-      rec.ProblemCategory = rspRec.ProblemCategory;
+      rec.Category = rspRec.Category;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
-      rec.Status = rspRec.CaseStatus;
+      rec.Status = rspRec.CaseStatus;      
       rec.Count = parseInt(rspRec.Count);
-      let ProblemCategory = JSON.parse(rspRec.ProblemCategory);
-      ProblemCategory.forEach(proRec => {
-        if (proRec.answer_checked) {
-          // 檢查目前和教育部版相同，先用T1，不同再用分支
-          rec.ProblemCategoryValue.push(this.parseProblemCategoryNoT1(proRec.answer_value));
-        }
-      });
+      if (rspRec.Category != "") {
+        let Category = JSON.parse(rspRec.Category);
+        Category.forEach(proRec => {
+          if (proRec.answer_checked) {
+            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+          }
+        });
+
+      }
 
       data.push(rec);
     });
 
-    if (data.length > 0) {
+    let map = new Map<string, CaseMonthlyStatistics2>();
+
+    // 相關服務
+    [].concat(resp2.Statistics || []).forEach(rspRec => {
+      // 輔導相關服務
+      let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
+
+      if (!map.has(key)) {
+        let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
+        rec.TeacherID = rspRec.TeacherID;
+        rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.TeacherRole = rspRec.TeacherRole;
+        rec.OccurDate = rspRec.OccurDate;
+        rec.StudentID = rspRec.StudentID;
+        rec.TeacherName = rspRec.TeacherName;
+        rec.ContactItem = rspRec.ContactItem;
+        rec.ContactName = rspRec.ContactName;
+        rec.CLevel = rspRec.CLevel;
+        map.set(key, rec);
+      }
+
+
+      if (rspRec.StudentGender === '男') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.BoyCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+
+      if (rspRec.StudentGender === '女') {
+        if (map.has(key)) {
+          let x = map.get(key);
+          x.GirlCount += parseInt(rspRec.Count);
+          map.set(key, x);
+        }
+      }
+    });
+
+    map.forEach((values, keys) => {
+      data2.push(values);
+    });
+
+    if (data.length > 0 || data2.length > 0) {
       let data1: any[] = [];
+      let data2_d: any[] = [];
       data.forEach(da => {
         let item = {
-          '教師編碼': da.TeacherName,
+          '職司編碼': da.TeacherName,
+          '身份':da.TeacherRole,
           '學生年級': da.GradeYear,
           '學生性別': da.StudentGender,
-          '個案類別': da.ProblemCategoryValue.join(','),
+          '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count         
+          '晤談次數': da.Count
         };
         data1.push(item);
       })
 
+      data2.forEach(da => {
+        let tno = da.TeacherName; if (da.TeacherNickName
+          != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
+          {
+            '職司編碼': tno,'身份':da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+              da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
+          };
+        data2_d.push(item);
+      })
+
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
-      XLSX.utils.book_append_sheet(wb, ws, wsName);
+      const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+      XLSX.utils.book_append_sheet(wb, ws, "1.當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
     } else {

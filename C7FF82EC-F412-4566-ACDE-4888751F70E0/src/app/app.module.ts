@@ -120,7 +120,7 @@ import { CaseModule } from './case/case.module';
     ReferralReportComponent,
     HRCounselInterviewCountComponent,
     GroupAnalysisReportComponent,
-    ComprehensiveDataExportComponent,
+    ComprehensiveDataExportComponent,  
   ],
   imports: [
     BrowserModule,
