@@ -146,7 +146,7 @@ export class CounselClass {
 
     SetClassCheck() {
         this.Checked = !this.Checked;
-        console.log("");
+       // console.log("");
     }
 }
 
@@ -1064,4 +1064,12 @@ export class QuizFieldInfos {
     constructor() {
         this.MapQuizField = new Map<string, string>();
     }
+}
+
+// 批次產生綜合紀錄表使用
+export class StudentDocument {
+    StudentID: string = "";
+    ClassID: string = "";
+    PrintDocumentID: string = "";
+    GradeYear: string = "";
 }

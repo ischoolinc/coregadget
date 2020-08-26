@@ -18,6 +18,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   selectMonth: number;
   selectReportType: string = '輔導工作月統計';
   reportTypeList: string[] = [];
+  buttonDisable: boolean = true;
   constructor(@Optional()
   private appComponent: AppComponent, private dsaService: DsaService) { }
 
@@ -26,7 +27,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     // 年,月 初始化
     this.selectYear = new Date().getFullYear();
     this.selectMonth = new Date().getMonth() + 1;
-
+    this.buttonDisable = false;
     this.reportNameList = [
       "輔導工作月統計報表-教育部版",
       "輔導工作月統計報表-新北市版",
@@ -47,7 +48,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         chkPass = true;
       }
     }
-
+    this.buttonDisable = true;
     if (chkPass) {
       if (item === '輔導工作月統計報表-教育部版') {
         this.GetCaseMonthlyStatistics1();
@@ -212,6 +213,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
+
+    this.buttonDisable = false;
   }
 
   // 名稱與代碼轉換(教育部)
@@ -421,6 +424,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
+    this.buttonDisable = false;
   }
 
   // 輔導工作月統計報表-新竹國中版
@@ -552,7 +556,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
-
+    this.buttonDisable = false;
   }
 
   // 輔導工作月統計報表-新竹國小版
@@ -684,7 +688,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
-
+    this.buttonDisable = false;
   }
 
   // 名稱與代碼轉換(新北市版)

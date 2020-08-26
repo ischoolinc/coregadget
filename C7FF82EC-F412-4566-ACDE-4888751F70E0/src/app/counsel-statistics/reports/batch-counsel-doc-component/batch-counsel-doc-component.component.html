@@ -1,0 +1,93 @@
+<div style="height: 20px"></div>
+<div class="d-flex flex-row justify-content-start">
+  <div class="d-flex">
+    <div class="dropdown"
+         style="margin-left: 20px;margin-top: 20px; ">
+      <button class="btn btn-light dropdown-toggle"
+              type="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+        {{ selectDocName }}
+      </button>
+      <div class="dropdown-menu scrollable-menu">
+        <a class="dropdown-item"
+           *ngFor="let doc of printDocument"
+           (click)="SetSelectDocument(doc)">{{ doc.Name+'('+doc.DocumentName+')'}}</a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ml-auto align-self-center p-4">
+    <button type="button"
+            class="btn btn-info"
+            (click)="report()"
+            [disabled]="isExportButtonDisable">
+      產生報表
+    </button>
+  </div>
+</div>
+<div style="height: 20px"></div>
+<div class="tab-content">
+  <div>請勾選班級..</div>
+  <div>
+    <span class="custom-control custom-checkbox w-25">
+      <input type="checkbox"
+             class="custom-control-input"
+             [id]="0"
+             [checked]="isSelectAllItem"
+             (click)="SetSelectAllItem()" />
+
+      <label class="custom-control-label"
+             [for]="0">全選 年級
+      </label>
+    </span>
+
+    <div class="d-flex flex-wrap pl-3">
+      <div class="custom-control custom-checkbox w-25"
+           *ngFor="let item of SelectGradeYearList">
+        <input type="checkbox"
+               class="custom-control-input"
+               [id]="item.id"
+               [checked]="item.Checked"
+               (click)="SetSelectGradeItem(item.GradeYear)" />
+        <label class="custom-control-label"
+               [for]="item.id">{{item.GradeYearStr}}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngFor="let item of SelectGradeYearList">
+    <div class="form-group">
+
+      <span class="custom-control custom-checkbox w-25">
+
+        <input type="checkbox"
+               class="custom-control-input"
+               [id]="item.id"
+               [checked]="item.Checked"
+               (click)="SetSelectGradeItem(item.GradeYear)" />
+        <label class="custom-control-label"
+               [for]="item.id"> 全選 {{item.GradeYearStr}}
+        </label>
+      </span>
+
+      <div class="d-flex flex-wrap pl-3">
+        <div class="custom-control custom-checkbox w-25"
+             *ngFor="let ClassItem of item.ClassItems">
+          <input type="checkbox"
+                 class="custom-control-input"
+                 [id]="ClassItem.id"
+                 [checked]="ClassItem.Checked"
+                 (click)="ClassItem.SetClassCheck()" />
+          <label class="custom-control-label"
+                 [for]="ClassItem.id"> {{ClassItem.ClassName}}
+          </label>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</div>
