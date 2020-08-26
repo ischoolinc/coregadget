@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DsaService } from "../../../dsa.service";
-import { CounselClass, GradeClassInfo, StudentDocument } from '../../CounselStatistics-vo';
+import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
+
 @Component({
   selector: 'app-batch-counsel-doc-component',
   templateUrl: './batch-counsel-doc-component.component.html',
@@ -54,11 +55,14 @@ export class BatchCounselDocComponentComponent implements OnInit {
 
     //  alert(this.selectPriDocument.PrintDocumentID+',  '+this.selectClassIDs);
 
-    this.selectClass.forEach(item => {
-      var title = item.ClassName + ' ' + this.selectPriDocument.DocumentName;
-      window.open(`/#/counsel_doc2/${item.ClassID}/${this.selectPriDocument.PrintDocumentID}/${title}`);
+    this.selectClass.forEach((item,i) => {
+      setTimeout(
+        () => {
+          var title = item.ClassName + ' ' + this.selectPriDocument.DocumentName;
+          window.open(`content.htm#/counsel_doc2/${item.ClassID}/${this.selectPriDocument.PrintDocumentID}/${title}`);
+        },
+        i*10000);
     });
-
   }
 
   SetSelectAllItem() {

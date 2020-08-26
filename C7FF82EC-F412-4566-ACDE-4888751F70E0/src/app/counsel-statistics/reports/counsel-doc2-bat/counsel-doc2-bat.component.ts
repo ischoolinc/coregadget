@@ -21,7 +21,6 @@ export class CounselDoc2BatComponent implements OnInit {
     private title: Title) { }
 
   ngOnInit() {
-
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.classID = params.get("classID");
@@ -31,6 +30,8 @@ export class CounselDoc2BatComponent implements OnInit {
       }
     );
   }
+
+  
   async getReportData() {
 
     this.isLoading = true;
@@ -99,7 +100,7 @@ export class CounselDoc2BatComponent implements OnInit {
 
       });
     } catch (error) {
-      console.log(error);
+      alert(error.dsaError.message);
     } finally {
       this.isLoading = false;
     }
