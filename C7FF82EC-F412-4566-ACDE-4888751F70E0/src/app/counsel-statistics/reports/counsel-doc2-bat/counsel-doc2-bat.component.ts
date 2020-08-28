@@ -67,8 +67,9 @@ export class CounselDoc2BatComponent implements OnInit {
     }
 
     try {
-      StudentDocumentIDs.forEach(async item => {
-       
+      
+      for(const item of StudentDocumentIDs)
+      {
         var reportData: any;
 
         reportData = await this.dsaService.send("GetPrintDocumentDetail", {
@@ -97,8 +98,9 @@ export class CounselDoc2BatComponent implements OnInit {
           });
         });
         this.reportDataList.push(reportData);
-
-      });
+      }
+     
+    
     } catch (error) {
       alert(error.dsaError.message);
     } finally {
