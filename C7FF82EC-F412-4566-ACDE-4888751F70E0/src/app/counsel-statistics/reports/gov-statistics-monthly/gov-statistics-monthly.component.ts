@@ -5,6 +5,8 @@ import * as XLSX from 'xlsx';
 import { AppComponent } from "../../../app.component";
 import { CaseMonthlyStatistics, CaseMonthlyStatistics2 } from '../gov-statistics-monthly/gov-statistics-vo';
 import { MapOperator } from 'rxjs/internal/operators/map';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-gov-statistics-monthly',
@@ -18,21 +20,37 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   selectMonth: number;
   selectReportType: string = '輔導工作月統計';
   reportTypeList: string[] = [];
+  buttonDisable: boolean = true;
+  dsnsName: string = "";
+  schoolType;
+
   constructor(@Optional()
-  private appComponent: AppComponent, private dsaService: DsaService) { }
+  private appComponent: AppComponent, private dsaService: DsaService, private http: HttpClient) { }
 
   ngOnInit() {
+    let scType: string;
+    this.dsnsName = gadget.getApplication().accessPoint;
 
-    // 年,月 初始化
-    this.selectYear = new Date().getFullYear();
-    this.selectMonth = new Date().getMonth() + 1;
+    let url = `https://dsns.ischool.com.tw/campusman.ischool.com.tw/config.public/GetSchoolList?body=%3CCondition%3E%3CDsns%3E${this.dsnsName}%3C/Dsns%3E%3C/Condition%3E&rsptype=json`;
+    try {
+      this.http.get<any>(url, { responseType: 'json' }).subscribe(response => {
+        this.schoolType = response.Response.School.Type;
 
-    this.reportNameList = [
-      "輔導工作月統計報表-教育部版",
-      "輔導工作月統計報表-新北市版",
-      "輔導工作月統計報表-新竹國中版",
-      "輔導工作月統計報表-新竹國小版"
-    ];
+        // 年,月 初始化
+        this.selectYear = new Date().getFullYear();
+        this.selectMonth = new Date().getMonth() + 1;
+        this.buttonDisable = false;
+        this.reportNameList = [
+          "輔導工作月統計報表-教育部版",
+          "輔導工作月統計報表-新北市版",
+          "輔導工作月統計報表-新竹國中版",
+          "輔導工作月統計報表-新竹國小版"
+        ];
+
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   exportRepot(item) {
@@ -48,6 +66,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       }
     }
 
+    this.buttonDisable = true;
     if (chkPass) {
       if (item === '輔導工作月統計報表-教育部版') {
         this.GetCaseMonthlyStatistics1();
@@ -68,6 +87,35 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       alert('西元年或月，輸入格式有問題。');
     }
   }
+
+  // 年級轉換
+  parseGradeYear(value: string) {
+    if (this.schoolType) {
+      if (this.schoolType === '高中') {
+        if (value === '1')
+          return '10';
+        if (value === '2')
+          return '11';
+        if (value === '3')
+          return '12';
+
+      } else if (this.schoolType === '國中') {
+        if (value === '1' || value === '7')
+          return '7';
+        if (value === '2' || value === '8')
+          return '8';
+        if (value === '3' || value === '9')
+          return '9';
+      } else {
+        // 當國小處理，回傳原本年級
+        return value;
+      }
+
+    } else {
+      return value;
+    }
+  }
+
 
   // 輔導工作月統計報表-教育部版
   async GetCaseMonthlyStatistics1() {
@@ -177,11 +225,12 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
           '教師編碼': tno,
-          '學生年級': da.GradeYear,
+          '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count
+          '晤談次數': da.Count,
+          '其他服務次數': 0
         };
         data1.push(item);
       })
@@ -212,6 +261,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
+
+    this.buttonDisable = false;
   }
 
   // 名稱與代碼轉換(教育部)
@@ -366,8 +417,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         da.OtherCount = da.SumOtherDetailCount();
         let item = {
-          '教師編碼': da.TeacherName,
-          '學生年級': da.GradeYear,
+          '教師編碼': tno,
+          '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
@@ -421,6 +472,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
+    this.buttonDisable = false;
   }
 
   // 輔導工作月統計報表-新竹國中版
@@ -458,7 +510,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
-      rec.Status = rspRec.CaseStatus;      
+      rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
       if (rspRec.Category != "") {
         let Category = JSON.parse(rspRec.Category);
@@ -520,10 +572,13 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       let data1: any[] = [];
       let data2_d: any[] = [];
       data.forEach(da => {
+        let tno = da.TeacherName;
+        if (da.TeacherNickName != '')
+          tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '職司編碼': da.TeacherName,
-          '身份':da.TeacherRole,
-          '學生年級': da.GradeYear,
+          '職司編碼': tno,
+          '身份': da.TeacherRole,
+          '學生年級':this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
@@ -536,7 +591,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno,'身份':da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);
@@ -552,7 +607,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
-
+    this.buttonDisable = false;
   }
 
   // 輔導工作月統計報表-新竹國小版
@@ -590,7 +645,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
-      rec.Status = rspRec.CaseStatus;      
+      rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
       if (rspRec.Category != "") {
         let Category = JSON.parse(rspRec.Category);
@@ -652,10 +707,13 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       let data1: any[] = [];
       let data2_d: any[] = [];
       data.forEach(da => {
+        let tno = da.TeacherName;
+        if (da.TeacherNickName != '')
+          tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '職司編碼': da.TeacherName,
-          '身份':da.TeacherRole,
-          '學生年級': da.GradeYear,
+          '職司編碼': tno,
+          '身份': da.TeacherRole,
+          '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別': da.CategoryValue.join(','),
           '新案舊案': da.Status,
@@ -668,7 +726,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno,'身份':da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);
@@ -684,7 +742,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     } else {
       alert("沒有資料");
     }
-
+    this.buttonDisable = false;
   }
 
   // 名稱與代碼轉換(新北市版)

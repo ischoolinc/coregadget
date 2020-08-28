@@ -78,6 +78,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from './shared/shared.module';
 import { CaseModule } from './case/case.module';
+import { BatchCounselDocComponentComponent } from './counsel-statistics/reports/batch-counsel-doc-component/batch-counsel-doc-component.component';
+import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-doc2-bat/counsel-doc2-bat.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +122,9 @@ import { CaseModule } from './case/case.module';
     ReferralReportComponent,
     HRCounselInterviewCountComponent,
     GroupAnalysisReportComponent,
-    ComprehensiveDataExportComponent,  
+    ComprehensiveDataExportComponent,
+    BatchCounselDocComponentComponent,
+    CounselDoc2BatComponent,  
   ],
   imports: [
     BrowserModule,

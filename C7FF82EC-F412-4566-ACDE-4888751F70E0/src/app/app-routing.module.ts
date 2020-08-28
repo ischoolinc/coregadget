@@ -28,6 +28,7 @@ import { PsychologicalTestRoutingComponent } from './psychological-test/psycholo
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
 import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
+import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-doc2-bat/counsel-doc2-bat.component';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
@@ -45,7 +46,12 @@ const routes: Routes = [
       }
     ]
   },
-  { path: "counsel_statistics", component: CounselStatisticsComponent },
+  {
+    path: "counsel_statistics", component: CounselStatisticsComponent
+
+  },
+  { path: "counsel_doc2/:classID/:printDocumentID/:title", component: CounselDoc2BatComponent },
+
   { path: "referral", loadChildren: './referral/referral.module#ReferralModule' },
   { path: "case", component: CaseComponent },
   { path: "interview_statistics", component: InterviewStatisticsComponent },

@@ -46,11 +46,12 @@
 
   <app-group-analysis-report *ngSwitchCase="'選組分析表'"> </app-group-analysis-report>
   <ng-container *ngSwitchDefault></ng-container>
+
+  <ng-container *ngSwitchCase="'綜合紀錄表'">
+    <app-batch-counsel-doc-component></app-batch-counsel-doc-component>
+  </ng-container>
+
 </div>
-
-
-
-
 
 
 <!-- 
