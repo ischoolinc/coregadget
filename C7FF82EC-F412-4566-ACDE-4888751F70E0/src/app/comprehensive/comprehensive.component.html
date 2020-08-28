@@ -1,8 +1,7 @@
 <div class="tab-content">
   <app-permission-denied *ngIf="!roleService.isLoading && !roleService.enableComprehensive">
   </app-permission-denied>
-  <div *ngIf="!roleService.isLoading && roleService.enableComprehensive"
-       class="tab-pane fade-in show active">
+  <div *ngIf="!roleService.isLoading && roleService.enableComprehensive" class="tab-pane fade-in show active">
     <ng-container *ngIf="!isLoading;else tmpLoading">
       <!-- <div class="float-right d-flex mb-3 mb-md-0 sticky-top">
         <ng-container *ngTemplateOutlet="plugin"></ng-container>
@@ -18,99 +17,78 @@
           <!-- currentMode -->
           <div>
             <div class="dropdown ml-2 h-100">
-              <button class="btn btn-light dropdown-toggle h-100"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
+              <button class="btn btn-light dropdown-toggle h-100" type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <span *ngIf="currentMode=='view'">填寫狀態</span>
                 <span *ngIf="currentMode=='statistics'">分析統計</span>
               </button>
               <div class="dropdown-menu">
-                <a class="dropdown-item"
-                   [ngClass]="{ active: currentMode=='view' }"
-                   [routerLink]="['/comprehensive']">
+                <a class="dropdown-item" [ngClass]="{ active: currentMode=='view' }" [routerLink]="['/comprehensive']">
                   <span>填寫狀態</span>
                 </a>
-                <a class="dropdown-item"
-                   [ngClass]="{ active: currentMode=='statistics' }"
-                   [routerLink]="['/comprehensive', 'statistics']">
+                <a class="dropdown-item" [ngClass]="{ active: currentMode=='statistics' }"
+                  [routerLink]="['/comprehensive', 'statistics']">
                   <span>分析統計</span>
                 </a>
               </div>
             </div>
           </div>
           <!-- currentClass -->
-          <div *ngIf="currentMode=='view'"
-               class="ml-2">
+          <div *ngIf="currentMode=='view'" class="ml-2">
             <div class="dropdown h-100">
-              <button class="btn btn-light dropdown-toggle h-100"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
+              <button class="btn btn-light dropdown-toggle h-100" type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <span *ngIf="currentClass">{{ currentClass.ClassName}}</span>
                 <span *ngIf="!currentClass">總覽</span>
               </button>
-              <div *ngIf="currentSection"
-                   class="dropdown-menu dropdown-menu-scrollable">
-                <a class="dropdown-item"
-                   [ngClass]="{ active: !currentClass }"
-                   [routerLink]="['/comprehensive', 'view', 'all', 'section', currentSection.FillInSectionID]">
+              <div *ngIf="currentSection" class="dropdown-menu dropdown-menu-scrollable">
+                <a class="dropdown-item" [ngClass]="{ active: !currentClass }"
+                  [routerLink]="['/comprehensive', 'view', 'all', 'section', currentSection.FillInSectionID]">
                   <span>總覽</span>
                 </a>
                 <hr />
-                <a class="dropdown-item"
-                   *ngFor="let classRec of currentSection.Class"
-                   [ngClass]="{ active: classRec === currentClass }"
-                   [routerLink]="['/comprehensive', 'view', classRec.ClassID, 'section', currentSection.FillInSectionID ]">
+                <a class="dropdown-item" *ngFor="let classRec of currentSection.Class"
+                  [ngClass]="{ active: classRec === currentClass }"
+                  [routerLink]="['/comprehensive', 'view', classRec.ClassID, 'section', currentSection.FillInSectionID ]">
                   <span>{{ classRec.ClassName }}</span>
                 </a>
               </div>
             </div>
           </div>
           <!-- currentSection -->
-          <div *ngIf="currentMode=='view'"
-               class="ml-2">
+          <div *ngIf="currentMode=='view'" class="ml-2">
             <div class="dropdown h-100">
-              <button class="btn btn-light dropdown-toggle h-100"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
+              <button class="btn btn-light dropdown-toggle h-100" type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <span *ngIf="currentSection">{{currentSection.Name}}</span>
               </button>
               <div class="dropdown-menu">
-                <a class="dropdown-item"
-                   *ngFor="let sectionRec of sectionList"
-                   [ngClass]="{ active: sectionRec === currentSection }"
-                   [routerLink]="['/comprehensive', 'view', (currentClass?currentClass.ClassID:'all'), 'section', sectionRec.FillInSectionID]">
+                <a class="dropdown-item" *ngFor="let sectionRec of sectionList"
+                  [ngClass]="{ active: sectionRec === currentSection }"
+                  [routerLink]="['/comprehensive', 'view', (currentClass?currentClass.ClassID:'all'), 'section', sectionRec.FillInSectionID]">
                   <span>{{ sectionRec.Name }}</span>
                 </a>
               </div>
             </div>
           </div>
           <div class="ml-auto"></div>
-          <div class="ml-2"
-               *ngIf="currentMode=='view'">
+          <div class="ml-2" *ngIf="currentMode=='view'">
             <div class="dropdown h-100">
-              <button class="btn btn-info dropdown-toggle h-100"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
+              <button class="btn btn-info dropdown-toggle h-100" type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <i class="material-icons">settings</i>
                 工具
               </button>
               <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item"
-                   (click)="shoModal()">
+                <a class="dropdown-item" (click)="shoModal()">
                   <i class="material-icons">add</i>
                   {{comprehensiveStr}}
                 </a>
+
+
+
                 <ng-container *ngIf="counselVisible === true">
-                  <a class="dropdown-item"
-                     (click)="showSystemAsyncModal()">
+                  <a class="dropdown-item" (click)="showSystemAsyncModal()">
                     <span class="material-icons">
                       swap_vert
                     </span>
@@ -127,50 +105,41 @@
                   <i style="display: inline-block;width: 27.42px;"></i>
                   產生填寫代碼(GUID)
                 </a> -->
-                <a class="dropdown-item"
-                   (click)="showGenerateKeyAndSetTime()">
+                <a class="dropdown-item" (click)="showGenerateKeyAndSetTime()">
                   <i style="display: inline-block;width: 27.42px;"></i>
                   填寫設定
                 </a>
                 <hr />
-                <a class="dropdown-item"
-                   target="_blank"
-                   [attr.href]="'content.htm#/pd(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">
+                <a class="dropdown-item" target="_blank"
+                  [attr.href]="'content.htm#/pd(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">
                   <i style="display: inline-block;width: 27.42px;"></i>
                   學生填寫頁面連結
                 </a>
               </div>
             </div>
           </div>
-          <div class="ml-2"
-               *ngIf="plugin">
+          <div class="ml-2" *ngIf="plugin">
             <ng-container *ngTemplateOutlet="plugin"></ng-container>
           </div>
         </div>
         <router-outlet></router-outlet>
       </ng-container>
       <ng-template #noData>
-        <div *ngIf="currentSemester"
-             class="d-flex">
+        <div *ngIf="currentSemester" class="d-flex">
           <!-- semester -->
           <div>
             <button class="btn btn-light h-100">
               <span>{{ currentSemester.SchoolYear }}學年度 第{{currentSemester.Semester}}學期</span>
             </button>
           </div>
-          <div *ngIf="currentMode=='view'"
-               class="ml-auto my-auto dropdown">
-            <button class="btn btn-info dropdown-toggle h-100"
-                    type="button"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
+          <div *ngIf="currentMode=='view'" class="ml-auto my-auto dropdown">
+            <button class="btn btn-info dropdown-toggle h-100" type="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
               <i class="material-icons">settings</i>
               工具
             </button>
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item"
-                 (click)="shoModal()">
+              <a class="dropdown-item" (click)="shoModal()">
                 <i class="material-icons">add</i>
                 {{comprehensiveStr}}
               </a>
@@ -179,17 +148,15 @@
                 產生填寫代碼(身分證號)
               </a> -->
               <hr />
-              <a class="dropdown-item"
-                 target="_blank"
-                 [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">
+              <a class="dropdown-item" target="_blank"
+                [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill)'">
                 <i style="display: inline-block;width: 27.42px;"></i>
                 學生填寫頁面連結
               </a>
             </div>
           </div>
         </div>
-        <div class="row justify-content-center"
-             style="margin-top:250px;margin-bottom:200px;">
+        <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
           沒有資料
         </div>
       </ng-template>
@@ -197,35 +164,23 @@
   </div>
 </div>
 
-<ng-template #tmpLoading
-             class="container">
-  <div class="row justify-content-center"
-       style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>
 
 
 <!-- 建立新個案 Modal -->
-<div class="modal fade"
-     id="GenerateFillInData"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="newCaseLabel"
-     aria-hidden="true">
-  <div class="modal-dialog"
-       role="document">
+<div class="modal fade" id="GenerateFillInData" tabindex="-1" role="dialog" aria-labelledby="newCaseLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"
-            id="newCaseLabel">
-          {{comprehensiveStr}}
+        <h5 class="modal-title" id="newCaseLabel">
+        <b>{{comprehensiveStr}}</b>
         </h5>
-        <button *ngIf="!generater.isSaving"
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close">
+        <button *ngIf="!generater.isSaving" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -233,27 +188,59 @@
         <ng-container *ngIf="generater.isLoading">
           資料讀取中...
         </ng-container>
+
         <ng-container *ngIf="!generater.isLoading">
           <p>產生{{generater.schoolYear}}學年度 第{{generater.semester}}學期 在校學生的{{comprehensiveStr1}}，將花費較多時間，請耐心等候。</p>
         </ng-container>
-        <ng-container *ngIf="generater.isSaving">
+        <ng-container *ngIf="generater.isSaving || generater.isBringPrevious">
           <div class="progress">
-            <div class="progress-bar"
-                 role="progressbar"
-                 [ngStyle]="{'width': generater.progress + '%'}"
-                 [attr.aria-valuenow]="generater.progress"
-                 aria-valuemin="0"
-                 aria-valuemax="100">{{generater.progress}}%</div>
+            <div class="progress-bar" role="progressbar" [ngStyle]="{'width': generater.progress + '%'}"
+              [attr.aria-valuenow]="generater.progress" aria-valuemin="0" aria-valuemax="100">{{generater.progress}}%
+            </div>
           </div>
         </ng-container>
+
+   <!-- 增加上學期轉入 -->
+  
+   <div  *ngIf="!generater.isSaving &&!generater.isBringPrevious && ShowBringPreviousSection">
+      <div class="my-3">
+      <div class="form-check ">
+        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" [(ngModel)]="generater.isBringPreviousAnsCheck">
+        <label class="form-check-label" for="inlineCheckbox1">帶入填寫內容</label>
       </div>
+    </div>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="inputGroupSelect01">選擇學年度學期:</label>
+    </div>
+    <div class="my-1">從</div> 
+    <div class="ml-3">
+      
+    <select  class="custom-select"  [(ngModel)]="generater.selectSemesterInfo" (change)="updateCurrentonObject($event)">
+      <option  *ngFor="let ss of SchoolYearSemesterList ; let ind =index"  [ngValue]="ss"  [selected] ="ind == 0 ? true :false" > {{ss.SchoolYear}}學年度
+        第{{ss.Semester}}學期  </option>
+    </select>
+
+  </div><div>帶入 </div>  
+  
+  <br>  
+  
+  </div>
+
+  <div>
+    <span  class ="mt-2" style="color:#ff3333 "> 產生綜合紀錄表實勾選「帶入填寫內容」，在產生本學期綜合紀錄表時會將「填寫(預設帶入舊值)」題型之填寫紀錄<b class="emphiz">完全覆蓋</b>。</span>
+  </div>
+</div>
+
+</div>
+
+<!-- 增加上學期轉入 end -->
+    
+
       <div class="modal-footer">
-        <h6 *ngIf="generater.isSaving"
-            class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
-        <button type="button"
-                class="btn btn-info"
-                (click)="generater.gen()"
-                [disabled]="generater.isLoading || generater.isSaving">
+        <h6 *ngIf="generater.isSaving ||generater.isBringPrevious" class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
+        <button type="button" class="btn btn-info" (click)="generater.gen()"
+          [disabled]="generater.isLoading || generater.isSaving">
           產生
         </button>
       </div>
@@ -261,28 +248,16 @@
   </div>
 </div>
 
-
-
 <!-- 系統欄位轉入A表  Modal-->
-<div class="modal fade"
-     id="genSystemCoreColtoAFrom"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="newCaseLabel"
-     aria-hidden="true">
-  <div class="modal-dialog"
-       role="document">
+<div class="modal fade" id="genSystemCoreColtoAFrom" tabindex="-1" role="dialog" aria-labelledby="newCaseLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"
-            id="newCaseLabel">
+        <h5 class="modal-title" id="newCaseLabel">
           校務系統欄位轉入綜合紀錄表
         </h5>
-        <button *ngIf="!generater.isSaving"
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close">
+        <button *ngIf="!generater.isSaving" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -295,8 +270,7 @@
         </ng-container>
         <ng-container *ngIf="true">
           <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
-          <mat-progress-bar *ngIf="isLoading"
-                            mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
         </ng-container>
         <ng-container *ngIf="this.transferSuccess">
           <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
@@ -304,13 +278,9 @@
         </ng-container>
       </div>
       <div class="modal-footer">
-        <h6 *ngIf="generater.isSaving"
-            class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
-        <button *ngIf="!this.isLoading&&!this.transferSuccess"
-                type="button"
-                class="btn btn-info"
-                (click)="transferSystemCoreColToAFrom()"
-                [disabled]="generater.isLoading || generater.isSaving">
+        <h6 *ngIf="generater.isSaving" class="text-muted ml-4 mr-auto">{{generater.currentClass}}</h6>
+        <button *ngIf="!this.isLoading&&!this.transferSuccess" type="button" class="btn btn-info"
+          (click)="transferSystemCoreColToAFrom()" [disabled]="generater.isLoading || generater.isSaving">
           轉入
         </button>
       </div>

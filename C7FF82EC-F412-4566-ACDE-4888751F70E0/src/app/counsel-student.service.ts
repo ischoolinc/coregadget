@@ -236,8 +236,8 @@ export class CounselStudent {
 }
 
 export class SemesterInfo {
-  SchoolYear: number;
-  Semester: number;
+ public SchoolYear: number;
+ public Semester: number;
 }
 
 // 登入教師
