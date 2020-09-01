@@ -87,7 +87,7 @@
 
 
 
-                <ng-container *ngIf="counselVisible === true">
+                <ng-container *ngIf="counselVisible ">
                   <a class="dropdown-item" (click)="showSystemAsyncModal()">
                     <span class="material-icons">
                       swap_vert
@@ -205,7 +205,7 @@
    <div  *ngIf="!generater.isSaving &&!generater.isBringPrevious && ShowBringPreviousSection">
       <div class="my-3">
       <div class="form-check ">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" [(ngModel)]="generater.isBringPreviousAnsCheck">
+        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" [(ngModel)]="generater.isBringPreviousAnsCheck" (change)="generater.clearSemester($event)" >
         <label class="form-check-label" for="inlineCheckbox1">帶入填寫內容</label>
       </div>
     </div>
@@ -216,7 +216,7 @@
     <div class="my-1">從</div> 
     <div class="ml-3">
       
-    <select  class="custom-select"  [(ngModel)]="generater.selectSemesterInfo" (change)="updateCurrentonObject($event)">
+    <select   [disabled] ="!generater.isBringPreviousAnsCheck" class="custom-select"  [(ngModel)]="generater.selectSemesterInfo" (change)="updateCurrentonObject($event)">
       <option  *ngFor="let ss of SchoolYearSemesterList ; let ind =index"  [ngValue]="ss"  [selected] ="ind == 0 ? true :false" > {{ss.SchoolYear}}學年度
         第{{ss.Semester}}學期  </option>
     </select>

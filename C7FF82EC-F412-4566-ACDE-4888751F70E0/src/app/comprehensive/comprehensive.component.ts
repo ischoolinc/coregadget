@@ -30,13 +30,11 @@ export class ComprehensiveComponent implements OnInit {
   plugin: TemplateRef<any>;
   generater: any = {};
   SchoolYearSemesterList: SemesterInfo[];
+  GradeYearWrongsList: any[];
 
   IsBringbring: Boolean = false;
   IsBringChecked: Boolean = false;
   ShowBringPreviousSection: Boolean = false; // 看看要不要顯示 轉入前學年度學期的資料
-
-
-
 
   public comprehensiveStr: String = "產生綜合紀錄表";
   public comprehensiveStr1: String = "綜合紀錄表資料";
@@ -84,11 +82,9 @@ export class ComprehensiveComponent implements OnInit {
         sectionRec.Subject = [].concat(sectionRec.Subject || []);
         sectionRec.Class = [].concat(sectionRec.Class || []);
         sectionRec.Class.forEach(classRec => {
-          classRec.Subject = [].concat(classRec.Subject || []);
+        classRec.Subject = [].concat(classRec.Subject || []);
         });
       });
-      // if (this.sectionList.length)
-      //   this.currentSection = this.sectionList[0];
       this.isLoading = false;
     } catch (err) {
       alert(err);
@@ -118,15 +114,10 @@ export class ComprehensiveComponent implements OnInit {
   */
   async shoModal() {
 
-    console.log("welcome shoModal()");
-    console.log(" Is ...IsBringChecked?", this.IsBringChecked);
     try {
       this.SchoolYearSemesterList = [];
       const SchoolYearSemesters = await this.dsaService.send("ComprehensiveRecordForm.GetComprehensiveRecordSchoolSemester");
       this.SchoolYearSemesterList = [].concat(SchoolYearSemesters.SemesterInfo || []);
-
-      console.log("SchoolYearSemesters", SchoolYearSemesters);
-      // this.SchoolYearSemesterList = this.SchoolYearSemesterList.concat(SchoolYearSemesters);
 
       if (this.SchoolYearSemesterList.length > 0) {
         this.SchoolYearSemesterList = this.SchoolYearSemesterList.filter(item => { // 去除掉當學期
@@ -134,16 +125,12 @@ export class ComprehensiveComponent implements OnInit {
         });
 
       }
-
-      console.log(this.SchoolYearSemesterList);
       if (this.SchoolYearSemesterList.length !== 0) { // 如果本學期以前個學年度學期科目  如果不等於 0
-
         this.ShowBringPreviousSection = true; // 此區塊才顯示
 
       }
     } catch (err) {
       alert("發生錯誤" + err);
-
     }
     this.generater = {
       isBringPreviousAnsCheck: this.IsBringChecked,
@@ -160,7 +147,6 @@ export class ComprehensiveComponent implements OnInit {
        * 按下「產生」
        */
       gen: async function () {
-
         // 檢查有沒有選擇學年度學期
         if (this.isBringPreviousAnsCheck) {
           if (!this.selectSemesterInfo) {
@@ -168,7 +154,6 @@ export class ComprehensiveComponent implements OnInit {
             return;
           }
         }
-        console.log("this.selectSemesterInfo", this.selectSemesterInfo);
         if (this.isSaving || this.isLoading) { return; }
         this.isSaving = true;
         this.progress = 0;
@@ -176,8 +161,12 @@ export class ComprehensiveComponent implements OnInit {
         let classList = await this.dsaService.send("GetClass", {});
         classList = [].concat(classList.Class || []);
         let index = 0;
-
         for (const classRec of classList) {
+
+          if (!parseInt(classRec.GradeYear, 10) || parseInt(classRec.GradeYear, 10 ) > 6 ) { // 因為恩正設計 是 1-6年級 所以年級有誤時 會提醒使用者並不展開
+            alert(classRec.ClassName + " 年級有誤! 無法產生題目。");
+            continue;
+          }
           this.currentClass = classRec.ClassName + " 題目展開中 ...";
           console.log("GenerateFillInData" + JSON.stringify({
             SchoolYear: this.schoolYear
@@ -200,29 +189,37 @@ export class ComprehensiveComponent implements OnInit {
         this.isBringPrevious = true;
 
         // 帶入之前學期
-
-        let index2 = 0;
-        for (const classRec of classList) {
-          this.currentClass = classRec.ClassName + "    " + this.selectSemesterInfo.SchoolYear + "學年度" + this.selectSemesterInfo.Semester + "學期" + " 答案轉入中 ...";
-          try {
-            const resp = await this.dsaService.send("ComprehensiveRecordForm.UpdateAnswerByPreviousSemester", {
-              CurrentSchoolYear: this.schoolYear
-              , CurrentSemester: this.semester
-              , SourceSchoolYear: this.selectSemesterInfo.SchoolYear
-              , SourceSemester: this.selectSemesterInfo.Semester
-              , ClassID: classRec.ClassID
-            });
-          } catch (err) {
-            alert("發生錯誤:" + err.dsaError.message);
-            console.log("error", err);
+        if (this.isBringPreviousAnsCheck){// 如果有勾選帶入前學年度學習
+          let index2 = 0;
+          for (const classRec of classList) {
+            this.currentClass = classRec.ClassName + "    " + this.selectSemesterInfo.SchoolYear + "學年度" + this.selectSemesterInfo.Semester + "學期" + " 答案轉入中 ...";
+            try {
+              const resp = await this.dsaService.send("ComprehensiveRecordForm.UpdateAnswerByPreviousSemester", {
+                CurrentSchoolYear: this.schoolYear
+                , CurrentSemester: this.semester
+                , SourceSchoolYear: this.selectSemesterInfo.SchoolYear
+                , SourceSemester: this.selectSemesterInfo.Semester
+                , ClassID: classRec.ClassID
+              });
+            } catch (err) {
+              alert("發生錯誤:" + err.dsaError.message);
+              console.log("error", err);
+            }
+            this.progress = Math.round((++index2) * 100 / classList.length);
           }
-          this.progress = Math.round((++index2) * 100 / classList.length);
+          this.isBringPrevious = false;
         }
-        this.isBringPrevious = false;
-        console.log("關閉之前");
-        
         $("#GenerateFillInData").modal('hide');
         window.location.reload();
+      },
+
+      /**
+       * 當勾選帶入先前學年度學期資料時 select 的disable 跟著變動
+       */
+      clearSemester : function() {
+        if (!this.isBringPreviousAnsCheck) {
+          this.selectSemesterInfo = null ;
+        }
       }
     };
 
@@ -233,7 +230,6 @@ export class ComprehensiveComponent implements OnInit {
       backdrop: 'static'
     });
   }
-
 
   /**
    * Modal彈出(轉入系統核心欄位)
@@ -258,7 +254,6 @@ export class ComprehensiveComponent implements OnInit {
         SchoolYear: this.currentSemester.SchoolYear
         , Semester: this.currentSemester.Semester
       });
-      console.log("resp", resp);
       this.isLoading = false;
       this.transferSuccess = true;
 
@@ -270,10 +265,6 @@ export class ComprehensiveComponent implements OnInit {
   }
 
   updateCurrentonObject(even, index) {
-    console.log("event----", this.generater.selectSemesterInfo);
-
-
-
   }
 
 
