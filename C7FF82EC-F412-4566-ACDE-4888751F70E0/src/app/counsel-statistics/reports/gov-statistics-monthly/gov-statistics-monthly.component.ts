@@ -187,6 +187,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.StudentID = rspRec.StudentID;
         rec.TeacherName = rspRec.TeacherName;
         rec.ContactItem = rspRec.ContactItem;
+        rec.ServiceItem = rspRec.ServiceItem;
         rec.ContactName = rspRec.ContactName;
         rec.CLevel = rspRec.CLevel;
         map.set(key, rec);
@@ -241,8 +242,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
           '教師編碼': tno,
-          '服務項目': da.ContactItem,
-          '對象': da.ContactName,
+          '服務項目': da.ServiceItem,
+          '對象': da.ContactItem,
           '日期': da.OccurDate,
           '服務人次(男)': da.BoyCount,
           '服務人次(女)': da.GirlCount
@@ -378,8 +379,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.TeacherNickName = rspRec.TeacherNickName;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
-        rec.TeacherName = rspRec.TeacherName;
+        rec.TeacherName = rspRec.TeacherName;        
         rec.ContactItem = rspRec.ContactItem;
+        rec.ServiceItem = rspRec.ServiceItem;
         rec.ContactName = rspRec.ContactName;
         rec.CLevel = rspRec.CLevel;
         map.set(key, rec);
@@ -443,25 +445,15 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
           '教師編碼': tno,
-          '服務項目': da.ContactItem,
-          '對象': da.ContactName,
+          '服務項目': da.ServiceItem,
+          '對象': da.ContactItem,
           '日期': da.OccurDate,
           '服務人次(男)': da.BoyCount,
           '服務人次(女)': da.GirlCount
         };
         data2_d.push(item);
       })
-
-      data2.forEach(da => {
-        let tno = da.TeacherName; if (da.TeacherNickName
-          != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
-          {
-            '教師編碼': tno, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
-              da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
-          };
-        data2_d.push(item);
-      })
-
+  
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
       const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
@@ -541,6 +533,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.StudentID = rspRec.StudentID;
         rec.TeacherName = rspRec.TeacherName;
         rec.ContactItem = rspRec.ContactItem;
+        rec.ServiceItem = rspRec.ServiceItem;
         rec.ContactName = rspRec.ContactName;
         rec.CLevel = rspRec.CLevel;
         map.set(key, rec);
@@ -591,7 +584,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);
@@ -676,6 +669,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.StudentID = rspRec.StudentID;
         rec.TeacherName = rspRec.TeacherName;
         rec.ContactItem = rspRec.ContactItem;
+        rec.ServiceItem = rspRec.ServiceItem;
         rec.ContactName = rspRec.ContactName;
         rec.CLevel = rspRec.CLevel;
         map.set(key, rec);
@@ -726,7 +720,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ContactItem, '對象': da.ContactName, '日期':
+            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);

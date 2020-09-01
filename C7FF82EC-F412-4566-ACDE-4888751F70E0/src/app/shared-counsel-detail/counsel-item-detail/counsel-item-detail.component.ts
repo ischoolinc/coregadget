@@ -144,6 +144,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview = caseInterview;
     this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
     this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
+    this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview._CaseInterview.isSaveDisable = true;
     this._addInterview.loadDefaultData();
     $("#addCaseInterview").modal("show");

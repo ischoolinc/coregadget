@@ -67,6 +67,7 @@ export class CaseMonthlyStatistics2 {
     TeacherName: string;
     // StudentGender: string;
     ContactItem: string;
+    ServiceItem: string;
     ContactName: string;
     CLevel: string; // 一級或二級輔導
     BoyCount: number = 0;
