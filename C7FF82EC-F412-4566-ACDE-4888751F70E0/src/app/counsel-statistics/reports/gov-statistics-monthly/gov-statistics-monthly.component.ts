@@ -293,6 +293,33 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     return value;
   }
 
+    // 名稱與代碼轉換(教育部)
+    parseCategoryNoT2(item: string) {
+      let value: string = 'T19'; // 預設其他
+      switch (item) {
+        case '人際困擾': value = 'T01'; break;
+        case '師生關係': value = 'T02'; break;
+        case '家庭困擾': value = 'T03'; break;
+        case '自我探索': value = 'T04'; break;
+        case '情緒困擾': value = 'T05'; break;
+        case '生活壓力': value = 'T06'; break;
+        case '創傷反應': value = 'T07'; break;
+        case '自我傷害': value = 'T08'; break;
+        case '性別議題': value = 'T09'; break;
+        case '高風險家庭': value = 'T10'; break;
+        case '兒少保議題': value = 'T11'; break;
+        case '學習困擾': value = 'T12'; break;
+        case '生涯輔導': value = 'T13'; break;
+        case '偏差行為': value = 'T14'; break;
+        case '網路成癮': value = 'T15'; break;
+        case '中離(輟)拒學': value = 'T16'; break;
+        case '藥物濫用': value = 'T17'; break;
+        case '心理疾病': value = 'T18'; break;
+        case '其他': value = 'T19'; break;
+      }
+      return value;
+    }
+
   // 輔導工作月統計報表-新北市版
   async GetCaseMonthlyStatistics2() {
     // Service 取得資料邏輯：
@@ -508,7 +535,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let Category = JSON.parse(rspRec.Category);
         Category.forEach(proRec => {
           if (proRec.answer_checked) {
-            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+            rec.CategoryValue.push(this.parseCategoryNoT2(proRec.answer_text));
           }
         });
 
@@ -644,7 +671,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let Category = JSON.parse(rspRec.Category);
         Category.forEach(proRec => {
           if (proRec.answer_checked) {
-            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+            rec.CategoryValue.push(this.parseCategoryNoT2(proRec.answer_text));
           }
         });
 
