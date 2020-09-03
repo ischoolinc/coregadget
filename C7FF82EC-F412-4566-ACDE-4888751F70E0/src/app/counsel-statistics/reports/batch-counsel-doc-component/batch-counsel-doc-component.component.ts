@@ -59,7 +59,7 @@ export class BatchCounselDocComponentComponent implements OnInit {
       setTimeout(
         () => {
           var title = item.ClassName + ' ' + this.selectPriDocument.DocumentName;
-          window.open(`content.htm#/counsel_doc2/${item.ClassID}/${this.selectPriDocument.PrintDocumentID}/${title}`);
+          window.open(`content.htm#/counsel_doc2/${item.ClassID}/${this.selectPriDocument.PrintDocumentID}/${title}`,'_blank');
         },
         i*10000);
     });
