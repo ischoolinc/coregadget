@@ -1,8 +1,9 @@
-import { Component, OnInit, Optional } from "@angular/core";
+import { Component, OnInit, Optional,ViewChild } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { CounselStudentService, CounselStudent } from "../counsel-student.service";
 import { CounselComponent } from '../counsel/counsel.component';
 import { DsaService } from '../dsa.service';
+import { SetCounselInterviewPrintItemComponent } from './set-counsel-interview-print-item/set-counsel-interview-print-item.component';
 
 @Component({
   selector: "app-counsel-detail",
@@ -28,6 +29,9 @@ export class CounselDetailComponent implements OnInit {
   _psychological_testEnable: boolean = false;
 
   printDocument: any[];
+
+  @ViewChild("setCounselInterviewPrintItem") _setCounselInterviewPrintItem: SetCounselInterviewPrintItemComponent;
+
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -161,4 +165,21 @@ export class CounselDetailComponent implements OnInit {
     var rsp = await this.dsaService.send("GetPrintDocumentTemplate");
     this.printDocument = [].concat(rsp.PrintDocument || []);
   }
+
+  // 設定學生個人輔導紀錄列印功能
+  setCounselPrintItem(studentID: string){
+    this._setCounselInterviewPrintItem.studentID = studentID;
+
+    $("#setCounselInterviewdocPrintItem").modal("show");
+
+    // 關閉畫面
+    $("#setCounselInterviewdocPrintItem").on("hide.bs.modal", () => {
+      // 重整資料
+      if (!this._setCounselInterviewPrintItem.isCancel)
+        this.loadStudent();
+      $("#setCounselInterviewdocPrintItem").off("hide.bs.modal");
+    });
+
+  }
+
 }

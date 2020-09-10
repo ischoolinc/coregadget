@@ -29,6 +29,7 @@ export class BatchCounselDocComponentComponent implements OnInit {
     this.loadPrintDocument();
     this.isSelectAllItem = false;
     this.GetCounselClass();
+
   }
 
   async loadPrintDocument() {

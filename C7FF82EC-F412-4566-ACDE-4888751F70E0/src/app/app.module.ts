@@ -80,6 +80,7 @@ import { SharedModule } from './shared/shared.module';
 import { CaseModule } from './case/case.module';
 import { BatchCounselDocComponentComponent } from './counsel-statistics/reports/batch-counsel-doc-component/batch-counsel-doc-component.component';
 import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-doc2-bat/counsel-doc2-bat.component';
+import { CounselInterviewDocComponent } from './simple-page/print/counsel-interview-doc/counsel-interview-doc.component';
 
 @NgModule({
   declarations: [
@@ -124,7 +125,8 @@ import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-do
     GroupAnalysisReportComponent,
     ComprehensiveDataExportComponent,
     BatchCounselDocComponentComponent,
-    CounselDoc2BatComponent,  
+    CounselDoc2BatComponent,
+    CounselInterviewDocComponent,
   ],
   imports: [
     BrowserModule,

@@ -21,6 +21,7 @@ export class CounselDoc2BatComponent implements OnInit {
     private title: Title) { }
 
   ngOnInit() {
+   
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.classID = params.get("classID");

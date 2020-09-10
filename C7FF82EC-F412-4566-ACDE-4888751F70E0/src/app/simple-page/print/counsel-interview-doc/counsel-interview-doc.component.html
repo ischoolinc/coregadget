@@ -1,0 +1,108 @@
+<!-- 學生個人 -輔導紀錄 -->
+<div *ngIf="!isLoading; else tmpLoading">
+  <ng-container *ngIf="reportData">
+    <h4 class="text-center">{{SchoolName}} 個人輔導紀錄</h4>
+    <h5>
+      <span>學號：</span><span>{{StudentNumber}}</span>
+      <span>&nbsp;</span>
+      <span>姓名：</span><span>{{StudentName}}</span>
+    </h5>
+
+    <br>
+    <ng-container *ngIf="isDisplayCounsel">
+      <h4>一級輔導</h4>
+      <table>
+        <tr>
+          <td style="text-align: center; vertical-align: middle;width: 7%"><strong>學年度</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 4%"><strong>學期</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 4%"><strong>年級</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 10%"><strong>日期</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 10%"><strong>對象</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 55%"><strong>輔導內容</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
+        </tr>
+        <ng-container *ngFor="let item of CounselInterview">
+          <ng-container *ngIf="item.isPrivate == isPrivate">
+            <tr>
+              <td style="text-align: center; vertical-align: middle;">{{item.SchoolYear}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.Semester}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.GradeYear}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
+    
+              <td *ngIf="item.Content"
+                  style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
+              <td *ngIf="!item.Content"></td>
+          
+              <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <!-- <ng-container *ngFor="let item of addBlank">
+          <tr style="height: 30px">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </ng-container> -->
+      </table>
+    </ng-container>
+    
+    <br>
+    <ng-container *ngIf="isDisplayCase">
+      <h4>二級輔導</h4>
+      <table>
+        <tr>
+          <td style="text-align: center; vertical-align: middle;width: 7%"><strong>學年度</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 4%"><strong>學期</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 4%"><strong>個案編號</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 10%"><strong>日期</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 10%"><strong>對象</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 55%"><strong>內容說明</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
+        </tr>
+        <ng-container *ngFor="let item of CaseInterview">
+          <ng-container *ngIf="item.isPrivate == isPrivate">
+            <tr>           
+              <td style="text-align: center; vertical-align: middle;">{{item.SchoolYear}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.Semester}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.CaseNo}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
+              <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
+    
+              <td *ngIf="item.Content"
+                  style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
+              <td *ngIf="!item.Content"></td>
+          
+              <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
+            </tr>
+          </ng-container>         
+        </ng-container>
+        <!-- <ng-container *ngFor="let item of addBlank">
+          <tr style="height: 30px">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </ng-container> -->
+      </table>
+        
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

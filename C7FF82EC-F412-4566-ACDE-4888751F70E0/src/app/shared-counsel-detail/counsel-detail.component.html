@@ -31,6 +31,13 @@
                   輔導紀錄表B表 ( 輔導紀錄表 )
                 </a>
               </ng-container>
+              <ng-container *ngIf="counselVisible === true">
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item"
+                   (click) = "setCounselPrintItem(currentStudent.StudentID)">
+                  個人輔導紀錄
+                </a>
+              </ng-container>
             </div>
           </div>
           <h4 class="mt-1 mb-3">
@@ -146,3 +153,5 @@
     Loading...
   </div>
 </ng-template>
+
+<app-set-counsel-interview-print-item #setCounselInterviewPrintItem></app-set-counsel-interview-print-item>
