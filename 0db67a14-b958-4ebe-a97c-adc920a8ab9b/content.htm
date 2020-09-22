@@ -12,8 +12,6 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'bubu@debug.ischool.com.tw',
-                password: '1234'
             }
         });
     </script>
@@ -72,10 +70,10 @@
                             <div class="form-group pull-right col-md-5" style="margin-top: 10px;">
                                 <div class="input-group">
                                     <div class="input-group-addon">重設測驗日期：</div>
-                                    <input type="text" disabled class="form-control" datepicker-popup="yyyy/MM/dd" ng-model="test_date" is-open="opened" show-button-bar="false" datepicker-options="{
+                                    <input id ="mydate" type="text" disabled class="form-control" datepicker-popup="yyyy/MM/dd" ng-model="test_date" is-open="opened" show-button-bar="false" datepicker-options="{
     formatYear: 'yy',
     startingDay: 1
-  }" ng-required="true" ng-change="showEditForm('test_date',test_date)" close-text="Close" />
+  }" ng-required="true" ng-change="showIfSaveDate()" close-text="Close" />
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-default" ng-click="datePickerOpen($event)">
                                             <i class="fa fa-calendar"></i>
