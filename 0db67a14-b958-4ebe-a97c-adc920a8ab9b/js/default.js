@@ -340,7 +340,8 @@ var app = angular
 
 
 
-        $scope.save = function (data) {
+        $scope.save = function (data, callback) {
+
             //       data = { column : 'test_date',
             //     course_id : $scope.current.id,
             //     detail: [{seat_no:int,value:string},{seat_no:int,value:string},...]
@@ -358,6 +359,7 @@ var app = angular
                     //console.log(error);
                     if (!error) {
                         response.data.detail = [].concat(response.data.detail);
+          
                         var tmp = [];
                         var msg = [];
                         for (var i = 0; i < response.data.detail.length; i++) {
@@ -371,6 +373,7 @@ var app = angular
                                 message: '下列學生儲存發生錯誤，請確認是否在資料輸入區間或稍後再試一次：<br>' + msg.join(",")
                             });
                         for (var i = 0; i < $scope.list.length; i++) {
+                            $scope.list[i][response.data.uid] = tmp[$scope.list[i].uid];
                             $scope.list[i][response.data.column] = tmp[$scope.list[i].student_id];
                         }
                         listCheck();
@@ -380,6 +383,7 @@ var app = angular
                     }
                     //更新施測日期
                     $scope.$apply();
+                    if(callback) { callback(); }
                 }
 
 
@@ -570,8 +574,10 @@ var app = angular
                         course_id: $scope.current.id,
                         detail: dataRow
                     }
-                    $scope.save(sendObject);
-                    $scope.CheckSaveDate(sendObject)
+                    $scope.save(sendObject, function() {
+                        $scope.CheckSaveDate(sendObject);
+                    });
+                    
                     $('#importModal').modal('hide');
                 };
             });
