@@ -170,7 +170,12 @@ var app = angular
             $scope.current = m;
             CurrentChanged();
         }
-        $scope.getList = function ($course_id) {
+        /**
+         * 
+         * @param {*} $course_id 
+         * @param {*} callback 
+         */
+        $scope.getList = function ($course_id ,callback) {
             $scope.list = [];
             $scope.contract.send({
                 service: "GetList",
@@ -191,6 +196,12 @@ var app = angular
                     $scope.safeApply();
                 }
             });
+
+        
+            if(callback)
+            { 
+               callback() ;
+            }
         }
         $scope.refresh = function () {
             $scope.init();
@@ -257,9 +268,12 @@ var app = angular
                     course_id: $scope.current.id,
                     detail: tmplist
                 }
-                $scope.save(sendObject);
-                $timeout($scope.onTimeout, 1000);
-                $scope.CheckSaveDate(sendObject)
+                // $scope.save(sendObject);
+                // $timeout($scope.onTimeout, 1000);
+                // $scope.CheckSaveDate(sendObject)
+                $scope.save(sendObject, function() {
+                   $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
+                });
 
             } else {
                 var modalInstance = $modal.open({
@@ -281,9 +295,12 @@ var app = angular
                         course_id: $scope.current.id,
                         detail: tmplist
                     }
-                    $scope.save(sendObject);
-                    //$scope.$apply();
-                    $scope.CheckSaveDate(sendObject);// 如果施測日期有空白再儲存;
+                    // $scope.save(sendObject);
+                    // //$scope.$apply();
+                    // $scope.CheckSaveDate(sendObject);// 如果施測日期有空白再儲存;
+                    $scope.save(sendObject, function() {
+                       $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
+                    });
 
                 }, function () {
                     //$log.info('Modal dismissed at: ' + new Date());
@@ -574,10 +591,10 @@ var app = angular
                         course_id: $scope.current.id,
                         detail: dataRow
                     }
+                 
                     $scope.save(sendObject, function() {
-                        $scope.CheckSaveDate(sendObject);
+                       $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
                     });
-                    
                     $('#importModal').modal('hide');
                 };
             });
