@@ -123,13 +123,15 @@
           文字代碼表
         </i>
       </a>
-      <a *ngIf="curExam.ExamID === 'DailyLifeRecommend'" 
-        href="javascript:;" 
-        class="btn btn-outline-secondary"
-        (click)="openCodeModal(textCode)">
-        <i class="far fa-file-code">
-          文字代碼表
-        </i>
+      <a *ngIf="curExam.ExamID === 'DailyLifeRecommend'">
+        <a 
+          href="javascript:;" 
+          class="btn btn-outline-secondary"
+          (click)="openCodeModal(textCode)">
+          <i class="far fa-file-code">
+            文字代碼表
+          </i>
+        </a>
       </a>
       <a href="javascript:;" (click)="enterGrade()" class="btn btn-outline-secondary">
         送出

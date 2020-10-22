@@ -50,11 +50,16 @@ export class CounselStatisticsComponent implements OnInit {
     }
 
     this.reportTypeList.push('各班導師晤談次數');
+    this.reportTypeList.push('匯出填寫內容');
 
 
     if (gadget.params.groupAanalysisEnabled) {
       this.reportTypeList.push('選組分析表');
     }
+
+    this.reportTypeList.push('綜合紀錄表');
+
+
 
     // this.reportTypeList.push('轉介學生名單');
     this.selectReportType = '請選擇..';

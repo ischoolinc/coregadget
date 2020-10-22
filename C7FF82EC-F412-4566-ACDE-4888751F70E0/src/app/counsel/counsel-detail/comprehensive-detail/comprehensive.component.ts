@@ -1,6 +1,6 @@
 import { Component, OnInit, Optional, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CounselDetailComponent } from "../counsel-detail.component";
+import { CounselDetailComponent } from '../../../shared-counsel-detail/counsel-detail.component';
 import { DsaService } from '../../../dsa.service';
 
 @Component({

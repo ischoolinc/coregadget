@@ -1,8 +1,5 @@
 import { QOption } from "./case-question-data-modal";
 import { CaseQuestionTemplate } from "./case-question-template";
-import { QuizData } from "../counsel/counsel-detail/psychological-test-detail/quiz-data-vo";
-
-
 
 export class CaseStudent {
   constructor() {
@@ -40,13 +37,13 @@ export class CaseStudent {
   CaseCount: string; // 個案輔導次數
   PhotoUrl: string;
   CaseTeachers: CaseTeacher[];
-  
+
   // 個案輔導等級相關
   isCaseLevel1Checked: boolean = false;
   isCaseLevel2Checked: boolean = false;
   isCaseLevel3Checked: boolean = false;
   isCaseLevelHasValue: boolean = false;
-  
+
   CaseLevel: string = "";
   MainTeacher: string = "";
   Role: string = "";
@@ -98,11 +95,11 @@ export class CaseStudent {
   SetCaseLevel(level: string) {
     this.isCaseLevel1Checked = false;
     this.isCaseLevel2Checked = false;
-    this.isCaseLevel3Checked = false;   
+    this.isCaseLevel3Checked = false;
     this.CaseLevel = level;
 
     if (level === '初級') {
-      this.isCaseLevel1Checked = true;      
+      this.isCaseLevel1Checked = true;
     } if (level === '二級') {
       this.isCaseLevel2Checked = true;
     } if (level === '三級') {
@@ -112,7 +109,7 @@ export class CaseStudent {
 
   // 取得目前個案教師名稱
   public GetTeacherNames() {
-    let ta: string[] = [];    
+    let ta: string[] = [];
     this.CaseTeachers.forEach(item => {
       ta.push(item.TeacherName);
     });
@@ -247,7 +244,7 @@ export class CaseStudent {
       );
       // 檢查是否有輸入文字
       for (const cc of this.proble_description) {
-        // 有值 
+        // 有值
         if (cc.answer_value.length > 0 || cc.answer_martix.length > 0) {
           this.isProbleDescriptionHasValue = true;
         }
@@ -478,67 +475,7 @@ export class CounselTeacher {
   TeacherName: string;
 }
 
-// 當月個案
-export class CaseMonthlyStatistics {
-  constructor() { }
-  CaseNo: string;
-  OccurDate: string;
-  ProblemCategory: string;
-  StudentID: string;
-  TeacherName: string;
-  GradeYear: string;
-  StudentGender: string;
-  Status: string; // 新或舊
-  Count: number = 0;
-  ProblemCategoryValue: any[] = [];
-  OtherCount: number = 0; // 其他服務
-  OtherDetailCount: CaseMonthlyItemCount[] = [];
 
-  // 取得單項其他數量
-  GetOtherDetailCount(name: string) {
-    let value = 0;
-    this.OtherDetailCount.forEach(item => {
-      if (item.ItemName === name) {
-        value = item.Count;
-      }
-    });
-
-    return value;
-  }
-
-  AddOtherDetailCount(name: string) {
-    let addValue: boolean = true;
-    this.OtherDetailCount.forEach(item => {
-      if (item.ItemName === name) {
-        item.Count = item.Count + 1;
-        addValue = false;
-      }
-    });
-    if (addValue) {
-      let item: CaseMonthlyItemCount = new CaseMonthlyItemCount();
-      item.ItemName = name;
-      item.Count = 1;
-      this.OtherDetailCount.push(item);
-    }
-  }
-
-  // 計算其他總數
-  SumOtherDetailCount() {
-    let value = 0;
-
-    this.OtherDetailCount.forEach(item => {
-      value = value + item.Count;
-    });
-    return value;
-  }
-}
-
-export class CaseMonthlyItemCount {
-  constructor() {
-  }
-  ItemName: string;
-  Count: number = 0;
-}
 
 export class SelectCaseTeacher {
   constructor() { }

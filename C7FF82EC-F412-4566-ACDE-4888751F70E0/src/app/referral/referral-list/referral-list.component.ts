@@ -1,5 +1,4 @@
-import { Component, Optional, OnInit, ViewChild } from "@angular/core";
-import { AppComponent } from "../../app.component";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { GrantModalComponent } from "../grant-modal/grant-modal.component";
 import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
 import { DsaService } from "../../dsa.service";
@@ -8,7 +7,6 @@ import {
   ActivatedRoute,
   ParamMap,
   Router,
-  RoutesRecognized
 } from "@angular/router";
 
 @Component({
@@ -93,16 +91,16 @@ export class ReferralListComponent implements OnInit {
 
   setGrantModal(refStudent: ReferralStudent) {
     this.grant_modal.referralStudent = refStudent;
-    
+
     this.grant_modal.loadDefault();
-       
+
     $("#grant_modal").modal("show");
     // 關閉畫面
     $("#grant_modal").on("hide.bs.modal", () => {
       // 重整資料
       if (!this.grant_modal.isCancel)
         this.loadData();
-      
+
       $("#grant_modal").off("hide.bs.modal");
     });
   }

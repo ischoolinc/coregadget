@@ -209,7 +209,7 @@ export class CaseQuestionTemplate {
         answer_checked: false
       },
       {
-        answer_text: "高風險家庭",
+        answer_text: "脆弱家庭",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,

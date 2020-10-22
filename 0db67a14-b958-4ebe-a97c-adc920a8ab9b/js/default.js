@@ -1,8 +1,10 @@
-$(document).ready(function() {
-    $(window).resize(function() {
+$(document).ready(function () {
+    $(window).resize(function () {
         $("#container-nav, #container-main").height($(window).height() - 50);
         //console.log($(window).height() - 50);
+
     });
+
 });
 
 function parseDateUTC(input) {
@@ -13,18 +15,18 @@ function parseDateUTC(input) {
 //Expect input as y/m/d
 //http://stackoverflow.com/questions/5812220/how-to-validate-a-date
 function isValidDate2(s) {
-    if (s == '-'){
+    if (s == '-') {
         return true;
     }
     else {
         var bits = s.split('/');
-        var y = parseInt(bits[0]), 
+        var y = parseInt(bits[0]),
             m = parseInt(bits[1]),
             d = parseInt(bits[2]);
         if (isNaN(y) || isNaN(m) || isNaN(d)) {
             return false;
         }
-        if (y == 0 || m == 0 || d == 0){
+        if (y == 0 || m == 0 || d == 0) {
             return false;
         }
         else {
@@ -42,31 +44,31 @@ function isValidDate2(s) {
 }
 var app = angular
     .module("app", ['ui.bootstrap'])
-    .filter('myDateFormat', function($filter) {
-        return function(text, format) {
+    .filter('myDateFormat', function ($filter) {
+        return function (text, format) {
             var tempdate = new Date(text.replace(/-/g, "/"));
             // //console.log(tempdate);
             if (tempdate && tempdate != 'Invalid Date' && !isNaN(tempdate))
                 return $filter('date')(tempdate, format);
         };
     })
-    .directive('selectOnFocus', function($timeout) {
+    .directive('selectOnFocus', function ($timeout) {
         return {
             restrict: 'A',
-            link: function(scope, elem, attrs) {
-                elem.bind('focus', function(e) {
-                    $timeout(function() {
+            link: function (scope, elem, attrs) {
+                elem.bind('focus', function (e) {
+                    $timeout(function () {
                         elem.select();
                     }, 1);
                 });
             }
         };
     })
-    .directive('keyFocus', function() {
+    .directive('keyFocus', function () {
         return {
             restrict: 'A',
-            link: function(scope, elem, attrs) {
-                elem.bind('keyup', function(e) {
+            link: function (scope, elem, attrs) {
+                elem.bind('keyup', function (e) {
                     // up arrow
                     if (e.keyCode == 38) {
                         if (!scope.$first) {
@@ -96,25 +98,26 @@ var app = angular
         //         }
         //     });
     })
-    .directive('initFocus', function() {
+    .directive('initFocus', function () {
         var timer;
-        return function(scope, elm, attr) {
+        return function (scope, elm, attr) {
             if (timer) clearTimeout(timer);
 
-            timer = setTimeout(function() {
+            timer = setTimeout(function () {
                 elm.focus();
                 //console.log('focus', elm);
             }, 0);
         }
     })
-    .controller("Ctrl", function($scope, $modal, $filter) {
-        $scope.showRule = function() {
+    .controller("Ctrl", function ($scope, $modal, $filter) {
+        console.log("set_dateTime");
+        $scope.showRule = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'myModalRule.html',
                 controller: ModalRuleCtrl,
             });
         }
-        $scope.ngObjFixHack = function(ngObj) {
+        $scope.ngObjFixHack = function (ngObj) {
             var output;
 
             output = angular.toJson(ngObj);
@@ -122,17 +125,17 @@ var app = angular
 
             return output;
         }
-        $scope.safeApply = function(fn) {
+        $scope.safeApply = function (fn) {
             var phase = this.$root.$$phase;
             if (phase == '$apply' || phase == '$digest') {
-                if (fn && (typeof(fn) === 'function')) {
+                if (fn && (typeof (fn) === 'function')) {
                     fn();
                 }
             } else {
                 this.$apply(fn);
             }
         };
-        $scope.datePickerOpen = function($event) {
+        $scope.datePickerOpen = function ($event) {
             $event.preventDefault();
             $event.stopPropagation();
 
@@ -141,14 +144,14 @@ var app = angular
         $scope.contract = gadget.getContract("ischool.fitness.input.peteacher");
         $scope.menu = [];
         $scope.checkListBool = false;
-        $scope.init = function() {
+        $scope.init = function () {
             $scope.getMenu();
         }
-        $scope.getMenu = function() {
+        $scope.getMenu = function () {
             $scope.contract.send({
                 service: "GetMenu",
                 body: {},
-                result: function(response, error, http) {
+                result: function (response, error, http) {
                     //console.log(response.data);
                     //console.log(response.error);
                     if (!error) {
@@ -163,18 +166,23 @@ var app = angular
                 }
             });
         }
-        $scope.setCurrent = function(m) {
+        $scope.setCurrent = function (m) {
             $scope.current = m;
             CurrentChanged();
         }
-        $scope.getList = function($course_id) {
+        /**
+         * 
+         * @param {*} $course_id 
+         * @param {*} callback 
+         */
+        $scope.getList = function ($course_id ,callback) {
             $scope.list = [];
             $scope.contract.send({
                 service: "GetList",
                 body: {
                     course_id: $course_id
                 },
-                result: function(response, error, http) {
+                result: function (response, error, http) {
                     //console.log(response);
                     //console.log(error);
                     if (!error) {
@@ -188,11 +196,18 @@ var app = angular
                     $scope.safeApply();
                 }
             });
+
+        
+            if(callback)
+            { 
+               callback() ;
+            }
         }
-        $scope.refresh = function() {
+        $scope.refresh = function () {
             $scope.init();
         }
         function listCheck() {
+
             //for (var i = 0; i < $scope.list.length; i++) {
             //    if ( !$scope.list[i].test_date ) {
             //        $scope.checkListBool = false;
@@ -200,10 +215,27 @@ var app = angular
             //    }
             //};
             $scope.checkListBool = true;
-            return true ;
+            return true;
         }
-        $scope.showEditForm = function(column, defaultValue) {
-            if ( $scope.saving )
+
+        $scope.showIfSaveDate = function () {
+            // 重設測驗日期 批次更新 先跳出提醒給使用者
+            if (!$scope.test_date) {
+                return;
+            }
+            // 處理日期格式 顯示
+            let year = '' + $scope.test_date.getFullYear();
+            let month = ($scope.test_date.getMonth() < 9) ? ('0' + ($scope.test_date.getMonth() + 1)) : ('' + ($scope.test_date.getMonth() + 1));
+            let date = '' + $scope.test_date.getDate();
+            let dateString = year + "/" + month + "/" + date;
+
+
+            if (window.confirm("是否將本班所有學生的施測日期更新為：" + dateString + " ?")) {
+                $scope.showEditForm('test_date', $scope.test_date);
+            }
+        }
+        $scope.showEditForm = function (column, defaultValue) {
+            if ($scope.saving)
                 return;
             if (!$scope.current || !$scope.current.id)
                 return;
@@ -230,52 +262,121 @@ var app = angular
                 return;
             }
             if (defaultValue) {
-                $scope.save({
+
+                let sendObject = {
                     column: column,
                     course_id: $scope.current.id,
                     detail: tmplist
+                }
+                // $scope.save(sendObject);
+                // $timeout($scope.onTimeout, 1000);
+                // $scope.CheckSaveDate(sendObject)
+                $scope.save(sendObject, function() {
+                   $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
                 });
+
             } else {
                 var modalInstance = $modal.open({
                     templateUrl: 'myModalContent.html',
                     controller: ModalInstanceCtrl,
                     resolve: {
-                        column: function() {
+                        column: function () {
                             return column;
                         },
-                        tmplist: function() {
+                        tmplist: function () {
                             return tmplist;
                         }
                     }
                 });
-                modalInstance.result.then(function(tmplist) {
-                    $scope.save({
+                modalInstance.result.then(function (tmplist) {
+
+                    let sendObject = {
                         column: column,
                         course_id: $scope.current.id,
                         detail: tmplist
+                    }
+                    // $scope.save(sendObject);
+                    // //$scope.$apply();
+                    // $scope.CheckSaveDate(sendObject);// 如果施測日期有空白再儲存;
+                    $scope.save(sendObject, function() {
+                       $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
                     });
-                }, function() {
+
+                }, function () {
                     //$log.info('Modal dismissed at: ' + new Date());
                 });
             }
         }
-        $scope.save = function(data) {
+
+
+        $scope.CheckSaveDate = function (data) {
+            if (data.column != "test_date") {
+                //檢查是否有空的施測日期
+                // 整理資料
+                emptyTmplist = [];
+                totallist = [];
+                //今天的日期 
+                let today = new Date();
+                let year = '' + today.getFullYear();
+                let month = (today.getMonth() < 9) ? ('0' + (today.getMonth() + 1)) : ('' + (today.getMonth() + 1));
+                let date = '' + today.getDate();
+                let dateString = year + "/" + month + "/" + date;
+
+                //  對於畫面上的每一筆學生體適能紀錄
+                for (var i = 0; i < $scope.list.length; i++) {
+                    //整理要更新之欄位資訊
+                    updateObj = {
+                        uid: $scope.list[i].uid,
+                        student_id: $scope.list[i].student_id,
+                        seat_no: $scope.list[i].seat_no,
+                        name: $scope.list[i].name,
+                        value: $scope.list[i]["test_date"] || dateString, // 更新欄位之值
+                    };
+
+                    totallist.push(updateObj);
+                    // 如果施測日期欄位是空值
+                    if (!$scope.list[i]["test_date"]) {
+                        emptyTmplist.push(updateObj);
+                    }
+                };
+                // 如果沒有空值就不需更新  
+                if (emptyTmplist.length < 1) {
+                    return;
+                }
+                // 如果有學生有施測試期有值 再更新
+                if (emptyTmplist.length > 0) {
+                    let SendObject = {
+                        column: "test_date",
+                        course_id: $scope.current.id,
+                        detail: emptyTmplist
+                    }
+                    $scope.save(SendObject);
+                }
+            }
+        }
+
+
+
+        $scope.save = function (data, callback) {
+
             //       data = { column : 'test_date',
             //     course_id : $scope.current.id,
             //     detail: [{seat_no:int,value:string},{seat_no:int,value:string},...]
             // };
-            $scope.saving = true ;
+            $scope.saving = true;
             data = $scope.ngObjFixHack(data);
+
             //console.log(data);
             $scope.contract.send({
                 service: "SetFitness1Col",
                 body: data,
-                result: function(response, error, http) {
-                    $scope.saving = false ;
+                result: function (response, error, http) {
+                    $scope.saving = false;
                     //console.log(response);
                     //console.log(error);
                     if (!error) {
                         response.data.detail = [].concat(response.data.detail);
+          
                         var tmp = [];
                         var msg = [];
                         for (var i = 0; i < response.data.detail.length; i++) {
@@ -289,6 +390,7 @@ var app = angular
                                 message: '下列學生儲存發生錯誤，請確認是否在資料輸入區間或稍後再試一次：<br>' + msg.join(",")
                             });
                         for (var i = 0; i < $scope.list.length; i++) {
+                            $scope.list[i][response.data.uid] = tmp[$scope.list[i].uid];
                             $scope.list[i][response.data.column] = tmp[$scope.list[i].student_id];
                         }
                         listCheck();
@@ -296,13 +398,18 @@ var app = angular
                         $scope.icon_css = "icon-warning-sign";
                         set_error_message("#mainMsg", "SetFitness1Col", error);
                     }
+                    //更新施測日期
                     $scope.$apply();
+                    if(callback) { callback(); }
                 }
+
+
+
             });
+
         }
-        var CurrentChanged = function(argument) {
-            if ($scope.current == null && $scope.menu[0])
-            {
+        var CurrentChanged = function (argument) {
+            if ($scope.current == null && $scope.menu[0]) {
                 $scope.current = $scope.menu[0];
                 $scope.current.inPeriod = (new Date($scope.current.start_time)).getTime() >= (new Date()).getTime() || (new Date($scope.current.end_time)).getTime() <= (new Date()).getTime();
             }
@@ -420,7 +527,7 @@ var app = angular
                             item.InputValues[i] = '錯誤';//item.errorMsg;
                             item.HasError = true;
                         }
-                        
+
                     }
                     // 狀況:匯入的資料超過學生數
                     $scope.list.forEach(function (stuRec, index) {
@@ -448,7 +555,7 @@ var app = angular
                     // 資料整理
                     var dataRow = [];
                     $scope.list.forEach(function (stuRec, index) {
-                        if (item.InputValues[index] == '-'){
+                        if (item.InputValues[index] == '-') {
                             dataRow.push({
                                 uid: stuRec.uid,
                                 student_id: stuRec.student_id,
@@ -478,19 +585,23 @@ var app = angular
                     //});
 
                     // 儲存置資料庫
-                    $scope.save({
+
+                    let sendObject = {
                         column: item.Key,
                         course_id: $scope.current.id,
                         detail: dataRow
+                    }
+                 
+                    $scope.save(sendObject, function() {
+                       $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
                     });
-
                     $('#importModal').modal('hide');
                 };
             });
         };
 
     });
-var set_error_message = function(select_str, serviceName, error) {
+var set_error_message = function (select_str, serviceName, error) {
     var tmp_msg;
 
     tmp_msg = "<i class=\"icon-white icon-info-sign \"></i><strong class=\"my-err-info\">呼叫服務失敗或網路異常，請稍候重試!</strong>(" + serviceName + ")";
@@ -514,12 +625,12 @@ var set_error_message = function(select_str, serviceName, error) {
             }
         }
         $(select_str).html("<div class=\"alert alert-danger\"><button class=\"close\" data-dismiss=\"alert\">×</button>" + tmp_msg + "</div>");
-        return $(".my-err-info").click(function() {
+        return $(".my-err-info").click(function () {
             return alert("請拍下此圖，並與客服人員連絡，謝謝您。\n" + JSON.stringify(error, null, 2));
         });
     }
 };
-var ModalInstanceCtrl = function($scope, column, tmplist) {
+var ModalInstanceCtrl = function ($scope, column, tmplist) {
     var columnObj = {
         test_date: {
             header: "測驗日期",
@@ -560,10 +671,10 @@ var ModalInstanceCtrl = function($scope, column, tmplist) {
 
     $scope.column_text = columnObj[column].header;
     $scope.tmplist = tmplist;
-    $scope.ok = function() {
+    $scope.ok = function () {
         var tag = true;
         var tmp = null;
-        var match ;
+        var match;
         for (var i = 0; i < $scope.tmplist.length; i++) {
             tmp = $scope.tmplist[i];
             tmp.value = tmp.value.trim();
@@ -571,9 +682,9 @@ var ModalInstanceCtrl = function($scope, column, tmplist) {
                 tmp.unvalidated = !columnObj[column].validate(tmp.value);
             } else {
                 match = tmp.value.match(columnObj[column].validate);
-                tmp.unvalidated = !match ;
+                tmp.unvalidated = !match;
             }
-            if ( tag && tmp.unvalidated ) {
+            if (tag && tmp.unvalidated) {
                 tmp.focus = true;
                 tag = false;
             }
@@ -589,13 +700,12 @@ var ModalInstanceCtrl = function($scope, column, tmplist) {
             alert(columnObj[column].errorMsg);
         }
     };
-    $scope.cancel = function() {
+    $scope.cancel = function () {
         $scope.$dismiss('cancel');
     };
 };
-var ModalRuleCtrl = function($scope)
-{
-    $scope.cancel = function() {
+var ModalRuleCtrl = function ($scope) {
+    $scope.cancel = function () {
         $scope.$dismiss('cancel');
     };
 }

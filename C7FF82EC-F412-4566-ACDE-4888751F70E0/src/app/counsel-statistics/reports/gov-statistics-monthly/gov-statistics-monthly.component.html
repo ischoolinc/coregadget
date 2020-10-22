@@ -33,7 +33,7 @@
         <li data-title="報表名稱">{{ item }}</li>
         <li data-title="">
           <button class="btn btn-light"
-                  (click)="exportRepot(item)">
+                  (click)="exportRepot(item)" [disabled]="buttonDisable">
             產生報表
           </button>
         </li>

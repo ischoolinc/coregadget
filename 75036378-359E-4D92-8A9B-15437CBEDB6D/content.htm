@@ -13,7 +13,9 @@
     <script>
         init({
             application: "demo.h.vicky.chang",
-            paramValues: {},
+            paramValues: {
+                "enabled": false
+            },
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
@@ -21,11 +23,12 @@
                 //account: 'teacher02.whsh@1campus.net',
                 //account: 'teacher03.whsh@1campus.net',
                 //account: 'student03.whsh@1campus.net',
-                account: 'bubu@debug.ischool.com.tw',
-
-                password: '1234'  //window.prompt('password:')
+                // account: 'bubu@debug.ischool.com.tw',
+                // password: '1234' 
+                 //window.prompt('password:')
             }
-        });
+        },
+        );
     </script>
 
 
@@ -301,11 +304,11 @@
                             </td>
                             <td class="text-right" style="padding-left:0px;padding-right:0px;">
                                 <span ng-if="Stage!=3 && StageMode =='模式:志願序' && AlreadyInVolunteer(clubRec)" class="fa fa-star" aria-hidden="true" style="color:#F59F00;"> </span>
-                                <span ng-if="Stage!=3 && StageMode =='模式:先搶先贏' && clubRec.IsFull=='true'" class="fa fa-user-times" aria-hidden="true" style="color:#b72a20"> </span>
+                                <span ng-if="Stage!=3 && StageMode =='模式:先搶先贏' && clubRec.IsFull=='true'" class="fa fa-user-times" aria-hidden="true" style="color:#b72a20" ng-style="HCHstyle()"> </span>
                                 <span ng-if="clubRec.ClubID== student.ClubID" class="fa fa-check" aria-hidden="true" style="color:green;"> </span>
                                 <span ng-if="clubRec.ClubID== student.ClubID && Stage==3 && StageMode =='目前身分為鎖社狀態，不開放選社' " class="fa fa-lock" aria-hidden="true"> </span>
                             </td>
-                            <td ng-if="Stage!=3 && StageMode =='模式:先搶先贏'" class="text-right" >
+                            <td ng-if="Stage!=3 && StageMode =='模式:先搶先贏'" class="text-right" ng-style="HCHstyle()">
                                 <span>{{clubRec.TotalCount||0}}/{{clubRec.Limit}}</span>
                             </td>
                         </tr>
@@ -584,7 +587,7 @@
                         </div>
                         <div class="col-xs-12 ">
                             <div class="panel panel-default">
-                                <div class="panel-body">
+                                <div class="panel-body" ng-style="HCHstyle()">
                                     <div class="col-xs-12 col-sm-12">
                                         <strong>社團條件</strong>
                                     </div>

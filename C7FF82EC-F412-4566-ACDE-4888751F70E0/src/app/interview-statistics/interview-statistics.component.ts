@@ -1,6 +1,5 @@
 import { Component, OnInit, Optional } from "@angular/core";
 import { AppComponent } from "../app.component";
-import { CounselInterview } from "../counsel/counsel-vo";
 
 @Component({
   selector: "app-interview-statistics",
@@ -14,7 +13,8 @@ export class InterviewStatisticsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.appComponent)
+    if (this.appComponent) {
       this.appComponent.currentComponent = "interview_statistics";
+    }
   }
 }

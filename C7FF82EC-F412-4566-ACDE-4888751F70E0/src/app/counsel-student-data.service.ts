@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DsaService } from './dsa.service';
-import { SemesterInfo } from './counsel/counsel-vo';
+import { SemesterInfo } from './shared-counsel-detail/counsel-vo';
 import * as node2json from 'nodexml';
 
 @Injectable({

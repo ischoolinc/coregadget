@@ -41,14 +41,17 @@
   <ng-container *ngSwitchCase="'各班導師晤談次數'">
     <app-hrcounsel-interview-count></app-hrcounsel-interview-count>
   </ng-container>
+  <app-comprehensive-data-export *ngSwitchCase="'匯出填寫內容'"> </app-comprehensive-data-export>
+  <ng-container *ngSwitchDefault></ng-container>
 
   <app-group-analysis-report *ngSwitchCase="'選組分析表'"> </app-group-analysis-report>
   <ng-container *ngSwitchDefault></ng-container>
+
+  <ng-container *ngSwitchCase="'綜合紀錄表'">
+    <app-batch-counsel-doc-component></app-batch-counsel-doc-component>
+  </ng-container>
+
 </div>
-
-
-
-
 
 
 <!-- 

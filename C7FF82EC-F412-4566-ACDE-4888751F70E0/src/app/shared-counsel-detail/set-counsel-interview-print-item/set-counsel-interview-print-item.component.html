@@ -1,0 +1,112 @@
+<div class="modal fade"
+     id="setCounselInterviewdocPrintItem"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="CounselInterviewdocPrintItemLabel"
+     aria-hidden="true">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="CounselInterviewdocPrintItemLabel">
+          個人輔導紀錄
+        </h5>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="d-flex flex-row justify-content-start">
+          <div class="d-flex ml-auto flex-row align-self-center ">
+            <div style="font-size: 18px; margin-right: 10px;padding-top: 8px;"> 開始日期</div>
+            <div style="margin-left: 10px;">
+              <input required
+                     type="date"
+                     class="form-control"
+                     id="startDate"
+                     name="startDate"
+                     placeholder="請輸入開始日期"
+                     [(ngModel)]="startDate" />
+            </div>
+
+          </div>
+
+          <div class="ml-auto d-flex flex-row align-self-center">
+            <div style="font-size: 18px; margin-right: 10px;;padding-top: 8px;">結束日期</div>
+            <div style="margin-left: 10px;">
+              <input required
+                     type="date"
+                     class="form-control"
+                     id="endDate"
+                     name="endDate"
+                     placeholder="請輸入結束日期"
+                     [(ngModel)]="endDate" />
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="d-flex flex-row justify-content-start">
+          <div class="d-flex flex-wrap pl-3">
+            <div class="custom-control custom-checkbox w-100">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="1111111"
+                     [checked]="isCheckN1"
+                     (click)="setCheckItem('一級輔導')"
+                     />
+
+              <label class="custom-control-label"
+                     [for]="1111111">一級輔導
+              </label>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap pl-3">
+            <div class="custom-control custom-checkbox w-100">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="1111112"
+                     [checked]="isCheckN2"
+                     (click)="setCheckItem('二級輔導')"
+                     />
+              <label class="custom-control-label"
+                     [for]="1111112">二級輔導
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="d-flex flex-wrap pl-3">
+          <div class="custom-control custom-checkbox w-25">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   [id]="1111113"
+                   [checked]="isCheckPublic"
+                   (click)="setCheckItem('公開')"
+                   />
+            <label class="custom-control-label"
+                   [for]="1111113">公開
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-dark"
+                data-dismiss="modal"
+                (click)="cancel()">
+          取消
+        </button>
+        <button type="button"
+                class="btn btn-info ml-auto"
+                (click)="print()">
+          列印
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
 
     // 預設功能畫面文字
     this.counselStudentStr = "輔導學生";
-    this.comprehensiveStr = "綜合紀錄表"
+    this.comprehensiveStr = "綜合紀錄表";
 
     // 有限制才特別處理
     // 輔導學生(都可用)
@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
     }
 
     if (gadget.params.system_counsel_position === 'freshman') {
-      // 新生特有文字     
+      // 新生特有文字
       this.counselStudentStr = "學生資料";
       this.comprehensiveStr = "填報資料"
     }

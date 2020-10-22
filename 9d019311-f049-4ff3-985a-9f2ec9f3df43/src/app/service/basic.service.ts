@@ -79,6 +79,7 @@ export class BasicService {
     // 資料整理
     if (rsp.Response) {
       // DailyBehavior 
+      
       if (rsp.Response.DailyBehavior) {
         const exam: ExamRecord = {
           ExamID: 'DailyBehavior',
@@ -128,6 +129,7 @@ export class BasicService {
     if (rsp.Response && rsp.Response.DailyLifeInputConfig) {
       data.SchoolYear = rsp.Response.DailyLifeInputConfig.SchoolYear;
       data.Semester = rsp.Response.DailyLifeInputConfig.Semester;
+      
       data.Time = [];
       [].concat(rsp.Response.DailyLifeInputConfig.InputTimeControl.Time || []).forEach(time => {    
           data.Time.push(time);
