@@ -16,9 +16,9 @@
 
       <div class="modal-body">
 
-        <div class="d-flex flex-row justify-content-start">
+        <div class="d-flex flex-row justify-content-around">
           <div class="d-flex ml-auto flex-row align-self-center ">
-            <div style="font-size: 18px; margin-right: 10px;padding-top: 8px;"> 開始日期</div>
+            <div style="font-size: 18px;padding-top: 8px;"> 開始日期</div>
             <div style="margin-left: 10px;">
               <input required
                      type="date"
@@ -28,11 +28,10 @@
                      placeholder="請輸入開始日期"
                      [(ngModel)]="startDate" />
             </div>
-
           </div>
 
           <div class="ml-auto d-flex flex-row align-self-center">
-            <div style="font-size: 18px; margin-right: 10px;;padding-top: 8px;">結束日期</div>
+            <div style="font-size: 18px; padding-top: 8px;">結束日期</div>
             <div style="margin-left: 10px;">
               <input required
                      type="date"
@@ -42,71 +41,87 @@
                      placeholder="請輸入結束日期"
                      [(ngModel)]="endDate" />
             </div>
-
           </div>
 
         </div>
+        <div style="height: 10px;"></div>
+        <!-- 一級輔導 -->
+        <div class="d-flex justify-content-start">
 
+          <div style="font-size: 18px; margin-right: 10px;;padding-top: 8px;">一級輔導</div>
+          <div class="d-flex flex-wrap">
+            <div class="custom-control custom-checkbox w-80">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="111"
+                     [checked]="isCheckP1T"
+                     (click)="setCheckItem('一級輔導公開')" />
+              <label class="custom-control-label"
+                     [for]="111">公開
+              </label>
+            </div>
+            <div style="width: 30px"></div>
+            <div class="custom-control custom-checkbox w-80">
+              <input type="checkbox"
+                     class="custom-control-input"
+                     [id]="112"
+                     [checked]="isCheckP1F"
+                     (click)="setCheckItem('一級輔導不公開')" />
+              <label class="custom-control-label"
+                     [for]="112">不公開
+              </label>
+            </div>
+          </div>
+
+        </div>
+        <div style="height: 10px;"></div>
+
+        <!-- 二級輔導-->
         <div class="d-flex flex-row justify-content-start">
-          <div class="d-flex flex-wrap pl-3">
-            <div class="custom-control custom-checkbox w-100">
+          <div style="font-size: 18px; margin-right: 10px;;padding-top: 8px;">二級輔導</div>
+
+          <div class="d-flex">
+            <div class="custom-control custom-checkbox w-80">
               <input type="checkbox"
                      class="custom-control-input"
-                     [id]="1111111"
-                     [checked]="isCheckN1"
-                     (click)="setCheckItem('一級輔導')"
-                     />
-
+                     [id]="211"
+                     [checked]="isCheckP2T"
+                     (click)="setCheckItem('二級輔導公開')" />
               <label class="custom-control-label"
-                     [for]="1111111">一級輔導
+                     [for]="211">公開
               </label>
             </div>
-          </div>
-          <div class="d-flex flex-wrap pl-3">
-            <div class="custom-control custom-checkbox w-100">
+            <div style="width: 30px"></div>
+            <div class="custom-control custom-checkbox w-80">
               <input type="checkbox"
                      class="custom-control-input"
-                     [id]="1111112"
-                     [checked]="isCheckN2"
-                     (click)="setCheckItem('二級輔導')"
-                     />
+                     [id]="212"
+                     [checked]="isCheckP2F"
+                     (click)="setCheckItem('二級輔導不公開')" />
               <label class="custom-control-label"
-                     [for]="1111112">二級輔導
+                     [for]="212">不公開
               </label>
             </div>
           </div>
 
         </div>
 
-        <div class="d-flex flex-wrap pl-3">
-          <div class="custom-control custom-checkbox w-25">
-            <input type="checkbox"
-                   class="custom-control-input"
-                   [id]="1111113"
-                   [checked]="isCheckPublic"
-                   (click)="setCheckItem('公開')"
-                   />
-            <label class="custom-control-label"
-                   [for]="1111113">公開
-            </label>
-          </div>
+
+
+
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-dark"
+                  data-dismiss="modal"
+                  (click)="cancel()">
+            取消
+          </button>
+          <button type="button"
+                  class="btn btn-info ml-auto"
+                  (click)="print()">
+            列印
+          </button>
         </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button type="button"
-                class="btn btn-dark"
-                data-dismiss="modal"
-                (click)="cancel()">
-          取消
-        </button>
-        <button type="button"
-                class="btn btn-info ml-auto"
-                (click)="print()">
-          列印
-        </button>
       </div>
     </div>
   </div>
-</div>

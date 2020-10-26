@@ -18,23 +18,26 @@
           <td style="text-align: center; vertical-align: middle;width: 4%"><strong>年級</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>日期</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>對象</strong></td>
-          <td style="text-align: center; vertical-align: middle;width: 55%"><strong>輔導內容</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 20%"><strong>類別</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 30%"><strong>輔導內容</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
+          <!-- <td style="text-align: center; vertical-align: middle;width: 5%"><strong>公開</strong></td> -->
         </tr>
         <ng-container *ngFor="let item of CounselInterview">
-          <ng-container *ngIf="item.isPrivate == isPrivate">
+          <ng-container *ngIf="item.isDisplay == true">
             <tr>
               <td style="text-align: center; vertical-align: middle;">{{item.SchoolYear}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.Semester}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.GradeYear}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
-    
+              <td style="text-align: center; vertical-align: middle;">{{item.category_text}}</td>
               <td *ngIf="item.Content"
                   style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
               <td *ngIf="!item.Content"></td>
           
               <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
+              <!-- <td style="text-align: center; vertical-align: middle;">{{item.isPublic}}</td> -->
             </tr>
           </ng-container>
         </ng-container>
@@ -62,25 +65,28 @@
           <td style="text-align: center; vertical-align: middle;width: 4%"><strong>個案編號</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>日期</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>對象</strong></td>
-          <td style="text-align: center; vertical-align: middle;width: 55%"><strong>內容說明</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 20%"><strong>類別</strong></td>
+          <td style="text-align: center; vertical-align: middle;width: 30%"><strong>內容說明</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
+          <!-- <td style="text-align: center; vertical-align: middle;width: 5%"><strong>公開</strong></td> -->
         </tr>
         <ng-container *ngFor="let item of CaseInterview">
-          <ng-container *ngIf="item.isPrivate == isPrivate">
+          <ng-container *ngIf="item.isDisplay == true">
             <tr>           
               <td style="text-align: center; vertical-align: middle;">{{item.SchoolYear}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.Semester}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.CaseNo}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
-    
+              <td style="text-align: center; vertical-align: middle;">{{item.category_text}}</td>
               <td *ngIf="item.Content"
                   style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
               <td *ngIf="!item.Content"></td>
           
               <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
+              <!-- <td style="text-align: center; vertical-align: middle;">{{item.isPublic}}</td> -->
             </tr>
-          </ng-container>         
+          </ng-container>
         </ng-container>
         <!-- <ng-container *ngFor="let item of addBlank">
           <tr style="height: 30px">

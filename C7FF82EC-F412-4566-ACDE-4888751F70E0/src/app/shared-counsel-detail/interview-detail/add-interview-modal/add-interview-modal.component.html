@@ -65,7 +65,8 @@
                    id="interviewDate"
                    placeholder="請輸入日期"
                    [(ngModel)]="_CounselInterview.OccurDate"
-                   (keyup)="_CounselInterview.checkValue()" />
+                   (keyup)="_CounselInterview.checkValue()"
+                   (ngModelChange)="_CounselInterview.checkValue()" />
           </div>
         </div>
         <div class="form-group">

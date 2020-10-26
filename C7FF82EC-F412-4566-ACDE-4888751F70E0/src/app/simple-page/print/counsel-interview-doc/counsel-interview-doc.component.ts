@@ -15,8 +15,8 @@ export class CounselInterviewDocComponent implements OnInit {
   StudentNumber: string;
   SchoolName: string;
   StudentName: string;
+  param: ICounselInterviewDocRec;
   addBlank: number[] = [];
-  isPrivate: string = 't';
   startDate: string = "";
   endDate: string = "";
   reportData: any;
@@ -31,37 +31,16 @@ export class CounselInterviewDocComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
-    private dsaService: DsaService,) { }
+    private dsaService: DsaService,) {
+  }
 
 
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
-        this.studentID = params.get("studentID");
-        this.startDate = params.get("sd");
-        this.endDate = params.get("ed");
-
-        if (params.get("co") === '12') {
-          this.isDisplayCase = true;
-          this.isDisplayCounsel = true;
-        } else if (params.get("co") === '1') {
-          this.isDisplayCase = false;
-          this.isDisplayCounsel = true;
-        } else if (params.get("co") === '2') {
-          this.isDisplayCase = true;
-          this.isDisplayCounsel = false;
-        } else {
-          this.isDisplayCase = false;
-          this.isDisplayCounsel = false;
-        }
-
-        if (params.get("p") === 'f') {
-          this.isPrivate= 't';
-        } else
-          this.isPrivate = 'f';
-
-
+        this.param = JSON.parse(params.get("param"));
+        // console.log(this.param);
 
         this.getReportData();
       }
@@ -71,11 +50,14 @@ export class CounselInterviewDocComponent implements OnInit {
   // 取得報表資料
   async getReportData() {
     this.isLoading = true;
+    this.isDisplayCounsel = false;
+    this.isDisplayCase = false;
+
     try {
       this.reportData = await this.dsaService.send("GetPrintCounselData12ByStudentID", {
-        StudentID: this.studentID,
-        StartDate: this.startDate,
-        EndDate: this.endDate
+        StudentID: this.param.studentID,
+        StartDate: this.param.StartDate,
+        EndDate: this.param.EndDate
       });
 
       if (this.reportData.SchoolName) {
@@ -94,12 +76,86 @@ export class CounselInterviewDocComponent implements OnInit {
       this.CounselInterview = [];
       if (this.reportData.CounselInterview) {
         this.CounselInterview = [].concat(this.reportData.CounselInterview || []);
+
+        // 解析資料
+        this.CounselInterview.forEach((data) => {
+
+          let disp: boolean = false;
+
+          if (data.isPrivate === 'f') {
+            data.isPublic = '是';
+            // 公開
+            if (this.param.P1T) {
+              disp = true;
+            }
+          } else {
+            // 不公開
+            if (this.param.P1F) {
+              data.isPublic = '否';
+              disp = true;
+            }
+          }
+
+          data.isDisplay = disp;
+          let cate_strs: string[] = [];
+          if (data.Category) {
+            data.category_json = JSON.parse(data.Category);
+            data.category_json.forEach((data1) => {
+              if (data1.answer_checked) {
+                cate_strs.push(data1.answer_text);
+              }
+            });
+
+            data.category_text = cate_strs.join('、');
+          }
+          if (disp) {
+            this.isDisplayCounsel = true;
+          }
+
+        });
       }
 
       // 二級輔導
       this.CaseInterview = [];
       if (this.reportData.CaseInterview) {
         this.CaseInterview = [].concat(this.reportData.CaseInterview || []);
+
+        // 解析資料
+        this.CaseInterview.forEach((data) => {
+
+          let disp: boolean = false;
+
+          if (data.isPrivate === 'f') {
+            data.isPublic = '是';
+            // 公開
+            if (this.param.P2T) {
+              disp = true;
+            }
+          } else {
+            // 不公開
+            if (this.param.P2F) {
+              data.isPublic = '否';
+              disp = true;
+            }
+          }
+
+          data.isDisplay = disp;
+          let cate_strs: string[] = [];
+          if (data.Category) {
+            data.category_json = JSON.parse(data.Category);
+            data.category_json.forEach((data1) => {
+              if (data1.answer_checked) {
+                cate_strs.push(data1.answer_text);
+              }
+            });
+
+            data.category_text = cate_strs.join('、');
+          }
+          if (disp) {
+            this.isDisplayCase = true;
+          }
+        });
+
       }
 
       this.addBlank = [];
@@ -125,4 +181,14 @@ export class CounselInterviewDocComponent implements OnInit {
     }
   }
 
+}
+
+interface ICounselInterviewDocRec {
+  studentID: string;
+  StartDate: string;
+  EndDate: string;
+  P1T: boolean;
+  P1F: boolean;
+  P2T: boolean;
+  P2F: boolean;
 }

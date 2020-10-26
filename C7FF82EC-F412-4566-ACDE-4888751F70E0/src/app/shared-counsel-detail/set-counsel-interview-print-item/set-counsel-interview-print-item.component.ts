@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DsaService } from "../../dsa.service";
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-set-counsel-interview-print-item',
@@ -10,18 +11,23 @@ import * as moment from 'moment';
 export class SetCounselInterviewPrintItemComponent implements OnInit {
 
   isCancel: boolean = true;
-  isCheckPublic: boolean = true;
-  isCheckN1: boolean = true;
-  isCheckN2: boolean = true;
+  isCheckP1T: boolean = false;
+  isCheckP1F: boolean = false;
+  isCheckP2T: boolean = false;
+  isCheckP2F: boolean = false;
+
   startDate: string = "";
   endDate: string = "";
   // [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel-interview-doc/'+currentStudent.StudentID+')'">
 
-  constructor(private dsaService: DsaService) { }
+  constructor(private dsaService: DsaService,
+    private router: Router) { }
   studentID: string = "";
 
   cancel() {
     this.isCancel = true;
+    this.startDate = this.endDate = '';
+    this.isCheckP1T = this.isCheckP1F = this.isCheckP2T = this.isCheckP2F = false;
     $("#setCounselInterviewdocPrintItem").modal("hide");
   }
 
@@ -41,68 +47,42 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
       }
     }
 
+    if (this.isCheckP1T == false && this.isCheckP1F == false && this.isCheckP2T == false && this.isCheckP2F == false) {
+      alert("只少勾選1個公開或不公開!");
+      chkDataPass = false;
+    }
+
     let StartDate = this.startDate.replace('T', ' ');
     let EndDate = this.endDate.replace('T', ' ');
-    //     { path: "print/counsel-interview-doc/:studentID/:p/:sd/:ed", component:Coun
 
     if (chkDataPass) {
       this.isCancel = false;
 
-      let isP: string = 'f';
-      if (this.isCheckPublic)
-        isP = 't';
-      let isCo: string = '';
-      if (this.isCheckN1 && this.isCheckN2) {
-        isCo = '12';
-      }
-      if (this.isCheckN1 && this.isCheckN2 === false) {
-        isCo = '1';
-      }
-
-      if (this.isCheckN1 === false && this.isCheckN2) {
-        isCo = '2';
-      }
-
-
-
-      window.open('content.htm#/(simple-page:simple-page/print/counsel-interview-doc/' + this.studentID + '/' + isP + '/' + StartDate + '/' + EndDate + '/' + isCo + ')', '_blank');
-      $("#setCounselInterviewdocPrintItem").modal("hide");
-
+      let a = { studentID: this.studentID, StartDate: StartDate, EndDate: EndDate, P1T: this.isCheckP1T, P1F: this.isCheckP1F, P2T: this.isCheckP2T, P2F: this.isCheckP2F }
+      let x = JSON.stringify(a);
+      window.open('content.htm#/(simple-page:simple-page/print/counsel-interview-doc/' + x + ')', '_blank');
     }
 
   }
   ngOnInit() {
-    this.isCheckN1 = true;
-    this.isCheckN2 = true;
-    this.isCheckPublic = true;
+   
   }
 
+  // 設定選項
   setCheckItem(item: string) {
-
-    if (item === '一級輔導') {
-      if (this.isCheckN1)
-        this.isCheckN1 = false;
-      else
-        this.isCheckN1 = true;
+    if (item === '一級輔導公開') {
+      this.isCheckP1T = !this.isCheckP1T;
+    }
+    if (item === '一級輔導不公開') {
+      this.isCheckP1F = !this.isCheckP1F;
     }
 
-    if (item === '二級輔導') {
-      if (this.isCheckN2)
-        this.isCheckN2 = false;
-      else
-        this.isCheckN2 = true;
+    if (item === '二級輔導公開') {
+      this.isCheckP2T = !this.isCheckP2T;
     }
-
-    if (item === '公開') {
-      if (this.isCheckPublic)
-        this.isCheckPublic = false;
-      else
-        this.isCheckPublic = true;
-
+    if (item === '二級輔導不公開') {
+      this.isCheckP2F = !this.isCheckP2F;
     }
-
-    console.log(this.isCheckN1);
-    console.log(this.isCheckN2);
   }
 
 }

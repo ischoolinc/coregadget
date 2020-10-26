@@ -83,6 +83,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.OccurDate = this.parseDate(dt);
     this._addInterview._CaseInterview.useQuestionOptionTemplate();
     this._addInterview.loadDefaultData();
+    this._addInterview._CaseInterview.checkValue();
 
     $("#addCaseInterview").modal("show");
 
@@ -147,6 +148,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview._CaseInterview.isSaveDisable = true;
     this._addInterview.loadDefaultData();
+    this._addInterview._CaseInterview.checkValue();
     $("#addCaseInterview").modal("show");
     // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {

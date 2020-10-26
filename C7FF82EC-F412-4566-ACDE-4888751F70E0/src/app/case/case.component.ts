@@ -60,6 +60,7 @@ export class CaseComponent implements OnInit {
     this.case_modal.selectCaseSourceValue = "請選擇個案來源";
     this.case_modal.selectCaseTeachersValue = "請選擇認輔老師";
     this.case_modal.caseStudent.selectCaseTeacers = [];
+    // 預設結案老師是輸入老師
     this.case_modal.closedTeacherName = "";
 
     this.case_modal.isCanSetClass = true;

@@ -370,22 +370,27 @@ export class NewCaseModalComponent implements OnInit {
       alert("GetCounselTeacherRole error:" + err.dsaError.message);
     }
 
-    // 取得結案教師
-    if (this.caseStudent.UID && this.caseStudent.UID.length > 0)
-      try {
-        let rspCloseTeacher = await this.dsaService.send("GetCaseClosedTeacherName", {
-          Request: {
-            CaseID: this.caseStudent.UID
-          }
-        });
-        let dataCloseTeacher = [].concat(rspCloseTeacher.ClosedTeacher || []);
-        if (dataCloseTeacher.length > 0) {
-          this.closedTeacherName = dataCloseTeacher[0].TeacherName;
-        }
+    
+    // // 取得結案教師
+    // if (this.caseStudent.UID && this.caseStudent.UID.length > 0)
+    //   try {
+    //     let rspCloseTeacher = await this.dsaService.send("GetCaseClosedTeacherName", {
+    //       Request: {
+    //         CaseID: this.caseStudent.UID
+    //       }
+    //     });
+    //     let dataCloseTeacher = [].concat(rspCloseTeacher.ClosedTeacher || []);
+    //     if (dataCloseTeacher.length > 0) {
+    //       this.closedTeacherName = dataCloseTeacher[0].TeacherName;
+    //     }
 
-      } catch (err) {
-        alert("GetCaseClosedTeacherName error:" + err.dsaError.message);
-      }
+    //   } catch (err) {
+    //     alert("GetCaseClosedTeacherName error:" + err.dsaError.message);
+    //   }
+
+    // 2020/10/14 與佳樺討論後結案老師是輸入老師
+    
+
   }
 
   parseCaseOptions(data: QOption[]) {

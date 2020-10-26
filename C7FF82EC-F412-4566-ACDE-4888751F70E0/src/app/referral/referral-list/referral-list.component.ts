@@ -79,6 +79,7 @@ export class ReferralListComponent implements OnInit {
     this.case_modal.loadData();
     this.case_modal.setCaseFromReferral(refStudent);
     this.case_modal.isAddMode = true;
+    this.case_modal.caseStudent.checkValue();
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
@@ -93,7 +94,7 @@ export class ReferralListComponent implements OnInit {
     this.grant_modal.referralStudent = refStudent;
 
     this.grant_modal.loadDefault();
-
+    this.grant_modal.referralStudent.checkValue();
     $("#grant_modal").modal("show");
     // 關閉畫面
     $("#grant_modal").on("hide.bs.modal", () => {
@@ -137,10 +138,8 @@ export class ReferralListComponent implements OnInit {
         rec.ReferralReplyDate = studRec.ReferralReplyDate;
         rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
         rec.RefCaseID = studRec.CaseID;
-        rec.PhotoUrl = `${
-          this.dsaService.AccessPoint
-          }/GetStudentPhoto?stt=Session&sessionid=${
-          this.dsaService.SessionID
+        rec.PhotoUrl = `${this.dsaService.AccessPoint
+          }/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID
           }&parser=spliter&content=StudentID:${rec.StudentID}`;
         rec.isDisplay = false;
 
