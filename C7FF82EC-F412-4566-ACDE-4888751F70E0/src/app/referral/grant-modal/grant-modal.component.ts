@@ -40,6 +40,7 @@ export class GrantModalComponent implements OnInit {
 
   ngOnInit() {
     this.referralStudent = new ReferralStudent();
+
   }
 
   checkValue() {

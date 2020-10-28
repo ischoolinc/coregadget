@@ -94,7 +94,7 @@ const routes: Routes = [
       { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
       { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent },
       { path: "print/counsel_history/:studentID", component: CounselHistoryComponent },
-      { path: "print/counsel-interview-doc/:studentID/:p/:sd/:ed/:co", component:CounselInterviewDocComponent},
+      { path: "print/counsel-interview-doc/:param", component:CounselInterviewDocComponent},
       { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
       { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
     ]
