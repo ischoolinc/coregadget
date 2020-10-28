@@ -1,4 +1,5 @@
-import { Component, Input, ElementRef, ViewChild, ChangeDetectorRef, NgZone, TemplateRef , OnInit, OnDestroy} from '@angular/core';
+
+import { Component, Input, ElementRef, ViewChild, ChangeDetectorRef, NgZone, TemplateRef, OnInit, OnDestroy } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { ScrollDispatcher } from '@angular/cdk/overlay';
 import { TargetDataService } from '../service/target-data.service';
@@ -15,7 +16,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 export class InputBlockComponent implements OnInit, OnDestroy {
 
   // 是否可以編輯
-  canEdit: boolean;
+  canEdit: boolean = true ;
   // 目前評量
   curExam: ExamRecord = {} as ExamRecord;
   // 目前評分項目
@@ -43,6 +44,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   affixTop = false;
   isMobile = false;
 
+  textCodeListT = {};
   private inputSeatNo: ElementRef;
   private inputTextScore: ElementRef;
 
@@ -91,7 +93,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     /**訂閱資料 */
     this.targetDataSrv.canEdit$.pipe(
       takeUntil(this.dispose$)
-    ).subscribe(value => {
+    ).subscribe((value :boolean)=> {
       this.canEdit = value;
     });
 
@@ -112,6 +114,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     this.targetDataSrv.exam$.pipe(
       takeUntil(this.dispose$)
     ).subscribe((exam: ExamRecord) => {
+     
       this.curExam = exam;
       this.setPage();
     });
@@ -120,6 +123,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       takeUntil(this.dispose$)
     ).subscribe((quiz: string) => {
       this.setCurQuiz(quiz);
+      this.setPage();
     });
   }
 
@@ -142,7 +146,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
 
   /** 根據資料以及成績是否可編輯來切換樣板 */
   setPage() {
-    if(this.curStudent && this.curExam.Item.length) {
+    if (this.curStudent && this.curExam.Item.length) {
       if (!this.canEdit) {
         this.displayPage = this.tplSourceLock;
       } else {
@@ -190,15 +194,36 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * 根據高雄須修改可以多的代碼一起轉換成文字
+   * @param code 
+   */
+  switchLevelCodeWithMany(code: string) {
+    let commentCos: string[];
+    let commentWords: string[] = [];
+    commentCos = code.split(',');
+    commentCos.forEach(item => {
+      const commentCode = this.commentCodeList.find((txt: CommentCode) => txt.Code === item);
+      if (commentCode) {
+        commentWords.push(commentCode.Comment);
+      } else {
+        commentWords.push(item);
+      }
+    });
+    this.curValue = commentWords.join(',');
+  }
+
+
   /** 驗證通過與否 */
   enterGrade() {
+    
     this.curValue = this.curValue.trim();
     switch (this.curExam.ExamID) {
       case 'DailyBehavior':
         this.switchLevelCode(this.curValue);
         break;
       case 'DailyLifeRecommend':
-        this.switchCommentCode(this.curValue);
+        this.switchLevelCodeWithMany(this.curValue);
         break;
       case 'GroupActivity':
         if (this.curQuizName.includes('努力程度')) {
@@ -214,7 +239,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   /** 更新成績且跳至下一位 */
   submitGrade = (score: any) => {
     // 資料更新
-    this.curStudent.DailyLifeScore.set(`${this.curExam.ExamID}_${this.curQuizName}`,score);
+    this.curStudent.DailyLifeScore.set(`${this.curExam.ExamID}_${this.curQuizName}`, score);
     const target = this.studentList.find((stu: StudentRecord) => stu.ID === this.curStudent.ID);
     if (target) {
       target.DailyLifeScore = this.curStudent.DailyLifeScore;
@@ -247,14 +272,14 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       const _combine = combineLatest(
         this.modalService.onHide
       ).subscribe(() => this.changeDetectorRef.markForCheck());
-  
+
       this.subscriptions.push(
         this.modalService.onHide.subscribe(() => {
           this.enterGrade();
           this.unsubscribe();
         })
       );
-  
+
       this.subscriptions.push(_combine);
       this.modalRef = this.modalService.show(template);
     }
@@ -281,7 +306,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   /**選擇文字代碼 */
   selectCommentCode(code: CommentCode) {
     this.curValue = this.curValue.trim();
-
+    console.log("CommentCode", code);
     if (this.curValue) {
       this.curValue += `,${code.Comment}`
     } else {
@@ -308,16 +333,16 @@ export class InputBlockComponent implements OnInit, OnDestroy {
     if (this.isMobile) { return; }
     const curIndex = this.curStudent ? this.curStudent.Index || 0 : 0;
     const targetStudents: StudentRecord[] = this.studentList.filter((stu: StudentRecord) => stu.SeatNumber === this.selectSeatNumber);
-    
+
     if (targetStudents.length > 0) {
-      const targetStudent1: StudentRecord = targetStudents.find((stu:StudentRecord) => stu.Index > curIndex);
-      const targetStudent2: StudentRecord = targetStudents.find((stu:StudentRecord) => stu.Index <= curIndex);
+      const targetStudent1: StudentRecord = targetStudents.find((stu: StudentRecord) => stu.Index > curIndex);
+      const targetStudent2: StudentRecord = targetStudents.find((stu: StudentRecord) => stu.Index <= curIndex);
       this.curStudent = targetStudent1 || targetStudent2;
-      this.setCurStudentAndValue();  
+      this.setCurStudentAndValue();
     }
   }
 
-  setCurStudentAndValue(){
+  setCurStudentAndValue() {
     this.targetDataSrv.setStudent(this.curStudent);
     this.curValue = this.curStudent.DailyLifeScore.get(`${this.curExam.ExamID}_${this.curQuizName}`);
   }
@@ -343,5 +368,5 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       this.affixTop = false;
     }
   }
-  
+
 }

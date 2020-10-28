@@ -33,6 +33,12 @@ export class AppComponent implements OnInit {
   curSemester: string;
   // 學年度清單
   schoolYearList: string[];
+  schoolYearList1: string[];
+  schoolYearList2: string[];
+  schoolYearList3: string[];
+
+  dropdowndisplay: boolean = true;
+
   // 學期清單
   semesterList: string[];
   // 導師評語代碼表
@@ -55,6 +61,13 @@ export class AppComponent implements OnInit {
   curClassTimeConfig: any;
   // 目前學生
   curStudent: StudentRecord;
+
+  // 全班都是在在校生的 班級 
+  ClassWithStuStatus1 :ClassReocrd[] =[];
+
+  btnState: string;
+  saveBtnTitle: string; 
+
   // 目前學生編號
   curStudentID: string;
 
@@ -93,6 +106,9 @@ export class AppComponent implements OnInit {
       this.isLoading = true;
       this.loadError = '';
       this.schoolYearList = [];
+      this.schoolYearList1 = [];
+      this.schoolYearList2 = [];
+      this.schoolYearList3 = [];
       this.semesterList = [];
 
       const rsp = await Promise.all([
@@ -103,6 +119,7 @@ export class AppComponent implements OnInit {
         this.basicSrv.getMoralCommentMappingTable(), // 4. 取得日常生活表現具體建議代碼表
         this.basicSrv.getEffortDegreeMappingTable(), // 5. 取得努力程度對照表
         this.basicSrv.getDailyLifeMappingTable(), // 6. 取得日常生活表現評量項目、評分項目、努力程度
+        this.basicSrv.getClassStudentStatus1()
       ]);
       // rsp 資料整理
       {
@@ -111,6 +128,13 @@ export class AppComponent implements OnInit {
         for(let i = 4; i >= 0; i--) {
           this.schoolYearList.push('' + (Number(this.curSchoolYear) - i));
         }
+        this.schoolYearList1.push('' + (Number(this.curSchoolYear))); 
+        for(let i = 1; i >= 0; i--) {
+          this.schoolYearList2.push('' + (Number(this.curSchoolYear) - i));
+        }
+        for(let i = 2; i >= 0; i--) {
+          this.schoolYearList3.push('' + (Number(this.curSchoolYear) - i));
+        }
         this.sysDateTime = rsp[1];
         this.dailyLifeInputConfig = rsp[2];
         this.classList = rsp[3];
@@ -118,6 +142,13 @@ export class AppComponent implements OnInit {
         this.effortCodeList = rsp[5];
         this.examList = rsp[6].examList;
         this.levelCodeList = rsp[6].degreeCode;
+        this.ClassWithStuStatus1 = rsp[7];
+        
+       
+        // console.log("levelCodeList",this.levelCodeList);
+        // 處理一下班級 沒有status的學生
+    
+       this.classList = this.ClassWithStuStatus1 ;
         // 設定目前評量
         this.setCurrentExam(this.examList[0] || {} as ExamRecord);
         // 設定目前班級
@@ -177,6 +208,7 @@ export class AppComponent implements OnInit {
    * 2. 取得學生成績資料
   */
   async setCurrentClass(classRec: ClassReocrd) {
+   
     let execute: boolean = false;
     if (this.isChange) {
       if (window.confirm("警告:尚未儲存資料，現在離開視窗將不會儲存本次更動")) {
@@ -194,6 +226,23 @@ export class AppComponent implements OnInit {
           return time.Grade === this.curClass.GradeYear;
         });
         this.curClassTimeConfig = time || '';
+      }
+
+      switch(this.curClass.GradeYear)
+      {
+        
+          case '1': this.schoolYearList = this.schoolYearList1;
+          break;
+          case '2': this.schoolYearList = this.schoolYearList2;
+          break;
+          case '3': this.schoolYearList = this.schoolYearList3;
+          break;
+          case '7': this.schoolYearList = this.schoolYearList1;
+          break;
+          case '8': this.schoolYearList = this.schoolYearList2;
+          break;
+          case '9': this.schoolYearList = this.schoolYearList3;
+          break;
       }
       
       this.isEditable();
@@ -283,20 +332,28 @@ export class AppComponent implements OnInit {
 
   /** 判斷目前學年度、學期、班級 是否可編輯 */
   isEditable() {
+  
     if (this.curSchoolYear === this.dailyLifeInputConfig.SchoolYear && this.curSemester === this.dailyLifeInputConfig.Semester) {
       // 系統時間
       if ( Date.parse(this.sysDateTime).valueOf() >= Date.parse(this.curClassTimeConfig.Start).valueOf()
         && Date.parse(this.sysDateTime).valueOf() <= Date.parse(this.curClassTimeConfig.End).valueOf()) {
         this.canEdit = true;
-        this.targetDataSrv.setCanEdit(this.canEdit);
+        this.dropdowndisplay = true;
+        this.btnState = "";
+        this.saveBtnTitle = "";
       } else {
         this.canEdit = false;
-        this.targetDataSrv.setCanEdit(this.canEdit);
+        this.dropdowndisplay = false;
+        this.btnState = "disabled";
+        this.saveBtnTitle = "不在輸入時間內";
       }
     } else{
       this.canEdit = false;
-      this.targetDataSrv.setCanEdit(this.canEdit);
+      this.dropdowndisplay = false;
+      this.btnState = "disabled";
+      this.saveBtnTitle = "非現學年度學期，僅供查看";
     }
+    this.targetDataSrv.setCanEdit(this.canEdit);
   }
 
   /** 切換學生 */
@@ -332,7 +389,6 @@ export class AppComponent implements OnInit {
         });
       }
     });
-    console.log('checkAllTable');
     this.isChange = change;
   }
 
@@ -489,7 +545,7 @@ export class AppComponent implements OnInit {
     <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
   </head>
   <body onLoad='self.print()'>
-    <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
+    <table border='1' cellspacing='0' cellpadding='2'> ${this.curSchoolYear} 學年度  第${this.curSemester} 學期  ${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
       <tr>
         ${titleList.join('')}
       </tr>
@@ -507,7 +563,7 @@ export class AppComponent implements OnInit {
     <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/>
   </head>
   <body onLoad='self.print()'>
-    <table border='1' cellspacing='0' cellpadding='2'>${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
+    <table border='1' cellspacing='0' cellpadding='2'> ${this.curSchoolYear} 學年度  第${this.curSemester} 學期 ${this.curClass.ClassName} 日常生活表現 - ${this.curExam.Name}
       <tr>
         ${titleList.join('')}
       </tr>
@@ -530,6 +586,11 @@ export class AppComponent implements OnInit {
         class: 'modal-lg',
         initialState: {
           title: quizName,
+          textCodeList: this.commentCodeList,
+          degreeCodeList: this.levelCodeList,
+          effortCodeList :this.effortCodeList,
+          curExam:this.curExam
+
         }
       }; 
       this.bsModalRef = this.modalService.show(BatchImportComponent, config);

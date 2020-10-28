@@ -125,12 +125,12 @@
 
 <ng-template #tplTextType>
   <td colspan="2" class="miniPadding">
-    <textarea #inputTextScore
+    <textarea #inputTextScore 
       [(ngModel)]="curValue"
       (keyup.enter)="enterGrade()"
       maxlength="200"
       placeholder="{{isMobile ? '' : 'Enter送出'}}"
-      style="min-height: 60px;height:120px;resize: vertical;"
+      style="min-height: 60px;height:120px;resize: vertical;  "
       class="form-control" select-on-click>
     </textarea>
     <div class="btn-group mt-1 d-flx align-items-center justify-content-center">

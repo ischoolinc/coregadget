@@ -11,17 +11,23 @@ import { RawSource } from 'webpack-sources';
 export class BasicService {
 
   private _conn: any;
+  private _conn2 : any ;
 
   constructor(
     private gadget: GadgetService,
   ) {
     this._conn = this.gadget.getContract('ta');
+    this._conn2 = this.gadget.getContract('1campus.daily_behavior.teacher');
+
   }
 
   async connection() {
     return this._conn;
   }
 
+  async connection2() {
+    return this._conn2;
+  }
   /** 取得目前學年期 */
   async getCurrentSemester() {
     const conn = await this.connection();
@@ -34,6 +40,19 @@ export class BasicService {
       curSemester: curSemester,
     }
   }
+
+  /**
+   * 取得實際有在校生之班級
+   */
+  async getClassStudentStatus1()  {
+
+    const conn2  =  await this.connection2(); // 連線到
+    const rsp =  await conn2.send('_.GetClassesWithOutGraduation', {}); 
+    return  [].concat(rsp.Response.Class ||[]);
+  }
+
+
+
 
   /** 取得主機時間 */
   async getCurrentDateTime() {

@@ -70,7 +70,10 @@ export class StudentsBlockComponent implements OnInit, OnDestroy{
   }
 
   doSelect(student: StudentRecord, quizName: string) {
-    this.targetDataSrv.setStudent(student);
+     
+    this.curStudent =student;
+    this.targetDataSrv.setStudent(this.curStudent);
+    
     this.targetDataSrv.setQuizName(quizName);
   }
   

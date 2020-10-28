@@ -50,7 +50,12 @@
         </table>
       </div>
       <div class="modal-footer">
+
+
         <ng-container *ngIf="!parseValues.length">
+          <button  *ngIf="IsShowTranferBtn" type="button"
+          class="btn btn-outline-secondary mr-auto mx-3"
+          (click)="doTransfer()">代碼轉文字</button>
           <button type="button"
             class="btn btn-outline-secondary"
             (click)="modalRef.hide()">取消</button>
