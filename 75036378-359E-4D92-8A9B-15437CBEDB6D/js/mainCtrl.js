@@ -893,36 +893,33 @@
                             alert('GetOpeningHours Error' + JSON.stringify(error));
                         } else {
                             $(response.Response.OpeningHours).each(function (index, item) {
-
                                 if (item.Startdate1 && item.Enddate1) {
-                                    var tmp_Date = new Date();
+                                    var Selectable = item.Stage1_Selectable === 'true' ? true : false;
                                     var Startdate = new Date(item.Startdate1);
                                     var Enddate = new Date(item.Enddate1);
-
-                                    if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
-
+                                    // 透過SQL回傳資料判斷系統時間是否符合第一階段選社時間
+                                    if (Selectable) {                              
                                         Opening = "yes";
                                         $scope.Stage = "1";
                                         $scope.OpenTime = "第1階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
                                         $scope.StageMode = "模式:" + item.Stage1_Mode;
-
-                                    } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
-
+                                    } else {
                                         Opening = "no";
                                         $scope.Stage = "3";
                                         $scope.OpenTime = "目前未開放選社"
                                     }
                                 }
                                 if (item.Startdate2 && item.Enddate2) {
-                                    var tmp_Date = new Date();
+                                    var Selectable = item.Stage2_Selectable === 'true' ? true : false;
                                     var Startdate = new Date(item.Startdate2);
                                     var Enddate = new Date(item.Enddate2);
-                                    if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
+                                    // 透過SQL回傳資料判斷系統時間是否符合第二階段選社時間
+                                    if (Selectable) {                                       
                                         Opening = "yes";
                                         $scope.Stage = "2";
                                         $scope.OpenTime = "第2階段開放選社時間：" + $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm");
                                         $scope.StageMode = "模式:" + item.Stage2_Mode;
-                                    } else if (tmp_Date < Startdate || tmp_Date > Enddate) {
+                                    } else {
                                         if ($scope.Stage != 1) {
                                             Opening = "no";
                                             $scope.Stage = "3";
