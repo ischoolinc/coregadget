@@ -423,20 +423,18 @@ var _gg = function() {
                                 } else {
                                     if (response.DTScore != null) {
                                         var schoolYear = '', semester = '';
+                                        var selectable = false;
                                         $(response.DTScore).each(function (index, item) {
                                             opening = item;
                                             schoolYear = item.Result.SystemConfig.DefaultSchoolYear;
                                             semester = item.Result.SystemConfig.DefaultSemester;
+                                            selectable = item.Result.SystemConfig.Selectable === 'true' ? true : false;
                                         });
 
                                         opening.state = "no";
 
                                         if (opening.Start && opening.End) {
-                                            var tmp_Date  = new Date();
-                                            var Startdate = $.parseDate(opening.Start);
-                                            var Enddate   = $.parseDate(opening.End);
-
-                                            if (Startdate <= tmp_Date && Enddate >= tmp_Date) {
+                                            if (selectable) {
                                                 opening.state = "yes";
                                                 var tmp_html = '' +
                                                     '<div class="alert alert-error">' +
@@ -450,7 +448,13 @@ var _gg = function() {
                                     }
 
                                     if (opening.state === "no") {
-                                        $('#opening').html('<div class="alert alert-error">未開放登錄</div>');
+                                        var tmp_html = '' +
+                                                    '<div class="alert alert-error">' +
+                                                        schoolYear + ' 學年度第 ' + semester +
+                                                        ' 學期　成績輸入區間： ' + opening.Start + ' ~ ' + opening.End + 
+                                                        ' 非登錄時間' +
+                                                    '</div>';
+                                        $('#opening').html(tmp_html);
                                     }
                                 }
                             }
