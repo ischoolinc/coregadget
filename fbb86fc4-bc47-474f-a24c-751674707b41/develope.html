@@ -5,12 +5,19 @@
   <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
   <META HTTP-EQUIV="EXPIRES" CONTENT="0">
   <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-  <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script>
+  <script src="js/gadget.js"></script>
   <script>
-    init({
-      application: "dev.sh_d", //"h.trialschool.tw", //"http://test.iteacher.tw/cs4/test_sh_d_chhs", //"dev.jh_kh",
-      paramValues: {}
-    });
+      init({
+          application: "dev.sh_d",
+          //application: "test.kh.edu.tw",
+          paramValues: {},
+          oAuth: {
+              clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+              clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+              account: 'bubu@debug.ischool.com.tw',
+              password:'1234'
+          }
+      });
   </script>
   <link href="css/bootstrap.css" rel="stylesheet" />
   <link href="css/bootstrap-responsive.css" rel="stylesheet" />
