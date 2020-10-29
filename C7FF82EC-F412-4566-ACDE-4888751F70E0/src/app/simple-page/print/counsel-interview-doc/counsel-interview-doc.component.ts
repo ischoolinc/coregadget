@@ -102,7 +102,14 @@ export class CounselInterviewDocComponent implements OnInit {
             data.category_json = JSON.parse(data.Category);
             data.category_json.forEach((data1) => {
               if (data1.answer_checked) {
-                cate_strs.push(data1.answer_text);
+                let strValue = data1.answer_text;
+
+                // 有其他時
+                if (data1.answer_text.indexOf('其他%text') > -1) {
+                  strValue = data1.answer_martix.join('：');
+                }
+
+                cate_strs.push(strValue);
               }
             });
 
@@ -145,7 +152,15 @@ export class CounselInterviewDocComponent implements OnInit {
             data.category_json = JSON.parse(data.Category);
             data.category_json.forEach((data1) => {
               if (data1.answer_checked) {
-                cate_strs.push(data1.answer_text);
+
+                let strValue = data1.answer_text;
+
+                // 有其他時
+                if (data1.answer_text.indexOf('其他%text') > -1) {
+                  strValue = data1.answer_martix.join('：');
+                }
+
+                cate_strs.push(strValue);
               }
             });
 
