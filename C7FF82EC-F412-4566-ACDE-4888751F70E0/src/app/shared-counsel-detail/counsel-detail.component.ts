@@ -1,9 +1,10 @@
-import { Component, OnInit, Optional,ViewChild } from "@angular/core";
+import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { CounselStudentService, CounselStudent } from "../counsel-student.service";
 import { CounselComponent } from '../counsel/counsel.component';
 import { DsaService } from '../dsa.service';
 import { SetCounselInterviewPrintItemComponent } from './set-counsel-interview-print-item/set-counsel-interview-print-item.component';
+import { GlobalService } from "../global.service";
 
 @Component({
   selector: "app-counsel-detail",
@@ -18,6 +19,7 @@ export class CounselDetailComponent implements OnInit {
 
   public baseVisible: boolean = false;
   public counselVisible: boolean = false;
+  public setCounselPrintItemVisible: boolean = false;
   public coubselReferralVisible: boolean = false;
   public comprehensiveStr: string = "綜合紀錄表";
 
@@ -38,6 +40,7 @@ export class CounselDetailComponent implements OnInit {
     private router: Router,
     public counselStudentService: CounselStudentService,
     private dsaService: DsaService,
+    public globalService: GlobalService,
     @Optional()
     private counselComponent: CounselComponent
   ) { }
@@ -66,6 +69,15 @@ export class CounselDetailComponent implements OnInit {
       // 新生特有
       this.comprehensiveStr = "填報資料";
     }
+
+    // 判斷 個人輔導紀錄 功能只有管理者才可以使用
+    this.setCounselPrintItemVisible = false;
+    if (this.counselVisible) {
+      if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長') {
+        this.setCounselPrintItemVisible = true;
+      }
+    }
+
 
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
@@ -115,6 +127,7 @@ export class CounselDetailComponent implements OnInit {
         ) {
           this._psychological_testEnable = true;
         }
+
       } else {
         this.deny = true;
       }
@@ -167,7 +180,7 @@ export class CounselDetailComponent implements OnInit {
   }
 
   // 設定學生個人輔導紀錄列印功能
-  setCounselPrintItem(studentID: string){
+  setCounselPrintItem(studentID: string) {
     this._setCounselInterviewPrintItem.studentID = studentID;
 
     $("#setCounselInterviewdocPrintItem").modal("show");
