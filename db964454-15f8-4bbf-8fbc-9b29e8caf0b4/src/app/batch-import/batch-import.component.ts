@@ -36,7 +36,7 @@ export class BatchImportComponent implements OnInit{
   // 目前評量
   curExam: ExamRecord;
    // 是否顯示轉換科目代碼
-  IsShowTranferBtn :boolean ;
+  IsShowTranferBtn :boolean = false;
 
    //代碼資料比對用清單
    textCodeListT = {};
@@ -50,7 +50,7 @@ export class BatchImportComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.IsShowTranferBtn =this.title.includes('努力程度')
+    
     // 訂閱資料
     this.targetDataSrv.studentList$.pipe(
       takeUntil(this.dispose$)
@@ -67,6 +67,11 @@ export class BatchImportComponent implements OnInit{
     this.effortCodeList.forEach(item => {
       if (item.Code) { this.effortCodeListT[item.Code] = item.Name || ''; }
   });
+
+  this.IsShowTranferBtn = (( this.curExam.ExamID == 'DailyBehavior') || // 日常行為表現 
+  (this.curExam.ExamID === 'DailyLifeRecommend') || // 日常生活表現具體建議
+  (this.curExam.ExamID === 'GroupActivity' && this.title.includes('努力程度'))); // 團體活動下的努力程度
+
   }
 
   // 要處理原始來自 Excel 來源的資料會有跨行(自動換行Excel 貼出來的字會有幫前後字串加綴雙引號")
