@@ -73,8 +73,7 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-            ],
+            "scripts": [],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
@@ -154,5 +153,8 @@
     "@schematics/angular:service": {
       "spec": false
     }
+  },
+  "cli": {
+    "analytics": "b3c15dbe-91fc-494e-901c-e5ea7212b9cc"
   }
 }

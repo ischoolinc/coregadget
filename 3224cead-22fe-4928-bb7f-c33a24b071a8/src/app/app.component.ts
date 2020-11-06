@@ -16,6 +16,9 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
   ]
 })
 export class AppComponent implements OnInit {
+  // 備註：
+  // 成績計算規則：先抓取學生身上的成績計算規則，沒有的話則取班級的成績計算規則，如果兩個都沒有則預設第一條的成績計算規則。（用SQL來判斷，service: GetJHExamScore）
+
   
   //dialog相關設定
   modalRef: BsModalRef;
@@ -149,12 +152,11 @@ export class AppComponent implements OnInit {
 
   async GetClassExam() {
     this.examList = [];
-    const rsp = await this.contract.send('GetClassExam', {
+    const rsp = await this.contract.send('GetJHClassExam', {
       ClassID: this.curClass.id,
       SchoolYear: this.curSS.school_year,
       Semester: this.curSS.semester
     });
-    
     this.examList = [].concat(rsp.Exam || []);
     this.curExam = this.examList[0];
   }
@@ -238,7 +240,9 @@ export class AppComponent implements OnInit {
         if(data.score == '' && data.score_us == ''){
           this.studentList[index].examScore_avg[data.subject][data.exam_id] = '';
         }else{
-          if(data.score !== ''){
+          if(data.score == '' || data.score == '缺' ){
+            score = 0;
+          } else {
             score = parseInt(data.score);
           }
           if(data.score_us !== ''){
@@ -259,15 +263,28 @@ export class AppComponent implements OnInit {
     
     this.studentList.forEach(stu => {
       this.examList.forEach((exam: ExamRec) => { 
-        stu.examScore_avg[exam.id]['加權平均'] = this.avgPipe.transform(NP.divide(stu.examScore_avg[exam.id]['examWeighted_total'],stu.examScore_avg[exam.id]['credit']),parseInt(stu.examScore_decimal),stu.examScore_carry);
-        stu.examScore_avg[exam.id]['算術平均'] = this.avgPipe.transform(NP.divide(stu.examScore_avg[exam.id]['examScore_total'],stu.examScore_avg[exam.id]['exam_total']),parseInt(stu.examScore_decimal),stu.examScore_carry);
+        stu.examScore_avg[exam.id] =stu.examScore_avg[exam.id]?stu.examScore_avg[exam.id]: {};
+        stu.examScore_avg[exam.id]['credit'] = stu.examScore_avg[exam.id]['credit'] ? stu.examScore_avg[exam.id]['credit']: 0;
+        stu.examScore_avg[exam.id]['examWeighted_total'] =  stu.examScore_avg[exam.id]['examWeighted_total'] ? stu.examScore_avg[exam.id]['examWeighted_total']: 0;
+        stu.examScore_avg[exam.id]['exam_total'] =  stu.examScore_avg[exam.id]['exam_total'] ? stu.examScore_avg[exam.id]['exam_total']: 0;
+        stu.examScore_avg[exam.id]['examScore_total'] =  stu.examScore_avg[exam.id]['examScore_total'] ? stu.examScore_avg[exam.id]['examScore_total']: 0;
+        stu.examScore_avg[exam.id]['加權平均'] =  stu.examScore_avg[exam.id]['加權平均'] ? stu.examScore_avg[exam.id]['加權平均']: 0;
+        stu.examScore_avg[exam.id]['算術平均'] =  stu.examScore_avg[exam.id]['算術平均'] ? stu.examScore_avg[exam.id]['算術平均']: 0;
+
+        
+        if(stu.examScore_avg[exam.id]['examWeighted_total'] !== 0 || stu.examScore_avg[exam.id]['examWeighted_total'] == null) {
+          stu.examScore_avg[exam.id]['加權平均'] = this.avgPipe.transform(NP.divide(stu.examScore_avg[exam.id]['examWeighted_total'],stu.examScore_avg[exam.id]['credit']),parseInt(stu.examScore_decimal),stu.examScore_carry);
+        } else {
+          stu.examScore_avg[exam.id]['加權平均'] = 0;
+        }
+
+        if(stu.examScore_avg[exam.id]['examScore_total'] !== 0 || stu.examScore_avg[exam.id]['examScore_total'] == null) {
+          stu.examScore_avg[exam.id]['算術平均'] = this.avgPipe.transform(NP.divide(stu.examScore_avg[exam.id]['examScore_total'],stu.examScore_avg[exam.id]['exam_total']),parseInt(stu.examScore_decimal),stu.examScore_carry);
+        } else {
+          stu.examScore_avg[exam.id]['算術平均'] = 0;
+        }
       })
     })
-
-
-
-    console.log(this.studentList);
-    console.log(this.examList);
   }
 
   async GetStuExamRank() {
@@ -348,7 +365,7 @@ export class AppComponent implements OnInit {
       this.examMatrix[matrix.rank_name][matrix.item_type][matrix.item_name]['level_10'] = matrix.level_10;
       this.examMatrix[matrix.rank_name][matrix.item_type][matrix.item_name]['level_lt10'] = matrix.level_lt10;
     });
-    console.log(this.examMatrix);
+    // console.log(this.examMatrix);
   }
   async GetExamRankMatrixGradeYear() {
     this.examMatrix = {};
