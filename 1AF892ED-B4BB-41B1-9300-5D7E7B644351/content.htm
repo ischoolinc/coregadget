@@ -9,7 +9,10 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "demo.h.cynthia.chen",
+           // application: "demo.h.cynthia.chen",
+        //   application: "demo.h.vicky.chang",
+          application: "dev.sh_d",
+        // application: "demo.h.beibei.lai",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
                 //"第一次期中考Round": "1",
@@ -668,9 +671,9 @@
                                         <div ng-if="importProcess.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importProcess.ParseValues[$index]==''"
+                                        <div ng-if="importProcess.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!=''"
+                                        <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!==''"
                                              class="pull-right"
                                              ng-class="{'text-danger':importProcess.ParseValues[$index] < stuRec.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
                                     </div>
@@ -691,9 +694,9 @@
                                         <div ng-if="importProcess.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
                                              style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importProcess.ParseValues[$index]==''"
+                                        <div ng-if="importProcess.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
-                                        <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!=''"
+                                        <div ng-if="importProcess.ParseValues[$index]!='錯誤'&&importProcess.ParseValues[$index]!==''"
                                              class="pull-right"
                                              ng-class="{'text-danger':importProcess.ParseValues[$index] < stuRec.PassingStandard}">{{importProcess.ParseValues[$index]}}</div>
                                     </div>
