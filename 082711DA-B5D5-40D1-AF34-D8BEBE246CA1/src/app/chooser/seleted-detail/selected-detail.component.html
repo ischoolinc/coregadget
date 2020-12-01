@@ -1,0 +1,28 @@
+<h3 mat-dialog-title>{{title}}</h3>
+<mat-dialog-content>
+  <ng-container *ngIf="target==='TEACHER'" [ngTemplateOutlet]="tplTeacherList"></ng-container>
+  <ng-container *ngIf="target==='STUDENT'" [ngTemplateOutlet]="tplStudentList"></ng-container>
+</mat-dialog-content>
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button mat-button mat-dialog-close cdkFocusInitial>關閉</button>
+</mat-dialog-actions>
+
+<ng-template #tplTeacherList>
+  <mat-chip *ngFor="let item of teachers" disableRipple
+    class="mr-2 py-2 px-3 mb-2">
+    {{item.TeacherName || '無姓名'}} {{item.Nickname ? '(' + item.Nickname + ')' : ''}}
+  </mat-chip>
+</ng-template>
+
+<ng-template #tplStudentList>
+  <div *ngFor="let grade of grades">
+    <h5 class="mt-2">{{grade.gradeYear}}年級</h5>
+    <div *ngFor="let cls of grade.classes">
+      <h6 class="mt-2">{{cls.className}}</h6>
+      <mat-chip *ngFor="let stud of cls.students" disableRipple
+        class="mr-2 py-2 px-3 mb-2">
+        {{stud.StudentName || '無姓名'}} ({{stud.StudentNumber || '無學號'}})
+      </mat-chip>
+    </div>
+  </div>
+</ng-template>

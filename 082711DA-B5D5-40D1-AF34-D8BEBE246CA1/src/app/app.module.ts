@@ -1,3 +1,4 @@
+import { ChooserModule } from './chooser/chooser.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule} from '@angular/core';
 
@@ -27,6 +28,7 @@ import { ListFormComponent } from './list-form/list-form.component';
     MatInputModule,
     MatNativeDateModule
     , MatIconModule
+    , ChooserModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,46 @@
+<div>
+  <mat-form-field class="form-group textfield-box w-100">
+    <input matInput [placeholder]="placeHolder" [formControl]="searchControl">
+  </mat-form-field>
+</div>
+<div *ngIf="!loading; else tplLoading">
+  <div [hidden]="processing">
+    <div class="student-container">
+      <div class="mb-2" *ngFor="let item of list;let idx = index;">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input"
+            [attr.id]="'item_check_' + idx"
+            [(ngModel)]="item.checked">
+          <label class="custom-control-label"
+            [attr.for]="'item_check_' + idx">
+            <ng-container *ngTemplateOutlet="targetTemplate; context: {item: item}"></ng-container>
+          </label>
+        </div>
+      </div>
+      <p [hidden]="list.length">查無此資料！</p>
+    </div>
+  </div>
+
+  <p [hidden]="!processing" [ngClass]="message.msgClass || ''">{{ message.text }}</p>
+</div>
+
+
+<ng-template #tplLoading>
+  <p>loading...</p>
+</ng-template>
+
+<ng-template #tplTeacherInfo let-info="item">
+  {{info.TeacherName || '無姓名'}} {{info.Nickname ? '(' + info.Nickname + ')' : ''}}
+</ng-template>
+<ng-template #tplStudentInfo let-info="item">
+  {{info.ClassName}} {{info.StudentName || '無姓名'}} ({{info.StudentNumber || '無學號'}})
+</ng-template>
+
+<ng-template #tplOuterDialogTitle>
+</ng-template>
+
+<ng-template #tplOuterDialogAction>
+  <button [hidden]="loading || processing" mat-flat-button color="primary" class="add-btn" (click)="confirm()">
+    <mat-icon>add</mat-icon>加入收件者
+  </button>
+</ng-template>
