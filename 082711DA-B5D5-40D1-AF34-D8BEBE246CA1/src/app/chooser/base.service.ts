@@ -21,17 +21,6 @@ export class BaseService {
     );
   }
 
-  /**
-   * 取得各身分安裝統計數值
-   */
-  public getInstalledCount() {
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<InstallVisitCountRecord>('GetInstalledCount')),
-      map(rsp => {
-        return rsp;
-      })
-    );
-  }
 
   /**
    * 取得全校班級
@@ -44,103 +33,6 @@ export class BaseService {
         // @ts-ignore 為加速，所以 uds 回傳字串，此處將字串轉陣列
         classes.forEach(cls => cls.StudentIds = (cls.StudentIds ? cls.StudentIds.split(',') : []));
         return classes;
-      })
-    );
-  }
-
-  /**
-   * 取得發佈單位
-   */
-  public getDisplaySenders() {
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<DisplaySenderResponse>('GetDisplaySenders')),
-      map(rsp => {
-        return [].concat(!!rsp && rsp.DisplaySender || []) as string[];
-      })
-    );
-  }
-
-
-  /**
-   * 取得老師、學生、家長 APP 安裝狀態
-   * @param teacherIds 老師系統編號陣列
-   * @param studentIds 學生系統編號陣列
-   */
-  public getInstalledStatus(teacherIds: string[], studentIds: string[]) {
-
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<InstallStatusInfo>('GetInstalledStatus', {
-        Request: {
-          TeacherId: teacherIds,
-          StudentId: studentIds,
-        }
-      })),
-      map(rsp => {
-        return (!!rsp && rsp) as InstallStatusInfo;
-      }),
-      map(infos => {
-        if (!infos) {
-          infos.Students = { Student: [] };
-          infos.Parents = { Parent: [] };
-          infos.Teachers = { Teacher: [] };
-        }
-
-        if (!infos.Teachers) {
-          infos.Teachers = { Teacher: [] };
-        }
-
-        if (!infos.Students) {
-          infos.Students = { Student: [] };
-        }
-
-        if (!infos.Parents) {
-          infos.Parents = { Parent: [] };
-        }
-
-        infos.Teachers.Teacher = [].concat(infos.Teachers.Teacher || []);
-        infos.Students.Student = [].concat(infos.Students.Student || []);
-        infos.Parents.Parent = [].concat(infos.Parents.Parent || []);
-        return infos;
-      })
-    );
-  }
-
-  /**
-   * 取得訊息列表及總筆數
-   */
-  public getNotices(limit: number = 30, offset: number = 0) {
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<NoticeResponse>('GetNotices', {
-        Request: {
-          Limit: limit,
-          Offset: offset,
-        }
-      })),
-      map(rsp => {
-        return {
-          Count: (!!rsp && rsp.Count) ? +rsp.Count : 0,
-          Notices: [].concat(!!rsp && rsp.Notices || []) as NoticeRecord[]
-        };
-      })
-    );
-  }
-
-  /**
-   * 取得訊息全部讀取狀態
-   * @param noticeId 訊息系統編號
-   */
-  public getReadStatus(noticeId: string) {
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<ReadStatusResponse>('GetReadStatus', {
-        Request: {
-          NoticeId: noticeId
-        }
-      })),
-      map(rsp => {
-        return {
-          Student: [].concat(!!rsp && rsp.Student || []) as StudentReadStatusRecord[],
-          Teacher: [].concat(!!rsp && rsp.Teacher || []) as TeacherReadStatusRecord[],
-        };
       })
     );
   }
@@ -208,54 +100,6 @@ export class BaseService {
     );
   }
 
-  /**
-   * 取得訊息讀取記錄
-   * @param noticeId 訊息編號
-   * @param targetId 老師或學生編號
-   * @param targetType 目標角色 'TEACHER' | 'STUDENT'
-   */
-  public getReadHistories(noticeId: string, targetId: string, targetType: 'TEACHER' | 'STUDENT') {
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<ReadLogResponse>('GetReadHistory', {
-        Request: {
-          NoticeId: noticeId,
-          TargetId: targetId,
-          TargetType: targetType
-        }
-      })),
-      map(rsp => {
-        return [].concat(!!rsp && rsp.Logs || []) as ReadLogRecord[];
-      })
-    );
-  }
-
-  /**
-   * 發送訊息
-   * @param title 標題
-   * @param message 內容
-   * @param displaySender 發送單位
-   */
-  public pushNotice({ title, message, displaySender,
-    parentVisible, studentVisible, students, teachers }: PushArguments) {
-
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<PushResponse>('PushNotice', {
-        Request: {
-          Title: `${title}`,
-          Message:  `${message}`,
-          DisplaySender: `${displaySender}`,
-          ParentVisible: parentVisible,
-          StudentVisible: studentVisible,
-          TargetStudent: students,
-          TargetTeacher: teachers,
-        }
-      })),
-      map(rsp => {
-        return rsp;
-      })
-    );
-  }
-
   /** 取得自己的姓名 */
   public getUserInfo() {
     return this.contract.pipe(
@@ -264,46 +108,11 @@ export class BaseService {
       })
     );
   }
-
-  /**
-   * 發送訊息給自己
-   * @param title 標題
-   * @param message 內容
-   * @param displaySender 發送單位
-   */
-  public pushNoticeSelf(title: string = '', message: string = '', displaySender: string) {
-    return this.contract.pipe(
-      concatMap((conn) => conn.send<any>('PushNoticeSelf', {
-        Request: {
-          Title: `${title}`,
-          Message: `${message}`,
-          DisplaySender: `${displaySender}`,
-        }
-      })),
-      map(rsp => {
-        return rsp;
-      })
-    );
-  }
 }
 
 
 interface ClassesResponse {
   Class: ClassRecord[];
-}
-
-interface DisplaySenderResponse {
-  DisplaySender: string[];
-}
-
-interface NoticeResponse {
-  Count: number;
-  Notices: NoticeRecord[];
-}
-
-interface ReadStatusResponse {
-  Student: StudentReadStatusRecord[];
-  Teacher: TeacherReadStatusRecord[];
 }
 
 interface StudentResponse {
@@ -318,21 +127,8 @@ interface TagPrefixResponse {
   TagPrefixs: TagPrefix[];
 }
 
-interface ReadLogResponse {
-  Logs: ReadLogRecord[];
-}
 
 //////////////////////////////////////////
-
-interface PushArguments {
-  title: string;
-  message: string;
-  displaySender: string;
-  parentVisible: boolean;
-  studentVisible: boolean;
-  students: string[];
-  teachers: string[];
-}
 
 export interface PushResponse {
   rs: NoticeRecordx[];
