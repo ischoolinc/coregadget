@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
+import { DemoComponent } from './demo/demo.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MatOptionModule } from '@angular/material/core';
     ByTagComponent,
     ByRoleComponent,
     ByKeywordComponent,
-    ByClassComponent
+    ByClassComponent,
+    DemoComponent
   ],
   imports: [
     MatButtonToggleModule,
@@ -43,7 +45,8 @@ import { MatOptionModule } from '@angular/material/core';
     ReactiveFormsModule,
   ],
   exports: [
-    ChooserComponent
+    ChooserComponent,
+    DemoComponent,
   ]
 })
 export class ChooserModule { }
