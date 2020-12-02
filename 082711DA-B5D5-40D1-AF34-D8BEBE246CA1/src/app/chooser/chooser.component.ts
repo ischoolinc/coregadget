@@ -113,7 +113,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
       parent: this.injector,
       providers: [
         {
-          provide: value,
+          provide: key,
           useValue: value,
         }
       ]

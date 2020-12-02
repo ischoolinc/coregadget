@@ -12,6 +12,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ListFormComponent } from './list-form/list-form.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ListFormComponent } from './list-form/list-form.component';
     MatNativeDateModule
     , MatIconModule
     , ChooserModule
+    , MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

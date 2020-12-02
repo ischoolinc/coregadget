@@ -13,6 +13,7 @@ import { SelectedDetailComponent } from './seleted-detail/selected-detail.compon
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatChipsModule} from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -30,9 +31,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatIconModule,
     MatChipsModule,
     PortalModule,
+    MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+  ],
+  exports: [
+    ChooserComponent
   ]
 })
 export class ChooserModule { }
