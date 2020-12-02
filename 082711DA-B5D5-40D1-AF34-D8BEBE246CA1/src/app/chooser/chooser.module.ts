@@ -1,3 +1,4 @@
+import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ByClassComponent } from './by-class/by-class.component';
 import { ByKeywordComponent } from './by-keyword/by-keyword.component';
@@ -8,12 +9,14 @@ import { CommonModule } from '@angular/common';
 import { ChooserComponent } from './chooser.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
-import {PortalModule} from '@angular/cdk/portal';
+import { PortalModule } from '@angular/cdk/portal';
 import { SelectedDetailComponent } from './seleted-detail/selected-detail.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -25,16 +28,19 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ByClassComponent
   ],
   imports: [
-    CommonModule,
     MatButtonToggleModule,
+    MatButtonModule,
     MatDialogModule,
     MatIconModule,
     MatChipsModule,
-    PortalModule,
     MatSnackBarModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
+    MatOptionModule,
+    MatInputModule,
+    CommonModule,
+    FormsModule,
+    PortalModule,
+    ReactiveFormsModule,
   ],
   exports: [
     ChooserComponent

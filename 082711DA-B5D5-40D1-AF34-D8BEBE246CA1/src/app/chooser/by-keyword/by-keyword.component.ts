@@ -38,8 +38,8 @@ export class ByKeywordComponent implements OnInit, OnDestroy {
   ) { }
 
   targetTemplate: TemplateRef<any>;
-  @ViewChild('tplTeacherInfo') tplTeacherInfo: TemplateRef<any>;
-  @ViewChild('tplStudentInfo') tplStudentInfo: TemplateRef<any>;
+  @ViewChild('tplTeacherInfo', { static: true }) tplTeacherInfo: TemplateRef<any>;
+  @ViewChild('tplStudentInfo', { static: true }) tplStudentInfo: TemplateRef<any>;
 
   @ViewChild('tplOuterDialogTitle') set outerDialogTitle(val: TemplateRef<any>) {
     this.dialogTitleSrv.title$.next(val);
