@@ -1,4 +1,7 @@
 <div class="container">
   <p>demo works!</p>
-  <button (click)="openChooser()">Chooser</button>
+  <button mat-flat-button color="primary" (click)="openChooser()">
+    <mat-icon>add</mat-icon>加入收件者
+  </button>
+  <pre>{{items | json}}</pre>
 </div>
