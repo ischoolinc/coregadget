@@ -26,7 +26,7 @@
         </mat-form-field>
 
 
-        <span class="material-icons  ml-3">
+        <span (click)="save()" class="material-icons  ml-3">
           account_box
         </span>
 
@@ -64,7 +64,7 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngFor="let dateInfo of LeavveDateInfos">
+          <ng-container *ngFor="let dateInfo of LeaveDateInfos">
             <tr>
               <th (mouseover)="infoShow()" (mouseout)="infoHidden()" class="hover_section" scope="row"
                 (click)="selectAllPeriod(dateInfo)" style="cursor: pointer; ">{{dateInfo.Date}}</th>

@@ -1,4 +1,5 @@
 
+
 /**
  * 裝學生資訊
  */
@@ -60,7 +61,7 @@ export class DatesLeaveInfo {
 }
 
 /**
- * 顯示在畫面上
+ * 顯示在畫面上用
  */
 export class LeavePeriodInfo {
   constructor(period: string) {
@@ -80,4 +81,71 @@ export interface Period {
   Name: string;
   Sort: string;
   Type: string;
+}
+
+
+/**
+ * 未讀取回來資料
+ */
+export interface LeaveItem {
+  content: string ;
+}
+
+
+/**
+ *  為了接 Service回來的Json檔
+ */
+export interface Content {
+  PeriodShow: string[];
+  Dates: DateInfo[];
+  Reason: string;
+  Student: Student[];
+
+}
+
+/**
+ *  為了接Service 回來的Json檔 格式有點不正確 只是為了接資料
+ */
+export interface Student {
+  id: string;
+  student_number: string;
+  seat_no: string;
+  name: string;
+  class_name: string;
+}
+
+
+export interface DateInfo {
+  Date: string;
+  Periods: PeriodInfo[];
+  MapPeriods : Map<string,PeriodInfo> ;
+
+
+}
+
+
+/**
+ * 接回傳的Json檔用  interface 有點不符因為會重複
+ */
+export interface PeriodInfo {
+  Abbreviation: string;
+  Absence: string;
+  Period: string;
+
+}
+
+
+
+
+export class PeriodInfo {
+  Abbreviation = '';
+  Absence = '';
+  Period = '';
+}
+
+export interface  HistoryRecord {
+    uid: string ;
+    quid: string ;
+    content: string;
+    contentObj: Content;
 }

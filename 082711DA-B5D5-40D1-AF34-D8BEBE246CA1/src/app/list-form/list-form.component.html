@@ -2,54 +2,56 @@
   <div class="card-body">
 
     <h1>填單紀錄</h1>
-    <span class="material-icons">
-      qr_code_2
-    </span>
 
-    <div class="float-right">
+
+
+    <ng-container class="each-history" *ngFor="let record of HisRecords">
+
       <span class="material-icons">
-        edit
+        qr_code_2
+        <span>{{record.quid}} </span>
       </span>
-      <span class="material-icons">
-        print
-      </span>
-      <span class="material-icons">
-        delete
-      </span>
-    </div>
-    <div class="card w-80 mt-1">
-      <div class="card-body">
+      <div class="float-right">
+        <span class="material-icons">
+          edit
+        </span>
+        <span class="material-icons">
+          print
+        </span>
+        <span class="material-icons">
+          delete
+        </span>
+      </div>
+      <div class="card w-80 mt-1">
+        <div class="card-body">
 
-        <ng-container>
+          <ng-container>
 
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">日期</th>
-                <ng-container>
-                  <th scope="col" style="cursor: pointer;"></th>
-                </ng-container>
-                <th scope="col">
-
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container >
+            <table class="table table-bordered">
+              <thead>
                 <tr>
+                  <th scope="col">日期</th>
+                  <ng-container *ngFor="let period of record.contentObj.PeriodShow">
+                    <th scope="col" style="cursor: pointer;">{{period}}</th>
+                  </ng-container>
 
-                  <th class="hover_section" scope="row" style="cursor: pointer; "></th>
-                  <td ></td>
-                  <td>
-                    <span class="material-icons">
-                      highlight_off
-                    </span></td>
                 </tr>
-              </ng-container>
-            </tbody>
-          </table>
-        </ng-container>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let date of record.contentObj.Dates">
+                  <tr>
+                    <th class="hover_section" scope="row" style="cursor: pointer; ">{{date.Date}}</th>
+                    <td *ngFor="let period of record.contentObj.PeriodShow ">
+                      {{GetPeriodInfo(period,date.MapPeriods).Abbreviation ||'-'}}
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
+        </div>
+      </div>
 
-    </div>
+    </ng-container>
+
   </div>
-</div>

@@ -14,9 +14,9 @@ export class FillOutComponent implements OnInit {
 
   con: Contract | undefined;
   Periods: Period[] = [];
-  LeavveDateInfos: DatesLeaveInfo[] = [];
+  LeaveDateInfos: DatesLeaveInfo[] = [];
   SelectDate = '';
-  showInfoSection = false ;
+  showInfoSection = false;
 
   constructor(private dsa: GadgetService) {
   }
@@ -37,12 +37,12 @@ export class FillOutComponent implements OnInit {
   }
   /**
    * 加入日期後顯示於上面
-   * @param event
+   * @param event ??
    */
   addDate(event: MatDatepickerInputEvent<Date>): void {
 
     const datesLeaveInfo: DatesLeaveInfo = new DatesLeaveInfo(event.value?.toString() || '', this.Periods);
-    this.LeavveDateInfos.push(datesLeaveInfo);
+    this.LeaveDateInfos.push(datesLeaveInfo);
 
   }
 
@@ -52,8 +52,10 @@ export class FillOutComponent implements OnInit {
    */
   toggle(target: LeavePeriodInfo): void {
     if (target.Abbreviation === '-') {
+      target.Absence = '公假';
       target.Abbreviation = '公';
     } else if (target.Abbreviation === '公') {
+      target.Absence = '';
       target.Abbreviation = '-';
     }
 
@@ -82,23 +84,28 @@ export class FillOutComponent implements OnInit {
    * 刪除日期
    */
   removeAllDate(dateInfo: DatesLeaveInfo): void {
-    console.log("dateInfo",dateInfo);
-   const index = this.LeavveDateInfos.findIndex(
+    console.log('dateInfo', dateInfo);
+    const index = this.LeaveDateInfos.findIndex(
       (period) => period.Date === dateInfo.Date
     );
 
-    this.LeavveDateInfos.splice(index,1);
+    this.LeaveDateInfos.splice(index, 1);
   }
-
-
+  async save(): Promise<any>{
+    // debugger
+    console.log('json', JSON.stringify(this.LeaveDateInfos));
+    const resp = await this.con?.send('_.GetPeriodTable', {
+      Content: JSON.stringify(this.LeaveDateInfos)
+    });
+  }
   /**
    * 顯示資訊
    */
   infoShow(): void {
-  this.showInfoSection = true ;
+    this.showInfoSection = true;
   }
 
   infoHidden(): void {
-    this.showInfoSection = false ;
+    this.showInfoSection = false;
   }
 }
