@@ -29,7 +29,7 @@ export class ReceiversService {
 
     const lastRemove = item;
 
-    this.snackbar.open(`已將「${item.displayText}」從收件者移除。`, '復原', {
+    this.snackbar.open(`已將「${item.displayText}」從清單中移除。`, '復原', {
       duration: 5000
     })
     .onAction()

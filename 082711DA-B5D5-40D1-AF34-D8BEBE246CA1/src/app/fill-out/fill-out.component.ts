@@ -1,16 +1,22 @@
 import { DatesLeaveInfo, Period } from './../vo';
 import { ThisReceiver } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Contract, GadgetService } from '../gadget.service';
 import { LeavePeriodInfo } from '../vo';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { SelectionResult } from '../chooser/data';
+import { Subject, Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ReceiversService } from '../chooser/receivers.service';
+import { takeUntil } from 'rxjs/operators';
+import { ChooserComponent } from '../chooser/chooser.component';
 
 @Component({
   selector: 'app-fill-out',
   templateUrl: './fill-out.component.html',
   styleUrls: ['./fill-out.component.scss']
 })
-export class FillOutComponent implements OnInit {
+export class FillOutComponent implements OnInit, OnDestroy {
 
   con: Contract | undefined;
   Periods: Period[] = [];
@@ -18,14 +24,30 @@ export class FillOutComponent implements OnInit {
   SelectDate = '';
   showInfoSection = false;
 
-  constructor(private dsa: GadgetService) {
+  items: SelectionResult[];
+
+  constructor(
+    private dsa: GadgetService,
+    private dialog: MatDialog,
+    private receiver: ReceiversService
+    ) {
   }
+
+  dispose: Subscription;
 
   async ngOnInit(): Promise<void> {
     this.con = await this.dsa.getContract('ischool.leave.teacher');
     this.loadPeriod(); // 1.取得節次對照表
 
+    this.dispose = this.receiver.receivers$
+      .subscribe(v => {
+        console.log(v);
+        this.items = v;
+      });
+  }
 
+  ngOnDestroy() {
+    this.dispose.unsubscribe();
   }
 
   /**
@@ -107,5 +129,17 @@ export class FillOutComponent implements OnInit {
 
   infoHidden(): void {
     this.showInfoSection = false;
+  }
+
+  chooseStudent(): void {
+    this.dialog.open<ChooserComponent, {}, SelectionResult[]>(ChooserComponent, {
+      data: { target: 'STUDENT' },
+      width: '80%',
+      disableClose: false,
+    });
+  }
+
+  removeItem(item: SelectionResult) {
+    this.receiver.removeReceiver(item);
   }
 }

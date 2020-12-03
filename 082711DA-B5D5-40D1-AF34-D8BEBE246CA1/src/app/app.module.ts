@@ -1,3 +1,5 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { ChooserModule } from './chooser/chooser.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule} from '@angular/core';
@@ -31,6 +33,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     , MatIconModule
     , ChooserModule
     , MatDialogModule
+    , MatChipsModule
+    , MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

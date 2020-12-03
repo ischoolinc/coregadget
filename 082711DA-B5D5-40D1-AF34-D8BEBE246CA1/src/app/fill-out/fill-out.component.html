@@ -31,13 +31,19 @@
         </span>
 
 
-        <span style="font-size :16px"> 選擇學生</span>
+        <button mat-button (click)="chooseStudent()">選擇學生</button>
+        <!-- <span style="font-size :16px"> 選擇學生</span> -->
         <span class="material-icons float-right">
           save
         </span>
       </h6>
 
-
+      <mat-chip-list>
+        <mat-chip *ngFor="let chip of items" (removed)="removeItem(chip)">
+          {{chip.displayText}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
 
       <form class="example-form">
         <span class="material-icons">
