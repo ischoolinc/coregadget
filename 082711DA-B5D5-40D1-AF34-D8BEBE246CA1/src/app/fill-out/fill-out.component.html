@@ -1,0 +1,102 @@
+<div class="out-section justify-content-center mt-2">
+
+
+  <div class="w-100 d-block">
+    <span class="material-icons">
+      description 公假單
+    </span>
+  </div>
+  <div class="card w-75 mt-3 ">
+
+    <div class="card-body">
+      <h1 class="card-title">填寫公假單</h1>
+      <h6 class="card-subtitle mb-2 text-muted">
+        <span class="material-icons">
+          event
+        </span>
+
+        <span class="m-2" style="font-size :16px"> 選擇日期</span>
+        <mat-form-field class="example-full-width " appearance="fill">
+
+          <input matInput [matDatepicker]="picker" (dateChange)="addDate($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+
+        <span (click)="save()" class="material-icons  ml-3">
+          account_box
+        </span>
+
+
+        <button mat-button (click)="chooseStudent()">選擇學生</button>
+        <!-- <span style="font-size :16px"> 選擇學生</span> -->
+        <span class="material-icons float-right">
+          save
+        </span>
+      </h6>
+
+      <mat-chip-list>
+        <mat-chip *ngFor="let chip of items" (removed)="removeItem(chip)">
+          {{chip.displayText}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
+
+      <form class="example-form">
+        <span class="material-icons">
+          edit_road
+        </span>
+        <span style="font-size :16px">事由 </span>
+        <mat-form-field class="example-full-width" style="width: 90%;">
+          <mat-label></mat-label>
+          <input matInput placeholder="" value="">
+        </mat-form-field>
+      </form>
+
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">日期</th>
+            <ng-container *ngFor="let period of Periods">
+              <th scope="col" style="cursor: pointer;">{{period.Name}}</th>
+            </ng-container>
+            <th scope="col">
+
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let dateInfo of LeaveDateInfos">
+            <tr>
+              <th (mouseover)="infoShow()" (mouseout)="infoHidden()" class="hover_section" scope="row"
+                (click)="selectAllPeriod(dateInfo)" style="cursor: pointer; ">{{dateInfo.Date}}</th>
+              <td *ngFor="let period of dateInfo.LeaveInfos" (click)="toggle(period)">{{period.Abbreviation}}</td>
+              <td (click)="removeAllDate(dateInfo)">
+                <span class="material-icons">
+                  highlight_off
+                </span></td>
+            </tr>
+
+          </ng-container>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+
+
+</div>
+
+<!--
+
+<div *ngIf="showInfoSection" class="info_section_show">
+
+
+</div> -->

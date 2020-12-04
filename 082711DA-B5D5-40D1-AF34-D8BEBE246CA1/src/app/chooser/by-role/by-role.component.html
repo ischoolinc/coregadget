@@ -1,0 +1,23 @@
+<div *ngIf="!loading; else tplLoading">
+  <div [hidden]="processing">
+    {{targetRole}}
+  </div>
+
+  <p [hidden]="!processing" [ngClass]="message.msgClass || ''">{{ message.text }}</p>
+</div>
+
+<ng-template #tplLoading>
+  <p>loading...</p>
+</ng-template>
+
+<ng-template #tplOuterDialogTitle>
+  <div>
+    <span>已選擇 {{selectionCount}} 人</span>
+  </div>
+</ng-template>
+
+<ng-template #tplOuterDialogAction>
+  <button [hidden]="loading || processing" mat-flat-button color="primary" class="add-btn" (click)="confirm()">
+    <mat-icon>add</mat-icon>加入收件者
+  </button>
+</ng-template>
