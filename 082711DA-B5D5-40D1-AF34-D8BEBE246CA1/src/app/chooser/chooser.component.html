@@ -1,4 +1,5 @@
 <div class="mb-3" mat-dialog-title>
+  <!-- 暫時沒有用 -->
   <div class="my-toggle-btn">
     <mat-button-toggle-group *ngIf="target === 'TEACHER'" (change)="toggleBtn($event)">
       <mat-button-toggle value="AllTeacher" aria-label="全校教師">全校教師</mat-button-toggle>
@@ -6,10 +7,14 @@
       <mat-button-toggle value="Tag" aria-label="類別教師">類別教師</mat-button-toggle>
       <mat-button-toggle value="ByKeyword" aria-label="依關鍵字搜尋">依關鍵字搜尋</mat-button-toggle>
     </mat-button-toggle-group>
-    <mat-button-toggle-group *ngIf="target === 'STUDENT'" (change)="toggleBtn($event)">
+
+    <!-- 使用者 -->
+    <mat-button-toggle-group [value]="selectedPortalName" *ngIf="target === 'STUDENT'" (change)="toggleBtn($event)">
       <!-- <mat-button-toggle value="AllStudent" aria-label="全校學生">全校學生</mat-button-toggle>
       <mat-button-toggle value="Class" aria-label="班級學生">班級學生</mat-button-toggle>
       <mat-button-toggle value="Tag" aria-label="類別學生">類別學生</mat-button-toggle> -->
+      <mat-button-toggle value="ByClassStudent" aria-label="班級學生">班級學生</mat-button-toggle>
+      <mat-button-toggle value="ByTagStudent" aria-label="類別學生">類別學生</mat-button-toggle>
       <mat-button-toggle value="ByKeyword" aria-label="依關鍵字搜尋">依關鍵字搜尋</mat-button-toggle>
     </mat-button-toggle-group>
   </div>

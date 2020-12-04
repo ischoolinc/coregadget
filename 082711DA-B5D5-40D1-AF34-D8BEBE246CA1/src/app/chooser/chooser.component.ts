@@ -27,6 +27,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
   selectedPortal: Portal<any> | null = null;
   selectedDialogTitle: TemplateRef<any> | null = null;
   selectedDialogAction: TemplateRef<any> | null = null;
+  selectedPortalName = '';
 
   @ViewChild('tplMain') tplMain: TemplateRef<any> | null = null;
 
@@ -62,7 +63,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
       this.selectedDialogAction = v;
     });
 
-    this.setPortal('main');
+    this.setPortal('ByKeyword');
   }
 
   ngOnDestroy(): void {
@@ -77,6 +78,8 @@ export class ChooserComponent implements OnInit, OnDestroy {
   /** 切換 Portal 內容 */
   async setPortal(val: string) {
     let injector: Injector;
+
+    this.selectedPortalName = '';
 
     switch (val) {
       case 'AllTeacher':
@@ -98,6 +101,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
       case 'ByKeyword':
         injector = this._createInjector(ByKeywordComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
         this.selectedPortal = new ComponentPortal(ByKeywordComponent, undefined, injector);
+        this.selectedPortalName = 'ByKeyword';
         break;
       default:
         if (this.tplMain) {
