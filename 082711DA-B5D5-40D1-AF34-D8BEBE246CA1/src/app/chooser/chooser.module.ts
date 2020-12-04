@@ -18,6 +18,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { DemoComponent } from './demo/demo.component';
+import { ByClassStudentComponent } from './by-class-student/by-class-student.component';
+import { ByTagStudentComponent } from './by-tag-student/by-tag-student.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { DemoComponent } from './demo/demo.component';
     ByRoleComponent,
     ByKeywordComponent,
     ByClassComponent,
-    DemoComponent
+    DemoComponent,
+    ByClassStudentComponent,
+    ByTagStudentComponent
   ],
   imports: [
     MatButtonToggleModule,

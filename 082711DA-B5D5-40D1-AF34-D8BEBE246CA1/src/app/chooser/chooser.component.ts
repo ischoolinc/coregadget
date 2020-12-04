@@ -11,7 +11,9 @@ import { DialogTitleService } from './dialog-title.service';
 import { observeOn, takeUntil } from 'rxjs/operators';
 import { asapScheduler, Subject } from 'rxjs';
 import { DialogActionService } from './dialog-action.service';
-
+import { ByClassStudentComponent_INJECT_DATA } from './by-class-student/by-class-student.component';
+import { ByClassStudentComponent } from './by-class-student/by-class-student.component'
+import { ByTagStudentComponent, ByTagStudentComponent_INJECT_DATA } from './by-tag-student/by-tag-student.component';
 
 @Component({
   selector: 'app-chooser',
@@ -63,7 +65,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
       this.selectedDialogAction = v;
     });
 
-    this.setPortal('ByKeyword');
+    this.setPortal('ByClassStudent');
   }
 
   ngOnDestroy(): void {
@@ -102,6 +104,16 @@ export class ChooserComponent implements OnInit, OnDestroy {
         injector = this._createInjector(ByKeywordComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
         this.selectedPortal = new ComponentPortal(ByKeywordComponent, undefined, injector);
         this.selectedPortalName = 'ByKeyword';
+        break;
+      case 'ByClassStudent':
+        injector = this._createInjector(ByClassStudentComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
+        this.selectedPortal = new ComponentPortal(ByClassStudentComponent, undefined, injector);
+        this.selectedPortalName = 'ByClassStudent';
+        break;
+      case 'ByTagStudent':
+        injector = this._createInjector(ByTagStudentComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
+        this.selectedPortal = new ComponentPortal(ByTagStudentComponent, undefined, injector);
+        this.selectedPortalName = 'ByTagStudent';
         break;
       default:
         if (this.tplMain) {
