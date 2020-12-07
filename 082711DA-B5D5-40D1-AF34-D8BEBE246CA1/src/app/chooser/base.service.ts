@@ -16,7 +16,7 @@ export class BaseService {
   constructor(
     dsa: DSAService
   ) {
-    this.contract = dsa.getContract('1campus.notice.admin.web').pipe(
+    this.contract = dsa.getContract('ischool.leave.teacher').pipe(
       shareReplay() // 讓之後呼叫 service 不會一直重新 connect。
     );
   }
@@ -44,7 +44,7 @@ export class BaseService {
    */
   public getStudents(type: 'All' | 'GradeYear' | 'ClassId' | 'TagPrefix' | 'TagId' | 'Keyword', value: any) {
     return this.contract.pipe(
-      concatMap((conn) => conn.send<StudentResponse>('GetStudents', {
+      concatMap((conn) => conn.send<StudentResponse>('GetStudentForChoose', {
         Request: {
           ConditionType: type,
           ConditionValue: value,
