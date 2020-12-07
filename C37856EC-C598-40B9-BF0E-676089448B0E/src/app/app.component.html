@@ -2,7 +2,7 @@
     <div id="index" class="h-100" page>
         <nav aria-label="breadcrumb text-nowrap text-truncate">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">成績標準設定</li>
+                <li class="breadcrumb-item active" aria-current="page">授課教師輸入特殊生課程總成績</li>
             </ol>
         </nav>
         <ng-container *ngIf="!isLoading; else tplLoading">
@@ -67,7 +67,7 @@
 
 <ng-template #tplNostudent>
     <tr>
-        <td colspan="7">此課程無IEP學生</td>
+        <td colspan="8">此課程無IEP學生</td>
     </tr>
 </ng-template>
 
@@ -80,7 +80,7 @@
     </div>
     <div class="modal-body">
         <div class="modal-body">
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label class="col-form-label">
                     及格標準
                 </label>
@@ -93,7 +93,7 @@
                 </label>
                 <input class="form-control" rows="1" placeholder="請輸入補考標準" [(ngModel)]="curStudent.makeup_standard"
                     (keyup)="validateMs()" [ngClass]="{'error': !curStudent.validate_ms}">
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <label class="col-form-label">

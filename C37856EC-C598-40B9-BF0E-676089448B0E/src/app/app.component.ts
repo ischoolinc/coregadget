@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     this.isLoading = true;
     try {
-      this.contract = await this.gadget.getContract('ischool.course.iep');
+      this.contract = await this.gadget.getContract('ischool.course.iep1');
 
       await this.getMyCourse();
       await this.getDeadline();

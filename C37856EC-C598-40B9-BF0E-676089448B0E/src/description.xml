@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="IEP成績標準設定" description="授課老師-IEP成績標準設定">
-    <Title lang="zh-TW">IEP成績標準設定</Title>
+  <ModulePrefs title="授課教師輸入特殊生課程總成績" description="授課教師輸入特殊生課程總成績">
+    <Title lang="zh-TW">授課教師輸入特殊生課程總成績</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">
