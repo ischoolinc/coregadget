@@ -39,7 +39,7 @@ export class BaseService {
    * @param type 篩選類型 'All' | 'GradeYear' | 'ClassId' | 'TagPrefix' | 'TagId' | 'Keyword'
    * @param value 條件值
    */
-  public getStudents(type: 'All' | 'GradeYear' | 'ClassId' | 'TagPrefix' | 'TagId' | 'Keyword', value: any) {
+  public getStudents(type: 'All' | 'GradeYear' | 'ClassId' | 'TagPrefix' | 'TagId' | 'Keyword', value?: any) {
     return this.contract.pipe(
       concatMap((conn) => conn.send<StudentResponse>('Chooser.GetStudents', {
         Request: {
@@ -123,7 +123,6 @@ interface TeacherResponse {
 interface TagPrefixResponse {
   TagPrefixs: TagPrefix[];
 }
-
 
 //////////////////////////////////////////
 

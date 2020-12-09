@@ -41,7 +41,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
 
     this.dispose = this.receiver.receivers$
       .subscribe(v => {
-        console.log(v);
         this.items = v;
       });
   }

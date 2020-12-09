@@ -1,3 +1,4 @@
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ByClassComponent } from './by-class/by-class.component';
@@ -43,6 +44,7 @@ import { ByTagStudentComponent } from './by-tag-student/by-tag-student.component
     MatFormFieldModule,
     MatOptionModule,
     MatInputModule,
+    MatCheckboxModule,
     CommonModule,
     FormsModule,
     PortalModule,

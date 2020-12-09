@@ -1,3 +1,4 @@
+import { BaseService } from './base.service';
 import { Component, OnInit, Inject, Injector, TemplateRef, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
@@ -14,12 +15,15 @@ import { DialogActionService } from './dialog-action.service';
 import { ByClassStudentComponent_INJECT_DATA } from './by-class-student/by-class-student.component';
 import { ByClassStudentComponent } from './by-class-student/by-class-student.component'
 import { ByTagStudentComponent, ByTagStudentComponent_INJECT_DATA } from './by-tag-student/by-tag-student.component';
+import { StudentsService } from './students.service';
 
 @Component({
   selector: 'app-chooser',
   templateUrl: './chooser.component.html',
   styleUrls: ['./chooser.component.scss'],
-  providers: [DialogTitleService]
+  providers: [
+    DialogTitleService,
+    StudentsService]
 })
 export class ChooserComponent implements OnInit, OnDestroy {
 
@@ -47,7 +51,8 @@ export class ChooserComponent implements OnInit, OnDestroy {
     this.target = data.target;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
     // 設定
     this.dialogTitleSrv.title$.pipe(
       observeOn(asapScheduler),
