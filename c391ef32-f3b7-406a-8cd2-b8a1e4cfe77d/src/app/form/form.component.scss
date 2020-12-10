@@ -1,0 +1,55 @@
+table {
+  width: 100%;
+  background-color: ghostwhite;
+  font-size: 18px;
+  text-align: left;
+  border-collapse:collapse;
+  table-layout:fixed;
+  word-break:break-all;
+}
+#title {
+  height: 30px;
+  padding: 10px;
+  color: rgb(25, 46, 65);
+  text-align: center;
+  font-family: inherit;
+  font-size: 20px;
+}
+.upload-file-section {
+  height: 24px;
+  width:200px;
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display:block;
+  margin:3px;
+  opacity: 0.5;
+}
+.divider {
+  display: inline;
+  margin: 5px;
+  opacity: 0.75;
+  color: rgb(109, 103, 101);
+}
+.form-section {
+  margin: 20px 15px;
+}
+.table-section {
+  margin: 20px 15px;
+  color :rgba(0,0,0,0.75);
+  .thead{
+    height:56px ;
+   }
+
+  .mat-sort-header-content {
+    display:flex;
+    justify-content:center !important ;
+  }
+
+   .tbody{
+    border-top: 1px solid rgba(0,0,0,.12) ;
+    height:48px ;
+    opacity: 0.8;
+   }
+
+}
