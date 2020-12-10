@@ -99,9 +99,8 @@ export class ByClassStudentComponent implements OnInit {
     if (selections.length) {
       this.receiversSrv.addReceivers(selections);
       this.message = { text: '加入完成！', msgClass: 'text-success' };
-      setTimeout(() => {
-        this.processing = false;
-      }, 3000);
+      alert('加入完成！');
+      this.processing = false;
     } else {
       this.processing = false;
     }
