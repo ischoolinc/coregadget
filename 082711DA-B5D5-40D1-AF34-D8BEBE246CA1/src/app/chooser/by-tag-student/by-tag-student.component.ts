@@ -1,7 +1,7 @@
-import { TagRecord, TagPrefix } from './../data/tag';
+import { TagPrefix } from './../data/tag';
 import { Component, InjectionToken, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { BaseService } from '../base.service';
-import { ClassRecord, SelectionResult, StudentRecord, StudentSelection } from '../data';
+import { SelectionResult, StudentRecord, StudentSelection } from '../data';
 import { DialogActionService } from '../dialog-action.service';
 import { ReceiversService } from '../receivers.service';
 import { StudentsService } from '../students.service';
@@ -69,7 +69,7 @@ export class ByTagStudentComponent implements OnInit {
   }
 
 
-  classBtnClick(cls: ClassRecord) {
+  classBtnClick(cls: TagPrefix) {
     cls.students = cls.students.map(stu => {
       stu.checked = cls.checked;
       return stu;

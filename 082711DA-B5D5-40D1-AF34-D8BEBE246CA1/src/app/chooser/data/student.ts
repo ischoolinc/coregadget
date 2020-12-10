@@ -6,6 +6,5 @@ export class StudentRecord {
   GradeYear: string;
   ClassName: string;
   ClassDisplayOrder: string;
-  SeatNo: string;
   checked?: boolean;
 }
