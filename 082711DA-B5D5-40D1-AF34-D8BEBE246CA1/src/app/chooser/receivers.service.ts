@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ReceiversService {
 
+  // 建立一個可觀察對象
   receivers$ = new BehaviorSubject<SelectionResult[]>([] as SelectionResult[]);
 
   constructor(
@@ -17,7 +18,7 @@ export class ReceiversService {
   getReceivers(): SelectionResult[] {
     return this.receivers$.value;
   }
-
+  // 推撥
   addReceivers(list: SelectionResult[]) {
     const merge = this.receivers$.value.concat(list);
     const unique = merge.reduce((unique, cur) => {
@@ -29,6 +30,7 @@ export class ReceiversService {
     this.receivers$.next([...unique.values()]);
   }
 
+  // 推撥
   removeReceiver(item: SelectionResult) {
     const idx = this.receivers$.value.findIndex(v => v === item);
     this.receivers$.value.splice(idx, 1);

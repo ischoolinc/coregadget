@@ -1,0 +1,78 @@
+
+<!-- 使用原本樣板 -->
+<ng-container>
+  <div id="print" >
+    <h1 style="text-align:center">{{SchoolName}} 學生公假單</h1>
+    <div style="text-align:center;font-size:16px;line-height:22px">印表日期：{{PrintDate}}</div>
+    <h1>
+
+    </h1>
+    <div style="text-align:center">
+      <ngx-barcode [bc-height]="57" [bc-value]="qiCode" [bc-display-value]="true"></ngx-barcode>
+    </div>
+    <div style="margin-top:20px;display:flex;flex-direction:row;align-items:center;justify-content:center"><img id="barcode" /></div>
+    <div style="margin-top:20px">
+        <table style="border-spacing:0;border-collapse:collapse;width:100%;margin:10px 0">
+            <thead>
+                <tr>
+                    <th style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:120px;white-space:nowrap;font-size:14px;background:rgba(0,0,0,.087)">班級</th>
+                    <th style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:120px;white-space:nowrap;font-size:14px;background:rgba(0,0,0,.087)">姓名</th>
+                    <th style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:120px;white-space:nowrap;font-size:14px;background:rgba(0,0,0,.087)">座號</th>
+                    <th style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:120px;white-space:nowrap;font-size:14px;background:rgba(0,0,0,.087)">日期</th>
+                    <th style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:120px;white-space:nowrap;font-size:14px;background:rgba(0,0,0,.087)">節次</th>
+                    <th style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:120px;white-space:nowrap;font-size:14px;background:rgba(0,0,0,.087)">事由</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                  <ng-container *ngFor="let student of PrintDatas?.contentObj?.Students">
+                    <ng-container *ngFor="let date of PrintDatas?.contentObj?.Dates">
+                    <tr>
+                            <td  style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:40px;white-space:nowrap;font-size:14px">{{student.class_name}}</td>
+                            <td  style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:40px;white-space:nowrap;font-size:14px">{{student.name}}</td>
+                            <td  style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:40px;white-space:nowrap;font-size:14px">{{student.seat_no}}</td>
+                            <td  style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:40px;white-space:nowrap;font-size:14px">{{date.Date}}</td>
+                            <td  style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:40px;white-space:nowrap;font-size:14px">{{date.LeavePeriod.join('、')}}</td>
+                            <td  style="border:1px solid #777;padding:5px;margin:-1px 0 0 -1px;text-align:center;width:40px;white-space:nowrap;font-size:14px">{{PrintDatas?.contentObj.Reason}}</td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+
+                <!-- </templas  te> -->
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:20px">
+        <template is="dom-repeat" items="[[printTarget.classes]]" as="class">
+            <div style="margin:10px 0">
+                <div style="line-height:32px">[[class.Name]] 導師簽名 : </div>
+                <div style="display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap">
+                    <template is="dom-repeat" items="[[class.Students]]" as="student">
+                        <div style="border:1px solid #ccc;padding:5px 10px;margin:0 5px 5px 0">[[student.seat_no]] [[student.name]]</div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div style="margin-top:40px">
+        <table style="border-spacing:0;border-collapse:collapse;width:100%;margin:10px 0">
+            <tbody>
+                <tr>
+                    <td *ngFor="let singer of AnnualSignTitle" style="border:1px solid #777;padding:10px;margin:-1px 0 0 -1px;text-align:center;font-size:16px">{{singer}}</td>
+
+                </tr>
+                <tr>
+                    <td style="border:1px solid #777;padding:10px;margin:-1px 0 0 -1px;text-align:center;font-size:16px;height:60px"></td>
+                    <td style="border:1px solid #777;padding:10px;margin:-1px 0 0 -1px;text-align:center;font-size:16px;height:60px"></td>
+                    <td style="border:1px solid #777;padding:10px;margin:-1px 0 0 -1px;text-align:center;font-size:16px;height:60px"></td>
+                    <td style="border:1px solid #777;padding:10px;margin:-1px 0 0 -1px;text-align:center;font-size:16px;height:60px"></td>
+                    <td style="border:1px solid #777;padding:10px;margin:-1px 0 0 -1px;text-align:center;font-size:16px;height:60px"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</ng-container>

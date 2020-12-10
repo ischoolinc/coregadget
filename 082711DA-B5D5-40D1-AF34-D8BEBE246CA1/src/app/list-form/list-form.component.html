@@ -1,24 +1,26 @@
 <div class="card w-75 mt-4">
   <div class="card-body">
-
     <h1>填單紀錄</h1>
+    
+    <!-- <div>長度{{PrintDatas?.contentObj.Students.length}}</div> -->
 
 
-
-    <ng-container class="each-history" *ngFor="let record of HisRecords">
-
+    <ng-container class="each-history" *ngFor="let record of HisRecords" >
+      <div style="margin :15px">
       <span class="material-icons">
         qr_code_2
-        <span>{{record.quid}} </span>
+
       </span>
+      <span style="font-size: 16px;">{{record.uqid}} </span>
+
       <div class="float-right">
-        <span class="material-icons">
+        <span class="material-icons" (click)="editRecord(record)">
           edit
         </span>
-        <span class="material-icons">
+        <span class="material-icons" (click)="printSheet(record)">
           print
         </span>
-        <span class="material-icons">
+        <span class="material-icons" (click)="deleteRecord(record)">
           delete
         </span>
       </div>
@@ -26,7 +28,17 @@
         <div class="card-body">
 
           <ng-container>
-
+          <div style="width: 80%; height:16px; font-size: 16px; margin: 8px;">
+            <span>事由:</span>{{' '+record.contentObj.Reason}}
+          </div>
+          <div class="student-section" >
+          <mat-chip-list>
+            <mat-chip *ngFor="let student of record.contentObj.Students" >
+           <!-- {{student.class_name}} {{student.name}} ({{student.student_number}}) -->
+              {{getStudentDisplayText(student)}}<!-- <mat-icon matChipRemove>cancel</mat-icon> -->
+            </mat-chip>
+          </mat-chip-list>
+        </div>
             <table class="table table-bordered">
               <thead>
                 <tr>
@@ -34,7 +46,6 @@
                   <ng-container *ngFor="let period of record.contentObj.PeriodShow">
                     <th scope="col" style="cursor: pointer;">{{period}}</th>
                   </ng-container>
-
                 </tr>
               </thead>
               <tbody>
@@ -42,7 +53,7 @@
                   <tr>
                     <th class="hover_section" scope="row" style="cursor: pointer; ">{{date.Date}}</th>
                     <td *ngFor="let period of record.contentObj.PeriodShow ">
-                      {{GetPeriodInfo(period,date.MapPeriods).Abbreviation ||'-'}}
+                      {{getPeriodInfo(period,date.MapPeriods).Abbreviation ||'-'}}
                     </td>
                   </tr>
                 </ng-container>
@@ -51,7 +62,49 @@
           </ng-container>
         </div>
       </div>
-
+    </div>
     </ng-container>
 
   </div>
+
+
+
+<!-- <ng-container >
+  <div class="print-section" style="width :100%"  >
+    <table  style="width :100% ;text-align: center;border: 1px solid black;" >
+      <thead>
+        <tr>
+          <th style="width: calc(100%/6)">班級</th>
+          <th style="width: calc(100%/6)">姓名</th>
+          <th style="width: calc(100%/6)">座號</th>
+          <th style="width: calc(100%/6)">日期</th>
+          <th style="width: calc(100%/6)">節次</th>
+          <th style="width: calc(100%/6)">事油</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of ['aa','bb']">
+        <tr>
+          <td>123</td>
+          <td>321</td>
+          <td>1345767</td>
+          <td>898951</td>
+          <td>1234</td>
+          <td>1234</td>
+        </tr>
+      </tbody>
+      <tbody >
+        <tr>
+         <ng-template>
+           <td></td>
+           <td></td>
+         </ng-template>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</ng-container>
+ -->
+
+
