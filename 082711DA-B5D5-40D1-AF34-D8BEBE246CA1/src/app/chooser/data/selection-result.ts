@@ -14,12 +14,16 @@ export abstract class SelectionResult {
   /** 要顯示的文字。 */
   abstract get displayText(): string;
 
+  get displayText2 ():string {return ""}
+
   /** 可否顯示細節 */
   get previewable(): boolean { return false; }
 
   abstract get IdList(): string[];
 
   async previewData(injector: Injector): Promise<void> {}
+
+  // get Obj(): StudentRecord ;
 }
 
 export class AllStudentSelection extends SelectionResult {
@@ -284,8 +288,26 @@ export class StudentSelection extends SelectionResult {
     return `${ClassName} ${StudentName} (${StudentNumber})`;
   }
 
+  get displayText2(): string {
+    // 101班 王同學（510002)
+    const { StudentName, StudentNumber, ClassName ,SeatNo} = this.student;
+
+    return `${ClassName} ${StudentName} (${SeatNo})`;
+  }
+
   get IdList(): string[] {
     return [this.student.Id];
+  }
+  /**
+  * 回傳學生資訊
+   *
+   * @readonly
+   * @type {StudentRecord[]}
+   * @memberof StudentSelection
+   */
+  get  ObjList(): StudentRecord[]
+  {
+    return [this.student];
   }
 }
 

@@ -72,10 +72,8 @@ export class SelectedDetailComponent implements OnInit {
         grade.addStudent(stu);
       });
       this.grades = grades;
-      // console.log(this.grades);
     } else {
       this.teachers = data.records || [];
-      // console.log(this.teachers);
     }
   }
 
