@@ -1,72 +1,51 @@
-<div class="card w-75 mt-4">
-  <div class="card-body">
-    <h1>填單紀錄</h1>
-    
-    <!-- <div>長度{{PrintDatas?.contentObj.Students.length}}</div> -->
-
-
-    <ng-container class="each-history" *ngFor="let record of HisRecords" >
-      <div style="margin :15px">
-      <span class="material-icons">
-        qr_code_2
-
-      </span>
-      <span style="font-size: 16px;">{{record.uqid}} </span>
-
-      <div class="float-right">
-        <span class="material-icons" (click)="editRecord(record)">
-          edit
-        </span>
-        <span class="material-icons" (click)="printSheet(record)">
-          print
-        </span>
-        <span class="material-icons" (click)="deleteRecord(record)">
-          delete
-        </span>
-      </div>
-      <div class="card w-80 mt-1">
-        <div class="card-body">
-
-          <ng-container>
-          <div style="width: 80%; height:16px; font-size: 16px; margin: 8px;">
-            <span>事由:</span>{{' '+record.contentObj.Reason}}
-          </div>
-          <div class="student-section" >
-          <mat-chip-list>
-            <mat-chip *ngFor="let student of record.contentObj.Students" >
-           <!-- {{student.class_name}} {{student.name}} ({{student.student_number}}) -->
-              {{getStudentDisplayText(student)}}<!-- <mat-icon matChipRemove>cancel</mat-icon> -->
-            </mat-chip>
-          </mat-chip-list>
-        </div>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th scope="col">日期</th>
-                  <ng-container *ngFor="let period of record.contentObj.PeriodShow">
-                    <th scope="col" style="cursor: pointer;">{{period}}</th>
-                  </ng-container>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let date of record.contentObj.Dates">
-                  <tr>
-                    <th class="hover_section" scope="row" style="cursor: pointer; ">{{date.Date}}</th>
-                    <td *ngFor="let period of record.contentObj.PeriodShow ">
-                      {{getPeriodInfo(period,date.MapPeriods).Abbreviation ||'-'}}
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </ng-container>
-        </div>
-      </div>
+<h3 class="mt-5">填單紀錄</h3>
+<!-- <div>長度{{PrintDatas?.contentObj.Students.length}}</div> -->
+<div class="mb-3" *ngFor="let record of HisRecords">
+  <div class="d-flex align-items-center mb-1">
+    <span><span class="material-icons">label</span> {{record.uqid}}</span>
+    <div class="ml-auto">
+      <button mat-icon-button color="primary" (click)="editRecord(record)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" (click)="printSheet(record)">
+        <mat-icon>print</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteRecord(record)">
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
-    </ng-container>
-
   </div>
-
+  <div class="card">
+    <div class="card-body">
+      <div style="font-size: 1.2rem;">事由： {{record.contentObj.Reason}}</div>
+      <div class="my-3">
+        <mat-chip-list>
+          <mat-chip *ngFor="let student of record.contentObj.Students">
+          <!-- {{student.class_name}} {{student.name}} ({{student.student_number}}) -->
+            {{getStudentDisplayText(student)}}<!-- <mat-icon matChipRemove>cancel</mat-icon> -->
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <table class="table my-table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">日期</th>
+            <th *ngFor="let period of record.contentObj.PeriodShow"
+              scope="col" style="cursor: pointer;">{{period}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let date of record.contentObj.Dates">
+            <th class="hover_section" scope="row" style="cursor: pointer; ">{{date.Date}}</th>
+            <td *ngFor="let period of record.contentObj.PeriodShow">
+              {{getPeriodInfo(period,date.MapPeriods).Abbreviation || '-'}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 
 <!-- <ng-container >
