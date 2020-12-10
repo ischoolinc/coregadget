@@ -20,7 +20,14 @@ export class ReceiversService {
   }
   // 推撥
   addReceivers(list: SelectionResult[]) {
-    this.receivers$.next(this.receivers$.value.concat(list));
+    const merge = this.receivers$.value.concat(list);
+    const unique = merge.reduce((unique, cur) => {
+      const [first] = cur.IdList;
+      unique.set(+first, cur);
+      return unique;
+    }, new Map<number, SelectionResult>());
+
+    this.receivers$.next([...unique.values()]);
   }
 
   // 推撥
