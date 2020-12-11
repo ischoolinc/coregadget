@@ -3,7 +3,7 @@ import { FrontPageComponent } from './../front-page/front-page.component';
 import { ClassStudentRecord } from './../chooser/data/class-student';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentRecord } from './../chooser/data/student';
-import { DatesInfo, Record, Period, PeriodInfo, Student } from './../vo';
+import { DatesInfo, Record, Period, PeriodInfo, Student, IStudent } from './../vo';
 import { ThisReceiver } from '@angular/compiler';
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { Contract, GadgetService } from '../gadget.service';
@@ -51,11 +51,13 @@ export class FillOutComponent implements OnInit, OnDestroy {
     private router: Router,
     private _snackBar: MatSnackBar,
     private receiversSrv: ReceiversService
-  ) {
-  }
+  ) { }
 
   dispose: Subscription; // 訂閱的事件
+
   async ngOnInit(): Promise<void> {
+
+    this.receiver.resetReceivers();
 
     // 判斷新增或編輯
     this.route.paramMap.subscribe(async param => {
@@ -74,7 +76,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
       });
 
   }
-
 
   ngOnDestroy(): void {
     this.dispose.unsubscribe();
@@ -95,11 +96,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
 
       await this.loadPeriod(); // 1.取得節次對照表
     }
-
   }
-
-
-
 
   /**
    * 取得 節次對照表
@@ -108,16 +105,14 @@ export class FillOutComponent implements OnInit, OnDestroy {
     const resp = await this.con?.send('GetPeriodTable');
     this.CurrentRecordForedit.contentObj.PeriodShow = ([].concat(resp.Periods.Period)).map(period => period.Name);
   }
+
   /**
    * 加入日期後顯示於上面
    * @param event ??
    */
   addDate(event: MatDatepickerInputEvent<Date>): void {
-
     const datesLeaveInfo: DatesInfo = new DatesInfo(event.value?.toString() || '', this.CurrentRecordForedit.contentObj.PeriodShow);
     this.CurrentRecordForedit.contentObj.Dates.push(datesLeaveInfo);
-
-
   }
 
 
@@ -254,7 +249,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
     if (this.CurrentRecordForedit.contentObj.Dates.length === 0) {
       this.openSnackBar('請選擇日期!', '確定');
       return false;
-    } else if (this.items.length === 0) {
+    } else if (this.items.length === 0 && this.CurrentRecordForedit.contentObj.Students.length === 0) {
 
       this.openSnackBar('請選擇學生!', '確定');
       return false;
@@ -296,6 +291,12 @@ export class FillOutComponent implements OnInit, OnDestroy {
     this.receiver.removeReceiver(item);
   }
 
+  removeItemDB(item: IStudent) {
+    const { contentObj: { Students } } = this.CurrentRecordForedit;
+
+    this.CurrentRecordForedit.contentObj.Students = Students.filter(v => v.id !== item.id);
+
+  }
 
 
   /**
@@ -306,7 +307,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
   getSendData(selectStuds: SelectionResult[], record: Record): any {
     const content = {
       Reason: record.contentObj.Reason,
-      Students: [],
+      Students: [...record?.contentObj?.Students] || [],
       Dates: []
     };
     const Students: any[] = [];
@@ -343,6 +344,9 @@ export class FillOutComponent implements OnInit, OnDestroy {
     return content;
   }
 
+  get students(): IStudent[] {
+    return this.CurrentRecordForedit?.contentObj?.Students || [];
+  }
 
   /**
    *
