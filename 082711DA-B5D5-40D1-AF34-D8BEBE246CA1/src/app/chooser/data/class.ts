@@ -1,3 +1,4 @@
+import { StudentRecord } from './student';
 export interface ClassRecord {
   Id: string;
   ClassName: string;
@@ -9,5 +10,6 @@ export interface ClassRecord {
   TeacherAccount: string;
   StudentIds: string[];
   checked?: boolean;
+  students?: StudentRecord[];
   [x: string]: any;
 }

@@ -3,10 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>CampusLeave</title>
-  <base href="/">
+  <script>document.write('<base href="' + document.location + '" />');</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
   <script src="assets/js/gadget.js"></script>
   <script>
     var vars = [], hash;
@@ -38,8 +37,8 @@
         oAuth: {
           clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
           clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-          account: 'bubu@debug.ischool.com.tw',
-          password: '1234'
+          // account: 'bubu@debug.ischool.com.tw',
+          // password: '1234'
         },
         paramValues: {
         }
@@ -48,8 +47,10 @@
   </script>
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="assets/css/material.min.css" rel="stylesheet" type="text/css">
+  <link href="assets/css/default.css" rel="stylesheet" type="text/css">
 </head>
-<body class="mat-typography">
+<body>
   <app-root></app-root>
 </body>
 </html>

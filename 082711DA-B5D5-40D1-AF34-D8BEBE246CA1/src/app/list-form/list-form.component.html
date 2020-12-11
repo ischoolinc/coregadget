@@ -1,57 +1,89 @@
-<div class="card w-75 mt-4">
-  <div class="card-body">
-
-    <h1>填單紀錄</h1>
-
-
-
-    <ng-container class="each-history" *ngFor="let record of HisRecords">
-
-      <span class="material-icons">
-        qr_code_2
-        <span>{{record.quid}} </span>
-      </span>
-      <div class="float-right">
-        <span class="material-icons">
-          edit
-        </span>
-        <span class="material-icons">
-          print
-        </span>
-        <span class="material-icons">
-          delete
-        </span>
+<h3 class="mt-5">填單紀錄</h3>
+<!-- <div>長度{{PrintDatas?.contentObj.Students.length}}</div> -->
+<div class="mb-3" *ngFor="let record of HisRecords">
+  <div class="d-flex align-items-center mb-1">
+    <span><span class="material-icons">label</span> {{record.uqid}}</span>
+    <div class="ml-auto">
+      <button mat-icon-button color="primary" (click)="editRecord(record)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" (click)="printSheet(record)">
+        <mat-icon>print</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteRecord(record)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div style="font-size: 1.2rem;">事由： {{record.contentObj.Reason}}</div>
+      <div class="my-3">
+        <mat-chip-list>
+          <mat-chip *ngFor="let student of record.contentObj.Students">
+          <!-- {{student.class_name}} {{student.name}} ({{student.student_number}}) -->
+            {{getStudentDisplayText(student)}}<!-- <mat-icon matChipRemove>cancel</mat-icon> -->
+          </mat-chip>
+        </mat-chip-list>
       </div>
-      <div class="card w-80 mt-1">
-        <div class="card-body">
+      <table class="table my-table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">日期</th>
+            <th *ngFor="let period of record.contentObj.PeriodShow"
+              scope="col" style="cursor: pointer;">{{period}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let date of record.contentObj.Dates">
+            <th class="hover_section" scope="row" style="cursor: pointer; ">{{date.Date}}</th>
+            <td *ngFor="let period of record.contentObj.PeriodShow">
+              {{getPeriodInfo(period,date.MapPeriods).Abbreviation || '-'}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-          <ng-container>
 
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th scope="col">日期</th>
-                  <ng-container *ngFor="let period of record.contentObj.PeriodShow">
-                    <th scope="col" style="cursor: pointer;">{{period}}</th>
-                  </ng-container>
-
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let date of record.contentObj.Dates">
-                  <tr>
-                    <th class="hover_section" scope="row" style="cursor: pointer; ">{{date.Date}}</th>
-                    <td *ngFor="let period of record.contentObj.PeriodShow ">
-                      {{GetPeriodInfo(period,date.MapPeriods).Abbreviation ||'-'}}
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </ng-container>
-        </div>
-      </div>
-
-    </ng-container>
+<!-- <ng-container >
+  <div class="print-section" style="width :100%"  >
+    <table  style="width :100% ;text-align: center;border: 1px solid black;" >
+      <thead>
+        <tr>
+          <th style="width: calc(100%/6)">班級</th>
+          <th style="width: calc(100%/6)">姓名</th>
+          <th style="width: calc(100%/6)">座號</th>
+          <th style="width: calc(100%/6)">日期</th>
+          <th style="width: calc(100%/6)">節次</th>
+          <th style="width: calc(100%/6)">事油</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of ['aa','bb']">
+        <tr>
+          <td>123</td>
+          <td>321</td>
+          <td>1345767</td>
+          <td>898951</td>
+          <td>1234</td>
+          <td>1234</td>
+        </tr>
+      </tbody>
+      <tbody >
+        <tr>
+         <ng-template>
+           <td></td>
+           <td></td>
+         </ng-template>
+        </tr>
+      </tbody>
+    </table>
 
   </div>
+
+</ng-container>
+ -->
+
+

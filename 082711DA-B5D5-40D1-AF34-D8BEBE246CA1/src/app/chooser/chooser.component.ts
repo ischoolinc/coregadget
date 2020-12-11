@@ -1,3 +1,4 @@
+import { BaseService } from './base.service';
 import { Component, OnInit, Inject, Injector, TemplateRef, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
@@ -11,13 +12,18 @@ import { DialogTitleService } from './dialog-title.service';
 import { observeOn, takeUntil } from 'rxjs/operators';
 import { asapScheduler, Subject } from 'rxjs';
 import { DialogActionService } from './dialog-action.service';
-
+import { ByClassStudentComponent_INJECT_DATA } from './by-class-student/by-class-student.component';
+import { ByClassStudentComponent } from './by-class-student/by-class-student.component'
+import { ByTagStudentComponent, ByTagStudentComponent_INJECT_DATA } from './by-tag-student/by-tag-student.component';
+import { StudentsService } from './students.service';
 
 @Component({
   selector: 'app-chooser',
   templateUrl: './chooser.component.html',
   styleUrls: ['./chooser.component.scss'],
-  providers: [DialogTitleService]
+  providers: [
+    DialogTitleService,
+    StudentsService]
 })
 export class ChooserComponent implements OnInit, OnDestroy {
 
@@ -27,6 +33,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
   selectedPortal: Portal<any> | null = null;
   selectedDialogTitle: TemplateRef<any> | null = null;
   selectedDialogAction: TemplateRef<any> | null = null;
+  selectedPortalName = '';
 
   @ViewChild('tplMain') tplMain: TemplateRef<any> | null = null;
 
@@ -44,7 +51,8 @@ export class ChooserComponent implements OnInit, OnDestroy {
     this.target = data.target;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
     // 設定
     this.dialogTitleSrv.title$.pipe(
       observeOn(asapScheduler),
@@ -62,7 +70,7 @@ export class ChooserComponent implements OnInit, OnDestroy {
       this.selectedDialogAction = v;
     });
 
-    this.setPortal('main');
+    this.setPortal('ByClassStudent');
   }
 
   ngOnDestroy(): void {
@@ -77,6 +85,8 @@ export class ChooserComponent implements OnInit, OnDestroy {
   /** 切換 Portal 內容 */
   async setPortal(val: string) {
     let injector: Injector;
+
+    this.selectedPortalName = '';
 
     switch (val) {
       case 'AllTeacher':
@@ -98,6 +108,17 @@ export class ChooserComponent implements OnInit, OnDestroy {
       case 'ByKeyword':
         injector = this._createInjector(ByKeywordComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
         this.selectedPortal = new ComponentPortal(ByKeywordComponent, undefined, injector);
+        this.selectedPortalName = 'ByKeyword';
+        break;
+      case 'ByClassStudent':
+        injector = this._createInjector(ByClassStudentComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
+        this.selectedPortal = new ComponentPortal(ByClassStudentComponent, undefined, injector);
+        this.selectedPortalName = 'ByClassStudent';
+        break;
+      case 'ByTagStudent':
+        injector = this._createInjector(ByTagStudentComponent_INJECT_DATA, { dialogRef: this.dialogRef, target: this.target });
+        this.selectedPortal = new ComponentPortal(ByTagStudentComponent, undefined, injector);
+        this.selectedPortalName = 'ByTagStudent';
         break;
       default:
         if (this.tplMain) {
