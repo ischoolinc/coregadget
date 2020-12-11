@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StudentRecord } from './../chooser/data/student';
 import { DatesInfo, Record, Period, PeriodInfo, Student } from './../vo';
 import { ThisReceiver } from '@angular/compiler';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { Contract, GadgetService } from '../gadget.service';
 import { LeavePeriodInfo } from '../vo';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -27,7 +27,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FillOutComponent implements OnInit, OnDestroy {
 
   con: Contract | undefined;
-  ActionType: string;
+  actionType: string;
+  recordId: string;
 
   // LeaveDateInfos: DatesLeaveInfo[] = [];
   /**
@@ -57,8 +58,12 @@ export class FillOutComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
 
     // 判斷新增或編輯
-    this.route.paramMap.subscribe(param => {
-      this.ActionType = param.get('action');
+    this.route.paramMap.subscribe(async param => {
+      this.actionType = param.get('action');
+      this.recordId = param.get('id');
+
+      this.con = await this.dsa.getContract('ischool.leave.teacher'); // 取得con
+      await this.setMainRecord(this.recordId);
     });
 
     // rxjs
@@ -67,12 +72,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
         this.items = v;
         // this.packStudentData();
       });
-
-
-    this.con = await this.dsa.getContract('ischool.leave.teacher'); // 取得con
-    // 1.如果是編輯
-
-    await this.setMainRecord();
 
   }
 
@@ -84,12 +83,12 @@ export class FillOutComponent implements OnInit, OnDestroy {
   /**
    * 初始化 CurrentRecord 物件
    */
-  async setMainRecord() {
+  async setMainRecord(id?: string) {
 
-
-    if (this.ActionType === 'edit') {
-      this.CurrentRecordForedit = await this.dataService.getCurrentRecord();
-      this.CurrentRecordForedit.contentObj.Reason = await this.CurrentRecordForedit.contentObj.Reason;
+    if (this.actionType === 'edit') {
+      const record = this.dataService.HisRecords.find(v => v.uid == id);
+      this.CurrentRecordForedit = record
+      this.CurrentRecordForedit.contentObj.Reason = this.CurrentRecordForedit.contentObj.Reason;
     } else {
       // 新增的secction
       this.CurrentRecordForedit = new Record();
@@ -225,7 +224,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
       return;
     }
     const result = this.getSendData(this.items, this.CurrentRecordForedit); // 整理資料
-    if (this.ActionType === 'edit') { // 如果是編輯
+    if (this.actionType === 'edit') { // 如果是編輯
       const resp = await this.con?.send('_.UpdateAnnualLeaveRecord', {
         UID: this.CurrentRecordForedit.uid,
         Content: JSON.stringify(result)
@@ -237,7 +236,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.ActionType == 'edit') {
+    if (this.actionType == 'edit') {
       this.router.navigate(['']);
     } else {
       this.setMainRecord();

@@ -1,4 +1,4 @@
-import { Record } from './../vo';
+import { PeriodInfo, Record } from './../vo';
 import { Injectable, NgZone } from "@angular/core";
 import { Contract, GadgetService } from '../gadget.service';
 @Injectable({
@@ -11,15 +11,67 @@ export class DataService {
   con?: Contract | undefined;
   baseInfoCon: Contract;
   // private PrintDate: string;
-  private SchoolName: string ;
+  private SchoolName: string;
 
+  HisRecords: Record[] = [];
 
   constructor(private dsa: GadgetService) {
     this.loadTeachersSign();
     this.loadingSchoolInfo();
   }
+
+  /**
+   * 載入資料
+   */
+  async loadHistoryData(): Promise<Record[]> {
+    this.con = await this.dsa.getContract('ischool.leave.teacher');
+    this.HisRecords =[];
+    const periods: string[] = [];
+    console.log('rsp');
+    const rsp = await this.con?.send('_.GetAnnualLeaveRecord'); // 取得資料
+    console.log(rsp);
+    if (rsp && rsp.LeaveItems) {
+      // 解析轉成物件
+      [].concat(rsp.LeaveItems.Item || []).forEach(item => {
+        this.HisRecords.push(JSON.parse(JSON.stringify(item)));
+      });
+
+      this.HisRecords.forEach(record => {
+        record.contentObj = JSON.parse(record.content);
+        record.contentObj.Dates.forEach(date => {
+          date.Periods.forEach(period => {
+            if (!periods.includes(period.Period)) {
+              periods.push(period.Period);
+            }
+          });
+        });
+        if (record.contentObj) {
+          record.contentObj.PeriodShow = periods;
+        }
+
+      });
+      // 處理Mapping
+      this.HisRecords.forEach(record => {
+        record.contentObj.Dates.forEach(date => {
+          date.LeavePeriod = [];
+          date.MapPeriods = new Map<string, PeriodInfo>();
+          record.contentObj.PeriodShow.forEach(perShow => {
+            let result: PeriodInfo = new PeriodInfo();
+            if (date.Periods.find(period => period.Period === perShow)) {
+              result = date.Periods.find(period => period.Period === perShow) || new PeriodInfo();
+            }
+            date.MapPeriods.set(perShow, result);
+          });
+        });
+      });
+    }
+
+    return this.HisRecords;
+  }
+
   // private connection: any;
   private CurrentEditRecord: Record;
+
   /**
    *
    * 將要編輯的資料放放進來
@@ -28,6 +80,7 @@ export class DataService {
   async setCurrentRecord(record: Record): Promise<any> {
     this.CurrentEditRecord = record;
   }
+
   /**
    *
    * 將要編輯的資料取出
@@ -48,16 +101,17 @@ export class DataService {
     this.AnnualSignTitle = rsp.AnnualSignTitle;
   }
 
-/**
- *
- * 取得學校資訊(名稱)
- * @memberof DataService
- */
-async loadingSchoolInfo(): Promise<any>{
-this.baseInfoCon = await this.dsa.getContract('basic.public');
-const rsp = await this.baseInfoCon?.send('_.GetSchoolInfo');
-this.SchoolName = rsp.ChineseName;
-}
+  /**
+   *
+   * 取得學校資訊(名稱)
+   * @memberof DataService
+   */
+  async loadingSchoolInfo(): Promise<any> {
+    this.baseInfoCon = await this.dsa.getContract('basic.public');
+    const rsp = await this.baseInfoCon?.send('_.GetSchoolInfo');
+    this.SchoolName = rsp.ChineseName;
+  }
+
   /**
    *
    * 取得簽名老師的資訊
@@ -76,7 +130,6 @@ this.SchoolName = rsp.ChineseName;
     return this.PrintDatas;
   }
 
-
   /**
    *
    *
@@ -85,8 +138,6 @@ this.SchoolName = rsp.ChineseName;
   setPrintData(data: Record): void {
     this.PrintDatas = data;
   }
-
-
 
   /**
    *
@@ -132,30 +183,17 @@ this.SchoolName = rsp.ChineseName;
     if (month.length < 2)
       month = '0' + month;
     if (date.length < 2)
-    date = '0' + date;
+      date = '0' + date;
 
     return year + '/' + month + '/' + date + '  ' + hr + ':' + Min + '(' + weekDay + ')';
   }
-
-
-  /**
-   *
-   *
-   * @memberof DataService
-   */
-  getStudent()
-  {
-
-
-  }
-
 
   /**
    * 取得學校資訊
    *
    * @memberof DataService
    */
-  getSchoolName(): string{
+  getSchoolName(): string {
     return this.SchoolName;
 
   }
