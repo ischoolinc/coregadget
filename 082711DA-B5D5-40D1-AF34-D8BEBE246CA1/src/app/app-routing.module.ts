@@ -9,7 +9,7 @@ import { FrontPageComponent } from './front-page/front-page.component';
 const routes: Routes = [
   {path: '', component: FrontPageComponent}
   , {path: 'chooser_demo', component: DemoComponent}
-  , {path: 'edit_record/:action', component: FillOutComponent}
+  , {path: 'edit_record/:action/:id', component: FillOutComponent}
   , {path: 'print', component: PrintComponent}
  , { path: 'print',
     outlet: 'print',

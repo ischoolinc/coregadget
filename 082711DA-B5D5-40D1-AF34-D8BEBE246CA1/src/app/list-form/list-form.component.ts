@@ -127,9 +127,9 @@ export class ListFormComponent implements OnInit {
    * 編輯資料
    * @memberof ListFormComponent
    */
-  async editRecord(date: Record): Promise<any> {
-    await this.dataService.setCurrentRecord(date);
-    this.router.navigate(['edit_record', 'edit']);
+  async editRecord(data: Record): Promise<any> {
+    await this.dataService.setCurrentRecord(data);
+    this.router.navigate(['edit_record', 'edit', data.uid]);
 
   }
   /**
