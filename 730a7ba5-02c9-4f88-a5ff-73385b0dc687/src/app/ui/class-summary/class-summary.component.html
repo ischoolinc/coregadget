@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>缺曠</title>
+</head>
+
+<body>
+  <div class="container-fluid cbs d-flex justify-content-between flex-column">
+    <div id="index" page>
+      <nav aria-label="breadcrumb text-nowrap text-truncate">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active" aria-current="page">缺曠紀錄</li>
+        </ol>
+      </nav>
+
+      <div class="d-flex flex-column flex-sm-row mb-3">
+        <!-- <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle mr-3" type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">{{classNameList}}</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">資一甲</a>
+                        <a class="dropdown-item" href="#">商二甲</a>
+                    </div>
+                </div> -->
+        <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
+          <mat-label>選擇班級</mat-label>
+          <mat-select #className [(ngModel)]="selectedClass"
+                    (selectionChange)="querySemesters()">
+            <mat-option [value]="cls"
+                        *ngFor="let cls of classList">
+              {{cls.ClassName}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>學年度學期</mat-label>
+          <mat-select #semester [(ngModel)]="selectedSemester"
+          (selectionChange)="queryStudentAttendance()">
+            <mat-option [value]="semester"
+                        *ngFor="let semester of semesters">
+               {{ semester.school_year}}學年第{{ semester.semester}}學期
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- <div class="dropdown my-2 my-sm-0">
+                    <button class="btn btn-light dropdown-toggle mr-3" type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">109學年度 第1學期</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">109學年度 第1學期</a>
+                        <a class="dropdown-item" href="#">108學年度 第2學期</a>
+                        <a class="dropdown-item" href="#">108學年度 第1學期</a>
+                    </div>
+                </div> -->
+
+        <div class="dropdown ml-auto mt-5 mt-sm-0">
+          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">匯出報表</button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="#">班級統計（Excel）</a>
+            <a class="dropdown-item" href="#">班級統計（HTML）</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">學生明細（Excel）</a>
+            <a class="dropdown-item" href="#">學生明細（HTML）</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 缺曠 -->
+      <div class="table-responsive">
+        <table id="aList" class="table-rwd table table-bordered table-hover kd-t">
+          <thead>
+            <tr>
+              <th>座號</th>
+              <th>姓名</th>
+              <th *ngFor="let leave of absenceName">{{ leave }}</th>
+            </tr>
+          </thead>
+          <tbody *ngFor=" let studentInfo of aryStudents">
+            <tr class="collapsed" data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
+              <td data-th="座號">{{ studentInfo.seat_no}}</td>
+              <td data-th="姓名">{{ studentInfo.name}}</td>
+              <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center" (click) ="toggle()">{{ studentMappingTable.get(studentInfo.ref_student_id).attendanceMapping.get(leave) }} </td>
+            </tr>
+            <tr class="collapse" id="aA" data-parent="#aList">
+              <td colspan="10" class="p-0">
+                <div class="table-responsive">
+                  <table class="table table-bordered mb-0">
+                    <thead class="thead-gray">
+                      <tr>
+                        <th scope="col">日期</th>
+                        <th scope="col">升旗</th>
+                        <th scope="col">一</th>
+                        <th scope="col">二</th>
+                        <th scope="col">三</th>
+                        <th scope="col">四</th>
+                        <th scope="col">午休</th>
+                        <th scope="col">五</th>
+                        <th scope="col">六</th>
+                        <th scope="col">七</th>
+                        <th scope="col">八</th>
+                        <th scope="col">九</th>
+                        <th scope="col">十</th>
+                        <th scope="col">十一</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td scope="row" class="text-nowrap">2018-05-18</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>病</td>
+                        <td>病</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td scope="row" class="text-nowrap">2018-05-17</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>病</td>
+                        <td>病</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+    <footer class="text-center p-2 mt-auto">
+      Powered By ischool
+    </footer>
+  </div>
+
+  <!-- <script type="text/javascript">
+        function toggle(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            $('#addInterview').modal('show');
+        }
+
+        function showTooltip(){
+            $('td[data-toggle=tooltip]').tooltip('toggle');
+        }
+    </script> -->
+  <!----------------------------------------------------------------------------------------------------------->
+
+</body>
+
+</html>
