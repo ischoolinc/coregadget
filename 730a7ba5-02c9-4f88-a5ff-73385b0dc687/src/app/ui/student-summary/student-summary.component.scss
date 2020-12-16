@@ -1,0 +1,15 @@
+div.data-item {
+  border-bottom: 1px solid lightgray;
+}
+div.data-item:hover {
+  cursor: pointer;
+  color: red ;
+}
+
+div.semester {
+  background-color: aliceblue;
+  font-weight: bold;
+}
+div.semester:nth-child(1) {
+  border-top: 1px solid lightgray;
+}

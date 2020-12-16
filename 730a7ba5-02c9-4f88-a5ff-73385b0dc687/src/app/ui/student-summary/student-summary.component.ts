@@ -77,6 +77,13 @@ export class StudentSummaryComponent implements OnInit {
       temp.push(eachSemester);
     });
     this.sortedStudentList = temp;
+    this.sortedStudentList.forEach((value) => {
+      const temp = value.semester.split('-');
+      value.semester = `${temp[0]}學年度第${temp[1]}學期`;
+    });
+  }
+  nextPage() {
+
   }
 }
 

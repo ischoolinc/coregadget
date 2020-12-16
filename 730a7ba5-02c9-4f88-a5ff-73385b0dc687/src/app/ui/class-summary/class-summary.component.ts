@@ -47,6 +47,7 @@ export class ClassSummaryComponent implements OnInit {
   async querySemesters() {
     this.semesters = await this.attendanceService.getSemestersByClassID(this.selectedClass.ClassID);
     this.selectedSemester = this.semesters[0];
+    await this.queryStudentAttendance();
   }
 
   async queryStudentAttendance() {
