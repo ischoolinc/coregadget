@@ -15,7 +15,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
   qiCode: string ;
   SchoolName: string ;
   constructor(
-      private dataService: DataService
+      public  dataService: DataService
     , private router: Router) { }
 
 

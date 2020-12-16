@@ -6,7 +6,16 @@
       <li class="breadcrumb-item active d-flex"
           aria-current="page"
           style="width: 100%">
-        <div class="mr-auto">公假單</div>
+        <div class="mr-auto">
+          <span><a [routerLink] = "['']">公假單</a>
+          </span>
+          <span *ngIf="actionType">
+            >  {{currentRecordForedit?.uqid}}
+          </span>
+        </div>
+        <div>
+          <a  *ngIf="actionType" [routerLink] = "['']"> 返回</a>
+        </div>
       </li>
     </ol>
   </nav>
@@ -14,7 +23,7 @@
     <div class="card-body">
       <h3>填寫公假單</h3>
 
-      <div *ngIf="!CurrentRecordForedit; else tplForm">Loading...</div>
+      <div *ngIf="!currentRecordForedit; else tplForm">Loading...</div>
 
     </div>
   </div>
@@ -22,46 +31,43 @@
 
 <ng-template #tplForm>
   <div class="d-flex justify-contents-start align-items-baseline">
-    <!-- <div class="mr-3">
-        <button class="mr-3" mat-stroked-button color="primary" (click)="picker.open()">
-          <span class="material-icons">event</span> 選擇日期
-        </button>
-        <mat-form-field>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate readonly>
-            <input matEndDate readonly>
-          </mat-date-range-input>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
-      </div> -->
 
     <div class="mr-3">
       <button class="mr-3" mat-stroked-button color="primary"
               (click)="picker.open()">
         <span class="material-icons">event</span> 新增日期
       </button>
-      <mat-form-field>
-        <input matInput [matDatepicker]="picker" readonly
-               (dateChange)="addDate($event)">
+      <mat-form-field >
+
+        <input  sti matInput [matDatepicker]="picker" readonly
+               (dateChange)="addDate($event)" [formControl]="selectDate"   >
+               <mat-datepicker-toggle style="display:none"  matSuffix></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
 
+
+
     <button mat-stroked-button color="primary" (click)="chooseStudent()">
       <span class="material-icons">account_box</span> 選擇學生
     </button>
-    <button class="ml-auto" mat-raised-button color="primary"
-            (click)="save()">儲存</button>
-  </div>
+    <div  class="ml-auto">
 
+      <button  mat-raised-button color="primary"
+              (click)="save()">儲存</button>
+    </div>
+  </div>
+   <!-- 此地方比較複雜 因原本資料庫資了 及 chooser的資料格式不相同 所有來源有可能會有兩個-->
   <div class="mb-3">
     <mat-chip-list>
       <mat-chip *ngFor="let stu of students" (removed)="removeItemDB(stu)">
-        {{stu.class_name}} {{stu.name}}({{stu.seat_no}})
+        <span [innerHTML]="stu.class_name + stu.name+'(' + stu.seat_no + ')'"></span> <!--此處使用innerHtml 為要處理特殊字問題-->
+
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
       <mat-chip *ngFor="let stu of items" (removed)="removeItem(stu)">
-        {{stu.displayText2}}
+        <span [innerHTML]="stu.displayText2"></span>
+        <!-- {{stu.displayText2}} -->
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
     </mat-chip-list>
@@ -70,7 +76,7 @@
   <mat-form-field class="w-100">
     <mat-label>事由：</mat-label>
     <input matInput name="inputReason"
-           [(ngModel)]="CurrentRecordForedit?.contentObj.Reason"
+           [(ngModel)]="currentRecordForedit?.contentObj.Reason"
            [value]="">
   </mat-form-field>
 
@@ -80,7 +86,7 @@
       <thead>
         <tr>
           <th>日期</th>
-          <th *ngFor="let period of CurrentRecordForedit.contentObj.PeriodShow"
+          <th *ngFor="let period of currentRecordForedit.contentObj.PeriodShow"
               class="my-hover" (click)="selectEachDateSPeriod(period)">
             {{period}}
           </th>
@@ -89,11 +95,11 @@
       </thead>
       <tbody>
         <ng-container
-                      *ngFor="let dateInfo of CurrentRecordForedit.contentObj.Dates">
+                      *ngFor="let dateInfo of currentRecordForedit.contentObj.Dates">
           <tr>
             <th (click)="selectAllPeriod(dateInfo)" class="my-hover">
-              {{dateInfo.Date}}</th>
-            <td *ngFor="let period of CurrentRecordForedit.contentObj.PeriodShow"
+              {{helperService.getFormatDateString(dateInfo.Date)}}</th>
+            <td *ngFor="let period of currentRecordForedit.contentObj.PeriodShow"
                 class="my-hover"
                 (click)="toggle(getPeriodInfo(period,dateInfo.MapPeriods))">
               {{getPeriodInfo(period,dateInfo.MapPeriods).Abbreviation || '-'}}
@@ -114,7 +120,7 @@
       <thead>
         <tr>
           <th>日期</th>
-          <th *ngFor="let period of CurrentRecordForedit?.contentObj?.PeriodShow"
+          <th *ngFor="let period of currentRecordForedit?.contentObj?.PeriodShow"
               (click)="selectEachDateSPeriod(period)"
               class="my-hover">{{period}}</th>
           <th></th>
@@ -122,10 +128,10 @@
       </thead>
       <tbody>
         <ng-container
-                      *ngFor="let dateInfo of CurrentRecordForedit?.contentObj?.Dates">
+                      *ngFor="let dateInfo of currentRecordForedit?.contentObj?.Dates">
           <tr>
             <th (click)="selectAllPeriod(dateInfo)" class="my-hover">
-              {{dateInfo.Date}}</th>
+              {{helperService.getFormatDateString(dateInfo.Date)}}</th>
             <td *ngFor="let period of dateInfo.Periods"
                 (click)="toggle(period)" class="my-hover">
               {{period.Abbreviation || '-'}}</td>

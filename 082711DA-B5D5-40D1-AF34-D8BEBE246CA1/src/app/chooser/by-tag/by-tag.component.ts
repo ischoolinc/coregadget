@@ -83,7 +83,6 @@ export class ByTagComponent implements OnInit {
         .filter(tag => tag.checked)
         .reduce((acc, cur) => acc = acc.concat(cur.MemberIds), []));
     });
-    // console.log(allIds);
     const unique = allIds.filter((v: string, i: number, a: string[]) => a.indexOf(v) === i);
     this.selectionCount = unique.length;
   }

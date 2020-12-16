@@ -25,11 +25,9 @@ export class DataService {
    */
   async loadHistoryData(): Promise<Record[]> {
     this.con = await this.dsa.getContract('ischool.leave.teacher');
-    this.HisRecords =[];
+    this.HisRecords = [];
     const periods: string[] = [];
-    console.log('rsp');
     const rsp = await this.con?.send('_.GetAnnualLeaveRecord'); // 取得資料
-    console.log(rsp);
     if (rsp && rsp.LeaveItems) {
       // 解析轉成物件
       [].concat(rsp.LeaveItems.Item || []).forEach(item => {
@@ -132,7 +130,7 @@ export class DataService {
 
   /**
    *
-   *
+   *把要印的資料放進來
    * @memberof DataService
    */
   setPrintData(data: Record): void {
@@ -144,7 +142,7 @@ export class DataService {
    * 格式化日期
    * @memberof DataService
    */
-  getPrintDate() {
+  async getPrintDate() {
     let dnow = new Date();
     let month = '' + (dnow.getMonth() + 1);
     let date = '' + dnow.getDate();
@@ -154,25 +152,25 @@ export class DataService {
     let day = dnow.getDay();
     let weekDay = '';
     switch (day) {
-      case day: 0
+      case 0:
         weekDay = '日'
         break;
-      case day: 1
+      case 1:
         weekDay = '一'
         break;
-      case day: 2
+      case 2:
         weekDay = '二'
         break;
-      case day: 3
+      case 3:
         weekDay = '三'
         break;
-      case day: 4
+      case 4:
         weekDay = '四'
         break;
-      case day: 5
+      case 5:
         weekDay = '五'
         break;
-      case day: 6
+      case 6:
         weekDay = '六'
         break;
 
@@ -185,7 +183,18 @@ export class DataService {
     if (date.length < 2)
       date = '0' + date;
 
-    return year + '/' + month + '/' + date + '  ' + hr + ':' + Min + '(' + weekDay + ')';
+    return year + '/' + month + '/' + date + '  ' + '(' + weekDay + ') ' + hr + ':' + Min;
+  }
+
+  /**
+  * 取得日期 Format YYYY/MM/DD
+  */
+  getDateFormat(dateString: string): string {
+    let fdate = new Date(dateString);
+    let year = fdate.getFullYear();
+    let month = fdate.getMonth() + 1;
+    let date = fdate.getDate();
+    return  `${year}/${month}/${date}`;
   }
 
   /**

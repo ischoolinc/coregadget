@@ -6,8 +6,8 @@
 *:focus { outline: none !important; border: 0 !important; }
 
 @media print {
-  app-root > * { display: none; }
-  app-root app-print { display: block; }
+  app-root > * { display: none }
+  app-root app-print { display: block}
 }
 
 table.my-table {

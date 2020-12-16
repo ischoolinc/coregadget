@@ -47,12 +47,12 @@ export class ByClassStudentComponent implements OnInit {
       .getAllClasses()
       .toPromise()
 
-    this.classes = this.classes.sort((x, y) => {
-      const xx = `${+x.DisplayOrder || Number.MAX_VALUE}:${x.ClassName}`;
-      const yy = `${+y.DisplayOrder || Number.MAX_VALUE}:${y.ClassName}`;
+    // this.classes = this.classes.sort((x, y) => {
+    //   const xx = `${+x.DisplayOrder || Number.MAX_VALUE}:${x.ClassName}`;
+    //   const yy = `${+y.DisplayOrder || Number.MAX_VALUE}:${y.ClassName}`;
 
-      return xx.localeCompare(yy);
-    });
+    //   return xx.localeCompare(yy);
+    // });
 
     for(const cls of this.classes) {
       cls.students = cls
