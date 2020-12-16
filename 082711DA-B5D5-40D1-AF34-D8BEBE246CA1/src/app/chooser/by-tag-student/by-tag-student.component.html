@@ -15,7 +15,8 @@
                     (change)="calcSelectedCount()"
                     [(ngModel)]="stu.checked"
                     [ngModelOptions]="{standalone: true}">
-        {{stu.StudentName}}
+                    <span [innerHTML]="stu.StudentName + '(' + stu.SeatNo + ')'"></span>
+        <!-- {{stu.StudentName}}({{stu.StudentNumber}}) -->
       </mat-checkbox>
     </div>
   </div>

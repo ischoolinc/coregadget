@@ -1,17 +1,4 @@
 
-
-/**
- * 裝學生資訊
-//  */
-// export class Student {
-//   id = '';
-//   StuName = '';
-//   StudentNumber = '';
-//   SeatNo = '';
-//   ClassName = '';
-//   GradeYear = '';
-// }
-
 import { SelectionResult } from './chooser/data';
 
 /**
@@ -89,7 +76,7 @@ export class DatesInfo {
       day = '0' + day;
     }
 
-    return [year, month, day].join('-');
+    return [year, month, day].join('/');
   }
 }
 
@@ -103,7 +90,7 @@ export class LeavePeriodInfo implements PeriodInfo {
   }
   Period = '';
   Absence = '';
-  Abbreviation = '-';
+  Abbreviation = '';
 }
 
 
@@ -238,4 +225,5 @@ export class Record {
    * 將content 轉化為Obj 方便資料使用
    */
   contentObj: Content;
+  approved :string ;
 }

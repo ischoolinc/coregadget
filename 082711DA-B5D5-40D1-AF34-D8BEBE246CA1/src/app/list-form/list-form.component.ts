@@ -1,3 +1,4 @@
+import { HelperService } from './../Service/helper.service';
 import { DataService } from './../Service/data.service';
 import { Record, Period, PeriodInfo,  DatesInfo, IStudent } from './../vo';
 import { Component, OnInit } from '@angular/core';
@@ -19,7 +20,8 @@ export class ListFormComponent implements OnInit {
     , private router: Router
     , private route: ActivatedRoute
     , private dataService: DataService
-    , private _snackBar: MatSnackBar) {
+    , private _snackBar: MatSnackBar
+    , public helperService:HelperService) {
 
       route.data.subscribe(r => {
         this.HisRecords = r.records;
@@ -79,7 +81,7 @@ export class ListFormComponent implements OnInit {
   async deleteRecord(record: Record): Promise<any> {
 
     try {
-      this.openSnackBar('','');
+      this.openSnackBar(`已刪除 ${record.uqid} `,'');
       const rsp = await this.con?.send('_.DeleteAnnualLeaveRecord', { UID: record.uid });
     } catch (ex) {
       alert(`刪除發生錯誤 : \n${ex.Message}`);
