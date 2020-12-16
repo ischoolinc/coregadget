@@ -1,1 +1,25 @@
-<p>student-summary works!</p>
+<div class="container-fluid cbs d-flex justify-content-between flex-column">
+  <div id="index" page>
+    <nav aria-label="breadcrumb text-nowrap text-truncate">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">學生缺曠統計</li>
+      </ol>
+    </nav>
+
+    <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate">學生: {{this.selectedName}}</div>
+    <table id="aList" class="table-rwd table table-bordered table-hover kd-t">
+      <div class="table-responsive" *ngFor = "let data of this.sortedStudentList" >
+        <thead>
+          <tr>
+            <th>{{ data.semester }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="collapsed" data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
+            <td *ngFor= "let item of data.statics">{{ item.absenceType}} {{ item.count}}</td>
+          </tr>
+        </tbody>
+      </div>
+
+    </table>
+</div>

@@ -80,9 +80,9 @@
           </thead>
           <tbody *ngFor=" let studentInfo of aryStudents">
             <tr class="collapsed" data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
-              <td data-th="座號">{{ studentInfo.seat_no}}</td>
-              <td data-th="姓名">{{ studentInfo.name}}</td>
-              <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center" (click) ="toggle()">{{ studentMappingTable.get(studentInfo.ref_student_id).attendanceMapping.get(leave) }} </td>
+              <td data-th="座號" (click) ="nextPage(studentInfo)" routerLink="/student-summary">{{ studentInfo.seat_no}}</td>
+              <td data-th="姓名" (click) ="nextPage(studentInfo)" routerLink="/student-summary">{{ studentInfo.name}}</td>
+              <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center" (click) ="nextPage(studentInfo)" routerLink="/student-summary">{{ studentMappingTable.get(studentInfo.ref_student_id).attendanceMapping.get(leave) }} </td>
             </tr>
             <tr class="collapse" id="aA" data-parent="#aList">
               <td colspan="10" class="p-0">
