@@ -8,7 +8,13 @@ export class DatesInfo {
   Date = ''; // 請公假的日期
   Periods: LeavePeriodInfo[] = [];
   MapPeriods: Map<string, PeriodInfo> = new Map();
-  LeavePeriod: string[];
+
+ /**
+  * 列印用
+  * @type {string[]}
+  * @memberof DatesInfo
+  */
+ LeavePeriodString: string[] ;
 
   /**
    * 建構子
@@ -35,7 +41,7 @@ export class DatesInfo {
     this.Date = dateInfo.Date ;
     this.Periods = dateInfo.Periods;
     this.MapPeriods = dateInfo.MapPeriods;
-    this.LeavePeriod = dateInfo.LeavePeriod;
+    this.LeavePeriodString = dateInfo.LeavePeriodString;
   }
 
   /**

@@ -35,7 +35,7 @@
                         <span [innerHTML]="student.name"></span> <!-- 此處特別使用 [innerHTML]="student.name" 為要處理特殊字的問題-->
                       </td>
                       <td  class="datail-row">{{this.dataService.getDateFormat(date.Date)}}</td>
-                      <td  class="datail-row">{{date.LeavePeriod.join('、')}}</td>
+                      <td  class="datail-row">{{date.LeavePeriodString.join('、')}}</td>
                       <td  class="datail-row">{{PrintDatas?.contentObj.Reason}}</td>
                           </tr>
                         </ng-container>

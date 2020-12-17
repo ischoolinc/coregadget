@@ -29,9 +29,7 @@ export class ListFormComponent implements OnInit {
   }
   async ngOnInit(): Promise<any> {
     this.con = await this.dsa.getContract('ischool.leave.teacher');
-    // await this.getConfig();
 
-    // this.HisRecords = this.dataService.HisRecords;
   }
 
   /**
@@ -63,9 +61,10 @@ export class ListFormComponent implements OnInit {
     // 進入
     // 裝資料
     data.contentObj.Dates.forEach(date => {
+    date.LeavePeriodString=[]; //先清空
     date.Periods.forEach(period => {
       if(period.Abbreviation ==="公"){
-          date.LeavePeriod.push(period.Period);
+          date.LeavePeriodString.push(period.Period);
       }
       });
     });

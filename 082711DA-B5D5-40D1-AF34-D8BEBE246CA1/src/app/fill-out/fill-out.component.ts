@@ -125,10 +125,8 @@ export class FillOutComponent implements OnInit, OnDestroy {
 
     this.selectDate=new FormControl(event.value);
 
-    console.log('546',this.selectDate);
-    console.log('546',event.value?.toString() );
-
     const datesLeaveInfo: DatesInfo = new DatesInfo(event.value?.toString() || '', this.currentRecordForedit.contentObj.PeriodShow);
+   console.log('datesLeaveInfo',datesLeaveInfo)
     this.currentRecordForedit.contentObj.Dates.push(datesLeaveInfo);
   }
 
@@ -136,11 +134,21 @@ export class FillOutComponent implements OnInit, OnDestroy {
   /**
    * 點選後顯示 '公'或是 '-'
    */
-  toggle(target: LeavePeriodInfo): void {
+  toggle(target: LeavePeriodInfo,periodInfo? :any): void {
     if (target.Abbreviation === ''  ) {
+      if(periodInfo) //處理編輯時資料來源不同的問題
+      {
+        let periodInfo_ :LeavePeriodInfo= periodInfo.Periods.find(period=>period.Period===target.Period);// 給值方便儲存
+        periodInfo_.Abbreviation='公';
+      }
       target.Absence = '公假';
       target.Abbreviation = '公';
     } else if (target.Abbreviation === '公') {
+      if(periodInfo) //處理編輯時資料來源不同的問題
+      {
+        let periodInfo_ :LeavePeriodInfo= periodInfo.Periods.find(period=>period.Period===target.Period);// 給值方便儲存
+        periodInfo_.Abbreviation='';
+      }
       target.Absence = '';
       target.Abbreviation = '';
     }
@@ -235,7 +243,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
   async save(): Promise<any> {
 
 
-
     // 1.檢查資料
     if (!this.checkData()) {
       return;
@@ -251,10 +258,10 @@ export class FillOutComponent implements OnInit, OnDestroy {
     if (this.actionType === 'edit') { // 如果是編輯
 
       try {
-        const resp = await this.con?.send('_.UpdateAnnualLeaveRecord', {
+        const resp = await this.con?.send('_.UpdateAnnualLeaveRecord', {Content :{
           UID: this.currentRecordForedit.uid,
           Content: JSON.stringify(result)
-        });
+        }});
       } catch (ex) {
         alert('編輯發生錯誤!');
       }
@@ -425,6 +432,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
     let result: any;
     if (periodMap.has(period)) {
       result = periodMap.get(period);
+
     }
     return result;
   }
