@@ -1,3 +1,11 @@
+<div class='up-section'>
+  <nav aria-label="breadcrumb text-nowrap text-truncate">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page" routerLink="" style="cursor: pointer;">課程代碼查詢</li>
+      <li class="breadcrumb-item active" aria-current="page">課程代碼上傳</li>
+    </ol>
+  </nav>
+</div>
 <div>
   <form class='form-section'>
     <div style="width: 200px; height: 20px;display: inline; margin-right: 30px;">
@@ -10,7 +18,7 @@
     </div>
     <span>
       <button type="button" mat-stroked-button color="primary" (click)="dealCsv.click()">
-        <mat-icon aria-hidden="false">upload</mat-icon>選擇檔案
+        <mat-icon aria-hidden="false" style="padding-top: 5px;">upload</mat-icon>選擇檔案
       </button>
       <div class='divider'>※課程代碼檔案支援格式: csv</div>
     </span>
@@ -28,7 +36,7 @@
     </div>
     <span>
       <button type="button" mat-stroked-button color="primary" (click)="dealSubjectCsv.click()">
-        <mat-icon aria-hidden="false">upload</mat-icon>選擇檔案
+        <mat-icon aria-hidden="false" style="padding-top: 5px;">upload</mat-icon>選擇檔案
       </button>
     </span>
   </div>
@@ -75,7 +83,7 @@
           </span>
 
         </span></td> -->
-      <mat-expansion-panel hideToggle  style="background-color: transparent;">
+      <mat-expansion-panel hideToggle  style="background-color: transparent;" class="mat-elevation-z0">
         <!-- #enddocregion hide-toggle -->
             <mat-expansion-panel-header>
               <mat-panel-title style= "width: 20% ; margin: 0px 0px 0px 0px">{{course.courseCode}}</mat-panel-title>

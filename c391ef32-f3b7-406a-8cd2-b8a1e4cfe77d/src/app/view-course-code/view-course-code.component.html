@@ -1,7 +1,12 @@
 <div class='up-section'>
-<button class='uploadBtn' id= "btn" mat-raised-button color="primary" routerLink="/upload" >上傳csv<mat-icon aria-hidden="false">play_arrow</mat-icon></button>
+  <nav aria-label="breadcrumb text-nowrap text-truncate">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">課程代碼查詢</li>
+    </ol>
+  </nav>
+<button class='uploadBtn' id= "btn" mat-raised-button color="primary" routerLink="/upload" >上傳csv<mat-icon aria-hidden="false" style="padding-top: 5px;">play_arrow</mat-icon></button>
 <!----->
-<mat-form-field appearance="fill" >
+<mat-form-field appearance="fill" class="mr-0 mr-sm-2">
   <mat-label>選擇入學年度</mat-label>
   <mat-select  #selectYear (selectionChange)="filterInspect(selectYear.value)"  [(ngModel)]="selectYearOption">
     <mat-option [value]="year" *ngFor = "let year of years"> {{year}} </mat-option>
@@ -21,16 +26,15 @@
 <div class='table-section'>
 <table class="theader" matSort (matSortChange)="sortData($event)">
   <tr class="thead">
-    <th style='width: 6%;' mat-sort-header="入學年度">入學年度</th>
-    <th style='width: 8%;'mat-sort-header="課程類型">課程類型</th>
-    <th style='width: 13%;'mat-sort-header="群別類型">群別類型</th>
-    <th style='width: 13%;'mat-sort-header="科別類型">科別類型</th>
-    <th style='width: 13%;'mat-sort-header="班群類型">班群類型</th>
-    <th style='width: 13%;'mat-sort-header="科目名稱">科目名稱</th>
-    <th style='width: 13%;'mat-sort-header="學期學分">學期學分</th>
-    <th style='width: 20%;'mat-sort-header="課程代碼">課程代碼</th>
+    <th class="my-th" style="width: 80px"mat-sort-header="入學年度">入學年度</th>
+    <th class="my-th" mat-sort-header="課程類型">課程類型</th>
+    <th class="my-th" mat-sort-header="群別類型">群別類型</th>
+    <th class="my-th" mat-sort-header="科別類型">科別類型</th>
+    <th class="my-th" mat-sort-header="班群類型">班群類型</th>
+    <th class="my-th" mat-sort-header="科目名稱">科目名稱</th>
+    <th class="my-th" mat-sort-header="學期學分">學期學分</th>
+    <th class="my-th" style="width: 250px" mat-sort-header="課程代碼">課程代碼</th>
   </tr>
-
   <tr class="tbody" *ngFor="let course of sortedData">
     <td>{{course.entryYear}}</td>
     <td>{{course.courseType}}</td>
