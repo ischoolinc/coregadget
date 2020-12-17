@@ -9,8 +9,8 @@ import { AttendanceService } from 'src/app/dal/attendance.service';
 export class StudentSummaryComponent implements OnInit {
 
   selectedName: string;
-  studentMappingStatics: Map<string, Map<string, number>> = new Map();
-  sortedMappingStatics: Map<string, Map<string, number>> = new Map();
+  studentMappingStatics: Map<string, Map<string, AbsenceRecord>> = new Map();
+  sortedMappingStatics: Map<string, Map<string, AbsenceRecord>> = new Map();
   sortedStudentList: studentAbsenceType[] = [];
   semesterList: string[] = [];
   constructor(private attendanceService: AttendanceService) {
@@ -35,19 +35,29 @@ export class StudentSummaryComponent implements OnInit {
         const absenceMappingStatics = new Map();
         this.studentMappingStatics.set(stdKey, absenceMappingStatics);
       }
-      // 計算各類型缺曠的數目
-      const stdDetailPeriod = [].concat(studentAttendanceList.Detail.Period || []);
+      console.log('studentAttendanceList', studentAttendanceList);
+      // 計算各類型缺曠的數目 TODO:
+      const stdDetailPeriod: AbsenceDetail[] = [].concat(studentAttendanceList.Detail.Period || []);
       stdDetailPeriod.forEach((eachAbsenceType) => {
-        if (! this.studentMappingStatics.get(stdKey).has(eachAbsenceType.AbsenceType)) {
-           this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType, 0);
+        if (!this.studentMappingStatics.get(stdKey).has(eachAbsenceType.AbsenceType)) {
+          const tempAbsenceDetail = {
+            date: [],
+            period: [],
+            count: 0
+          };
+          this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType, tempAbsenceDetail);
         }
-         this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType,  this.studentMappingStatics.get(stdKey).get(eachAbsenceType.AbsenceType) + 1);
+        const currentDetail = this.studentMappingStatics.get(stdKey).get(eachAbsenceType.AbsenceType);
+        currentDetail.date.push(studentAttendanceList.OccurDate);
+        currentDetail.period.push(eachAbsenceType['@text']);
+        currentDetail.count++;
+        this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType, currentDetail);
       });
     });
   }
   sortMap() {
     // 重新排序Map中內容(根據學年度學期)
-    this.studentMappingStatics.forEach((value,index) => {
+    this.studentMappingStatics.forEach((value, index) => {
       this.semesterList.push(index);
     });
     this.semesterList.sort((a, b) => {
@@ -61,15 +71,17 @@ export class StudentSummaryComponent implements OnInit {
     this.semesterList.forEach((value) => {
       this.sortedMappingStatics.set(value, this.studentMappingStatics.get(value));
     })
-    // 將Map轉換成陣列作為畫面顯示
+    // 將Map轉換成陣列作為畫面顯示 TODO:
     const temp = [];
-    this.sortedMappingStatics.forEach((semester, key) => {
+    this.sortedMappingStatics.forEach((absenceTypeStatics, semester) => {
       const eachSemester = new studentAbsenceType();
-      eachSemester.semester = key;
-      semester.forEach((count, absenceType)=> {
+      eachSemester.semester = semester;
+      absenceTypeStatics.forEach((absenceDetail, absenceType) => {
         const typeAndCount = {
           absenceType: absenceType,
-          count: count
+          count: absenceDetail.count,
+          date: absenceDetail.date,
+          period: absenceDetail.period
         };
         eachSemester.statics.push(typeAndCount);
       });
@@ -82,36 +94,44 @@ export class StudentSummaryComponent implements OnInit {
       value.semester = `${temp[0]}學年度第${temp[1]}學期`;
     });
   }
-  nextPage() {
+  previousPage() {
 
   }
 }
 
 class studentAbsenceType {
-  constructor(){this.statics = [];}
+  constructor() { this.statics = []; }
   semester: string;
   statics: {
     absenceType: string;
     count: number;
+    date: string[];
+    period: string[];
   }[];
 }
 
+interface AbsenceRecord {
+  date: string[];
+  period: string[];
+  count: number;
+}
 interface StudentAttendanceRecord {
-  '@':[],
+  '@': [],
   'Id': string,
   'OccurDate': string,
   'SchoolYear': string,
   'Semester': string,
   'Detail': {
-    'Period': {
-      '@text': string,
-      '@':[],
-      'AbsenceType': string,
-      'AttendanceType': string
-    }[]
+    'Period': AbsenceDetail[]
   }
 }
 
+interface AbsenceDetail {
+  '@text': string,
+  '@': [],
+  'AbsenceType': string,
+  'AttendanceType': string
+}
 interface StudentAttendanceList {
   'Response': {
     'Attendance': {
