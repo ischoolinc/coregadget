@@ -1,4 +1,3 @@
-import { ActivatedRoute, Router } from '@angular/router';
 import { Contract } from './../gadget.service';
 import { Parser } from './../parser';
 import { Component, ElementRef, OnInit} from '@angular/core';
@@ -120,6 +119,7 @@ export class FormComponent implements OnInit {
         });
         this.saveView(courseCode);
         alert('儲存成功');
+        this.reset();
       }
     }
     else {
@@ -331,9 +331,7 @@ export class FormComponent implements OnInit {
     return rowData.action ;
   }
   reset(): void {
-    console.log('this.moeFileInfoHistory before', this.moeFileInfoHistory.size);
     this.moeFileInfoHistory.clear();
-    console.log('this.moeFileInfoHistory after', this.moeFileInfoHistory.size);
     this.moeFileInfoTemp.clear();
     this.priFileName = undefined;
     this.fileContent = undefined;

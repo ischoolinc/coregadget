@@ -20,9 +20,7 @@
   <link href="./css/default.css" rel="stylesheet" type="text/css"> -->
 </head>
 <body>
-  <app-class-summary *ngIf = "(mode === 'classSummary')"></app-class-summary>
-  <app-student-summary *ngIf = "(mode === 'studentSummary')"></app-student-summary>
-  <app-student-detail *ngIf = "(mode === 'studentDetail')"></app-student-detail>
+  <router-outlet></router-outlet>
 </body>
 </html>
 

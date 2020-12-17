@@ -1,4 +1,4 @@
-import { AttendanceService, SemesterInfo } from './../../dal/attendance.service';
+import { AttendanceService, SemesterInfo, StudentAttendanceInfo, studentObj } from './../../dal/attendance.service';
 import { Component, OnInit } from '@angular/core';
 import * as node2json from 'nodexml';
 
@@ -47,6 +47,7 @@ export class ClassSummaryComponent implements OnInit {
   async querySemesters() {
     this.semesters = await this.attendanceService.getSemestersByClassID(this.selectedClass.ClassID);
     this.selectedSemester = this.semesters[0];
+    await this.queryStudentAttendance();
   }
 
   async queryStudentAttendance() {
@@ -60,6 +61,7 @@ export class ClassSummaryComponent implements OnInit {
     this.studentMappingTable.clear();
     this.aryStudents = [];
     // foreach attendance record .......
+    const temp = [].concat(studentList.result || []);
     studentList.result.forEach((eachStudentAttendanceInfo) =>{
       // 計算各學生缺曠的統計
       if (!this.studentMappingTable.has(eachStudentAttendanceInfo.ref_student_id)) {
@@ -75,9 +77,9 @@ export class ClassSummaryComponent implements OnInit {
     })
     console.log('aryStudents', this.aryStudents);
   }
-  toggle() {
+  nextPage(studentInfo: StudentAttendanceInfo) {
     this.attendanceService.mode = 'studentSummary';
-    console.log(this.attendanceService.mode);
+    this.attendanceService.fillInStudentInfo(studentInfo);
   }
 }
 
@@ -116,16 +118,6 @@ class StudentAttendanceStatistics {
   }
 }
 
-interface studentObj {
-  'Attendance': {
-    'Period': {
-      '@text': string,
-      '@': [],
-      'AbsenceType': string,
-      'AttendanceType': string
-    }[]
-  }
-}
 interface StudentListResponse {
   result: {
     ref_student_id: string;
@@ -138,15 +130,6 @@ interface StudentListResponse {
   }[]
 }
 
-interface StudentAttendanceInfo {
-  ref_student_id: string;
-  seat_no: string;
-  name: string;
-  school_year: string;
-  semester: string;
-  occur_date: string;
-  detail: string;
-}
 interface leaveType {
   StudentID: string;
   StudentName: string;

@@ -7,14 +7,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
 import { ClassSummaryComponent } from './ui/class-summary/class-summary.component';
 import { StudentSummaryComponent } from './ui/student-summary/student-summary.component';
-import { StudentDetailComponent } from './ui/student-detail/student-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ClassSummaryComponent,
-    StudentSummaryComponent,
-    StudentDetailComponent
+    StudentSummaryComponent
   ],
   imports: [
     BrowserModule,

@@ -8,6 +8,10 @@ import { Injectable } from '@angular/core';
 export class AttendanceService {
 
   mode :'classSummary'|'studentSummary'|'studentDetail' = 'classSummary';
+  selectedStudentID: string;
+  selectedSchoolYear: string;
+  selectedSemester: string;
+  selectedName: string;
   absenceMappingTable = new Map();
   constructor(
     private gadget: GadgetService,
@@ -122,31 +126,26 @@ export class AttendanceService {
   }
 
   // TODO:取得學生缺曠資料(尚未完成)
-  async getStudentAttendance(schoolYear, semester, cls) {
-    const contract = await this.gadget.getContract('ta');
-    const result = await contract.send('TeacherAccess.GetStudentAttendance', {
-      Content: {
+  async getStudentAttendance(studentID) {
+    const contract = await this.contract.getDefaultContract();
+    const result = await contract.send('attendance.GetStudentAttendance', {
+      Request: {
         Field: {
-          StudentID: {},
-          StudentName: {},
-          SeatNumber: {},
-          OccurDate: {},
-          Detail: {}
+          All:''
         },
-        Condition: {
-          SchoolYear: schoolYear,
-          Semester: semester,
-          ClassID: cls.ClassID
-        },
-        Order: {
-          SeatNumber: {}
-        }
+        RefStudentId: studentID
       }
     }
     );
-    console.log(result);
+    console.log('getStudentAttendance', result);
     return result;
 
+  }
+  fillInStudentInfo(studentInfo: StudentAttendanceInfo) {
+    this.selectedStudentID = studentInfo.ref_student_id;
+    this.selectedSchoolYear = studentInfo.school_year;
+    this.selectedSemester = studentInfo.seat_no;
+    this.selectedName = studentInfo.name;
   }
 }
 
@@ -172,6 +171,7 @@ interface AbsenceListResponse {
     }[];
   }
 }
+
 interface ClassListResponse {
   ClassList: {
     Class: {
@@ -181,7 +181,40 @@ interface ClassListResponse {
   }
 }
 
+
+export interface StudentAttendanceInfo {
+  ref_student_id: string;
+  seat_no: string;
+  name: string;
+  school_year: string;
+  semester: string;
+  occur_date: string;
+  detail: string;
+}
+
 export interface SemesterInfo {
   school_year: number;
   semester: number;
+}
+
+export interface studentObj {
+  'Attendance': {
+    'Period': {
+      '@text': string,
+      '@': [],
+      'AbsenceType': string,
+      'AttendanceType': string
+    }[]
+  }
+}
+
+export interface studentObj {
+  'Attendance': {
+    'Period': {
+      '@text': string,
+      '@': [],
+      'AbsenceType': string,
+      'AttendanceType': string
+    }[]
+  }
 }
