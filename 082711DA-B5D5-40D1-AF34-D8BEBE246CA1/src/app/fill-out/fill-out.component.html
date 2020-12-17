@@ -101,7 +101,7 @@
               {{helperService.getFormatDateString(dateInfo.Date)}}</th>
             <td *ngFor="let period of currentRecordForedit.contentObj.PeriodShow"
                 class="my-hover"
-                (click)="toggle(getPeriodInfo(period,dateInfo.MapPeriods))">
+                (click)="toggle(getPeriodInfo(period,dateInfo.MapPeriods),dateInfo)">
               {{getPeriodInfo(period,dateInfo.MapPeriods).Abbreviation || '-'}}
             </td>
             <td (click)="removeAllDate(dateInfo)" class="my-hover">

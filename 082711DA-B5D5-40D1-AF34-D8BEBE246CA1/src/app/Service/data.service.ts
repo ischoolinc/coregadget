@@ -51,7 +51,7 @@ export class DataService {
       // 處理Mapping
       this.HisRecords.forEach(record => {
         record.contentObj.Dates.forEach(date => {
-          date.LeavePeriod = [];
+          date.LeavePeriodString = [];
           date.MapPeriods = new Map<string, PeriodInfo>();
           record.contentObj.PeriodShow.forEach(perShow => {
             let result: PeriodInfo = new PeriodInfo();
