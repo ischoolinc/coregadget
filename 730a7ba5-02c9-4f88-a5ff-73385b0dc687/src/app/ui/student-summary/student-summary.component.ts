@@ -41,9 +41,9 @@ export class StudentSummaryComponent implements OnInit {
       stdDetailPeriod.forEach((eachAbsenceType) => {
         if (!this.studentMappingStatics.get(stdKey).has(eachAbsenceType.AbsenceType)) {
           const tempAbsenceDetail = {
+            count: 0,
             date: [],
-            period: [],
-            count: 0
+            period: []
           };
           this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType, tempAbsenceDetail);
         }
@@ -77,11 +77,11 @@ export class StudentSummaryComponent implements OnInit {
       const eachSemester = new studentAbsenceType();
       eachSemester.semester = semester;
       absenceTypeStatics.forEach((absenceDetail, absenceType) => {
-        const typeAndCount = {
-          absenceType: absenceType,
-          count: absenceDetail.count,
-          date: absenceDetail.date,
-          period: absenceDetail.period
+      const typeAndCount = {
+        absenceType: absenceType,
+        count: absenceDetail.count,
+        date: absenceDetail.date,
+        period: absenceDetail.period
         };
         eachSemester.statics.push(typeAndCount);
       });
@@ -111,9 +111,9 @@ class studentAbsenceType {
 }
 
 interface AbsenceRecord {
+  count: number;
   date: string[];
   period: string[];
-  count: number;
 }
 interface StudentAttendanceRecord {
   '@': [],
