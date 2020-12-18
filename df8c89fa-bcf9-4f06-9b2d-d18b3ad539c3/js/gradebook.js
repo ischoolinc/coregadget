@@ -792,7 +792,10 @@
                 if (!$scope.current.Student) {
                     student = $scope.studentList[0];
                 } else {
-                    student = $scope.current.Student;
+                    // 不能用右邊的寫法，因為切換評量時 studentList 被重設，current 的關連已斷。 student = $scope.current.Student;
+                    student = $scope.studentList.find(function(s) {
+                        return ($scope.current.Student.StudentID === s.StudentID);
+                    });
                 }
                 /**
                  * 設定目前試別
