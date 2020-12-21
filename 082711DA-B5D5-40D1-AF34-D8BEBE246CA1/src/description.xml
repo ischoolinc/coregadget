@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="教師公假填報" description="教師公假填報">
-    <Title lang="zh-TW">教師公假填報</Title>
+  <ModulePrefs title="學生公假填報" description="學生公假填報">
+    <Title lang="zh-TW">學生公假填報</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">

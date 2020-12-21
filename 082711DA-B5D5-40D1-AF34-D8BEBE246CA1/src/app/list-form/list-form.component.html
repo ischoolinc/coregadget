@@ -2,7 +2,7 @@
 <!-- <div>長度{{PrintDatas?.contentObj.Students.length}}</div> -->
 <div class="mb-3" *ngFor="let record of HisRecords">
   <div class="d-flex align-items-center mb-1">
-    <span><span class="material-icons">label</span>  {{record.uqid}} <span style="color:#3f51b5"> {{record.approved=='t'?'已核準':''}}</span></span>
+    <span><span class="material-icons">label</span>  {{record.uqid}} <span style="color:#3f51b5"> {{record.approved=='t'?'已核准':''}}</span></span>
     <div class="ml-auto">
       <button *ngIf="record.approved!=='t'"  mat-icon-button color="primary" (click)="editRecord(record)">
         <mat-icon>edit</mat-icon>
