@@ -90,8 +90,9 @@ export class FormComponent implements OnInit {
     this.contract = await this.gadget.getContract('campus.moe_coursecode.adminator');
     this.gadget.onLeave(() => {
       if (this.moeFileInfoTemp.size > 0) {
-        return '您尚未儲存課程代碼，確認要離開此網頁嗎?';
+        return '您尚未儲存選課結果，確認要離開此網頁嗎?';
       }
+      return '';
     });
     // window.addEventListener('beforeunload', (event) => {
     //   event.returnValue = '111';
