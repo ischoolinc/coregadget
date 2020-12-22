@@ -27,7 +27,7 @@ export class ClassSummaryComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     // 1. get my classes
-    await this.queryClass();
+    await this.queryClasses();
 
     // 2. get semesters by class.
     await this.querySemesters();
@@ -43,7 +43,7 @@ export class ClassSummaryComponent implements OnInit {
     await this.queryStudentAttendance();
   }
 
-  async queryClass() {
+  async queryClasses() {
     this.classList = await this.attendanceService.getMyClasses();
     this.selectedClass = this.classList[0];
   }
@@ -66,7 +66,7 @@ export class ClassSummaryComponent implements OnInit {
     this.aryStudents = [];
     // foreach attendance record .......
     const temp = [].concat(studentList.result || []);
-    studentList.result.forEach((eachStudentAttendanceInfo) => {
+    temp.forEach((eachStudentAttendanceInfo) => {
       // 計算各學生缺曠的統計
       if (!this.studentMappingTable.has(eachStudentAttendanceInfo.ref_student_id)) {
         this.studentMappingTable.set(eachStudentAttendanceInfo.ref_student_id, new StudentAttendanceStatistics(eachStudentAttendanceInfo));
@@ -83,7 +83,6 @@ export class ClassSummaryComponent implements OnInit {
   }
   // 供下一頁參考的資料
   nextPage(studentInfo: StudentAttendanceInfo) {
-    this.attendanceService.mode = 'studentSummary';
     this.attendanceService.fillInStudentInfo(studentInfo);
   }
   // 匯出報表
