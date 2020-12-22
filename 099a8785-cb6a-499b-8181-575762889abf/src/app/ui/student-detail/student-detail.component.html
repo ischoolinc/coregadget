@@ -1,0 +1,42 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column">
+  <div id="index" page>
+    <nav aria-label="breadcrumb text-nowrap text-truncate">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page" routerLink="">班級獎懲</li>
+        <li class="breadcrumb-item active" aria-current="page"> 學生獎懲明細</li>
+      </ol>
+    </nav>
+
+    <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate">學生:
+      {{this.selectedName}}</div>
+
+    <div class="d-flex flex-column">
+      <div class="table-responsive" *ngFor="let data of this.sortedStudentList;">
+
+        <div class="py-2 px-4 semester">{{ data.semester }}</div>
+        <div *ngFor="let item of data.statics"
+          class="d-flex flex-row justify-content-between align-items-center py-1 px-4 data-item"
+          style="border-bottom: 1px solid lightgray;">
+          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mat-elevation-z0" style="width: 100%;">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <div>{{ item.absenceType }}</div>
+              </mat-panel-title>
+              <mat-panel-description>
+                <div>{{ item.count }} 節</div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div style="border-top: 1px solid lightgray;" class="py-2" *ngFor="let date of item.date; let i = index"
+                 class ="d-flex flex-row justify-content-between align-items-center py-1 px-4 data-item">
+              <div>
+                {{ date }}
+              </div>
+              <div>
+                {{ item.period[i] }}
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+    </div>
+    </div>
+  </div>
