@@ -7,8 +7,7 @@ import { ContractService } from './contract.service';
 export class DisciplineService {
 
   selectedStudentID: string;
-  selectedSchoolYear: string;
-  selectedSemester: string;
+  selectedSeatNum: string;
   selectedName: string;
 
   constructor(private contractService: ContractService) { }
@@ -52,7 +51,7 @@ export class DisciplineService {
   }
 
   // 取得班級學生獎懲列表
-  async GetStudentDisciplineByClass(cls: ClassInfo, semester: SemesterInfo) {
+  async getStudentDisciplineByClass(cls: ClassInfo, semester: SemesterInfo) {
     const contract = await this.contractService.getDefaultContract();
     const result: any = await contract.send('discipline.GetStudentDisciplineByClass', {
       Request: {
@@ -75,10 +74,22 @@ export class DisciplineService {
   }
 
   // 取得學生獎懲明細
+  async getStudentDisciplineDetail(studentId: string) {
+    const contract = await this.contractService.getDefaultContract();
+    const rst: any = await contract.send('discipline.GetStudentDisciplineDetail', {
+      Request: {
+        StudentId: studentId
+      }
+    });
+    const result: parseXmlDisciplineDetail[] = [].concat(rst.result || []);
+    console.log(result);
+    return result;
 
+  }
   fillInStudentInfo(studentInfo: StudentDisciplineStatistics) {
     this.selectedStudentID = studentInfo.studentId;
     this.selectedName = studentInfo.name;
+    this.selectedSeatNum = studentInfo.seatNumber;
   }
 }
 
@@ -152,4 +163,58 @@ export interface parseXmlDiscipline {
       'ClearDate': string
     }
   }
+}
+
+export class studentInfoDetail {
+  date: string;
+  seatNumber: string;
+  name: string;
+  majorMerit: string;
+  minorMerit: string;
+  commendation: string;
+  majorDemerit: string;
+  minorDemerit: string;
+  admonition: string;
+  reason: string;
+  hasDelNegligence: string;
+  delNegligenceDate: string;
+  delNegligenceReason: string;
+  detention: string;
+
+  constructor(detail: parseXmlDisciplineDetail, seatNumber: string, name: string) {
+    this.date = detail.date;
+    this.seatNumber = seatNumber;
+    this.name = name;
+    this.majorMerit = Number(detail.major_merit) > 0 ? detail.major_merit : '';
+    this.minorMerit = Number(detail.minor_merit) > 0 ? detail.minor_merit : '';
+    this.commendation = Number(detail.commendation) > 0 ? detail.commendation: '';
+    this.majorDemerit = Number(detail.major_demerit) > 0 ? detail.major_demerit : '';
+    this.minorDemerit = Number(detail.minor_demerit) > 0 ? detail.minor_demerit : '';
+    this.admonition = Number(detail.admonition) > 0 ? detail.admonition : '';
+    this.reason = detail.reason;
+    this.hasDelNegligence = detail.has_del_negligence;
+    this.delNegligenceDate = detail.del_negligence_date;
+    this.delNegligenceReason = detail.del_negligence_reason;
+    this.detention = detail.detention;
+  }
+
+}
+export interface parseXmlDisciplineDetail {
+  ref_student_id: string,
+  school_year: string,
+  semester: string,
+  date: string,
+  reason: string,
+  detail: string,
+  type: string,
+  major_merit: string,
+  minor_merit: string,
+  commendation: string,
+  major_demerit: string,
+  minor_demerit: string,
+  admonition: string,
+  has_del_negligence: string,
+  del_negligence_date: string,
+  del_negligence_reason: string,
+  detention: string
 }

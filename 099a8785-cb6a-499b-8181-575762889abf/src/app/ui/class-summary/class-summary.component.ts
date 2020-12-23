@@ -54,7 +54,7 @@ export class ClassSummaryComponent implements OnInit {
   }
 
   async queryStudentAttendance() {
-    this.studentList = await this.disciplineService.GetStudentDisciplineByClass(this.selectedClass, this.selectedSemester);
+    this.studentList = await this.disciplineService.getStudentDisciplineByClass(this.selectedClass, this.selectedSemester);
     await this.parseStudentDetail(this.studentList);
   }
 
@@ -138,8 +138,6 @@ export class ClassSummaryComponent implements OnInit {
   // 輸出成外部檔案(html/ xls)
   exportFile(type: 'html' | 'xls'): void {
 
-    // -----------------------------------------------------------------------------------------------
-    /* table id is passed over here */
     let element = this.table.nativeElement;
     // 表格加入格線
     element.children[0].setAttribute('border', '1');
@@ -154,8 +152,6 @@ export class ClassSummaryComponent implements OnInit {
             ${element.innerHTML}
         </body>
     </html>`;
-    console.log(html);
-    // console.log(element.children[0].innerHTML);
     const fileName = `${this.selectedClass.ClassName}_${this.selectedSemester.school_year}學年第${this.selectedSemester.semester}學期.${type}`;
     FileSaver.saveAs(new Blob([html], { type: "application/octet-stream" }), fileName);
   }

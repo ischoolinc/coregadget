@@ -10,33 +10,52 @@
     <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate">學生:
       {{this.selectedName}}</div>
 
-    <div class="d-flex flex-column">
-      <div class="table-responsive" *ngFor="let data of this.sortedStudentList;">
+      <div class="table-responsive" #table *ngFor="let eachStudent of this.getArray();">
+        <div> {{this.parseTableKey(eachStudent[0])}}</div>
+        <table class="table-rwd table table-bordered table-hover kd-t" >
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <!-- <th>座號</th>
+                    <th>姓名</th> -->
+                    <th>大功</th>
+                    <th>小功</th>
+                    <th>嘉獎</th>
+                    <th>大過</th>
+                    <th>小過</th>
+                    <th>警告</th>
+                    <th>留校察看</th>
+                    <th>原因</th>
+                    <th>銷過日期</th>
+                    <th>銷過原因</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="collapsed"
+                    data-toggle="collapse"
+                    data-target="#rA"
+                    aria-expanded="false"
+                    aria-controls="rA"
+                    *ngFor=" let detail of eachStudent[1]"
+                    >
 
-        <div class="py-2 px-4 semester">{{ data.semester }}</div>
-        <div *ngFor="let item of data.statics"
-          class="d-flex flex-row justify-content-between align-items-center py-1 px-4 data-item"
-          style="border-bottom: 1px solid lightgray;">
-          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mat-elevation-z0" style="width: 100%;">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <div>{{ item.absenceType }}</div>
-              </mat-panel-title>
-              <mat-panel-description>
-                <div>{{ item.count }} 節</div>
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div style="border-top: 1px solid lightgray;" class="py-2" *ngFor="let date of item.date; let i = index"
-                 class ="d-flex flex-row justify-content-between align-items-center py-1 px-4 data-item">
-              <div>
-                {{ date }}
-              </div>
-              <div>
-                {{ item.period[i] }}
-              </div>
-            </div>
-          </mat-expansion-panel>
-        </div>
-    </div>
+                    <td data-th="日期" >{{detail.date}}</td>
+                    <!-- <td data-th="座號" >{{detail.seatNumber}}</td>
+                    <td data-th="姓名" >{{detail.name}}</td> -->
+                    <td data-th="大功" >{{detail.majorMerit}}</td>
+                    <td data-th="小功" >{{detail.minorMerit}}</td>
+                    <td data-th="嘉獎" >{{detail.commendation}}</td>
+                    <td data-th="大過" >{{detail.majorDemerit}}</td>
+                    <td data-th="小過" >{{detail.minorDemerit}}</td>
+                    <td data-th="警告" >{{detail.admonition}}</td>
+                    <td data-th="留校察看" >{{detail.detention}}</td>
+                    <td data-th="原因" >{{detail.reason}}</td>
+                    <td data-th="銷過日期" >{{detail.delNegligenceDate}}</td>
+                    <td data-th="銷過原因" >{{detail.delNegligenceReason}}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
   </div>
