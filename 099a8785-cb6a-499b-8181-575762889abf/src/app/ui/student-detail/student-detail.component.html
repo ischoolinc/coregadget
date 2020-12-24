@@ -6,12 +6,23 @@
         <li class="breadcrumb-item active" aria-current="page"> 學生獎懲明細</li>
       </ol>
     </nav>
+    <div class="d-flex flex-column flex-sm-row mb-3">
+        <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate">
+            學生:{{this.selectedName}}
+        </div>
+        <div class="dropdown ml-auto mt-5 mt-sm-0">
+            <a style="cursor: pointer;" (click)="exportFile('xls')">
+                <mat-icon> cloud_download</mat-icon>學生明細(Excel)
+            </a>
+            <a style="cursor: pointer;" (click)="exportFile('html')">
+                <mat-icon> cloud_download</mat-icon>學生明細(Html)
+            </a>
+        </div>
+    </div>
 
-    <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate">學生:
-      {{this.selectedName}}</div>
 
       <div class="table-responsive" #table *ngFor="let eachStudent of this.getArray();">
-        <div> {{this.parseTableKey(eachStudent[0])}}</div>
+        <div> {{this.getSemester(eachStudent[0])}}</div>
         <table class="table-rwd table table-bordered table-hover kd-t" >
             <thead>
                 <tr>

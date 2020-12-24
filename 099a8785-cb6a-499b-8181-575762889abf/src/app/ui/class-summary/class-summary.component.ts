@@ -20,7 +20,9 @@ export class ClassSummaryComponent implements OnInit {
   studentMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
   sortedMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
   showWarning = false;
+  semestersLocked = false;
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
+  @ViewChild('semester') semester: ElementRef<HTMLSelectElement>;
 
   constructor(private disciplineService: DisciplineService) { }
 
@@ -47,6 +49,7 @@ export class ClassSummaryComponent implements OnInit {
     if (this.selectedSemester) {
       await this.queryStudentAttendance();
     }
+    // 查無班級缺曠獎懲紀錄
     else {
       this.sortedMappingTable.clear();
       this.showWarning = true;
@@ -62,7 +65,6 @@ export class ClassSummaryComponent implements OnInit {
     this.showWarning = false;
     this.studentMappingTable.clear();
     this.sortedMappingTable.clear();
-    console.log('studentList', studentList);
     studentList.forEach((eachDetail) => {
       const detail: parseXmlDiscipline = node2json.xml2obj(Object(eachDetail.detail));
       if (!this.studentMappingTable.has(eachDetail.seat_no)) {
@@ -70,6 +72,7 @@ export class ClassSummaryComponent implements OnInit {
       }
 
       let tempStudentStatus: StudentDisciplineStatistics = this.studentMappingTable.get(eachDetail.seat_no);
+      // merit_flag 判別獎勵/ 懲罰/ 留校察看
       switch (eachDetail.merit_flag) {
         case '0':
           this.accDemerit(detail, tempStudentStatus);
@@ -78,21 +81,23 @@ export class ClassSummaryComponent implements OnInit {
           this.accMerit(detail, tempStudentStatus);
           break;
         case '2':
-          tempStudentStatus.detention = '是';
           this.studentMappingTable.set(eachDetail.seat_no, tempStudentStatus);
           break;
       }
-    })
+    });
     this.sortedMap(this.studentMappingTable);
   }
 
   getArray() {
     return Array.from(this.sortedMappingTable);
   }
+
   getSemesterString(s: SemesterInfo) {
     if (s === undefined) {
-      return '無'
+      this.semestersLocked = true;
+      return;
     }
+    this.semestersLocked = false;
     return `${s.school_year}學年第${s.semester}學期`;
   }
 
@@ -135,6 +140,7 @@ export class ClassSummaryComponent implements OnInit {
       this.sortedMappingTable.set(seatNumber, mappingTable.get(seatNumber));
     });
   }
+
   // 輸出成外部檔案(html/ xls)
   exportFile(type: 'html' | 'xls'): void {
 
@@ -155,6 +161,7 @@ export class ClassSummaryComponent implements OnInit {
     const fileName = `${this.selectedClass.ClassName}_${this.selectedSemester.school_year}學年第${this.selectedSemester.semester}學期.${type}`;
     FileSaver.saveAs(new Blob([html], { type: "application/octet-stream" }), fileName);
   }
+
   // 提供至下一頁的學生資訊
   nextPage(studentInfo: StudentDisciplineStatistics) {
     this.disciplineService.fillInStudentInfo(studentInfo);

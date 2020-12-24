@@ -21,7 +21,7 @@
         <mat-form-field appearance="fill">
           <mat-label>學年度學期</mat-label>
           <mat-select #semester [(ngModel)]="selectedSemester"
-          (selectionChange)="queryStudentAttendance()">
+                      (selectionChange)="queryStudentAttendance()" [disabled]="semestersLocked">
             <mat-option id="yearSemester" [value]="semester"
                         *ngFor="let semester of semesters">
                 {{getSemesterString(semester)}}
@@ -55,25 +55,25 @@
                       <th></th>
                   </tr>
               </thead>
-                  <tbody *ngFor="let eachStudent of this.getArray();">
-                      <tr class="collapsed"
-                          data-toggle="collapse"
-                          data-target="#rA"
-                          aria-expanded="false"
-                          aria-controls="rA"
-                          >
-                          <td data-th="座號" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].seatNumber}}</td>
-                          <td data-th="姓名" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].name}}</td>
-                          <td data-th="大功" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.A)}}</td>
-                          <td data-th="小功" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.B)}}</td>
-                          <td data-th="嘉獎" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.C)}}</td>
-                          <td data-th="大過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.A)}}</td>
-                          <td data-th="小過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.B)}}</td>
-                          <td data-th="警告" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.C)}}</td>
-                          <td data-th="留校察看" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].detention}}</td>
-                          <td></td>
-                      </tr>
-                  </tbody>
+              <tbody *ngFor="let eachStudent of this.getArray();">
+                  <tr class="collapsed"
+                      data-toggle="collapse"
+                      data-target="#rA"
+                      aria-expanded="false"
+                      aria-controls="rA"
+                      >
+                      <td data-th="座號" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].seatNumber}}</td>
+                      <td data-th="姓名" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].name}}</td>
+                      <td data-th="大功" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.A)}}</td>
+                      <td data-th="小功" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.B)}}</td>
+                      <td data-th="嘉獎" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.C)}}</td>
+                      <td data-th="大過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.A)}}</td>
+                      <td data-th="小過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.B)}}</td>
+                      <td data-th="警告" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.C)}}</td>
+                      <td data-th="留校察看" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].detention}}</td>
+                      <td></td>
+                  </tr>
+              </tbody>
           </table>
           <div *ngIf="this.showWarning">本學期班級無獎懲紀錄</div>
       </div>

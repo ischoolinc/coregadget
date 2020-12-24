@@ -20,7 +20,6 @@ export class DisciplineService {
       Request: {}
     }
     );
-    console.log(result);
     let classes = [];
     if (Array.isArray(result.ClassList.Class)) {
       classes = result.ClassList.Class;
@@ -39,7 +38,6 @@ export class DisciplineService {
       }
     }
     );
-    console.log(result.result);
     let semesters = [];
     if (Array.isArray(result.result)) {
       semesters = result.result;
@@ -61,7 +59,6 @@ export class DisciplineService {
       }
     }
     );
-    console.log('result', result);
     let studentDisciplineDetail = [];
     if (Array.isArray(result.result)) {
       studentDisciplineDetail = result.result;
@@ -69,7 +66,6 @@ export class DisciplineService {
     else {
       studentDisciplineDetail.push(result.result);
     }
-    console.log(studentDisciplineDetail);
     return studentDisciplineDetail as StudentDisciplineDetail[];
   }
 
@@ -82,7 +78,6 @@ export class DisciplineService {
       }
     });
     const result: parseXmlDisciplineDetail[] = [].concat(rst.result || []);
-    console.log(result);
     return result;
 
   }
@@ -91,6 +86,7 @@ export class DisciplineService {
     this.selectedName = studentInfo.name;
     this.selectedSeatNum = studentInfo.seatNumber;
   }
+
 }
 
 export interface ClassInfo {
@@ -124,7 +120,7 @@ export class StudentDisciplineStatistics {
     this.name = student.name;
     this.merit = new discipline();
     this.demerit = new discipline();
-    this.detention = '否';
+    this.detention = '';
   }
   studentId: string;
   seatNumber: string;
@@ -195,7 +191,7 @@ export class studentInfoDetail {
     this.hasDelNegligence = detail.has_del_negligence;
     this.delNegligenceDate = detail.del_negligence_date;
     this.delNegligenceReason = detail.del_negligence_reason;
-    this.detention = detail.detention;
+    this.detention = detail.detention = '否' ? '': detail.detention;
   }
 
 }
