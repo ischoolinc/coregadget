@@ -4,7 +4,7 @@ import { FrontPageComponent } from './../front-page/front-page.component';
 import { ClassStudentRecord } from './../chooser/data/class-student';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentRecord } from './../chooser/data/student';
-import { DatesInfo, Record, Period, PeriodInfo, Student, IStudent } from './../vo';
+import { DatesInfo, Record, Period, PeriodInfo, Student, IStudent, DateInfoWithRule, WeekDay } from './../vo';
 import { ThisReceiver } from '@angular/compiler';
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Contract, GadgetService } from '../gadget.service';
@@ -22,6 +22,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
+import { RRule, RRuleSet, rrulestr, } from 'rrule'
+import * as moment from 'moment';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { CustomDatesDialog } from './custom-dates-dialog';
+
+
+
+declare var $: any;
 
 @Component({
   selector: 'app-fill-out',
@@ -29,17 +37,25 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./fill-out.component.scss']
 })
 export class FillOutComponent implements OnInit, OnDestroy {
-
+  DATE_RULE = ["星期一"
+    , "星期二"
+    , "星期三"
+    , "星期四"
+    , "星期五"
+    , "星期六"
+    , "(星期一至星期五)"
+  ]
   con: Contract | undefined;
   actionType: string;
   recordId: string;
-
+  datesInfoWithRule: DateInfoWithRule = new DateInfoWithRule();
+  selectPeriod : string ="每天";
   // LeaveDateInfos: DatesLeaveInfo[] = [];
   /**
    * 存放申請過的歷史資料
    */
   selectDate = new FormControl(null); // 初始化DatePicker 的日期
-  seletDate='';
+  seletDate = '';
   currentRecordForedit: Record;
   hisRecords: Record[] = [];
   showInfoSection = false;
@@ -56,10 +72,13 @@ export class FillOutComponent implements OnInit, OnDestroy {
     private router: Router,
     private _snackBar: MatSnackBar,
     private receiversSrv: ReceiversService,
-    public helperService:HelperService,
+    public helperService: HelperService,
 
 
-  ) { }
+  ) {
+
+
+  }
 
   dispose: Subscription; // 訂閱的事件
 
@@ -83,8 +102,16 @@ export class FillOutComponent implements OnInit, OnDestroy {
         this.items = v.filter(stu => {
           return this.couldBeAdded(stu['student']['Id']);
         }
+
+
         );
-      });
+        //關閉視窗
+       setTimeout(() => {
+        this.dialog.closeAll();
+       }, 1000);
+        this.dialog.closeAll();
+      }
+      );
   }
 
   ngOnDestroy(): void {
@@ -103,8 +130,10 @@ export class FillOutComponent implements OnInit, OnDestroy {
     } else {
       // 新增的secction
       this.currentRecordForedit = new Record();
+      this.datesInfoWithRule = new DateInfoWithRule();
+      this.selectPeriod ="每天";
       this.items = [];
-      this.selectDate =new FormControl(null);
+      this.selectDate = new FormControl(null);
       await this.loadPeriod(); // 1.取得節次對照表
     }
   }
@@ -123,31 +152,157 @@ export class FillOutComponent implements OnInit, OnDestroy {
    */
   addDate(event: MatDatepickerInputEvent<Date>): void {
 
-    this.selectDate=new FormControl(event.value);
-
     const datesLeaveInfo: DatesInfo = new DatesInfo(event.value?.toString() || '', this.currentRecordForedit.contentObj.PeriodShow);
-   console.log('datesLeaveInfo',datesLeaveInfo)
     this.currentRecordForedit.contentObj.Dates.push(datesLeaveInfo);
   }
 
 
   /**
+   * 第一次點選 [開始日期] 時 一並代入 [結束日期]
+   * @memberof FillOutComponent
+   */
+  setEndDate() {
+    //
+    if (!this.datesInfoWithRule.endDate) {
+      this.datesInfoWithRule.endDate = this.datesInfoWithRule.startDate;
+
+    }
+  }
+
+  /**
+   *按下期間時
+   * @memberof SelectDateDialog
+   */
+  checkIfBySelf(selectItem: any) {
+    this.datesInfoWithRule.periodDays = [];
+    this.datesInfoWithRule.periodDays.push(selectItem);
+
+  }
+
+
+  /**
+   * 選擇要修改的日期
+   */
+  showCustomSelectDate() {
+    this.datesInfoWithRule.periodDays = [];
+    //[顯示][自訂的視窗]
+    const dialogRef = this.dialog.open(CustomDatesDialog, {
+      width: "500px",
+      data: { startDate: null, endDate: null }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.datesInfoWithRule.periodNumber = result.RepeatPeriod;
+      this.datesInfoWithRule.periodDays = result.selectItem;
+    });
+
+  }
+
+
+
+
+  /**
+   * 後來改為用多天
+   */
+  addDates() {
+    // [檢查][]
+    this.checkBeforeAddDate();
+    // [檢查][編輯畫面][新增日期]
+    let rrulePerWDate: any[] = this.getWeekDays(this.datesInfoWithRule.periodDays);
+
+    const rule = new RRule({
+      freq: RRule.WEEKLY,
+      interval: this.datesInfoWithRule.periodNumber || 1, // 如果沒有傳預設值就是 1
+      byweekday: rrulePerWDate,
+      dtstart: new Date(Date.UTC(this.datesInfoWithRule.startDate.year(), this.datesInfoWithRule.startDate.month(), this.datesInfoWithRule.startDate.date())),
+      until: new Date(Date.UTC(this.datesInfoWithRule.endDate.year(), this.datesInfoWithRule.endDate.month(), this.datesInfoWithRule.endDate.date()))
+
+    })
+    let selectDates: Date[] = rule.all(); // rrule 取得符合規則的日期
+    //[產生資料][新增/編輯][this.currentRecordForedit.contentObj.Dates] =>供畫面顯示
+    selectDates.forEach(date => {  // 1.2
+      let dateInfo: DatesInfo = new DatesInfo(date.toUTCString(), this.currentRecordForedit.contentObj.PeriodShow);
+
+      // [編輯]
+      // [檢查]:是否已經存在
+      if (!this.isContainDate(moment(date.toUTCString()).format('YYYY/MM/DD'))) {
+        // 不存在才加入
+        this.currentRecordForedit.contentObj.Dates.push(dateInfo);
+      }
+    });
+  }
+
+
+  /**
+   *
+   */
+  checkBeforeAddDate() {
+   if(!this.datesInfoWithRule.endDate|| !this.datesInfoWithRule.startDate)
+   {
+    this._snackBar.open("請選擇起訖日期", "", {
+      duration: 2000,
+    })
+
+   }
+    if (this.datesInfoWithRule.endDate < this.datesInfoWithRule.startDate) {
+      this._snackBar.open("開始日大於結束日 !", "", {
+        duration: 2000,
+      })
+    }
+
+  }
+
+  /**
+   *
+   * 取得星期幾的rrule 供 rrule 使用
+   * @param {string[]} days 勾選的星期陣列 ["星期一","星期二","星期三"]
+   * @returns {any[]} 回傳 rrule 用的
+   * @memberof FillOutComponent
+   */
+  getWeekDays(days: string[]): any[] {
+    let result = [];
+    if(days)
+    {
+      days.forEach(day => {
+        if (day == "星期一") {
+          result.push(RRule.MO);
+        } else if (day == "星期二") {
+          result.push(RRule.TU);
+        } else if (day == "星期三") {
+          result.push(RRule.WE);
+        } else if (day == "星期四") {
+          result.push(RRule.TH);
+        } else if (day == "星期五") {
+          result.push(RRule.FR);
+        } else if (day == "星期六") {
+          result.push(RRule.SA);
+        } else if (day == "(星期一至星期五)") {
+          result = result.concat([RRule.MO, RRule.TU, RRule.WE, RRule.TH, RRule.FR]);
+        }
+      })
+
+
+    }
+
+    return result;
+  }
+
+  /**
    * 點選後顯示 '公'或是 '-'
    */
-  toggle(target: LeavePeriodInfo,periodInfo? :any): void {
-    if (target.Abbreviation === ''  ) {
-      if(periodInfo) //處理編輯時資料來源不同的問題
+  toggle(target: LeavePeriodInfo, periodInfo?: any): void {
+    if (target.Abbreviation === '') {
+      if (periodInfo) //處理編輯時資料來源不同的問題
       {
-        let periodInfo_ :LeavePeriodInfo= periodInfo.Periods.find(period=>period.Period===target.Period);// 給值方便儲存
-        periodInfo_.Abbreviation='公';
+        let periodInfo_: LeavePeriodInfo = periodInfo.Periods.find(period => period.Period === target.Period);// 給值方便儲存
+        periodInfo_.Abbreviation = '公';
       }
       target.Absence = '公假';
       target.Abbreviation = '公';
     } else if (target.Abbreviation === '公') {
-      if(periodInfo) //處理編輯時資料來源不同的問題
+      if (periodInfo) //處理編輯時資料來源不同的問題
       {
-        let periodInfo_ :LeavePeriodInfo= periodInfo.Periods.find(period=>period.Period===target.Period);// 給值方便儲存
-        periodInfo_.Abbreviation='';
+        let periodInfo_: LeavePeriodInfo = periodInfo.Periods.find(period => period.Period === target.Period);// 給值方便儲存
+        periodInfo_.Abbreviation = '';
       }
       target.Absence = '';
       target.Abbreviation = '';
@@ -248,9 +403,9 @@ export class FillOutComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if(this.actionType==='edit'){ //如果是編輯模式
+    if (this.actionType === 'edit') { //如果是編輯模式
       if (!window.confirm("修改假單內容會使「假單編號」改變，若不修改假單內容請按「取消」")) {
-       return ;
+        return;
       }
     }
 
@@ -258,10 +413,12 @@ export class FillOutComponent implements OnInit, OnDestroy {
     if (this.actionType === 'edit') { // 如果是編輯
 
       try {
-        const resp = await this.con?.send('_.UpdateAnnualLeaveRecord', {Content :{
-          UID: this.currentRecordForedit.uid,
-          Content: JSON.stringify(result)
-        }});
+        const resp = await this.con?.send('_.UpdateAnnualLeaveRecord', {
+          Content: {
+            UID: this.currentRecordForedit.uid,
+            Content: JSON.stringify(result)
+          }
+        });
       } catch (ex) {
         alert('編輯發生錯誤!');
       }
@@ -284,7 +441,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
 
   /**
    *
-   * 檢查是否該填寫的都填寫了
+   * [檢查] 是否該填寫的都填寫了
    * @memberof FillOutComponent
    */
   checkData(): boolean {
@@ -302,8 +459,7 @@ export class FillOutComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // 確認所有日期下有沒有選擇 公假 如果有某個日期下的節次沒有選的話就要
-
+    // [檢查] => 確認所有日期下有沒有選擇 公假 如果有某個日期下的節次沒有選的話就要
     const periodErrorMessage: string[] = [];
     this.currentRecordForedit.contentObj.Dates.forEach(date => {
       const checkedCount = this.getSelectPeriodCount(date.Periods);
@@ -314,12 +470,29 @@ export class FillOutComponent implements OnInit, OnDestroy {
 
     if (periodErrorMessage.length > 0) {
 
-      this.openSnackBar(`請勾選${periodErrorMessage.join('、')}節次 !`, '確定');
+      this.openSnackBar(`請勾選 \n${periodErrorMessage.join('、')} \n節次 !`, '確定');
       return false;
     }
 
 
     return true
+  }
+
+  /**
+   *
+   * [檢查][編輯畫面][增加日期時] 確認是否 已經存在此日期
+   * @param {string} date 次日期是否存在
+   * @returns
+   * @memberof FillOutComponent
+   */
+  isContainDate(date: string): boolean {
+    let existItem = this.currentRecordForedit.contentObj.Dates.find(item => item.Date === date)
+    if (existItem) {
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
 
@@ -380,8 +553,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
         student.id == stu['student']['Id'];
       });
 
-      //如果是編輯
-
       content.Students.push({
         id: stu['student']['Id'],
         student_number: stu['student']['StudentNumber'],
@@ -389,14 +560,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
         name: stu['student']['StudentName'],
         class_name: stu['student']['ClassName']
       });
-
-      // content.Students.push({
-      //   id: stu['student']['Id'],
-      //   student_number: stu['student']['StudentNumber'],
-      //   seat_no: stu['student']['SeatNo'],
-      //   name: stu['student']['StudentName'],
-      //   class_name: stu['student']['ClassName']
-      // });
 
     });
 
@@ -432,7 +595,6 @@ export class FillOutComponent implements OnInit, OnDestroy {
     let result: any;
     if (periodMap.has(period)) {
       result = periodMap.get(period);
-
     }
     return result;
   }
@@ -455,14 +617,15 @@ export class FillOutComponent implements OnInit, OnDestroy {
   * 確認是否舊資料已經有選擇此學生
   */
   couldBeAdded(selectionItemID: string): boolean {
-    let result  ;
+    let result;
     result = this.students.find(x => x.id == selectionItemID);
     if (!result) {// 原本沒有才可以加
-      return true ;
-    }else{
+      return true;
+    } else {
 
-      return false ;
+      return false;
     }
 
   }
+
 }

@@ -33,7 +33,7 @@
   {{info.TeacherName || '無姓名'}} {{info.Nickname ? '(' + info.Nickname + ')' : ''}}
 </ng-template>
 <ng-template #tplStudentInfo let-info="item">
-  <span [innerHTML]="info.StudentName + '(' + info.SeatNo + ')'+ ' ' + info.StudentNumber "></span>
+  <span class="font-style" [innerHTML]="info.StudentName + '(' + info.SeatNo + ')'+ ' ' + info.StudentNumber "></span>
   <!-- {{info.ClassName}} {{info.StudentName || '無姓名'}} ({{info.StudentNumber || '無學號'}}) -->
 </ng-template>
 

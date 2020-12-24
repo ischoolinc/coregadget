@@ -25,6 +25,7 @@
     "moment": "^2.29.1",
     "ngx-barcode": "^0.3.0",
     "ngx-bootstrap": "^6.2.0",
+    "rrule": "^2.6.6",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

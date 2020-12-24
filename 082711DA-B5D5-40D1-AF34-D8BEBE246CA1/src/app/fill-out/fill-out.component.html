@@ -31,7 +31,84 @@
 
 <ng-template #tplForm>
   <div class="d-flex justify-contents-start align-items-baseline">
+<!-- 選擇單日 -->
+<!-- <div class="mr-3">
+  <button class="mr-3" mat-stroked-button color="primary"
+          (click)="picker.open()">
+    <span class="material-icons">event</span> 選擇單日
+  </button>
+  <mat-form-field >
 
+    <input   sti matInput [matDatepicker]="picker" readonly
+           (dateChange)="addDate($event)" [formControl]="selectDate"   >
+           <mat-datepicker-toggle style="display:none ;width: 26px;"  matSuffix></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</div> -->
+
+
+    <div class="mr-3">
+      <button class="mr-3" mat-stroked-button color="primary" (click)="picker.open() ">
+        <span class="material-icons">event</span> 開始日期
+      </button>
+      <mat-form-field>
+
+        <input  sti matInput [matDatepicker]="picker" readonly [(ngModel)]="datesInfoWithRule.startDate" (ngModelChange)="setEndDate()">
+        <mat-datepicker-toggle style="display:none" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="mr-3">
+      <button class="mr-3" mat-stroked-button color="primary" (click)="pickerEnd.open()">
+        <span class="material-icons">event</span> 結束日期
+      </button>
+      <mat-form-field>
+
+        <input sti matInput [matDatepicker]="pickerEnd" readonly [(ngModel)]="datesInfoWithRule.endDate">
+        <mat-datepicker-toggle style="display:none" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #pickerEnd></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="mr-3">
+      <mat-form-field appearance="legacy">
+        <mat-label>週期 : </mat-label>
+        <mat-select (valueChange)="checkIfBySelf($event)"  [(ngModel)]="selectPeriod">
+          <mat-option value="每天" matSuffix>
+            每天
+          </mat-option>
+          <mat-option *ngFor="let weekDay of DATE_RULE" [value]="weekDay">
+            每週 {{weekDay}}
+          </mat-option>
+          <mat-option  (click)="showCustomSelectDate()"value="自訂">
+            自訂
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+
+    <button  mat-stroked-button color="primary"
+              (click)="addDates()">新增</button>
+
+
+  </div>
+  <div class="d-flex justify-contents-start align-items-baseline mb-3">
+
+
+
+    <div class="d-flex justify-contents-start align-items-baseline"></div>
+    <button mat-stroked-button color="primary" (click)="chooseStudent()">
+      <span class="material-icons">account_box</span> 選擇學生
+    </button>
+
+<!---顯示日期跳出得視窗 end -->
+
+
+
+
+<!--
     <div class="mr-3">
       <button class="mr-3" mat-stroked-button color="primary"
               (click)="picker.open()">
@@ -44,21 +121,20 @@
                <mat-datepicker-toggle style="display:none"  matSuffix></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-    </div>
+    </div> -->
 
 
 
-    <button mat-stroked-button color="primary" (click)="chooseStudent()">
-      <span class="material-icons">account_box</span> 選擇學生
-    </button>
+
     <div  class="ml-auto">
 
       <button  mat-raised-button color="primary"
               (click)="save()">儲存</button>
     </div>
   </div>
+
    <!-- 此地方比較複雜 因原本資料庫資了 及 chooser的資料格式不相同 所有來源有可能會有兩個-->
-  <div class="mb-3">
+  <div class="mb-3 ">
     <mat-chip-list>
       <mat-chip *ngFor="let stu of students" (removed)="removeItemDB(stu)">
         <span [innerHTML]="stu.class_name + stu.name+'(' + stu.seat_no + ')'"></span> <!--此處使用innerHtml 為要處理特殊字問題-->
