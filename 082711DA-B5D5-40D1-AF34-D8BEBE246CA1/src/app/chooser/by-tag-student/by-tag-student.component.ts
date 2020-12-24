@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TagPrefix } from './../data/tag';
 import { Component, InjectionToken, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { BaseService } from '../base.service';
@@ -29,6 +30,7 @@ export class ByTagStudentComponent implements OnInit {
     private students: StudentsService,
     private dialogActionSrv: DialogActionService,
     private receiversSrv: ReceiversService,
+    private snackBar: MatSnackBar
   ) { }
 
   async ngOnInit() {
@@ -49,6 +51,7 @@ export class ByTagStudentComponent implements OnInit {
     });
 
     for(const cls of this.tagPrefixes) {
+      cls.more=false;
       cls.students = cls
       .MemberIds.map(s => {
         return this.students.get(+s);
@@ -98,10 +101,20 @@ export class ByTagStudentComponent implements OnInit {
     if (selections.length) {
       this.receiversSrv.addReceivers(selections);
       this.message = { text: '加入完成！', msgClass: 'text-success' };
-      alert('加入完成！');
+      this.snackBar.open("加入完成!", "", {
+        duration: 2000,
+      });
       this.processing = false;
+
     } else {
       this.processing = false;
     }
+  }
+    /**
+   * 顯示要不要show 學生
+   */
+  toggleShow(classrRecord :TagPrefix)
+  {
+    classrRecord.more =  !classrRecord.more;
   }
 }

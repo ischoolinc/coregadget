@@ -8,18 +8,18 @@
           [(ngModel)]="item.checked"
           (ngModelChange)="toggleAll(item)">
 
-        <label class="custom-control-label my-font-bold"
+        <label class="custom-control-label my-font-bold font-style"
           [attr.for]="'grade_check_' + idx">
           <h5>{{item.gradeYear}}年級 所有{{targetRole}} ({{item.count}})</h5></label>
       </div>
-      <div class="student-container">
+      <div class="student-container font-style">
         <div class="mb-2" *ngFor="let cls of item.classes">
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input"
               [attr.id]="'cls_check_' + cls.Id"
               [(ngModel)]="cls.checked"
               (ngModelChange)="reflectClassSelection(item)">
-            <label class="custom-control-label"
+            <label class="custom-control-label " style ="font-size: 20px;"
               [attr.for]="'cls_check_' + cls.Id">
               {{cls.ClassName}} ({{cls.Count}})</label>
             <!-- {{cls | json}} -->

@@ -146,7 +146,7 @@ export class ByClassComponent implements OnInit {
       this.message = { text: '加入完成！', msgClass: 'text-success' };
       setTimeout(() => {
         this.processing = false;
-      }, 3000);
+      }, 2000);
     } else {
       this.processing = false;
     }

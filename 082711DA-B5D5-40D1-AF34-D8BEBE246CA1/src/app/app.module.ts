@@ -23,6 +23,10 @@ import { NgxBarcodeModule } from 'ngx-barcode';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
+import {MatSelectModule} from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { CustomDatesDialog } from './fill-out/custom-dates-dialog';
+// import { RRule, RRuleSet, rrulestr } from 'rrule'
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,12 +35,12 @@ import { MatMomentDateModule } from "@angular/material-moment-adapter";
     // EditFormComponent,
     FrontPageComponent,
     PrintComponent,
+    CustomDatesDialog
 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    // MatCardModule,
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatInputModule,
@@ -52,7 +56,10 @@ import { MatMomentDateModule } from "@angular/material-moment-adapter";
     ,ReactiveFormsModule
     ,CommonModule
     ,MatMomentDateModule
-  ,
+    ,MatSelectModule
+    ,MatCheckboxModule
+
+
   ],
   providers: [ListControlService,
 

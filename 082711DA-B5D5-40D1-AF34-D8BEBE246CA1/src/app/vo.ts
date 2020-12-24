@@ -1,4 +1,5 @@
 
+import { Moment } from 'moment';
 import { SelectionResult } from './chooser/data';
 
 /**
@@ -232,4 +233,34 @@ export class Record {
    */
   contentObj: Content;
   approved :string ;
+}
+
+
+
+/**
+ * 裝選多天用
+ */
+export  class  DateInfoWithRule{
+    startDate :Moment ;
+    endDate : Moment ;
+    periodDays:string[]; // 看是要星期幾
+    periodNumber :number ;
+}
+
+
+export class WeekDay{
+  constructor(dayName:string){
+    this.dayName = dayName;
+  }
+  dayName :string ;
+  check :boolean =false;
+  /**
+   *
+   *
+   * @memberof WeekDay
+   */
+ public  toogle ()
+  {
+    this.check = !this.check
+  }
 }
