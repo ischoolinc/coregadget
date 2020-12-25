@@ -40,6 +40,7 @@ export class DisciplineService {
     );
     let semesters = [];
     if (Array.isArray(result.result)) {
+      result.result.sort((a, b) => parseInt(a.school_year) > parseInt(b.school_year) ? -1 : 1);
       semesters = result.result;
     }
     else {
@@ -81,6 +82,24 @@ export class DisciplineService {
     return result;
 
   }
+
+  // 取得班級學生
+  async getStudents(classID: string) {
+    const contract = await this.contractService.getDefaultContract();
+    const rst: any = await contract.send('classroom.GetStudents', {
+      Request: {
+        Type: 'Class',
+        UID: classID
+      }
+    });
+    const result = [].concat(rst.Students.Student || []);
+    const studentList = [];
+    result.forEach((student) => {
+      studentList.push(new classIdStudents(student.ID, student.Name, student.SeatNo));
+    });
+    return studentList;
+
+  }
   fillInStudentInfo(studentInfo: StudentDisciplineStatistics) {
     this.selectedStudentID = studentInfo.studentId;
     this.selectedName = studentInfo.name;
@@ -114,10 +133,10 @@ export interface StudentDisciplineDetail {
 }
 
 export class StudentDisciplineStatistics {
-  constructor(student: StudentDisciplineDetail) {
-    this.seatNumber = student.seat_no;
-    this.studentId = student.ref_student_id;
-    this.name = student.name;
+  constructor(studentId, studentName, seatNumber) {
+    this.studentId = studentId;
+    this.name = studentName;
+    this.seatNumber = seatNumber;
     this.merit = new discipline();
     this.demerit = new discipline();
     this.detention = '';
@@ -141,6 +160,20 @@ class discipline {
   B: number;
   C: number;
 }
+
+export class classIdStudents {
+  studentId: string;
+  studentName: string;
+  seatNumber: string;
+
+  constructor(studentId: string, studentName: string, seatNumber: string) {
+    this.studentId = studentId;
+    this.studentName= studentName;
+    this.seatNumber = seatNumber;
+  }
+
+}
+
 export interface parseXmlDiscipline {
   'Discipline': {
     'Merit': {

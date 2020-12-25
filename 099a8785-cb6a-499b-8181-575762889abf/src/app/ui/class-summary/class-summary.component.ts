@@ -1,4 +1,4 @@
-import { ClassInfo, DisciplineService, parseXmlDiscipline, SemesterInfo, StudentDisciplineDetail, StudentDisciplineStatistics } from './../../dal/discipline.service';
+import { classIdStudents, ClassInfo, DisciplineService, parseXmlDiscipline, SemesterInfo, StudentDisciplineDetail, StudentDisciplineStatistics } from './../../dal/discipline.service';
 import * as node2json from 'nodexml';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import FileSaver from 'file-saver';
@@ -20,6 +20,7 @@ export class ClassSummaryComponent implements OnInit {
   studentMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
   sortedMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
   showWarning = false;
+  showAllStudents = false;
   semestersLocked = false;
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
   @ViewChild('semester') semester: ElementRef<HTMLSelectElement>;
@@ -35,7 +36,6 @@ export class ClassSummaryComponent implements OnInit {
 
     // // 3. get students list and parse
     // await this.queryStudentAttendance();
-
   }
 
   async queryClasses() {
@@ -68,7 +68,8 @@ export class ClassSummaryComponent implements OnInit {
     studentList.forEach((eachDetail) => {
       const detail: parseXmlDiscipline = node2json.xml2obj(Object(eachDetail.detail));
       if (!this.studentMappingTable.has(eachDetail.seat_no)) {
-        this.setNewStudent(eachDetail);
+        const studentTempStatus = new StudentDisciplineStatistics(eachDetail.ref_student_id, eachDetail.name, eachDetail.seat_no);
+        this.studentMappingTable.set(eachDetail.seat_no, studentTempStatus);
       }
 
       let tempStudentStatus: StudentDisciplineStatistics = this.studentMappingTable.get(eachDetail.seat_no);
@@ -81,10 +82,21 @@ export class ClassSummaryComponent implements OnInit {
           this.accMerit(detail, tempStudentStatus);
           break;
         case '2':
+          tempStudentStatus.detention = '是';
           this.studentMappingTable.set(eachDetail.seat_no, tempStudentStatus);
           break;
       }
     });
+    // 勾選顯示全部學生
+    if (this.showAllStudents) {
+      const tempStudentList: classIdStudents[] = await this.disciplineService.getStudents(this.selectedClass.ClassID);
+      tempStudentList.forEach((student) => {
+        if (!this.studentMappingTable.has(student.seatNumber)) {
+          const studentTempStatus = new StudentDisciplineStatistics(student.studentId, student.studentName, student.seatNumber);
+          this.studentMappingTable.set(student.seatNumber, studentTempStatus);
+        }
+      })
+    }
     this.sortedMap(this.studentMappingTable);
   }
 
@@ -123,7 +135,7 @@ export class ClassSummaryComponent implements OnInit {
   }
 
   setNewStudent(student: StudentDisciplineDetail) {
-    const studentTempStatus = new StudentDisciplineStatistics(student);
+    const studentTempStatus = new StudentDisciplineStatistics(student.ref_student_id, student.name, student.seat_no);
     this.studentMappingTable.set(student.seat_no, studentTempStatus);
   }
 
@@ -132,10 +144,7 @@ export class ClassSummaryComponent implements OnInit {
     mappingTable.forEach((studentDiscipline, seatNumber) => {
       studentNumList.push(seatNumber);
     });
-    studentNumList.sort((a, b) => {
-      if (parseInt(a) > parseInt(b)) return 1;
-      return -1;
-    });
+    studentNumList.sort((a, b) => parseInt(a) > parseInt(b) ? 1: -1);
     studentNumList.forEach((seatNumber) => {
       this.sortedMappingTable.set(seatNumber, mappingTable.get(seatNumber));
     });

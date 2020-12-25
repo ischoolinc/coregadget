@@ -18,7 +18,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
           <mat-label>學年度學期</mat-label>
           <mat-select #semester [(ngModel)]="selectedSemester"
                       (selectionChange)="queryStudentAttendance()" [disabled]="semestersLocked">
@@ -28,6 +28,10 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <a>
+          <mat-checkbox [(ngModel)]="showAllStudents" (click)="queryStudentAttendance()">顯示全部學生</mat-checkbox>
+        </a>
 
         <div class="dropdown ml-auto mt-5 mt-sm-0">
           <a style="cursor: pointer;" (click)="exportFile('xls')">
