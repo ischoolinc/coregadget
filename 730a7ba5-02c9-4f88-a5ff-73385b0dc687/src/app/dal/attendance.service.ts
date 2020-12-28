@@ -61,7 +61,6 @@ export class AttendanceService {
       }
     }
     );
-    console.log(result);
     const temp = [];
     result.AbsenceMappingTableResponse.Absence.forEach((value) => {
       switch (parameter) {
@@ -90,7 +89,6 @@ export class AttendanceService {
       Request: {}
     }
     );
-    console.log(result);
     return result.ClassList.Class;
   }
 
@@ -103,7 +101,6 @@ export class AttendanceService {
       }
     }
     );
-    console.log(result.result);
     let temp = [];
     if (Array.isArray(result.result)) {
       temp = result.result;
@@ -125,7 +122,7 @@ export class AttendanceService {
     return result;
   }
 
-  // TODO:取得學生缺曠資料(尚未完成)
+  // TODO:取得學生缺曠資料
   async getStudentAttendance(studentID) {
     const contract = await this.contract.getDefaultContract();
     const result = await contract.send('attendance.GetStudentAttendance', {
@@ -137,14 +134,32 @@ export class AttendanceService {
       }
     }
     );
-    console.log('getStudentAttendance', result);
     return result;
 
   }
-  fillInStudentInfo(studentInfo: StudentAttendanceInfo) {
-    this.selectedStudentID = studentInfo.ref_student_id;
-    this.selectedSchoolYear = studentInfo.school_year;
-    this.selectedSemester = studentInfo.seat_no;
+
+  // 取得班級學生
+  async getStudents(classID: string) {
+    const contract = await this.contract.getDefaultContract();
+    const rst: any = await contract.send('classroom.GetStudents', {
+      Request: {
+        Type: 'Class',
+        UID: classID
+      }
+    });
+    const result = [].concat(rst.Students.Student || []);
+    const studentList = [];
+    result.forEach((student) => {
+      studentList.push(new classIdStudents(student.ID, student.Name, student.SeatNo));
+    });
+    return studentList;
+
+  }
+
+  fillInStudentInfo(studentInfo) {
+    this.selectedStudentID = studentInfo.studentId;
+    // this.selectedSchoolYear = studentInfo.school_year;
+    // this.selectedSemester = studentInfo.semester;
     this.selectedName = studentInfo.name;
   }
 }
@@ -197,15 +212,29 @@ export interface SemesterInfo {
   semester: number;
 }
 
+export class classIdStudents {
+  studentId: string;
+  studentName: string;
+  seatNumber: string;
+
+  constructor(studentId: string, studentName: string, seatNumber: string) {
+    this.studentId = studentId;
+    this.studentName= studentName;
+    this.seatNumber = seatNumber;
+  }
+}
+
 export interface studentObj {
   'Attendance': {
-    'Period': {
-      '@text': string,
-      '@': [],
-      'AbsenceType': string,
-      'AttendanceType': string
-    }[]
+    'Period': periodTypeDetail[]
   }
+}
+
+export interface periodTypeDetail {
+  '@text': string,
+  '@': [],
+  'AbsenceType': string,
+  'AttendanceType': string
 }
 
 export interface studentObj {
@@ -217,4 +246,11 @@ export interface studentObj {
       'AttendanceType': string
     }[]
   }
+}
+
+export interface periodDetail {
+  Aggregated: string;
+  Name: string;
+  Sort: string;
+  Type: string;
 }

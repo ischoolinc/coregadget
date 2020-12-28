@@ -1,7 +1,6 @@
-import { AttendanceService, SemesterInfo, StudentAttendanceInfo, studentObj } from './../../dal/attendance.service';
+import { AttendanceService, classIdStudents, periodDetail, SemesterInfo, StudentAttendanceInfo, studentObj, periodTypeDetail } from './../../dal/attendance.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as node2json from 'nodexml';
-import * as XLSX from 'xlsx';
 import FileSaver from 'file-saver';
 
 @Component({
@@ -18,9 +17,15 @@ export class ClassSummaryComponent implements OnInit {
   selectedClass: any = {};
   semesters: SemesterInfo[] = [];
   selectedSemester: SemesterInfo = {} as SemesterInfo;
+  typeList = [];
+  selectedType: any;
+  selectedAll = '不限';
+  periodTypeMap = new Map();
   studentMappingTable: Map<string, StudentAttendanceStatistics> = new Map();
-  aryStudents: StudentAttendanceInfo[] = [];  // 所有學生清單, 以一個 StudentAttendanceInfo 物件來代表一位學生
+  aryStudents = [];  // 所有學生清單, 以一個 StudentAttendanceInfo 物件來代表一位學生
+  showAllStudents = false;
   ready = false;
+  ifNoResult = false;
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
 
   constructor(private attendanceService: AttendanceService) { }
@@ -34,12 +39,12 @@ export class ClassSummaryComponent implements OnInit {
 
     // 3. get absenceMapping Table
     this.absenceName = await this.attendanceService.getAbsenceMappingTable('Name');
+
+    // 4. get periodMapping type
+    await this.queryPeriodType();
     this.ready = true;
 
-    // 4. get periodMapping Table
-    this.periodTable = await this.attendanceService.getPeriodMappingTable('Name');
-
-    // 5. get student attendance by class
+    // 4. get student attendance by class
     await this.queryStudentAttendance();
   }
 
@@ -51,35 +56,66 @@ export class ClassSummaryComponent implements OnInit {
   async querySemesters() {
     this.semesters = await this.attendanceService.getSemestersByClassID(this.selectedClass.ClassID);
     this.selectedSemester = this.semesters[0];
-    await this.queryStudentAttendance();
+    await this.queryPeriodType();
   }
 
+  async queryPeriodType() {
+    const tempTypeArray: periodDetail[] = await this.attendanceService.getPeriodMappingTable();
+    const tempPeriodTypeList = [];
+    tempTypeArray.forEach((periodDetail) => {
+      this.periodTypeMap.set(periodDetail.Name, periodDetail.Type);
+      tempPeriodTypeList.push(periodDetail.Type);
+    });
+    tempPeriodTypeList.unshift(this.selectedAll);
+    this.typeList = tempPeriodTypeList.filter( (el, i, arr) => arr.indexOf(el) === i);
+    this.selectedType = this.typeList[0];
+    await this.queryStudentAttendance();
+  }
   async queryStudentAttendance() {
     const studentList: StudentListResponse = await this.attendanceService.getStudentAttendanceByClassID(this.selectedClass, this.selectedSemester);
-    console.log('studentList', studentList);
     this.calStudentAttendance(studentList);
   }
 
-  calStudentAttendance(studentList: StudentListResponse) {
+  async calStudentAttendance(studentList: StudentListResponse) {
     // reset
     this.studentMappingTable.clear();
     this.aryStudents = [];
     // foreach attendance record .......
-    const temp = [].concat(studentList.result || []);
+    const temp: StudentAttendanceInfo[] = [].concat(studentList.result || []);
+    // 勾選顯示全部學生
+    if (this.showAllStudents) {
+      const tempStudentList: classIdStudents[] = await this.attendanceService.getStudents(this.selectedClass.ClassID);
+      tempStudentList.forEach((student) => {
+        if (!this.studentMappingTable.has(student.seatNumber)) {
+          const studentTempStatus = new StudentAttendanceStatistics(student.studentId, student.studentName, student.seatNumber);
+          this.studentMappingTable.set(student.seatNumber, studentTempStatus);
+          const studentInfo = {
+            studentId: student.studentId,
+            name: student.studentName,
+            seat_no: student.seatNumber
+          }
+          this.aryStudents.push(studentInfo);
+        }
+      });
+    }
     temp.forEach((eachStudentAttendanceInfo) => {
       // 計算各學生缺曠的統計
-      if (!this.studentMappingTable.has(eachStudentAttendanceInfo.ref_student_id)) {
-        this.studentMappingTable.set(eachStudentAttendanceInfo.ref_student_id, new StudentAttendanceStatistics(eachStudentAttendanceInfo));
-        this.aryStudents.push(eachStudentAttendanceInfo);
+      if (!this.studentMappingTable.has(eachStudentAttendanceInfo.seat_no)) {
+        this.studentMappingTable.set(
+          eachStudentAttendanceInfo.seat_no,
+          new StudentAttendanceStatistics(eachStudentAttendanceInfo.seat_no,eachStudentAttendanceInfo.name,eachStudentAttendanceInfo.seat_no));
+        const studentInfo = {
+          studentId: eachStudentAttendanceInfo.ref_student_id,
+          name: eachStudentAttendanceInfo.name,
+          seat_no: eachStudentAttendanceInfo.seat_no
+        }
+        this.aryStudents.push(studentInfo);
       }
-      const studAttendStatistics = this.studentMappingTable.get(eachStudentAttendanceInfo.ref_student_id);
-      studAttendStatistics.add(eachStudentAttendanceInfo);
+      const studAttendStatistics = this.studentMappingTable.get(eachStudentAttendanceInfo.seat_no);
+      studAttendStatistics.add(eachStudentAttendanceInfo, this.selectedType, this.selectedAll, this.periodTypeMap);
     });
-    this.aryStudents.sort((a, b) => {
-      if (parseInt(a.seat_no) > parseInt(b.seat_no)) return 1;
-      return -1;
-    })
-    console.log('aryStudents', this.aryStudents);
+    this.aryStudents.length === 0 ? this.ifNoResult = true : this.ifNoResult = false;
+    this.aryStudents.sort((a, b) => parseInt(a.seat_no) > parseInt(b.seat_no) ? 1: -1);
   }
   // 供下一頁參考的資料
   nextPage(studentInfo: StudentAttendanceInfo) {
@@ -121,8 +157,6 @@ export class ClassSummaryComponent implements OnInit {
             ${element.innerHTML}
         </body>
     </html>`;
-    console.log(html);
-    // console.log(element.children[0].innerHTML);
     const fileName = `${this.selectedClass.ClassName}_${this.selectedSemester.school_year}學年第${this.selectedSemester.semester}學期.${type}`;
     FileSaver.saveAs(new Blob([html], { type: "application/octet-stream" }), fileName);
   }
@@ -141,30 +175,32 @@ class StudentAttendanceStatistics {
   attendanceMapping: Map<string, number> = new Map(); // <key>缺曠名稱 / <value>統計數目
   attendanceRecords: StudentAttendanceInfo[] = [];
 
-  constructor(studentInfo: StudentAttendanceInfo) {
-    this.name = studentInfo.name;
-    this.refStudentId = studentInfo.ref_student_id;
-    this.seatNumber = studentInfo.seat_no;
+  constructor(studentId, studentName, seatNumber) {
+    this.refStudentId = studentId;
+    this.name = studentName;
+    this.seatNumber = seatNumber;
   }
 
 
-  public add(attendRecord: StudentAttendanceInfo) {
+  public add(attendRecord: StudentAttendanceInfo, attendanceType: string, selectAll: string, periodTypeMap: Map<string, string>) {
     this.attendanceRecords.push(attendRecord);
-    this.parseAttendance(attendRecord.detail);
+    this.parseAttendance(attendRecord.detail, attendanceType, selectAll, periodTypeMap);
   }
 
-  parseAttendance(xmlDetail: Object) {
+  parseAttendance(xmlDetail: Object, attendanceType: string, selectAll: string, periodTypeMap: Map<string, string>) {
     const personalAttendance: studentObj = node2json.xml2obj(xmlDetail);
-    const temp = [].concat(personalAttendance.Attendance.Period || []);
+    const temp: periodTypeDetail[] = [].concat(personalAttendance.Attendance.Period || []);
     temp.forEach((period) => {
       const absType = period.AbsenceType;
-      if (!this.attendanceMapping.has(absType)) {
+      if (!this.attendanceMapping.has(absType) && ((periodTypeMap.get(period['@text']) === attendanceType) || (attendanceType === selectAll))) {
         this.attendanceMapping.set(absType, 0);
       }
-
-      this.attendanceMapping.set(absType, this.attendanceMapping.get(absType) + 1);
+      if ((attendanceType === selectAll) || (periodTypeMap.get(period['@text']) === attendanceType)) {
+        this.attendanceMapping.set(absType, this.attendanceMapping.get(absType) + 1);
+      }
     });
   }
+
 }
 
 interface StudentListResponse {
@@ -190,4 +226,8 @@ interface leaveType {
       AbsenceType: string;
     }[];
   }[];
+}
+
+interface addPeriodType {
+
 }
