@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="缺曠" description="管理員-校長設定">
-    <Title lang="zh-TW">缺曠</Title>
+  <ModulePrefs title="獎懲" description="教師">
+    <Title lang="zh-TW">獎懲</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">
