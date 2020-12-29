@@ -1,0 +1,50 @@
+<div class='up-section'>
+  <nav aria-label="breadcrumb text-nowrap text-truncate">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">課程代碼查詢</li>
+    </ol>
+  </nav>
+<button class='uploadBtn' id= "btn" mat-raised-button color="primary" routerLink="/upload" >上傳csv<mat-icon aria-hidden="false" style="padding-top: 5px;">play_arrow</mat-icon></button>
+<!----->
+<mat-form-field appearance="fill" class="mr-0 mr-sm-2">
+  <mat-label>選擇入學年度</mat-label>
+  <mat-select  #selectYear (selectionChange)="filterInspect(selectYear.value)"  [(ngModel)]="selectYearOption">
+    <mat-option [value]="year" *ngFor = "let year of years"> {{year}} </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="fill" style='width:500px'>
+  <mat-label>選擇群別</mat-label>
+  <mat-select #selectCategory (selectionChange)="filterInspect(selectCategory.value)" [(ngModel)]="selectCategoryOption" style='width:480px'>
+    <mat-option [value]="category" *ngFor = "let category of categories"> {{category}}</mat-option>
+  </mat-select>
+</mat-form-field>
+</div>
+<!----->
+<!----->
+
+<div class='table-section'>
+<table class="theader" matSort (matSortChange)="sortData($event)">
+  <tr class="thead">
+    <th class="my-th" style="width: 80px"mat-sort-header="入學年度">入學年度</th>
+    <th class="my-th" mat-sort-header="課程類型">課程類型</th>
+    <th class="my-th" mat-sort-header="群別類型">群別類型</th>
+    <th class="my-th" mat-sort-header="科別類型">科別類型</th>
+    <th class="my-th" mat-sort-header="班群類型">班群類型</th>
+    <th class="my-th" mat-sort-header="科目名稱">科目名稱</th>
+    <th class="my-th" mat-sort-header="學期學分">學期學分</th>
+    <th class="my-th" style="width: 250px" mat-sort-header="課程代碼">課程代碼</th>
+  </tr>
+  <tr class="tbody" *ngFor="let course of sortedData">
+    <td>{{course.entryYear}}</td>
+    <td>{{course.courseType}}</td>
+    <td>{{course.groupType}}</td>
+    <td>{{course.subjectType}}</td>
+    <td>{{course.classType}}</td>
+    <td>{{course.subjectName}}</td>
+    <td>{{course.creditPeriod}}</td>
+    <td>{{course.courseCode}}</td>
+  </tr>
+
+</table>
+</div>

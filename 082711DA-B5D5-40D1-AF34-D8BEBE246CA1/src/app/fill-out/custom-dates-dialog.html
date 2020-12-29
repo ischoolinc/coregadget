@@ -1,0 +1,25 @@
+
+
+<div class="d-flex">
+    <div >
+      <mat-form-field class="example-full-width">
+      <mat-label>重複週期間隔 :</mat-label>
+      <input type="number" min="1" max="100" matInput placeholder="請輸入數字 "  [(ngModel)] ="periodNumber">
+    </mat-form-field>
+    </div>
+    </div>
+
+    <div class="d-flex">
+      <div>
+        <section>
+          <mat-checkbox class="m-1 p-3" *ngFor="let item of showItem"  (change)="item.toogle()"><span   style="font-size: 18px; color: rgba(0,0,0,.85);">{{item.dayName}}</span>  </mat-checkbox>
+        </section>
+      </div>
+
+    </div>
+
+
+<div class="fotter">
+  <button class="float-right"mat-button color="primary" (click)="exit()">取消</button>
+  <button class="float-right"mat-button color="primary" (click)="save()">確定</button>
+</div>

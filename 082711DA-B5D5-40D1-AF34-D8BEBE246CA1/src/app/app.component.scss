@@ -1,0 +1,4 @@
+@media print {
+  app-root > * { display: none }
+  app-root app-print { display: block}
+}

@@ -1,17 +1,5 @@
 
-
-/**
- * 裝學生資訊
-//  */
-// export class Student {
-//   id = '';
-//   StuName = '';
-//   StudentNumber = '';
-//   SeatNo = '';
-//   ClassName = '';
-//   GradeYear = '';
-// }
-
+import { Moment } from 'moment';
 import { SelectionResult } from './chooser/data';
 
 /**
@@ -21,7 +9,13 @@ export class DatesInfo {
   Date = ''; // 請公假的日期
   Periods: LeavePeriodInfo[] = [];
   MapPeriods: Map<string, PeriodInfo> = new Map();
-  LeavePeriod: string[];
+
+ /**
+  * 列印用
+  * @type {string[]}
+  * @memberof DatesInfo
+  */
+ LeavePeriodString: string[] ;
 
   /**
    * 建構子
@@ -48,7 +42,7 @@ export class DatesInfo {
     this.Date = dateInfo.Date ;
     this.Periods = dateInfo.Periods;
     this.MapPeriods = dateInfo.MapPeriods;
-    this.LeavePeriod = dateInfo.LeavePeriod;
+    this.LeavePeriodString = dateInfo.LeavePeriodString;
   }
 
   /**
@@ -89,7 +83,7 @@ export class DatesInfo {
       day = '0' + day;
     }
 
-    return [year, month, day].join('-');
+    return [year, month, day].join('/');
   }
 }
 
@@ -103,7 +97,7 @@ export class LeavePeriodInfo implements PeriodInfo {
   }
   Period = '';
   Absence = '';
-  Abbreviation = '-';
+  Abbreviation = '';
 }
 
 
@@ -238,4 +232,35 @@ export class Record {
    * 將content 轉化為Obj 方便資料使用
    */
   contentObj: Content;
+  approved :string ;
+}
+
+
+
+/**
+ * 裝選多天用
+ */
+export  class  DateInfoWithRule{
+    startDate :Moment ;
+    endDate : Moment ;
+    periodDays:string[]; // 看是要星期幾
+    periodNumber :number ;
+}
+
+
+export class WeekDay{
+  constructor(dayName:string){
+    this.dayName = dayName;
+  }
+  dayName :string ;
+  check :boolean =false;
+  /**
+   *
+   *
+   * @memberof WeekDay
+   */
+ public  toogle ()
+  {
+    this.check = !this.check
+  }
 }

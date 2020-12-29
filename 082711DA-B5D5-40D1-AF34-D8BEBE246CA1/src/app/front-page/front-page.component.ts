@@ -14,10 +14,10 @@ export class FrontPageComponent implements OnInit {
     private data: ListControlService
   ) { }
 
-  // @ViewChild(ListFormComponent, {static: true}) list: ListFormComponent;
+  @ViewChild(ListFormComponent, {static: true}) list: ListFormComponent;
 
   ngOnInit(): void {
-    //this.data.list = this.list;
+    this.data.list = this.list;
   }
 
   // public refreshList() {

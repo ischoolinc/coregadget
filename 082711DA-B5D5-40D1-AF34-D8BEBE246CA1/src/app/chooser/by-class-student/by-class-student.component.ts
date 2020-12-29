@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentsService } from './../students.service';
 import { StudentRecord } from './../data/student';
 import { ClassRecord } from './../data/class';
@@ -31,6 +32,7 @@ export class ByClassStudentComponent implements OnInit {
     private students: StudentsService,
     private dialogActionSrv: DialogActionService,
     private receiversSrv: ReceiversService,
+    private snackBar :MatSnackBar
   ) { }
 
   @ViewChild('tplOuterDialogAction') set outerDialogAction(val: TemplateRef<any>) {
@@ -47,14 +49,15 @@ export class ByClassStudentComponent implements OnInit {
       .getAllClasses()
       .toPromise()
 
-    this.classes = this.classes.sort((x, y) => {
-      const xx = `${+x.DisplayOrder || Number.MAX_VALUE}:${x.ClassName}`;
-      const yy = `${+y.DisplayOrder || Number.MAX_VALUE}:${y.ClassName}`;
+    // this.classes = this.classes.sort((x, y) => {
+    //   const xx = `${+x.DisplayOrder || Number.MAX_VALUE}:${x.ClassName}`;
+    //   const yy = `${+y.DisplayOrder || Number.MAX_VALUE}:${y.ClassName}`;
 
-      return xx.localeCompare(yy);
-    });
+    //   return xx.localeCompare(yy);
+    // });
 
     for(const cls of this.classes) {
+      cls.more=false;
       cls.students = cls
       .StudentIds.map(s => {
         return this.students.get(+s);
@@ -99,10 +102,23 @@ export class ByClassStudentComponent implements OnInit {
     if (selections.length) {
       this.receiversSrv.addReceivers(selections);
       this.message = { text: '加入完成！', msgClass: 'text-success' };
-      alert('加入完成！');
+      // alert('加入完成！');
+      this.snackBar.open("加入完成！", "", {
+        duration: 2000,
+      })
       this.processing = false;
     } else {
       this.processing = false;
     }
+  }
+
+
+
+  /**
+   * 顯示要不要show
+   */
+  toggleShow(classrRecord :ClassRecord)
+  {
+    classrRecord.more =  !classrRecord.more;
   }
 }

@@ -1,0 +1,139 @@
+<div class='up-section'>
+  <nav aria-label="breadcrumb text-nowrap text-truncate">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page" routerLink="" style="cursor: pointer;">課程代碼查詢</li>
+      <li class="breadcrumb-item active" aria-current="page">課程代碼上傳</li>
+    </ol>
+  </nav>
+</div>
+<div>
+  <form class='form-section'>
+    <div style="width: 200px; height: 20px;display: inline; margin-right: 30px;">
+      <input hidden (change)="uploadFile()" #dealCsv type="file" id="courseCodeFile" accept=".csv">
+        <span> CSV檔 : </span>
+          <mat-form-field class="example-full-width" style="width :700px">
+            <mat-label>{{ priFileName }}</mat-label>
+            <input matInput placeholder="upload" value="" type="text" [readonly]="true">
+          </mat-form-field>
+    </div>
+    <span>
+      <button type="button" mat-stroked-button color="primary" (click)="dealCsv.click()">
+        <mat-icon aria-hidden="false" style="padding-top: 5px;">upload</mat-icon>選擇檔案
+      </button>
+      <div class='divider'>※課程代碼檔案支援格式: csv</div>
+    </span>
+    <button class='uploadBtn' id="btn" mat-raised-button color="primary" (click)="saveFileToServer()"
+      style=" display:inline ; float:right" [disabled]="buttonIsLocked">確認上傳</button>
+    <!-- 普通型高中需額外上傳班群代碼檔案 -->
+    <div>
+    <div style="width: 200px; height: 20px;display: inline; margin-right: 30px;">
+      <input hidden (change)="uploadSubjectFile()" #dealSubjectCsv type="file" id="classTypeFile" accept=".csv">
+        <span> 班群代碼檔 : </span>
+          <mat-form-field class="example-full-width" style="width :670px">
+            <mat-label>{{ secFileName }}</mat-label>
+            <input matInput placeholder="upload" value="" type="text" [readonly]="true">
+          </mat-form-field>
+    </div>
+    <span>
+      <button type="button" mat-stroked-button color="primary" (click)="dealSubjectCsv.click()">
+        <mat-icon aria-hidden="false" style="padding-top: 5px;">upload</mat-icon>選擇檔案
+      </button>
+    </span>
+  </div>
+  </form>
+</div>
+
+<div class='table-section'>
+  <table class="theader" matSort>
+    <tr class="thead">
+      <th style="padding: 0px 24px;">
+        <div class="mat-content ng-tns-c78-17">
+          <div style="width: 20%; display: inline-block; margin: 0px 0px 0px 0px">課程代碼(新)</div>
+          <div style="width: 20%; display: inline-block; margin: 0px 0px 0px 0px">課程名稱(新)</div>
+          <div style="width: 10%; display: inline-block; margin: 0px 0px 0px 0px">學期分數</div>
+          <div style="width: 20%; display: inline-block; margin: 0px 0px 0px 0px">課程代碼(舊)</div>
+          <div style="width: 20%; display: inline-block; margin: 0px 0px 0px 0px">課程名稱(舊)</div>
+          <div style="width: 10%; display: inline-block; margin: 0px 0px 0px 0px">狀態</div>
+        </div>
+      </th>
+    </tr>
+
+    <tr class="tbody" *ngFor="let course of dataSource">
+      <!-- <td>{{course.courseCode}}</td>
+      <td>{{course.subjectName}}</td>
+      <td>{{course.creditPeriod}}</td>
+      <td>{{course.oriCourseCode}}</td>
+      <td>{{course.oriSubjectName}}</td>
+      <td><span>{{course.action}}</span> <span>
+
+          <span [ngSwitch]="cssSwitch(course)">
+            <span *ngSwitchCase="'新增'">
+              <span style ="color:#99bbff ;font-size:20px;" class="material-icons">
+                add_box
+              </span>
+            </span>
+            <span *ngSwitchCase="'修改'">
+              <span  style ="color:	 #5cd65c ;font-size:20px;"  class="material-icons">
+                edit_road
+              </span></span>
+            <span *ngSwitchCase="'刪除'">
+              <span   style ="color:#ff4d4d ;font-size:20px;"  class="material-icons">
+                remove_circle
+              </span></span>
+          </span>
+
+        </span></td> -->
+      <mat-expansion-panel hideToggle  style="background-color: transparent;" class="mat-elevation-z0">
+        <!-- #enddocregion hide-toggle -->
+            <mat-expansion-panel-header>
+              <mat-panel-title style= "width: 20% ; margin: 0px 0px 0px 0px">{{course.courseCode}}</mat-panel-title>
+              <mat-panel-title style= "width: 20% ; margin: 0px 0px 0px 0px">{{course.subjectName}}</mat-panel-title>
+              <mat-panel-title style= "width: 10% ; margin: 0px 0px 0px 0px">{{course.creditPeriod}}</mat-panel-title>
+              <mat-panel-title style= "width: 20% ; margin: 0px 0px 0px 0px">{{course.oriCourseCode}}</mat-panel-title>
+              <mat-panel-title style= "width: 20% ; margin: 0px 0px 0px 0px">{{course.oriSubjectName}}</mat-panel-title>
+              <mat-panel-title style= "width: 10% ; margin: 0px 0px 0px 0px"><span>{{course.action}}</span> <span>
+
+                <span [ngSwitch]="cssSwitch(course)">
+                  <span *ngSwitchCase="'新增'">
+                    <!-- <span style ="color:#99bbff ;font-size:20px;" class="material-icons">
+                      add_box
+                    </span> -->
+                  </span>
+                  <span *ngSwitchCase="'修改'">
+                    <!-- <span  style ="color:	 #5cd65c ;font-size:20px;"  class="material-icons">
+                      edit_road
+                    </span> -->
+                  </span>
+                  <span *ngSwitchCase="'刪除'">
+                    <!-- <span   style ="color:#ff4d4d ;font-size:20px;"  class="material-icons">
+                      remove_circle
+                    </span> -->
+                  </span>
+                </span>
+
+              </span></mat-panel-title>
+            </mat-expansion-panel-header>
+            <table style="width: 100%; 	background-color:rgb(231, 237, 238);">
+              <tr style="text-align: left; border: 1px solid gray;">
+                <th colspan="5" style="text-align: center;">歷史資料</th>
+              </tr>
+              <tr style="text-align: left; border: 1px solid gray;">
+                <th>日期</th>
+                <th>行為</th>
+                <th>修改後課程代碼</th>
+                <th>修改前課程代碼</th>
+                <th>MD5</th>
+              </tr>
+              <tr *ngFor = "let history of course.actionHistories" style="text-align: left; border: 1px solid gray;">
+                <td>{{history.date}}</td>
+                <td>{{history.action}}</td>
+                <td>{{history.newCourseCode}}</td>
+                <td>{{history.originCourseCode}}</td>
+                <td>{{history.md5}}</td>
+              </tr>
+          </table>
+      </mat-expansion-panel>
+    </tr>
+    <div *ngIf="isEmpty" style = "color: red">本次上傳無更動資料庫結果</div>
+  </table>
+</div>

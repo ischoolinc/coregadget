@@ -1,9 +1,10 @@
+import { HelperService } from './../Service/helper.service';
 import { DataService } from './../Service/data.service';
 import { Record, Period, PeriodInfo,  DatesInfo, IStudent } from './../vo';
 import { Component, OnInit } from '@angular/core';
 import { Contract, GadgetService } from '../gadget.service';
 import { LeaveItem } from '../vo';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar'
 @Component({
   selector: 'app-list-form',
@@ -17,62 +18,25 @@ export class ListFormComponent implements OnInit {
 
   constructor(private dsa: GadgetService
     , private router: Router
+    , private route: ActivatedRoute
     , private dataService: DataService
-    , private _snackBar: MatSnackBar) {
+    , private _snackBar: MatSnackBar
+    , public helperService:HelperService) {
 
+      route.data.subscribe(r => {
+        this.HisRecords = r.records;
+      });
   }
   async ngOnInit(): Promise<any> {
     this.con = await this.dsa.getContract('ischool.leave.teacher');
-    // await this.getConfig();
-    await this.loadDate();
 
   }
-
-
-
 
   /**
    * 載入資料
    */
   async loadDate(): Promise<any> {
-    this.HisRecords =[];
-    const periods: string[] = [];
-    const rsp = await this.con?.send('_.GetAnnualLeaveRecord'); // 取得資料
-    if (rsp && rsp.LeaveItems) {
-      // 解析轉成物件
-      [].concat(rsp.LeaveItems.Item || []).forEach(item => {
-        this.HisRecords.push(JSON.parse(JSON.stringify(item)));
-      });
-
-      this.HisRecords.forEach(record => {
-        record.contentObj = JSON.parse(record.content);
-        record.contentObj.Dates.forEach(date => {
-          date.Periods.forEach(period => {
-            if (!periods.includes(period.Period)) {
-              periods.push(period.Period);
-            }
-          });
-        });
-        if (record.contentObj) {
-          record.contentObj.PeriodShow = periods;
-        }
-
-      });
-      // 處理Mapping
-      this.HisRecords.forEach(record => {
-        record.contentObj.Dates.forEach(date => {
-          date.LeavePeriod = [];
-          date.MapPeriods = new Map<string, PeriodInfo>();
-          record.contentObj.PeriodShow.forEach(perShow => {
-            let result: PeriodInfo = new PeriodInfo();
-            if (date.Periods.find(period => period.Period === perShow)) {
-              result = date.Periods.find(period => period.Period === perShow) || new PeriodInfo();
-            }
-            date.MapPeriods.set(perShow, result);
-          });
-        });
-      });
-    }
+    this.HisRecords = await this.dataService.loadHistoryData();
   }
 
   /**
@@ -97,9 +61,10 @@ export class ListFormComponent implements OnInit {
     // 進入
     // 裝資料
     data.contentObj.Dates.forEach(date => {
+    date.LeavePeriodString=[]; //先清空
     date.Periods.forEach(period => {
       if(period.Abbreviation ==="公"){
-          date.LeavePeriod.push(period.Period);
+          date.LeavePeriodString.push(period.Period);
       }
       });
     });
@@ -115,7 +80,7 @@ export class ListFormComponent implements OnInit {
   async deleteRecord(record: Record): Promise<any> {
 
     try {
-      this.openSnackBar('','');
+      this.openSnackBar(`已刪除 ${record.uqid} `,'');
       const rsp = await this.con?.send('_.DeleteAnnualLeaveRecord', { UID: record.uid });
     } catch (ex) {
       alert(`刪除發生錯誤 : \n${ex.Message}`);
@@ -127,10 +92,9 @@ export class ListFormComponent implements OnInit {
    * 編輯資料
    * @memberof ListFormComponent
    */
-  async editRecord(date: Record): Promise<any> {
-    await this.dataService.setCurrentRecord(date);
-    this.router.navigate(['edit_record', 'edit']);
-
+  async editRecord(data: Record): Promise<any> {
+    await this.dataService.setCurrentRecord(data);
+    this.router.navigate(['edit_record', 'edit', data.uid]);
   }
   /**
    * 回傳顯示資訊的
