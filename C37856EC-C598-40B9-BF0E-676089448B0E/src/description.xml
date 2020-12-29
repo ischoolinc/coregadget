@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="授課教師輸入特殊生課程總成績" description="授課教師輸入特殊生課程總成績">
-    <Title lang="zh-TW">授課教師輸入特殊生課程總成績</Title>
+  <ModulePrefs title="特殊生課程總成績輸入" description="特殊生課程總成績輸入">
+    <Title lang="zh-TW">特殊生課程總成績輸入</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">
