@@ -1,0 +1,197 @@
+<div class="container mt-4">
+    <div id="index" class="h-100" page>
+        <nav class="navbar navbar-light bg-light">
+            <span class="navbar-brand mb-0 h1">班級歷年成績查詢</span>
+        </nav>
+        <ng-container *ngIf="classList.length > 0; else tplNoClass">
+            <!-- fliter -->
+            <div class="input-group my-3">
+                <!-- 班級 -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{curClass.class_name}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let class of classList" href="javascript:void(0)"
+                            [ngClass]="{'active': curClass.id == class.id}" (click)="setClass(class)"> <!-- [ngClass] 在這裡主要處理，目前顯示班級，在此表格中添加背景醒目提示-->
+                            {{class.class_name}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 學年度 學期 -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{curSS.content}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let ss of ssList" href="javascript:void(0)"
+                            [ngClass]="{'active': ss.school_year == curSS.school_year && ss.semester == curSS.semester}"
+                            (click)="setSS(ss)">
+                            {{ss.content}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 類型 -->
+                <!-- 平均類型 -->
+                <div class="btn-group">
+                    <button class="btn btn-light dropdown-toggle mr-3" type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{curAvgType}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let avgtype of avgTypeList" href="javascript:void(0)"
+                            [ngClass]="{'active': curAvgType == avgtype}" (click)="setAvgType(avgtype)">
+                            {{avgtype}}
+                        </a>
+                    </div>
+                </div>                               
+                <!-- 定期評量 -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{curExam.exam_name}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let exam of examList" href="javascript:void(0)"
+                            [ngClass]="{'active': curExam.id == exam.id}" (click)="setExam(exam)">
+                            {{exam.exam_name}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- data list -->
+            <ng-container *ngIf="!isLoading; else tplLoading">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="colgroup" colspan="2" >學生</th>
+                            <th scope="colgroup" colspan="3" *ngFor="let sub of subjectList" >{{sub}}</th>
+                            <th scope="colgroup" colspan="1">期末資訊</th>
+                        </tr>
+                        <tr class="text-center" >
+                            <th scope="col" style="white-space: nowrap">座號</th>
+                            <th scope="col" >姓名</th>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <th scope="col" style="white-space: nowrap" >分數評量</th>
+                                <th scope="col" style="white-space: nowrap" >努力程度</th>
+                                <th scope="col" style="white-space: nowrap" >文字描述</th>
+                            </ng-container>
+                            <th scope="col" style="white-space: nowrap" >{{curAvgType}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let stu of studentList">
+                            <td>{{stu.seat_no}}</td>
+                            <td style="white-space: nowrap">{{stu.name}}</td>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <td [appScoreType]="stu.examScore[sub][curExam.id]" *ngIf="stu.examScore[sub] && stu.examScore[sub][curExam.id]; else tplNoData" >
+                                    {{stu.examScore[sub][curExam.id]}}
+                                </td>
+                                <td *ngIf="stu.examScore_us[sub] && stu.examScore_us[sub][curExam.id]; else tplNoData">
+                                        {{stu.examScore_us[sub][curExam.id]}}
+                                </td>
+                                <td 
+                                    style="white-space: nowrap"  [title]=stu.examScore_text[sub] *ngIf="stu.examScore_text[sub] ; else tplNoData">
+                                    {{stu.examScore_text[sub] | textFilter}}<i (click) = "openModal(template,stu.examScore_text[sub])" class="material-search-icons">search</i>
+                                </td>
+                            </ng-container>
+                                <td [appScoreType]="stu.examScore_avg[curExam.id][curAvgType]"
+                                    *ngIf="stu.examScore_avg[curExam.id] 
+                                    && stu.examScore_avg[curExam.id][curAvgType] 
+                                    ; else tplNoData">
+                                    {{stu.examScore_avg[curExam.id][curAvgType]}}
+                                </td>
+                        </tr>
+                            <tr *ngFor="let range of fiveRange">
+                                <td colspan="2">{{range.value}}</td>
+                                <ng-container *ngFor="let sub of subjectList">                                   
+                                        <td [appScoreType]="examMatrix[curItemType][sub][range.key]" *ngIf="examMatrix[curItemType] && examMatrix[curItemType][sub]; else tplNoData2" colspan="3">
+                                            {{examMatrix[curItemType][sub][range.key]}}
+                                        </td>
+                                    </ng-container>                             
+                                <td colspan="1"></td>
+                            </tr>
+                            <tr *ngFor="let range of rangeList">
+                                <td colspan="2">{{range.value}}</td>
+                                    <ng-container *ngFor="let sub of subjectList">
+                                            <td *ngIf="examMatrix[curItemType] && examMatrix[curItemType][sub]; else tplNoData2" colspan="3">
+                                                {{examMatrix[curItemType][sub][range.key]}}
+                                            </td>
+                                    </ng-container>
+                                <td colspan="1"></td>
+                            </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </ng-container>
+
+
+    </div>
+</div>
+
+<ng-template #tplNoClass>
+    <div class="d-flex justify-content-center mt-5">
+        <h5>沒有班級資料</h5>
+    </div>
+</ng-template>
+
+<ng-template #tplNoData>
+    <td></td>
+</ng-template>
+
+<ng-template #tplNoData2>
+    <td colspan="3"></td>
+</ng-template>
+<ng-template #tplNoUSRow>
+ 
+</ng-template>
+<ng-template #tplNoUScore>
+ 
+</ng-template>
+
+<ng-template #tplNoUSDataRow>
+    <th scope="colgroup" colspan="4" *ngFor="let sub of subjectList" >{{sub}}</th>
+</ng-template>
+<ng-template #tplLoading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #tplNoUSRange>
+    <tr *ngFor="let range of fiveRange">
+        <td colspan="2">{{range.value}}</td>
+        <ng-container *ngFor="let sub of subjectList">                                   
+                <td [appScoreType]="examMatrix[curItemType][sub][range.key]" *ngIf="examMatrix[curItemType] && examMatrix[curItemType][sub]; else tplNoData2" colspan="3">
+                    {{examMatrix[curItemType][sub][range.key]}}
+                </td>
+            </ng-container>                             
+        <td colspan="1"></td>
+    </tr>
+    <tr *ngFor="let range of rangeList">
+        <td colspan="2">{{range.value}}</td>
+            <ng-container *ngFor="let sub of subjectList">
+                    <td *ngIf="examMatrix[curItemType] && examMatrix[curItemType][sub]; else tplNoData2" colspan="3">
+                        {{examMatrix[curItemType][sub][range.key]}}
+                    </td>
+            </ng-container>
+        <td colspan="1"></td>
+    </tr>
+</ng-template>
+
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">文字描述</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      {{curScoreText}}
+    </div>
+</ng-template>
