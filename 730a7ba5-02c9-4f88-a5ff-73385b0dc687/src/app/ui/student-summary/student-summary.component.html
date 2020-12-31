@@ -2,15 +2,15 @@
   <div id="index" page>
     <nav aria-label="breadcrumb text-nowrap text-truncate">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page" routerLink="">缺曠紀錄</li>
+        <li class="breadcrumb-item active" aria-current="page" routerLink="" style="cursor: pointer;">缺曠紀錄</li>
         <li class="breadcrumb-item active" aria-current="page"> 學生缺曠統計</li>
       </ol>
     </nav>
 
 
     <div class="d-flex flex-column flex-sm-row mb-3">
-      <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate">學生:
-        {{this.selectedName}}</div>
+      <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate" [innerHTML]="'學生:'+this.selectedName">
+      </div>
         <div class="dropdown ml-auto mt-5 mt-sm-0">
           <a style="cursor: pointer;" (click)="exportFile('xls')">
               <mat-icon> cloud_download</mat-icon>學生明細(Excel)

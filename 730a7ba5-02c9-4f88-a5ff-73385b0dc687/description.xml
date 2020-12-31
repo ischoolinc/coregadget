@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="缺曠" description="管理員-校長設定">
+  <ModulePrefs title="缺曠" description="缺曠">
     <Title lang="zh-TW">缺曠</Title>
     <Icon>icon.png</Icon>
     <Mobile />

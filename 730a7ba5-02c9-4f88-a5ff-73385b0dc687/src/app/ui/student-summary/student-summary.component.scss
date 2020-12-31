@@ -13,3 +13,7 @@ div.semester {
 div.semester:nth-child(1) {
   border-top: 1px solid lightgray;
 }
+
+.mat-expansion-panel-header-title, .mat-expansion-panel-header-description {
+  flex: 1;
+}

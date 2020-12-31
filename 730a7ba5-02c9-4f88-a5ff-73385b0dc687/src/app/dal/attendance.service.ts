@@ -122,7 +122,7 @@ export class AttendanceService {
     return result;
   }
 
-  // TODO:取得學生缺曠資料
+  // 取得學生缺曠資料
   async getStudentAttendance(studentID) {
     const contract = await this.contract.getDefaultContract();
     const result = await contract.send('attendance.GetStudentAttendance', {

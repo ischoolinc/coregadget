@@ -48,17 +48,26 @@ export class ClassSummaryComponent implements OnInit {
     await this.queryStudentAttendance();
   }
 
+  /**
+   * 查詢班級列表
+   */
   async queryClasses() {
     this.classList = await this.attendanceService.getMyClasses();
     this.selectedClass = this.classList[0];
   }
 
+  /**
+   * 查詢學年度學期
+   */
   async querySemesters() {
     this.semesters = await this.attendanceService.getSemestersByClassID(this.selectedClass.ClassID);
     this.selectedSemester = this.semesters[0];
     await this.queryPeriodType();
   }
 
+  /**
+   * 查詢節次類型
+   */
   async queryPeriodType() {
     const tempTypeArray: periodDetail[] = await this.attendanceService.getPeriodMappingTable();
     const tempPeriodTypeList = [];
@@ -71,11 +80,19 @@ export class ClassSummaryComponent implements OnInit {
     this.selectedType = this.typeList[0];
     await this.queryStudentAttendance();
   }
+
+  /**
+   * 查詢該學期有缺曠的學生
+   */
   async queryStudentAttendance() {
     const studentList: StudentListResponse = await this.attendanceService.getStudentAttendanceByClassID(this.selectedClass, this.selectedSemester);
     this.calStudentAttendance(studentList);
   }
 
+  /**
+   * 統計學生各種缺曠的類型數目
+   * @param studentList
+   */
   async calStudentAttendance(studentList: StudentListResponse) {
     // reset
     this.studentMappingTable.clear();
@@ -117,32 +134,15 @@ export class ClassSummaryComponent implements OnInit {
     this.aryStudents.length === 0 ? this.ifNoResult = true : this.ifNoResult = false;
     this.aryStudents.sort((a, b) => parseInt(a.seat_no) > parseInt(b.seat_no) ? 1: -1);
   }
+
   // 供下一頁參考的資料
   nextPage(studentInfo: StudentAttendanceInfo) {
     this.attendanceService.fillInStudentInfo(studentInfo);
   }
+
   // 匯出報表
-  // exportFile(type): void {
-
-
-
-  //   // -----------------------------------------------------------------------------------------------
-  //   /* table id is passed over here */
-  //   let element = this.table.nativeElement;
-  //   const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-  //   /* generate workbook and add the worksheet */
-  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  //   const fileName = `${this.selectedClass.ClassName}_${this.selectedSemester.school_year}學年第${this.selectedSemester.semester}學期.${type}`;
-  //   XLSX.utils.book_append_sheet(wb, ws, fileName);
-  //   /* save to file */
-  //   XLSX.writeFile(wb, fileName);
-
-
-  // }
   exportFile(type): void {
 
-    // -----------------------------------------------------------------------------------------------
-    /* table id is passed over here */
     let element = this.table.nativeElement;
     // 表格加入格線
     element.children[0].setAttribute('border', '1');
@@ -226,8 +226,4 @@ interface leaveType {
       AbsenceType: string;
     }[];
   }[];
-}
-
-interface addPeriodType {
-
 }
