@@ -1,0 +1,224 @@
+<div class="container mt-4">
+    <div id=index class="h-100" page>
+        <nav class="navbar navbar-light bg-light">
+            <span class="navbar-brand mb-0 h1">班級歷年成績查詢</span>
+        </nav>
+        <ng-container *ngIf="!isFirstLoading; else tplFirstLoading">
+            <ng-container *ngIf="classList.length > 0; else tplNoClass">
+            <!-- fliter -->
+            <div class="input-group my-3">
+                <!-- 班級 -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                        {{curClass.class_name}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let class of classList" href="javascript:void(0);"
+                            [ngClass]="{'active': curClass.id == class.id}" (click)="setClass(class)"> <!-- [ngClass] 在這裡主要處理，目前顯示班級，在此表格中添加背景醒目提示-->
+                            {{class.class_name}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 學年學期 -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    {{curSS.content}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let ss of ssList" href="javascript:void(0)"
+                            [ngClass]="{'active': ss.school_year == curSS.school_year && ss.semester == curSS.semester}"
+                            (click)="setSS(ss)">
+                            {{ss.content}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 排名母群類別 -->
+                <div class="btn-group">
+                    <button type="button"  class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{curMatrix}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let matrix of matrixList" href="javascript:void(0)"
+                            [ngClass]="{'active': curMatrix == matrix}" (click)="setMatrix(matrix)">
+                            {{matrix}}
+                        </a>
+                    </div>
+                </div>
+                <!-- 平均類別 -->
+                <div class="btn-group">
+                    <button class="btn btn-light dropdown-toggle mr-3" type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{curAvgType}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" *ngFor="let avgtype of avgTypeList" href="javascript:void(0)"
+                            [ngClass]="{'active': curAvgType == avgtype}" (click)="setAvgType(avgtype)">
+                            {{avgtype}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- data list -->
+            
+            <ng-container *ngIf="!isLoading; else tplLoading">
+                <table class="table table-bordered table-striped mb-5 mr-3">
+                    <thead>
+                        <tr>
+                            <th scope="colgroup" colspan="2" ></th>
+                            <th scope="colgroup" colspan="3" *ngFor="let sub of subjectList" >{{sub}}</th>
+                            <th scope="colgroup" colspan="4">固定排名</th>
+                        </tr>
+                        <tr class="text-center" >
+                            <th scope="col" style="white-space: nowrap">座號</th>
+                            <th scope="col" >姓名</th>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <th scope="col" style="white-space: nowrap" >原始成績</th>
+                                <th scope="col" style="white-space: nowrap" >其他成績</th>
+                                <th scope="col" style="white-space: nowrap" >科目排名/(原始)</th>
+                            </ng-container>
+                            <th scope="col" style="white-space: nowrap" >{{curAvgType}}(原始)</th>
+                            <th scope="col" style="white-space: nowrap" >{{curAvgType}}</th>
+                            <th scope="col" style="white-space: nowrap" >排名(原始)</th>
+                            <th scope="col" style="white-space: nowrap" >排名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let stu of studentList">
+                            <td>{{stu.seat_no}}</td>
+                            <td style="white-space: nowrap">{{stu.name}}</td>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <td [appScoreType]="stu.subject[sub].ori_score.score" *ngIf="stu.subject[sub].ori_score && stu.subject[sub].ori_score.noneScore; else tplNoFinalScore">{{stu.subject[sub].ori_score.score}}</td>
+                                <td *ngIf="stu.subject[sub].finalMark; else tplNoFinalScore">{{stu.subject[sub].finalMark}}</td>
+                                <td>{{stu.subject[sub]['學期/科目成績'][curMatrix]}} / {{stu.subject[sub]['學期/科目成績(原始)'][curMatrix]}}</td>
+                            </ng-container>
+                            <td [appScoreType]="stu[curAvgType]['原始']" *ngIf="stu[curAvgType]['原始']; else tplNoFinalScore">{{stu[curAvgType]['原始']}}</td>
+                            <td [appScoreType]="stu[curAvgType]['擇優']" *ngIf="stu[curAvgType]['擇優']; else tplNoFinalScore">{{stu[curAvgType]['擇優']}}</td>
+                            <td *ngIf="stu['學期/分項成績(原始)']; else tplNoFinalScore">{{stu['學期/分項成績(原始)'][curMatrix]}}</td>
+                            <td *ngIf="stu['學期/分項成績']; else tplNoFinalScore">{{stu['學期/分項成績'][curMatrix]}}</td>
+                        </tr>
+                        <!-- <tr *ngFor="let range of fiveRange">
+                            <td colspan="2">{{range.value}}</td>
+                            <ng-container *ngFor="let sub of subjectList">                                   
+                                    <td colspan="1">
+                                        {{examMatrix[curClass.class_name]['原始成績'][sub][range.key]}}
+                                    </td>
+                                    <td colspan="1">
+                                        {{examMatrix[curClass.class_name]['學年調整成績'][sub][range.key]}}
+                                    </td>
+                                    <td colspan="2"></td>
+                                </ng-container>                             
+                            <td colspan="2"></td>
+                        </tr> -->
+                        <!-- <tr *ngFor="let range of rangeList">
+                            <td colspan="2">{{range.value}}</td>
+                            <ng-container *ngFor="let sub of subjectList">
+                                <td colspan="1">
+                                    {{examMatrix[curClass.class_name]['原始成績'][sub][range.key]}}
+                                </td>
+                                <td colspan="1">
+                                    {{examMatrix[curClass.class_name]['學年調整成績'][sub][range.key]}}
+                                </td>
+                                <td colspan="2"></td>
+                            </ng-container>
+                            <td colspan="2"></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+
+                <h3>級距統計表</h3>
+                    <table class="table table-bordered table-striped mb-5 mr-3">
+                            <thead>
+                                <tr>
+                                    <th scope="colgroup" colspan="1" ></th>
+                                    <th scope="colgroup" colspan="2">{{curAvgType}}</th>
+                                    <th scope="colgroup" colspan="2" *ngFor="let sub of subjectList" >{{sub}}</th>
+                                </tr>
+                                <tr class="text-center" >
+                                    <th scope="col" style="white-space: nowrap">級距</th>
+                                    <th scope="col" style="white-space: nowrap" >原始</th>
+                                    <th scope="col" style="white-space: nowrap" >擇優</th>
+                                    <ng-container *ngFor="let sub of subjectList">
+                                        <th scope="col" style="white-space: nowrap" >原始</th>
+                                        <th scope="col" style="white-space: nowrap" >擇優</th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                        
+                        <tbody>
+                            <tr class="text-center" *ngFor="let range of rangeList">
+                                <td style="white-space: nowrap">{{range.value}}</td>
+                                    <td style="white-space: nowrap">{{examMatrix[curAvgType]['原始'][range.key]}}</td>
+                                    <td style="white-space: nowrap">{{examMatrix[curAvgType]['擇優'][range.key]}}</td>
+                                    <ng-container *ngFor="let sub of subjectList">
+                                        <td style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key]}}</td>
+                                        <td style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績'][range.key]}}</td>
+                                    </ng-container>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                <h3>五標統計表</h3>
+                    <table class="table table-bordered table-striped mb-5 mr-3">
+                            <thead>
+                                <tr>
+                                    <th scope="colgroup" colspan="1" ></th>
+                                    <th scope="colgroup" colspan="2" *ngFor="let sub of subjectList" >{{sub}}</th>
+                                </tr>
+                                <tr class="text-center" >
+                                    <th scope="col" style="white-space: nowrap">五標</th>
+                                    <ng-container *ngFor="let sub of subjectList">
+                                        <th scope="col" style="white-space: nowrap" >原始</th>
+                                        <th scope="col" style="white-space: nowrap" >擇優</th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                        
+                        <tbody>
+                            <tr class="text-center" *ngFor="let range of fiveRange">
+                                <td style="white-space: nowrap">{{range.value}}</td>
+                                    <ng-container *ngFor="let sub of subjectList">
+                                        <td *ngIf="examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key] !== 0 ; else tplNoRange" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key] | number}}</td>
+                                        <td *ngIf="examMatrix2[sub][curMatrix]['學期/科目成績'][range.key] !== 0 ; else tplNoRange" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績'][range.key] | number}}</td>
+                                    </ng-container>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<!-- template區塊 -->
+<ng-template #tplNoClass>
+    <div class="d-flex justify-content-center mt-5">
+        <h5>沒有班級資料</h5>
+    </div>
+</ng-template>
+<!-- template區塊 -->
+<ng-template #tplLoading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tplFirstLoading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tplNoFinalScore>
+    <td>--</td>
+</ng-template>
+
+<ng-template #tplNoRange>
+    <td style="white-space: nowrap">--</td>
+</ng-template>

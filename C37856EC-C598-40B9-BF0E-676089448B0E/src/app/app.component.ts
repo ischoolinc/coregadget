@@ -180,6 +180,7 @@ interface StudentRec {
   makeup_standard: number;
   remark: string;
   designate_final_score: number;
+  score: number;
 
   // 資料驗證
   validate_ps: boolean;
