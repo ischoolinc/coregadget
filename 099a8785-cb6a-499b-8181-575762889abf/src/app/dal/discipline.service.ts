@@ -60,6 +60,7 @@ export class DisciplineService {
       }
     }
     );
+    console.log(result);
     let studentDisciplineDetail = [];
     if (Array.isArray(result.result)) {
       studentDisciplineDetail = result.result;
@@ -79,6 +80,7 @@ export class DisciplineService {
       }
     });
     const result: parseXmlDisciplineDetail[] = [].concat(rst.result || []);
+    console.log('獎懲明細', result);
     return result;
 
   }
@@ -93,6 +95,7 @@ export class DisciplineService {
       }
     });
     const result = [].concat(rst.Students.Student || []);
+    console.log('student', result);
     const studentList = [];
     result.forEach((student) => {
       studentList.push(new classIdStudents(student.ID, student.Name, student.SeatNo));
@@ -224,7 +227,7 @@ export class studentInfoDetail {
     this.hasDelNegligence = detail.has_del_negligence;
     this.delNegligenceDate = detail.del_negligence_date;
     this.delNegligenceReason = detail.del_negligence_reason;
-    this.detention = detail.detention = '否' ? '': detail.detention;
+    this.detention = detail.detention == '否' ? '': detail.detention;
   }
 
 }

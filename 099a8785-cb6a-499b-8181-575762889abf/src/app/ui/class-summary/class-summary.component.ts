@@ -10,17 +10,45 @@ import FileSaver from 'file-saver';
 })
 export class ClassSummaryComponent implements OnInit {
 
-  periodTable: any;
-  absenceName: any;
+  /**
+   * 根據教師ID取得班級列表
+   */
   classList = [];
+  /**
+   * 根據班級ID取得學生獎懲列表
+   */
   studentList: StudentDisciplineDetail[];
+  /**
+   * 目前選擇中的班級
+   */
   selectedClass: ClassInfo;
+  /**
+   * 根據班級查詢到的學年學期列表
+   */
   semesters: SemesterInfo[] = [];
+  /**
+   * 目前選擇中的學期
+   */
   selectedSemester: SemesterInfo = {} as SemesterInfo;
+  /**
+   * 學生對照表(key: 座號，value: 學生獎勵懲處統計) ， 未排序
+   */
   studentMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
+  /**
+   * 學生對照表(key: 座號，value: 學生獎勵懲處統計) ， 排序後
+   */
   sortedMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
+  /**
+   * 查無獎懲紀錄顯示狀態
+   */
   showWarning = false;
+  /**
+   * 是否勾選顯示全部學生
+   */
   showAllStudents = false;
+  /**
+   * 查無學年度學期會鎖定下拉式窗格
+   */
   semestersLocked = false;
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
   @ViewChild('semester') semester: ElementRef<HTMLSelectElement>;
@@ -40,6 +68,7 @@ export class ClassSummaryComponent implements OnInit {
 
   async queryClasses() {
     this.classList = await this.disciplineService.getMyClasses();
+    console.log(this.classList);
     this.selectedClass = this.classList[0];
   }
 
@@ -67,24 +96,30 @@ export class ClassSummaryComponent implements OnInit {
     this.sortedMappingTable.clear();
     studentList.forEach((eachDetail) => {
       const detail: parseXmlDiscipline = node2json.xml2obj(Object(eachDetail.detail));
-      if (!this.studentMappingTable.has(eachDetail.seat_no)) {
-        const studentTempStatus = new StudentDisciplineStatistics(eachDetail.ref_student_id, eachDetail.name, eachDetail.seat_no);
-        this.studentMappingTable.set(eachDetail.seat_no, studentTempStatus);
-      }
+      // 已銷過的懲處不列入統計
+      if ((eachDetail.merit_flag !== '0') || (detail.Discipline.Demerit.Cleared !== '是')) {
+          if (!this.studentMappingTable.has(eachDetail.seat_no)) {
+            const studentTempStatus = new StudentDisciplineStatistics(eachDetail.ref_student_id, eachDetail.name, eachDetail.seat_no);
+            this.studentMappingTable.set(eachDetail.seat_no, studentTempStatus);
+          }
 
-      let tempStudentStatus: StudentDisciplineStatistics = this.studentMappingTable.get(eachDetail.seat_no);
-      // merit_flag 判別獎勵/ 懲罰/ 留校察看
-      switch (eachDetail.merit_flag) {
-        case '0':
-          this.accDemerit(detail, tempStudentStatus);
-          break;
-        case '1':
-          this.accMerit(detail, tempStudentStatus);
-          break;
-        case '2':
-          tempStudentStatus.detention = '是';
-          this.studentMappingTable.set(eachDetail.seat_no, tempStudentStatus);
-          break;
+          let tempStudentStatus: StudentDisciplineStatistics = this.studentMappingTable.get(eachDetail.seat_no);
+          // merit_flag 判別獎勵/ 懲罰/ 留校察看
+          switch (eachDetail.merit_flag) {
+            case '0':
+              this.accDemerit(detail, tempStudentStatus);
+              break;
+            case '1':
+              this.accMerit(detail, tempStudentStatus);
+              break;
+            case '2':
+              /**
+               * 留校察看
+               */
+              tempStudentStatus.detention = '是';
+              this.studentMappingTable.set(eachDetail.seat_no, tempStudentStatus);
+              break;
+          }
       }
     });
     // 勾選顯示全部學生
@@ -119,7 +154,10 @@ export class ClassSummaryComponent implements OnInit {
     }
     return content;
   }
-
+  /**
+   * @param content 本次獎勵明細
+   * @param studentStatistic 紀錄於Map中的明細並累加本次獎勵的明細
+   */
   accMerit(content: parseXmlDiscipline, studentStatistic: StudentDisciplineStatistics) {
     studentStatistic.merit.A += Number(content.Discipline.Merit.A);
     studentStatistic.merit.B += Number(content.Discipline.Merit.B);
@@ -127,6 +165,10 @@ export class ClassSummaryComponent implements OnInit {
     this.studentMappingTable.set(studentStatistic.seatNumber, studentStatistic);
   }
 
+  /**
+   * @param content 本次懲處明細
+   * @param studentStatistic 紀錄於Map中的明細並累加本次懲處的明細
+   */
   accDemerit(content: parseXmlDiscipline, studentStatistic: StudentDisciplineStatistics) {
     studentStatistic.demerit.A += Number(content.Discipline.Demerit.A);
     studentStatistic.demerit.B += Number(content.Discipline.Demerit.B);
@@ -139,6 +181,10 @@ export class ClassSummaryComponent implements OnInit {
     this.studentMappingTable.set(student.seat_no, studentTempStatus);
   }
 
+  /**
+   *
+   * @param mappingTable 根據座號排序map
+   */
   sortedMap(mappingTable: Map<string, StudentDisciplineStatistics>) {
     const studentNumList = [];
     mappingTable.forEach((studentDiscipline, seatNumber) => {
@@ -150,7 +196,10 @@ export class ClassSummaryComponent implements OnInit {
     });
   }
 
-  // 輸出成外部檔案(html/ xls)
+  /**
+   *
+   * @param type 輸出成外部檔案(html/ xls)
+   */
   exportFile(type: 'html' | 'xls'): void {
 
     let element = this.table.nativeElement;
@@ -171,7 +220,10 @@ export class ClassSummaryComponent implements OnInit {
     FileSaver.saveAs(new Blob([html], { type: "application/octet-stream" }), fileName);
   }
 
-  // 提供至下一頁的學生資訊
+  /**
+   *
+   * @param studentInfo 提供至下一頁的學生資訊
+   */
   nextPage(studentInfo: StudentDisciplineStatistics) {
     this.disciplineService.fillInStudentInfo(studentInfo);
   }

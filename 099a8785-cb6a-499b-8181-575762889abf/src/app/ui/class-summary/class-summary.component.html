@@ -47,16 +47,15 @@
           <table class="table-rwd table table-bordered table-hover kd-t">
               <thead>
                   <tr>
-                      <th>座號</th>
-                      <th>姓名</th>
-                      <th>大功</th>
-                      <th>小功</th>
-                      <th>嘉獎</th>
-                      <th>大過</th>
-                      <th>小過</th>
-                      <th>警告</th>
-                      <th>留校察看</th>
-                      <th></th>
+                      <th style="width: 10%;">座號</th>
+                      <th style="width: 10%;">姓名</th>
+                      <th style="width: 10%;">大功</th>
+                      <th style="width: 10%;">小功</th>
+                      <th style="width: 10%;">嘉獎</th>
+                      <th style="width: 10%;">大過</th>
+                      <th style="width: 10%;">小過</th>
+                      <th style="width: 10%;">警告</th>
+                      <th style="width: 10%;">留校察看</th>
                   </tr>
               </thead>
               <tbody *ngFor="let eachStudent of this.getArray();">
@@ -67,7 +66,7 @@
                       aria-controls="rA"
                       >
                       <td data-th="座號" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].seatNumber}}</td>
-                      <td data-th="姓名" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].name}}</td>
+                      <td data-th="姓名" routerLink="student-detail" (click)="nextPage(eachStudent[1])" [innerHTML]="eachStudent[1].name"></td>
                       <td data-th="大功" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.A)}}</td>
                       <td data-th="小功" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.B)}}</td>
                       <td data-th="嘉獎" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].merit.C)}}</td>
@@ -75,7 +74,6 @@
                       <td data-th="小過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.B)}}</td>
                       <td data-th="警告" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.C)}}</td>
                       <td data-th="留校察看" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].detention}}</td>
-                      <td></td>
                   </tr>
               </tbody>
           </table>

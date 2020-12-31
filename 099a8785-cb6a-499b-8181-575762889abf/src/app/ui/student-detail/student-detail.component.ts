@@ -9,25 +9,48 @@ import FileSaver from 'file-saver';
 })
 export class StudentDetailComponent implements OnInit {
 
+  /**
+   * 目前選擇的學生座號
+   */
   selectedSeatNum: string;
+  /**
+   * 目前選擇的學生ID
+   */
   selectedId: string;
+  /**
+   * 目前選擇的學生姓名
+   */
   selectedName: string;
-  sortedStudentList = [];
+  /**
+   * 學生獎懲明細(key: 學年度學期，value: 獎懲明細)
+   */
   studentInfoTable: Map<string, studentInfoDetail[]> = new Map();
-  sortedTable: Map<string, studentInfoDetail[]> = new Map();
+  /**
+   * 學生ID查詢的獎懲明細
+   */
   studentDetail: parseXmlDisciplineDetail[] = [];
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
 
   constructor(private disciplineService: DisciplineService) { }
 
   async ngOnInit(): Promise<void> {
-    this.selectedSeatNum = this.disciplineService.selectedSeatNum;
-    this.selectedId = this.disciplineService.selectedStudentID;
-    this.selectedName = this.disciplineService.selectedName;
+
+    // 抓取欲查詢學生明細
+    this.getStudentInfo();
     this.studentDetail = await this.disciplineService.getStudentDisciplineDetail(this.selectedId);
     await this.parseDetail();
   }
-
+  /**
+   * 抓取本次查詢的學生明細
+   */
+  getStudentInfo() {
+    this.selectedSeatNum = this.disciplineService.selectedSeatNum;
+    this.selectedId = this.disciplineService.selectedStudentID;
+    this.selectedName = this.disciplineService.selectedName;
+  }
+  /**
+   * 解析學生明細 (key: 學年度學期， value: 獎懲明細)
+   */
   parseDetail() {
     this.studentDetail.forEach((detail) => {
       const tableKey = `${detail.school_year}_${detail.semester}`;
@@ -39,17 +62,25 @@ export class StudentDetailComponent implements OnInit {
       this.studentInfoTable.set(tableKey, tempDetail);
     });
   }
-
+  /**
+   * convert studentInfoTable Map into array
+   */
   getArray() {
     return Array.from(this.studentInfoTable);
   }
-
+  /**
+   *
+   * @param content: xxx學年度_xxx學期
+   */
   getSemester(content:string) {
     const text = content.split('_');
     return `${text[0]}學年第${text[1]}學期`;
   }
 
-  // 輸出成外部檔案(html/ xls)
+  /**
+   *
+   * @param type 輸出成外部檔案(html/ xls)
+   */
   exportFile(type: 'html' | 'xls'): void {
 
     // 重新繪製Html
@@ -69,7 +100,6 @@ export class StudentDetailComponent implements OnInit {
                 <th>原因</th>
                 <th>銷過日期</th>
                 <th>銷過原因</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>`;
@@ -91,7 +121,6 @@ export class StudentDetailComponent implements OnInit {
                     <td data-th="原因" >${detail.reason}</td>
                     <td data-th="銷過日期" >${detail.delNegligenceDate}</td>
                     <td data-th="銷過原因" >${detail.delNegligenceReason}</td>
-                    <td></td>
                 </tr>`
       });
       end += `
@@ -99,7 +128,7 @@ export class StudentDetailComponent implements OnInit {
         </table>
       </div>`;
     })
-    let innText = head + body + end;
+    let innerText = head + body + end;
     let html = `
     <html>
         <head>
@@ -107,11 +136,35 @@ export class StudentDetailComponent implements OnInit {
         </head>
         <body>
             <div>${this.selectedName}_${this.selectedId}_功過獎懲明細表</div>
-            ${innText}
+            ${innerText}
         </body>
     </html>`;
+
     const fileName = `${this.selectedName}_${this.selectedId}_功過獎懲明細表.${type}`;
     FileSaver.saveAs(new Blob([html], { type: "application/octet-stream" }), fileName);
   }
 
+  // stringTransform(content: string) {
+  //   const tempString = content.split('&#x');
+  //   const array = [];
+  //   tempString.forEach((content) => {
+  //     if (content !== '') {
+  //       // 取得 unicode
+  //       const specialWord = content.match('\\d{1,}');
+  //       if (specialWord !== null) {
+  //         array.push(...specialWord);
+  //       }
+  //       // 取得 中文字
+  //       const normalWord = content.match('[\u4e00-\u9fa5]{1,}');
+  //       if (normalWord !== null) {
+  //         array.push(...normalWord);
+  //       }
+  //     }
+  //   });
+  //   // TODO:array內的 unicode值尚未處理
+
+
+
+  //   return
+  // }
 }

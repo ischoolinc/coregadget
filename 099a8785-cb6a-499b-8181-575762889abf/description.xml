@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="獎懲" description="教師">
+  <ModulePrefs title="獎懲" description="獎懲">
     <Title lang="zh-TW">獎懲</Title>
     <Icon>icon.png</Icon>
     <Mobile />
