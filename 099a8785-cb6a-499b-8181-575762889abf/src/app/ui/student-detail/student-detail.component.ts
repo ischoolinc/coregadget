@@ -100,6 +100,7 @@ export class StudentDetailComponent implements OnInit {
                 <th>原因</th>
                 <th>銷過日期</th>
                 <th>銷過原因</th>
+                <th>備註</th>
             </tr>
         </thead>
         <tbody>`;
@@ -121,6 +122,7 @@ export class StudentDetailComponent implements OnInit {
                     <td data-th="原因" >${detail.reason}</td>
                     <td data-th="銷過日期" >${detail.delNegligenceDate}</td>
                     <td data-th="銷過原因" >${detail.delNegligenceReason}</td>
+                    <td data-th="備註">${detail.remark}</td>
                 </tr>`
       });
       end += `

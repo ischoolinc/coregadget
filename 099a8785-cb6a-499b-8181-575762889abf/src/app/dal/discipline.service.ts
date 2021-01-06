@@ -212,6 +212,7 @@ export class studentInfoDetail {
   delNegligenceDate: string;
   delNegligenceReason: string;
   detention: string;
+  remark :string ;
 
   constructor(detail: parseXmlDisciplineDetail, seatNumber: string, name: string) {
     this.date = detail.date;
@@ -228,6 +229,7 @@ export class studentInfoDetail {
     this.delNegligenceDate = detail.del_negligence_date;
     this.delNegligenceReason = detail.del_negligence_reason;
     this.detention = detail.detention == '否' ? '': detail.detention;
+    this.remark = detail.remark;
   }
 
 }
@@ -248,5 +250,6 @@ export interface parseXmlDisciplineDetail {
   has_del_negligence: string,
   del_negligence_date: string,
   del_negligence_reason: string,
-  detention: string
+  detention: string ,
+  remark :string
 }
