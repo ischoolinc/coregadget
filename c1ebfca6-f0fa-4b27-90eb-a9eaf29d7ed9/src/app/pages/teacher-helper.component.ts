@@ -22,6 +22,7 @@ export class TeacherHelperComponent implements OnInit {
   teacherSetting: any;
   settingList: any;
   objectKeys = Object.keys;
+  checkSummary ;
 
   constructor(
     private dsa: DSAService,
