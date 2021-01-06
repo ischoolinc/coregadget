@@ -58,11 +58,6 @@ export class MainComponent implements OnInit {
   //開啟學生清單介面
   async openSchedule(schedule: Schedule) {
 
-    // await this.alert.json(suggest)
-    //   .afterClosed()
-    //   .toPromise();
-    //console.log(schedule);
-
     const md1 = schedule.ClassID ? 'Class' : 'Course';
     const md2 = schedule.ClassID ? schedule.ClassID : schedule.CourseID;
     const md3 = schedule.Period;
@@ -73,7 +68,6 @@ export class MainComponent implements OnInit {
 
   //開啟節次點名介面
   async openPicker(course: CourseConf) {
-    // console.log(course);
     this.dialog.open(PeriodChooserComponent, {
       data: { course: course, period: this.conf.PeriodConf },
     });
@@ -90,7 +84,6 @@ export class MainComponent implements OnInit {
 
   //開啟設定小幫手畫面
   async openTeacherHelper(course: CourseConf){
-
     this.router.navigate(['/teacher-helper',course.CourseID,course.CourseName]);
   }
 }
