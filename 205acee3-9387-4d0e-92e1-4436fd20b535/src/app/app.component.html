@@ -1,1 +1,32 @@
-<p>moe works!</p>
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer #drawer class="example-sidenav" mode="side" opened disableClose>
+    <mat-form-field appearance="fill">
+      <mat-label>學年度</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let food of foods" [value]="food.value">
+          {{food.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-selection-list #shoes [multiple]="false">
+      <mat-list-option *ngFor="let shoe of typesOfShoes" [value]="shoe">
+        {{shoe}}
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-drawer>
+
+  <div class="container">
+    <mat-tab-group mat-align-tabs="start">
+      <mat-tab label="課程規劃內容">
+
+        <p>
+          Option selected: {{shoes.selectedOptions.selected[0]?.value}}
+        </p>
+
+      </mat-tab>
+      <mat-tab label="課程計劃平臺代碼表設定">Content 2</mat-tab>
+    </mat-tab-group>
+  </div>
+
+</mat-drawer-container>
