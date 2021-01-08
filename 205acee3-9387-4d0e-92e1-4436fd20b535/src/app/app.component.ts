@@ -4,10 +4,31 @@ export interface Section {
   name: string;
   updated: Date;
 }
-interface Food {
+
+export interface Food {
   value: string;
   viewValue: string;
 }
+
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
+
+const ELEMENT_DATA: PeriodicElement[] = [
+  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
+  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
+  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
+  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
+  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
+  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
+  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
+  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
+  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+];
 
 @Component({
   selector: 'app-root',
@@ -15,6 +36,9 @@ interface Food {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'course_code', 'action'];
+  dataSource = ELEMENT_DATA;
 
   notes: Section[] = [
     {
@@ -30,8 +54,14 @@ export class AppComponent {
   foods: Food[] = [
     {value: 'steak-0', viewValue: '107'},
     {value: 'pizza-1', viewValue: '108'},
-    {value: 'tacos-2', viewValue: '109'}
+    {value: 'tacos-2', viewValue: '109'},
+    {value: 'tacos-3', viewValue: '不分學年度'}
   ];
 
-  typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
+  typesOfShoes: string[] = [
+    '108學年度資料處理科學程',
+    '98學年度應用外語科日文組課程規劃',
+    '108設計科技學程不分班群',
+    '108學術自然學程不分班群',
+    '108應用英語學程不分班群'];
 }
