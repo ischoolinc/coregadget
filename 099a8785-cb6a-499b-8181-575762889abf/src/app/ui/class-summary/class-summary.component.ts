@@ -1,7 +1,9 @@
+import { GadgetService } from './../../dal/gadget.service';
 import { classIdStudents, ClassInfo, DisciplineService, parseXmlDiscipline, SemesterInfo, StudentDisciplineDetail, StudentDisciplineStatistics } from './../../dal/discipline.service';
 import * as node2json from 'nodexml';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import FileSaver from 'file-saver';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-class-summary',
@@ -50,12 +52,36 @@ export class ClassSummaryComponent implements OnInit {
    * 查無學年度學期會鎖定下拉式窗格
    */
   semestersLocked = false;
+  /**
+   *
+   *
+   * @memberof ClassSummaryComponent
+   */
+
+
+  /**
+   *
+   * 學制是否為高中 用來判斷 是否要顯示 "留校察看"
+   * @type {boolean}
+   * @memberof ClassSummaryComponent
+   */
+  isHeightSchool : boolean = true  ;
+
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
   @ViewChild('semester') semester: ElementRef<HTMLSelectElement>;
 
-  constructor(private disciplineService: DisciplineService) { }
+  constructor(private disciplineService: DisciplineService
+    ,private http: HttpClient) { }
 
   async ngOnInit(): Promise<void> {
+    // 0. 取得學制 = "高中" OR "國中"
+    this.isHeightSchool = true;
+    await this.disciplineService.loadSchoolType() ;
+    // console.log("3", this.disciplineService.schoolType);
+
+    this.isHeightSchool = this.disciplineService.schoolType == "高中" ;
+    // console.log("isHeightSchool",this.disciplineService.schoolType);
+
     // 1. get my classes
     await this.queryClasses();
 

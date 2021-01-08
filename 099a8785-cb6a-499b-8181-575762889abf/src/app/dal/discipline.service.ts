@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { promise } from 'protractor';
 import { ContractService } from './contract.service';
 
 @Injectable({
@@ -9,9 +11,38 @@ export class DisciplineService {
   selectedStudentID: string;
   selectedSeatNum: string;
   selectedName: string;
+  schoolType:string ;
 
-  constructor(private contractService: ContractService) { }
 
+   constructor(
+      private contractService: ContractService
+      ,private http:HttpClient){
+    //取得學制
+    // this.loadSchoolType();
+  }
+
+  /**
+   * 取得 學制
+   * @memberof DisciplineService
+   */
+  async loadSchoolType() {
+
+    let schoolType = '高中'; // 預設值為"高中" 如果沒有預設值
+    let dsnsName = await gadget.getApplication().accessPoint;
+    let url = `https://dsns.ischool.com.tw/campusman.ischool.com.tw/config.public/GetSchoolList?body=%3CCondition%3E%3CDsns%3E${dsnsName}%3C/Dsns%3E%3C/Condition%3E&rsptype=json`;
+    try {
+
+      const response = await this.http.get<any>(url, { responseType: 'json' }).toPromise();
+      schoolType = response.Response.School.Type;
+      console.log("asign", response.Response.School.Type);
+      this.schoolType = schoolType;
+      console.log("1", this.schoolType);
+    } catch (err) {
+      console.log("err: \n", err);
+      alert("取得學制發生錯誤!");
+    }
+    // console.log("2", this.schoolType);
+  }
 
   // 取得班級列表
   async getMyClasses() {
