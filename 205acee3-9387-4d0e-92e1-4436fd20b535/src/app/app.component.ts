@@ -1,3 +1,4 @@
+import { GadgetService } from './gadget.service';
 import { Component, OnInit } from '@angular/core';
 import { Jsonx } from '@1campus/jsonx';
 
@@ -37,6 +38,11 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  constructor(
+    private gadget: GadgetService
+  ) {}
+
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'course_code', 'action'];
   dataSource = ELEMENT_DATA;
 
@@ -65,7 +71,17 @@ export class AppComponent implements OnInit {
     '學術自然學程不分班群',
     '應用英語學程不分班群'];
 
-    ngOnInit(): void {
+    schoolInfo: any;
+
+    async ngOnInit() {
+
+      const contract = await this.gadget.getContract('basic.public');
+
+      // 呼叫 service。
+      this.schoolInfo = await contract.send('beta.GetSystemConfig', {
+        Name: '學校資訊'
+      });
+
       const jx = Jsonx.parse('<root><child val="1">text</child></root>');
 
       console.log(jx.child('root', 'child').text);
