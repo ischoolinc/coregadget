@@ -15,7 +15,7 @@ export interface ExamScoreRec {
     seat_no: string;
 
     /** 取得學分 */
-    ge_credit: string;
+    get_cedit: string;
 
     /** 學分 */
     credit: string;

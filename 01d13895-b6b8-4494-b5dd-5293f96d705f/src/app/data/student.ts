@@ -35,6 +35,8 @@ export interface StudentRec {
         /** 總分(原始) */ 
         ori_examScore_total?: number;
 
+        rank_name?: string;
+
 
     // /** 系統編號 */
     // id: number;
