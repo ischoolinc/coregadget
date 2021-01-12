@@ -23,7 +23,14 @@ export class GadgetService {
       });
     });
   }
+   /**
+   * 離開 Gadget。
+   */
+  public onLeave(callback: () => string): void {
+    gadget.onLeave(callback);
+  } 
 }
+
 
 /**
  * 代表已連接的 Contract。

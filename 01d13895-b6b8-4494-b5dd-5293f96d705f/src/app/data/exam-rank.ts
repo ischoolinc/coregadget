@@ -27,4 +27,32 @@ export interface ExamRankRec {
     level_lt10?: string;
 }
 
+export interface SubScoreRankRec {
+    /** 學生UID */
+    ref_student_id: string;
+
+    /** 分項項目（學業、實習科目等） */
+    item_name?: string;
+
+    /** 分數及排名類型（最終or原始） */
+    item_type?: string;
+
+    /** 排名母群（最終or原始） */
+    rank_type?: string;
+
+    /** 排名母群類型（最終or原始） */
+    rank_name?: string;
+
+    /** 排名 */
+    rank?: string;
+
+    /** 分數 */
+    score?: string;
+
+    /** 百分比（先拿，後續可能會用到）*/
+    percentile?: string;
+
+    /** PR值（先拿，後續可能會用到）*/
+    pr?: string;
+}
 

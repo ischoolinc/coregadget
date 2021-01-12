@@ -32,7 +32,7 @@
                     <th style="width:6%;">大過</th>
                     <th style="width:6%;">小過</th>
                     <th style="width:6%;">警告</th>
-                    <th style="width:6%;">留校察看</th>
+                    <th *ngIf=" this.schoolType=='高中'"  style="width:6%;">留校察看</th>
                     <th style="width:20%">原因</th>
                     <th style="width:6%">銷過日期</th>
                     <th style="width:20%">銷過原因</th>
@@ -55,11 +55,11 @@
                     <td data-th="大過" >{{detail.majorDemerit}}</td>
                     <td data-th="小過" >{{detail.minorDemerit}}</td>
                     <td data-th="警告" >{{detail.admonition}}</td>
-                    <td data-th="留校察看" >{{detail.detention}}</td>
+                    <td *ngIf=" this.schoolType=='高中'" data-th="留校察看" >{{detail.detention}}</td>
                     <td data-th="原因" >{{detail.reason}}</td>
                     <td data-th="銷過日期" >{{detail.delNegligenceDate}}</td>
                     <td data-th="銷過原因" >{{detail.delNegligenceReason}}</td>
-                    <td data-th="備註"></td>
+                    <td data-th="備註">{{detail.remark}}</td>
                 </tr>
             </tbody>
         </table>

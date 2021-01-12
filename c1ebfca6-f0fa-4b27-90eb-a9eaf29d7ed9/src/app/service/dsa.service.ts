@@ -1,6 +1,7 @@
 import { Contract } from './gadget.service';
 import { Injectable } from '@angular/core';
 import { GadgetService } from './gadget.service';
+import { RollCallRateDenominator } from '../pages/vo';
 
 
 @Injectable()
@@ -201,6 +202,38 @@ export class DSAService {
 
     return teacherSetting;
   }
+
+  // 依班級 ID get 出席率母數
+  public async getAbsenRateDenominator(courseID :string)  {
+    
+    // let result : RollCallRateDenominator  = new RollCallRateDenominator ();
+    let result :RollCallRateDenominator ;
+    try{
+      await this.ready;
+      const rsp = await this.contract.send('GetAbsenRateDenominatorbyCourseID',{CourseID:courseID});
+      result = rsp.RateSetting ;
+    //  result.IsUseWeeks=rsp.RateSetting.IsUseWeeks;
+  
+    }catch(ex)
+    {
+      alert("取得課程出席率母數發生錯誤: \n"+ex);
+    }
+    return  result;
+  }
+
+
+/**
+ *
+ * 取得出席率母數是依【實際點名次數】還是【上課週數*節數】
+ * @memberof DSAService
+ */
+async getAbsenRateDenominatorDepen() {
+  let  isUseWeekFromCourse :boolean ;
+  const rsp = await this.contract.send('GetAbsenRateDenominaton',{});
+  isUseWeekFromCourse = rsp.RateSetting.IsUseWeeks =='true';
+  // console.log(" rsp.RateSetting.IsUseWeeks =='true';"  ,rsp.RateSetting.IsUseWeeks)
+  return isUseWeekFromCourse
+}
 
   //取得出席率
   public async getAbsenceRate(courseId: string) {

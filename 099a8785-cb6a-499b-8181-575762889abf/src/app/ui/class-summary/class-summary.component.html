@@ -5,8 +5,6 @@
               <li class="breadcrumb-item active" aria-current="page">班級獎懲</li>
           </ol>
       </nav>
-
-
       <div class="d-flex flex-column flex-sm-row mb-3">
         <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
           <mat-label>選擇班級</mat-label>
@@ -55,7 +53,7 @@
                       <th style="width: 10%;">大過</th>
                       <th style="width: 10%;">小過</th>
                       <th style="width: 10%;">警告</th>
-                      <th style="width: 10%;">留校察看</th>
+                      <th *ngIf="isHeightSchool" style="width: 10%;">留校察看</th>
                   </tr>
               </thead>
               <tbody *ngFor="let eachStudent of this.getArray();">
@@ -73,7 +71,8 @@
                       <td data-th="大過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.A)}}</td>
                       <td data-th="小過" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.B)}}</td>
                       <td data-th="警告" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{this.checkMerit(eachStudent[1].demerit.C)}}</td>
-                      <td data-th="留校察看" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].detention}}</td>
+
+                      <td *ngIf="isHeightSchool" data-th="留校察看" routerLink="student-detail" (click)="nextPage(eachStudent[1])">{{eachStudent[1].detention}}</td>
                   </tr>
               </tbody>
           </table>

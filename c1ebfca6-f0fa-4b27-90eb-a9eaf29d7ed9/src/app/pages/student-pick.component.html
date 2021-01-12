@@ -27,8 +27,9 @@
 
   <!--  -->
   <ng-template #elseTemplate>
-    <div class="d-flex flex-column-reverse flex-sm-row mb-3">
-      <div class="btn-group dropdown mr-auto">
+    <div class="d-flex flex-column-reverse flex-sm-row mb-3 justify-content-between">
+      <div>
+      <div class="btn-group dropdown ">
         <button [matMenuTriggerFor]="menu"
                 type="button"
                 class="btn btn-dark dropdown-toggle"
@@ -37,19 +38,26 @@
                 aria-expanded="false">
           <span *ngIf="!selectedAbsence">選擇假別</span>
           <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
+      
         </button>
+       
         <mat-menu #menu="matMenu">
           <div *ngIf="!periodConf">loading...</div>
           <button mat-menu-item
                   *ngFor="let abb of periodConf?.Absence"
                   (click)="selectedAbsenceItem(abb)">{{abb.Name}}</button>
         </mat-menu>
+    
       </div>
-      <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
-      <ng-container [ngTemplateOutlet]="save"></ng-container>
+        <span *ngIf=" this.groupInfo.type=='Course'" class = "m-2 p-2" style="color: #ff3333; margin :auto"> 
+          {{explainMessage}}
+        </span>
     </div>
-
-
+      <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
+      <div class="float-right">
+        <ng-container  [ngTemplateOutlet]="save"></ng-container>
+      </div>
+    </div>
     <!-- 學生資料(no photo)-->
     <div class="row mt-3 mt-lg-1"
          *ngIf="!showPhoto">
@@ -101,7 +109,8 @@
               {{getAttendanceText(student)}}</div>
             <div class="card-body py-2 text-truncate w-100">
               <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate">{{student.data?.Name}}</strong>
+                <!-- <strong class="mb-0 text-truncate" inhtml>{{student.data?.Name}}</strong> -->
+                <strong class="mb-0 text-truncate" [innerHtml]="student.data?.Name"></strong>
                 <div class="ml-auto"
                      *ngIf="student.data?.AbsenceRate"
                      [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
@@ -122,11 +131,16 @@
       <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
       <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
+   
   </ng-template>
 
-  <ng-template #save>
-    <button (click)="saveRollCall()"
-            type="button"
-            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary +')': '儲存'}}</button>
+  <ng-template #save >
+<div class="float-right">
+
+  <button (click)="saveRollCall()"
+          type="button"
+          class="btn btn-lg btn-info">{{checkSummary? '送出 (' + checkSummary +')': '全到 (送出)'}}</button>
+
+</div>
   </ng-template>
 </div>

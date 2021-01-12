@@ -1,7 +1,7 @@
 import { ScoreRec, } from './data/score';
 import { GadgetService } from './gadget.service';
 import { Component, OnInit, NgZone, Inject, TemplateRef} from '@angular/core';
-import { StudentRec, ClassRec ,ExamScoreRec, MatrixRec, ExamRec, ExamRankRec, SSRec, ScoreRankInfo } from './data';
+import { StudentRec, ClassRec ,ExamScoreRec, MatrixRec, ExamRec, ExamRankRec, SSRec, ScoreRankInfo, SubScoreRankRec } from './data';
 import NP from 'number-precision';
 import { avgPipe } from './pipes/avgPipe.pipe';
 import { setTheme } from 'ngx-bootstrap/utils';
@@ -15,6 +15,14 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
   ]
 })
 export class AppComponent implements OnInit {
+  /** 開發日誌：
+   * 後續可考量，最一開始先判斷指定班級該學期學年是否有計算過固定排名！
+   * 最一開始應該要先考慮哪些必要資料會影響資料的呈現跟組成（如科目，分項項目），要先判斷並依結果控制後續呼叫Service的條件。
+   * 學期成績分數（含分項）均讀取「學期成績」內的資料
+   * 
+   * 
+   *  */ 
+
   // 運作基本參數
   isFirstLoading: boolean;
   isLoading: boolean; // 讓html可以依此變數來調整畫面呈現
@@ -27,6 +35,7 @@ export class AppComponent implements OnInit {
   // 學年度學期相關變數
   curSS: SSRec = {} as SSRec;
   ssList: SSRec[];
+  noneSS = false;
 
 
   initScorType: ScoreRec = {
@@ -38,18 +47,25 @@ export class AppComponent implements OnInit {
 
   // 排名類型相關變數
   matrixList = [];  // 排名母群存放的陣列
-  curMatrix: String;
+  curMatrix: any;
   rankType = [];
   stuExamRank :ScoreRankInfo[];
   oriSemesSubRank = []; // 原先評估要把排行資料依排行類型做分類，分別組成四個陣列，但現行先決定直接用原資料來做吃料處理
-
+  noneRank = false; // 作為判別有無計算過固定排名，沒有(true)則排名及五標級距均不顯示 *切換選項的時候需重置
+  // subItem = ['學業','專業科目','實習科目']; // 存放學期分項項目
+  subItem = ['學業','專業科目','實習科目','體育','健康與護理','國防通識'];
+  subItem2 = ['學業分項','專業科目分項','實習科目分項','體育分項','健康與護理分項','國防通識分項'];
   // 平均類型相關變數
   avgTypeList = ['算術平均','加權平均'];
   curAvgType = this.avgTypeList[0];
   //curAvgTypeForServer = '平均'; //因為資料庫中算術平均儲存的字串為'平均'
   
   // 科目相關變數
-  subjectList: string[]
+  subjectList: string[];
+  subjectSubjList: string[];
+  subjectEntryList: string[];
+  noneSubj = false; // *切換選項的時候需重置
+  subjectList2: string[]; // 顯示用的科目清單（裡面只存放學期成績取得的科目）
 
   /// 學生清單相關變數
   studentList: StudentRec[];
@@ -66,19 +82,21 @@ export class AppComponent implements OnInit {
   ];
 
   rangeList = [
-    {key: 'level_gte100', value: '>= 100'}
-    , {key: 'level_90', value: '>= 90, < 100'}
-    , {key: 'level_80', value: '>= 80, < 90'}
-    , {key: 'level_70', value: '>= 70, < 80'}
-    , {key: 'level_60', value: '>= 60, < 70'}
-    , {key: 'level_50', value: '>= 50, < 60'}
-    , {key: 'level_40', value: '>= 40, < 50'}
-    , {key: 'level_30', value: '>= 30, < 40'}
-    , {key: 'level_20', value: '>= 20, < 30'}
-    , {key: 'level_10', value: '>= 10, < 20'}
+    {key: 'level_gte100', value: '≥ 100'}
+    , {key: 'level_90', value: '≥ 90, < 100'}
+    , {key: 'level_80', value: '≥ 80, < 90'}
+    , {key: 'level_70', value: '≥ 70, < 80'}
+    , {key: 'level_60', value: '≥ 60, < 70'}
+    , {key: 'level_50', value: '≥ 50, < 60'}
+    , {key: 'level_40', value: '≥ 40, < 50'}
+    , {key: 'level_30', value: '≥ 30, < 40'}
+    , {key: 'level_20', value: '≥ 20, < 30'}
+    , {key: 'level_10', value: '≥ 10, < 20'}
     , {key: 'level_lt10', value: '< 10'}
   ]
 
+  subSubjItemList = [];
+  i = 0
 
   constructor(
     private gadget: GadgetService,
@@ -89,6 +107,14 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+    
+    // this.i = this.i + 1
+    // this.gadget.onLeave(() => {
+    //   if (this.i > 1) {
+    //     return '您尚未儲存選課結果，確認要離開此網頁嗎?';
+    //   }
+    //   return '';
+    // });
     NP.enableBoundaryChecking(false); //number-precision此套件的設定
     this.isFirstLoading = true;
     
@@ -96,16 +122,26 @@ export class AppComponent implements OnInit {
       this.contract = await this.gadget.getContract('ischool.exam.teacher');
       await this.getMyClass();
       await this.GetSemsSubjSS();
-      await this.GetClassStudent();
-      await this.GetSubject();
-      await this.GetStuRankType();
-      await this.GetStuExamRank();
-      await this.GetStuSemsScore();
-      await this.GetRangeMaterix();
+      if(!this.noneSS){
+        await this.GetClassStudent();
+        await this.GetSubject2();
+        await this.GetSubItem();
+        if(this.noneSubj === false){
+          await this.GetStuRankType();
+          await this.GetStuExamRank();
+          await this.GetStuSemsScore();
+          await this.GetSemsEntryScore();
+          if(this.noneRank === false){
+            await this.GetSubScoreRank();
+            await this.GetRangeMaterix();
+          }
+        }
+      }
       // await this.getRange();
       //await this.GetExamRankMatrix();
-
-
+      console.log(this.subjectSubjList);
+        console.log(this.studentList);
+        console.log(this.examMatrix2);
     }catch(err){
       console.log(err);
     }finally{
@@ -136,11 +172,24 @@ export class AppComponent implements OnInit {
       const rsp = await this.contract.send('GetSemsScoreSS',{
         ClassID: this.curClass.id
       });
-      this.ssList = [].concat(rsp.SchoolYearSemester || []).map((data:SSRec) => {
-          data.content = `${data.school_year}學年度${data.semester}學期`
-          return data;
-      });
-      this.curSS = this.ssList[0];
+      if(rsp.SchoolYearSemester){
+        this.ssList = [].concat(rsp.SchoolYearSemester || []).map((data:SSRec) => {
+            data.content = `${data.school_year}學年度${data.semester}學期`
+            return data;
+        });
+        this.curSS = this.ssList[0];
+      } else {
+        this.noneSS = true;
+        this.ssList[0]= {
+          content: '沒有學年度學期',
+          school_year: 0,
+          semester: 0,
+        }
+        this.matrixList = ['沒有排名母群'];
+        this.curMatrix = this.matrixList[0];
+        this.curSS = this.ssList[0];
+      }
+      console.log(this.ssList);
     } catch (error) {
       console.log('取得學年度學期錯誤' + error.message);
     }
@@ -164,55 +213,270 @@ export class AppComponent implements OnInit {
     //console.log(this.studentList);
   }
 
-/** 取得科目清單 */
-async GetSubject(){
+// /** 取得科目清單 */
+// async GetSubject(){
 
+//   this.subjectList = [];
+//   try {
+//     const rsp = await this.contract.send('GetSHSubject', {
+//       ClassID: this.curClass.id
+//       , SchoolYear: this.curSS.school_year
+//       , Semester: this.curSS.semester
+//     });
+//     this.subjectList = [].concat(rsp.SemesSubj || []).map((subj) => {
+//       return subj.subject;
+//     });
+//   } catch (err) {
+//     console.log('建立學期科目清單失敗' + err.message);
+//     return
+//   }
+//   //console.log(this.studentList);
+// }
+
+/** 
+ *  取得科目清單(從科目對照表)
+ *  分別從學期成績紀錄、固定排名結果及科目對照表取得各一份科目清單
+ *  排名來的清單：主要取得實際有的科目
+ *  科目對照表來的清單：取得科目清單順序
+ *  兩份組成：科目清單順序且實際有排名的科目清單
+ *  備註：要考慮實際有的科目但沒有存在科目對照表內
+ */
+async GetSubject2(){
   this.subjectList = [];
+  this.subjectList2 = [];
+  let subjFromRank = [];
+  let subjFromList = [];
+  let extraSubj = [];
+  let noneSubjList = false;
+  let noneSubj = false;
+  let temp1 = [];
+  let temp2 = [];
+  let temp3 = [];
+  let temp4 = [];
+  let temp5 = [];
   try {
-    const rsp = await this.contract.send('GetSHSubject', {
+    const rsp2 = await this.contract.send('GetSHSubjFromRank', {
       ClassID: this.curClass.id
       , SchoolYear: this.curSS.school_year
       , Semester: this.curSS.semester
     });
-    this.subjectList = [].concat(rsp.SemesSubj || []).map((subj) => {
+    if(rsp2.SemesSubj){ // 如果有計算固定排名
+      subjFromRank = [].concat(rsp2.SemesSubj || []).map((subj) => {
+        return subj.item_name;
+      });
+    } else if (rsp2.SemesSubjScore){ // 沒有有計算固定排名，則從學期成績取得科目清單
+      subjFromRank = [].concat(rsp2.SemesSubjScore || []).map((subj) => {
+        return subj.subject;
+      });
+    } else {
+      noneSubj = true // 學期成績跟排名都沒有科目
+    }
+
+    // 取得「學期成績」跟「排名」來的科目超集合
+    temp1 = [].concat(rsp2.SemesSubj || []);
+    temp2 = [].concat(rsp2.SemesSubjScore || []);
+    temp5 = [].concat(rsp2.SemesSubjScore || []).map((subj) => {
       return subj.subject;
     });
+    temp1.forEach(t1 => {
+      const index = temp2.findIndex(t2 => t2.subject === t1.item_name);
+      if(index > -1){
+        temp3.push(t1.item_name);
+      } else if (index <= -1){
+        temp4.push(t1.item_name);
+      }
+    });
+    temp3 = temp3.concat(temp4);
+    temp4 = [];
+    temp2.forEach(t2 => {
+      const index = temp3.findIndex(t3 => t3 === t2.subject);
+      if(index <= -1) {
+        temp4.push(t2.subject);
+      }
+    });
+    temp3 = temp3.concat(temp4);
+    console.log(temp3);
+    subjFromRank = temp3;
   } catch (err) {
-    console.log('建立學期科目清單失敗' + err.message);
+    console.log('建立學期科目清單失敗(從固定排名取得)' + err.message);
     return
   }
-  //console.log(this.studentList);
+  extraSubj = subjFromRank;
+  try {
+    const rsp = await this.contract.send('GetSHSubjList', {
+      ClassID: this.curClass.id
+      , SchoolYear: this.curSS.school_year
+      , Semester: this.curSS.semester
+    });
+    if(rsp.SemesSubj) {
+      subjFromList = [].concat(rsp.SemesSubj || []).map((subj) => {
+        return subj.subject;
+      });
+    } else {
+      noneSubjList = true
+    };
+  } catch (err) {
+    console.log('建立學期科目清單失敗(從科目對照表取得)' + err.message);
+    return
+  }
+  // 「固定排名」跟「學期成績」超集合取得的科目清單，依照科目對照表來做整理 
+  if(noneSubj === false && noneSubjList === false ){ // 有計算排名且有科目對照表
+    subjFromList.forEach(sfl => {
+      subjFromRank.forEach(sfr => {
+        if(sfl === sfr) {
+          this.subjectList.push(sfl);
+        } 
+      });
+    });
+  
+    subjFromRank.forEach(sfl => {
+      let index: number;
+        index = subjFromList.indexOf(sfl);
+        if(index === -1){
+          this.subjectList.push(sfl);
+        }
+      });
+  } else if(noneSubj === false && noneSubjList === true ){ // 有計算排名但沒有科目對照表
+    this.subjectList = subjFromRank;
+  } else if(noneSubj === true && noneSubjList === false ){ // 沒有計算排名但有科目對照表
+    this.subjectList = subjFromList;
+  } else { // 沒有計算排名也沒有科目對照表，無科目呈現。
+    this.subjectList.push('沒有科目');
+    this.noneSubj = true;
+  }
+
+  // 「固定排名」，依照科目對照表來做整理，作為畫面顯示
+  if(noneSubj === false && noneSubjList === false ){ // 有計算排名且有科目對照表
+    subjFromList.forEach(sfl => {
+      temp5.forEach(sfr => {
+        if(sfl === sfr) {
+          this.subjectList2.push(sfl);
+        } 
+      });
+    });
+  
+    temp5.forEach(sfl => {
+      let index: number;
+        index = subjFromList.indexOf(sfl);
+        if(index === -1){
+          this.subjectList2.push(sfl);
+        }
+      });
+  } else if(noneSubj === false && noneSubjList === true ){ // 有計算排名但沒有科目對照表
+    this.subjectList2 = temp5;
+  } else if(noneSubj === true && noneSubjList === false ){ // 沒有計算排名但有科目對照表
+    this.subjectList2 = subjFromList;
+  } else { // 沒有計算排名也沒有科目對照表，無科目呈現。
+    this.subjectList2.push('沒有科目');
+    this.noneSubj = true;
+  }
+  let subItem = ['學業分項','專業科目分項','實習科目分項','體育分項','健康與護理分項','國防通識分項'];
+  this.subjectSubjList = this.subjectList;
+  this.subjectList = this.subjectList.concat(subItem);
+  console.log(this.subjectList);
+  console.log(this.subjectList2);
+  console.log(this.subjectSubjList);
 }
+
+/** 取得學期分項項目清單
+ * 
+ * @param ClassID
+ * @param SchoolYear
+ * @param Semester
+*/
+async GetSubItem() {
+  try {
+    const rsp = await this.contract.send('GetSHSemeSubItem', {
+      ClassID: this.curClass.id
+      , SchoolYear: this.curSS.school_year
+      , Semester: this.curSS.semester
+    });
+    if(rsp.SemesSubItem){
+      this.subItem = [];
+      [].concat(rsp.SemesSubItem.forEach(item => {
+        this.subItem.push(item.item_name);
+      }));
+    };
+  } catch (error) {
+    console.log('取得學期分項項目清單錯誤');
+    console.log(error);
+  }
+
+}
+
+/** 取得學期分項分數及排名
+ * 
+ * @param ClassID
+ * @param SchoolYear
+ * @param Semester
+*/
+async GetSubScoreRank() {
+  try {
+    const rsp = await this.contract.send('GetSHSubScoreRank', {
+      ClassID: this.curClass.id
+      , SchoolYear: this.curSS.school_year
+      , Semester: this.curSS.semester
+    });
+    if(rsp.SubScoreRank){
+      this.studentList.forEach((stu: StudentRec) => {
+        rsp.SubScoreRank.forEach((i: SubScoreRankRec) => {
+          if(stu.id === i.ref_student_id) {
+            // 例：stu[學業/分項成績][年排名][學業][分數]
+            let tempText = '';
+            tempText = i.item_name + '分項';
+            stu[i.item_type][i.rank_type][tempText]['分數'] = i.score;
+            stu[i.item_type][i.rank_type][tempText]['排名'] = i.rank;
+            stu[i.item_type][i.rank_type][tempText]['類別'] = i.rank_name;
+          }
+        });
+      });
+    } 
+    
+  } catch (error) {
+    console.log('取得取得學期分項分數及排名失敗');
+    console.log(error);
+  }
+}
+
 
 /** 取得學期成績排名類型,排名母群類型
  * 排名類型：{學期科目/學期分項/學期科目(原始)/學期分項(原始)}
- * 排名母群類型：{班排名/年排名/科排名/類別排名}
+ * 排名母群類型：{班排名/年排名/科排名/類別排名} 
  * 
  * @param ClassID
  * @param SchoolYear
  * @param Semester
 */
 async GetStuRankType() {
+  let RankGTypeTemp = ['班排名','年排名','科排名','類別1排名','類別2排名'];
   try {
     const rsp = await this.contract.send('GetSHRankType', {
       ClassID: this.curClass.id
       , SchoolYear: this.curSS.school_year
       , Semester: this.curSS.semester
     });
-      console.log(rsp);
       this.matrixList = [];
       this.rankType = [];
       //建立排名母群類型清單
-      rsp.RankGType.forEach(i => {
-        this.matrixList.push(i.rank_group_type);
-      });
+      if(!rsp.RankGType || !rsp.RankType){
+        this.matrixList = ['沒有排名'];
+        this.noneRank = true;
+      } else {
+        RankGTypeTemp.forEach(it => {
+          rsp.RankGType.forEach(i => {
+            if(it === i.rank_group_type){
+              this.matrixList.push(it);
+            }
+          });
+        });
+        
+        //建立排名類型清單
+        rsp.RankType.forEach(i => {
+          this.rankType.push(i.rank_type);
+        })
+      };
       this.curMatrix = this.matrixList[0];
-
-      //建立排名類型清單
-      rsp.RankType.forEach(i => {
-        this.rankType.push(i.rank_type);
-      })
-      console.log(this.rankType);
+      console.log(this.noneRank);
     } catch (error) {
       console.log('取得學期成績排名類型,排名母群類型' + error.message);
     }
@@ -232,39 +496,28 @@ async GetStuSemsScore() {
       , SchoolYear: this.curSS.school_year
       , Semester: this.curSS.semester
     });
-      console.log(rsp);
-
-      // [].concat(rsp.SemesScore || []).forEach((data: ExamScoreRec) => {
-      //   // 建立學期科目清單（之後應該要新增一支service來單純取得科目清單）
-      //   try{ 
-      //     this.buildSub(data.subject); 
-      //     console.log(this.subjectList);
-      //   } catch(err) { 
-      //     console.log('建立學期科目清單失敗' + err.message);
-      //   }
-      // });
-      // console.log(this.subjectList);
+    
       // 初始化級距清單
       this.initiRange();
+      // 建立學期科目清單
+      try{ 
+        this.buildstuSub();
+      } catch(err) { 
+        console.log('建立學期科目清單失敗' + err.message);
+      }
 
       [].concat(rsp.SemesScore || []).forEach((data: ExamScoreRec) => {
-          // 建立學期科目清單
-          try{ 
-            this.buildstuSub();
-          } catch(err) { 
-            console.log('建立學期科目清單失敗' + err.message);
-          }
           
           // 寫入各項成績
           try {
+            
             this.insertStuScore(data);
           } catch (error) {
             console.log('寫入各項成績失敗' + error.message);
+            console.log(error);
           }
         });
         this.insertStuRank();
-        console.log(this.studentList);
-        console.log(this.examMatrix);
   } catch (error) {
     console.log('取得成績失敗' + error.message);
   }
@@ -284,43 +537,131 @@ async GetStuExamRank() {
       , SchoolYear: this.curSS.school_year
       , Semester: this.curSS.semester
     });
-      console.log(rsp);
       this.stuExamRank = [].concat(rsp.SemesScore || []);
       this.oriSemesSubRank = [].concat(this.stuExamRank.filter(r => r.item_type === '學期/科目成績(原始)'));
     } catch (error) {
-      console.log('取得成績失敗' + error.message);
+      console.log('取得學期成績排名失敗' + error.message);
     }
   }
 
 
-async GetExamRankMatrix(){
+/** 取得分項成績（從學期成績來 not固定排名）
+ * 當沒有計算固定排名時，學期分項成績則取用此處獲得的成績
+ * @param ClassID
+ * @param SchoolYear
+ * @param Semester
+*/ 
+async GetSemsEntryScore() {
+  this.initiRange2();
+  let subItemAll = ['學業','專業科目','實習科目','體育','健康與護理','國防通識'];
+  try {
+    const rsp = await this.contract.send('GetSemsEntryScore', {
+      ClassID: this.curClass.id
+      , SchoolYear: this.curSS.school_year
+      , Semester: this.curSS.semester
+    });
+    console.log(rsp.SemsEntryScore);
+    if(rsp.SemsEntryScore){
+      [].concat(rsp.SemsEntryScore).forEach(ses =>{
+        this.studentList.forEach(stu =>{
+          if(stu.id === ses.student_id){
+              stu.subject['學業分項']['原始'] = ses['原始學業'] ? ses['原始學業'] : '--';
+              stu.subject['學業分項']['擇優'] = ses['學業'] ? ses['學業'] : '--';
+              stu.subject['專業科目分項']['原始'] = ses['原始專業科目'] ? ses['原始專業科目'] : '--';
+              stu.subject['專業科目分項']['擇優'] = ses['專業科目'] ? ses['專業科目'] : '--';
+              stu.subject['實習科目分項']['原始'] = ses['原始實習科目'] ? ses['原始實習科目'] : '--';
+              stu.subject['實習科目分項']['擇優'] = ses['實習科目'] ? ses['實習科目'] : '--';
+              stu.subject['體育分項']['原始'] = ses['原始體育'] ? ses['原始體育'] : '--';
+              stu.subject['體育分項']['擇優'] = ses['體育'] ? ses['體育'] : '--';
+              stu.subject['健康與護理分項']['原始'] = ses['原始健康與護理'] ? ses['原始健康與護理'] : '--';
+              stu.subject['健康與護理分項']['擇優'] = ses['健康與護理'] ? ses['健康與護理'] : '--';
+              stu.subject['國防通識分項']['原始'] = ses['原始國防通識'] ? ses['原始國防通識'] : '--';
+              stu.subject['國防通識分項']['擇優'] = ses['國防通識'] ? ses['國防通識'] : '--';
+          }
+        })
+      })
+    } else {
+      this.studentList.forEach(stu =>{
+            stu['學業分項']['原始'] = '--';
+            stu['學業分項']['擇優'] = '--';
+            stu['專業科目分項']['原始'] = '--';
+            stu['專業科目分項']['擇優'] = '--';
+            stu['實習科目分項']['原始'] = '--';
+            stu['實習科目分項']['擇優'] = '--';
+            stu['體育分項']['原始'] = '--';
+            stu['體育分項']['擇優'] = '--';
+            stu['健康與護理分項']['原始'] = '--';
+            stu['健康與護理分項']['擇優'] = '--';
+            stu['國防通識分項']['原始'] = '--';
+            stu['國防通識分項']['擇優'] = '--';
+        })
+      }
+    } catch (error) {
+      console.log('取得學期分項成績失敗' + error.message);
+    }
+  }
 
-}
-  // 設定類型function 區塊
+// async GetExamRankMatrix(){
 
+// }
   
+// 設定類型function 區塊 ↓↓↓
+
   async setClass(data:ClassRec){ // 用於設定班級，會影響學年度學期的資料內容
     this.isLoading = true;
     this.curClass = data;
-    await this.getMyClass();
-    await this.GetSemsSubjSS();
-    await this.GetClassStudent();
-    await this.GetSubject();
-    await this.GetStuRankType();
-    await this.GetStuExamRank();
-    await this.GetStuSemsScore();
-    await this.GetRangeMaterix();
+    this.noneRank = false;
+    this.noneSubj = false;
+    this.noneSS = false;
+    this.subItem = ['學業','專業科目','實習科目','體育','健康與護理','國防通識'];
+    this.matrixList = [];
+    this.subjectList2 = [];
+      await this.GetSemsSubjSS();
+      if(!this.noneSS){
+        await this.GetClassStudent();
+        await this.GetSubject2();
+        await this.GetSubItem();
+        if(this.noneSubj === false){
+          await this.GetStuRankType();
+          await this.GetStuExamRank();
+          await this.GetStuSemsScore();
+          await this.GetSemsEntryScore();
+          if(this.noneRank === false){
+            await this.GetSubScoreRank();
+            await this.GetRangeMaterix();
+          }
+        }
+      }
+      console.log(this.studentList);
+      console.log(this.subjectSubjList);
+      console.log(this.examMatrix2);
     this.isLoading = false;
   };
 
   async setSS(data: SSRec){ //用於設定學年度學期
     this.isLoading = true;
     this.curSS = data;
-    await this.GetSubject();
-    await this.GetStuRankType();
-    await this.GetStuExamRank();
-    await this.GetStuSemsScore();
-    await this.GetRangeMaterix();
+    this.noneRank = false;
+    this.noneSubj = false;
+    this.noneSS = false;
+    this.subItem = ['學業','專業科目','實習科目','體育','健康與護理','國防通識'];
+    this.matrixList = [];
+    this.subjectList2 = [];
+    await this.GetClassStudent();
+      await this.GetSubject2();
+      await this.GetSubItem();
+      if(this.noneSubj === false){
+        await this.GetStuRankType();
+        await this.GetStuExamRank();
+        await this.GetStuSemsScore();
+        await this.GetSemsEntryScore();
+        if(this.noneRank === false){
+          await this.GetSubScoreRank();
+          await this.GetRangeMaterix();
+        }
+      }
+      console.log(this.studentList);
+      console.log(this.examMatrix2);
     this.isLoading = false;
   }
 
@@ -339,6 +680,10 @@ async GetExamRankMatrix(){
       //this.curAvgTypeForServer = '加權平均';
     }
   };
+  // 設定類型function 區塊 ↑↑↑ 
+
+
+  // 資料處理類型function 區塊 ↓↓↓
 
   public buildSub (subject: string) {
     if (this.subjectList.find(sub => sub === subject) === undefined) {
@@ -350,8 +695,13 @@ async GetExamRankMatrix(){
   
   /** 建立學生擁有的科目 */
   public buildstuSub() {
-    
+    let type = ['原始','擇優'];
+    let scoreRank = ['分數','排名'];
+    let subItemAll = ['學業分項','專業科目分項','實習科目分項','體育分項','健康與護理分項','國防通識分項'];
+  
+    // 總分相關初始化
     this.studentList.forEach( stu => {
+      stu['rank_name'] = stu['rank_name'] ? stu['rank_name'] : '';
       stu['算術平均'] = stu['算術平均'] ? stu['算術平均'] : {};
       stu['加權平均'] = stu['加權平均'] ? stu['加權平均'] : {};
       stu['算術平均']['擇優'] = stu['算術平均']['擇優'] ? stu['算術平均']['擇優'] : '';
@@ -360,12 +710,38 @@ async GetExamRankMatrix(){
       stu['加權平均']['原始'] = stu['加權平均']['原始'] ? stu['加權平均']['原始'] : '';
       stu['學期/分項成績'] = stu['學期/分項成績'] ? stu['學期/分項成績'] : {}; // 預定塞入排名
       stu['學期/分項成績(原始)'] = stu['學期/分項成績(原始)'] ? stu['學期/分項成績(原始)'] : {}; // 預定塞入排名
-      
+      stu['類別1排名'] = stu['類別1排名'] ? stu['類別1排名'] : '';
+      stu['類別1排名'] = stu['類別1排名'] ? stu['類別1排名'] : '';
+      subItemAll.forEach(sb => {
+        stu[sb] = stu[sb] ? stu[sb] : {} ;
+        type.forEach(item => {
+          stu[sb][item] = stu[sb][item] ? stu[sb][item] : '--';
+        })
+      })
+      stu['score_tooltip'] = stu['score_tooltip'] ? stu['score_tooltip'] : '';
+
+      if(!this.noneRank) {
+      this.matrixList.forEach(item => { // 塞母群
+        stu['學期/分項成績'][item] = stu['學期/分項成績'][item] ? stu['學期/分項成績'][item] : {}; 
+        stu['學期/分項成績(原始)'][item] = stu['學期/分項成績(原始)'][item] ? stu['學期/分項成績(原始)'][item] : {}; 
+        this.subItem2.forEach(st => {
+          stu['學期/分項成績'][item][st] = stu['學期/分項成績'][item][st] ? stu['學期/分項成績'][item][st] : {}; 
+          stu['學期/分項成績(原始)'][item][st] = stu['學期/分項成績(原始)'][item][st] ? stu['學期/分項成績(原始)'][item][st] : {}; 
+            scoreRank.forEach(sr =>{
+              stu['學期/分項成績'][item][st][sr] = stu['學期/分項成績'][item][st][sr]  ? stu['學期/分項成績'][item][st][sr] : ''; 
+              stu['學期/分項成績(原始)'][item][st][sr]  = stu['學期/分項成績(原始)'][item][st][sr] ? stu['學期/分項成績(原始)'][item][st][sr]  : ''; 
+              });
+            });
+          
+        });
+      }
       // 在排名類型內放入排名母群
-      this.matrixList.forEach(m => {
-        stu['學期/分項成績'][m] = stu['學期/分項成績'][m] ? stu['學期/分項成績'][m] : '';
-        stu['學期/分項成績(原始)'][m] = stu['學期/分項成績(原始)'][m] ? stu['學期/分項成績(原始)'][m] : '';
-      });
+      // if(!this.noneRank) {
+      //   this.matrixList.forEach(m => {
+      //     stu['學期/分項成績'][m] = stu['學期/分項成績'][m] ? stu['學期/分項成績'][m] : '';
+      //     stu['學期/分項成績(原始)'][m] = stu['學期/分項成績(原始)'][m] ? stu['學期/分項成績(原始)'][m] : '';
+      //   });
+      // }
 
       // 新增擺放總分、加權總分、總學分數及科目總數(紀錄科目總數目的為過濾掉學分數為零的科目，不會列計平均時的分母)
       stu['credit'] = stu['credit'] ? stu['credit']: 0; // 總學分數
@@ -378,7 +754,6 @@ async GetExamRankMatrix(){
       // 新增處理平均所用的變數
       stu['score_decimal'] = stu['score_decimal'] ? stu['score_decimal'] : 0;
       stu['score_carry'] = stu['score_carry'] ? stu['score_carry'] : '';
-
       this.subjectList.forEach (sub => {
         stu.subject[sub] = stu.subject[sub] ? stu.subject[sub] : {};
         stu.subject[sub]['ori_score'] = stu.subject[sub]['ori_score'] ? stu.subject[sub]['ori_score'] : {};
@@ -392,24 +767,24 @@ async GetExamRankMatrix(){
         stu.subject[sub]['credit_avg'] = stu.subject[sub]['credit_avg'] ? stu.subject[sub]['credit_avg'] : '';
         stu.subject[sub]['學期/科目成績(原始)'] = stu.subject[sub]['學期/科目成績(原始)'] ? stu.subject[sub]['學期/科目成績(原始)'] : {}; // 預定塞入排名
         stu.subject[sub]['學期/科目成績'] = stu.subject[sub]['學期/科目成績'] ? stu.subject[sub]['學期/科目成績'] : {}; // 預定塞入排名
-        
-
-        this.matrixList.forEach(m => {
-          stu.subject[sub]['學期/科目成績'][m] = stu.subject[sub]['學期/科目成績'][m] ? stu.subject[sub]['學期/科目成績'][m] : '';
-          stu.subject[sub]['學期/科目成績(原始)'][m] = stu.subject[sub]['學期/科目成績(原始)'][m] ? stu.subject[sub]['學期/科目成績(原始)'][m] : '';
-        });
+        stu.subject[sub]['get_cedit'] = stu.subject[sub]['get_cedit'] ? stu.subject[sub]['get_cedit'] : false;
+        // 各科排名初始化
+        if(!this.noneRank){
+          this.matrixList.forEach(m => {
+            stu.subject[sub]['學期/科目成績'][m] = stu.subject[sub]['學期/科目成績'][m] ? stu.subject[sub]['學期/科目成績'][m] : '';
+            stu.subject[sub]['學期/科目成績(原始)'][m] = stu.subject[sub]['學期/科目成績(原始)'][m] ? stu.subject[sub]['學期/科目成績(原始)'][m] : '';
+          });
+        }
       });
     });
   };
   
   /** 將成績依照學生擁有的科目放入，並整理 */ 
   public insertStuScore(data: ExamScoreRec) {
-    // console.log(this.studentList);
     const index = this.studentList.findIndex((stu: StudentRec) => stu.id == data.student_id);
     if(index > -1){
       // 將各分數及分數狀態寫入清單，為了後續比較大小，還需額外紀錄成績是否存在（noneScore）
       //let doc = JSON.stringify(data.class_rating);
-      //console.log(doc);
       this.studentList[index].subject[data.subject]['ori_score'].score = data.ori_score ? data.ori_score : 0; // 原始成績
       this.studentList[index].subject[data.subject]['ori_score'].type = '原始成績';
       this.studentList[index].subject[data.subject]['ori_score'].symbol = 'O';
@@ -430,41 +805,47 @@ async GetExamRankMatrix(){
       this.studentList[index].subject[data.subject]['re_score'].type = '重修成績';
       this.studentList[index].subject[data.subject]['re_score'].symbol = 'R';
       this.studentList[index].subject[data.subject]['re_score'].noneScore = data.re_score ? true : false;
+      this.studentList[index].subject[data.subject]['score_tooltip'] = this.studentList[index].subject[data.subject]['score_tooltip'] ? this.studentList[index].subject[data.subject]['score_tooltip'] : '';
+      if(data.get_cedit === '是') {
+        this.studentList[index].subject[data.subject]['get_cedit'] = true;
+      } else {
+        this.studentList[index].subject[data.subject]['get_cedit'] = false;
+      }
       this.studentList[index].subject[data.subject]['finalScore'] = this.calfinalScore(data, index);
       
-      //統計級距
-      this.calRange(data.subject, '原始', data.ori_score);
-      this.calRange(data.subject, '擇優', this.studentList[index].subject[data.subject]['finalScore'][0].score);
+      // 統計級距 (手動計算，但之後改為直接取用固定排名的資料)
+      // this.calRange(data.subject, '原始', data.ori_score);
+      // this.calRange(data.subject, '擇優', this.studentList[index].subject[data.subject]['finalScore'][0].score);
 
       // 計算總分(含原始)、加權總分(含原始)、總學分數及科目總數
-      let score_decimal = 0;
-      let score_avg_calculating = 0;
-      let score_weight = 0;
-      let score_carry = ''
+      // let score_decimal = 0;
+      // let score_avg_calculating = 0;
+      // let score_weight = 0;
+      // let score_carry = ''
   
-      score_decimal = parseInt(data.score_decimal);
-      this.studentList[index]['score_decimal'] = score_decimal;
-      score_weight = parseInt(data.credit);
-      if(data.score_carry_45){
-        score_carry = '四捨五入'
-      } else if(data.score_carry_round_down) {
-        score_carry = '無條件捨去'
-      } else {
-        score_carry = '無條件進位'
-      }
-      this.studentList[index]['score_carry'] = score_carry;
+      // score_decimal = parseInt(data.score_decimal);
+      // this.studentList[index]['score_decimal'] = score_decimal;
+      // score_weight = parseInt(data.credit);
+      // if(data.score_carry_45){
+      //   score_carry = '四捨五入'
+      // } else if(data.score_carry_round_down) {
+      //   score_carry = '無條件捨去'
+      // } else {
+      //   score_carry = '無條件進位'
+      // }
+      // this.studentList[index]['score_carry'] = score_carry;
 
-      if(score_weight > 0){
-        this.studentList[index]['credit'] = this.studentList[index]['credit'] + score_weight;
-        this.studentList[index]['exam_total'] = this.studentList[index]['exam_total'] + 1;
-        this.studentList[index]['examScore_total'] = this.studentList[index]['examScore_total'] + parseInt(this.studentList[index].subject[data.subject]['finalScore'][0].score); // 總分(擇優)
-        this.studentList[index]['examWeighted_total'] = this.studentList[index]['examWeighted_total'] + NP.times(parseInt(this.studentList[index].subject[data.subject]['finalScore'][0].score), score_weight); // 加權總分(擇優)
-        this.studentList[index]['ori_examScore_total'] = this.studentList[index]['ori_examScore_total'] + parseInt(this.studentList[index].subject[data.subject]['ori_score'].score); // 加權總分(原始)
-        this.studentList[index]['ori_examWeighted_total'] = this.studentList[index]['ori_examWeighted_total'] + NP.times(parseInt(this.studentList[index].subject[data.subject]['ori_score'].score), score_weight); // 總分(原始)
-      }
+      // if(score_weight > 0){
+      //   this.studentList[index]['credit'] = this.studentList[index]['credit'] + score_weight;
+      //   this.studentList[index]['exam_total'] = this.studentList[index]['exam_total'] + 1;
+      //   this.studentList[index]['examScore_total'] = this.studentList[index]['examScore_total'] + parseInt(this.studentList[index].subject[data.subject]['finalScore'][0].score); // 總分(擇優)
+      //   this.studentList[index]['examWeighted_total'] = this.studentList[index]['examWeighted_total'] + NP.times(parseInt(this.studentList[index].subject[data.subject]['finalScore'][0].score), score_weight); // 加權總分(擇優)
+      //   this.studentList[index]['ori_examScore_total'] = this.studentList[index]['ori_examScore_total'] + parseInt(this.studentList[index].subject[data.subject]['ori_score'].score); // 加權總分(原始)
+      //   this.studentList[index]['ori_examWeighted_total'] = this.studentList[index]['ori_examWeighted_total'] + NP.times(parseInt(this.studentList[index].subject[data.subject]['ori_score'].score), score_weight); // 總分(原始)
+      // }
     }else {
-      console.log('成績資料內有學生，沒有存在目前班級學生清單中');
-      console.log(data);
+        console.log('成績資料內有學生，沒有存在目前班級學生清單中');
+        console.log(data);
     }
   };
 
@@ -472,6 +853,8 @@ async GetExamRankMatrix(){
   public calfinalScore(data: ExamScoreRec, index: number) {
     const count: ScoreRec[] = [];
     let finaltxt = '';
+    let scoreTooltip = ''
+
     count.push(
       this.studentList[index].subject[data.subject]['ori_score'],
       this.studentList[index].subject[data.subject]['adjustedScore'], 
@@ -487,10 +870,12 @@ async GetExamRankMatrix(){
     // 組成「其他成績」字串
     count.forEach((i, index) => {
       if(i.type !== '原始成績' && i.noneScore){
-        finaltxt = finaltxt + i.symbol + ':' + i.score + ';'
+        finaltxt = finaltxt + i.symbol + ':' + i.score + ';';
+        scoreTooltip = scoreTooltip + i.type + ':' + i.score + '; \n';
       }
     });
     this.studentList[index].subject[data.subject]['finalMark'] = finaltxt;
+    this.studentList[index].subject[data.subject]['score_tooltip'] = scoreTooltip;
     return count;
   }
 
@@ -520,10 +905,16 @@ async GetExamRankMatrix(){
   // 放入學生排行及計算平均
   public insertStuRank() {
     this.studentList.forEach((student: StudentRec) => {
-      this.calAvg(student); // 計算平均
+      // 計算平均 (佳樺決議拿掉)
+      // this.calAvg(student); 
         this.stuExamRank.forEach((ser: ScoreRankInfo) => {
           try {
-            if(ser.student_id === student.id && ser.item_type){
+            if(ser.student_id === student.id && ser.item_type && student.subject[ser.item_name]){
+              if(ser.rank_type === '類別1排名'){
+                student['類別1排名'] = ser.rank_name;
+              } else if(ser.rank_type === '類別2排名') {
+                student['類別2排名'] = ser.rank_name;
+              }
               switch (ser.item_type) {
                 case '學期/科目成績':
                   student.subject[ser.item_name]['學期/科目成績'][ser.rank_type] = ser.rank ? ser.rank : '--';
@@ -601,8 +992,6 @@ async GetExamRankMatrix(){
             })
           })
       })
-
-      console.log(this.examMatrix);
     };
 
     public calRange(subject: string, type: string, score: number) {
@@ -653,33 +1042,36 @@ async GetExamRankMatrix(){
 
     async GetRangeMaterix() {
       this.initiRange2();
-      console.log(this.examMatrix2);
       try {
         const rsp = await this.contract.send('GetSHRankMatrix', {
           ClassID: this.curClass.id
           , SchoolYear: this.curSS.school_year
           , Semester: this.curSS.semester
         });
-          console.log(rsp);
           [].concat(rsp.RankMatrix || []).forEach((data: ExamRankRec) => {
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['avg_top_25'] = data.avg_top_25 ? data.avg_top_25 : 0;
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['avg_top_50'] = data.avg_top_50 ? data.avg_top_50 : 0;
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['avg'] = data.avg ? data.avg : 0;
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['avg_bottom_50'] = data.avg_bottom_50 ? data.avg_bottom_50 : 0;
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['avg_bottom_25'] = data.avg_bottom_25 ? data.avg_bottom_25 : 0;
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_gte100'] = data.level_gte100 ? data.level_gte100 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_90'] = data.level_90 ? data.level_90 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_80'] = data.level_80 ? data.level_80 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_70'] = data.level_70 ? data.level_70 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_60'] = data.level_60 ? data.level_60 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_50'] = data.level_50 ? data.level_50 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_40'] = data.level_40 ? data.level_40 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_30'] = data.level_30 ? data.level_30 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_20'] = data.level_20 ? data.level_20 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_10'] = data.level_10 ? data.level_10 : '';
-            this.examMatrix2[data.item_name][data.rank_type][data.item_type]['level_lt10'] = data.level_lt10 ? data.level_lt10 : '';
+            let tempText = '';
+            if(data.item_type === '學期/分項成績' || data.item_type === '學期/分項成績(原始)' ) {
+              tempText = data.item_name + '分項';
+            } else {
+              tempText = data.item_name;
+            }
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['avg_top_25'] = data.avg_top_25 ? data.avg_top_25 : 0;
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['avg_top_50'] = data.avg_top_50 ? data.avg_top_50 : 0;
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['avg'] = data.avg ? data.avg : 0;
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['avg_bottom_50'] = data.avg_bottom_50 ? data.avg_bottom_50 : 0;
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['avg_bottom_25'] = data.avg_bottom_25 ? data.avg_bottom_25 : 0;
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_gte100'] = data.level_gte100 ? data.level_gte100 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_90'] = data.level_90 ? data.level_90 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_80'] = data.level_80 ? data.level_80 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_70'] = data.level_70 ? data.level_70 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_60'] = data.level_60 ? data.level_60 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_50'] = data.level_50 ? data.level_50 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_40'] = data.level_40 ? data.level_40 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_30'] = data.level_30 ? data.level_30 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_20'] = data.level_20 ? data.level_20 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_10'] = data.level_10 ? data.level_10 : '';
+            this.examMatrix2[tempText][data.rank_type][data.item_type]['level_lt10'] = data.level_lt10 ? data.level_lt10 : '';
           });
-          console.log(this.examMatrix2);
         } catch (error) {
           console.log('取得級距及五標失敗');
           console.log(error);
@@ -690,26 +1082,33 @@ async GetExamRankMatrix(){
     public initiRange2() {
       // 因為要即時運算級距人數，所以重新調整；分層：單一班級->單一學年學期->科目&總平均->原始&擇優->各級距->人數
       // 此段處理科目&總平均->原始&擇優->各級距 的資料基本架構
-      let type = ['學期/科目成績(原始)','學期/科目成績']
-      this.matrixList
+      let type = ['學期/科目成績(原始)','學期/科目成績','學期/分項成績(原始)','學期/分項成績']
       this.examMatrix2 = {};
-
+      this.subSubjItemList = [];
+      this.subSubjItemList = this.subjectList
+      // let noneRankMatrixList = [];
       // 組成科目級距及五標的基本架構
-      this.subjectList.forEach(sub => {
+      this.subSubjItemList.forEach(sub => {
         this.examMatrix2[sub] = {};
-        this.matrixList.forEach(ml => {
-          this.examMatrix2[sub][ml] = {};
-            type.forEach(t => {
-              this.examMatrix2[sub][ml][t] = {};
-                this.rangeList.forEach(rl => {
-                  this.examMatrix2[sub][ml][t][rl.key] = 0;
-                })
-                this.fiveRange.forEach(fr => {
-                  this.examMatrix2[sub][ml][t][fr.key] = 0;
-                })
-            })
-        })
+        if(this.noneRank === false) {
+          this.matrixList.forEach(ml => {
+            this.examMatrix2[sub][ml] = {};
+              type.forEach(t => {
+                this.examMatrix2[sub][ml][t] = {};
+                  this.rangeList.forEach(rl => {
+                    this.examMatrix2[sub][ml][t][rl.key] = 0;
+                  })
+                  this.fiveRange.forEach(fr => {
+                    this.examMatrix2[sub][ml][t][fr.key] = 0;
+                  })
+              })
+          })
+        } else { // 這段暫時沒用...
+          this.examMatrix2[sub]['沒有排名'] = {}
+          type.forEach(t => {
+            this.examMatrix2[sub]['沒有排名'][t] = {};
+          });
+        }
       });
-        console.log(this.examMatrix2);
       };
 }

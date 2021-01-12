@@ -7,6 +7,8 @@ import { MenuPositionX } from '@angular/material/menu';
 import { StudentCheck } from '../student-check';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { GadgetService } from '../service/gadget.service';
+import { RollCallRateDenominator } from './vo';
+import { Console } from '@angular/core/src/console';
 
 @Component({
   selector: 'gd-student-pick',
@@ -34,6 +36,7 @@ export class StudentPickComponent implements OnInit {
   settingList: any;
   objectKeys = Object.keys;
   showPhoto: boolean;
+  explainMessage : string = "";
 
   constructor(
     private dsa: DSAService,
@@ -64,12 +67,10 @@ export class StudentPickComponent implements OnInit {
       this.period = pm.get('period'); // period name
       this.groupInfo.name = pm.get('name');
 
-      console.log(pm.get('name'));
+      // console.log(pm.get('name'));
 
       //載入出席率
       await this.loadAbsencreRate();
-
-
       // 可點節次。
       this.periodConf = this.config.getPeriod(this.period);
       this.periodConf.Absence = [].concat(this.periodConf.Absence || []);
@@ -97,19 +98,41 @@ export class StudentPickComponent implements OnInit {
 
     const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
+    // 看看能不能顯示出席率 
+    let  denominator  :RollCallRateDenominator = await this.dsa.getAbsenRateDenominator(this.groupInfo.id);
+  
+    //【檢查】(是否顯示出席率) 如果有設定 使用上課週數 * 節數 
+    // console.log("IsUseWeeks",denominator.IsUseWeeks)
+    
+    if(denominator.IsUseWeeks =='true')
+     {
+       if((denominator.Period=="0"||denominator.Period==""))
+       {
+         this.explainMessage = "出席率分母採用 上課週數 * 節數， \n但節數為0或未設定，無法計算出席率 。"
+       }else // 如果 節數設定正常 
+       {
+        if(denominator.WeeksFromCourse )
+        {
+          this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.WeeksFromCourse}週*${denominator.Period}節) ${denominator.CourseDe} 堂`
 
+        }else{
+          this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.DefaultWeeks}週*${denominator.Period}節) ${denominator.DefaultDe} 堂`
+        }
+       }
+
+    }else{ // 不採用上課週數 => 實際點名
+      this.explainMessage = `出席率分母採用 教師實際點名次數 為 ${denominator.ActualRollcallTime} 堂`
+    }
+   
     for (const stu of students) {
-
       // 取得學生照片 url
       stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.StudentID}`;
+      // 取得出席率 
       const status = this.getSelectedAttendance(stu);
-
       // 加入出席率
       stu.AbsenceRate = this.absenceRates[stu.StudentID];
-
       this.studentChecks.push(new StudentCheck(stu, status, this.periodConf));
     }
-
 
     this.calcSummaryText();
 
@@ -229,7 +252,6 @@ export class StudentPickComponent implements OnInit {
 
     try {
       await this.dsa.setRollCall(this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);
-      // await this.reloadStudentAttendances();
       this.router.navigate(['/main']);
     } catch (error) {
       this.alert.json(error);
@@ -240,7 +262,7 @@ export class StudentPickComponent implements OnInit {
   }
 
   selectedAbsenceItem(abbr) {
-    console.log(abbr);
+    // console.log(abbr);
     this.selectedAbsence = abbr.Name;
   }
 
@@ -252,8 +274,7 @@ export class StudentPickComponent implements OnInit {
       this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
     else
     this.absenceRates = {};
-
-    console.log('', this.absenceRates);
+ 
     console.log("課程ID", this.groupInfo.id);
   }
 }

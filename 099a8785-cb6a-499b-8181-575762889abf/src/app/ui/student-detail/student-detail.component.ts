@@ -29,11 +29,16 @@ export class StudentDetailComponent implements OnInit {
    * 學生ID查詢的獎懲明細
    */
   studentDetail: parseXmlDisciplineDetail[] = [];
+
+
+  schoolType :string ="高中"
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
 
   constructor(private disciplineService: DisciplineService) { }
 
   async ngOnInit(): Promise<void> {
+    // 在入學制
+    this.schoolType  =this.disciplineService.schoolType;
 
     // 抓取欲查詢學生明細
     this.getStudentInfo();
@@ -95,11 +100,20 @@ export class StudentDetailComponent implements OnInit {
                 <th>嘉獎</th>
                 <th>大過</th>
                 <th>小過</th>
-                <th>警告</th>
-                <th>留校察看</th>
+                <th>警告</th>`;
+
+
+                if( this.schoolType=="高中") // 如果會顯示
+                {
+                  head +=  `<th></th>`
+
+                }
+                head +=
+                `
                 <th>原因</th>
                 <th>銷過日期</th>
                 <th>銷過原因</th>
+                <th>備註</th>
             </tr>
         </thead>
         <tbody>`;
@@ -116,11 +130,18 @@ export class StudentDetailComponent implements OnInit {
                     <td data-th="嘉獎" >${detail.commendation}</td>
                     <td data-th="大過" >${detail.majorDemerit}</td>
                     <td data-th="小過" >${detail.minorDemerit}</td>
-                    <td data-th="警告" >${detail.admonition}</td>
-                    <td data-th="留校察看" >${detail.detention}</td>
-                    <td data-th="原因" >${detail.reason}</td>
+                    <td data-th="警告" >${detail.admonition}</td>`;
+
+                    if(this.schoolType=="高中")
+                    {
+                      `<td data-th="留校察看" >${detail.detention}</td>`
+                    }
+
+                    body +=
+                    `<td data-th="原因" >${detail.reason}</td>
                     <td data-th="銷過日期" >${detail.delNegligenceDate}</td>
                     <td data-th="銷過原因" >${detail.delNegligenceReason}</td>
+                    <td data-th="備註">${detail.remark}</td>
                 </tr>`
       });
       end += `

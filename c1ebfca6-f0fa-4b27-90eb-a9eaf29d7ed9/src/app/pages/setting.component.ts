@@ -3,6 +3,7 @@ import { DSAService, RollCallRecord, PeriodConf, AbsenceConf, Schedule, CourseCo
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConfigService } from '../service/config.service';
 import { AlertService } from '../service/alert.service';
+import { RollCallRateDenominator } from './vo';
 
 
 @Component({
@@ -21,9 +22,18 @@ export class SettingComponent implements OnInit {
   loading: boolean;
   settingList: any;
 
-  classList:any[];
+  classList: any[];
   courseList: any[];
 
+  //顯示母數 
+  denominatorString : string  = '未設定';
+  peiord :string ='未設定';
+  weekCount :string = '未設定';
+  showAbsenceRate : boolean ;
+  // 如果設定採用 上課週數*節數 但是課程上卻沒有設節次 調出提醒字眼
+  reminderMessage : string ;
+  isUseWeekFromCourse :boolean ;
+  
   constructor(
     private dsa: DSAService,
     private router: Router,
@@ -45,12 +55,21 @@ export class SettingComponent implements OnInit {
       var rsp = await this.dsa.send("GetClassHelper");
       this.classList = [].concat(rsp.Class || []);
       this.courseList = [].concat(rsp.Course || []);
-    } catch (error) {
 
+      // 取得點名母數 
+     this.isUseWeekFromCourse  =   await this.dsa.getAbsenRateDenominatorDepen() ;
+     console.log("isUseWeekFromCourse",this.isUseWeekFromCourse)
+   
+    } catch (error) {
+       console.log("發生錯誤!");
     } finally {
       this.loading = false;
     }
   }
+
+
+
+
 
   async openTeacherHelper(course: CourseConf) {
 
