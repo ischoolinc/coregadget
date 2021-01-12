@@ -20,6 +20,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "@1campus/jsonx"
+            ],
             "outputPath": "dist/205acee3-9387-4d0e-92e1-4436fd20b535",
             "index": "src/index.html",
             "main": "src/main.ts",

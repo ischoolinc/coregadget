@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Jsonx } from '@1campus/jsonx';
 
 export interface Section {
   name: string;
@@ -35,8 +36,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-
+export class AppComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'course_code', 'action'];
   dataSource = ELEMENT_DATA;
 
@@ -64,4 +64,21 @@ export class AppComponent {
     '設計科技學程不分班群',
     '學術自然學程不分班群',
     '應用英語學程不分班群'];
+
+    ngOnInit(): void {
+      const jx = Jsonx.parse('<root><child val="1">text</child></root>');
+
+      console.log(jx.child('root', 'child').text);
+      console.log(jx.child('root', 'child').getAttr('val'));
+
+      jx.child('root', 'child', 'newChild').text = 'add new';
+
+      // 新增 element。
+      const nc = jx.child('root').children('child').new();
+      nc.setAttr('name', '123');
+      nc.text = 'new text';
+
+      console.log(jx.toXml());
+    }
+
 }
