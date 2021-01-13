@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="班級歷年成績查詢" description="班級歷年成績查詢">
-    <Title lang="zh-TW">班級歷年成績查詢</Title>
+  <ModulePrefs title="班級學期成績查詢" description="班級學期成績查詢">
+    <Title lang="zh-TW">班級學期成績查詢</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">

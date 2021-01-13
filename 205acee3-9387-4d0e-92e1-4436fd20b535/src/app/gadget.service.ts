@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class GadgetService {
 
   constructor(private zone: NgZone) { }
@@ -18,19 +18,12 @@ export class GadgetService {
         r(new Contract(contract, this.zone));
       });
 
-      contract.loginFailed((err) => {
+      contract.loginFailed((err: any) => {
         j(err);
       });
     });
   }
-   /**
-   * 離開 Gadget。
-   */
-  public onLeave(callback: () => string): void {
-    gadget.onLeave(callback);
-  } 
 }
-
 
 /**
  * 代表已連接的 Contract。
@@ -47,7 +40,7 @@ export class Contract {
       this.contract.send({
         service: serviceName,
         body: body,
-        result: (rsp, err, xmlhttp) => {
+        result: (rsp: any, err: any, xmlhttp: any) => {
           if(err) {
             j(err);
           } else {
