@@ -1,15 +1,10 @@
-import { GadgetService } from './gadget.service';
+import { GadgetService } from './core/gadget.service';
 import { Component, OnInit } from '@angular/core';
 import { Jsonx } from '@1campus/jsonx';
 
 export interface Section {
   name: string;
   updated: Date;
-}
-
-export interface Food {
-  value: string;
-  viewValue: string;
 }
 
 export interface PeriodicElement {
@@ -20,16 +15,16 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
 
 @Component({
@@ -41,7 +36,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private gadget: GadgetService
-  ) {}
+  ) { }
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'course_code', 'action'];
   dataSource = ELEMENT_DATA;
@@ -57,44 +52,34 @@ export class AppComponent implements OnInit {
     }
   ];
 
-  foods: Food[] = [
-    {value: 'steak-0', viewValue: '107'},
-    {value: 'pizza-1', viewValue: '108'},
-    {value: 'tacos-2', viewValue: '109'},
-    {value: 'tacos-3', viewValue: '不分學年度'}
-  ];
+  schoolInfo: any;
 
-  typesOfShoes: string[] = [
-    '資料處理科學程',
-    '應用外語科日文組課程規劃',
-    '設計科技學程不分班群',
-    '學術自然學程不分班群',
-    '應用英語學程不分班群'];
+  async ngOnInit() {
 
-    schoolInfo: any;
+    const contract = await this.gadget.getContract('basic.public');
 
-    async ngOnInit() {
+    // 呼叫 service。
+    this.schoolInfo = await contract.send('beta.GetSystemConfig', {
+      Name: '學校資訊'
+    });
 
-      const contract = await this.gadget.getContract('basic.public');
+    const jx = Jsonx.parse('<root><child val="1">text</child></root>');
 
-      // 呼叫 service。
-      this.schoolInfo = await contract.send('beta.GetSystemConfig', {
-        Name: '學校資訊'
-      });
+    // console.log(jx.child('root', 'child').text);
+    // console.log(jx.child('root', 'child').getAttr('val'));
 
-      const jx = Jsonx.parse('<root><child val="1">text</child></root>');
+    jx.child('root', 'child', 'newChild').text = 'add new';
 
-      console.log(jx.child('root', 'child').text);
-      console.log(jx.child('root', 'child').getAttr('val'));
+    // 新增 element。
+    const nc = jx.child('root').children('child').new();
+    nc.setAttr('name', '123');
+    nc.text = 'new text';
 
-      jx.child('root', 'child', 'newChild').text = 'add new';
+    // console.log(jx.toXml());
+  }
 
-      // 新增 element。
-      const nc = jx.child('root').children('child').new();
-      nc.setAttr('name', '123');
-      nc.text = 'new text';
-
-      console.log(jx.toXml());
-    }
+  test() {
+    
+  }
 
 }

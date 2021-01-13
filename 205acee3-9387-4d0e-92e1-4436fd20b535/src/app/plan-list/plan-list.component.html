@@ -1,0 +1,22 @@
+<mat-form-field appearance="fill" class="full-width">
+    <mat-label>學年度</mat-label>
+    <mat-select [formControl]="yearDropdown">
+        <mat-option *ngFor="let year of years" [value]="year">
+            {{year}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<ng-container *ngIf="!isLoading;else tplLoading">
+    <mat-selection-list #shoes [multiple]="false">
+        <mat-list-option *ngFor="let plan of planList" [value]="plan">
+            {{plan.name}}
+        </mat-list-option>
+    </mat-selection-list>
+</ng-container>
+
+<ng-template #tplLoading>
+    <div style="display: flex;flex-direction: row;justify-content: center;margin-top: 30px;">
+        <mat-spinner [diameter]="45"></mat-spinner>
+    </div>
+</ng-template>

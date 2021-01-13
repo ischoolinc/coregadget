@@ -1,7 +1,7 @@
 <mat-drawer-container class="example-container" autosize>
   <mat-drawer #drawer class="example-sidenav" mode="side" opened disableClose>
     <div class="mat-drawer-inner-container">
-      <mat-form-field appearance="fill" class="full-width">
+      <!-- <mat-form-field appearance="fill" class="full-width">
         <mat-label>學年度</mat-label>
         <mat-select>
           <mat-option *ngFor="let food of foods" [value]="food.value">
@@ -9,12 +9,15 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
       <mat-selection-list #shoes [multiple]="false">
         <mat-list-option *ngFor="let shoe of typesOfShoes" [value]="shoe">
           {{shoe}}
         </mat-list-option>
-      </mat-selection-list>
+      </mat-selection-list> -->
+
+      <app-plan-list></app-plan-list>
+
+      
       <div class="flex-column full-flex">
       </div>
       <mat-divider></mat-divider>
@@ -24,7 +27,7 @@
 
   <div>
     <mat-toolbar style="height: 59px">
-      {{shoes.selectedOptions.selected[0]?.value}}
+      <!-- {{shoes.selectedOptions.selected[0]?.value}} -->
     </mat-toolbar>
 
     <mat-tab-group mat-align-tabs="start">

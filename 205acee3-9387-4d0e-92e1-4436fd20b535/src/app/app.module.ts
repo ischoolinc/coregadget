@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
@@ -14,10 +15,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { PlanComponent } from './plan/plan.component';
+import { PlanListComponent } from './plan-list/plan-list.component';
+import { PlanInfoComponent } from './plan/plan-info/plan-info.component';
+import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PlanListComponent,
+    PlanInfoComponent,
+    PlanConfigComponent,
+    PlanComponent
   ],
   imports: [
     BrowserModule,
@@ -32,6 +43,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatDividerModule,
     MatTableModule,
     MatToolbarModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
