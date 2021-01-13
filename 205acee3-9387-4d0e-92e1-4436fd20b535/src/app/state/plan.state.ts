@@ -6,7 +6,11 @@ import { GetAllPlans, SetCurPlan } from './plan.action';
 
 @State({
     name: 'plan',
-    defaults: {} as PlanModel
+    defaults: {
+        planList: [],
+        yearList: [],
+        curPlan: {} as PlanRec
+    } as PlanModel
 })
 @Injectable()
 export class PlanState {

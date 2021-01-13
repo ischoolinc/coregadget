@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { PlanRec } from '../data';
 import { Store, Select } from '@ngxs/store';
 import { PlanModel } from '../state/plan.state';
+import { SetCurPlan } from '../state/plan.action';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-plan-list',
@@ -21,7 +23,8 @@ export class PlanListComponent implements OnInit, OnDestroy {
   unSubscribe$ = new Subject();
 
   constructor(
-    private store: Store
+    private store: Store,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -29,6 +32,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
       takeUntil(this.unSubscribe$)
     ).subscribe((v: PlanModel) => {
       this.plan = v;
+      if (v.yearList.length) {
+        this.yearFormCtrl.setValue(this.plan.yearList[0]);
+      }
     });
 
     this.yearFormCtrl.valueChanges.pipe(
@@ -41,6 +47,14 @@ export class PlanListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unSubscribe$.next();
     this.unSubscribe$.complete();
+  }
+
+  setCurPlan(plan: PlanRec) {
+    this.store.dispatch(new SetCurPlan(plan)).pipe(
+      take(1)
+    ).subscribe(() => {
+      this.router.navigate(['/plan', plan.id])
+    });
   }
 
 }
