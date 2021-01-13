@@ -6,6 +6,11 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// ngxs
+import { NgxsModule } from '@ngxs/store';
+import { PlanState } from './state/plan.state';
+
+// angular material
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,7 +50,8 @@ import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
     MatToolbarModule,
     FormsModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgxsModule.forRoot([PlanState])
   ],
   providers: [],
   bootstrap: [AppComponent]

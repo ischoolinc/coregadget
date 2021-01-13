@@ -29,5 +29,9 @@ export class PlanService {
     return await this.contract.send('GetPlans', { SchoolYear: year });
   }
 
+  public async getAllPlans() {
+    await this.connect();
+    return await this.contract.send('GetAllPlans', {});
+  }
 
 }

@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PlanService } from '../core/plan.service';
 import { PlanRec } from '../data';
+import { Store, Select } from '@ngxs/store';
+import { PlanModel } from '../state/plan.state';
 
 @Component({
   selector: 'app-plan-list',
@@ -13,42 +14,33 @@ import { PlanRec } from '../data';
 export class PlanListComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
-  yearDropdown = new FormControl(null);
-  years: string[] = [];
+  yearFormCtrl = new FormControl();
+  @Select((state: { plan: any; }) => state.plan)plan$: Observable<any> | undefined;
+  plan: PlanModel = {} as PlanModel;
   planList: PlanRec[] = [];
   unSubscribe$ = new Subject();
 
   constructor(
-    private planSrv: PlanService
+    private store: Store
   ) { }
 
   ngOnInit() {
-    this.getYears();
-    this.yearDropdown.valueChanges.pipe(
+    this.plan$?.pipe(
+      takeUntil(this.unSubscribe$)
+    ).subscribe((v: PlanModel) => {
+      this.plan = v;
+    });
+
+    this.yearFormCtrl.valueChanges.pipe(
       takeUntil(this.unSubscribe$)
     ).subscribe(v => {
-      this.getPlans();
+      this.planList = this.plan.planList.filter(plan => plan.school_year === v);
     });
   }
 
   ngOnDestroy(): void {
     this.unSubscribe$.next();
     this.unSubscribe$.complete();
-  }
-
-  async getYears() {
-    this.isLoading = true;
-    const rsp = await this.planSrv.getSchoolYear();
-    this.years = [].concat(rsp.plan || []).map((data: any) => data.school_year);
-    this.yearDropdown.setValue(this.years[0]);
-    this.isLoading = false;
-  }
-
-  async getPlans() {
-    this.isLoading = true;
-    const rsp = await this.planSrv.getPlans(this.yearDropdown.value);
-    this.planList = [].concat(rsp.plan || []);
-    this.isLoading = false;
   }
 
 }
