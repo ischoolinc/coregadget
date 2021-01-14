@@ -21,11 +21,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
 
 import { PlanComponent } from './plan/plan.component';
 import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlanInfoComponent } from './plan/plan-info/plan-info.component';
 import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
+import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
     PlanListComponent,
     PlanInfoComponent,
     PlanConfigComponent,
-    PlanComponent
+    PlanComponent,
+    PlanEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,8 @@ import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
     FormsModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    NgxsModule.forRoot([PlanState])
+    NgxsModule.forRoot([PlanState]),
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
