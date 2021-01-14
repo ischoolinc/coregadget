@@ -12,7 +12,7 @@ export interface SubjectRec {
     RequiredBy: string;
     Semester: string;
     SubjectName: string;
-    課程代碼: string;
+    Code: string // 課程代碼: string;
     課程類別: string;
     開課方式: string;
     科目屬性: string;
