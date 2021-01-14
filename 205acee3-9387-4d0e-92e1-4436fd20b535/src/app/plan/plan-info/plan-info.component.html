@@ -22,7 +22,7 @@
     <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef style="width: 60px"> 編輯 </th>
         <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" aria-label="Example icon button with a home icon">
+            <button mat-icon-button color="primary" (click)="openEditor()">
                 <mat-icon>edit</mat-icon>
             </button>
         </td>

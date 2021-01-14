@@ -22,6 +22,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { PlanComponent } from './plan/plan.component';
 import { PlanListComponent } from './plan-list/plan-list.component';
@@ -55,7 +56,11 @@ import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     NgxsModule.forRoot([PlanState]),
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
+  ],
+  entryComponents: [
+    PlanEditorComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
