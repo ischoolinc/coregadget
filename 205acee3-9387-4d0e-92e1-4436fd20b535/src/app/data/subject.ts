@@ -1,40 +1,43 @@
 export interface SubjectRec {
-    
     /** 領域 */
     Domain: string;
     /** 分項類別 */
     Entry: string;
-
-    // === key ====
     /** 科目名稱 */
     SubjectName: string;
     /** 必選修 */
     Required: string;
     /** 校部訂 */
     RequiredBy: string;
-    
     /** 科目代碼 */
     SubjectCode: string;
-
-
-    Category: string;
-    Credit: string;
-    GradeYear: string;
-    Level: string;
-    FullName: string;
-    NotIncludedInCalc: string;
-    NotIncludedInCredit: string;
-    Semester: string;
-    課程代碼: string;
-    課程類別: string;
-    開課方式: string;
-    科目屬性: string;
-    領域名稱: string;
-    課程名稱: string;
-    學分: string;
-    授課學期學分: string;
+    /** 開始級別 */
+    StartLevel: number;
+    /** desktop 排序方式 */
+    RowIndex: number;
+    /** 1上 */
+    LastSemester1: string;
+    /** 1下 */
+    NextSemester1: string;
+    /** 2上 */
+    LastSemester2: string;
+    /** 2下 */
+    NextSemester2: string;
+    /** 3上 */
+    LastSemester3: string;
+    /** 3下 */
+    NextSemester3: string;
+    /** 4上 */
+    LastSemester4: string;
+    /** 4下 */
+    NextSemester4: string;
+    /** 課程清單 */
+    courseList: CourseRec[];
 }
 
 export interface CourseRec {
-
+    GradeYear: string;
+    Semester: string;
+    CourseName: string;
+    Credit: string;
 }
