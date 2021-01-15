@@ -17,7 +17,7 @@ export class PlanComponent implements OnInit, OnDestroy {
 
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
   curPlan: PlanRec = {} as PlanRec;
-  displayedColumns: string[] = ['Domain', 'Entry', 'SubjectName', 'Level', 'Code', 'action'];
+  displayedColumns: string[] = ['Domain', 'Entry', 'SubjectName', 'RequiredBy', 'Required', 'Level', 'SubjectCode', 'action'];
   subjectList: SubjectRec[] = [];
   unSubscribe$ = new Subject();
   showEditeBtn: boolean = false;
@@ -40,15 +40,17 @@ export class PlanComponent implements OnInit, OnDestroy {
   }
 
   graduationPlanParse(xml: string) {
+    this.subjectList = [];
     const jx = Jsonx.parse(xml);
-    this.subjectList = jx.child('GraduationPlan').children('Subject').data.map((sb: any) => {
-      return {
-        ...sb['_attributes'],
-        Code: sb['_attributes'].課程代碼
-      };
+    jx.child('GraduationPlan').children('Subject').data.forEach((data: any) => {
+      if (!this.subjectList.find((sbRec: SubjectRec) => 
+        sbRec.Required === data['_attributes'].Required 
+        && sbRec.RequiredBy === data['_attributes'].RequiredBy 
+        && sbRec.SubjectName === data['_attributes'].SubjectName)) {
+        this.subjectList.push(data['_attributes']);
+      }
     });
+   
   }
-
-
 
 }
