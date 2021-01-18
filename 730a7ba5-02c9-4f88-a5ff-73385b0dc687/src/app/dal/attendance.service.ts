@@ -89,7 +89,7 @@ export class AttendanceService {
       Request: {}
     }
     );
-    return result.ClassList.Class;
+    return [].concat(result.ClassList.Class);
   }
 
   // 取得班級學年度學期
@@ -101,16 +101,14 @@ export class AttendanceService {
       }
     }
     );
-    let temp = [];
-    if (Array.isArray(result.result)) {
-      temp = result.result;
-    } else {
-      temp.push(result.result);
-    }
+    let temp = [].concat(result?.result||[]);
     return temp as SemesterInfo[];
   }
 
   async getStudentAttendanceByClassID(cls, semester: SemesterInfo) {
+    if(!semester){
+       return [];
+    }
     const contract = await this.contract.getDefaultContract();
     const result = await contract.send('attendance.GetStudentAttendanceByClassID', {
       Request: {

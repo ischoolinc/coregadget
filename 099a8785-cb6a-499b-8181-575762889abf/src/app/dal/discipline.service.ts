@@ -36,7 +36,6 @@ export class DisciplineService {
       schoolType = response.Response.School.Type;
       console.log("asign", response.Response.School.Type);
       this.schoolType = schoolType;
-      console.log("1", this.schoolType);
     } catch (err) {
       console.log("err: \n", err);
       alert("取得學制發生錯誤!");
@@ -69,15 +68,9 @@ export class DisciplineService {
       }
     }
     );
-    let semesters = [];
-    if (Array.isArray(result.result)) {
-      result.result.sort((a, b) => parseInt(a.school_year) > parseInt(b.school_year) ? -1 : 1);
-      semesters = result.result;
-    }
-    else {
-      semesters.push(result.result);
-    }
-    return semesters as SemesterInfo[];
+    let temp = [].concat(result?.result||[]);
+
+    return temp as SemesterInfo[];
   }
 
   // 取得班級學生獎懲列表

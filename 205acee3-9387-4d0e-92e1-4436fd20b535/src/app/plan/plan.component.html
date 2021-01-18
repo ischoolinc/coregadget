@@ -1,0 +1,25 @@
+<mat-toolbar style="height: 59px" 
+    (mouseenter)="showEditeBtn=true" (mouseleave)="showEditeBtn=false"
+    [ngStyle]="{'border-bottom': showEditTitle ? '2px solid #3f51b5' : ''}">
+    <div *ngIf="!showEditTitle;else tplEditTitle" 
+        style="display: flex; flex-direction: row;align-items: center;">
+        <span>{{curPlan.name}}</span>
+        <button mat-icon-button color="primary" 
+            [ngStyle]="{'visibility': showEditeBtn ? 'visible' : 'hidden'}"
+            (click)="showEditTitle=!showEditTitle">
+            <mat-icon>create</mat-icon>
+        </button>
+    </div>
+    <ng-template #tplEditTitle>
+        <input matInput placeholder="請輸入課程規劃名稱" [(ngModel)]="curPlan.name" (keyup.enter)="showEditTitle=false">
+    </ng-template>
+</mat-toolbar>
+<mat-tab-group mat-align-tabs="start">
+    <mat-tab label="課程規劃內容">
+        <app-plan-info [dataSource]="subjectList" [columns]="displayedColumns"></app-plan-info>
+    </mat-tab>
+    <mat-tab label="課程計劃平臺設定">
+        <app-plan-config></app-plan-config>
+        <!-- <pre>{{schoolInfo | json}}</pre> -->
+    </mat-tab>
+</mat-tab-group>

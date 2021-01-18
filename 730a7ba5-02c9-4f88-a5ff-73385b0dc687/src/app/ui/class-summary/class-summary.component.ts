@@ -86,7 +86,7 @@ export class ClassSummaryComponent implements OnInit {
    */
   async queryStudentAttendance() {
     const studentList: StudentListResponse = await this.attendanceService.getStudentAttendanceByClassID(this.selectedClass, this.selectedSemester);
-    this.calStudentAttendance(studentList);
+    await this.calStudentAttendance(studentList);
   }
 
   /**
@@ -161,8 +161,8 @@ export class ClassSummaryComponent implements OnInit {
     FileSaver.saveAs(new Blob([html], { type: "application/octet-stream" }), fileName);
   }
 
-  getSemesterString(s: SemesterInfo) {
-    return `${s.school_year}學年第${s.semester}學期`;
+  getSemesterString(semester: SemesterInfo) {
+    return `${semester?.school_year}學年第${semester?.semester}學期`;
   }
 }
 

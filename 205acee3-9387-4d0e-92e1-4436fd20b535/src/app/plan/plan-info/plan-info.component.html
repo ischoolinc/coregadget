@@ -1,0 +1,80 @@
+<table mat-table [dataSource]="dataSource" class="full-width">
+    <ng-container matColumnDef="Domain">
+        <th mat-header-cell *matHeaderCellDef> 領域 </th>
+        <td mat-cell *matCellDef="let element"> {{element.Domain}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Entry">
+        <th mat-header-cell *matHeaderCellDef> 分項類別 </th>
+        <td mat-cell *matCellDef="let element"> {{element.Entry}} </td>
+    </ng-container>
+    <ng-container matColumnDef="SubjectName">
+        <th mat-header-cell *matHeaderCellDef> 科目名稱 </th>
+        <td mat-cell *matCellDef="let element"> {{element.SubjectName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="RequiredBy">
+        <th mat-header-cell *matHeaderCellDef> 校／部訂 </th>
+        <td mat-cell *matCellDef="let element"> {{element.RequiredBy}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Required">
+        <th mat-header-cell *matHeaderCellDef> 必／選修 </th>
+        <td mat-cell *matCellDef="let element"> {{element.Required}} </td>
+    </ng-container>
+    <ng-container matColumnDef="StartLevel">
+        <th mat-header-cell *matHeaderCellDef> 開始級別 </th>
+        <td mat-cell *matCellDef="let element"> {{element.StartLevel}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="LastSemester1">
+        <th mat-header-cell *matHeaderCellDef> 1上 </th>
+        <td mat-cell *matCellDef="let element"> {{element.LastSemester1}} </td>
+    </ng-container>
+    <ng-container matColumnDef="NextSemester1">
+        <th mat-header-cell *matHeaderCellDef> 1下 </th>
+        <td mat-cell *matCellDef="let element"> {{element.NextSemester1}} </td>
+    </ng-container>
+    <ng-container matColumnDef="LastSemester2">
+        <th mat-header-cell *matHeaderCellDef> 2上 </th>
+        <td mat-cell *matCellDef="let element"> {{element.LastSemester2}} </td>
+    </ng-container>
+    <ng-container matColumnDef="NextSemester2">
+        <th mat-header-cell *matHeaderCellDef> 2下 </th>
+        <td mat-cell *matCellDef="let element"> {{element.NextSemester2}} </td>
+    </ng-container>
+    <ng-container matColumnDef="LastSemester3">
+        <th mat-header-cell *matHeaderCellDef> 3上 </th>
+        <td mat-cell *matCellDef="let element"> {{element.LastSemester3}} </td>
+    </ng-container>
+    <ng-container matColumnDef="NextSemester3">
+        <th mat-header-cell *matHeaderCellDef> 3下 </th>
+        <td mat-cell *matCellDef="let element"> {{element.NextSemester3}} </td>
+    </ng-container>
+    <ng-container matColumnDef="LastSemester4">
+        <th mat-header-cell *matHeaderCellDef> 4上 </th>
+        <td mat-cell *matCellDef="let element"> {{element.LastSemester4}} </td>
+    </ng-container>
+    <ng-container matColumnDef="NextSemester4">
+        <th mat-header-cell *matHeaderCellDef> 4下 </th>
+        <td mat-cell *matCellDef="let element"> {{element.NextSemester4}} </td>
+    </ng-container>
+
+
+
+
+
+    <ng-container matColumnDef="SubjectCode">
+        <th mat-header-cell *matHeaderCellDef> 科目代碼 </th>
+        <td mat-cell *matCellDef="let element"> {{element.SubjectCode}} </td>
+    </ng-container>
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef style="width: 60px"> 編輯 </th>
+        <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="openEditor()">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+</table>
