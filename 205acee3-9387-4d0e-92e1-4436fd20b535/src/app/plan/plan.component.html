@@ -11,7 +11,7 @@
         </button>
     </div>
     <ng-template #tplEditTitle>
-        <input matInput placeholder="請輸入課程規劃名稱" [(ngModel)]="curPlan.name" (keyup.enter)="showEditTitle=false">
+        <input matInput placeholder="請輸入課程規劃名稱" [formControl]="planNameControl" (keyup.enter)="planNameChange()">
     </ng-template>
 </mat-toolbar>
 <mat-tab-group mat-align-tabs="start">

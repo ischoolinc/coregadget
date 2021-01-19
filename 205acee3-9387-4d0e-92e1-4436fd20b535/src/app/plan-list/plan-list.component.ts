@@ -5,7 +5,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { PlanRec } from '../data';
 import { Store, Select } from '@ngxs/store';
 import { PlanModel } from '../state/plan.state';
-import { SetCurPlan, SetCurSchoolYear } from '../state/plan.action';
+import { SetCurPlan, SetCurPlanList } from '../state/plan.action';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,10 +18,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   yearFormCtrl = new FormControl();
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
-  @Select((state: { plan: any; }) => state.plan.curSchoolYear)curSchoolYear$: Observable<string> | undefined;
   plan: PlanModel = {} as PlanModel;
-  planList: PlanRec[] = [];
   unSubscribe$ = new Subject();
+  curYear: string = '';
 
   constructor(
     private store: Store,
@@ -33,25 +32,11 @@ export class PlanListComponent implements OnInit, OnDestroy {
       takeUntil(this.unSubscribe$)
     ).subscribe((v: PlanModel) => {
       this.plan = v;
-      if (this.plan.yearList.length && !this.plan.curSchoolYear) {
-        this.yearFormCtrl.setValue(this.plan.yearList[0]);
+      
+      if (this.plan.yearList.length && !this.curYear) {
+        this.setCurYear(this.plan.yearList[0]);
       }
     });
-
-    this.yearFormCtrl.valueChanges.pipe(
-      takeUntil(this.unSubscribe$)
-    ).subscribe(v => {
-      this.store.dispatch(new SetCurSchoolYear(v));
-    });
-
-    this.curSchoolYear$?.pipe(
-      takeUntil(this.unSubscribe$)
-    ).subscribe(v => {
-      if (v) {
-        this.planList = this.plan.planList.filter(plan => plan.school_year === v);
-      }
-    });
-    
   }
 
   ngOnDestroy(): void {
@@ -65,6 +50,16 @@ export class PlanListComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       this.router.navigate(['/plan', plan.id])
     });
+  }
+
+  yearChange(e: any) {
+    this.setCurYear(e.value);
+    this.router.navigate(['/']);
+  }
+
+  setCurYear(year: string) {
+    this.curYear = year;
+    this.store.dispatch(new SetCurPlanList(this.plan.planList.filter(plan => plan.school_year === this.curYear)));
   }
 
 }
