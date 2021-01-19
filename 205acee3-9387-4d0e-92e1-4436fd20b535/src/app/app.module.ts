@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -57,7 +58,7 @@ import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
     FormsModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    NgxsModule.forRoot([PlanState]),
+    NgxsModule.forRoot([PlanState], {developmentMode: !environment.production}),
     MatInputModule,
     MatDialogModule
   ],
