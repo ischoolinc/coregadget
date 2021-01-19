@@ -1,3 +1,4 @@
+import { CodeField } from './record';
 
 /** 代碼對照表。 */
 export class MappingTable {
@@ -13,5 +14,9 @@ export class MappingTable {
 
   public getDescription(code: string) {
     return this.map.get(code) ?? '';
+  }
+
+  public addCode(field: CodeField) {
+    this.map.set(field.value, field.description);
   }
 }

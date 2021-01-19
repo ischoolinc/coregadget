@@ -1,3 +1,4 @@
+import { CodeField } from './record';
 import { MappingTable } from './mapping-table';
 import { CourseCode } from './course-code';
 import { ListName, MOEService } from './moe.service';
@@ -11,10 +12,16 @@ export class CourseCodeService {
 
   private tables: Map<Field, MappingTable> | null = null;
 
+  private extTables = new  Map<Field, CodeField[]>();
+
   constructor(
     private moe: MOEService
   ) {}
 
+  /**
+   * 套用課程代碼中每個欄位的中文說明。
+   * @param codeList 課程代碼清單。
+   */
   public async applyDescription(codeList: CourseCode[]) {
 
     if(!this.tables) {
@@ -42,7 +49,16 @@ export class CourseCodeService {
     }
   }
 
-  public async loadTables() {
+  /**
+   * 針對指定的欄位增加延申的對照資料，例如：班群(索引：6)。
+   * @param field 要延申的欄位。
+   * @param values 對照表清單。
+   */
+  public addExtTable(field: Field, values: CodeField[]) {
+    this.extTables.set(field, values);
+  }
+
+  private async loadTables() {
     this.tables = new Map<Field, MappingTable>();
 
     const argList = [
@@ -59,6 +75,11 @@ export class CourseCodeService {
     for(const arg of argList) {
       const mapdata = await this.moe.getList(arg.name).toPromise();
       const map = new MappingTable(arg.keyName, arg.valueName, mapdata);
+
+      if(this.extTables.has(arg.field)) {
+        this.extTables.get(arg.field)?.forEach(v => map.addCode(v));
+      }
+
       this.tables.set(arg.field, map);
     }
   }

@@ -35,6 +35,11 @@ export class CourseCode {
     return this.record[+field].value;
   }
 
+  /** 設定指定欄立的代碼資料。 */
+  public setCode(field: Field, code: CodeField) {
+    this.record[+field] = code;
+  }
+
   /** 取得代碼中文說明。 */
   public getDescription(field: Field): string {
     return this.record[+field].description;
