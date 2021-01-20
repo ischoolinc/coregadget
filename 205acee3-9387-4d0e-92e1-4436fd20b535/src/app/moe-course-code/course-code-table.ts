@@ -1,3 +1,4 @@
+import { CreditSet } from './credit_set';
 import { CourseCode } from './course-code';
 import { CourseCodeRecord } from './course-code-record';
 import { CodeData } from './moe.service';
@@ -10,7 +11,9 @@ export class CourseCodeTable {
   constructor(codes: CodeData[]) {
     for(const code of codes) {
       const {course_code, subject_name, credits} = code;
-      this.records.push(new CourseCodeRecord(new CourseCode(course_code), subject_name, credits));
+      this.records.push(new CourseCodeRecord(new CourseCode(course_code),
+        subject_name,
+        CreditSet.parse(credits)));
     }
   }
 
@@ -21,5 +24,17 @@ export class CourseCodeTable {
 
   public [Symbol.iterator]() {
     return this.records;
+  }
+
+  /** 合併兩個課程代碼表。 */
+  public static merge(...tables: CourseCodeTable[]) {
+    const combine: CourseCodeRecord[] = [];
+
+    tables.forEach(v => combine.push(...v.records));
+
+    const newTable = new CourseCodeTable([]);
+    newTable.records = combine;
+
+    return newTable;
   }
 }

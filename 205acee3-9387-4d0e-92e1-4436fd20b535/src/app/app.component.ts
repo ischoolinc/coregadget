@@ -1,3 +1,9 @@
+import { CreditSet } from './moe-course-code/credit_set';
+import { CourseCodeService } from './moe-course-code/course-code.service';
+import { CourseCodeTable } from './moe-course-code/course-code-table';
+import { MOEService } from './moe-course-code/moe.service';
+import { GraduationPlan } from './moe-course-code/graduation-plan/graduation-plan';
+import { DemoService } from './moe-course-code/demo.service';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { GetAllPlans } from './state/plan.action';
@@ -17,7 +23,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   isLoading: boolean = false;
 
   constructor(
-    private store: Store
+    private store: Store,
+    private gp: DemoService,
+    private moe: MOEService,
+    private ccsrv: CourseCodeService
   ) { }
 
   notes: Section[] = [
@@ -32,7 +41,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   ];
   schoolInfo: any;
 
-  ngOnInit() {
+  async ngOnInit() {
+    // const xml = await this.gp.getGraduationPlan().toPromise();
+    // const gp = GraduationPlan.parse(xml);
+
+    // const cct = await this.ccsrv.getCourseCodeTable('108041305H11101A');
+    // const cct2 = await this.ccsrv.getCourseCodeTable('108120401V213010');
+
+    // const cct3 = CourseCodeTable.merge(cct, cct2);
+
+    // console.log(cct3);
 
   }
 

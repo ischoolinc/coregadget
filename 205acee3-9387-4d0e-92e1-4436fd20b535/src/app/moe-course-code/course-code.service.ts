@@ -20,6 +20,7 @@ export class CourseCodeService {
   ) {}
 
 
+  /** 取得指定的課程代碼表。 */
   public async getCourseCodeTable(groupCode: string): Promise<CourseCodeTable> {
     const sixteen = await this.moe.getCourseCodeTable(groupCode);
     const cct = new CourseCodeTable(sixteen.Response.Code);
