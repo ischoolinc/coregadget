@@ -7,7 +7,7 @@ export class GetAllPlans {
 
 export class SetCurPlanList {
     static readonly type = '[plan] set current plan list';
-    constructor(public plans: PlanRec[]) {}
+    constructor(public year: string) {}
 }
 
 export class SetCurPlan {

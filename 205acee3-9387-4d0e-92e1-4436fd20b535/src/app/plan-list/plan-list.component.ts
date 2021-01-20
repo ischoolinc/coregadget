@@ -59,7 +59,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
   setCurYear(year: string) {
     this.curYear = year;
-    this.store.dispatch(new SetCurPlanList(this.plan.planList.filter(plan => plan.school_year === this.curYear)));
+    this.store.dispatch(new SetCurPlanList(this.curYear));
   }
 
 }

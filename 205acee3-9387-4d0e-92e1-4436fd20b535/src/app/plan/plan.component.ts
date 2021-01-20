@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlanRec, SubjectRec } from '../data';
 import { PlanModel } from '../state/plan.state';
-import { SetCurPlanList, SetPlanName } from '../state/plan.action';
+import { SetPlanName } from '../state/plan.action';
 import { Jsonx } from '@1campus/jsonx';
 import { FormControl } from '@angular/forms';
 
@@ -117,13 +117,14 @@ export class PlanComponent implements OnInit, OnDestroy {
   planNameChange() {
     this.showEditTitle = false;
     this.store.dispatch(new SetPlanName(+this.curPlan.id, this.planNameControl.value));
-    this.curPlanList = this.curPlanList.map((planRec: PlanRec) => {
-      if (planRec.id === this.curPlan.id) {
-        planRec.name = this.planNameControl.value;
-        return planRec;
-      }
-      return planRec;
-    });
-    this.store.dispatch(new SetCurPlanList(this.curPlanList));
+    // this.curPlanList = this.curPlanList.map((planRec: PlanRec) => {
+    //   if (planRec.id === this.curPlan.id) {
+    //     planRec.name = this.planNameControl.value;
+    //     console.log(planRec);
+    //     return planRec;
+    //   }
+    //   return planRec;
+    // });
+    // this.store.dispatch(new SetCurPlanList(this.curPlanList));
   }
 }

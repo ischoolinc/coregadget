@@ -39,7 +39,7 @@ export class PlanState {
 
     @Action(SetCurPlanList)
     setCurPlanList(ctx: StateContext<PlanModel>, action: SetCurPlanList) {
-        ctx.patchState({curPlanList: action.plans})
+        ctx.patchState({curPlanList: ctx.getState().planList.filter(plan => plan.school_year === action.year)});
     }
 
     @Action(SetCurPlan)
@@ -50,15 +50,25 @@ export class PlanState {
     @Action(SetPlanName)
     async setPlanName(ctx: StateContext<PlanModel>, action: SetPlanName) {
         const rsp = await this.planSrv.setPlanName(action.id, action.name);
-        const planModel = ctx.getState();
-        planModel.curPlan = rsp.plan;
-        planModel.planList = planModel.planList.map(plan => {
+        const planMode = ctx.getState();
+        const plans = planMode.planList.map(plan => {
             if (plan.id === rsp.plan.id) {
                 return rsp.plan;
             }
             return plan;
         });
-        ctx.patchState(planModel);
+        const curPlans = planMode.curPlanList?.map(plan => {
+            if (plan.id === rsp.plan.id) {
+                return rsp.plan;
+            }
+            return plan;
+        });
+
+        ctx.patchState({
+            curPlan: rsp.plan,
+            curPlanList: curPlans,
+            planList: plans
+        });
     }
 
 }
