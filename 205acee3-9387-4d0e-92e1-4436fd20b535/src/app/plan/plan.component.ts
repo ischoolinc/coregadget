@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PlanRec, SubjectRec } from '../data';
+import { PlanRec, SubjectExRec } from '../data';
 import { PlanModel } from '../state/plan.state';
 import { SetPlanName } from '../state/plan.action';
 import { Jsonx } from '@1campus/jsonx';
@@ -23,11 +23,12 @@ export class PlanComponent implements OnInit, OnDestroy {
     'LastSemester1', 'NextSemester1', 'LastSemester2', 'NextSemester2', 'LastSemester3', 'NextSemester3', 'LastSemester4', 'NextSemester4',
     'SubjectCode', 'action'
   ];
-  subjectList: SubjectRec[] = [];
+  subjectList: SubjectExRec[] = [];
   unSubscribe$ = new Subject();
   showEditeBtn: boolean = false;
   showEditTitle: boolean = false;
   planNameControl = new FormControl(null);
+  jx: Jsonx = {} as Jsonx;
 
   constructor(
     private store: Store,
@@ -53,24 +54,25 @@ export class PlanComponent implements OnInit, OnDestroy {
 
   graduationPlanParse(xml: string) {
     this.subjectList = [];
-    const jx = Jsonx.parse(xml);
+    this.jx = Jsonx.parse(xml);
+    
+    for (const sbJX of this.jx.child('GraduationPlan').children('Subject')) {
+      const { _attributes: subject, Grouping: {_attributes: group} } = sbJX.data as any;
 
-    jx.child('GraduationPlan').children('Subject').data.forEach((data: any) => {
-      const { _attributes: subject, Grouping: {_attributes: group} } = data;
-
-      if (!this.subjectList.find((sbRec: SubjectRec) => 
+      if (!this.subjectList.find((sbRec: SubjectExRec) => 
         sbRec.Required === subject.Required 
         && sbRec.RequiredBy === subject.RequiredBy 
         && sbRec.SubjectName === subject.SubjectName)) {
         this.subjectList.push({
           StartLevel: group.startLevel,
           RowIndex: group.RowIndex,
-          courseList: [],
-          ...subject
+          smsSubjectList: [],
+          ...subject,
+          edit: false
         });
       }
 
-      const subRec = this.subjectList.find((sbRec: SubjectRec) => sbRec.Required === subject.Required && sbRec.RequiredBy === subject.RequiredBy && sbRec.SubjectName === subject.SubjectName);
+      const subRec = this.subjectList.find((sbRec: SubjectExRec) => sbRec.Required === subject.Required && sbRec.RequiredBy === subject.RequiredBy && sbRec.SubjectName === subject.SubjectName);
       if (subRec) {
         switch (`${subject.GradeYear}${subject.Semester}`) {
           case '11':
@@ -99,14 +101,15 @@ export class PlanComponent implements OnInit, OnDestroy {
             break;
         }
   
-        subRec?.courseList.push({
+        subRec?.smsSubjectList.push({
           CourseName: subject.FullName,
           GradeYear: subject.GradeYear,
           Semester: subject.Semester,
-          Credit: subject.Credit
+          Credit: subject.Credit,
+          jx: sbJX
         });
       }
-    });
+    }
 
     this.subjectList = this.subjectList.sort((a, b) => {
       return a.RowIndex - b.RowIndex;
@@ -117,14 +120,5 @@ export class PlanComponent implements OnInit, OnDestroy {
   planNameChange() {
     this.showEditTitle = false;
     this.store.dispatch(new SetPlanName(+this.curPlan.id, this.planNameControl.value));
-    // this.curPlanList = this.curPlanList.map((planRec: PlanRec) => {
-    //   if (planRec.id === this.curPlan.id) {
-    //     planRec.name = this.planNameControl.value;
-    //     console.log(planRec);
-    //     return planRec;
-    //   }
-    //   return planRec;
-    // });
-    // this.store.dispatch(new SetCurPlanList(this.curPlanList));
   }
 }

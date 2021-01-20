@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { PlanRec } from '../data';
 import { PlanService } from '../core/plan.service';
-import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName } from './plan.action';
+import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName, SetPlanContent } from './plan.action';
 import { LoadingService } from '../core/loading.service';
 
 @State({
@@ -72,6 +72,32 @@ export class PlanState {
             return plan;
         });
 
+        ctx.patchState({
+            curPlan: rsp.plan,
+            curPlanList: curPlans,
+            planList: plans
+        });
+        this.loadSrv.stopLoading();
+    }
+
+    @Action(SetPlanContent)
+    async setPlanContent(ctx: StateContext<PlanModel>, action: SetPlanContent) {
+        this.loadSrv.startLoading();
+        console.log('set plan content');
+        const rsp = await this.planSrv.setPlanContent(action.id, action.content);
+        const planMode = ctx.getState();
+        const plans = planMode.planList.map(plan => {
+            if (plan.id === rsp.plan.id) {
+                return rsp.plan;
+            }
+            return plan;
+        });
+        const curPlans = planMode.curPlanList?.map(plan => {
+            if (plan.id === rsp.plan.id) {
+                return rsp.plan;
+            }
+            return plan;
+        });
         ctx.patchState({
             curPlan: rsp.plan,
             curPlanList: curPlans,
