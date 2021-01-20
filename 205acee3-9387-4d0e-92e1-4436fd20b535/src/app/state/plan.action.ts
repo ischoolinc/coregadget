@@ -5,12 +5,17 @@ export class GetAllPlans {
     constructor() {}
 }
 
+export class SetCurPlanList {
+    static readonly type = '[plan] set current plan list';
+    constructor(public year: string) {}
+}
+
 export class SetCurPlan {
     static readonly type = '[plan] set current plan';
     constructor(public plan: PlanRec) {}
 }
 
-export class SetCurSchoolYear {
-    static readonly type = '[plan] set current school_year';
-    constructor(public schoolYear: string) {}
+export class SetPlanName {
+    static readonly type = '[plan] set plan name';
+    constructor(public id: number, public name: string) {}
 }

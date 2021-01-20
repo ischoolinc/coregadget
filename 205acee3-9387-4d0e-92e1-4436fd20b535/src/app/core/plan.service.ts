@@ -34,4 +34,9 @@ export class PlanService {
     return await this.contract.send('GetAllPlans', {});
   }
 
+  public async setPlanName(id: number, name: string) {
+    await this.connect();
+    return await this.contract.send('SetPlanName', { ID: id, Name: name });
+  }
+
 }
