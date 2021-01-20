@@ -1,3 +1,4 @@
+import { GadgetService } from './../core/gadget.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -8,6 +9,7 @@ export class DemoService {
 
   constructor(
     private http: HttpClient,
+    private gadget: GadgetService
   ) { }
 
   public getGraduationPlan() {

@@ -4,6 +4,7 @@ import { CourseCode } from './course-code';
 import { ListName, MOEService } from './moe.service';
 import { Injectable } from '@angular/core';
 import { Field } from './field';
+import { CourseCodeTable } from './course-code-table';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,20 @@ export class CourseCodeService {
     private moe: MOEService
   ) {}
 
+
+  public async getCourseCodeTable(groupCode: string): Promise<CourseCodeTable> {
+    const sixteen = await this.moe.getCourseCodeTable(groupCode);
+    const cct = new CourseCodeTable(sixteen.Response.Code);
+
+    try {
+      await this.applyDescription(cct.getCodesRef());
+    } catch(err) {
+      console.log(err);
+    }
+
+
+    return cct;
+  }
   /**
    * 套用課程代碼中每個欄位的中文說明。
    * @param codeList 課程代碼清單。
