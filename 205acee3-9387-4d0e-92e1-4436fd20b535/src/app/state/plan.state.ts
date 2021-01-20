@@ -3,6 +3,7 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { PlanRec } from '../data';
 import { PlanService } from '../core/plan.service';
 import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName } from './plan.action';
+import { LoadingService } from '../core/loading.service';
 
 @State({
     name: 'plan',
@@ -17,11 +18,13 @@ import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName } from './plan.act
 export class PlanState {
 
     constructor(
-        private planSrv: PlanService
+        private planSrv: PlanService,
+        private loadSrv: LoadingService
     ) {}
 
     @Action(GetAllPlans)
     async getAllPlans(ctx: StateContext<PlanModel>, action: GetAllPlans) {
+        this.loadSrv.startLoading();
         const rsp = await this.planSrv.getAllPlans();
         const yearList: string[] = [];
         rsp.plan.forEach((plan: PlanRec) => {
@@ -33,22 +36,27 @@ export class PlanState {
             planList: [].concat(rsp.plan || []),
             yearList,
             curPlan: {} as PlanRec,
-            // curSchoolYear: ''
         });
+        this.loadSrv.stopLoading();
     }
 
     @Action(SetCurPlanList)
     setCurPlanList(ctx: StateContext<PlanModel>, action: SetCurPlanList) {
+        this.loadSrv.startLoading();
         ctx.patchState({curPlanList: ctx.getState().planList.filter(plan => plan.school_year === action.year)});
+        this.loadSrv.stopLoading();
     }
 
     @Action(SetCurPlan)
     async setCurPlan(ctx: StateContext<PlanModel>, action: SetCurPlan) {
+        this.loadSrv.startLoading();
         ctx.patchState({curPlan: action.plan});
+        this.loadSrv.stopLoading();
     }
 
     @Action(SetPlanName)
     async setPlanName(ctx: StateContext<PlanModel>, action: SetPlanName) {
+        this.loadSrv.startLoading();
         const rsp = await this.planSrv.setPlanName(action.id, action.name);
         const planMode = ctx.getState();
         const plans = planMode.planList.map(plan => {
@@ -69,6 +77,7 @@ export class PlanState {
             curPlanList: curPlans,
             planList: plans
         });
+        this.loadSrv.stopLoading();
     }
 
 }

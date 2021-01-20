@@ -31,6 +31,7 @@ import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlanInfoComponent } from './plan/plan-info/plan-info.component';
 import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
 import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
+import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
     PlanInfoComponent,
     PlanConfigComponent,
     PlanComponent,
-    PlanEditorComponent
+    PlanEditorComponent,
+    LoadingScreenComponent
   ],
   imports: [
     BrowserModule,
