@@ -82,8 +82,7 @@ export class PlanState {
 
     @Action(SetPlanContent)
     async setPlanContent(ctx: StateContext<PlanModel>, action: SetPlanContent) {
-        this.loadSrv.startLoading();
-        console.log('set plan content');
+        // this.loadSrv.startLoading();
         const rsp = await this.planSrv.setPlanContent(action.id, action.content);
         const planMode = ctx.getState();
         const plans = planMode.planList.map(plan => {
@@ -103,7 +102,7 @@ export class PlanState {
             curPlanList: curPlans,
             planList: plans
         });
-        this.loadSrv.stopLoading();
+        // this.loadSrv.stopLoading();
     }
 
 }

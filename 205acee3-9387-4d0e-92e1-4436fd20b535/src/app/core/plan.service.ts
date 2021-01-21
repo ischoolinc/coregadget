@@ -41,7 +41,6 @@ export class PlanService {
 
   public async setPlanContent(id: number, content: string) {
     await this.connect();
-    console.log('call service');
     return await this.contract.send('SetPlanContent', { ID: id, Content: content});
   }
 

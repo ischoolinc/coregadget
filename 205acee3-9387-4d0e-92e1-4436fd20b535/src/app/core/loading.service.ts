@@ -19,12 +19,10 @@ export class LoadingService {
   }
 
   startLoading() {
-    console.log('start loading');
     this.loading = true;
   }
 
   stopLoading() {
-    console.log('stop loading');
     this.loading = false;
   }
 
