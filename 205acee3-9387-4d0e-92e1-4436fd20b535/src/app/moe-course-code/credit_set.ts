@@ -41,6 +41,12 @@ export class CreditSet {
     return result;
   }
 
+  public clone() {
+    const newone = new CreditSet();
+    newone.credits = [...this.credits];
+    return newone;
+  }
+
   public static parse(credits: string) {
     const cs = new CreditSet();
 

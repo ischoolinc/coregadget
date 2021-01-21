@@ -10,6 +10,9 @@ export class Subject {
     this.level = data.getAttr('Level');
     this.required = data.getAttr('Required') as Required;
     this.requiredBy = data.getAttr('RequiredBy') as RequiredBy;
+    this.gradeYear = +data.getAttr('GradeYear');
+    this.semester = +data.getAttr('Semester');
+    this.credit = +data.getAttr('Credit');
   }
 
   public name: string;
@@ -20,4 +23,9 @@ export class Subject {
 
   public requiredBy: RequiredBy;
 
+  public gradeYear: number;
+
+  public semester: number;
+
+  public credit: number;
 }

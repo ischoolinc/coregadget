@@ -1,6 +1,12 @@
 import { CreditSet } from './credit_set';
 import { Required, RequiredBy } from './graduation-plan/common';
 
+export interface ComparableSubject {
+
+  getUnifiedSubject(): UnifiedSubject;
+
+}
+
 /** 代表一致化的科目資料，可用來比較與檢查。 */
 export class UnifiedSubject {
 
