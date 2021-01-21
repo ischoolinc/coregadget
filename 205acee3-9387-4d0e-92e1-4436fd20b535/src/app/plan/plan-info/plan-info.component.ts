@@ -119,7 +119,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       RequiredBy: '',
       SubjectCode: '',
       StartLevel: '',
-      RowIndex: 0,
+      RowIndex: this.subjectList.length,
       LastSemester1: '',
       NextSemester1: '',
       LastSemester2: '',
@@ -166,42 +166,112 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     }
   }
 
-  newJsonx(sb: SubjectExRec) {
+  newJsonx(sb: SubjectExRec): SubjectExRec {
+    const startLevel = sb.LastSemester1 || sb.NextSemester1 || sb.LastSemester2 || sb.NextSemester2 || sb.LastSemester3 || sb.NextSemester3 || sb.LastSemester4 || sb.NextSemester4 || '';
     if (sb.LastSemester1) {
       sb.smsSubjectList.push({
         GradeYear: '1',
         Semester: '1',
         CourseName: `${sb.SubjectName} I`,
         Credit: sb.LastSemester1,
-        jx: {} as Jsonx
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester1}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="1" Level="1" FullName="${sb.SubjectName} I" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
       });
     }
     if (sb.NextSemester1) {
-
+      sb.smsSubjectList.push({
+        GradeYear: '1',
+        Semester: '2',
+        CourseName: `${sb.SubjectName} II`,
+        Credit: sb.NextSemester1,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester1}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="1" Level="2" FullName="${sb.SubjectName} II" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
     if (sb.LastSemester2) {
-
+      sb.smsSubjectList.push({
+        GradeYear: '2',
+        Semester: '1',
+        CourseName: `${sb.SubjectName} III`,
+        Credit: sb.LastSemester2,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester2}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="2" Level="3" FullName="${sb.SubjectName} III" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
     if (sb.NextSemester2) {
-
+      sb.smsSubjectList.push({
+        GradeYear: '2',
+        Semester: '2',
+        CourseName: `${sb.SubjectName} IV`,
+        Credit: sb.NextSemester2,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester2}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="2" Level="4" FullName="${sb.SubjectName} IV" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
     if (sb.LastSemester3) {
-
+      sb.smsSubjectList.push({
+        GradeYear: '3',
+        Semester: '1',
+        CourseName: `${sb.SubjectName} V`,
+        Credit: sb.LastSemester3,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester3}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="3" Level="5" FullName="${sb.SubjectName} V" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
     if (sb.NextSemester3) {
-
+      sb.smsSubjectList.push({
+        GradeYear: '3',
+        Semester: '2',
+        CourseName: `${sb.SubjectName} VI`,
+        Credit: sb.NextSemester3,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester3}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="3" Level="6" FullName="${sb.SubjectName} VI" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
     if (sb.LastSemester4) {
-      
+      sb.smsSubjectList.push({
+        GradeYear: '4',
+        Semester: '1',
+        CourseName: `${sb.SubjectName} VII`,
+        Credit: sb.LastSemester4,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester4}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="4" Level="7" FullName="${sb.SubjectName} VII" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
     if (sb.NextSemester4) {
-
+      sb.smsSubjectList.push({
+        GradeYear: '4',
+        Semester: '2',
+        CourseName: `${sb.SubjectName} VIII`,
+        Credit: sb.NextSemester4,
+        jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester4}" Domain="${sb.Domain}" Entry="${sb.Entry}" 
+GradeYear="4" Level="8" FullName="${sb.SubjectName} VIII" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}" 
+Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${startLevel}" />
+</Subject>`).child('Subject')
+      });
     }
+
+    return sb;
   }
 
   saveState(sbRec: SubjectExRec) {
     if (!sbRec.smsSubjectList.length) {
-      this.newJsonx(sbRec);
+      sbRec = this.newJsonx(sbRec);
+      console.log(sbRec);
     }
 
     sbRec.edit = false;
