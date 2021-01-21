@@ -23,7 +23,7 @@ export class CourseCodeTable {
   }
 
   public [Symbol.iterator]() {
-    return this.records;
+    return this.records.values();
   }
 
   /** 合併兩個課程代碼表。 */
