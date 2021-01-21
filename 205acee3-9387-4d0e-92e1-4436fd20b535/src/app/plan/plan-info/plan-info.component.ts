@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PlanRec, SubjectExRec } from 'src/app/data';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, Select } from '@ngxs/store';
@@ -8,6 +8,7 @@ import { PlanModel } from 'src/app/state/plan.state';
 import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Jsonx } from '@1campus/jsonx';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-plan-info',
@@ -17,6 +18,7 @@ import { Jsonx } from '@1campus/jsonx';
 export class PlanInfoComponent implements OnInit, OnDestroy {
 
   @Input() columns: string[] = [];
+  dataSource = new MatTableDataSource<SubjectExRec>();
   subjectList: SubjectExRec[] = [];
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
   curPlan: PlanRec = {} as PlanRec;
@@ -24,7 +26,8 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog,
-    private store: Store
+    private store: Store,
+    private detect: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -103,6 +106,32 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       return a.RowIndex - b.RowIndex;
     });
 
+    this.dataSource = new MatTableDataSource(this.subjectList);
+  }
+
+  addSubject() {
+    console.log('add btn click');
+    this.subjectList.splice(0, 0, {
+      Domain: '',
+      Entry: '',
+      SubjectName: '',
+      Required: '',
+      RequiredBy: '',
+      SubjectCode: '',
+      StartLevel: '',
+      RowIndex: 0,
+      LastSemester1: '',
+      NextSemester1: '',
+      LastSemester2: '',
+      NextSemester2: '',
+      LastSemester3: '',
+      NextSemester3: '',
+      LastSemester4: '',
+      NextSemester4: '',
+      smsSubjectList: [],
+      edit: true
+    });
+    this.dataSource.data = this.subjectList;
   }
 
   /** 單筆編輯 */
@@ -118,7 +147,63 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  save(sbRec: SubjectExRec) {
+  /** SubjectName + Required + RequiredBy => 唯一值*/
+  checkSRROnly(sb: SubjectExRec) {
+    const duplicate = this.subjectList.filter(sbRec => sbRec.SubjectName === sb.SubjectName 
+      && sbRec.RequiredBy === sb.RequiredBy 
+      && sbRec.Required === sbRec.Required).length > 1;
+    if (duplicate) {
+      this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: '警告',
+          confirmContent: `「${sb.SubjectName},${sb.RequiredBy},${sb.Required}」，資料重複無法儲存！`,
+          yesBtnText: '確定',
+          noBtnText: '取消'
+        }
+      });
+    } else {
+      this.saveState(sb)
+    }
+  }
+
+  newJsonx(sb: SubjectExRec) {
+    if (sb.LastSemester1) {
+      sb.smsSubjectList.push({
+        GradeYear: '1',
+        Semester: '1',
+        CourseName: `${sb.SubjectName} I`,
+        Credit: sb.LastSemester1,
+        jx: {} as Jsonx
+      });
+    }
+    if (sb.NextSemester1) {
+
+    }
+    if (sb.LastSemester2) {
+
+    }
+    if (sb.NextSemester2) {
+
+    }
+    if (sb.LastSemester3) {
+
+    }
+    if (sb.NextSemester3) {
+
+    }
+    if (sb.LastSemester4) {
+      
+    }
+    if (sb.NextSemester4) {
+
+    }
+  }
+
+  saveState(sbRec: SubjectExRec) {
+    if (!sbRec.smsSubjectList.length) {
+      this.newJsonx(sbRec);
+    }
+
     sbRec.edit = false;
     // update jsonx
     sbRec.smsSubjectList.forEach((smsSubject: any) => {
@@ -162,7 +247,10 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
           break;
       }
     });
+    this.save();
+  }
 
+  save() {
     let subjectList: any[] = [];
     this.subjectList.forEach((sbRec: SubjectExRec) => {
       subjectList = subjectList.concat(sbRec.smsSubjectList.map(smsSubject => {return smsSubject.jx.toXml('Subject');}));
@@ -186,7 +274,14 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       take(1)
     ).subscribe(v => {
       if (v) {
-
+        this.subjectList = this.subjectList.filter(subRec => {
+          if (subRec.SubjectName === sb.SubjectName && subRec.RequiredBy === sb.RequiredBy && subRec.Required === sb.Required) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        this.save();
       }
       sb.edit = false;
     });

@@ -14,7 +14,7 @@ export interface SubjectRec {
     /** 科目代碼 */
     SubjectCode: string;
     /** 開始級別 */
-    StartLevel: number;
+    StartLevel: string;
     /** desktop 排序方式 */
     RowIndex: number;
     /** 1上 */

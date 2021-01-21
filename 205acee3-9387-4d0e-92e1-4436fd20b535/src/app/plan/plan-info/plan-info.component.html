@@ -1,5 +1,10 @@
 <div style="height: 900px;overflow: auto;">
-    <table mat-table [dataSource]="subjectList" class="full-width">
+    <button mat-fab color="primary" matTooltip="新增科目"
+        style="position: absolute;bottom: 80px;right: 100px;"
+        (click)="addSubject()">
+        <mat-icon>add</mat-icon>
+    </button>
+    <table mat-table [dataSource]="dataSource" class="full-width">
         <ng-container matColumnDef="Domain">
             <th mat-header-cell *matHeaderCellDef> 領域 </th>
             <td mat-cell *matCellDef="let element">
@@ -78,8 +83,8 @@
                     {{element.StartLevel}}
                 </ng-container>
                 <ng-template #tplStartLevel>
-                    <mat-form-field class="middle-col">
-                        <input matInput type="text" [(ngModel)]="element.StartLevel">
+                    <mat-form-field class="small-col">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.StartLevel">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -92,7 +97,7 @@
                 </ng-container>
                 <ng-template #tplLS1>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.LastSemester1">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.LastSemester1">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -105,7 +110,7 @@
                 </ng-container>
                 <ng-template #tplNS1>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.NextSemester1">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.NextSemester1">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -118,7 +123,7 @@
                 </ng-container>
                 <ng-template #tplLS2>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.LastSemester2">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.LastSemester2">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -131,7 +136,7 @@
                 </ng-container>
                 <ng-template #tplNS2>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.NextSemester2">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.NextSemester2">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -144,7 +149,7 @@
                 </ng-container>
                 <ng-template #tplLS3>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.LastSemester3">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.LastSemester3">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -157,12 +162,12 @@
                 </ng-container>
                 <ng-template #tplNS3>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.NextSemester3">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.NextSemester3">
                     </mat-form-field>
                 </ng-template>
             </td>
         </ng-container>
-        <ng-container matColumnDef="LastSemester4">
+        <ng-container matColumnDef="LastSemester4" class="center">
             <th mat-header-cell *matHeaderCellDef class="center"> 4上 </th>
             <td mat-cell *matCellDef="let element" class="right-border">
                 <ng-container *ngIf="!element.edit;else tplLS4">
@@ -170,7 +175,7 @@
                 </ng-container>
                 <ng-template #tplLS4>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.LastSemester4">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.LastSemester4">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -183,7 +188,7 @@
                 </ng-container>
                 <ng-template #tplNS4>
                     <mat-form-field class="small-col">
-                        <input matInput type="text" [(ngModel)]="element.NextSemester4">
+                        <input matInput type="number" [min]="1" [(ngModel)]="element.NextSemester4">
                     </mat-form-field>
                 </ng-template>
             </td>
@@ -201,7 +206,7 @@
                     <mat-icon>edit</mat-icon>
                 </button>
                 <div *ngIf="element.edit" style="display: flex;flex-direction: row;">
-                    <button mat-icon-button color="primary" (click)="save(element)">
+                    <button mat-icon-button color="primary" (click)="checkSRROnly(element)">
                         <mat-icon>save</mat-icon>
                     </button>
                     <button mat-icon-button color="warn" (click)="remove(element)">

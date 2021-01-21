@@ -14,6 +14,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
@@ -22,17 +23,17 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
   imports: [
     CommonModule,
     MatDialogModule,
-    MatTabsModule,
-    MatListModule,
+    // MatTabsModule,
+    // MatListModule,
     MatIconModule,
-    MatSelectModule,
-    MatSidenavModule,
+    // MatSelectModule,
+    // MatSidenavModule,
     MatButtonModule,
-    MatDividerModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatProgressSpinnerModule,
-    MatInputModule,
+    // MatDividerModule,
+    // MatTableModule,
+    // MatToolbarModule,
+    // MatProgressSpinnerModule,
+    // MatInputModule,
   ],
   exports: [
     ConfirmDialogComponent,
@@ -48,6 +49,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MatToolbarModule,
     MatProgressSpinnerModule,
     MatInputModule,
+    MatTooltipModule
   ],
   entryComponents: [
     ConfirmDialogComponent
