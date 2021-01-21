@@ -1,3 +1,4 @@
+import { SubjectKey } from './subject-key';
 import { CreditSet } from './credit_set';
 import { CourseCode } from './course-code';
 import { CourseCodeRecord } from './course-code-record';
@@ -27,8 +28,8 @@ export class CourseCodeTable {
   }
 
   /** 使用「Unified Key」取得代碼。 */
-  public getCodeByUnifiedKey(key: string) {
-    return this.recordMap.get(key);
+  public getCodeBySubjectKey(key: SubjectKey) {
+    return this.recordMap.get(key.identify);
   }
 
   public [Symbol.iterator]() {

@@ -53,7 +53,7 @@ export class SubjectGroup implements ComparableSubject {
   }
 
   public fillCorrespondingCourseCode(codeTable: CourseCodeTable) {
-    this.courseCode = codeTable.getCodeByUnifiedKey(this.key.identify);
+    this.courseCode = codeTable.getCodeBySubjectKey(this.key);
     return this.courseCode;
   }
 
