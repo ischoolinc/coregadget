@@ -17,7 +17,7 @@ export class CourseCodeRecord implements ComparableSubject {
 
   /** 取得一致化的科目資料，用來進行通用比對。 */
   public getUnifiedSubject() {
-    const us = new UnifiedSubject();
+    const us = new UnifiedSubject(this);
 
     const { required, requiredBy } = CourseTypeMap.get(this.code.getCode(Field.N07))!;
     us.subjectName = this.subjectName;

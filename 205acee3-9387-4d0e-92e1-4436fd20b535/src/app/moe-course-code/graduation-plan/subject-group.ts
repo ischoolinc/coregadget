@@ -1,14 +1,16 @@
+import { CourseCodeTable } from './../course-code-table';
+import { CourseCodeRecord } from './../course-code-record';
 import { CreditSet, SemesterList } from './../credit_set';
 import { ComparableSubject, UnifiedSubject } from './../unified-subject';
 import { Subject } from './subject';
-import { SubjectGroupKey } from './subject-group-key';
+import { SubjectKey } from '../subject-key';
 
 export class SubjectGroup implements ComparableSubject {
 
   private subjects: Subject[] = [];
 
   constructor(
-    public key: SubjectGroupKey,
+    public key: SubjectKey,
   ) {}
 
   public addSubject(subj: Subject) {
@@ -16,7 +18,7 @@ export class SubjectGroup implements ComparableSubject {
   }
 
   public getUnifiedSubject() {
-    const us = new UnifiedSubject();
+    const us = new UnifiedSubject(this);
 
     const subj = this.getFirstSubject()!;
 
@@ -49,4 +51,12 @@ export class SubjectGroup implements ComparableSubject {
       return undefined;
     }
   }
+
+  public fillCorrespondingCourseCode(codeTable: CourseCodeTable) {
+    this.courseCode = codeTable.getCodeByUnifiedKey(this.key.identify);
+    return this.courseCode;
+  }
+
+  /** 相應的課程代碼資訊 */
+  public courseCode?: CourseCodeRecord;
 }

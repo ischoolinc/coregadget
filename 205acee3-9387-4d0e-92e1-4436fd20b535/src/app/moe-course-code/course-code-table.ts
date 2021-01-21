@@ -7,14 +7,18 @@ import { CodeData } from './moe.service';
 export class CourseCodeTable {
 
   private records: CourseCodeRecord[] = [];
+  private recordMap = new Map<string, CourseCodeRecord>();
 
   constructor(codes: CodeData[]) {
     for(const code of codes) {
       const {course_code, subject_name, credits} = code;
-      this.records.push(new CourseCodeRecord(new CourseCode(course_code),
-        subject_name,
-        CreditSet.parse(credits)));
+      const record = new CourseCodeRecord(new CourseCode(course_code),
+      subject_name,
+      CreditSet.parse(credits));
+      this.records.push(record);
     }
+
+    this.generateMap();
   }
 
   /** 取得所有課程代碼清單的參考。 */
@@ -22,8 +26,22 @@ export class CourseCodeTable {
     return this.records.map(v => v.code);
   }
 
+  /** 使用「Unified Key」取得代碼。 */
+  public getCodeByUnifiedKey(key: string) {
+    return this.recordMap.get(key);
+  }
+
   public [Symbol.iterator]() {
     return this.records.values();
+  }
+
+  private generateMap() {
+    this.recordMap.clear();
+
+    for(const record of this) {
+      this.recordMap.set(record.getUnifiedSubject().getUnifiedKey(), record);
+    }
+
   }
 
   /** 合併兩個課程代碼表。 */
@@ -34,6 +52,7 @@ export class CourseCodeTable {
 
     const newTable = new CourseCodeTable([]);
     newTable.records = combine;
+    newTable.generateMap();
 
     return newTable;
   }

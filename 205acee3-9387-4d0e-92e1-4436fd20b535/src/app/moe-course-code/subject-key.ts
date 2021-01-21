@@ -1,6 +1,6 @@
-import { Required, RequiredBy } from './common';
+import { Required, RequiredBy } from './graduation-plan/common';
 
-export class SubjectGroupKey {
+export class SubjectKey {
 
   constructor(
     public name: string,

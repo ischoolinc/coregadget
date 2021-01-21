@@ -1,4 +1,5 @@
-import { SubjectGroupKey } from './graduation-plan/subject-group-key';
+import { DiffSubject } from './diff-subject';
+import { SubjectKey } from './subject-key';
 import { CreditSet } from './credit_set';
 import { Required, RequiredBy } from './graduation-plan/common';
 
@@ -11,7 +12,10 @@ export interface ComparableSubject {
 /** 代表一致化的科目資料，可用來比較與檢查。 */
 export class UnifiedSubject {
 
-  constructor() {
+  constructor(
+    /** 科目的原始資料。 */
+    public readonly originData: any,
+  ) {
   }
 
   /** 科目名稱。 */
@@ -33,12 +37,39 @@ export class UnifiedSubject {
   public entry?: string;
 
   public getUnifiedKey() {
-    return new SubjectGroupKey(this.subjectName!,
+    return new SubjectKey(this.subjectName!,
       this.required!,
       this.requiredBy!).identify;
   }
 
+  /** 在科目名稱、校部訂、必選修相同狀況下比對。 */
+  public getDiff(other: UnifiedSubject) {
+    let isDiff = false;
+    const diff = new DiffSubject(this, 'change');
+
+    if(other.credits!.unifiedKey !== this.credits!.unifiedKey) {
+      // 檢查學分數不同。
+      const creditDiff = this!.credits!.diff(other.credits!);
+      diff.newCredits = creditDiff;
+      isDiff = true;
+    }
+
+    if(other.domain !== this.domain) {
+      // 檢查領域不同。
+      diff.newDomain = other.domain;
+      isDiff = true;
+    }
+
+    if (other.entry !== this.entry) {
+      // 檢查分項類別不同。
+      diff.newEntry = other.entry;
+      isDiff = true;
+    }
+
+    return isDiff ? diff : undefined;
+  }
+
   public clone() {
-    return Object.assign(new UnifiedSubject(), this)
+    return Object.assign(new UnifiedSubject(this.originData), this)
   }
 }
