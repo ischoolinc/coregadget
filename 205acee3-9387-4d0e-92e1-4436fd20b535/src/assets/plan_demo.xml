@@ -1,59 +1,23 @@
 <GraduationPlan SchoolYear="108">
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="實習科目" FullName="日語發音與口語練習 III" GradeYear="1" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="部訂" Semester="2" SubjectName="日語發音與口語練習" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="1" startLevel="3"/>
+  <Subject Category="" Credit="4" Domain="語文領域" Entry="學業" FullName="國語文 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國語文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+    <Grouping RowIndex="1" startLevel="1"/>
   </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="實習科目" FullName="日語發音與口語練習 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="部訂" Semester="1" SubjectName="日語發音與口語練習" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="1" startLevel="3"/>
+  <Subject Category="" Credit="4" Domain="語文領域" Entry="學業" FullName="國語文 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="國語文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+    <Grouping RowIndex="1" startLevel="1"/>
   </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="實習科目" FullName="日語發音與口語練習 V" GradeYear="2" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="部訂" Semester="2" SubjectName="日語發音與口語練習" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="1" startLevel="3"/>
+  <Subject Category="" Credit="4" Domain="語文領域" Entry="學業" FullName="國語文 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國語文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+    <Grouping RowIndex="1" startLevel="1"/>
   </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="實習科目" FullName="日語發音與口語練習 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="部訂" Semester="1" SubjectName="日語發音與口語練習" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="1" startLevel="3"/>
+  <Subject Category="" Credit="4" Domain="語文領域" Entry="學業" FullName="國語文 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="國語文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+    <Grouping RowIndex="1" startLevel="1"/>
   </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="實習科目" FullName="日語發音與口語練習 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="日語發音與口語練習" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+  <Subject Category="" Credit="2" Domain="語文領域" Entry="學業" FullName="國語文 V" GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國語文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+    <Grouping RowIndex="1" startLevel="1"/>
+  </Subject>
+  <Subject Category="" Credit="2" Domain="語文領域" Entry="學業" FullName="國語文 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="國語文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
+    <Grouping RowIndex="1" startLevel="1"/>
+  </Subject>
+  <Subject Category="" Credit="2" Domain="外國語文" Entry="學業" FullName="數學 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="數學" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
     <Grouping RowIndex="2" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="學業" FullName="日語會話 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="日語會話" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="3" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="實習科目" FullName="日語聽講練習 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="日語聽講練習" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="4" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="1" Domain="" Entry="健康與護理" FullName="全民國防教育 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="全民國防教育" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="5" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="外國語文" Entry="學業" FullName="英文 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="英文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="6" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="3" Domain="外國語文" Entry="學業" FullName="英語會話 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="英語會話" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="7" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="自然" Entry="學業" FullName="計算機概論 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="計算機概論" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="8" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="藝術" Entry="學業" FullName="音樂" GradeYear="1" Level="" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="音樂" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="9" startLevel=""/>
-  </Subject>
-  <Subject Category="" Credit="1" Domain="" Entry="健康與護理" FullName="健康與護理 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="健康與護理" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="10" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="商業類科" Entry="實習科目" FullName="商業概論 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="商業概論" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="11" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="4" Domain="本國語文" Entry="學業" FullName="國文 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國文" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="12" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="自然" Entry="學業" FullName="基礎物理" GradeYear="1" Level="" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="基礎物理" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="13" startLevel=""/>
-  </Subject>
-  <Subject Category="" Credit="3" Domain="數學" Entry="學業" FullName="數學 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="數學" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="14" startLevel="1"/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="歷史" Entry="學業" FullName="歷史" GradeYear="1" Level="" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="歷史" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="15" startLevel=""/>
-  </Subject>
-  <Subject Category="" Credit="2" Domain="" Entry="體育" FullName="體育 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="體育" 授課學期學分="" 科目屬性="" 課程代碼="" 課程名稱="" 課程類別="" 開課方式="" 領域名稱="">
-    <Grouping RowIndex="16" startLevel="1"/>
   </Subject>
 </GraduationPlan>

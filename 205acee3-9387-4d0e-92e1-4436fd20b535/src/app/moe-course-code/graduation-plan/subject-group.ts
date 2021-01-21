@@ -24,9 +24,11 @@ export class SubjectGroup implements ComparableSubject {
     us.required = subj.required;
     us.requiredBy = subj.requiredBy;
     us.credits = new CreditSet();
+    us.domain = subj.domain;
+    us.entry = subj.entry;
 
     for(const s of this) {
-      us.credits!.set(s.gradeYear + s.semester as SemesterList, s.credit);
+      us.credits!.setByGradeYear(s.gradeYear, s.semester, s.credit);
     }
 
     return us;

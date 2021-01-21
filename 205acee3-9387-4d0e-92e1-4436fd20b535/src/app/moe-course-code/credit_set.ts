@@ -20,9 +20,24 @@ export class CreditSet {
     this.credits[semester - 1] = credit;
   }
 
+  public setByGradeYear(gradeYear: number, semester: number, credit: number) {
+    const map = new Map<string, number>([
+      ['11', 0], ['12', 1],
+      ['21', 2], ['22', 3],
+      ['31', 4], ['32', 5],
+    ]);
+
+    this.credits[map.get(`${gradeYear}${semester}`)!] = credit;
+  }
+
   /** 取得指定學期的學分數。 */
   public get(semester: SemesterList) {
     return this.credits[semester - 1]
+  }
+
+  /** 取得可用來比較的字串。 */
+  public get unifiedKey() {
+    return this.credits.join(':');
   }
 
   public diff(other: CreditSet) {

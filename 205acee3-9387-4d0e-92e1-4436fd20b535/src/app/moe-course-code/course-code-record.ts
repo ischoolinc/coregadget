@@ -24,6 +24,13 @@ export class CourseCodeRecord implements ComparableSubject {
     us.credits = this.credits.clone();
     us.required = required;
     us.requiredBy = requiredBy;
+    us.domain = this.code.getDescription(Field.N10);
+
+    if (['2', '3'].indexOf(this.code.getCode(Field.N09)) >= 0) { // 專業科目、實習科目
+      us.entry = this.code.getDescription(Field.N09);
+    } else {
+      us.entry = '學業';
+    }
 
     return us;
   }

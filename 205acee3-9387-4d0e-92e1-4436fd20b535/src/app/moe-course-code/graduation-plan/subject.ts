@@ -13,6 +13,8 @@ export class Subject {
     this.gradeYear = +data.getAttr('GradeYear');
     this.semester = +data.getAttr('Semester');
     this.credit = +data.getAttr('Credit');
+    this.domain = data.getAttr('Domain');
+    this.entry = data.getAttr('Entry');
   }
 
   public name: string;
@@ -28,4 +30,9 @@ export class Subject {
   public semester: number;
 
   public credit: number;
+
+  public domain: string;
+
+  public entry: string;
+
 }
