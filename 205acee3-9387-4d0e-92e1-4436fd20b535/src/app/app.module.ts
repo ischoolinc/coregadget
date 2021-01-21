@@ -18,6 +18,7 @@ import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlanInfoComponent } from './plan/plan-info/plan-info.component';
 import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { NewPlanComponent } from './plan-list/new-plan/new-plan.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
     PlanInfoComponent,
     PlanConfigComponent,
     PlanComponent,
-    LoadingScreenComponent
+    LoadingScreenComponent,
+    NewPlanComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +40,9 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
     NgxsModule.forRoot([PlanState], {developmentMode: !environment.production}),
     SharedModule
   ],
-  entryComponents: [],
+  entryComponents: [
+    NewPlanComponent
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

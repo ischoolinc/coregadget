@@ -7,6 +7,8 @@ import { Store, Select } from '@ngxs/store';
 import { PlanModel } from '../state/plan.state';
 import { SetCurPlan, SetCurPlanList } from '../state/plan.action';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { NewPlanComponent } from './new-plan/new-plan.component';
 
 @Component({
   selector: 'app-plan-list',
@@ -24,7 +26,8 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -60,6 +63,18 @@ export class PlanListComponent implements OnInit, OnDestroy {
   setCurYear(year: string) {
     this.curYear = year;
     this.store.dispatch(new SetCurPlanList(this.curYear));
+  }
+
+  newPlan() {
+    const dialogRef = this.dialog.open(NewPlanComponent, {
+      width: '700px'
+    });
+    
+    dialogRef.afterClosed().pipe(
+      take(1)
+    ).subscribe(v => {
+      console.log(v);
+    });
   }
 
 }
