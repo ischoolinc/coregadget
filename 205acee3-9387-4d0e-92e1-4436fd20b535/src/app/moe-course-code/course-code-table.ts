@@ -36,6 +36,10 @@ export class CourseCodeTable {
     return this.records.values();
   }
 
+  public getCodes() {
+    return [...this];
+  }
+
   private generateMap() {
     this.recordMap.clear();
 

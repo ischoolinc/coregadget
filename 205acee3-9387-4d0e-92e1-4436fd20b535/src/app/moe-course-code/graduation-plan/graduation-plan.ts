@@ -30,6 +30,11 @@ export class GraduationPlan {
     return this.subjGroups.values();
   }
 
+  /** 取得科目群組清單。 */
+  public getSubjectGroups() {
+    return [...this];
+  }
+
   /** 對照課程代碼表。 */
   public fillCorrespondingCourseCode(courseTable: CourseCodeTable) {
 

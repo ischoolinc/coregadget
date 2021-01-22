@@ -44,13 +44,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     // const xml = await this.gp.getGraduationPlan().toPromise();
     // const gp = GraduationPlan.parse(xml);
-
     // const cct = await this.ccsrv.getCourseCodeTable('108041305H11101A');
-    // const cct2 = await this.ccsrv.getCourseCodeTable('108120401V213010');
 
-    // const cct3 = CourseCodeTable.merge(cct, cct2);
+    // const diff = gp.diff(cct);
 
-    // console.log(cct3);
+    // gp.fillCorrespondingCourseCode(cct);
+    // for(const sg of gp) {
+    //   console.log(sg);
+    //   console.log(cct.getCodeBySubjectKey(sg.key));
+    // }
 
   }
 
