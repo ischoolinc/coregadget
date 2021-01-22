@@ -288,7 +288,7 @@
             $scope.templateList = [];
             $scope.examList = [];
             /**定期、平時比例 */
-            course.courseScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage || 0);
+            course.courseScorePercentage = Number(course.TemplateExtension?.Extension.ScorePercentage || 0);
             course.courseAssignmentPercentage = 100 - course.courseScorePercentage;
 
             /**
@@ -368,7 +368,7 @@
                                 /** 定期比例
                                  *  平時比例：(100 - 定期比例)%
                                 */
-                                var ScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage)/100 || 0;
+                                var ScorePercentage = Number(course.TemplateExtension.Extension?.ScorePercentage)/100 || 0;
                                 // 評量比重
                                 var p = Number(template.Percentage) || 0;
                                 // 定期評量成績

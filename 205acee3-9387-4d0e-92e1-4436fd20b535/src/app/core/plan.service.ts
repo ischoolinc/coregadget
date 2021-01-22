@@ -19,15 +19,15 @@ export class PlanService {
     }
   }
 
-  public async getSchoolYear() {
-    await this.connect();
-    return await this.contract.send('GetSchoolYear', {});
-  }
+  // public async getSchoolYear() {
+  //   await this.connect();
+  //   return await this.contract.send('GetSchoolYear', {});
+  // }
 
-  public async getPlans(year: string) {
-    await this.connect();
-    return await this.contract.send('GetPlans', { SchoolYear: year });
-  }
+  // public async getPlans(year: string) {
+  //   await this.connect();
+  //   return await this.contract.send('GetPlans', { SchoolYear: year });
+  // }
 
   public async getAllPlans() {
     await this.connect();
@@ -36,7 +36,12 @@ export class PlanService {
 
   public async setPlanName(id: number, name: string) {
     await this.connect();
-    return await this.contract.send('SetPlanName', { ID: id, Name: name });
+    return await this.contract.send('SetPlanName', {Request: { ID: id, Name: name }});
+  }
+
+  public async setPlanContent(id: number, content: string) {
+    await this.connect();
+    return await this.contract.send('SetPlanContent', { ID: id, Content: content});
   }
 
 }

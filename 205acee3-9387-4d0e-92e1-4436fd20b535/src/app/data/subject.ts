@@ -1,3 +1,5 @@
+import { Jsonx } from "@1campus/jsonx";
+
 export interface SubjectRec {
     /** 領域 */
     Domain: string;
@@ -12,7 +14,7 @@ export interface SubjectRec {
     /** 科目代碼 */
     SubjectCode: string;
     /** 開始級別 */
-    StartLevel: number;
+    StartLevel: string;
     /** desktop 排序方式 */
     RowIndex: number;
     /** 1上 */
@@ -31,13 +33,19 @@ export interface SubjectRec {
     LastSemester4: string;
     /** 4下 */
     NextSemester4: string;
-    /** 課程清單 */
-    courseList: CourseRec[];
+    /** 學期課程清單 */
+    smsSubjectList: SemesterSubjectRec[];
 }
 
-export interface CourseRec {
+export interface SemesterSubjectRec {
     GradeYear: string;
     Semester: string;
     CourseName: string;
     Credit: string;
+    jx: Jsonx;
+}
+
+export interface SubjectExRec extends SubjectRec {
+    edit: boolean;
+    // jx: Jsonx;
 }

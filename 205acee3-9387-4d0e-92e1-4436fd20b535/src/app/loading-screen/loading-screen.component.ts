@@ -22,7 +22,6 @@ export class LoadingScreenComponent implements OnInit, OnDestroy {
       takeUntil(this.unSubscribe$)
     ).subscribe(v => {
       this.loading = v;
-      // console.log(v);
     });
   }
 
