@@ -66,14 +66,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
   }
 
   newPlan() {
-    const dialogRef = this.dialog.open(NewPlanComponent, {
-      width: '700px'
-    });
-    
-    dialogRef.afterClosed().pipe(
-      take(1)
-    ).subscribe(v => {
-      console.log(v);
+    this.dialog.open(NewPlanComponent, {
+      width: '700px',
+      disableClose: true
     });
   }
 

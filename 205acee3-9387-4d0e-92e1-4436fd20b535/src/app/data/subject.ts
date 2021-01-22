@@ -47,5 +47,4 @@ export interface SemesterSubjectRec {
 
 export interface SubjectExRec extends SubjectRec {
     edit: boolean;
-    // jx: Jsonx;
 }

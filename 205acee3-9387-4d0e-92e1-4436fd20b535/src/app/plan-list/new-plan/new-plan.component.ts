@@ -1,10 +1,12 @@
+import { Jsonx } from '@1campus/jsonx';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Select } from '@ngxs/store';
+import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { PlanRec } from 'src/app/data';
+import { NewPlan } from 'src/app/state/plan.action';
 import { PlanModel } from 'src/app/state/plan.state';
 
 @Component({
@@ -23,26 +25,58 @@ export class NewPlanComponent implements OnInit {
   });
 
   constructor(
-    public dialogRef: MatDialogRef<NewPlanComponent>
+    public dialogRef: MatDialogRef<NewPlanComponent>,
+    private store: Store
   ) { }
 
   ngOnInit(): void {
     this.plan$?.pipe(
       take(1)
     ).subscribe(v => {
-      this.planList = v.planList;
+      this.planList = [{id: '', name: '== 不複製現有課程規劃 ==', content: '', school_year: ''}].concat(v.planList);
     });
   }
 
   save() {
-    this.dialogRef.close({
-      year: this.planForm.get('year')?.value,
-      name: this.planForm.get('name')?.value,
-      plan: this.planForm.get('plan')?.value
-    });
+    const year = this.planForm.get('year')?.value;
+    const name = this.planForm.get('name')?.value;
+    const plan:PlanRec = this.planForm.get('plan')?.value;
+
+    if (plan.id) { // 複製現有課程規劃表
+      const jx = Jsonx.parse(plan.content);
+      if (year > 0) {
+        jx.child('GraduationPlan').setAttr('SchoolYear', year);
+        this.store.dispatch(new NewPlan(name, jx.toXml())).pipe(
+          take(1)
+        ).subscribe(() => {
+          this.close();
+        });
+      } else { // 不分入學年
+        const subjectContent = jx.child('GraduationPlan').children('Subject').toXml('Subject');
+        this.store.dispatch(new NewPlan(name, `<GraduationPlan>${subjectContent}</GraduationPlan>`)).pipe(
+          take(1)
+        ).subscribe(() => {
+          this.close();
+        });
+      }
+    } else {
+      if (year > 0) {
+        this.store.dispatch(new NewPlan(name, `<GraduationPlan SchoolYear="${year}"></GraduationPlan>`)).pipe(
+          take(1)
+        ).subscribe(() => {
+          this.close();
+        });
+      } else {
+        this.store.dispatch(new NewPlan(name, `<GraduationPlan></GraduationPlan>`)).pipe(
+          take(1)
+        ).subscribe(() => {
+          this.close();
+        });
+      }
+    }
   }
 
-  cancel() {
+  close() {
     this.dialogRef.close();
   }
 

@@ -24,3 +24,8 @@ export class SetPlanContent {
     static readonly type = '[plan] set plan content';
     constructor(public id: number, public content: string) {}
 }
+
+export class NewPlan {
+    static readonly type = '[plan] new plan';
+    constructor(public name: string, public content: string) {}
+}

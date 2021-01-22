@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { PlanRec } from '../data';
 import { PlanService } from '../core/plan.service';
-import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName, SetPlanContent } from './plan.action';
+import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName, SetPlanContent, NewPlan } from './plan.action';
 import { LoadingService } from '../core/loading.service';
 
 @State({
@@ -103,6 +103,36 @@ export class PlanState {
             planList: plans
         });
         // this.loadSrv.stopLoading();
+    }
+
+    @Action(NewPlan)
+    async newPlan(ctx: StateContext<PlanModel>, action: NewPlan) {
+        this.loadSrv.startLoading();
+        const { plan } = await this.planSrv.newPlan(action.name, action.content);
+        const planMode: PlanModel = ctx.getState();
+        const planList: PlanRec[] = planMode.planList.concat(plan);
+        const curPlanList: PlanRec[] = planMode.curPlanList?.concat([]) || [];
+        const yearList: string[] = [];
+
+        planMode.planList.forEach(plan => {
+            if (!yearList.find(year => year === plan.school_year)) {
+                yearList.push(plan.school_year);
+            }
+        });
+
+        if (planMode.curPlanList?.length) {
+            if (planMode.curPlanList[0].school_year === plan.school_year) {
+                curPlanList.push(plan);
+            }
+        }
+
+        ctx.setState({
+            planList, 
+            yearList,
+            curPlanList,
+            curPlan: planMode.curPlan
+        });
+        this.loadSrv.stopLoading();
     }
 
 }
