@@ -1,6 +1,6 @@
 import { Jsonx } from '@1campus/jsonx';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
@@ -33,6 +33,8 @@ export class NewPlanComponent implements OnInit {
     this.plan$?.pipe(
       take(1)
     ).subscribe(v => {
+      // 自訂課程規劃表名稱驗證規則
+      this.planForm.get('name')?.setValidators([Validators.required, PlanNameValidator(v.planList)]);
       this.planList = [{id: '', name: '== 不複製現有課程規劃 ==', content: '', school_year: ''}].concat(v.planList);
     });
   }
@@ -80,4 +82,11 @@ export class NewPlanComponent implements OnInit {
     this.dialogRef.close();
   }
 
+}
+
+export function PlanNameValidator(plans: PlanRec[]): ValidatorFn {
+  return (control: AbstractControl) => {
+      const forbidden = plans.find(plan => plan.name === control.value);
+      return forbidden ? {forbiddenName: {value: control.value}} : null;
+  };
 }

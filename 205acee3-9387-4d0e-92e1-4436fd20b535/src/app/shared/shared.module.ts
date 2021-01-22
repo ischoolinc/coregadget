@@ -23,17 +23,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
   imports: [
     CommonModule,
     MatDialogModule,
-    // MatTabsModule,
-    // MatListModule,
     MatIconModule,
-    // MatSelectModule,
-    // MatSidenavModule,
     MatButtonModule,
-    // MatDividerModule,
-    // MatTableModule,
-    // MatToolbarModule,
-    // MatProgressSpinnerModule,
-    // MatInputModule,
   ],
   exports: [
     ConfirmDialogComponent,
