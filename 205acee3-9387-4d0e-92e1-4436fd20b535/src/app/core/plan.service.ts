@@ -54,4 +54,9 @@ export class PlanService {
     return await this.contract.send('RemovePlan', {ID: id});
   }
 
+  public async getMoeGroupCode() {
+    await this.connect();
+    return await this.contract.send('GetMoeGroupCode', {});
+  }
+
 }

@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
@@ -40,7 +41,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MatToolbarModule,
     MatProgressSpinnerModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule
   ],
   entryComponents: [
     ConfirmDialogComponent
