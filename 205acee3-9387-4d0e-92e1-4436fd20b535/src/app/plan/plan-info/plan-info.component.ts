@@ -9,6 +9,11 @@ import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Jsonx } from '@1campus/jsonx';
 import { MatTableDataSource } from '@angular/material/table';
+import { CourseCodeService } from '../../moe-course-code/course-code.service';
+import { SubjectKey } from 'src/app/moe-course-code/subject-key';
+import { RequiredBy, Required } from 'src/app/moe-course-code/graduation-plan/common';
+import { GraduationPlan } from 'src/app/moe-course-code/graduation-plan/graduation-plan';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-plan-info',
@@ -27,7 +32,9 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private store: Store,
-    private detect: ChangeDetectorRef
+    private detect: ChangeDetectorRef,
+    private courseSrv: CourseCodeService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -37,13 +44,15 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       if (v.curPlan) {
         this.curPlan = v.curPlan;
         this.graduationPlanParse(this.curPlan.content);
+      } else {
+        this.router.navigate(['/']);
       }
     });
   }
 
   ngOnDestroy(): void {}
 
-  graduationPlanParse(xml: string) {
+  async graduationPlanParse(xml: string) {
     this.subjectList = [];
     const jx = Jsonx.parse(xml);
     
@@ -105,6 +114,23 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     this.subjectList = this.subjectList.sort((a, b) => {
       return a.RowIndex - b.RowIndex;
     });
+
+    // const table = await this.courseSrv.getCourseCodeTable('xxxxxxxx');
+
+    
+    // this.subjectList.map(sub => {
+    //   const a = table.getCodeBySubjectKey(new SubjectKey(sub.SubjectName, sub.Required as Required, sub.RequiredBy as RequiredBy));
+    // });
+
+    // const gp = GraduationPlan.parse(this.curPlan.content);
+
+    // gp.fillCorrespondingCourseCode(table);
+    // const diff = gp.diff(table);
+    // for(let a of diff[0].newCredits!) {
+
+    // }
+
+    // const b = diff[0].newCredits!;
 
     this.dataSource = new MatTableDataSource(this.subjectList);
   }

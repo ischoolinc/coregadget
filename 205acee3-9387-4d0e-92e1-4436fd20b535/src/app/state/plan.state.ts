@@ -156,7 +156,6 @@ export class PlanState {
             planList, 
             yearList,
             curPlanList,
-            curPlan: planMode.curPlan === plan.id ? undefined : planMode.curPlan
         });
         this.loadSrv.stopLoading();
     }
