@@ -1,5 +1,5 @@
 
 export type CodeField = { value: string, description: string };
 
-export class Record extends Array<CodeField> {
+export class CodeLine extends Array<CodeField> {
 }

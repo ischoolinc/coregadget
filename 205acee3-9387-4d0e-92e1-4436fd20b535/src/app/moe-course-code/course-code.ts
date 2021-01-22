@@ -1,11 +1,11 @@
-import { CodeField, Record } from './record';
+import { CodeField, CodeLine } from './code-line';
 import { Field } from "./field";
 import { MappingTable } from './mapping-table';
 
 /** 代表「全國高級中等學校 課程計畫平台」的課程代碼，支援 for...of 取得所有欄位值。 */
 export class CourseCode {
 
-  private record: Record;
+  private record: CodeLine;
 
   public constructor(
     private code: string) {

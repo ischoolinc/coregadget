@@ -1,4 +1,4 @@
-import { CodeField } from './record';
+import { CodeField } from './code-line';
 import { MappingTable } from './mapping-table';
 import { CourseCode } from './course-code';
 import { ListName, MOEService } from './moe.service';

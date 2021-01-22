@@ -1,4 +1,4 @@
-import { CodeField } from './record';
+import { CodeField } from './code-line';
 
 /** 代碼對照表。 */
 export class MappingTable {
