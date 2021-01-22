@@ -5,10 +5,11 @@ import { take, takeUntil } from 'rxjs/operators';
 import { PlanRec } from '../data';
 import { Store, Select } from '@ngxs/store';
 import { PlanModel } from '../state/plan.state';
-import { SetCurPlan, SetCurPlanList } from '../state/plan.action';
+import { RemovePlan, SetCurPlan, SetCurPlanList } from '../state/plan.action';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { NewPlanComponent } from './new-plan/new-plan.component';
+import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-plan-list',
@@ -20,7 +21,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   yearFormCtrl = new FormControl();
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
-  plan: PlanModel = {} as PlanModel;
+  // plan: PlanModel = {} as PlanModel;
+  yearList: string[] = [];
+  planList: PlanExRec[] = [];
   unSubscribe$ = new Subject();
   curYear: string = '';
 
@@ -34,10 +37,20 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.plan$?.pipe(
       takeUntil(this.unSubscribe$)
     ).subscribe((v: PlanModel) => {
-      this.plan = v;
+      // this.plan = v;
+      this.yearList = v.yearList;
+      this.planList = (v.curPlanList || []).map(data => {
+        return {
+          id: data.id,
+          name: data.name,
+          content: data.content,
+          school_year: data.school_year,
+          showCloseBtn: false
+        }
+      });
       
-      if (this.plan.yearList.length && !this.curYear) {
-        this.setCurYear(this.plan.yearList[0]);
+      if (this.yearList.length && !this.curYear) {
+        this.setCurYear(this.yearList[0]);
       }
     });
   }
@@ -72,4 +85,27 @@ export class PlanListComponent implements OnInit, OnDestroy {
     });
   }
 
+  removePlan(plan: PlanRec) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: '提醒',
+        confirmContent: `確定刪除「${plan.name}」此課程規劃表？`,
+        yesBtnText: '確定',
+        noBtnText: '取消'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(
+      take(1)
+    ).subscribe(v => {
+      if (v.result) {
+        this.store.dispatch(new RemovePlan(+plan.id));
+      }
+    });
+  }
+
+}
+
+interface PlanExRec extends PlanRec {
+  showCloseBtn: boolean;
 }

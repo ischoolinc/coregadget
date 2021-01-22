@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { PlanRec } from '../data';
 import { PlanService } from '../core/plan.service';
-import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName, SetPlanContent, NewPlan } from './plan.action';
+import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName, SetPlanContent, NewPlan, RemovePlan } from './plan.action';
 import { LoadingService } from '../core/loading.service';
 
 @State({
@@ -111,7 +111,7 @@ export class PlanState {
         const { plan } = await this.planSrv.newPlan(action.name, action.content);
         const planMode: PlanModel = ctx.getState();
         const planList: PlanRec[] = planMode.planList.concat(plan);
-        const curPlanList: PlanRec[] = planMode.curPlanList?.concat([]) || [];
+        const curPlanList: PlanRec[] = [...planMode.curPlanList ?? []];
         const yearList: string[] = [];
 
         planMode.planList.forEach(plan => {
@@ -135,6 +135,31 @@ export class PlanState {
         this.loadSrv.stopLoading();
     }
 
+    @Action(RemovePlan)
+    async removePlan(ctx: StateContext<PlanModel>, action: RemovePlan) {
+        this.loadSrv.startLoading();
+        const { plan } = await this.planSrv.removePlan(action.id);
+        const planMode: PlanModel = ctx.getState();
+        const planList: PlanRec[] = planMode.planList.filter(planRec => !(planRec.id === plan.id));
+        let curPlanList: PlanRec[] = [...planMode.curPlanList ?? []];
+        const yearList: string[] = [];
+
+        planMode.planList.forEach(plan => {
+            if (!yearList.find(year => year === plan.school_year)) {
+                yearList.push(plan.school_year);
+            }
+        });
+
+        curPlanList = curPlanList.filter(planRec => !(planRec.id === plan.id));
+
+        ctx.setState({
+            planList, 
+            yearList,
+            curPlanList,
+            curPlan: planMode.curPlan === plan.id ? undefined : planMode.curPlan
+        });
+        this.loadSrv.stopLoading();
+    }
 }
 
 export interface PlanModel {

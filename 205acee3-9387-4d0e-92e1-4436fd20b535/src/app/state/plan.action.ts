@@ -29,3 +29,8 @@ export class NewPlan {
     static readonly type = '[plan] new plan';
     constructor(public name: string, public content: string) {}
 }
+
+export class RemovePlan {
+    static readonly type = '[plan] remove plan';
+    constructor(public id: number) {}
+}

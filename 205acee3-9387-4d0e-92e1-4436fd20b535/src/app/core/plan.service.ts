@@ -49,4 +49,9 @@ export class PlanService {
     return await this.contract.send('NewPlan', {Request: { Name: name, Content: `${content}`}});
   }
 
+  public async removePlan(id: number) {
+    await this.connect();
+    return await this.contract.send('RemovePlan', {ID: id});
+  }
+
 }

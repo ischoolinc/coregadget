@@ -3,14 +3,24 @@
         <mat-form-field appearance="fill" class="full-width">
             <mat-label>學年度</mat-label>
             <mat-select [(ngModel)]="curYear" (selectionChange)="yearChange($event)">
-                <mat-option *ngFor="let year of plan.yearList" [value]="year">
+                <mat-option *ngFor="let year of yearList" [value]="year">
                     {{year === '0' ? '不分入學年度' : year}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
         <mat-selection-list #shoes [multiple]="false">
-            <mat-list-option *ngFor="let plan of plan.curPlanList" [value]="plan" (click)="setCurPlan(plan)">
-                {{plan.name}}
+            <mat-list-option *ngFor="let plan of planList" 
+                [value]="plan" 
+                (mouseenter)="plan.showCloseBtn = true"
+                (mouseleave)="plan.showCloseBtn = false">
+                <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
+                    <div (click)="setCurPlan(plan)">
+                        {{plan.name}}
+                    </div>
+                    <button mat-icon-button color="primary" [ngStyle]="{'visibility': plan.showCloseBtn ? 'visible' : 'hidden'}" (click)="removePlan(plan)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
             </mat-list-option>
         </mat-selection-list>
     </div>
