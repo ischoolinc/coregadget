@@ -5,6 +5,7 @@ import { ComparableSubject, UnifiedSubject } from './../unified-subject';
 import { Subject } from './subject';
 import { SubjectKey } from '../subject-key';
 
+/** 代表科目在所有學期的組成。 */
 export class SubjectGroup implements ComparableSubject {
 
   private subjects: Subject[] = [];

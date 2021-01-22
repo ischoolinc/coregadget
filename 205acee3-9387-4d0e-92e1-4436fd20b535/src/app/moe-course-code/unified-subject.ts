@@ -49,8 +49,7 @@ export class UnifiedSubject {
 
     if(other.credits!.unifiedKey !== this.credits!.unifiedKey) {
       // 檢查學分數不同。
-      const creditDiff = this!.credits!.diff(other.credits!);
-      diff.newCredits = creditDiff;
+      diff.newCredits = other.credits!.clone();
       isDiff = true;
     }
 

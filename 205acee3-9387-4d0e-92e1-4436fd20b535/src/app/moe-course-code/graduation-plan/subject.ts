@@ -1,6 +1,7 @@
 import { Required, RequiredBy } from './common';
 import { Jsonx } from '@1campus/jsonx';
 
+/** 代表單一學期的科目相關資訊。 */
 export class Subject {
 
   constructor(

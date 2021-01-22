@@ -8,6 +8,7 @@ import { Required, RequiredBy} from './common';
 import { Subject } from './subject';
 import { UnifiedSubject } from '../unified-subject';
 
+/** 代表一個課程規劃表的所有內容。 */
 export class GraduationPlan {
 
   private subjGroups = new Map<string, SubjectGroup>();

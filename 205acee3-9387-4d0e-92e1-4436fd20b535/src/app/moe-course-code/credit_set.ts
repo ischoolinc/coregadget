@@ -2,7 +2,7 @@
 export type SemesterList = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
- * 代表每一學期學分數資訊。
+ * 代表所有學期的學分數。
  */
 export class CreditSet {
 
@@ -38,22 +38,6 @@ export class CreditSet {
   /** 取得可用來比較的字串。 */
   public get unifiedKey() {
     return this.credits.join(':');
-  }
-
-  public diff(other: CreditSet) {
-    const result = new CreditSet();
-    for (let i = 1; i <= this.credits.length; i++) {
-      const a = this.get(i as SemesterList);
-      const b = other.get(i as SemesterList);
-
-      if(a !== b) {
-        result.set(i as any, b);
-      } else {
-        result.set(i as any, NaN);
-      }
-    }
-
-    return result;
   }
 
   public clone() {
