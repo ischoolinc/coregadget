@@ -1,8 +1,4 @@
-import { CreditSet } from './moe-course-code/credit_set';
-import { CourseCodeService } from './moe-course-code/course-code.service';
-import { CourseCodeTable } from './moe-course-code/course-code-table';
-import { MOEService } from './moe-course-code/moe.service';
-import { GraduationPlan } from './moe-course-code/graduation-plan/graduation-plan';
+import { CourseCodeService, MOEService } from '@1campus/moe-course';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { GetAllPlans } from './state/plan.action';

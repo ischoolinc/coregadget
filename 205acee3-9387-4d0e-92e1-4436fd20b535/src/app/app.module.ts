@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MOECourseCodeModule } from './moe-course-code/moe-course-code.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
 
@@ -19,6 +18,7 @@ import { PlanInfoComponent } from './plan/plan-info/plan-info.component';
 import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 import { NewPlanComponent } from './plan-list/new-plan/new-plan.component';
+import { MoeCourseModule } from '@1campus/moe-course';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,7 @@ import { NewPlanComponent } from './plan-list/new-plan/new-plan.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MOECourseCodeModule,
+    MoeCourseModule,
     FormsModule,
     ReactiveFormsModule,
     NgxsModule.forRoot([PlanState], {developmentMode: !environment.production}),
