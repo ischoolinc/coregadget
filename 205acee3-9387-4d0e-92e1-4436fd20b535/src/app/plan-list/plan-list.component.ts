@@ -40,13 +40,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
       // this.plan = v;
       this.yearList = v.yearList;
       this.planList = (v.curPlanList || []).map(data => {
-        return {
-          id: data.id,
-          name: data.name,
-          content: data.content,
-          school_year: data.school_year,
-          showCloseBtn: false
-        }
+        return { ...data, showCloseBtn: false};
       });
       
       if (this.yearList.length && !this.curYear) {

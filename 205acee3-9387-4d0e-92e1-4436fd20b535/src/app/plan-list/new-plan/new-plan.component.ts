@@ -35,7 +35,8 @@ export class NewPlanComponent implements OnInit {
     ).subscribe(v => {
       // 自訂課程規劃表名稱驗證規則
       this.planForm.get('name')?.setValidators([Validators.required, PlanNameValidator(v.planList)]);
-      this.planList = [{id: '', name: '== 不複製現有課程規劃 ==', content: '', school_year: ''}].concat(v.planList);
+      this.planList = [{id: '', name: '== 不複製現有課程規劃 ==', 
+        content: '', school_year: '', moe_group_code: '', moe_group_code_1: ''}].concat(v.planList);
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlanRec, SubjectExRec } from 'src/app/data';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, Select } from '@ngxs/store';
@@ -10,7 +10,6 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
 import { Jsonx } from '@1campus/jsonx';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { CourseCodeService } from '@1campus/moe-course';
 
 @Component({
   selector: 'app-plan-info',
@@ -29,8 +28,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private store: Store,
-    private detect: ChangeDetectorRef,
-    private courseSrv: CourseCodeService,
     private router: Router
   ) { }
 
@@ -49,7 +46,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  async graduationPlanParse(xml: string) {
+  graduationPlanParse(xml: string) {
     this.subjectList = [];
     const jx = Jsonx.parse(xml);
 
@@ -111,23 +108,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     this.subjectList = this.subjectList.sort((a, b) => {
       return a.RowIndex - b.RowIndex;
     });
-
-    // const table = await this.courseSrv.getCourseCodeTable('xxxxxxxx');
-
-
-    // this.subjectList.map(sub => {
-    //   const a = table.getCodeBySubjectKey(new SubjectKey(sub.SubjectName, sub.Required as Required, sub.RequiredBy as RequiredBy));
-    // });
-
-    // const gp = GraduationPlan.parse(this.curPlan.content);
-
-    // gp.fillCorrespondingCourseCode(table);
-    // const diff = gp.diff(table);
-    // for(let a of diff[0].newCredits!) {
-
-    // }
-
-    // const b = diff[0].newCredits!;
 
     this.dataSource = new MatTableDataSource(this.subjectList);
   }
