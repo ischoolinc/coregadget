@@ -196,7 +196,11 @@
         <ng-container matColumnDef="SubjectCode">
             <th mat-header-cell *matHeaderCellDef> 科目代碼 </th>
             <td mat-cell *matCellDef="let element">
-                {{element.SubjectCode}}
+                <button mat-icon-button color="primary" 
+                    *ngIf="element.mapping"
+                    matTooltip="{{element.SubjectCode}}">
+                    <mat-icon>check_circle_outline</mat-icon>
+                </button>
             </td>
         </ng-container>
         <ng-container matColumnDef="action">

@@ -47,4 +47,6 @@ export interface SemesterSubjectRec {
 
 export interface SubjectExRec extends SubjectRec {
     edit: boolean;
+    /** 是否與課程計畫平台代碼對應 */
+    mapping: boolean;
 }

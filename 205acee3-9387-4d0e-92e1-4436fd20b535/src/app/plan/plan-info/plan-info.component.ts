@@ -5,11 +5,12 @@ import { Store, Select } from '@ngxs/store';
 import { SetPlanContent } from 'src/app/state/plan.action';
 import { Observable, Subject } from 'rxjs';
 import { PlanModel } from 'src/app/state/plan.state';
-import { take, takeUntil } from 'rxjs/operators';
+import { subscribeOn, take, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Jsonx } from '@1campus/jsonx';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { CourseCodeService, MOEService, RequiredBy, Required, SubjectKey } from '@1campus/moe-course';
 
 @Component({
   selector: 'app-plan-info',
@@ -28,7 +29,9 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private store: Store,
-    private router: Router
+    private router: Router,
+    private moeSrv: MOEService,
+    private courseCodeSrv: CourseCodeService
   ) { }
 
   ngOnInit(): void {
@@ -46,7 +49,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  graduationPlanParse(xml: string) {
+  async graduationPlanParse(xml: string) {
     this.subjectList = [];
     const jx = Jsonx.parse(xml);
 
@@ -105,6 +108,31 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (this.curPlan.moe_group_code) {
+      const table = await this.courseCodeSrv.getCourseCodeTable(this.curPlan.moe_group_code);
+      this.subjectList = this.subjectList.map(sub => {
+        const rsp = table.getCodeBySubjectKey(new SubjectKey(sub.SubjectName, sub.Required as Required, sub.RequiredBy as RequiredBy));
+        // console.log(rsp);
+        if (rsp) {
+          sub.SubjectCode = rsp.code.getFullCode();
+          sub.mapping = true;
+        } else {
+          sub.SubjectCode = '';
+          sub.mapping = false;
+        }
+  
+        return sub;
+      });
+    } else {
+      this.subjectList = this.subjectList.map(sub => {
+        sub.SubjectCode = '';
+        return sub;
+      });
+    }
+
+    
+
+
     this.subjectList = this.subjectList.sort((a, b) => {
       return a.RowIndex - b.RowIndex;
     });
@@ -132,7 +160,8 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       LastSemester4: '',
       NextSemester4: '',
       smsSubjectList: [],
-      edit: true
+      edit: true,
+      mapping: false
     });
     this.dataSource.data = this.subjectList;
   }
