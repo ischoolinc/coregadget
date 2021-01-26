@@ -3,14 +3,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { PlanService } from '../../core/plan.service';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
-import { PlanModel } from 'src/app/state/plan.state';
+import { PlanModel } from '../../state/plan.state';
 import { takeUntil } from 'rxjs/operators';
-import { GroupCodeRec, PlanRec, SubjectExRec, SubjectRec } from 'src/app/data';
-import { SetPlanContent, SetPlanGroupCode } from '../../state/plan.action';
+import { DiffSubjectExRec, GroupCodeRec, PlanRec, SubjectRec } from '../../data';
+import { SetPlanGroupCode } from '../../state/plan.action';
 import { CourseCodeService, GraduationPlan } from '@1campus/moe-course';
 import { FormControl, Validators } from '@angular/forms';
 import { Jsonx } from '@1campus/jsonx';
-
 
 @Component({
   selector: 'app-plan-config',
@@ -19,12 +18,18 @@ import { Jsonx } from '@1campus/jsonx';
 })
 export class PlanConfigComponent implements OnInit {
 
+  // 課程代碼清單
   groupCodeList: GroupCodeRec[] = [];
-  curGroupCode = new FormControl(null, [Validators.required]);
+  // moe_group_code
+  groupCode = new FormControl(null, [Validators.required]);
+  // moe_group_code_1 一年級不分班群
+  slidToggle = new FormControl(false);
+  groupCodeOne = new FormControl(null, [Validators.required]);
   displayedColumns: string[] = ['selected', 'status', 'domain', 'entry', 'subjectName', 'requiredBy', 'required', 'credits'];
   dataSource = new MatTableDataSource<DiffSubjectExRec>();
+  afterInit: boolean = false;
 
-  @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
+  @Select((state: { plan: any; }) => state.plan) plan$: Observable<PlanModel> | undefined;
   curPlan: PlanRec = {} as PlanRec;
   unSubscribe$ = new Subject();
 
@@ -37,52 +42,123 @@ export class PlanConfigComponent implements OnInit {
   async ngOnInit() {
     await this.getGroupCode();
 
-    this.curGroupCode.valueChanges.pipe(
-      takeUntil(this.unSubscribe$)
-    ).subscribe(v => {
-      if (v) {
-        this.changeCurGroupCode();
+    this.groupCode.valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe(v => {
+      if (this.afterInit) {
+        this.checkDifferent();
       }
     });
 
-    this.plan$?.pipe(
-      takeUntil(this.unSubscribe$)
-    ).subscribe(v => {
+    this.groupCodeOne.valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe(v => {
+      if (this.afterInit) {
+        this.checkDifferent();
+      }
+    });
+
+    this.slidToggle.valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe(v => {
+      if (this.afterInit) {
+        this.checkDifferent();
+      }
+      if (!v) {
+        this.groupCodeOne.setValue(null);
+        this.checkDifferent();
+      }
+    });
+
+    this.plan$?.pipe(takeUntil(this.unSubscribe$)).subscribe(v => {
       this.dataSource.data = [];
       if (v.curPlan) {
         this.curPlan = v.curPlan;
-        const targetGroupCode = this.groupCodeList.find(data => data.group_code === v.curPlan?.moe_group_code);
-        this.curGroupCode.setValue(targetGroupCode);
+        const groupCode = this.groupCodeList.find(data => data.group_code === v.curPlan?.moe_group_code);
+        const groupCodeOne = this.groupCodeList.find(data => data.group_code === v.curPlan?.moe_group_code_1);
+        this.groupCode.setValue(groupCode ? groupCode : null);
+        this.groupCodeOne.setValue(groupCodeOne ? groupCodeOne : null);
+        this.slidToggle.setValue(groupCodeOne ? true : false);
+        this.checkDifferent();
+        this.afterInit = true;
       }
     });
   }
 
-  async getGroupCode () {
+  async getGroupCode() {
     const rsp = await this.planSrv.getMoeGroupCode();
     this.groupCodeList = [].concat(rsp.code || []);
   }
 
-  async changeCurGroupCode() {
-    const courseCode = await this.courseCodeSrv.getCourseCodeTable(this.curGroupCode.value.group_code);
-    const gp = GraduationPlan.parse(this.curPlan.content);
-    const subjs = gp.diff(courseCode);
-    this.dataSource.data = subjs.map((data: any) => {
-      const { status, subject, credits: {credits} } = data;
-      return { status, ...subject, credits};
+  async getDiffSubjects(plan: GraduationPlan, code: string): Promise<DiffSubjectExRec[]> {
+    const courseCode = await this.courseCodeSrv.getCourseCodeTable(code);
+    return plan.diff(courseCode).map((data: any) => {
+      const { status, subject, credits: { credits } } = data;
+      return { status, ...subject, credits };
     });
   }
 
+  mergeDiffSubjects(diffSubjects: DiffSubjectExRec[], diffSubjects1: DiffSubjectExRec[]): DiffSubjectExRec[] {
+    // 處理交集的部分
+    diffSubjects = diffSubjects.map(diff => {
+      const diffSubject1 = diffSubjects1.find(_diff => _diff.subjectName === diff.subjectName
+        && _diff.required === diff.required && _diff.requiredBy === diff.requiredBy);
+      if (diffSubject1) {
+        const [, , c, d, e, f] = diff.credits;
+        const [a, b, , , ,] = diffSubject1.credits;
+        diff.credits = [a, b, c, d, e, f];
+      }
+      return diff;
+    });
+    // concat沒有交集的部分
+    diffSubjects1 = diffSubjects1.filter(diff => !diffSubjects.find(_diff => _diff.subjectName === diff.subjectName 
+      && _diff.required === diff.required && _diff.requiredBy === diff.requiredBy));
+    return diffSubjects.concat(diffSubjects1);
+  }
+
+  parseCredits(diffSubjects: DiffSubjectExRec[]): DiffSubjectExRec[] {
+    return diffSubjects.map(sub => {
+      sub.creditsToString = sub.credits.map(credit => {
+        return Number.isNaN(credit) ? '--' : credit;
+      }).join(', ');
+      return sub;
+    });
+  }
+
+  /** 設定課程代碼 */
+  async checkDifferent() {
+    const gp = GraduationPlan.parse(this.curPlan.content);
+    const code = this.groupCode.value?.group_code;
+    const code1 = this.groupCodeOne.value?.group_code;
+
+    if (this.slidToggle.value && code1) {
+
+      let diffSubjects = await this.getDiffSubjects(gp, code);
+      let diffSubjects1 = await this.getDiffSubjects(gp, code1);
+
+      // courseCode 只需要 2,3,4年級的差異資料
+      diffSubjects = diffSubjects.filter(data => data.credits[2] || data.credits[3] || data.credits[4] || data.credits[5]);
+
+      // courseCode1 只需要1年級的差異資料
+      diffSubjects1 = diffSubjects1.filter(data => data.credits[0] || data.credits[1]
+      ).map(data => {
+        const [a, b] = data.credits;
+        data.credits = [a, b, NaN, NaN, NaN, NaN];
+        return data;
+      });
+     
+      this.dataSource.data = this.parseCredits(this.mergeDiffSubjects(diffSubjects, diffSubjects1));
+      console.log(this.dataSource.data);
+    } 
+    if (code) {
+      this.dataSource.data = this.parseCredits(await this.getDiffSubjects(gp, code));
+    }
+  }
+
+  /** 解析 graduation_plan.content 整理成 Subject[] */
   graduationPlanParse(xml: string): SubjectRec[] {
     const subjectList: SubjectRec[] = [];
     const jx = Jsonx.parse(xml);
 
     for (const sbJX of jx.child('GraduationPlan').children('Subject')) {
-      const { _attributes: subject, Grouping: {_attributes: group} } = sbJX.data as any;
+      const { _attributes: subject, Grouping: { _attributes: group } } = sbJX.data as any;
 
-      if (!subjectList.find((sbRec: SubjectRec) =>
-        sbRec.Required === subject.Required
-        && sbRec.RequiredBy === subject.RequiredBy
-        && sbRec.SubjectName === subject.SubjectName)) {
+      if (!subjectList.find((sbRec: SubjectRec) => sbRec.Required === subject.Required
+        && sbRec.RequiredBy === subject.RequiredBy && sbRec.SubjectName === subject.SubjectName)) {
         subjectList.push({
           StartLevel: group.startLevel,
           RowIndex: group.RowIndex,
@@ -133,6 +209,7 @@ export class PlanConfigComponent implements OnInit {
     return subjectList;
   }
 
+  /** 解析 SubjectRec 設定 SemesterSubjectRec XML 資料 */
   newJsonx(sb: SubjectRec): SubjectRec {
     if (sb.LastSemester1) {
       sb.smsSubjectList.push({
@@ -235,7 +312,6 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
   }
 
   async save() {
-    // content xml 解析
     let subjectList = this.graduationPlanParse(this.curPlan.content);
     // 寫入差異資料
     this.dataSource.data.filter((diffRec: DiffSubjectExRec) => diffRec.selected).forEach(data => {
@@ -259,38 +335,38 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
           NextSemester4: '',
           smsSubjectList: []
         });
-      } 
+      }
       const sbRec = subjectList.find(sb => sb.SubjectName === data.subjectName && sb.RequiredBy === data.requiredBy && sb.Required === data.required);
-        if (sbRec) {
-          data.credits.forEach((credit, index: number) => {
-            switch (index) {
-              case 0:
-                sbRec.LastSemester1 = credit;
-                break;
-              case 1:
-                sbRec.NextSemester1 = credit;
-                break;
-              case 2:
-                sbRec.LastSemester2 = credit;
-                break;
-              case 3:
-                sbRec.NextSemester2 = credit;
-                break;
-              case 4:
-                sbRec.LastSemester3 = credit;
-                break;
-              case 5:
-                sbRec.NextSemester3 = credit;
-                break;
-              case 6:
-                sbRec.LastSemester4 = credit;
-                break;
-              case 7:
-                sbRec.NextSemester4 = credit;
-                break;
-            }
-          });
-        }
+      if (sbRec) {
+        data.credits.forEach((credit, index: number) => {
+          switch (index) {
+            case 0:
+              sbRec.LastSemester1 = '' + credit;
+              break;
+            case 1:
+              sbRec.NextSemester1 = '' + credit;
+              break;
+            case 2:
+              sbRec.LastSemester2 = '' + credit;
+              break;
+            case 3:
+              sbRec.NextSemester2 = '' + credit;
+              break;
+            case 4:
+              sbRec.LastSemester3 = '' + credit;
+              break;
+            case 5:
+              sbRec.NextSemester3 = '' + credit;
+              break;
+            case 6:
+              sbRec.LastSemester4 = '' + credit;
+              break;
+            case 7:
+              sbRec.NextSemester4 = '' + credit;
+              break;
+          }
+        });
+      }
     });
     // 產出 jsonx 資料
     subjectList = subjectList.map(sb => {
@@ -299,34 +375,13 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
     // 整理 content xml 資料
     let smsSubjectList: string[] = [];
     subjectList.forEach((sbRec: SubjectRec) => {
-      smsSubjectList = smsSubjectList.concat(sbRec.smsSubjectList.map(smsSubject => {return smsSubject.jx.toXml('Subject');}));
+      smsSubjectList = smsSubjectList.concat(sbRec.smsSubjectList.map(smsSubject => { return smsSubject.jx.toXml('Subject'); }));
     });
     const subjectContent = smsSubjectList.join('');
     const content = `<GraduationPlan SchoolYear="${this.curPlan.school_year}">${subjectContent}</GraduationPlan>`;
-    // update content
-    // this.store.dispatch(new SetPlanContent(+this.curPlan.id, content));
-    // update moe_group_code
-    this.store.dispatch(new SetPlanGroupCode(+this.curPlan.id, this.curGroupCode.value.group_code, content));
+
+    this.store.dispatch(new SetPlanGroupCode(+this.curPlan.id, this.groupCode.value.group_code
+      , this.groupCodeOne.value.group_code, content));
   }
 
-
-}
-
-interface DiffSubjectRec {
-  // new
-  status: string;
-  credits: string[];
-  domain: string;
-  entry: string;
-  required: string;
-  requiredBy: string;
-  subjectName: string;
-  // change
-  newCredits?: string[];
-  newDomain?: string;
-  newEntry?: string;
-}
-
-interface DiffSubjectExRec extends DiffSubjectRec {
-  selected: boolean;
 }

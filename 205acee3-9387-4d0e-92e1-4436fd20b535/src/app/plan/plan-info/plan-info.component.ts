@@ -5,12 +5,12 @@ import { Store, Select } from '@ngxs/store';
 import { SetPlanContent } from 'src/app/state/plan.action';
 import { Observable, Subject } from 'rxjs';
 import { PlanModel } from 'src/app/state/plan.state';
-import { subscribeOn, take, takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Jsonx } from '@1campus/jsonx';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { CourseCodeService, MOEService, RequiredBy, Required, SubjectKey } from '@1campus/moe-course';
+import { CourseCodeService, RequiredBy, Required, SubjectKey } from '@1campus/moe-course';
 
 @Component({
   selector: 'app-plan-info',
@@ -30,7 +30,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private store: Store,
     private router: Router,
-    private moeSrv: MOEService,
     private courseCodeSrv: CourseCodeService
   ) { }
 
@@ -47,7 +46,10 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.unSubscribe$.next();
+    this.unSubscribe$.complete();
+  }
 
   async graduationPlanParse(xml: string) {
     this.subjectList = [];
@@ -129,9 +131,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
         return sub;
       });
     }
-
-    
-
 
     this.subjectList = this.subjectList.sort((a, b) => {
       return a.RowIndex - b.RowIndex;

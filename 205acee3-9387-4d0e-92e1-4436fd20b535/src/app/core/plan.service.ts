@@ -44,9 +44,9 @@ export class PlanService {
     return await this.contract.send('SetPlanContent', { ID: id, Content: `${content}`});
   }
 
-  public async setPlanGroupCode(ID: number, Code: string, Content: string) {
+  public async setPlanGroupCode(ID: number, Code: string, Code1: string, Content: string) {
     await this.connect();
-    return await this.contract.send('SetPlanGroupCode', { ID, Code, Content});
+    return await this.contract.send('SetPlanGroupCode', { ID, Code, Content, Code1});
   }
 
   public async newPlan(name: string, content: string) {

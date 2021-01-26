@@ -163,9 +163,7 @@ export class PlanState {
     @Action(SetPlanGroupCode)
     async setPlanGroupCode(ctx: StateContext<PlanModel>, action: SetPlanGroupCode) {
         this.loadSrv.startLoading();
-        const { plan } = await this.planSrv.setPlanGroupCode(action.id, action.code, action.content);
-
-        console.log(plan);
+        const { plan } = await this.planSrv.setPlanGroupCode(action.id, action.code, action.code1, action.content);
 
         const planMode = ctx.getState();
         const curPlanList = planMode.curPlanList!.map(data => {

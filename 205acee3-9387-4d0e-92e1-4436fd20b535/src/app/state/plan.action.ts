@@ -27,7 +27,7 @@ export class SetPlanContent {
 
 export class SetPlanGroupCode {
     static readonly type = '[plan] set plan group_code';
-    constructor(public id: number, public code: string, public content: string) {}
+    constructor(public id: number, public code: string, public code1: string, public content: string) {}
 }
 
 export class NewPlan {

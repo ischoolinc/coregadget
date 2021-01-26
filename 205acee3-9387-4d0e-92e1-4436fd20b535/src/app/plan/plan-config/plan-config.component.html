@@ -1,15 +1,26 @@
 <section style="padding: 10px 15px">
-    <!-- <h3>目前設定：普通型高中	學術群	108	108041305H11101B</h3> -->
-    
     <h3>課程代碼</h3>
     <mat-form-field style="width: 50%;">
         <mat-label>請選擇課程代碼</mat-label>
-        <mat-select [formControl]="curGroupCode">
+        <mat-select [formControl]="groupCode">
           <mat-option *ngFor="let code of groupCodeList" [value]="code">
             {{code.entry_year}} / {{code.course_type}} / {{code.group_type}} / {{code.subject_type}} / {{code.class_type}}
           </mat-option>
         </mat-select>
     </mat-form-field>
+    <h3>
+        設定一年級不分班群
+        <mat-slide-toggle color="primary" [formControl]="slidToggle"></mat-slide-toggle>
+    </h3>
+    <mat-form-field style="width: 50%;" *ngIf="slidToggle.value">
+        <mat-label>請選擇課程代碼</mat-label>
+        <mat-select [formControl]="groupCodeOne">
+          <mat-option *ngFor="let code of groupCodeList" [value]="code">
+            {{code.entry_year}} / {{code.course_type}} / {{code.group_type}} / {{code.subject_type}} / {{code.class_type}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
     <h3>差異比對</h3>
 
     <div style="height: 400px;overflow: auto;">
@@ -18,7 +29,7 @@
             <ng-container matColumnDef="selected">
                 <th mat-header-cell *matHeaderCellDef> 選擇 </th>
                 <td mat-cell *matCellDef="let element">
-                    <mat-checkbox [(ngModel)]="element.selected"></mat-checkbox>
+                    <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox>
                 </td>
             </ng-container>
 
@@ -56,7 +67,10 @@
 
             <ng-container matColumnDef="credits">
                 <th mat-header-cell *matHeaderCellDef> 學分數 </th>
-                <td mat-cell *matCellDef="let element"> {{element.credits}} </td>
+                <td mat-cell *matCellDef="let element"> 
+                    <!-- {{element.credits}}  -->
+                    {{element.creditsToString}}
+                </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
@@ -64,9 +78,9 @@
         </table>
     </div>
 
-    <!-- (click)="setPlanCroupCode()"  -->
     <div style="display: flex;flex-direction: row;justify-content: center;">
-        <button mat-raised-button color="primary" [disabled]="!curGroupCode.valid" (click)="save()">
+        <button mat-raised-button color="primary" style="margin-top: 20px;"
+            [disabled]="!groupCode.valid" (click)="save()">
             儲存課程代碼設定，並匯入勾選差異。
         </button>
     </div>

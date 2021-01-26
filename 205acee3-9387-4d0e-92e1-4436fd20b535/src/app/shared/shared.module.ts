@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
@@ -42,7 +43,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MatProgressSpinnerModule,
     MatInputModule,
     MatTooltipModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSlideToggleModule
   ],
   entryComponents: [
     ConfirmDialogComponent
