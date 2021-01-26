@@ -24,6 +24,13 @@
     <h3>差異比對</h3>
 
     <div style="height: 400px;overflow: auto;">
+        <mat-checkbox color="primary" 
+            style="margin-left: 23px;"
+            *ngIf="dataSource.data.length"
+            [formControl]="selectAll">
+            全選
+        </mat-checkbox>
+
         <table mat-table [dataSource]="dataSource" class="full-width">
 
             <ng-container matColumnDef="selected">

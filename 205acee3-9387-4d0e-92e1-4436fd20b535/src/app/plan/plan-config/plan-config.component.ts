@@ -23,8 +23,9 @@ export class PlanConfigComponent implements OnInit {
   // moe_group_code
   groupCode = new FormControl(null, [Validators.required]);
   // moe_group_code_1 一年級不分班群
-  slidToggle = new FormControl(false);
   groupCodeOne = new FormControl(null, [Validators.required]);
+  selectAll = new FormControl(false);
+  slidToggle = new FormControl(false);
   displayedColumns: string[] = ['selected', 'status', 'domain', 'entry', 'subjectName', 'requiredBy', 'required', 'credits'];
   dataSource = new MatTableDataSource<DiffSubjectExRec>();
   afterInit: boolean = false;
@@ -52,6 +53,13 @@ export class PlanConfigComponent implements OnInit {
       if (this.afterInit) {
         this.checkDifferent();
       }
+    });
+
+    this.selectAll.valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe(v => {
+      this.dataSource.data = this.dataSource.data.map(data => {
+        data.selected = v;
+        return data;
+      });
     });
 
     this.slidToggle.valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe(v => {
@@ -121,6 +129,7 @@ export class PlanConfigComponent implements OnInit {
 
   /** 設定課程代碼 */
   async checkDifferent() {
+    this.dataSource.data = [];
     const gp = GraduationPlan.parse(this.curPlan.content);
     const code = this.groupCode.value?.group_code;
     const code1 = this.groupCodeOne.value?.group_code;
@@ -341,28 +350,28 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         data.credits.forEach((credit, index: number) => {
           switch (index) {
             case 0:
-              sbRec.LastSemester1 = '' + credit;
+              sbRec.LastSemester1 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 1:
-              sbRec.NextSemester1 = '' + credit;
+              sbRec.NextSemester1 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 2:
-              sbRec.LastSemester2 = '' + credit;
+              sbRec.LastSemester2 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 3:
-              sbRec.NextSemester2 = '' + credit;
+              sbRec.NextSemester2 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 4:
-              sbRec.LastSemester3 = '' + credit;
+              sbRec.LastSemester3 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 5:
-              sbRec.NextSemester3 = '' + credit;
+              sbRec.NextSemester3 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 6:
-              sbRec.LastSemester4 = '' + credit;
+              sbRec.LastSemester4 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
             case 7:
-              sbRec.NextSemester4 = '' + credit;
+              sbRec.NextSemester4 = Number.isNaN(credit) ? '' : `${credit}`;
               break;
           }
         });
@@ -381,7 +390,7 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
     const content = `<GraduationPlan SchoolYear="${this.curPlan.school_year}">${subjectContent}</GraduationPlan>`;
 
     this.store.dispatch(new SetPlanGroupCode(+this.curPlan.id, this.groupCode.value.group_code
-      , this.groupCodeOne.value.group_code, content));
+      , this.groupCodeOne.value?.group_code, content));
   }
 
 }
