@@ -198,6 +198,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
   }
 
   newJsonx(sb: SubjectExRec): SubjectExRec {
+    sb.smsSubjectList = [];
     if (sb.LastSemester1) {
       sb.smsSubjectList.push({
         GradeYear: '1',
@@ -327,7 +328,7 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
     dialogRef.afterClosed().pipe(
       take(1)
     ).subscribe(v => {
-      if (v) {
+      if (v.result) {
         this.subjectList = this.subjectList.filter(subRec => {
           if (subRec.SubjectName === sb.SubjectName && subRec.RequiredBy === sb.RequiredBy && subRec.Required === sb.Required) {
             return false;
