@@ -148,20 +148,17 @@
                         </tbody>
                     </table>
 
-                    <h3>級距統計表</h3>
+                    <!-- <h3>級距統計表</h3>
                     <ng-container *ngIf="!noneRank ; else tplNoRank">
                         <table class="table table-bordered table-striped mb-5 mr-3" *ngIf="curMatrix === '班排名' || curMatrix === '年排名' || curMatrix === '科排名'; else tplSubRank">
                                 <thead>
                                     <tr>
                                         <th scope="colgroup" colspan="1"></th>
-                                        <!-- <th scope="colgroup" colspan="2">{{curAvgType}}</th> -->
                                         <th scope="colgroup" colspan="2" *ngFor="let sub of subjectList2">{{sub}}</th>
                                         <th scope="colgroup" colspan="2" *ngFor="let sub of subItem2">{{sub}}</th>
                                     </tr>
                                     <tr class="text-center" >
                                         <th scope="col" style="white-space: nowrap">級距</th>
-                                        <!-- <th scope="col" style="white-space: nowrap" >原始</th>
-                                        <th scope="col" style="white-space: nowrap" >擇優</th> -->
                                         <ng-container *ngFor="let sub of subjectList2">
                                             <th scope="col" style="white-space: nowrap" >原始</th>
                                             <th scope="col" style="white-space: nowrap" >擇優</th>
@@ -225,7 +222,7 @@
                                     </tbody>
                             </table>
 
-                        </ng-container>
+                        </ng-container> -->
                     </ng-container>
                 </ng-container>
             </ng-container>
