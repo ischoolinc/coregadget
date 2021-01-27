@@ -20,6 +20,8 @@ export class PlanConfigComponent implements OnInit {
 
   // 課程代碼清單
   groupCodeList: GroupCodeRec[] = [];
+  // 綜合高中代碼清單
+  groupCodeOneList: GroupCodeRec[] = [];
   // moe_group_code
   groupCode = new FormControl(null, [Validators.required]);
   // moe_group_code_1 一年級不分班群
@@ -90,11 +92,12 @@ export class PlanConfigComponent implements OnInit {
   async getGroupCode() {
     const rsp = await this.planSrv.getMoeGroupCode();
     this.groupCodeList = [].concat(rsp.code || []);
+    this.groupCodeOneList = this.groupCodeList.filter(code => code.group_code.indexOf('M') === 9);
   }
 
   async getDiffSubjects(plan: GraduationPlan, code: string): Promise<DiffSubjectExRec[]> {
-    const courseCode = await this.courseCodeSrv.getCourseCodeTable(code);
-    return plan.diff(courseCode).map((data: any) => {
+    const courseCodeTable = await this.courseCodeSrv.getCourseCodeTable(code);
+    return plan.diff(courseCodeTable).map((data: any) => {
       const { status, subject, credits: { credits } } = data;
       return { status, ...subject, credits };
     });
@@ -170,7 +173,7 @@ export class PlanConfigComponent implements OnInit {
         subjectList.push({
           StartLevel: group.startLevel,
           RowIndex: group.RowIndex,
-          smsSubjectList: [,,,,,],
+          smsSubjectList: [],
           ...subject,
           edit: false
         });

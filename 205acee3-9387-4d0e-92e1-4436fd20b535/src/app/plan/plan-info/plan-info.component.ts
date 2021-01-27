@@ -114,7 +114,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       const table = await this.courseCodeSrv.getCourseCodeTable(this.curPlan.moe_group_code);
       this.subjectList = this.subjectList.map(sub => {
         const rsp = table.getCodeBySubjectKey(new SubjectKey(sub.SubjectName, sub.Required as Required, sub.RequiredBy as RequiredBy));
-        // console.log(rsp);
+
         if (rsp) {
           sub.SubjectCode = rsp.code.getFullCode();
           sub.mapping = true;
@@ -167,7 +167,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
   /** 單筆編輯 */
   editSubject(sb: SubjectExRec) {
-    this.graduationPlanParse(this.curPlan.content); // restore subjectRec
+    // this.graduationPlanParse(this.curPlan.content); // restore subjectRec
     this.subjectList = this.subjectList.map(sbRec => {
       if (sbRec.SubjectName === sb.SubjectName && sbRec.RequiredBy === sb.RequiredBy && sbRec.Required === sb.Required) {
         sbRec.edit = true;
