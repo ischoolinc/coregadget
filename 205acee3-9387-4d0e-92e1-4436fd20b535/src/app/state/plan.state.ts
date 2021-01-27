@@ -62,12 +62,12 @@ export class PlanState {
             let code1 = new Promise((res, rej) => {res(false);});
             if (plan.moe_group_code) {
                 code = this.courseCodeSrv.getCourseCodeTable(plan.moe_group_code).then(v => {
-                    return gp.diff(v).length > 0;
+                    return gp.diff(v).filter(data => data.status === 'new').length > 0;
                 });
             } 
             if(plan.moe_group_code_1){
                 code1 = this.courseCodeSrv.getCourseCodeTable(plan.moe_group_code).then(v => {
-                    return gp.diff(v).length > 0;
+                    return gp.diff(v).filter(data => data.status === 'new').length > 0;
                 })
             }
             return Promise.all([plan, plan.moe_group_code ? code : false, code1]);
