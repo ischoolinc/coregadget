@@ -43,7 +43,16 @@ export class PlanState {
     @Action(SetCurPlanList)
     setCurPlanList(ctx: StateContext<PlanModel>, action: SetCurPlanList) {
         this.loadSrv.startLoading();
-        ctx.patchState({curPlanList: ctx.getState().planList.filter(plan => plan.school_year === action.year)});
+        ctx.patchState({curPlanList: ctx.getState().planList
+            .filter(plan => plan.school_year === action.year)
+            .sort((a, b) => {
+                if (a.name > b.name) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            })
+        });
         this.loadSrv.stopLoading();
     }
 

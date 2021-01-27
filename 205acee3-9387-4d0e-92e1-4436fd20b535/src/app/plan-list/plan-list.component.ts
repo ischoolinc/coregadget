@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { Store, Select } from '@ngxs/store';
+import { RemovePlan, SetCurPlan, SetCurPlanList } from '../state/plan.action';
+import { PlanModel } from '../state/plan.state';
 import { Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { PlanRec } from '../data';
-import { Store, Select } from '@ngxs/store';
-import { PlanModel } from '../state/plan.state';
-import { RemovePlan, SetCurPlan, SetCurPlanList } from '../state/plan.action';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { NewPlanComponent } from './new-plan/new-plan.component';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 
@@ -21,7 +21,6 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   yearFormCtrl = new FormControl();
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
-  // plan: PlanModel = {} as PlanModel;
   yearList: string[] = [];
   planList: PlanExRec[] = [];
   unSubscribe$ = new Subject();
@@ -37,7 +36,6 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.plan$?.pipe(
       takeUntil(this.unSubscribe$)
     ).subscribe((v: PlanModel) => {
-      // this.plan = v;
       this.yearList = v.yearList;
       this.planList = (v.curPlanList || []).map(data => {
         return { ...data, showCloseBtn: false};
