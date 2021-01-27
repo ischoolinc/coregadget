@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlanRec, SubjectExRec } from 'src/app/data';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, Select } from '@ngxs/store';
@@ -14,6 +14,7 @@ import { CourseCodeService, RequiredBy, Required, SubjectKey } from '@1campus/mo
 
 @Component({
   selector: 'app-plan-info',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-info.component.html',
   styleUrls: ['./plan-info.component.scss']
 })
@@ -30,7 +31,8 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private store: Store,
     private router: Router,
-    private courseCodeSrv: CourseCodeService
+    private courseCodeSrv: CourseCodeService,
+    private detectRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -114,7 +116,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       const table = await this.courseCodeSrv.getCourseCodeTable(this.curPlan.moe_group_code);
       this.subjectList = this.subjectList.map(sub => {
         const rsp = table.getCodeBySubjectKey(new SubjectKey(sub.SubjectName, sub.Required as Required, sub.RequiredBy as RequiredBy));
-        // console.log(rsp);
+
         if (rsp) {
           sub.SubjectCode = rsp.code.getFullCode();
           sub.mapping = true;
@@ -137,6 +139,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     });
 
     this.dataSource = new MatTableDataSource(this.subjectList);
+    this.detectRef.detectChanges();
   }
 
   addSubject() {
@@ -167,7 +170,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
   /** 單筆編輯 */
   editSubject(sb: SubjectExRec) {
-    this.graduationPlanParse(this.curPlan.content); // restore subjectRec
+    // this.graduationPlanParse(this.curPlan.content); // restore subjectRec
     this.subjectList = this.subjectList.map(sbRec => {
       if (sbRec.SubjectName === sb.SubjectName && sbRec.RequiredBy === sb.RequiredBy && sbRec.Required === sb.Required) {
         sbRec.edit = true;

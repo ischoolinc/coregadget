@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PlanService } from '../../core/plan.service';
 import { Store, Select } from '@ngxs/store';
@@ -13,6 +13,7 @@ import { Jsonx } from '@1campus/jsonx';
 
 @Component({
   selector: 'app-plan-config',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-config.component.html',
   styleUrls: ['./plan-config.component.scss']
 })
@@ -20,6 +21,8 @@ export class PlanConfigComponent implements OnInit {
 
   // 課程代碼清單
   groupCodeList: GroupCodeRec[] = [];
+  // 綜合高中代碼清單
+  groupCodeOneList: GroupCodeRec[] = [];
   // moe_group_code
   groupCode = new FormControl(null, [Validators.required]);
   // moe_group_code_1 一年級不分班群
@@ -90,11 +93,12 @@ export class PlanConfigComponent implements OnInit {
   async getGroupCode() {
     const rsp = await this.planSrv.getMoeGroupCode();
     this.groupCodeList = [].concat(rsp.code || []);
+    this.groupCodeOneList = this.groupCodeList.filter(code => code.group_code.indexOf('M') === 9);
   }
 
   async getDiffSubjects(plan: GraduationPlan, code: string): Promise<DiffSubjectExRec[]> {
-    const courseCode = await this.courseCodeSrv.getCourseCodeTable(code);
-    return plan.diff(courseCode).map((data: any) => {
+    const courseCodeTable = await this.courseCodeSrv.getCourseCodeTable(code);
+    return plan.diff(courseCodeTable).map((data: any) => {
       const { status, subject, credits: { credits } } = data;
       return { status, ...subject, credits };
     });
@@ -150,10 +154,10 @@ export class PlanConfigComponent implements OnInit {
         return data;
       });
      
-      this.dataSource.data = this.parseCredits(this.mergeDiffSubjects(diffSubjects, diffSubjects1));
+      this.dataSource.data = this.parseCredits(this.mergeDiffSubjects(diffSubjects, diffSubjects1)).filter(data => data.status === 'new');
     } 
     if (code) {
-      this.dataSource.data = this.parseCredits(await this.getDiffSubjects(gp, code));
+      this.dataSource.data = this.parseCredits(await this.getDiffSubjects(gp, code)).filter(data => data.status === 'new');
     }
   }
 
@@ -170,7 +174,7 @@ export class PlanConfigComponent implements OnInit {
         subjectList.push({
           StartLevel: group.startLevel,
           RowIndex: group.RowIndex,
-          smsSubjectList: [,,,,,],
+          smsSubjectList: [],
           ...subject,
           edit: false
         });

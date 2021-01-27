@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-plan',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan.component.html',
   styleUrls: ['./plan.component.scss']
 })

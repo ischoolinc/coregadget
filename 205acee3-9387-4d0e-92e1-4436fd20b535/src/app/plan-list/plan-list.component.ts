@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,6 +13,7 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.
 
 @Component({
   selector: 'app-plan-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-list.component.html',
   styleUrls: ['./plan-list.component.scss']
 })
@@ -29,7 +30,8 @@ export class PlanListComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private detectRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -44,6 +46,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
       if (this.yearList.length && !this.curYear) {
         this.setCurYear(this.yearList[0]);
       }
+      this.detectRef.detectChanges();
     });
   }
 

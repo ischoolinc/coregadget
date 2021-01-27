@@ -15,7 +15,7 @@
     <mat-form-field style="width: 50%;" *ngIf="slidToggle.value">
         <mat-label>請選擇課程代碼</mat-label>
         <mat-select [formControl]="groupCodeOne">
-          <mat-option *ngFor="let code of groupCodeList" [value]="code">
+          <mat-option *ngFor="let code of groupCodeOneList" [value]="code">
             {{code.entry_year}} / {{code.course_type}} / {{code.group_type}} / {{code.subject_type}} / {{code.class_type}}
           </mat-option>
         </mat-select>
@@ -30,7 +30,6 @@
             [formControl]="selectAll">
             全選
         </mat-checkbox>
-
         <table mat-table [dataSource]="dataSource" class="full-width">
 
             <ng-container matColumnDef="selected">

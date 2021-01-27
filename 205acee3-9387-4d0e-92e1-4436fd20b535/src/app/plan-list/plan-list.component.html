@@ -15,7 +15,13 @@
                 (mouseleave)="plan.showCloseBtn = false"
                 (click)="setCurPlan(plan)">
                 <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
-                    <div>{{plan.name}}</div>
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon" color="accent"
+                            *ngIf="plan.different">
+                            report
+                        </mat-icon>
+                        {{plan.name}}
+                    </div>
                     <button mat-icon-button color="primary" 
                         [ngStyle]="{'visibility': plan.showCloseBtn ? 'visible' : 'hidden'}" 
                         (click)="removePlan(plan)">
