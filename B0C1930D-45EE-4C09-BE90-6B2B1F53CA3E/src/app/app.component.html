@@ -1,0 +1,451 @@
+<div class="container-fluid m-4 pb-3 " style=" min-width: 100%;   width: max-content;" >
+    <div id=index   page>
+        <nav class="navbar navbar-light bg-light  me-auto ">
+            <span class="navbar-brand mb-0 h1">班級學期成績查詢</span>
+        </nav>
+        <ng-container *ngIf="!isFirstLoading; else tplFirstLoading">
+            <ng-container *ngIf="classess.length > 0; else tplNoClass">
+                <!-- fliter -->
+                <div class="input-group my-3">
+                    <!-- 班級 -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{selectionObj.currentClass.ClassName}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" *ngFor="let class of classess" href="javascript:void(0);"
+                                [ngClass]="{'active': class.ID == selectionObj.currentClass.ID}"
+                                (click)="clickClassbtn(class)">
+                                <!-- [ngClass] 在這裡主要處理，目前顯示班級，在此表格中添加背景醒目提示-->
+                                {{class.ClassName}}
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 學年學期 -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{this.selectionObj.schoolYearSemester?.SchoolYear}}學年度
+                            {{this.selectionObj.schoolYearSemester?.Semester}}學期
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" *ngFor="let ss of schoolYearSemester" href="javascript:void(0)"
+                                [ngClass]="{'active': ss.SchoolYear == this.selectionObj.schoolYearSemester.SchoolYear && ss.Semester == this.selectionObj.schoolYearSemester.Semester}"
+                                (click)="clickSchoolYearSemester(ss)">
+                                {{ss.SchoolYear}}學年度 {{ss.Semester}}學期
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 科目或領域成績 -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{selectionObj.currentScoreType}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" *ngFor="let scoreType of scoreTypeList" href="javascript:void(0)"
+                                [ngClass]="{'active': scoreType == selectionObj.currentScoreType }"
+                                (click)="clickScoreType(scoreType)">
+                                {{scoreType}}
+                            </a>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- 排名母群類別 -->
+
+
+
+                    <!-- 是否顯示排名-->
+                    <ng-container *ngIf="isSchoolSetingShowRank">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                                [disabled]="!currentRankType" aria-haspopup="true" aria-expanded="false">
+                                {{currentRankType?currentRankType?.RankType:"未結算固定排名"}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" *ngFor="let matrix of rankTypeList" href="javascript:void(0)"
+                                    [ngClass]="{'active': curMatrix == matrix}" (click)="setMatrix(matrix)">
+                                    {{matrix?.RankType}}
+                                </a>
+                            </div>
+                        </div>
+                        <!-- 使用者選擇 是否要顯示排名 -->
+
+                    </ng-container>
+                    <button type="button" class="btn btn-primary  mr-3" aria-haspopup="true" aria-expanded="false"
+                    (click)="searchData()">
+                    查詢
+                </button>
+                </div>
+
+                <div class="mt-2 mb-2">
+
+                    <!--顯示哪種成績 -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light dropdown-toggle mr-3" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            選擇成績類型
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" *ngFor="let scoreType of scoreTypeStateListt"
+                                href="javascript:void(0)" (click)="setCheck()">
+                                <input class="form-check-input" type="checkbox" value=""
+                                    [id]="'scoreType'+scoreType.Name" [checked]="scoreType.Check"
+                                    (change)="setScoretypeCheck(scoreType)">
+                                <label class="form-check-label" [for]="'scoreType'+scoreType.Name">
+                                    {{scoreType.Name}}
+                                </label>
+                            </a>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    <!-- 顯示科目按鈕 -->
+
+                    <button type="button" class="btn btn-light  mr-3" aria-haspopup="true" aria-expanded="false"
+                        (click)="openModal(template)">
+                        選擇顯示{{showingScoreType}}
+                    </button>
+
+                    <ng-container *ngIf="isSchoolSetingShowRank"> <!--如果沒有要顯示 -->
+                        <button *ngIf="isUserSelectShowRank" type="button" class="btn  btn-secondary  mr-3"
+                            aria-haspopup="true" aria-expanded="false" (click)="isUserSelectShowRank=!isUserSelectShowRank">
+                            不顯示排名
+                        </button>
+                        <button *ngIf="!isUserSelectShowRank" type="button" class="btn  btn-secondary  mr-3"
+                            aria-haspopup="true" aria-expanded="false" (click)="isUserSelectShowRank=!isUserSelectShowRank">
+                            顯示排名
+                        </button>
+                    </ng-container>
+
+
+                </div>
+                <ng-container *ngIf="!isLoading; else tplLoading">
+                    <ng-container *ngIf="!noneSS; else tplNoSS">
+                        <table class="table table-bordered table-striped mb-5 sticky" >
+                         
+                            <thead>
+                                <tr>
+                                    <th  class="head_row1" scope="colgroup" [attr.colspan]="2"   ></th>
+                                  
+                                <ng-container *ngFor="let sub of selectShowItems"  >
+                                    <th *ngIf="sub.Check=='true'" class="head_row1" scope="colgroup" [attr.colspan]="getShowItemCheckCount()"
+                                >
+                                    {{sub.Name}}
+                                </th>
+                            </ng-container>                                   
+
+                                </tr>
+                                <tr class="text-center">
+                                    <th class="head" scope="col" style="white-space: nowrap" style="max-width: 120px;">座號</th>
+                                    <th class="head" scope="col" style="width:100px;">姓名</th>
+                                    <ng-container *ngIf="!isUserSelectShowRank">
+
+                                        <ng-container *ngIf="false">
+                                            <th class="head" scope="colgroup" style="white-space: nowrap"
+                                                [attr.colspan]="getScoreTypeSelectCount()">成績</th>
+                                        </ng-container>
+                                        <ng-container *ngIf="true">
+                                            <ng-container *ngFor="let sub of selectShowItems">
+                                                  <ng-container  *ngIf="getScoreTypeSelectCount()==0">
+                                                  <th class="head" *ngIf="sub.Check=='true'"  >
+                                                  </th>
+                                                </ng-container>
+                                                <ng-container *ngFor="let scoreType of scoreTypeStateListt">
+                                                    <th *ngIf="scoreType.Check &&sub.Check=='true'" class="head" scope="colgroup"
+                                                        style="white-space: nowrap" [attr.colspan]="1">
+                                                        {{scoreType.Name}}</th>
+                                                </ng-container>
+                                            </ng-container>
+
+                                        </ng-container>
+
+                                    </ng-container>
+
+                                    <ng-container *ngIf="isUserSelectShowRank">
+                                        <ng-container *ngFor="let sub of selectShowItems">
+                                            <!-- 要顯示哪種 成績  -->
+                                            <ng-container *ngIf="isUserSelectShowRank">
+                                                <ng-container *ngFor="let scoreType of scoreTypeStateListt">
+                                                    <th *ngIf="scoreType.Check" class="head" scope="col"
+                                                        style="white-space: nowrap">
+                                                        {{scoreType.Name}}
+                                                    </th>
+                                                    <!-- 顯示排名 排名 -->
+                                                    <!-- <th *ngIf="scoreType.Check&&scoreType.HasRank" class="head"
+                                                        scope="col" style="white-space: nowrap">{{currentRankType?
+                                                        currentRankType.RankType:"排名"}}
+                                                    </th> -->
+                                                </ng-container>
+                                            </ng-container>
+                                            <ng-container *ngIf="!getScoreTypeSelectCount()">
+                                                <th class="head">
+                                                    成績
+                                                </th>
+                                                <th class="head" scope="col" style="white-space: nowrap">
+                                                    {{currentRankType? currentRankType.RankType:"排名"}}44
+                                                </th>
+                                            </ng-container>
+                                        </ng-container>
+
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr class="text-center " *ngFor="let stu of studentList">
+                                    <td>{{stu.SeatNo}} </td>
+                                    <td style="white-space: nowrap" [innerHtml]="stu.StudentName"></td>
+                                    <ng-container *ngFor="let sub of subjectList2">
+                                        <td [appCreditType]="stu.ScoreInfo[sub].get_cedit"
+                                            *ngIf="stu.ScoreInfo[sub].ori_score && stu.ScoreInfo[sub].ori_score.noneScore; else tplNoFinalScore">
+                                            {{stu.ScoreInfo[sub].ori_score.score}}</td>
+                                    </ng-container>
+
+                                    <ng-container *ngFor="let sub of selectShowItems">
+                                        <ng-container [ngSwitch]="noneRank">
+                                            <ng-container *ngSwitchCase="false">
+                                                <!--  顯示成績處 -->
+                                                <ng-container *ngIf="sub.Check=='true'">
+                                                    <ng-container *ngIf="getScoreTypeSelectCount()==0">
+                                                        <td>
+                                                        </td>
+                                                       </ng-container>
+                                                    <ng-container *ngFor="let scoreType of scoreTypeStateListt">
+                                                     
+
+
+                                                        <ng-container *ngIf="scoreType.Check && scoreType.Name=='成績'">
+                                                            <!--  擇優成績 -->
+                                                            <td>
+                                                                {{stu.hasSubj(sub.Name)?stu.ScoreInfo.get(sub.Name).Score:"--"}}
+                                                              
+                                                            </td>
+                                                            <!-- 擇優排名 -->
+                                                            <td  *ngIf="isSchoolSetingShowRank">
+                                                                {{stu.hasSubj(sub.Name)&&stu.ScoreInfo.get(sub.Name)?stu.ScoreInfo.get(sub.Name).RankInfo?.BestScoreRank:"--"}}
+                                                            </td>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="scoreType.Check && scoreType.Name=='原始成績'">
+                                                            <!--  擇優成績 -->
+                                                            <td>
+                                                                {{stu.hasSubj(sub.Name)?stu.ScoreInfo.get(sub.Name).OrginScore:"--"}}
+                                                             
+                                                            </td>
+                                                            <!-- 擇優排名 -->
+                                                            <td *ngIf="isSchoolSetingShowRank">
+                                                                {{stu.hasSubj(sub.Name)?stu.ScoreInfo.get(sub.Name).RankInfo?.OrgainScoreRank:"--"}}
+                                                            </td>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="scoreType.Check && scoreType.Name=='補考成績'">
+                                                            <!--  擇優成績 -->
+                                                            <td >
+                                                                {{stu.hasSubj(sub.Name)&&stu.ScoreInfo.get(sub.Name).RetestScore?stu.ScoreInfo.get(sub.Name).RetestScore:"--"}}
+                                                            </td>
+
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </ng-container>
+
+                                                <!-- <ng-container *ngIf="!isUserSelectShowRank">
+                                                    <ng-container *ngFor="let scoreType of scoreTypeStateListt">
+                                                        <td *ngIf="scoreType.Check" colspan="1">
+                                                      
+                                                            {{stu.hasSubj(sub.Name)?stu.ScoreInfo.get(sub.Name).OrginScore:"--"}}
+                                                            {{stu.hasSubj(sub.Name)?stu.ScoreInfo.get(sub.Name).RetestScore:"--"}}
+                                                        </td>
+                                                    </ng-container>
+
+
+                                                </ng-container> -->
+
+                                            </ng-container>
+                                     
+                                        </ng-container>
+                                
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- <h3>級距統計表</h3>
+                    <ng-container *ngIf="!noneRank ; else tplNoRank">
+                        <table class="table table-bordered table-striped mb-5 mr-3" *ngIf="curMatrix === '班排名' || curMatrix === '年排名' || curMatrix === '科排名'; else tplSubRank">
+                                <thead>
+                                    <tr>
+                                        <th scope="colgroup" colspan="1"></th>
+                                        
+                                        <th scope="colgroup" colspan="2" *ngFor="let sub of subjectList2">{{sub}}</th>
+                                        <th scope="colgroup" colspan="2" *ngFor="let sub of subItem2">{{sub}}</th>
+                                    </tr>
+                                    <tr class="text-center" >
+                                        <th scope="col" style="white-space: nowrap">級距</th>
+                                   
+                                        <ng-container *ngFor="let sub of subjectList2">
+                                            <th scope="col" style="white-space: nowrap" >原始</th>
+                                            <th scope="col" style="white-space: nowrap" >擇優</th>
+                                        </ng-container>
+                                        <ng-container *ngFor="let sub of subItem2">
+                                            <th scope="col" style="white-space: nowrap" >原始</th>
+                                            <th scope="col" style="white-space: nowrap" >擇優</th>
+                                        </ng-container>
+                                    </tr>
+                                </thead>
+                            
+                                <tbody>
+                                    <tr class="text-center" *ngFor="let range of rangeList">
+                                        <td style="white-space: nowrap">{{range.value}}</td>
+                                            <ng-container *ngFor="let sub of subjectList2">
+                                                <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/科目成績(原始)'] && examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key]; else tplNoFinalScore" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key]}}</td>
+                                                <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/科目成績'] && examMatrix2[sub][curMatrix]['學期/科目成績'][range.key]; else tplNoFinalScore" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績'][range.key]}}</td>
+                                            </ng-container>
+                                            <ng-container *ngFor="let sub of subItem2">
+                                                <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/分項成績(原始)'] && examMatrix2[sub][curMatrix]['學期/分項成績(原始)'][range.key]; else tplNoFinalScore" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/分項成績(原始)'][range.key]}}</td>
+                                                <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/分項成績'] && examMatrix2[sub][curMatrix]['學期/分項成績'][range.key]; else tplNoFinalScore" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/分項成績'][range.key]}}</td>
+                                            </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </ng-container>
+
+                    <h3>五標統計表</h3>
+                        <ng-container *ngIf="!noneRank ; else tplNoRank">
+                            <table class="table table-bordered table-striped mb-5 mr-3" *ngIf="curMatrix === '班排名' || curMatrix === '年排名' || curMatrix === '科排名'; else tplSubRank">
+                                    <thead>
+                                        <tr>
+                                            <th scope="colgroup" colspan="1"  style="width:50px"></th>
+                                            <th scope="colgroup" colspan="2" *ngFor="let sub of subjectList2" >{{sub}}</th>
+                                            <th scope="colgroup" colspan="2" *ngFor="let sub of subItem2">{{sub}}</th>
+                                        </tr>
+                                        <tr class="text-center" >
+                                            <th scope="col" style="white-space: nowrap">五標</th>
+                                            <ng-container *ngFor="let sub of subjectList2">
+                                                <th scope="col" style="white-space: nowrap" >原始</th>
+                                                <th scope="col" style="white-space: nowrap" >擇優</th>
+                                            </ng-container>
+                                            <ng-container *ngFor="let sub of subItem2">
+                                                <th scope="col" style="white-space: nowrap" >原始</th>
+                                                <th scope="col" style="white-space: nowrap" >擇優</th>
+                                            </ng-container>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center" *ngFor="let range of fiveRange">
+                                            <td style="white-space: nowrap">{{range.value}}</td>
+                                                <ng-container *ngFor="let sub of subjectList2">
+                                                    <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/科目成績(原始)'] && examMatrix2[sub][curMatrix]['學期/科目成績(原始)'] && examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key] && examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key] !== 0 ; else tplNoFinalScore" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績(原始)'][range.key] | number:'1.2-2'}}</td>
+                                                    <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/科目成績'] && examMatrix2[sub][curMatrix]['學期/科目成績'][range.key] && examMatrix2[sub][curMatrix]['學期/科目成績'][range.key] !== 0 ; else tplNoFinalScore" style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/科目成績'][range.key] | number:'1.2-2'}}</td>
+                                                </ng-container>
+                                                <ng-container *ngFor="let sub of subItem2">
+                                                    <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/分項成績(原始)'] && examMatrix2[sub][curMatrix]['學期/分項成績(原始)'][range.key] && examMatrix2[sub][curMatrix]['學期/分項成績(原始)'][range.key] !== 0 ; else tplNoFinalScore"style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/分項成績(原始)'][range.key] | number:'1.2-2'}}</td>
+                                                    <td *ngIf="examMatrix2[sub] && examMatrix2[sub][curMatrix] && examMatrix2[sub][curMatrix]['學期/分項成績'] && examMatrix2[sub][curMatrix]['學期/分項成績'][range.key] && examMatrix2[sub][curMatrix]['學期/分項成績'][range.key] !== 0 ; else tplNoFinalScore"style="white-space: nowrap">{{examMatrix2[sub][curMatrix]['學期/分項成績'][range.key] | number:'1.2-2'}}</td>
+                                                </ng-container>
+                                        </tr>
+                                    </tbody>
+                            </table>
+
+                        </ng-container> -->
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<!-- template區塊 -->
+<ng-template #tplNoClass>
+    <div class="d-flex justify-content-center mt-5">
+        <h5>沒有班級資料</h5>
+    </div>
+</ng-template>
+<ng-template #tplNoSS>
+    <div class="d-flex justify-content-center mt-5">
+        <h5>沒有相對應學年度學期的學期成績</h5>
+    </div>
+</ng-template>
+<!-- template區塊 -->
+<ng-template #tplLoading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tplFirstLoading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tplNoFinalScore>
+    <td>--</td>
+</ng-template>
+
+<ng-template #tplNoRange>
+    <td style="white-space: nowrap">-- / --</td>
+</ng-template>
+
+<ng-template #tplNoRank>
+    <div class="container mt-2 mb-4">
+        <h4 style="color:red;">尚未計算固定排名，不顯示統計表</h4>
+    </div>
+</ng-template>
+
+<ng-template #tplSubRank>
+    <div class="container mt-2 mb-4">
+        <h4 style="color:red;">目前為類別排名，不顯示統計表</h4>
+    </div>
+</ng-template>
+
+<ng-template #tplNoStuRank>
+</ng-template>
+
+
+
+
+<!-- 彈跳視窗 顯示 要顯示的科目  -->
+
+<!-- Modal 這邊採用 ngx-boostrap -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">選擇顯示科目(領域)</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-check ml-1" *ngFor="let item of selectShowItems">
+            <input class="form-check-input" type="checkbox" value="" [id]="'cb'+item.Name"
+                [checked]="item.Check=='true'" (change)="setCheck(item)">
+            <label class="form-check-label" [for]="'cb'+item.Name">
+                {{item.Name}} 
+            </label>
+
+        </div>
+        <!-- <button (click)="reloadData()"  > 
+        確定 
+    </button> -->
+
+<br>
+        <div class="ml-4">
+            <input class="form-check-input" type="checkbox" value="" id="selectAll" [checked]="subjSelectAll"
+                (change)="selectAllSubj($event)">
+            <label class="form-check-label" for="selectAll">
+           <b>全選 (清空)</b>  
+            </label>
+
+            <button type="button" class="btn btn-light float-right" (click)="reloadData()">確定</button>
+        </div>
+    </div>
+</ng-template>
