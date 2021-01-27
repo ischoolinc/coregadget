@@ -4,6 +4,7 @@ import { PlanRec } from '../data';
 import { PlanService } from '../core/plan.service';
 import { GetAllPlans, SetCurPlan, SetCurPlanList, SetPlanName, SetPlanContent, NewPlan, RemovePlan, SetPlanGroupCode } from './plan.action';
 import { LoadingService } from '../core/loading.service';
+import { CourseCodeService, GraduationPlan } from '@1campus/moe-course';
 
 @State({
     name: 'plan',
@@ -19,7 +20,8 @@ export class PlanState {
 
     constructor(
         private planSrv: PlanService,
-        private loadSrv: LoadingService
+        private loadSrv: LoadingService,
+        private courseCodeSrv: CourseCodeService
     ) {}
 
     @Action(GetAllPlans)
@@ -41,9 +43,10 @@ export class PlanState {
     }
 
     @Action(SetCurPlanList)
-    setCurPlanList(ctx: StateContext<PlanModel>, action: SetCurPlanList) {
+    async setCurPlanList(ctx: StateContext<PlanModel>, action: SetCurPlanList) {
         this.loadSrv.startLoading();
-        ctx.patchState({curPlanList: ctx.getState().planList
+
+        let plans = ctx.getState().planList
             .filter(plan => plan.school_year === action.year)
             .sort((a, b) => {
                 if (a.name > b.name) {
@@ -51,8 +54,37 @@ export class PlanState {
                 } else {
                     return 1;
                 }
-            })
+            });
+        // 檢查與課程代碼的差異
+        const checkDiff = plans.map(plan => {
+            const gp = GraduationPlan.parse(plan.content);
+            let code = new Promise((res, rej) => {res(false);});
+            let code1 = new Promise((res, rej) => {res(false);});
+            if (plan.moe_group_code) {
+                code = this.courseCodeSrv.getCourseCodeTable(plan.moe_group_code).then(v => {
+                    return gp.diff(v).length > 0;
+                });
+            } 
+            if(plan.moe_group_code_1){
+                code1 = this.courseCodeSrv.getCourseCodeTable(plan.moe_group_code).then(v => {
+                    return gp.diff(v).length > 0;
+                })
+            }
+            return Promise.all([plan, plan.moe_group_code ? code : false, code1]);
         });
+
+        const planDiffList = await Promise.all(checkDiff);
+        const result = planDiffList.map((planRsp) => {
+            const [planRec, codeHasChange, code1HasChange] = planRsp;
+            return {
+                ...planRec,
+                different: codeHasChange || code1HasChange
+            }
+        });
+
+        ctx.patchState({curPlanList: result as PlanRec[]});
+        // ctx.patchState({curPlanList: plans});
+        
         this.loadSrv.stopLoading();
     }
 
