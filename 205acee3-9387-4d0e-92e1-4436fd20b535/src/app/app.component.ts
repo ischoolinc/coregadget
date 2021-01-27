@@ -1,9 +1,7 @@
-import { GadgetService } from './core/gadget.service';
-import { Component, OnInit } from '@angular/core';
-import { Jsonx } from '@1campus/jsonx';
+import { CourseCodeService, MOEService } from '@1campus/moe-course';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { GetAllPlans } from './state/plan.action';
-import { take } from 'rxjs/operators';
 
 export interface Section {
   name: string;
@@ -15,15 +13,15 @@ export interface Section {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   isLoading: boolean = false;
 
   constructor(
-    private gadget: GadgetService,
-    private store: Store
+    private store: Store,
+    private moe: MOEService,
+    private ccsrv: CourseCodeService
   ) { }
-
 
   notes: Section[] = [
     {
@@ -38,31 +36,22 @@ export class AppComponent implements OnInit {
   schoolInfo: any;
 
   async ngOnInit() {
+    // const xml = await this.gp.getGraduationPlan().toPromise();
+    // const gp = GraduationPlan.parse(xml);
+    // const cct = await this.ccsrv.getCourseCodeTable('108041305H11101A');
 
-    const contract = await this.gadget.getContract('basic.public');
+    // const diff = gp.diff(cct);
 
-    // 呼叫 service。
-    this.schoolInfo = await contract.send('beta.GetSystemConfig', {
-      Name: '學校資訊'
-    });
+    // gp.fillCorrespondingCourseCode(cct);
+    // for(const sg of gp) {
+    //   console.log(sg);
+    //   console.log(cct.getCodeBySubjectKey(sg.key));
+    // }
 
-    const jx = Jsonx.parse('<root><child val="1">text</child></root>');
-    // console.log(jx.child('root', 'child').text);
-    // console.log(jx.child('root', 'child').getAttr('val'));
-    jx.child('root', 'child', 'newChild').text = 'add new';
+  }
 
-    // 新增 element。
-    const nc = jx.child('root').children('child').new();
-    nc.setAttr('name', '123');
-    nc.text = 'new text';
-    // console.log(jx.toXml());
-
-    this.isLoading = true;
-    this.store.dispatch(new GetAllPlans()).pipe(
-      take(1)
-    ).subscribe(() => {
-      this.isLoading = false;
-    });
+  ngAfterViewInit(): void {
+    this.store.dispatch(new GetAllPlans());
   }
 
 }

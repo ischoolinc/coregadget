@@ -1,19 +1,9 @@
+<app-loading-screen></app-loading-screen>
 <mat-drawer-container class="example-container" autosize>
   <mat-drawer #drawer class="example-sidenav" mode="side" opened disableClose>
-    <div class="mat-drawer-inner-container" style="height: 100%;">
-      <app-plan-list></app-plan-list>
-      <!-- <div class="flex-column full-flex"></div> -->
-      <mat-divider style="margin-top: auto;"></mat-divider>
-      <button mat-button color="primary">新增</button>
-    </div>
+    <app-plan-list></app-plan-list>
   </mat-drawer>
   <div>
     <router-outlet></router-outlet>
   </div>
 </mat-drawer-container>
-
-<!-- <ng-template #tplLoading>
-  <div style="display: flex;flex-direction: row;justify-content: center;">
-    <mat-spinner [diameter]="45"></mat-spinner>
-  </div>
-</ng-template> -->

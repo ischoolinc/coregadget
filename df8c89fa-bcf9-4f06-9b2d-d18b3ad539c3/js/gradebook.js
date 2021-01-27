@@ -288,7 +288,7 @@
             $scope.templateList = [];
             $scope.examList = [];
             /**定期、平時比例 */
-            course.courseScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage || 0);
+            course.courseScorePercentage = Number(course.TemplateExtension?.Extension.ScorePercentage || 0);
             course.courseAssignmentPercentage = 100 - course.courseScorePercentage;
 
             /**
@@ -368,7 +368,7 @@
                                 /** 定期比例
                                  *  平時比例：(100 - 定期比例)%
                                 */
-                                var ScorePercentage = Number(course.TemplateExtension.Extension.ScorePercentage)/100 || 0;
+                                var ScorePercentage = Number(course.TemplateExtension.Extension?.ScorePercentage)/100 || 0;
                                 // 評量比重
                                 var p = Number(template.Percentage) || 0;
                                 // 定期評量成績
@@ -792,7 +792,10 @@
                 if (!$scope.current.Student) {
                     student = $scope.studentList[0];
                 } else {
-                    student = $scope.current.Student;
+                    // 不能用右邊的寫法，因為切換評量時 studentList 被重設，current 的關連已斷。 student = $scope.current.Student;
+                    student = $scope.studentList.find(function(s) {
+                        return ($scope.current.Student.StudentID === s.StudentID);
+                    });
                 }
                 /**
                  * 設定目前試別

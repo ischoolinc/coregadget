@@ -1,1 +1,94 @@
-<p>plan-config works!</p>
+<section style="padding: 10px 15px">
+    <h3>課程代碼</h3>
+    <mat-form-field style="width: 50%;">
+        <mat-label>請選擇課程代碼</mat-label>
+        <mat-select [formControl]="groupCode">
+          <mat-option *ngFor="let code of groupCodeList" [value]="code">
+            {{code.entry_year}} / {{code.course_type}} / {{code.group_type}} / {{code.subject_type}} / {{code.class_type}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <h3>
+        設定一年級不分班群
+        <mat-slide-toggle color="primary" [formControl]="slidToggle"></mat-slide-toggle>
+    </h3>
+    <mat-form-field style="width: 50%;" *ngIf="slidToggle.value">
+        <mat-label>請選擇課程代碼</mat-label>
+        <mat-select [formControl]="groupCodeOne">
+          <mat-option *ngFor="let code of groupCodeList" [value]="code">
+            {{code.entry_year}} / {{code.course_type}} / {{code.group_type}} / {{code.subject_type}} / {{code.class_type}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <h3>差異比對</h3>
+
+    <div style="height: 400px;overflow: auto;">
+        <mat-checkbox color="primary" 
+            style="margin-left: 23px;"
+            *ngIf="dataSource.data.length"
+            [formControl]="selectAll">
+            全選
+        </mat-checkbox>
+
+        <table mat-table [dataSource]="dataSource" class="full-width">
+
+            <ng-container matColumnDef="selected">
+                <th mat-header-cell *matHeaderCellDef> 選擇 </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> 狀態 </th>
+                <td mat-cell *matCellDef="let element"> {{element.status === 'new' ? '新增' : '更新'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="domain">
+                <th mat-header-cell *matHeaderCellDef> 領域 </th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.domain}}
+                </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="entry">
+                <th mat-header-cell *matHeaderCellDef> 分項類別 </th>
+                <td mat-cell *matCellDef="let element"> {{element.entry}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subjectName">
+                <th mat-header-cell *matHeaderCellDef> 科目名稱 </th>
+                <td mat-cell *matCellDef="let element"> {{element.subjectName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="requiredBy">
+                <th mat-header-cell *matHeaderCellDef> 校部訂 </th>
+                <td mat-cell *matCellDef="let element"> {{element.requiredBy}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="required">
+                <th mat-header-cell *matHeaderCellDef> 必選修 </th>
+                <td mat-cell *matCellDef="let element"> {{element.required}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="credits">
+                <th mat-header-cell *matHeaderCellDef> 學分數 </th>
+                <td mat-cell *matCellDef="let element"> 
+                    <!-- {{element.credits}}  -->
+                    {{element.creditsToString}}
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+    <div style="display: flex;flex-direction: row;justify-content: center;">
+        <button mat-raised-button color="primary" style="margin-top: 20px;"
+            [disabled]="!groupCode.valid" (click)="save()">
+            儲存課程代碼設定，並匯入勾選差異。
+        </button>
+    </div>
+</section>

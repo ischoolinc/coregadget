@@ -1,35 +1,24 @@
+import { environment } from './../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MOECourseCodeModule } from './moe-course-code/moe-course-code.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from './shared/shared.module';
 
 // ngxs
 import { NgxsModule } from '@ngxs/store';
 import { PlanState } from './state/plan.state';
 
-// angular material
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
-
 import { PlanComponent } from './plan/plan.component';
 import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlanInfoComponent } from './plan/plan-info/plan-info.component';
 import { PlanConfigComponent } from './plan/plan-config/plan-config.component';
-import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
+import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { NewPlanComponent } from './plan-list/new-plan/new-plan.component';
+import { MoeCourseModule } from '@1campus/moe-course';
 
 @NgModule({
   declarations: [
@@ -38,31 +27,21 @@ import { PlanEditorComponent } from './plan/plan-editor/plan-editor.component';
     PlanInfoComponent,
     PlanConfigComponent,
     PlanComponent,
-    PlanEditorComponent
+    LoadingScreenComponent,
+    NewPlanComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MOECourseCodeModule,
-    MatTabsModule,
-    MatListModule,
-    MatIconModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatTableModule,
-    MatToolbarModule,
+    MoeCourseModule,
     FormsModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule,
-    NgxsModule.forRoot([PlanState]),
-    MatInputModule,
-    MatDialogModule
+    NgxsModule.forRoot([PlanState], {developmentMode: !environment.production}),
+    SharedModule
   ],
   entryComponents: [
-    PlanEditorComponent
+    NewPlanComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

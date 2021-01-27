@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>新增課程規劃表</h2>
+<mat-dialog-content class="mat-typography" [formGroup]="planForm">
+    <div style="display: flex;flex-direction: column;">
+        <mat-form-field appearance="fill">
+            <mat-label>入學年度</mat-label>
+            <input matInput type="number" [min]="0" formControlName="year">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>課程規劃名稱</mat-label>
+            <input matInput type="text" formControlName="name">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>複製現有課程規劃</mat-label>
+            <mat-select formControlName="plan">
+                <mat-option *ngFor="let plan of planList" [value]="plan">
+                    {{plan.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button cdkFocusInitial (click)="close()">取消</button>
+    <button mat-button (click)="save()" [disabled]="!planForm.valid">儲存</button>
+</mat-dialog-actions>

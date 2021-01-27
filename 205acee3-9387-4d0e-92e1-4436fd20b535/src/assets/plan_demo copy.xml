@@ -1,0 +1,353 @@
+<GraduationPlan SchoolYear="108">
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="人際溝通 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="人際溝通">
+		<Grouping RowIndex="1" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="社會" Entry="學業" FullName="公民 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="公民">
+		<Grouping RowIndex="2" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="社會" Entry="學業" FullName="公民 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="公民">
+		<Grouping RowIndex="2" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="公民 III" GradeYear="3" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="公民">
+		<Grouping RowIndex="3" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="公民 IV" GradeYear="3" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="公民">
+		<Grouping RowIndex="3" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="社會" Entry="學業" FullName="公民與社會 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="公民與社會">
+		<Grouping RowIndex="4" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="社會" Entry="學業" FullName="公民與社會 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="公民與社會">
+		<Grouping RowIndex="4" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="幼兒律動 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="幼兒律動">
+		<Grouping RowIndex="5" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="幼兒科學 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="幼兒科學">
+		<Grouping RowIndex="6" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="幼兒節奏 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="幼兒節奏">
+		<Grouping RowIndex="7" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="幼兒餐點設計 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="幼兒餐點設計">
+		<Grouping RowIndex="8" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="生活科技 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="生活科技">
+		<Grouping RowIndex="9" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="社會" Entry="學業" FullName="生涯規劃 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="生涯規劃">
+		<Grouping RowIndex="10" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="社會" Entry="學業" FullName="地理 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="地理">
+		<Grouping RowIndex="11" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="生活" Entry="學業" FullName="自學研究-資訊應用 I" GradeYear="2" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="自學研究-資訊應用">
+		<Grouping RowIndex="12" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="生活" Entry="學業" FullName="自學研究-資訊應用 II" GradeYear="2" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="自學研究-資訊應用">
+		<Grouping RowIndex="12" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="色彩學 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="色彩學">
+		<Grouping RowIndex="13" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="行為觀察與評量 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="行為觀察與評量">
+		<Grouping RowIndex="14" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="行銷與服務 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="行銷與服務">
+		<Grouping RowIndex="15" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="空白課程 I" GradeYear="3" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="空白課程">
+		<Grouping RowIndex="16" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="空白課程 II" GradeYear="3" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="空白課程">
+		<Grouping RowIndex="16" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="藝術" Entry="學業" FullName="美術 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="美術">
+		<Grouping RowIndex="17" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="藝術" Entry="學業" FullName="美術 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="美術">
+		<Grouping RowIndex="17" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="外國語文" Entry="學業" FullName="英文 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="英文">
+		<Grouping RowIndex="18" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="外國語文" Entry="學業" FullName="英文 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="英文">
+		<Grouping RowIndex="18" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="外國語文" Entry="學業" FullName="英文 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="英文">
+		<Grouping RowIndex="19" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="外國語文" Entry="學業" FullName="英文 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="英文">
+		<Grouping RowIndex="19" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="外國語文" Entry="學業" FullName="英文 V" GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="英文">
+		<Grouping RowIndex="19" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="外國語文" Entry="學業" FullName="英文 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="英文">
+		<Grouping RowIndex="19" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="英文輔 III" GradeYear="2" Level="3" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="英文輔">
+		<Grouping RowIndex="20" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="英文輔 IV" GradeYear="2" Level="4" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="英文輔">
+		<Grouping RowIndex="20" startLevel="3"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="1" Domain="" Entry="學業" FullName="英語會話 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="英語會話">
+		<Grouping RowIndex="21" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="1" Domain="" Entry="學業" FullName="英語會話 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="英語會話">
+		<Grouping RowIndex="21" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="計算機概論 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="計算機概論">
+		<Grouping RowIndex="22" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="面試技巧 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="面試技巧">
+		<Grouping RowIndex="23" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="藝術" Entry="學業" FullName="音樂 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="音樂">
+		<Grouping RowIndex="24" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="藝術" Entry="學業" FullName="音樂 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="音樂">
+		<Grouping RowIndex="24" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="家政概論 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="家政概論">
+		<Grouping RowIndex="25" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="家政概論 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="家政概論">
+		<Grouping RowIndex="25" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="家庭教育 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="家庭教育">
+		<Grouping RowIndex="26" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="健康與護理 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="健康與護理">
+		<Grouping RowIndex="27" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="健康與護理 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="健康與護理">
+		<Grouping RowIndex="27" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="健康與護理 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="健康與護理">
+		<Grouping RowIndex="28" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="健康與護理 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="健康與護理">
+		<Grouping RowIndex="28" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="健康體適能 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="健康體適能">
+		<Grouping RowIndex="29" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="健康體適能 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="健康體適能">
+		<Grouping RowIndex="29" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="本國語文" Entry="學業" FullName="國文 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國文">
+		<Grouping RowIndex="30" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="本國語文" Entry="學業" FullName="國文 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="國文">
+		<Grouping RowIndex="30" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="本國語文" Entry="學業" FullName="國文 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="國文">
+		<Grouping RowIndex="31" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="本國語文" Entry="學業" FullName="國文 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="國文">
+		<Grouping RowIndex="31" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="本國語文" Entry="學業" FullName="國文 V" GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="國文">
+		<Grouping RowIndex="31" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="本國語文" Entry="學業" FullName="國文 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="國文">
+		<Grouping RowIndex="31" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="國文輔 III" GradeYear="2" Level="3" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="國文輔">
+		<Grouping RowIndex="32" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="國文輔 IV" GradeYear="2" Level="4" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="國文輔">
+		<Grouping RowIndex="32" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="國防通識 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國防通識">
+		<Grouping RowIndex="33" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="國防通識 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="國防通識">
+		<Grouping RowIndex="33" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="國防通識 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="國防通識">
+		<Grouping RowIndex="33" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="1" Domain="生活" Entry="學業" FullName="國防通識 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="國防通識">
+		<Grouping RowIndex="33" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="國防通識 V" GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="國防通識">
+		<Grouping RowIndex="34" startLevel="5"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="國防通識 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="國防通識">
+		<Grouping RowIndex="34" startLevel="5"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="自然" Entry="學業" FullName="基礎生物 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="基礎生物">
+		<Grouping RowIndex="35" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="自然" Entry="學業" FullName="基礎物理 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="基礎物理">
+		<Grouping RowIndex="36" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="專一輔 I" GradeYear="2" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="專一輔">
+		<Grouping RowIndex="37" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="專一輔 II" GradeYear="2" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="專一輔">
+		<Grouping RowIndex="37" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="專二輔 I" GradeYear="2" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="專二輔">
+		<Grouping RowIndex="38" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="專二輔 II" GradeYear="2" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="專二輔">
+		<Grouping RowIndex="38" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="專題製作 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="專題製作">
+		<Grouping RowIndex="39" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="專題製作 II" GradeYear="3" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="專題製作">
+		<Grouping RowIndex="39" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="教保行政 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="教保行政">
+		<Grouping RowIndex="40" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="教保行政 II" GradeYear="3" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="教保行政">
+		<Grouping RowIndex="40" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="教保活動設計 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="教保活動設計">
+		<Grouping RowIndex="41" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="教保活動設計 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="教保活動設計">
+		<Grouping RowIndex="41" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="3" Domain="" Entry="學業" FullName="教保概論 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="教保概論">
+		<Grouping RowIndex="42" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="3" Domain="" Entry="學業" FullName="教保概論 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="教保概論">
+		<Grouping RowIndex="42" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="3" Domain="" Entry="學業" FullName="教保概論與實務 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="教保概論與實務">
+		<Grouping RowIndex="43" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="教保實務 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="教保實務">
+		<Grouping RowIndex="44" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="教保實務 II" GradeYear="3" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="教保實務">
+		<Grouping RowIndex="44" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="教學媒體設計與製作 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="教學媒體設計與製作">
+		<Grouping RowIndex="45" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="教學媒體設計與製作 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="教學媒體設計與製作">
+		<Grouping RowIndex="45" startLevel="1"/>
+	</Subject>
+	<Subject Category="活動科目" Credit="1" Domain="" Entry="學業" FullName="週會/班會 I" GradeYear="1" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="週會/班會">
+		<Grouping RowIndex="46" startLevel="1"/>
+	</Subject>
+	<Subject Category="活動科目" Credit="1" Domain="" Entry="學業" FullName="週會/班會 II" GradeYear="1" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="週會/班會">
+		<Grouping RowIndex="46" startLevel="1"/>
+	</Subject>
+	<Subject Category="活動科目" Credit="1" Domain="" Entry="學業" FullName="週會/班會 III" GradeYear="2" Level="3" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="週會/班會">
+		<Grouping RowIndex="46" startLevel="1"/>
+	</Subject>
+	<Subject Category="活動科目" Credit="1" Domain="" Entry="學業" FullName="週會/班會 IV" GradeYear="2" Level="4" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="週會/班會">
+		<Grouping RowIndex="46" startLevel="1"/>
+	</Subject>
+	<Subject Category="活動科目" Credit="1" Domain="" Entry="學業" FullName="週會/班會 V" GradeYear="3" Level="5" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="週會/班會">
+		<Grouping RowIndex="46" startLevel="1"/>
+	</Subject>
+	<Subject Category="活動科目" Credit="1" Domain="" Entry="學業" FullName="週會/班會 VI" GradeYear="3" Level="6" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="週會/班會">
+		<Grouping RowIndex="46" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="彈行運用時間 I" GradeYear="2" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="彈行運用時間">
+		<Grouping RowIndex="47" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="彈行運用時間 II" GradeYear="2" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="彈行運用時間">
+		<Grouping RowIndex="47" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="數學" Entry="學業" FullName="數學 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="數學">
+		<Grouping RowIndex="48" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="數學" Entry="學業" FullName="數學 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="數學">
+		<Grouping RowIndex="48" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="數學" Entry="學業" FullName="數學 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="數學">
+		<Grouping RowIndex="49" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="4" Domain="數學" Entry="學業" FullName="數學 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="數學">
+		<Grouping RowIndex="49" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="數學" Entry="學業" FullName="數學 V" GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="數學">
+		<Grouping RowIndex="49" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="數學" Entry="學業" FullName="數學 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="數學">
+		<Grouping RowIndex="49" startLevel="3"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="數學" Entry="學業" FullName="數學演練 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="數學演練">
+		<Grouping RowIndex="50" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="數學輔 III" GradeYear="2" Level="3" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="數學輔">
+		<Grouping RowIndex="51" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="數學輔 IV" GradeYear="2" Level="4" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="數學輔">
+		<Grouping RowIndex="51" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="衛生與安全 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="衛生與安全">
+		<Grouping RowIndex="52" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="生活" Entry="學業" FullName="閱讀指導 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="閱讀指導">
+		<Grouping RowIndex="53" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="生活" Entry="學業" FullName="閱讀指導 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="閱讀指導">
+		<Grouping RowIndex="53" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="器樂 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="器樂">
+		<Grouping RowIndex="54" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="器樂 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="器樂">
+		<Grouping RowIndex="54" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="3" Domain="社會" Entry="學業" FullName="學習輔導 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="學習輔導">
+		<Grouping RowIndex="55" startLevel="1"/>
+	</Subject>
+	<Subject Category="一般科目" Credit="2" Domain="社會" Entry="學業" FullName="歷史 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="歷史">
+		<Grouping RowIndex="56" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="嬰幼兒發展與保育 I" GradeYear="2" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="嬰幼兒發展與保育">
+		<Grouping RowIndex="57" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="嬰幼兒發展與保育 II" GradeYear="2" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="嬰幼兒發展與保育">
+		<Grouping RowIndex="57" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="聯課活動 I" GradeYear="1" Level="1" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="聯課活動">
+		<Grouping RowIndex="58" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="聯課活動 II" GradeYear="1" Level="2" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="聯課活動">
+		<Grouping RowIndex="58" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="聯課活動 III" GradeYear="2" Level="3" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="聯課活動">
+		<Grouping RowIndex="58" startLevel="1"/>
+	</Subject>
+	<Subject Category="專業科目" Credit="2" Domain="" Entry="學業" FullName="聯課活動 IV" GradeYear="2" Level="4" NotIncludedInCalc="True" NotIncludedInCredit="True" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="聯課活動">
+		<Grouping RowIndex="58" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="職業倫理 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="職業倫理">
+		<Grouping RowIndex="59" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="讀書計劃 I" GradeYear="3" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="讀書計劃">
+		<Grouping RowIndex="60" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="體育 I" GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="1" SubjectName="體育">
+		<Grouping RowIndex="61" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="體育 II" GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="部訂" Semester="2" SubjectName="體育">
+		<Grouping RowIndex="61" startLevel="1"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="體育 III" GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="1" SubjectName="體育">
+		<Grouping RowIndex="62" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="1" Domain="" Entry="學業" FullName="體育 IV" GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="必修" RequiredBy="校訂" Semester="2" SubjectName="體育">
+		<Grouping RowIndex="62" startLevel="3"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="體育 V" GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="1" SubjectName="體育">
+		<Grouping RowIndex="63" startLevel="5"/>
+	</Subject>
+	<Subject Category="體育" Credit="2" Domain="" Entry="學業" FullName="體育 VI" GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" Required="選修" RequiredBy="校訂" Semester="2" SubjectName="體育">
+		<Grouping RowIndex="63" startLevel="5"/>
+	</Subject>
+</GraduationPlan>
