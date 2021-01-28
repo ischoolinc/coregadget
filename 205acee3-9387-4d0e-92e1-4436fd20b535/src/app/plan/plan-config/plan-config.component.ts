@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PlanService } from '../../core/plan.service';
 import { Store, Select } from '@ngxs/store';
@@ -13,7 +13,6 @@ import { Jsonx } from '@1campus/jsonx';
 
 @Component({
   selector: 'app-plan-config',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-config.component.html',
   styleUrls: ['./plan-config.component.scss']
 })

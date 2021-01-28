@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PlanRec, SubjectExRec } from 'src/app/data';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, Select } from '@ngxs/store';
@@ -14,13 +14,16 @@ import { CourseCodeService, RequiredBy, Required, SubjectKey } from '@1campus/mo
 
 @Component({
   selector: 'app-plan-info',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-info.component.html',
   styleUrls: ['./plan-info.component.scss']
 })
 export class PlanInfoComponent implements OnInit, OnDestroy {
 
-  @Input() columns: string[] = [];
+  displayedColumns: string[] = [
+    'Domain', 'Entry', 'SubjectName', 'RequiredBy', 'Required', 'StartLevel',
+    'LastSemester1', 'NextSemester1', 'LastSemester2', 'NextSemester2', 'LastSemester3', 'NextSemester3', 'LastSemester4', 'NextSemester4',
+    'SubjectCode', 'action'
+  ];
   dataSource = new MatTableDataSource<SubjectExRec>();
   subjectList: SubjectExRec[] = [];
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
@@ -32,7 +35,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     private store: Store,
     private router: Router,
     private courseCodeSrv: CourseCodeService,
-    private detectRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -140,7 +142,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
     this.duplicateValid();
     this.dataSource.data = this.subjectList;
-    this.detectRef.detectChanges();
   }
 
   /** 檢查科目級別是否重複 */

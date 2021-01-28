@@ -34,10 +34,11 @@ export class PlanState {
                 yearList.push(plan.school_year);
             }
         });
-        ctx.setState({
+        ctx.patchState({
             planList: [].concat(rsp.plan || []),
             yearList,
             curPlan: {} as PlanRec,
+            curPlanList: []
         });
         this.loadSrv.stopLoading();
     }
