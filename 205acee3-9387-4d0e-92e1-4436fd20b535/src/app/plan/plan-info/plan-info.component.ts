@@ -138,8 +138,26 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       return a.RowIndex - b.RowIndex;
     });
 
+    this.duplicateValid();
     this.dataSource = new MatTableDataSource(this.subjectList);
     this.detectRef.detectChanges();
+  }
+
+  /** 檢查科目級別是否重複 */
+  duplicateValid() {
+    const keys: string[] = [];
+    this.subjectList.forEach(sub => {
+      sub.errorMsgs = [];
+      sub.smsSubjectList.forEach(sms => {
+        const sgs = `${sub.SubjectName}${sms.GradeYear}${sms.Semester}`;
+        if (!keys.find(key => key === sgs)) {
+          keys.push(sgs);
+        } else {
+          sub.error = true;
+          sub.errorMsgs.push('已有相同科目級別的資料存在');
+        }
+      });
+    });
   }
 
   addSubject() {
@@ -163,7 +181,9 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       NextSemester4: '',
       smsSubjectList: [],
       edit: true,
-      mapping: false
+      mapping: false,
+      error: false,
+      errorMsgs: []
     });
     this.dataSource.data = this.subjectList;
   }

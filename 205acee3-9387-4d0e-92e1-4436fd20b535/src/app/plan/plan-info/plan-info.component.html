@@ -35,7 +35,12 @@
             <th mat-header-cell *matHeaderCellDef> 科目名稱 </th>
             <td mat-cell *matCellDef="let element">
                 <ng-container *ngIf="!element.edit;else tplSubjectName">
-                    {{element.SubjectName}}
+                    <div style="display: flex;flex-direction: row;justify-content: space-between;align-items: center;">
+                        {{element.SubjectName}}
+                        <mat-icon *ngIf="element.error" color="warn" matTooltip="{{element.errorMsgs.join(',')}}">
+                            error
+                        </mat-icon>
+                    </div>
                 </ng-container>
                 <ng-template #tplSubjectName>
                     <mat-form-field class="large-col">

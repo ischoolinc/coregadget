@@ -16,9 +16,9 @@
                 (click)="setCurPlan(plan)">
                 <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
                     <div style="display: flex;flex-direction: row;align-items: center;">
-                        <mat-icon aria-hidden="false" aria-label="Example home icon" color="accent"
+                        <mat-icon aria-hidden="false" color="warn"
                             *ngIf="plan.different">
-                            report
+                            error
                         </mat-icon>
                         {{plan.name}}
                     </div>

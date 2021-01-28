@@ -49,4 +49,8 @@ export interface SubjectExRec extends SubjectRec {
     edit: boolean;
     /** 是否與課程計畫平台代碼對應 */
     mapping: boolean;
+    /** 科目級別是否重複 */
+    error: boolean;
+    /** 錯誤訊息 */
+    errorMsgs: string[];
 }
