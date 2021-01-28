@@ -139,7 +139,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     });
 
     this.duplicateValid();
-    this.dataSource = new MatTableDataSource(this.subjectList);
+    this.dataSource.data = this.subjectList;
     this.detectRef.detectChanges();
   }
 
@@ -190,7 +190,6 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
 
   /** 單筆編輯 */
   editSubject(sb: SubjectExRec) {
-    // this.graduationPlanParse(this.curPlan.content); // restore subjectRec
     this.subjectList = this.subjectList.map(sbRec => {
       if (sbRec.SubjectName === sb.SubjectName && sbRec.RequiredBy === sb.RequiredBy && sbRec.Required === sb.Required) {
         sbRec.edit = true;
@@ -199,6 +198,12 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
       }
       return sbRec;
     });
+  }
+
+  cancelEdit(sb: SubjectExRec) {
+    sb.edit = false;
+    // restore dataSource
+    this.graduationPlanParse(this.curPlan.content);
   }
 
   /** SubjectName + Required + RequiredBy => 唯一值*/
@@ -229,7 +234,7 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
         CourseName: `${sb.SubjectName} I`,
         Credit: sb.LastSemester1,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester1}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="1" Level="1" FullName="${sb.SubjectName} I" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="1" Level="1" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} I" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -241,7 +246,7 @@ Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} II`,
         Credit: sb.NextSemester1,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester1}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="1" Level="2" FullName="${sb.SubjectName} II" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="1" Level="2" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} II" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -253,7 +258,7 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} III`,
         Credit: sb.LastSemester2,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester2}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="2" Level="3" FullName="${sb.SubjectName} III" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="2" Level="3" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} III" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -265,7 +270,7 @@ Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} IV`,
         Credit: sb.NextSemester2,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester2}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="2" Level="4" FullName="${sb.SubjectName} IV" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="2" Level="4" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} IV" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -277,7 +282,7 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} V`,
         Credit: sb.LastSemester3,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester3}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="3" Level="5" FullName="${sb.SubjectName} V" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="3" Level="5" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} V" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -289,7 +294,7 @@ Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} VI`,
         Credit: sb.NextSemester3,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester3}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="3" Level="6" FullName="${sb.SubjectName} VI" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="3" Level="6" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} VI" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -301,7 +306,7 @@ Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} VII`,
         Credit: sb.LastSemester4,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.LastSemester4}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="4" Level="7" FullName="${sb.SubjectName} VII" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="4" Level="7" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} VII" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
@@ -313,7 +318,7 @@ Semester="1" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex=
         CourseName: `${sb.SubjectName} VIII`,
         Credit: sb.NextSemester4,
         jx: Jsonx.parse(`<Subject Category="" Credit="${sb.NextSemester4}" Domain="${sb.Domain}" Entry="${sb.Entry}"
-GradeYear="4" Level="8" FullName="${sb.SubjectName} VIII" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
+GradeYear="4" Level="8" NotIncludedInCalc="False" NotIncludedInCredit="False" FullName="${sb.SubjectName} VIII" Required="${sb.Required}" RequiredBy="${sb.RequiredBy}"
 Semester="2" SubjectName="${sb.SubjectName}" 課程代碼=""><Grouping RowIndex="${sb.RowIndex}" startLevel="${sb.StartLevel}" />
 </Subject>`).child('Subject')
       });
