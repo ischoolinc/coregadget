@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,7 +13,6 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.
 
 @Component({
   selector: 'app-plan-list',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-list.component.html',
   styleUrls: ['./plan-list.component.scss']
 })
@@ -22,6 +21,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   yearFormCtrl = new FormControl();
   @Select((state: { plan: any; }) => state.plan)plan$: Observable<PlanModel> | undefined;
+  @Select((state: { plan: { curPlanList: any; }; }) => state.plan.curPlanList)curPlanList$: Observable<PlanExRec[]> | undefined;
   yearList: string[] = [];
   planList: PlanExRec[] = [];
   unSubscribe$ = new Subject();
@@ -31,7 +31,6 @@ export class PlanListComponent implements OnInit, OnDestroy {
     private store: Store,
     private router: Router,
     private dialog: MatDialog,
-    private detectRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -39,14 +38,19 @@ export class PlanListComponent implements OnInit, OnDestroy {
       takeUntil(this.unSubscribe$)
     ).subscribe((v: PlanModel) => {
       this.yearList = v.yearList;
-      this.planList = (v.curPlanList || []).map(data => {
-        return { ...data, showCloseBtn: false};
-      });
       
       if (this.yearList.length && !this.curYear) {
         this.setCurYear(this.yearList[0]);
       }
-      this.detectRef.detectChanges();
+    });
+
+    this.curPlanList$?.pipe(
+      takeUntil(this.unSubscribe$)
+    ).subscribe((v: PlanExRec[]) => {
+      this.planList = v;
+      this.planList = (this.planList || []).map(data => {
+        return { ...data, showCloseBtn: false};
+      });
     });
   }
 
@@ -55,8 +59,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.unSubscribe$.complete();
   }
 
-  setCurPlan(plan: PlanRec) {
-    this.store.dispatch(new SetCurPlan(plan)).pipe(
+  setCurPlan(plan: PlanExRec) {
+    const { showCloseBtn, ...planRec } = plan;
+    this.store.dispatch(new SetCurPlan(planRec)).pipe(
       take(1)
     ).subscribe(() => {
       this.router.navigate(['/plan', plan.id])

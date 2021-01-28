@@ -19,9 +19,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { SpyDirective } from './spy.directive';
 
 @NgModule({
-  declarations: [ConfirmDialogComponent],
+  declarations: [ConfirmDialogComponent, SpyDirective],
   imports: [
     CommonModule,
     MatDialogModule,
@@ -44,7 +45,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MatInputModule,
     MatTooltipModule,
     MatCheckboxModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    SpyDirective
   ],
   entryComponents: [
     ConfirmDialogComponent
