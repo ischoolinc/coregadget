@@ -8,7 +8,7 @@ export class SpyDirective implements OnInit, OnDestroy {
   constructor() { }
   
   ngOnInit(): void {
-    console.log('🚀 DOM on init 🚀');
+    console.log('🚀 DOM on init');
   }
 
   ngOnDestroy(): void {

@@ -50,6 +50,10 @@ export class PlanInfoComponent implements OnInit, OnDestroy {
     });
   }
 
+  trackBy(index: number, item: SubjectExRec) {
+    return index;
+  }
+
   ngOnDestroy(): void {
     this.unSubscribe$.next();
     this.unSubscribe$.complete();

@@ -59,6 +59,10 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.unSubscribe$.complete();
   }
 
+  trackByFn(index: number, item: PlanRec) {
+    return index;
+  }
+
   setCurPlan(plan: PlanExRec) {
     const { showCloseBtn, ...planRec } = plan;
     this.store.dispatch(new SetCurPlan(planRec)).pipe(

@@ -4,7 +4,7 @@
         (click)="addSubject()">
         <mat-icon>add</mat-icon>
     </button>
-    <table mat-table [dataSource]="dataSource" class="full-width">
+    <table mat-table [dataSource]="dataSource" [trackBy]="trackBy" class="full-width">
         <ng-container matColumnDef="Domain">
             <th mat-header-cell *matHeaderCellDef> 領域 </th>
             <td mat-cell *matCellDef="let element">

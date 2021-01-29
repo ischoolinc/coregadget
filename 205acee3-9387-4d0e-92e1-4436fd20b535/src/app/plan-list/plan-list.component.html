@@ -9,7 +9,7 @@
             </mat-select>
         </mat-form-field>
         <mat-selection-list #shoes [multiple]="false">
-            <mat-list-option *ngFor="let plan of planList;"
+            <mat-list-option *ngFor="let plan of planList;trackBy: trackByFn"
                 [value]="plan" 
                 (mouseenter)="plan.showCloseBtn = true"
                 (mouseleave)="plan.showCloseBtn = false"
