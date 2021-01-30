@@ -290,7 +290,14 @@
                                 var repeatBatchRec = $scope.batchList.filter(_batchRec => _batchRec.BatchID == batchRec.BatchID);
 
                                 // 梯次開放輸入期間
-                                batchRec.Lock = !(new Date(batchRec.BatchStartTime) < new Date() && new Date() < new Date(batchRec.BatchEndTime));
+                                /** 因為在 Safari, new Date('2021-02-01 00:00:00') 會是 invalid date, 不認得這種時間字串，
+                                 * 所以就暫時先把時間部分去掉只剩日期，之後要改成從 db 判斷時間是否過期, 不要從 client判斷。  Kevin. */
+                                var startDate = new Date(batchRec.BatchStartTime.split(' ')[0]);
+                                var endDate = new Date(batchRec.BatchEndTime.split(' ')[0]);
+                                endDate.setDate(endDate.getDate() + 1); // 多加一天
+                                //batchRec.Lock = !(new Date(batchRec.BatchStartTime) < new Date() && new Date() < new Date(batchRec.BatchEndTime));
+                                var now = new Date();
+                                batchRec.Lock = !(startDate < now && now < endDate);
 
                                 // 一個 補考梯次 加入一次即可
                                 if (repeatBatchRec.length == 0) {
