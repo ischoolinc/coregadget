@@ -838,6 +838,8 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
+                                //  處理高雄特殊字
+                                item.ParseString  =  item.ParseString?.replace(new RegExp(String.fromCharCode(8), "g"),'');
                                 item.ParseString = item.ParseString || '';
                                 item.ParseValues = item.ParseString.split("\n");
                                 item.HasError = false;
@@ -946,7 +948,11 @@
                             },
                             Parse: function () {
                                 item.ParseString = item.ParseString || '';
+                                // 處理特殊字
+                                if(item.ParseString){
 
+                                    item.ParseString  = item.ParseString.replace(new RegExp(String.fromCharCode(8), "g"),'');
+                                }
                                 // 2017/11/30穎驊註解，由於Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
                                 var text_trimmed = item.ParseString.replace(/""/g, "")
 
@@ -1246,7 +1252,9 @@
         $scope.setCurrent = function (student, exam, setCondition, setFocus) {
             $scope.current.Exam = exam;
             $scope.current.Student = student;
-            var val = student[exam.ExamID];
+            if(student[exam.ExamID]){
+                var val = student[exam.ExamID];
+            }
 
             $scope.current.Value = (angular.isNumber(val) ? val : (val || ''));
             if (setCondition && student) {
@@ -1429,6 +1437,10 @@
          * 文字評量 代碼轉換
          */
         $scope.textChangeEvent = function () {
+            // 處理特殊字
+            if($scope.current.Value){
+                $scope.current.Value  =$scope.current.Value.replace(new RegExp(String.fromCharCode(8), "g"),'');
+            }
             var codeList = $scope.current.Value.split(",")
             var valueList = [];
 
@@ -1655,9 +1667,11 @@
                 };
                 [].concat($scope.studentList || []).forEach(function (studentRec, index) {
 
-                    // 去除 ',"
-
-                    var t1 = studentRec['Exam_文字評量'].replace(/'/g, "''");
+                  // 去除 ',"
+                  // 如果不是空值
+                  if(studentRec['Exam_文字評量']){
+                      var t1 = studentRec['Exam_文字評量'].replace(/'/g, "''");
+                  }
                     //   var t2 = t1.replace(/"/g, '""');
 
                     var obj = {
