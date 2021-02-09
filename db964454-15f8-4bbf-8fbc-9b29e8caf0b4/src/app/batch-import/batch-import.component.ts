@@ -83,8 +83,10 @@ export class BatchImportComponent implements OnInit{
   }
 
   parse() {
+    // 處理特殊字
+    this.sourceText  = this.sourceText.replace(new RegExp(String.fromCharCode(8), "g"),'');
    let parseText = this.sourceText || '';
-  
+
     // 由於 Excel 格子內文字若輸入" 其複製到 Web 後，會變成"" ，在此將其移除，避免後續的儲存處理問題
     // parseText = parseText.replace(/""/g, '');
 
@@ -117,6 +119,9 @@ export class BatchImportComponent implements OnInit{
 
   /**匯入資料 */
   importData() {
+    // 處理奇怪的文字
+     this.sourceText  = this.sourceText.replace(String.fromCharCode(8),'');
+     console.log('importData'  , this.sourceText);
     if (this.hasError == true) {
       return; 
     } else {
