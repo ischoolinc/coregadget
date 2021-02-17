@@ -115,6 +115,12 @@ export class CourseScoreInfo {
         });
         return value;
     }
+
+    // 依 試別名稱 取得 存放成績的陣列中的物件
+    getExamScoreInfo(examName: string): ExamScoreInfo{
+        let result = this.ExamScoreList.find(exam => exam.ExamName == examName)
+      return result;
+    }
 }
 
 // 評量成績

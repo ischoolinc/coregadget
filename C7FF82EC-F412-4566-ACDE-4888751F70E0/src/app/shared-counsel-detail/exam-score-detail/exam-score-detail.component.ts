@@ -49,22 +49,26 @@ export class ExamScoreDetailComponent implements OnInit {
 
   async loadData() {
     if (this.selectSchoolType === 'JHHC') {
-      // 新竹版國中小評量成績
+      // 1.新竹版國中小評量成績
       this.serviceGetExamScore = "GetExamScoreJHHC";
+
       await this.GetExamScore();
+      await this.GetExamList();
     }
 
     if (this.selectSchoolType === 'JHKH') {
-      // 高雄版國中小評量成績
+      // 2.高雄版國中小評量成績
       this.serviceGetExamScore = "GetExamScoreJHKH";
       await this.GetExamScoreOrdinarilyScoreJHKH();
 
     }
 
     if (this.selectSchoolType === 'SH') {
-      // 高中評量成績
+      // 3.高中評量成績
       this.serviceGetExamScore = "GetExamScoreSH";
+    
       await this.GetExamScore();
+      await this.GetExamList();
     }
 
     // // 取得預設學年度學期
@@ -92,7 +96,8 @@ export class ExamScoreDetailComponent implements OnInit {
     this.examScoreOrdinarilySource.forEach(ExamScore => {
 
     });
-    this.GetExamScore();
+    await this.GetExamScore();
+    await this.GetExamList();
   }
 
   // 取得學制
@@ -126,6 +131,26 @@ export class ExamScoreDetailComponent implements OnInit {
     }
   }
 
+/**
+ *
+ *  取得評量的聯集
+ * @memberof ExamScoreDetailComponent
+ */
+ async GetExamList(){
+  let resp = await this.dsaService.send("_.GetUnionExamName", {
+    Request: {
+      StudentID: this.counselDetailComponent.currentStudent.StudentID,
+      SchoolYear: this.selectSchoolYearSemester.SchoolYear,
+      Semester: this.selectSchoolYearSemester.Semester
+    }
+  });
+    [].concat(resp.Exams).forEach(exam =>{
+    if (!this.studentExamScore.ExamNameList.includes(exam.ExamName)) {
+      this.studentExamScore.ExamNameList.push(exam.ExamName);
+    }
+    });
+ }
+
   async GetExamScore() {
     this.semesterList = [];
     let tmpSems: string[] = [];
@@ -139,6 +164,7 @@ export class ExamScoreDetailComponent implements OnInit {
 
       this.examScoreSource = [].concat(resp.CourseExamScore || []);
 
+      //console.log('this.examScoreSource',this.examScoreSource);
       this.examScoreSource.forEach(ExamScore => {
         let ss = ExamScore.SchoolYear + ExamScore.Semester;
         if (!tmpSems.includes(ss)) {
@@ -164,7 +190,7 @@ export class ExamScoreDetailComponent implements OnInit {
 
       if (this.selectSchoolType === 'SH') {
         this.parseScoreSH();
-      } else {
+      } else { //國中
         this.parseScore();
       }
     } catch (err) {
@@ -366,7 +392,11 @@ export class ExamScoreDetailComponent implements OnInit {
   }
 
 
-  // 解析高中評量成績
+  /**
+   *
+   *解析高中評量成績
+   * @memberof ExamScoreDetailComponent
+   */
   parseScoreSH() {
 
     this.studentExamScore = new StudentExamScore();
@@ -410,12 +440,13 @@ export class ExamScoreDetailComponent implements OnInit {
       }
     })
 
-    // 處理評量成績
+    // [高中]處理評量成績
     this.selectExamScoreSource.forEach(item => {
 
-      if (!this.studentExamScore.ExamNameList.includes(item.ExamName)) {
-        this.studentExamScore.ExamNameList.push(item.ExamName);
-      }
+      // 原本試別顯示的清單 適用學生稱抓回來的去整理
+      // if (!this.studentExamScore.ExamNameList.includes(item.ExamName)) {
+      //   this.studentExamScore.ExamNameList.push(item.ExamName);
+      // }
       this.studentExamScore.CourseScoreList.forEach(courseItem => {
         if (item.CourseName === courseItem.CourseName) {
           let exam: ExamScoreInfo = new ExamScoreInfo();
@@ -428,6 +459,8 @@ export class ExamScoreDetailComponent implements OnInit {
         }
       });
     });
+      // 收集試別的聯集 .
+      this.GetExamList();
 
     if (this.studentExamScore.ExamNameList.length) {
       this.SelectExamCountName = this.studentExamScore.ExamNameList[0];
@@ -469,6 +502,11 @@ export class ExamScoreDetailComponent implements OnInit {
   }
 
   // 解析成績
+  /**
+   *
+   * [國中]解析成績
+   * @memberof ExamScoreDetailComponent
+   */
   parseScore() {
     this.studentExamScore = new StudentExamScore();
     this.studentExamScore.AvgItemCountNameList = [];
@@ -547,13 +585,16 @@ export class ExamScoreDetailComponent implements OnInit {
       }
     })
 
-    // 處理評量成績
+    // [國中] 處理評量成績
     this.selectExamScoreSource.forEach(item => {
 
-      if (!this.studentExamScore.ExamNameList.includes(item.ExamName)) {
-        this.studentExamScore.ExamNameList.push(item.ExamName);
-      }
+      // if (!this.studentExamScore.ExamNameList.includes(item.ExamName)) {
+      //   this.studentExamScore.ExamNameList.push(item.ExamName);
+      // }
+      console.log('CourseScoreList', this.studentExamScore.CourseScoreList);
       this.studentExamScore.CourseScoreList.forEach(courseItem => {
+        console.log('item.CourseName',item.CourseName);
+        console.log('courseItem.CourseName',courseItem.CourseName);
         if (item.CourseName === courseItem.CourseName) {
           let exam: ExamScoreInfo = new ExamScoreInfo();
           exam.Score = parseFloat(item.Score);
@@ -565,13 +606,17 @@ export class ExamScoreDetailComponent implements OnInit {
           exam.ExamName = item.ExamName;
           exam.HasScore = true;
           courseItem.ExamScoreList.push(exam);
+          console.log('--  exam.ExamScore ',   exam.ExamScore );
         }
       });
     });
 
+   // 收集試別的聯集 .
+   this.GetExamList();
     if (this.studentExamScore.ExamNameList.length) {
       this.SelectExamCountName = this.studentExamScore.ExamNameList[0];
 
+      // 因為高雄成績結構不同 平時評量存在 sc_attend 的 extension 裡 所以在這裡先加入
       if (this.selectSchoolType === 'JHKH') {
         this.studentExamScore.ExamNameList.push('平時評量');
       }

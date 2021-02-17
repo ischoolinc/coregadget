@@ -167,7 +167,6 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   checkChange(qq, item: CaseStudent) {
-    // console.log(qq);
 
     if (qq.value == "") {
       item.isProbleDescriptionHasValue = false;

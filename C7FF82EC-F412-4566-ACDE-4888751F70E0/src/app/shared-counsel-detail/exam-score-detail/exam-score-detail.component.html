@@ -21,7 +21,7 @@
 
                 </div>
             </div>
-            <!-- 新竹國中評量成績 -->
+            <!-- 1.新竹國中評量成績 -->
             <div class="table-responsive table-hover score mb-3">
                 <table class="table">
                     <thead>
@@ -39,38 +39,43 @@
                         </tr>
                         <tr class="table-active">
                             <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
-                                <th>總成績<br>(定期/平時)</th>
-                                <th>領域加權</th>
+                                <th  colspan="2">
+                                    <!-- 總成績 -->
+                                    <!-- <br> -->
+                                    (定期/平時)</th>
+                                <!-- <th>領域加權</th> -->
                             </ng-container>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let domainItem of studentExamScore.DomainScoreList">
-                            <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
+                                <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
                                 <tr *ngIf="rowIdx == 0">
                                     <th [rowSpan]="domainItem.CourseScoreList.length"
                                         scope="row">{{domainItem.DomainName}}
                                     </th>
                                     <th>{{courseItem.SubjectName}}</th>
                                     <td>{{courseItem.CourseCredit}}</td>
-                                    <ng-container *ngFor="let exam of courseItem.ExamScoreList">
-                                        <td [ngClass]="checkScoreFail(exam.ExamScore) ? 'fail':''">
-                                            {{exam.ExamScore || ''}}
-                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                    <!-- <ng-container *ngFor="let exam of courseItem.ExamScoreList">  Jean 修改 -->
+                                        <ng-container *ngFor="let examItem of studentExamScore.ExamNameList">
+                                        <td  colspan="2" [ngClass]="checkScoreFail(courseItem.getExamScoreInfo(examItem)?.ExamScore) ? 'fail':''">
+                                            <!-- {{courseItem.getExamScoreInfo(examItem)?.ExamScore || '--'}}
+                                            <span *ngIf="courseItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isDown"
                                                   class="text-danger">↓</span>
-                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
-                                                  class="text-success">↑</span><br>
-                                            <br>
-                                            <span [ngClass]="(exam.Score < passScore ||exam.AssignmentScore < passScore )?'badge badge-danger border mt-1':'badge badge-light border mt-1'">{{exam.Score}} / {{exam.AssignmentScore}}</span>
+                                            <span *ngIf="courseItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isUp"
+                                                  class="text-success">↑</span><br> -->
+                                            <!-- <br> -->
+                                            <span [ngClass]="(courseItem.getExamScoreInfo(examItem)?.Score < passScore ||courseItem.getExamScoreInfo(examItem)?.AssignmentScore < passScore )?'badge badge-danger border mt-1':'badge badge-light border mt-1'">{{courseItem.getExamScoreInfo(examItem)?.Score}} / {{courseItem.getExamScoreInfo(examItem)?.AssignmentScore}}</span>
                                         </td>
-                                        <td [rowSpan]="domainItem.CourseScoreList.length"
-                                            [ngClass]="checkScoreFail(domainItem.GetAvgExamScore(exam.ExamName)) ? 'fail':''">
-                                            {{domainItem.GetAvgExamScore(exam.ExamName)||''}}
-                                            <span *ngIf="domainItem.GetUpDown(exam.ExamName).isDown"
+                                            <!-- 如果是該領域第一個 需要處理 rowSpan-->
+                                        <!-- <td [rowSpan]="domainItem.CourseScoreList.length"
+                                            [ngClass]="checkScoreFail(domainItem.GetAvgExamScore(courseItem.getExamScoreInfo(examItem)?.ExamScore)) ? 'fail':''">
+                                            {{domainItem.GetAvgExamScore(courseItem.getExamScoreInfo(examItem)?.ExamScore)||''}}
+                                            <span *ngIf="domainItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isDown"
                                                   class="text-danger">↓</span>
-                                            <span *ngIf="domainItem.GetUpDown(exam.ExamName).isUp"
+                                            <span *ngIf="domainItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isUp"
                                                   class="text-success">↑</span>
-                                        </td>
+                                        </td> -->
                                     </ng-container>
 
 
@@ -79,14 +84,15 @@
                                     <th>{{courseItem.SubjectName}}</th>
                                     <td>{{courseItem.CourseCredit}}</td>
                                     <ng-container *ngFor="let exam of courseItem.ExamScoreList">
-                                        <td [ngClass]="checkScoreFail(exam.ExamScore) ? 'fail':''">
+                                        <td colspan="2" [ngClass]="checkScoreFail(exam.ExamScore) ? 'fail':''">
                                             {{exam.ExamScore || ''}}
-                                            <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                            <!-- 暫時隱藏 因為沒有總計成績  -->
+                                            <!-- <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
                                                   class="text-danger">↓</span>
                                             <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
                                                   class="text-success">↑</span><br>
-                                            <br>
-                                            <span [ngClass]="(exam.Score < passScore ||exam.AssignmentScore < passScore )?'badge badge-danger border mt-1':'badge badge-light border mt-1'">{{exam.Score}} / {{exam.AssignmentScore}}</span>
+                                            <br> -->
+                                            <span [ngClass]="(exam.Score < passScore ||exam.AssignmentScore < passScore )?'badge badge-danger border mt-1':'badge badge-light border mt-1'">{{exam.Score}} / {{exam.AssignmentScore}} </span>
                                         </td>
                                         <!-- <td>
                                    {{domainItem.DomainScore}}
@@ -95,21 +101,22 @@
                                 </tr>
                             </ng-container>
                         </ng-container>
-                        <tr>
+                        <!-- <tr>
                             <th colspan="3"
-                                scope="row">加權平均</th>
+                                scope="row">加權平均ss</th>
                             <ng-container *ngFor="let examName of studentExamScore.ExamNameList">
                                 <td colspan="2"
                                     [ngClass]="checkScoreFail(studentExamScore.GetExamAvgScore(examName) ) ? 'fail':''">
                                     {{ studentExamScore.GetExamAvgScore(examName)||''}}
                                 </td>
                             </ng-container>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
 
-            <ul class="nav nav-pills mb-3"
+            <!--新竹國中 組距 -->
+            <!-- <ul class="nav nav-pills mb-3"
                 id="assessment-tab"
                 role="tablist">
                 <ng-container *ngFor="let itemExam of studentExamScore.ExamNameList">
@@ -138,7 +145,7 @@
                         <table class="table">
                             <thead>
                                 <tr class="table-active">
-                                    <th scope="col">領域名稱</th>
+                                    <th scope="col"  style ="font-size :16px">領域名稱</th>
                                     <th scope="col">科目名稱</th>
                                     <ng-container *ngFor="let ItemCountName of studentExamScore.AvgItemCountNameList">
                                         <th scope="col">{{ItemCountName}}</th>
@@ -176,11 +183,11 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </ng-container>
 
-    <!-- 高雄國中 -->
+    <!-- 2.高雄國中 -->
     <ng-container *ngIf="selectSchoolType === 'JHKH'">
         <div class="tab-pane fade-in"
              id="listFour">
@@ -228,27 +235,29 @@
                 </thead>
                 <tbody>
                         <ng-container *ngFor="let domainItem of studentExamScore.DomainScoreList">
-                                <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
+                                <!-- <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index"> -->
+                            <ng-container *ngFor="let courseItem of domainItem.CourseScoreList;let rowIdx =index">
                                     <tr *ngIf="rowIdx == 0">
                                         <th [rowSpan]="domainItem.CourseScoreList.length"
                                             scope="row">{{domainItem.DomainName}}
                                         </th>
                                         <th>{{courseItem.SubjectName}}</th>
                                         <td>{{courseItem.CourseCredit || ''}}</td>
-                                        <ng-container *ngFor="let exam of courseItem.ExamScoreList">
-                                            <td [ngClass]="(exam.ExamScore < passScore) ? 'fail':''">
-                                                {{exam.ExamScore || ''}}
-                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isDown"
+                                        <!-- <ng-container *ngFor="let exam of courseItem.ExamScoreList"> -->
+                                            <ng-container *ngFor="let examItem of studentExamScore.ExamNameList">
+                                            <td [ngClass]="(courseItem.getExamScoreInfo(examItem)?.ExamScore < passScore) ? 'fail':''">
+                                                {{courseItem.getExamScoreInfo(examItem)?.ExamScore|| ''}}
+                                                <span *ngIf="courseItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isDown"
                                                       class="text-danger">↓</span>
-                                                <span *ngIf="courseItem.GetUpDown(exam.ExamName).isUp"
+                                                <span *ngIf="courseItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isUp"
                                                       class="text-success">↑</span>                                                                                             
                                             </td>
                                             <td [rowSpan]="domainItem.CourseScoreList.length"
-                                                [ngClass]="(domainItem.GetAvgExamScore(exam.ExamName) < passScore) ? 'fail':''">
-                                                {{domainItem.GetAvgExamScore(exam.ExamName)||''}}
-                                                <span *ngIf="domainItem.GetUpDown(exam.ExamName).isDown"
+                                                [ngClass]="(domainItem.GetAvgExamScore(courseItem.getExamScoreInfo(examItem)?.ExamScore) < passScore) ? 'fail':''">
+                                                {{domainItem.GetAvgExamScore(courseItem.getExamScoreInfo(examItem)?.ExamScore)||''}}
+                                                <span *ngIf="domainItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isDown"
                                                       class="text-danger">↓</span>
-                                                <span *ngIf="domainItem.GetUpDown(exam.ExamName).isUp"
+                                                <span *ngIf="domainItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isUp"
                                                       class="text-success">↑</span>
                                             </td>
                                         </ng-container>
@@ -289,7 +298,7 @@
 
     </ng-container>
 
-    <!-- 高中 -->
+    <!-- 3.高中 -->
     <ng-container *ngIf="selectSchoolType === 'SH'">
         <div class="tab-pane fade-in"
              id="listFour">
@@ -325,12 +334,15 @@
                         <ng-container *ngFor="let courseItem of studentExamScore.CourseScoreList">
                             <tr>
                                 <th>{{courseItem.SubjectName}}</th>
-                                <ng-container *ngFor="let examItem of courseItem.ExamScoreList">
+                                <!-- <ng-container *ngFor="let examItem of courseItem.ExamScoreList"> -->
+                                    <!-- Jean 修改  -->
+                                <ng-container *ngFor="let examItem of studentExamScore.ExamNameList">
+
                                     <td>
-                                        {{examItem.ExamScore || ''}}
-                                        <span *ngIf="courseItem.GetUpDown(examItem.ExamName).isDown"
+                                        {{courseItem.getExamScoreInfo(examItem)?.ExamScore || ''}} 
+                                        <span *ngIf="courseItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isDown"
                                               class="text-danger">↓</span>
-                                        <span *ngIf="courseItem.GetUpDown(examItem.ExamName).isUp"
+                                        <span *ngIf="courseItem.GetUpDown(courseItem.getExamScoreInfo(examItem)?.ExamScore).isUp"
                                               class="text-success">↑</span>
                                     </td>
                                 </ng-container>
