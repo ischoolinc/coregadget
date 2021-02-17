@@ -217,6 +217,8 @@ export class InputBlockComponent implements OnInit, OnDestroy {
   /** 驗證通過與否 */
   enterGrade() {
     
+     // 處理奇怪的符號 高雄某國中
+    this.curValue  = this.curValue.replace(new RegExp(String.fromCharCode(8), "g"),'');
     this.curValue = this.curValue.trim();
     switch (this.curExam.ExamID) {
       case 'DailyBehavior':
