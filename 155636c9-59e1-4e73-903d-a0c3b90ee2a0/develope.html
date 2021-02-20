@@ -5,17 +5,18 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "test.p.kcbs.hc.edu.tw",
+            application: "1admin_debug4",
             //2017/12/1 由於康橋要求國小部不要顯示成績數值，穎驊在此新增邏輯，
             //會依據發佈時  paramValues: { "show_grade": "false",}的設定，動態改變成績顯示與否
             paramValues: {
-                "show_grade": "false",              
+                "show_grade": "true",              
             },
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'ischool@chsc.tw',
-                password: 'openthedoor'
+                // account: 'ischool@chsc.tw',
+                // password: 'openthedoor'
+                
             }
         });
     </script>

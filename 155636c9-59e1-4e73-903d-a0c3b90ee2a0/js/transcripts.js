@@ -11,6 +11,7 @@ $(document).ready(function () {
     $('.my-schoolyear-semester-widget').on("click", ".btn", function () {
         _gg.schoolYear = $(this).attr("school-year");
         _gg.semester = $(this).attr("semester");
+        // console.log('呼叫1') ;
         _gg.SetScoreData();
     });
 
@@ -58,7 +59,8 @@ _gg.SetStudentCreditData = function () {
         $(".my-schoolyear-semester-widget div").html(items.join(""));
         $(".my-schoolyear-semester-widget button:first").addClass("active").trigger('click');
 
-        _gg.SetScoreData(); // TODO: 學年度成績資訊
+        // console.log('呼叫2...')
+        //    _gg.SetScoreData(); // TODO: 學年度成績資訊
     }
 };
 
@@ -122,17 +124,23 @@ _gg.SetScoreData = function () {
                 var intDomainScore = parseInt((domainItem.成績 || '0'), 10);
 
                 var domainScore, domainPass, domainLevel;
+                var showScore;
                 if (domainItem.成績) {
-                    if (parseInt(domainItem.補考成績 || '0', 10) >= intDomainScore)
-                        domainItem.成績 = "*" + domainItem.成績;
+                    domainLevel = getLevel(intDomainScore);//對應等第
+                    if (parseInt(domainItem.補考成績 || '0', 10) >= intDomainScore) {
+                        showScore = "*" + domainItem.成績;
+
+                    } else {
+
+                        showScore = "" + domainItem.成績;
+                    }
                     if (intDomainScore >= 60) {
-                        domainScore = '<td>' + (domainItem.成績 || '') + '</td>';
+                        domainScore = '<td>' + (showScore || '') + '</td>';
                         domainPass = '<i class="icon-ok"></i>';
                     } else {
-                        domainScore = '<td class="my-lost-credit">' + (domainItem.成績 || '') + '</td>';
+                        domainScore = '<td class="my-lost-credit">' + (showScore || '') + '</td>';
                         domainPass = '<i class="icon-remove"></i>';
                     }
-                    domainLevel = getLevel(intDomainScore);
                 } else {
                     domainScore = '<td></td>';
                     domainPass = '';
@@ -172,8 +180,7 @@ _gg.SetScoreData = function () {
                             '</thead>'
                         );
                     }
-                    else
-                    {
+                    else {
                         items.push(
                             '<thead>' +
                             '    <tr>' +
@@ -187,7 +194,7 @@ _gg.SetScoreData = function () {
                             '    </tr>' +
                             '</thead>'
                         );
-                    }                    
+                    }
                 }
 
 
@@ -236,11 +243,10 @@ _gg.SetScoreData = function () {
 
                     //2017/12/1 由於康橋要求國小部不要顯示成績數值，穎驊在此新增邏輯，
                     //會依據發佈時  paramValues: { "show_grade": "false",}的設定，動態改變成績顯示與否
-                    if (show_grade =='true')
-                    {
+                    if (show_grade == 'true') {
                         tmp_item.push(score);
                     }
-                    
+
                     tmp_item.push('<td>' + level + '</td>');
                     tmp_item.push('<td>' + (tmp_semsSubjScore.Description || '') + '</td>');
                     tmp_item.push('<td>' + pass + '</td>');
@@ -307,9 +313,8 @@ _gg.SetScoreData = function () {
             '  </tr>' +
             '</thead>';
     }
-    else
-    {
-       main_thead = '<thead>' +
+    else {
+        main_thead = '<thead>' +
             '  <tr>' +
             '    <th width="20%"><span>領域</span></th>' +
             '    <th width="20%"><span>科目</span></th>' +
@@ -321,7 +326,7 @@ _gg.SetScoreData = function () {
             '  </tr>' +
             '</thead>';
     }
-   
+
     var html = items.join('') + itemNoDoamin.join('');
 
     if (html) {
@@ -337,11 +342,10 @@ _gg.SetScoreData = function () {
     if (show_grade == 'true') {
         $("#SubjectTotalScore").html(totalscore.join(''));
     }
-    else
-    {
+    else {
         $("#MakeUpText").hide();
     }
-    
+
 };
 
 
