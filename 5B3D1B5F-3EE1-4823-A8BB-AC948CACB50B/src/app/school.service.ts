@@ -18,17 +18,17 @@ export class SchoolService {
       gadgets: ['gradebook', 'attendence']
     }],
 
-    ['p.lk.kcis.ntpc.edu.tw', { //康橋國際學校 林口校區 國小
+    ['p.kcislk.ntpc.edu.tw', { //康橋國際學校 林口校區 國小
       title: 'Kang Chiao International School(Linkou G1-6)',
       iconUrl: 'assets/img/logo.png',
       // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
-    ['j.lk.kcis.ntpc.edu.tw', { //康橋國際學校 林口校區 國中
+    ['j.kcislk.ntpc.edu.tw', { //康橋國際學校 林口校區 國中
       title: 'Kang Chiao International School(Linkou G7-9)',
       iconUrl: 'assets/img/logo.png',
       // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
-    ['h.lk.kcis.ntpc.edu.tw', { //康橋國際學校 林口校區 高中
+    ['h.kcislk.ntpc.edu.tw', { //康橋國際學校 林口校區 高中
       title: 'Kang Chiao International School(Linkou G10-12)',
       iconUrl: 'assets/img/logo.png',
       // gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
