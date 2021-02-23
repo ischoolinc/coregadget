@@ -231,6 +231,15 @@ export class ComprehensiveComponent implements OnInit {
     });
   }
 
+
+  /**
+   * 開新分頁
+   *
+   * @memberof ComprehensiveComponent
+   */
+  openWindow(url :string ){
+    window.open('content.htm#/(simple-page:simple-page/'+this.dsns+'/comprehensive_fill)', '_blank');
+  }
   /**
    * Modal彈出(轉入系統核心欄位)
    */

@@ -23,7 +23,7 @@
       </ng-container>
       <ng-container *ngIf="counsel_statisticsVisable === true">
         <li class="nav-item">
-          <a class="nav-link"
+          <a class="nav-link" 
              [attr.data-toggle]="roleService.enableCounselStatistics?'tab':null"
              (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
              [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">

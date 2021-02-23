@@ -86,6 +86,18 @@ export class CounselDetailComponent implements OnInit {
       }
     );
   }
+  
+  /**
+   * 打開視窗連到新的頁面 
+   */
+  openWindow(contentType :string  ,doc:any ){
+    if(contentType =='A表'){
+      window.open('content.htm#/(simple-page:simple-page/print/counsel_doc/'+this.currentStudent.StudentID+'/'+doc.PrintDocumentID+')', '_blank');
+
+    }else if (contentType =='B表'){
+      window.open('content.htm#/(simple-page:simple-page/print/counsel_history/'+this.currentStudent.StudentID+')', '_blank');
+    }
+  }
 
   loadStudent() {
     // this.counselStudentService.currentStudent = null;

@@ -67,4 +67,15 @@ export class ComprehensiveClassViewComponent implements OnInit {
       alert(err);
     }
   }
+
+
+  /**
+   *
+   * 開新視窗
+   * @memberof ComprehensiveClassViewComponent
+   */
+  openWindow(studentRec){
+
+    window.open('content.htm#/(simple-page:simple-page/'+this.dsns+'/comprehensive_fill/'+studentRec.Key+')', '_blank');
+  }
 }

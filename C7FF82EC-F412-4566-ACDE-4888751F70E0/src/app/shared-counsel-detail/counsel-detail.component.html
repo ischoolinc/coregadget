@@ -17,7 +17,8 @@
                 <ng-container *ngFor="let doc of printDocument">
                   <a class="dropdown-item"
                      target="_blank"
-                     [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_doc/'+currentStudent.StudentID+'/'+doc.PrintDocumentID+')'">
+                     (click)= 'openWindow("A表",doc)'
+                     >
                     {{doc.Name}}&nbsp;(&nbsp;{{doc.DocumentName}}&nbsp;)
                   </a>
                 </ng-container>
@@ -27,7 +28,8 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"
                    target="_blank"
-                   [attr.href]="'content.htm#/(simple-page:simple-page/print/counsel_history/'+currentStudent.StudentID+')'">
+                   (click)= 'openWindow("B表")'
+                 >
                   輔導紀錄表B表 ( 輔導紀錄表 )
                 </a>
               </ng-container>

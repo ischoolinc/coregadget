@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
@@ -8,6 +8,8 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 })
 export class ComprehensiveFillComponent implements OnInit {
 
+  //如果使用者有改變卻沒有儲存，需要提醒使用需要先儲存。 
+  isChangeNotSave = false ;
   dsns: string;
   fillInKey: string;
 
@@ -59,7 +61,9 @@ export class ComprehensiveFillComponent implements OnInit {
     }
   }
 
+
   async getFillInData(closeModal) {
+    console.log('-----');
     if (this.loadingFillInData) return;
     this.loadingFillInData = true;
 
@@ -111,13 +115,15 @@ export class ComprehensiveFillComponent implements OnInit {
                             optionC.AnswerChecked = false;
                           }
                         });
-                        this.refreshMark();
+                        console.log('單選');
+                        this.refreshMark('單選');
                       };
                       break;
                     case "複選":
                       option.change = () => {
                         option.AnswerChecked = !option.AnswerChecked;
-                        this.refreshMark();
+                        console.log('複選');
+                        this.refreshMark('複選');
                       };
                       break;
                     case "填答":
@@ -183,7 +189,7 @@ export class ComprehensiveFillComponent implements OnInit {
         this.sectionInfo = rsp.Section;
         this.studentInfo = rsp.Student;
         this.questionSubject = rsp.QuestionSubject;
-        this.refreshMark();
+        this.refreshMark('');
       }
       else{
         alert("代碼錯誤");
@@ -196,7 +202,12 @@ export class ComprehensiveFillComponent implements OnInit {
     this.loadingFillInData = false;
   }
 
-  refreshMark() {
+  refreshMark(param :string ) {
+
+    if(param!=''){
+      this.isChangeNotSave = true;
+
+    }
     this.requireList = [];
     this.questionSubject.forEach(subject => {
       subject.QuestionGroup.forEach(group => {
@@ -269,6 +280,26 @@ export class ComprehensiveFillComponent implements OnInit {
     alert(this.requireList.join("\n"));
   }
 
+
+
+ 
+  /**
+   *
+   * 當視窗被關閉時
+   * @param {*} event
+   * @returns
+   * @memberof ComprehensiveFillComponent
+   */
+  @HostListener('window:beforeunload', ['$event'])
+  onCTablose(event:any){
+    if(this.isChangeNotSave) {
+      event.returnValue ='跳出提醒視窗';
+      return '';
+    }
+  }
+
+
+
   setConfig() {
     if (this.config.key) {
       this.fillInKey = this.config.key;
@@ -277,6 +308,7 @@ export class ComprehensiveFillComponent implements OnInit {
   }
 
   async save() {
+    this.isChangeNotSave = false ;
     if (this.isSaving) { return; }
     this.isSaving = true;
     const options = [];

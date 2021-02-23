@@ -25,7 +25,7 @@
         <a *ngIf="studentRec.Key"
            class="text-info"
            target="_blank"
-           [attr.href]="'content.htm#/(simple-page:simple-page/'+dsns+'/comprehensive_fill/'+studentRec.Key+')'">開啟</a>
+           (click) ="openWindow(studentRec)">開啟</a>
         <a *ngIf="!studentRec.Key"
            href="javascript:void(0);"
            class="text-muted">開啟</a>

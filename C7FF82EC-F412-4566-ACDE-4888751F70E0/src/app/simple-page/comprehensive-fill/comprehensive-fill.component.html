@@ -107,14 +107,14 @@
                                             autosize="autosize"
                                             [ngStyle]="optionKey[optionPart].style"
                                             [(ngModel)]="option.AnswerMatrix[partIndex]"
-                                            (ngModelChange)="refreshMark()"></textarea>
+                                            (ngModelChange)="refreshMark('填答-長')"></textarea>
                                 </ng-container>
                                 <ng-template #textPart>
                                   <input type="text"
                                          class="sentence-input mx-0"
                                          [ngStyle]="optionKey[optionPart].style"
                                          [(ngModel)]="option.AnswerMatrix[partIndex]"
-                                         (ngModelChange)="refreshMark()" />
+                                         (ngModelChange)="refreshMark('填答-短')" />
                                 </ng-template>
                               </ng-container>
                               <ng-template #normalPart>
