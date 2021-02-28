@@ -23,7 +23,7 @@ export class CadreService {
       Request: {}
     }
     );
-    console.log(result);
+    // console.log(result);
     let types = [];
     if (Array.isArray(result.CadreTypes.CadreType)) {
       types = result.CadreTypes.CadreType;
@@ -72,7 +72,9 @@ export class CadreService {
     if (Array.isArray(result.Cadres.Cadre)) {
       types = result.Cadres.Cadre;
     } else {
-      types.push(result.Cadres.Cadre);
+      if (result.Cadres.Cadre) {
+        types.push(result.Cadres.Cadre);
+      }
     }
     return types as CadreInfo[];
   }
@@ -103,7 +105,7 @@ export class CadreService {
       }
     });
     const result = [].concat(rst.Students.Student || []);
-    console.log('student', result);
+    // console.log('student', result);
     const studentList = [];
     result.forEach((student) => {
       studentList.push(new StudentInfo(student.ID, student.Name, student.SeatNo));
