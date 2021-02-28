@@ -72,17 +72,10 @@ export class ClassSummaryComponent implements OnInit {
     ) { }
 
   async ngOnInit(): Promise<void> {
-    // 0. 取得學制 = "高中" OR "國中"
-    // this.isHeightSchool = true;
-    // await this.disciplineService.loadSchoolType() ;
-    // console.log("3", this.disciplineService.schoolType);
-
-    // this.isHeightSchool = this.disciplineService.schoolType == "高中" ;
-    // console.log("isHeightSchool",this.disciplineService.schoolType);
 
     // 1. get Cadre Types
     this.cadreTypes = await this.cadreService.getCadreTypes();
-    console.log(this.cadreTypes);
+    // console.log(this.cadreTypes);
 
     // 2. get My Classes
     await this.queryClasses();
@@ -99,7 +92,7 @@ export class ClassSummaryComponent implements OnInit {
 
   async queryClasses() {
     this.classList = await this.cadreService.getMyClasses();
-    console.log(this.classList);
+    // console.log(this.classList);
     this.selectedClass = this.classList[0];
   }
 
@@ -121,13 +114,14 @@ export class ClassSummaryComponent implements OnInit {
   async reloadCadreData() {
     // await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
     this.cadres = await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
+    // console.log(this.cadres);
     this.dicCadreUsage = {};  // reset ;
     this.cadres.forEach( cadre => {
       if (!this.dicCadreUsage[cadre.uid]) {
         this.dicCadreUsage[cadre.uid] = false ;
       }
     });
-    console.log(this.cadres);
+    // console.log(this.cadres);
     this.parseCadreRecords();
   }
 
@@ -135,7 +129,7 @@ export class ClassSummaryComponent implements OnInit {
     // this.semesters = await this.cadreService.getSemestersByClassID(this.selectedClass.ClassID);
     // console.log(this.semesters);
     const currentSemester = await this.cadreService.getCurrentSemester();
-    console.log(currentSemester);
+    // console.log(currentSemester);
     this.selectedSchoolYear = parseInt(currentSemester.Response.SchoolYear, 10);
     this.selectedSemester = parseInt(currentSemester.Response.Semester, 10);
 
@@ -148,7 +142,7 @@ export class ClassSummaryComponent implements OnInit {
   parseCadreRecords(): void {
     this.classCadres = [];  // reset
     this.cadreTypes.forEach(cadreType => {
-      console.log(cadreType);
+      // console.log(cadreType);
       for ( let i = 0; i < cadreType.Number; i++) {
         const classCadre = new ClassCadreRecord();
         classCadre.cadreType = cadreType ;
@@ -165,7 +159,7 @@ export class ClassSummaryComponent implements OnInit {
   chooseCadreRecordByType(cadreType: string): CadreInfo {
     let result: CadreInfo ;
     this.cadres.forEach( cadre => {
-      console.log(` cadreType: ${cadreType}, cadre: ${cadre}`);
+      // console.log(` cadreType: ${cadreType}, cadre: ${cadre}`);
       if (!this.dicCadreUsage[cadre.uid] && cadre.cadrename === cadreType) {
         result = cadre ;
         this.dicCadreUsage[cadre.uid] = true ;  // 表示已經讀取過
