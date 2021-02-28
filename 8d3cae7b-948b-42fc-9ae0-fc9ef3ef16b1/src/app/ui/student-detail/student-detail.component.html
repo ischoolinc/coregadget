@@ -1,0 +1,67 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column">
+  <div id="index" page>
+    <nav aria-label="breadcrumb text-nowrap text-truncate">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page" routerLink="" style="cursor: pointer;">班級獎懲</li>
+        <li class="breadcrumb-item active" aria-current="page"> 學生獎懲明細</li>
+      </ol>
+    </nav>
+    <div class="d-flex flex-column flex-sm-row mb-3">
+        <div class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate" [innerHTML]="'學生:'+ this.selectedName">
+        </div>
+        <div class="dropdown ml-auto mt-5 mt-sm-0">
+            <a style="cursor: pointer;" (click)="exportFile('xls')">
+                <mat-icon> cloud_download</mat-icon>學生明細(Excel)
+            </a>
+            <a style="cursor: pointer;" (click)="exportFile('html')">
+                <mat-icon> cloud_download</mat-icon>學生明細(Html)
+            </a>
+        </div>
+    </div>
+
+
+      <div class="table-responsive" #table *ngFor="let eachStudent of this.getArray();">
+        <div> {{this.getSemester(eachStudent[0])}}</div>
+        <table class="table-rwd table table-bordered" >
+            <thead>
+                <tr>
+                    <th style="width:6%;">日期</th>
+                    <th style="width:6%;">大功</th>
+                    <th style="width:6%;">小功</th>
+                    <th style="width:6%;">嘉獎</th>
+                    <th style="width:6%;">大過</th>
+                    <th style="width:6%;">小過</th>
+                    <th style="width:6%;">警告</th>
+                    <th *ngIf=" this.schoolType=='高中'"  style="width:6%;">留校察看</th>
+                    <th style="width:20%">原因</th>
+                    <th style="width:6%">銷過日期</th>
+                    <th style="width:20%">銷過原因</th>
+                    <th style="width:6%">備註</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="collapsed"
+                    data-toggle="collapse"
+                    data-target="#rA"
+                    aria-expanded="false"
+                    aria-controls="rA"
+                    *ngFor=" let detail of eachStudent[1]"
+                    >
+
+                    <td data-th="日期" >{{detail.date}}</td>
+                    <td data-th="大功" >{{detail.majorMerit}}</td>
+                    <td data-th="小功" >{{detail.minorMerit}}</td>
+                    <td data-th="嘉獎" >{{detail.commendation}}</td>
+                    <td data-th="大過" >{{detail.majorDemerit}}</td>
+                    <td data-th="小過" >{{detail.minorDemerit}}</td>
+                    <td data-th="警告" >{{detail.admonition}}</td>
+                    <td *ngIf=" this.schoolType=='高中'" data-th="留校察看" >{{detail.detention}}</td>
+                    <td data-th="原因" >{{detail.reason}}</td>
+                    <td data-th="銷過日期" >{{detail.delNegligenceDate}}</td>
+                    <td data-th="銷過原因" >{{detail.delNegligenceReason}}</td>
+                    <td data-th="備註">{{detail.remark}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </div>
