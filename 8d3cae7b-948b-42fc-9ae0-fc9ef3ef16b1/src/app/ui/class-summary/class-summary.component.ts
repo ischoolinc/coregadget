@@ -1,10 +1,8 @@
-import { CadreService, CadreTypeInfo, ClassInfo, SemesterInfo, StudentInfo, CadreInfo } from './../../dal/cadre.service';
-import { GadgetService } from './../../dal/gadget.service';
-import * as node2json from 'nodexml';
+import { AddCadreDialogComponent } from './../add-cadre-dialog/add-cadre-dialog.component';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CadreService, CadreTypeInfo, ClassInfo, StudentInfo, CadreInfo, ClassCadreRecord } from './../../dal/cadre.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import FileSaver from 'file-saver';
-import { HttpClient } from '@angular/common/http';
-import { parseXmlDiscipline, StudentDisciplineDetail, StudentDisciplineStatistics } from 'src/app/dal/discipline.service';
+import { StudentDisciplineStatistics } from 'src/app/dal/discipline.service';
 
 @Component({
   selector: 'app-class-summary',
@@ -16,7 +14,7 @@ export class ClassSummaryComponent implements OnInit {
   cadreTypes: CadreTypeInfo[] = []; // 班級幹部類別清單
   classList = [];  // 根據教師ID取得班級清單
   studentList: StudentInfo[]; // 指定班級的學生清單
-  dicStuds: { [studID: string]: StudentInfo} = {};  // 學生資料的 Dictionary 資料結構
+  dicStuds: { [studID: string]: StudentInfo } = {};  // 學生資料的 Dictionary 資料結構
 
   selectedClass: ClassInfo;  // 目前被選擇的班級
   selectedSchoolYear = 108;  // 目前選擇的學年度
@@ -25,51 +23,18 @@ export class ClassSummaryComponent implements OnInit {
   minSchoolYear = 108;       // 可選擇的最小學年度
 
   cadres: CadreInfo[] = []; // 班級幹部清單，有指定學生的幹部紀錄。
-  dicCadreUsage: {[uid: string ]: boolean} = {};  // 紀錄有哪些幹部清單已經被讀取過了
+  dicCadreUsage: { [uid: string]: string } = {};  // 紀錄有哪些幹部清單已經被讀取過了
 
   classCadres: ClassCadreRecord[] = []; // 畫面上的班級幹部清單
 
-  /**
-   * 學生對照表(key: 座號，value: 學生獎勵懲處統計) ， 未排序
-   */
-  studentMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
-  /**
-   * 學生對照表(key: 座號，value: 學生獎勵懲處統計) ， 排序後
-   */
-  sortedMappingTable: Map<string, StudentDisciplineStatistics> = new Map();
-  /**
-   * 查無獎懲紀錄顯示狀態
-   */
-  showWarning = false;
-  /**
-   * 是否勾選顯示全部學生
-   */
-  showAllStudents = false;
-  /**
-   * 查無學年度學期會鎖定下拉式窗格
-   */
-  semestersLocked = false;
-  /**
-   *
-   *
-   * @memberof ClassSummaryComponent
-   */
-
-
-  /**
-   *
-   * 學制是否為高中 用來判斷 是否要顯示 "留校察看"
-   * @type {boolean}
-   * @memberof ClassSummaryComponent
-   */
-  isHeightSchool : boolean = true  ;
 
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
   @ViewChild('semester') semester: ElementRef<HTMLSelectElement>;
 
   constructor(
-    private cadreService: CadreService
-    ) { }
+    private cadreService: CadreService,
+    public dialog: MatDialog
+  ) { }
 
   async ngOnInit(): Promise<void> {
 
@@ -103,7 +68,7 @@ export class ClassSummaryComponent implements OnInit {
 
       this.dicStuds = {}; // reset
       this.studentList.forEach(stud => {
-        this.dicStuds[stud.StudentId] = stud ;
+        this.dicStuds[stud.StudentId] = stud;
       });
     }
   }
@@ -116,9 +81,9 @@ export class ClassSummaryComponent implements OnInit {
     this.cadres = await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
     // console.log(this.cadres);
     this.dicCadreUsage = {};  // reset ;
-    this.cadres.forEach( cadre => {
+    this.cadres.forEach(cadre => {
       if (!this.dicCadreUsage[cadre.uid]) {
-        this.dicCadreUsage[cadre.uid] = false ;
+        this.dicCadreUsage[cadre.uid] = 'no';  // 尚未被讀取
       }
     });
     // console.log(this.cadres);
@@ -143,10 +108,12 @@ export class ClassSummaryComponent implements OnInit {
     this.classCadres = [];  // reset
     this.cadreTypes.forEach(cadreType => {
       // console.log(cadreType);
-      for ( let i = 0; i < cadreType.Number; i++) {
+      for (let i = 0; i < cadreType.Number; i++) {
         const classCadre = new ClassCadreRecord();
-        classCadre.cadreType = cadreType ;
+        classCadre.cadreType = cadreType;
+        // console.log(`find type: ${cadreType.Cadrename}`)
         classCadre.cadre = this.chooseCadreRecordByType(cadreType.Cadrename);
+        // console.log(classCadre.cadre);
         if (classCadre.cadre) {
           classCadre.student = this.dicStuds[classCadre.cadre.studentid];
         }
@@ -156,33 +123,54 @@ export class ClassSummaryComponent implements OnInit {
   }
 
   // 從班級幹部清單中讀取一筆指定類型的紀錄
-  chooseCadreRecordByType(cadreType: string): CadreInfo {
-    let result: CadreInfo ;
-    this.cadres.forEach( cadre => {
+  chooseCadreRecordByType(cadreName: string): CadreInfo {
+    console.log(cadreName);
+    let result: CadreInfo;
+    let hasFound = false;
+    this.cadres.forEach(cadre => {
       // console.log(` cadreType: ${cadreType}, cadre: ${cadre}`);
-      if (!this.dicCadreUsage[cadre.uid] && cadre.cadrename === cadreType) {
-        result = cadre ;
-        this.dicCadreUsage[cadre.uid] = true ;  // 表示已經讀取過
+      if (!hasFound) {
+        if (this.dicCadreUsage[cadre.uid] === 'no' && cadre.cadrename === cadreName) {
+          result = cadre;
+          // console.log(cadre);
+          this.dicCadreUsage[cadre.uid] = 'yes';  // 表示已經讀取過
+          hasFound = true ;
+        }
       }
     });
 
-    return result ;
+    return result;
   }
 
-  removeCadre(classCadre, evt) {
-    console.log(classCadre);
-    // evt.stopPropagation();
+  async removeCadre(classCadre) {
+    // console.log(classCadre.cadre.uid);
+    await this.cadreService.deleteCadre(classCadre.cadre.uid);
+    await this.reloadCadreData();
   }
 
-  addCadre(classCadre) {
-    console.log(classCadre);
+  // addCadre(classCadre) {
+  //   console.log(classCadre);
+  // }
+
+  openDialog(classCadre: ClassCadreRecord): void {
+    // console.log('open dialog');
+    const dialogRef = this.dialog.open(AddCadreDialogComponent, {
+      width: '250px',
+      data: {
+        classCadre: classCadre,
+        students: this.studentList,
+        schoolYear: this.selectedSchoolYear,
+        semester: this.selectedSemester,
+        class: this.selectedClass
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(async result => {
+      // console.log('The dialog was closed');
+      // console.log(result);
+      await this.reloadCadreData();
+    });
   }
 
 }
 
-/** 呈現出畫面上的一筆紀錄 */
-class ClassCadreRecord {
-  cadreType: CadreTypeInfo;
-  cadre: CadreInfo ;
-  student: StudentInfo ;
-}

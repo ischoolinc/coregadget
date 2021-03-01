@@ -89,21 +89,21 @@
                 <td data-th="座號">
                   {{ classCadre.student ? classCadre.student.SeatNo : "" }}
                 </td>
-                <td data-th="設定">
-                  <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl" (click)="removeCadre(classCadre, $event)">
+                <td data-th="">
+                  <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl" (click)="openDialog(classCadre, $event)">
                     <mat-icon
                       aria-hidden="false"
                       aria-label="create icon"
-
+                      color="primary"
                       >create</mat-icon
                     >
                   </button>
                   <ng-template #elseTmpl>
-                    <button mat-icon-button (click)="addCadre(classCadre)">
+                    <button mat-icon-button (click)="removeCadre(classCadre)">
                       <mat-icon
                         aria-hidden="false"
                         aria-label="delete icon"
-                        [ngStyle]="{ color: 'red' }"
+                        color="warn"
                         >delete_forever</mat-icon
                       >
                     </button>

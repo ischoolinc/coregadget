@@ -60,7 +60,7 @@ export class CadreService {
    */
   async getClassCadreStudents(classID, schoolYear, semester) {
     const contract = await this.contractService.getDefaultContract();
-    const result: any = await contract.send('cadre.GetClassCadreStudents', {
+    const result: any = await contract.send('cadre.GetClassCadres', {
       Request: {
         ClassID: classID,
         SchoolYear: schoolYear,
@@ -113,7 +113,32 @@ export class CadreService {
     return studentList as StudentInfo[];
   }
 
+  // 刪除一筆班級幹部紀錄
+  async deleteCadre(cadreUID: string) {
+    const contract = await this.contractService.getDefaultContract();
+    const rst: any = await contract.send('cadre.DeleteCadre', {
+      Request: {
+        UID: cadreUID
+      }
+    });
+  }
 
+  // 新增一筆班級幹部紀錄
+  async addCadre(cadre: CadreInfo) {
+    const contract = await this.contractService.getDefaultContract();
+    const rst: any = await contract.send('cadre.AddCadre', {
+      Request: {
+        Cadre: {
+          CadreName: cadre.cadrename,
+          ReferenceType: cadre.referencetype,
+          SchoolYear: cadre.schoolyear ,
+          Semester: cadre.semester,
+          StudentID: cadre.studentid ,
+          Text: cadre.text
+        }
+      }
+    });
+  }
 }
 
 export interface CadreTypeInfo {
@@ -156,6 +181,13 @@ export class StudentInfo {
     this.StudentName = studentName;
     this.SeatNo = seatNo;
   }
+}
+
+/** 呈現出畫面上的一筆紀錄 */
+export class ClassCadreRecord {
+  cadreType: CadreTypeInfo;
+  cadre: CadreInfo ;
+  student: StudentInfo ;
 }
 
 export interface SemesterInfo {

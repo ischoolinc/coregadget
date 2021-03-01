@@ -6,14 +6,15 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
 import { ClassSummaryComponent } from './ui/class-summary/class-summary.component';
-import { StudentDetailComponent } from './ui/student-detail/student-detail.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AddCadreDialogComponent } from './ui/add-cadre-dialog/add-cadre-dialog.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     ClassSummaryComponent,
-    StudentDetailComponent
+    AddCadreDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     FormsModule,
     MaterialModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

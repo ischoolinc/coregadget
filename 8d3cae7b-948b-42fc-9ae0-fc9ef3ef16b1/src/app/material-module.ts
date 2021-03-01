@@ -10,6 +10,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NgModule } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   exports: [
@@ -23,7 +24,8 @@ import { NgModule } from '@angular/core';
     MatBottomSheetModule,
     MatListModule,
     MatExpansionModule,
-    MatSortModule
+    MatSortModule,
+    MatDialogModule
   ]
 })
 export class MaterialModule {}
