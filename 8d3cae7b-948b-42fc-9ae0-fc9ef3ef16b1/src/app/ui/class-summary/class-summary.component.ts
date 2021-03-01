@@ -18,7 +18,7 @@ export class ClassSummaryComponent implements OnInit {
   dicStuds: { [studID: string]: StudentInfo } = {};  // 學生資料的 Dictionary 資料結構
 
   selectedClass: ClassInfo;  // 目前被選擇的班級
-  selectedSchoolYear = 108;  // 目前選擇的學年度
+  selectedSchoolYear = 109;  // 目前選擇的學年度
   selectedSemester = 1;      // 目前選擇的學期
   maxSchoolYear = 108;       // 可選擇的最大學年度
   minSchoolYear = 108;       // 可選擇的最小學年度
@@ -27,6 +27,8 @@ export class ClassSummaryComponent implements OnInit {
   dicCadreUsage: { [uid: string]: string } = {};  // 紀錄有哪些幹部清單已經被讀取過了
 
   classCadres: ClassCadreRecord[] = []; // 畫面上的班級幹部清單
+
+  isLoading = false ;
 
 
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
@@ -38,6 +40,8 @@ export class ClassSummaryComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
+
+    this.isLoading = true ;
 
     // 1. get Cadre Types
     this.cadreTypes = await this.cadreService.getCadreTypes();
@@ -78,6 +82,7 @@ export class ClassSummaryComponent implements OnInit {
    * 取得指定班級，學年度，學期的幹部紀錄。
    */
   async reloadCadreData() {
+    this.isLoading = true ;
     // await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
     this.cadres = await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
     // console.log(this.cadres);
@@ -89,6 +94,7 @@ export class ClassSummaryComponent implements OnInit {
     });
     // console.log(this.cadres);
     this.parseCadreRecords();
+    this.isLoading = false ;
   }
 
   async getCurrentSemester() {
@@ -149,10 +155,6 @@ export class ClassSummaryComponent implements OnInit {
     await this.reloadCadreData();
   }
 
-  // addCadre(classCadre) {
-  //   console.log(classCadre);
-  // }
-
   openDialog(classCadre: ClassCadreRecord): void {
     // console.log('open dialog');
     const dialogRef = this.dialog.open(AddCadreDialogComponent, {
@@ -173,8 +175,8 @@ export class ClassSummaryComponent implements OnInit {
     });
   }
 
+  /** 匯出成 Excel 檔案 */
   exportToExcel() {
-
     const data = [];
 
     this.classCadres.forEach( classCadre => {
