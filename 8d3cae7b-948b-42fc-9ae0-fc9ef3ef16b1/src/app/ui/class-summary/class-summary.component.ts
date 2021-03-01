@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { CadreService, CadreTypeInfo, ClassInfo, StudentInfo, CadreInfo, ClassCadreRecord } from './../../dal/cadre.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { StudentDisciplineStatistics } from 'src/app/dal/discipline.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-class-summary',
@@ -170,6 +171,31 @@ export class ClassSummaryComponent implements OnInit {
       // console.log(result);
       await this.reloadCadreData();
     });
+  }
+
+  exportToExcel() {
+
+    const data = [];
+
+    this.classCadres.forEach( classCadre => {
+      const item = {
+        學年 : this.selectedSchoolYear,
+        學期 : this.selectedSemester,
+        幹部 : classCadre.cadreType.Cadrename,
+        座號 : (classCadre.student ? classCadre.student.SeatNo : ''),
+        姓名 : (classCadre.student ? classCadre.student.StudentName : ''),
+        學生系統編號 : (classCadre.student ? classCadre.student.StudentId : ''),
+      };
+      data.push(item);
+    });
+
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '班級幹部');
+
+    /* save to file */
+    const fileName = `${this.selectedClass.ClassName}班級幹部名冊.xlsx`;
+    XLSX.writeFile(wb, fileName);
   }
 
 }
