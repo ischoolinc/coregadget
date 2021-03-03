@@ -17,9 +17,11 @@ export class ClassSummaryComponent implements OnInit {
   studentList: StudentInfo[]; // 指定班級的學生清單
   dicStuds: { [studID: string]: StudentInfo } = {};  // 學生資料的 Dictionary 資料結構
 
-  selectedClass: ClassInfo;  // 目前被選擇的班級
-  selectedSchoolYear = 109;  // 目前選擇的學年度
-  selectedSemester = 1;      // 目前選擇的學期
+  currentSemester: any;       // 目前學年學期
+  isCurrentSemester = true ;  // 是否是目前學年學期。如果是，才可以編輯資料。
+  selectedClass: ClassInfo;  // 被選擇的班級
+  selectedSchoolYear = 109;  // 選擇的學年度
+  selectedSemester = 1;      // 選擇的學期
   maxSchoolYear = 108;       // 可選擇的最大學年度
   minSchoolYear = 108;       // 可選擇的最小學年度
 
@@ -29,6 +31,7 @@ export class ClassSummaryComponent implements OnInit {
   classCadres: ClassCadreRecord[] = []; // 畫面上的班級幹部清單
 
   isLoading = false ;
+
 
 
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
@@ -83,6 +86,11 @@ export class ClassSummaryComponent implements OnInit {
    */
   async reloadCadreData() {
     this.isLoading = true ;
+
+    // 判斷是否適當學期，如果是，才可以編輯。
+    this.isCurrentSemester =  ( this.selectedSchoolYear === parseInt(this.currentSemester.Response.SchoolYear, 10) &&
+                              this.selectedSemester === parseInt(this.currentSemester.Response.Semester, 10)) ;
+
     // await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
     this.cadres = await this.cadreService.getClassCadreStudents(this.selectedClass.ClassID, this.selectedSchoolYear, this.selectedSemester);
     // console.log(this.cadres);
@@ -100,16 +108,20 @@ export class ClassSummaryComponent implements OnInit {
   async getCurrentSemester() {
     // this.semesters = await this.cadreService.getSemestersByClassID(this.selectedClass.ClassID);
     // console.log(this.semesters);
-    const currentSemester = await this.cadreService.getCurrentSemester();
+    this.currentSemester = await this.cadreService.getCurrentSemester();
     // console.log(currentSemester);
-    this.selectedSchoolYear = parseInt(currentSemester.Response.SchoolYear, 10);
-    this.selectedSemester = parseInt(currentSemester.Response.Semester, 10);
+    this.selectedSchoolYear = parseInt(this.currentSemester.Response.SchoolYear, 10);
+    this.selectedSemester = parseInt(this.currentSemester.Response.Semester, 10);
 
-    this.maxSchoolYear = parseInt(currentSemester.Response.SchoolYear, 10) + 1;
-    this.minSchoolYear = parseInt(currentSemester.Response.SchoolYear, 10) - 6;
+    this.maxSchoolYear = parseInt(this.currentSemester.Response.SchoolYear, 10) + 1;
+    this.minSchoolYear = parseInt(this.currentSemester.Response.SchoolYear, 10) - 6;
 
   }
 
+  async changeClass() {
+    await this.loadStudents();
+    await this.reloadCadreData();
+  }
 
   parseCadreRecords(): void {
     this.classCadres = [];  // reset
@@ -131,7 +143,7 @@ export class ClassSummaryComponent implements OnInit {
 
   // 從班級幹部清單中讀取一筆指定類型的紀錄
   chooseCadreRecordByType(cadreName: string): CadreInfo {
-    console.log(cadreName);
+    // console.log(cadreName);
     let result: CadreInfo;
     let hasFound = false;
     this.cadres.forEach(cadre => {
@@ -181,12 +193,13 @@ export class ClassSummaryComponent implements OnInit {
 
     this.classCadres.forEach( classCadre => {
       const item = {
-        學年 : this.selectedSchoolYear,
+        學年度 : this.selectedSchoolYear,
         學期 : this.selectedSemester,
         幹部 : classCadre.cadreType.Cadrename,
+        班級 : this.selectedClass.ClassName,
         座號 : (classCadre.student ? classCadre.student.SeatNo : ''),
         姓名 : (classCadre.student ? classCadre.student.StudentName : ''),
-        學生系統編號 : (classCadre.student ? classCadre.student.StudentId : ''),
+        學號 : (classCadre.student ? classCadre.student.StudentNumber : ''),
       };
       data.push(item);
     });

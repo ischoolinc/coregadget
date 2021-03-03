@@ -11,7 +11,7 @@
         <mat-select
           #className
           [(ngModel)]="selectedClass"
-          (selectionChange)="reloadCadreData()"
+          (selectionChange)="changeClass() "
         >
           <mat-option id="" [value]="cls" *ngFor="let cls of classList">
             {{ cls.ClassName }}
@@ -44,14 +44,21 @@
           (change)="reloadCadreData()"
         />
       </mat-form-field>
-      <mat-spinner *ngIf="isLoading" diameter="40" class="ml-4 mt-1"></mat-spinner>
+      <mat-spinner
+        *ngIf="isLoading"
+        diameter="40"
+        class="ml-4 mt-1"
+      ></mat-spinner>
 
       <!-- <a>
           <mat-checkbox [(ngModel)]="showAllStudents" (ngModelChange)="queryStudentAttendance()">顯示全部學生</mat-checkbox>
         </a> -->
 
       <!-- <div class="dropdown ml-auto mt-5 mt-sm-0 "> -->
-      <div class="ml-auto pr-2 d-flex align-items-center " style="padding-bottom: 1.34375em">
+      <div
+        class="ml-auto pr-2 d-flex align-items-center"
+        style="padding-bottom: 1.34375em"
+      >
         <a style="cursor: pointer" (click)="exportToExcel()" class="">
           <mat-icon> cloud_download</mat-icon>匯出
         </a>
@@ -89,24 +96,30 @@
                   {{ classCadre.student ? classCadre.student.SeatNo : "" }}
                 </td>
                 <td data-th="">
-                  <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl" (click)="openDialog(classCadre, $event)">
-                    <mat-icon
-                      aria-hidden="false"
-                      aria-label="create icon"
-                      color="primary"
-                      >create</mat-icon
+                  <div *ngIf="isCurrentSemester">
+                    <button
+                      mat-icon-button
+                      *ngIf="!classCadre.student; else elseTmpl"
+                      (click)="openDialog(classCadre, $event)"
                     >
-                  </button>
-                  <ng-template #elseTmpl>
-                    <button mat-icon-button (click)="removeCadre(classCadre)">
                       <mat-icon
                         aria-hidden="false"
-                        aria-label="delete icon"
-                        color="warn"
-                        >delete_forever</mat-icon
+                        aria-label="create icon"
+                        color="primary"
+                        >create</mat-icon
                       >
                     </button>
-                  </ng-template>
+                    <ng-template #elseTmpl>
+                        <button mat-icon-button (click)="removeCadre(classCadre)" >
+                          <mat-icon
+                            aria-hidden="false"
+                            aria-label="delete icon"
+                            color="warn"
+                            >delete_forever</mat-icon
+                          >
+                        </button>
+                    </ng-template>
+                </div>
                 </td>
               </tr>
             </tbody>

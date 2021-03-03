@@ -108,7 +108,7 @@ export class CadreService {
     // console.log('student', result);
     const studentList = [];
     result.forEach((student) => {
-      studentList.push(new StudentInfo(student.ID, student.Name, student.SeatNo));
+      studentList.push(new StudentInfo(student.ID, student.Name, student.SeatNo, student.StudentNumber));
     });
     return studentList as StudentInfo[];
   }
@@ -175,11 +175,13 @@ export class StudentInfo {
   StudentId: string;
   SeatNo: string;
   StudentName: string;
+  StudentNumber: string;
 
-  constructor(studentId: string, studentName: string, seatNo: string) {
+  constructor(studentId: string, studentName: string, seatNo: string, studNumber: string) {
     this.StudentId = studentId;
     this.StudentName = studentName;
     this.SeatNo = seatNo;
+    this.StudentNumber = studNumber ;
   }
 }
 
