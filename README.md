@@ -86,10 +86,10 @@ Core Gadget
 * 6ec306b3-f52f-481f-87c6-6665d1d8dc41 新民高中調整學生選課(科主任)
 * 6ec306b3-906b-4f32-88ab-589866f85a73 新民高中調整學生選課(班導師)
 * 05bd1ec2-c673-49cc-b56c-f13c384439ba 台中惠文高中學雜費減免(老師)
-* d10a1a37-37a5-4778-a10c-194fceac5e29 康橋外師(attendance、behavior、weekly report - 穎驊繼續修改版本)
-* 867ac675-1be1-40f1-bae1-b9e2caa413b5 康橋外師(attendance、behavior、weekly report - 內部備份版本/未發布)
-* 903e67d4-b391-4f97-81ec-fc84c05f5079 康橋國小線上點名(班導師 - 穎驊繼續修改版本)
-* 105a0205-189b-4f97-8148-3605b6074770 康橋國小線上點名(班導師 - 內部備份版本/未發布)
+* d10a1a37-37a5-4778-a10c-194fceac5e29 康橋外師(attendance、behavior、weekly report - 穎驊修改)
+* 867ac675-1be1-40f1-bae1-b9e2caa413b5 康橋外師(attendance、behavior、weekly report - 內部備份/未發布)
+* 903e67d4-b391-4f97-81ec-fc84c05f5079 康橋國小線上點名(班導師 - 穎驊修改)
+* 105a0205-189b-4f97-8148-3605b6074770 康橋國小線上點名(班導師 - 內部備份/未發布)
 
 台大EMBA
 
