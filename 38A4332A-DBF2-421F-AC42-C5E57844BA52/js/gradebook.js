@@ -4,7 +4,6 @@
         function ($scope, $timeout) {
 
             $scope.params = gadget.params;
-
             $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
 
             $scope.changeSelectMode = function (mode) {
@@ -15,7 +14,6 @@
             }
 
             $scope.setCurrent = function (student, setCondition, setFocus) {
-
                 $scope.current.Student = student;
 
                 var val = (student || {})['MakeUpScore'];
@@ -91,12 +89,11 @@
             $scope.enterGrade = function (event) {
                 if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
                 var flag = false;
-
                 var temp = Number($scope.current.Value);
                 if (!isNaN(temp)) {
                     flag = true;
-                    var round = Math.pow(10, $scope.current.Student.DecimalNumber || $scope.params.DefaultRound);
-                    temp = Math.round(temp * round) / round;
+                    var round = Math.pow(10, $scope.current.Student.subjScorePoint||0);
+                    temp = (Math.round(temp * round) / round).toFixed( $scope.current.Student.subjScorePoint);
                 }
                 if ($scope.current.Value == "缺")
                     flag = true;
@@ -107,7 +104,7 @@
                 if (flag) {
                     $scope.submitGrade();
                 }
-            }
+             }
 
             gadget.onLeave(function () {
                 var data_changed = !$scope.checkAllTable();
@@ -216,7 +213,7 @@
                         }
                     }
                 });
-            }
+            } 
 
             $scope.isMobile = navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/gi) ? true : false;
 
@@ -267,7 +264,7 @@
             };
 
             $scope.connection = gadget.getContract("makeUp.HS");
-
+     
             $scope.connection.send({
                 service: "_.GetMyMakeUpBatch",
                 body: {
@@ -313,16 +310,16 @@
                                 // 本學期沒有任何補考梯次
                                 $scope.HasNoCourse = true;
                             }
-
-
                             $scope.setCurrentBatch($scope.batchList[0]);
+
+
                         });
                     }
                 }
             });
 
+               // 取得學生資料 
             $scope.setCurrentBatch = function (batch) {
-
                 if ($scope.studentList) {
                     var data_changed = !$scope.checkAllTable();
                     if (data_changed) {
@@ -341,8 +338,8 @@
                 var currentGroupList = $scope.groupList.filter(group => group.RefBatchID == $scope.current.Batch.BatchID);
 
                 $scope.current.currentGroupList = currentGroupList;
-
                 $scope.setCurrentGroup($scope.current.currentGroupList[0])
+                // 取得學生資料
             }
 
             $scope.setCurrentGroup = function (group) {
@@ -365,7 +362,7 @@
                     service: "GetMakeUpStudentRecord",
                     autoRetry: true,
                     body: { GroupID: $scope.current.Group.GroupID },
-                    result: function (response, error, http) {
+                    result: function (response, error, http) { 
                         if (error) {
                             alert("GetMakeUpStudentRecord Error");
                         } else {
@@ -376,7 +373,6 @@
                                     MakeUpData.index = index;
                                     MakeUpData['MakeUpScore'] = MakeUpData.MakeUpScore;
                                     MakeUpData['MakeUpScoreOrigin'] = MakeUpData.MakeUpScore;
-
                                     $scope.studentList.push(MakeUpData);
                                     studentMapping[MakeUpData.RefStudentID] = MakeUpData;
                                 });
