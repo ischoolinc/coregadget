@@ -16,9 +16,9 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: '',
+                // account: 'bubu@debug.ischool.com.tw',
                 //password: window.prompt('password:')
-                password: ''
+                // password: '1234'
             }
         });
     </script>
@@ -72,7 +72,9 @@
 
 <body ng-controller="MainCtrl">
     <div ng-if="!(current) && !HasNoCourse"
-         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...</div>
+         style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">Loading...
+        </div>
+
     <div ng-if="HasNoCourse"
          style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有任何監考補考群組，請洽教務處行政人員。</div>
          <div ng-if="studentList.length === 0"
@@ -239,56 +241,56 @@
             </div>
             <div style="margin-right:270px;">
                 <table class="table table-bordered table-striped table-hover text-center"
-                       style="table-layout:fixed;">
+                       style="table-layout:fixed;  text-align: center; ">
                     <thead>
-                        <tr>
+                        <tr style ="height: 58.3px;">
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 25px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 科別
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 10px;"
+                                style="padding: 8px 2px ;width:5%;"  
                                 rowspan="2">
                                 年級
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 25px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 班級
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 10px;"
+                                style="padding: 8px 2px; width:5%;  "
                                 rowspan="2">
                                 座號
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 25px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 學號
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 25px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 姓名
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 40px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 科目名稱
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 10px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 科目級別
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 10px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
                                 分數
                             </th>
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 10px;"
+                                style="padding: 8px 2px"
                                 rowspan="2">
                                 補考分數
                             </th>
@@ -298,9 +300,10 @@
                                 成績身份
                             </th> -->
                             <th class="text-center"
-                                style="padding: 8px 2px;width: 10px;"
+                                style="padding: 8px 2px;"
                                 rowspan="2">
-                                及格標準
+                               及格標準
+                              
                             </th>
                         </tr>
                     </thead>
@@ -308,40 +311,40 @@
                         <tr ng-repeat="stuRec in studentList"
                             ng-class="{'warning': stuRec.Subject === current.Student.Subject && stuRec.RefStudentID === current.Student.RefStudentID}"
                             style="cursor:pointer;">
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
-                                <span>{{stuRec.Department}}</span>
+                                <span >{{stuRec.Department}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.GradeYear}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 <span>{{stuRec.ClassName}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec,true, true)">
                                 <span ng-if="stuRec.SeatNo"
-                                      style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}</span>
+                                     >{{stuRec.SeatNo}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.StudentNumber}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.StudentName}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.Subject}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.Level}}</span>
                             </td>
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.Score}}</span>
                             </td>
@@ -358,9 +361,9 @@
                                 ng-click="setCurrent(stuRec, true, true)">
                                 <span>{{stuRec.CalRole}}</span>
                             </td> -->
-                            <td class="text-left"
+                            <td 
                                 ng-click="setCurrent(stuRec, true, true)">
-                                <span>{{stuRec.PassingStandard}}</span>
+                                <span>{{stuRec.PassingStandard}} </span>
                             </td>
                         </tr>
                     </tbody>
