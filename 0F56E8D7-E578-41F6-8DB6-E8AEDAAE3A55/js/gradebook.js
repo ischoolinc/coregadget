@@ -1340,9 +1340,20 @@
           * 2. 執行submitGrade
           */
         $scope.enterGrade = function (event) {
+            console.log("enter.....")
             // 成績管理
             if ($scope.current.mode == $scope.modeList[0]) {
                 if (event && (event.keyCode !== 13 || $scope.isMobile)) {
+
+                    if(event.keyCode == 38)
+                    {
+                        $scope.goPrev();
+
+                    }else if(event.keyCode == 40)
+                    {
+                        $scope.goNext();
+                        
+                    }
                     return;
                 }
                 var flag = false;
