@@ -80,12 +80,23 @@
                         (click)="searchData()">
                         查詢
                     </button>
+                    <button type="button" class="btn btn-primary  mr-3" aria-haspopup="true" aria-expanded="false"
+                    (click)="exportData('#ClassSemesterScoreTable')">
+                    匯出
+                </button>
                 </div>
+      
 
-                <div class="mt-2 mb-2">
+                <div class="mt-2 mb-2" >
+
+                    <!-- <div class ="w-25">
+                        {{ CurrentTableShowObj.schoolYearSemester.SchoolYear}}學年度 {{ CurrentTableShowObj.schoolYearSemester.Semester}}學期 
+                     </div> -->
+
 
                     <!--顯示哪種成績 -->
                     <div class="btn-group">
+                      
                         <button type="button" class="btn btn-light  mr-3" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
                             選擇成績類型
@@ -129,11 +140,13 @@
                 </div>
                 <ng-container *ngIf="!isLoading; else tplLoading">
                     <ng-container *ngIf="!noneSS; else tplNoSS">
-                        <table class="table table-bordered table-striped mb-5 sticky">
+                        <table id="ClassSemesterScoreTable"   class="table table-bordered table-striped mb-5 sticky">
 
                             <thead>
                                 <tr>
-                                    <th class="head_row1" scope="colgroup" [attr.colspan]="2"></th>
+                                    <th class="head_row1" scope="colgroup" [attr.colspan]="2">
+                                    {{CurrentTableShowObj?.currentClass.ClassName}} 班
+                                    </th>
 
                                     <ng-container *ngFor="let showItem of selectShowItems">
                                         <th *ngIf="showItem.Check=='true'" class="head_row1" scope="colgroup"

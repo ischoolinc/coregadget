@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
    * 裝塞選欄位 
    */
   selectionObj: SelectionObj;
+  CurrentTableShowObj: SelectionObj;
   showingScoreType: string = "";
 
   scoreInfoList: SemsScoreInfo[] = [];
@@ -172,10 +173,8 @@ export class AppComponent implements OnInit {
    */
   getShowItemCheckCount(scoreType :string): number {
 
-   
     let count = 0;
     this.scoreTypeStateListt.forEach(item => {
-      console.log(scoreType +'aaa'+item.Name)
       if(scoreType =='總成績' && item.Name =='補考成績'){
         console.log('ch')
         debugger ;
@@ -222,7 +221,6 @@ export class AppComponent implements OnInit {
   */
    async getIsSchoolShowRank(){
     let rsp  = await this.contract.send('_.GetIsShowRank',{});
-     console.log('getIsSchoolShowRank',rsp);
 
    }
    
@@ -268,6 +266,8 @@ export class AppComponent implements OnInit {
    */
   async searchData() {
     // 
+
+    this.CurrentTableShowObj =  Object.assign({}, this.selectionObj); // 按下查詢後 table 顯示的才是真正的
     this.isLoading = true;
 
     if (this.selectionObj.currentScoreType == "科目成績") {
@@ -380,10 +380,6 @@ export class AppComponent implements OnInit {
       }
     }
 
-
-
-    console.log("看看成績裝進來沒!", this.scoreInfoMap);
-
     // 2.開始整理排名 成績  
     const rankRecord: RankInfo[] = [].concat(rankrsp ? rankrsp.StudentRankInfo : []);
     rankRecord.forEach(rankInfo => {
@@ -417,6 +413,7 @@ export class AppComponent implements OnInit {
   async getSchoolYearSemesterInfo() {
     const rsp = await this.contract.send('_.GetSchoolYearAndSemester', { ClassID: this.selectionObj.currentClass.ID });
     this.schoolYearSemester = [].concat(rsp.YearSemester);
+ 
     if (this.schoolYearSemester.length > 0) {
       this.selectionObj.schoolYearSemester = this.schoolYearSemester[0]; // 設定預設班級
     }
@@ -428,6 +425,7 @@ export class AppComponent implements OnInit {
    * @param classInfo
    */
   async clickClassbtn(classInfo: ClassInfo) {
+   
     this.selectionObj.currentClass = classInfo;
     await this.getSchoolYearSemesterInfo();  // 取得學期 
     await this.getSubjByClassID();    // 取得科目
@@ -518,6 +516,42 @@ export class AppComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { backdrop: 'static', keyboard: false });
   }
+
+
+  exportData(selector) {
+    var downloadLink;
+    var dataType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;';
+    var tableSelect = document.querySelector(selector);
+    var tableHTML = encodeURIComponent('<style> table, td {border:1px solid #dee2e6;  text-align: center;} table {border-collapse:collapse}</style>' + tableSelect.outerHTML);
+    
+    // Specify file name
+    var filename = this.CurrentTableShowObj.schoolYearSemester.SchoolYear+'-'+this.CurrentTableShowObj.schoolYearSemester.Semester+' '+this.CurrentTableShowObj.currentClass.ClassName+' 班級學期成績'+'.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob([tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    } else {
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+  }
+
+
+
+
 
   /**
   *
