@@ -16,9 +16,11 @@ export interface YearSemster {
  *【畫面顯示用】 裝讀進來 來的領域資料
  */
 export interface SubjectOrDomainInfo {
+    ScoreType :string ;
     Name: string;
     Order: string;
     Check: string;
+    Ramark :string ;
 }
 
 
@@ -36,6 +38,23 @@ export interface SemsScoreInfo {
     Score:string;
 
 }
+
+/**
+ * 裝回來資料 [] [service : GetTotalSemesScoreByClass]
+ */
+export interface TotalScore {
+    StudentID: string;
+    學習領域:{
+             成績:string ;
+             原始成績:string
+             } ;
+             
+    課程領域:{
+             成績:string ;
+             原始成績:string
+             } ; 
+}
+
 
 /**
  * 裝回來的資料
@@ -60,6 +79,7 @@ export class StudentInfo {
      * 裝科目資料
      */
     ScoreInfo: Map<string, SemsScore>
+    TotalScoreInfo :TotalScore ;
 
     constructor(semsSubjScoreInfo: SemsScoreInfo) {
         this.StudentID = semsSubjScoreInfo.StudentID;
@@ -101,17 +121,11 @@ export class StudentInfo {
  */
 export class SemsScore {
     constructor(semsSubjScoreInfo: SemsScoreInfo) {
-        console.log("semsSubjScoreInfo",semsSubjScoreInfo)
         this.Title = semsSubjScoreInfo.Title;
         this.OrginScore = semsSubjScoreInfo.OrginScore ;
         this.RetestScore = semsSubjScoreInfo.RetestScore ; 
         this.Score = semsSubjScoreInfo.Score;
-        // this.setBestScore();
-        console.log("semsSubjScoreInfo end ",this)
     }
-
- 
-   
   
     Title: string;
     OrginScore: string;
@@ -121,7 +135,6 @@ export class SemsScore {
    * 固定排名資訊  
    */
     RankInfo: RankInfo;
-    // aa:string ;
 
     /**
      * 取得 擇優成績 
@@ -184,6 +197,7 @@ export class ScoreType {
     Order: string;
     Check: boolean;
     HasRank: boolean = true; // 預設有排名 只有 【補考成績】沒有排名
+
 }
 
 

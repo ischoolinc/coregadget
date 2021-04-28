@@ -6,7 +6,7 @@ import NP from 'number-precision';
 
 import { setTheme } from 'ngx-bootstrap/utils';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ClassInfo, RankInfo, RankType, ScoreType, SelectionObj, SemsScoreInfo, StudentInfo, SubjectOrDomainInfo, YearSemster } from './vo';
+import { ClassInfo, RankInfo, RankType, ScoreType, SelectionObj, SemsScoreInfo, StudentInfo, SubjectOrDomainInfo, TotalScore, YearSemster } from './vo';
 import { MatGridTileHeaderCssMatStyler } from '@angular/material';
 @Component({
   selector: 'app-root',
@@ -16,18 +16,16 @@ import { MatGridTileHeaderCssMatStyler } from '@angular/material';
 })
 export class AppComponent implements OnInit {
 
+
   // setting 1. 是否顯示排名 
-  isSchoolSetingShowRank: boolean = true;
+  isSchoolSetingShowRank: boolean = false;
   isUserSelectShowRank: boolean = false;
   modalRef: BsModalRef; // ngx-boostrap 
   //  移過來的
   contract: any;
   classess: ClassInfo[] = [];
-  // public currentClass: ClassInfo | undefined;
   schoolYearSemester: YearSemster[] = []
-  // currentSemester: YearSemster | undefined;
   scoreTypeList: string[] = ['科目成績', '領域成績'];
-  // currentScoreType: string = '科目成績';
   selectShowItems: SubjectOrDomainInfo[] = [];
   ShowItem: SubjectOrDomainInfo[] = [];
   scoreInfoMap: Map<string, StudentInfo> = new Map();
@@ -35,11 +33,13 @@ export class AppComponent implements OnInit {
   rankTypeList: RankType[] = [];
   currentRankType: RankType;
   scoreTypeStateListt: ScoreType[] = [];  // 放你要哪一種成績
-  ScoreTypestringList = ['成績', '原始成績', '補考成績',];
+  // 顯示各種成績
+  ScoreTypestringList = ['成績', '原始成績', '補考成績'];
+  /**
+   * 裝塞選欄位 
+   */
   selectionObj: SelectionObj;
   showingScoreType: string = "";
-
-
 
   scoreInfoList: SemsScoreInfo[] = [];
   subjSelectAll = false;
@@ -128,12 +128,16 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //  0.初始化 裝selection 的物件 
+    // 0.取得 是否要顯示 
+  
     this.selectionObj = new SelectionObj();
-    // 0. 初始化畫面  成績
+    // 0. 初始化畫面  成績類型 []
     await this.initScoreType();
     // 1. 取得連線
     this.contract = await this.gadget.getContract('ischool.jh.semscore.teacher');
+
+    // 選擇是否顯示 排名
+    await this.getIsSchoolShowRank();    //  0.初始化 裝selection 的物件 
     // 2. 取得班級
     await this.lodingSelectData();
     // 3. 取得科目 
@@ -146,7 +150,7 @@ export class AppComponent implements OnInit {
    * 取得成績顯示長度
    */
   getScoreTypeSelectCount(): number {
-    console.log("getScoreType");
+    // console.log("getScoreType");
     let count = 0;
     this.scoreTypeStateListt.forEach(item => {
       if (item.Check) { count++; }
@@ -166,10 +170,17 @@ export class AppComponent implements OnInit {
   /**
    *  處理header 要如何顯示 
    */
-  getShowItemCheckCount(): number {
+  getShowItemCheckCount(scoreType :string): number {
 
+   
     let count = 0;
     this.scoreTypeStateListt.forEach(item => {
+      console.log(scoreType +'aaa'+item.Name)
+      if(scoreType =='總成績' && item.Name =='補考成績'){
+        console.log('ch')
+        debugger ;
+        return ;
+      }
 
       if (!this.isSchoolSetingShowRank && !this.isUserSelectShowRank) { // 沒有選擇要顯示排名
         if (item.Check) {
@@ -184,6 +195,7 @@ export class AppComponent implements OnInit {
       }
     });
 
+   
 
     // 如果有顯示排名 
     return count;
@@ -193,7 +205,6 @@ export class AppComponent implements OnInit {
    *  【畫面】 初始化 顯示哪種成績 
    */
   async initScoreType() {
-    console.log("init scoretype")
     this.ScoreTypestringList.forEach(scoretype => {
       const scoreType = new ScoreType(scoretype);
       if (scoretype == '補考成績') { // 因為補考成績沒有排名 所以將他放在
@@ -204,8 +215,18 @@ export class AppComponent implements OnInit {
       }
       this.scoreTypeStateListt.push(scoreType);
     });
-    console.log("init len", this.ScoreTypestringList);
   }
+  
+  /**
+  *  取得學校設定是否 
+  */
+   async getIsSchoolShowRank(){
+    let rsp  = await this.contract.send('_.GetIsShowRank',{});
+     console.log('getIsSchoolShowRank',rsp);
+
+   }
+   
+
 
   /**
    * 跑畫面 
@@ -216,16 +237,39 @@ export class AppComponent implements OnInit {
       // 3. 取得學年度
       await this.getSchoolYearSemesterInfo();
       // 4. 取得科目
-      await this.getIfShowRank();
+     // await this.getIfShowRank();
       // 6 . 如果顯示學校開放查詢顯示排名 顯示 
       await this.getRankType();
     }
   }
 
   /**
+   * 判斷是否低於 60分 
+   * @param score 
+   */
+  isScoreBelow60(score: string): boolean {
+
+    if (score) { // 有成績 
+      try {
+        let scoreNumber: number = parseFloat(score);
+        return scoreNumber < 60;
+      } catch (ex) {
+        return false;
+      }
+
+    } else {
+      return false;
+    }
+  }
+
+
+  /**
    * 按下[查詢]
    */
   async searchData() {
+    // 
+    this.isLoading = true;
+
     if (this.selectionObj.currentScoreType == "科目成績") {
       this.showingScoreType = "科目"
       await this.getSubjByClassID();
@@ -233,18 +277,26 @@ export class AppComponent implements OnInit {
       this.showingScoreType = "領域"
       await this.getDomainByClassID();
     }
-    await this.loadingSemsScoreData();
+    try {
+      await this.loadingSemsScoreData();
+
+    } catch
+    {
+      console.log("資料載入發生錯誤....")
+    }
+    this.isLoading = false;
   }
 
   /**
    * 
    */
   async loadingSemsScoreData() {
-    console.log("current...this.selectionObj", this.selectionObj)
+
     this.scoreInfoMap = new Map();
 
     let rsp: any;
     let rankrsp: { StudentRankInfo: "" };
+    let totalScorersp: any;
     if (this.selectionObj.currentScoreType == "科目成績") {
 
       // 取得學生科目成績 
@@ -262,15 +314,10 @@ export class AppComponent implements OnInit {
           , ItemType: "subject"
           , RankType: this.currentRankType.RankType
         });
-
-        console.log("subject rank", rankrsp);
-
       }
 
-
-
     } else {
-      // 取得學生領域成績
+      // 取得學生   [領域成績]
       rsp = await this.contract.send('_.GetDomainSemsScoreByClass', {
         ClassID: this.selectionObj.currentClass.ID
         , SchoolYear: this.selectionObj.schoolYearSemester.SchoolYear
@@ -278,6 +325,19 @@ export class AppComponent implements OnInit {
 
 
       });
+      // 取得領域成績時 一併處理 [總成績]
+      try {
+        totalScorersp =
+          await this.contract.send('_.GetTotalSemesScoreByClass', {
+            ClassID: this.selectionObj.currentClass.ID
+            , SchoolYear: this.selectionObj.schoolYearSemester.SchoolYear
+            , Semester: this.selectionObj.schoolYearSemester.Semester
+          });
+        // console.log("拿到總成績囉~~~", totalScorersp.ScoreInfos);
+      } catch (ex) {
+        alert("取得總成績發生錯誤!");
+      }
+
       // 取得學生領域排名 
       if (this.isSchoolSetingShowRank && this.currentRankType) {
         rankrsp = await this.contract.send('_.GetStudentRank', {
@@ -288,12 +348,8 @@ export class AppComponent implements OnInit {
           , RankType: this.currentRankType.RankType
         });
       }
-      console.log("domain rank", rankrsp);
     }
 
-
-    console.log("loading 資料 rsp", rsp);
-    //  1.開始整理成績資料 => Map <string >
     const scoreRecord: SemsScoreInfo[] = [].concat(rsp.ScoreInfos);
     scoreRecord.forEach(scoreRec => {
       if (!this.scoreInfoMap.has(scoreRec.StudentID)) // 如果 Map 中沒有該學生的資料
@@ -305,31 +361,43 @@ export class AppComponent implements OnInit {
       } else {
         // 同一學生有 相同科目的學期成績  
         // 可能有問題要再看要怎樣處理
-        // 
       }
     });
+    // 1.2 開始整理 [總成績]
+    if (this.selectionObj.currentScoreType == "領域成績") {
+      try {
+        const totalScore: TotalScore[] = [].concat(totalScorersp.ScoreInfos);
+        // alert(" Go to console and look!👶🧒") ;
+        totalScore.forEach(totalScoreInfo => {
+          if (this.scoreInfoMap.has(totalScoreInfo.StudentID)) {// 有這個學生
+  
+            this.scoreInfoMap.get(totalScoreInfo.StudentID).TotalScoreInfo = totalScoreInfo;
+          }
+        });
+
+      } catch (ex) {
+        alert("整理總成績有錯誤喔!!" + ex);
+      }
+    }
+
+
+
+    console.log("看看成績裝進來沒!", this.scoreInfoMap);
+
     // 2.開始整理排名 成績  
     const rankRecord: RankInfo[] = [].concat(rankrsp ? rankrsp.StudentRankInfo : []);
-    // 
-    console.log("開始整理 ...排名資料", rankRecord);
     rankRecord.forEach(rankInfo => {
       if (this.scoreInfoMap.has(rankInfo.StudentID)) {
-
         if (this.scoreInfoMap.get(rankInfo.StudentID).hasSubj(rankInfo.ItemName)) {
-          console.log("加入...")
           this.scoreInfoMap.get(rankInfo.StudentID).addRankInfo(rankInfo);
         }
       }
     });
 
-
-
-    // * 把 Map 轉換成 Array 供可跌代 
-    console.log("整理完", this.scoreInfoMap);
+    // * 把 Map 轉換成 Array 供畫面呈現可跌代 
     this.studentList = Array.from(this.scoreInfoMap.values());
     this.ShowItem = this.selectShowItems.filter(x => x.Check == 'true');
-    // alert("請看console")
-    console.log("this.studentList", this.studentList);
+
   }
 
 
@@ -360,12 +428,11 @@ export class AppComponent implements OnInit {
    * @param classInfo
    */
   async clickClassbtn(classInfo: ClassInfo) {
-    console.log("clickClick.....", classInfo);
     this.selectionObj.currentClass = classInfo;
     await this.getSchoolYearSemesterInfo();  // 取得學期 
     await this.getSubjByClassID();    // 取得科目
     await this.getRankType();         // 取得 排名總類
-   
+
   }
 
 
@@ -391,19 +458,11 @@ export class AppComponent implements OnInit {
     this.selectionObj.schoolYearSemester = semester;
   }
 
-  /**
-   * 取得班級
-   */
-  async setClass() {
-
-
-  }
 
   /**
    * 選擇所有 
    */
-  async selectAllSubj(event) {
-    console.log("event", event);
+  async selectAllSubj() {
     this.subjSelectAll = !this.subjSelectAll;
     this.selectShowItems.forEach(subj => {
       1
@@ -418,10 +477,8 @@ export class AppComponent implements OnInit {
    * 
    */
   async setMatrix(currRankType: any) {
-    console.log("currentRankType")
+    // console.log("currentRankType")
     this.currentRankType = currRankType;
-
-
 
   }
   /**
@@ -448,14 +505,16 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * 【畫面互動】 顯示模組 
+   * 【畫面互動】 顯示選擇領域或科目之視窗
    */
   async showSubjModal() {
-
     $("#subjSeleModal").show();
-
   }
 
+  /**
+   * ngx-modal
+   * @param template 
+   */
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { backdrop: 'static', keyboard: false });
   }
@@ -473,7 +532,8 @@ export class AppComponent implements OnInit {
         , Semester: this.selectionObj.schoolYearSemester.Semester
       });
     this.selectShowItems = rsp.Subjects;
-    console.log('this.showSubject ', rsp);
+
+    // alert("currentScoreType" +this.selectionObj.currentScoreType);
   }
 
   /**
@@ -486,8 +546,12 @@ export class AppComponent implements OnInit {
         , SchoolYear: this.selectionObj.schoolYearSemester.SchoolYear
         , Semester: this.selectionObj.schoolYearSemester.Semester
       });
+    //
     this.selectShowItems = rsp.Domains;
-    console.log('this.getDomainByClassID 的 rsp', rsp);
+    
+    //[畫面] 領域總計成績 與 領域 一並顯示  
+    this.selectShowItems.push({ Name: '學習領域', Order: '', Check: 'true', ScoreType: '總成績' ,Ramark:'不含彈性'})        // 因為是interface 所以就直接塞                   //取得科目後 再加入預設值 
+    this.selectShowItems.push({ Name: '課程學習', Order: '', Check: 'true', ScoreType: '總成績' , Ramark:'含彈性' })        // 因為是interface 所以就直接塞                   //取得科目後 再加入預設值 
 
   }
 
@@ -495,10 +559,6 @@ export class AppComponent implements OnInit {
   /**
    * 取得是否顯示排名 
    */
-  async getIfShowRank() {
-    // todo  實際上去抓取資料 第一版暫時
-    this.isSchoolSetingShowRank = false;
-  }
 
   /**
   * 取得所選學年度學期的排名
@@ -510,16 +570,12 @@ export class AppComponent implements OnInit {
         SchoolYear: this.selectionObj.schoolYearSemester.SchoolYear
         , Semester: this.selectionObj.schoolYearSemester.Semester
       });
-    console.log('getRankType', rsp);
+
     this.rankTypeList = [].concat(rsp.RankType);
     if (this.rankTypeList.length > 0) {
       this.currentRankType = this.rankTypeList[0];
     }
   }
-
-
-
-
 
   // 呼叫service獲取資料類型function 區塊 
 
