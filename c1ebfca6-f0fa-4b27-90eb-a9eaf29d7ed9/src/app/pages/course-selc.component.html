@@ -1,7 +1,7 @@
 <div>
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item">
+      <li class="breadcrumb-item header-top">
         <a href="#"
            [routerLink]="['']">課堂點名&nbsp;(&nbsp;{{today}}&nbsp;)</a>
       </li>
@@ -30,7 +30,7 @@
         <span class="pr-3">{{course.Credit}}</span>
       </div>
       <div class="col-3 text-nowrap">
-        <span class="pr-3">{{course.TeacherName?course.TeacherName:"無"}}</span>
+        <span class="pr-3">{{course.AllTeacherString?course.AllTeacherString:"無"}}</span>
       </div>
     </div>
   </li>

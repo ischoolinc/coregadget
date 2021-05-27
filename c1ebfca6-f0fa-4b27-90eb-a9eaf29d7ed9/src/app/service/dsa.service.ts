@@ -295,6 +295,7 @@ export interface Student {
   AbsenceRate: number;  //Jean 20190522 增加 出席率
   Absence: Absence;
   PrevAbsence: PrevAbsence;
+  EnglishName :string  ;
 }
 
 export interface Absence {
@@ -390,6 +391,7 @@ export interface CourseObj {
   Subject: string;
   TeacherID: string;
   TeacherName: string;
+  AllTeacherString :string ;
 }
 
 export interface GradeClassRecords {

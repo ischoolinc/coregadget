@@ -23,7 +23,6 @@ export class CourseSelcComponent implements OnInit {
     private dialog: MatDialog) {
 
     //所選的班級
-    console.log(cache.selectedClass);
     this.jClass = cache.selectedClass;
     this.className = this.jClass.ClassName;
   }
@@ -34,7 +33,6 @@ export class CourseSelcComponent implements OnInit {
 
   //開啟節次點名介面
   async openPicker(course: CourseConf) {
-    // console.log(course);
     this.dialog.open(PeriodChooserComponent, {
       data: { course: course },
     });

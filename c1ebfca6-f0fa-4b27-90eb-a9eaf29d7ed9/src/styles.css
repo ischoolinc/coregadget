@@ -3,9 +3,9 @@
 /* bootstrap */
 /* @import "~bootstrap/dist/css/bootstrap.min.css"; */
 
-/* @import "~font-awesome/css/font-awesome.min.css"; */
 
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/* @import "~font-awesome/css/font-awesome.min.css"; */
 /* @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; */
 
 /* @import "assets/css/base.css"; */
@@ -16,3 +16,124 @@ button:focus {
     outline: 0px dotted;
     outline: 0px auto -webkit-focus-ring-color;
   }
+
+
+  
+.card{
+      border: 1.5px solid #0000001f !important;
+      box-shadow: none  !important;
+      border-radius: 7px !important;
+     
+  
+  }
+      
+  .btn {
+  
+      border-radius: 5px !important;
+  }
+
+  
+.pic
+{
+  border-radius: 5px 5px 0px 0px;
+}
+.border-r5{
+  border-radius: 5px ;  
+}
+
+.header-top
+{
+font-size: 18px !important;
+font-weight: 700 !important ;
+color :#727375 !important ;
+}
+
+
+.breadcrumb-item.active
+{
+  color :#656566 !important ;
+}
+
+.pointer
+{
+  cursor: pointer;
+}
+
+
+
+.mat-raised-button {
+
+  box-shadow: none !important;
+  border: 2px solid #00000024 !important;
+  border-radius: 5px !important;
+
+
+}
+
+.mat-menu-content{
+
+  border: 1.5px solid #00000024;
+  box-shadow: none;
+  border-radius: 5px;
+}
+
+
+.mat-menu-panel{
+
+  box-shadow: none !important;
+  border-radius: 5px !important;
+
+}
+/* 
+
+
+.list-group-item.active{
+
+  background-color: #dcedfb;
+
+}
+
+
+.breadcrumb{
+
+  background-color: #dcedfb;
+} */
+
+
+
+.btn-info
+{
+background: #424242  !important;
+}
+
+
+
+.icon-green
+{
+color: #29bb89;
+
+}
+
+
+.btn-default{
+  border: 2px solid #00000024;
+  box-shadow: none;
+
+}
+
+.list-group-item active
+{
+    box-shadow: none;
+    border: 2px solid #eee;
+    border-bottom: 0px;
+
+}
+
+
+
+.list-group-item{
+
+    box-shadow: none;
+    border: 2px solid #eee;
+    border-top: 0px;
+}

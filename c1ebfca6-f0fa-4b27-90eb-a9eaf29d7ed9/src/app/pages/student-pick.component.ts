@@ -16,7 +16,10 @@ import { Console } from '@angular/core/src/console';
   styleUrls: ['../common.css']
 })
 export class StudentPickComponent implements OnInit {
-
+ 
+  /** 是否顯示英文名字 預設為否 */
+  displayEnglishName :boolean = false ;
+  
   today: string;
 
   periodConf: PeriodConf; // 節次設定，決定有哪些缺曠可以點。
@@ -27,16 +30,21 @@ export class StudentPickComponent implements OnInit {
 
   groupInfo: { type: GroupType, id: string, name: string } // 課程或班級。
 
+  /**【View Binding】 */
   studentChecks: StudentCheck[]; //點名狀態。
 
   checkSummary: string; // 目前點名狀態統計。
+
+  showCurrentAbsentType = "";
+
+  // isMouseIn = false;
 
   absenceRates: any;
   teacherSetting: any;
   settingList: any;
   objectKeys = Object.keys;
   showPhoto: boolean;
-  explainMessage : string = "";
+  explainMessage: string = "";
 
   constructor(
     private dsa: DSAService,
@@ -99,31 +107,28 @@ export class StudentPickComponent implements OnInit {
     const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });
     // 看看能不能顯示出席率 
-    let  denominator  :RollCallRateDenominator = await this.dsa.getAbsenRateDenominator(this.groupInfo.id);
-  
+    let denominator: RollCallRateDenominator = await this.dsa.getAbsenRateDenominator(this.groupInfo.id);
+
     //【檢查】(是否顯示出席率) 如果有設定 使用上課週數 * 節數 
     // console.log("IsUseWeeks",denominator.IsUseWeeks)
-    
-    if(denominator.IsUseWeeks =='true')
-     {
-       if((denominator.Period=="0"||denominator.Period==""))
-       {
-         this.explainMessage = "出席率分母採用 上課週數 * 節數， \n但節數為0或未設定，無法計算出席率 。"
-       }else // 如果 節數設定正常 
-       {
-        if(denominator.WeeksFromCourse )
-        {
+
+    if (denominator.IsUseWeeks == 'true') {
+      if ((denominator.Period == "0" || denominator.Period == "")) {
+        this.explainMessage = "出席率分母採用 上課週數 * 節數， \n但節數為0或未設定，無法計算出席率 。"
+      } else // 如果 節數設定正常 
+      {
+        if (denominator.WeeksFromCourse) {
           this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.WeeksFromCourse}週*${denominator.Period}節) ${denominator.CourseDe} 堂`
 
-        }else{
+        } else {
           this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.DefaultWeeks}週*${denominator.Period}節) ${denominator.DefaultDe} 堂`
         }
-       }
+      }
 
-    }else{ // 不採用上課週數 => 實際點名
+    } else { // 不採用上課週數 => 實際點名
       this.explainMessage = `出席率分母採用 教師實際點名次數 為 ${denominator.ActualRollcallTime} 堂`
     }
-   
+
     for (const stu of students) {
       // 取得學生照片 url
       stu.PhotoUrl = `${this.dsa.getAccessPoint()}/GetStudentPhoto?stt=Session&sessionid=${session.SessionID}&parser=spliter&content=StudentID:${stu.StudentID}`;
@@ -183,9 +188,30 @@ export class StudentPickComponent implements OnInit {
   }
 
   getAttendanceText(stu: StudentCheck) {
+
     return stu.status ? stu.status.AbsenceType : '- -';
   }
 
+  /**顯示absType */
+  showAbsText(stu: StudentCheck) {
+
+    if (stu.status) {
+    
+        return stu.status.AbsenceType;
+  
+
+    } else {
+      if (stu.isMouseIn) {
+        return stu.showCurrentAbsType;
+
+      } else {
+        return " - "
+      }
+
+    }
+
+
+  }
   getAttendanceStyle(stu: StudentCheck) {
 
     let bgColor = 'rgba(255,255,255, 0.1)';
@@ -261,20 +287,32 @@ export class StudentPickComponent implements OnInit {
 
   }
 
+  /**滑鼠移進來時顯示 目前顯示的 */
+  showCurrentAbsType(studentCheck: StudentCheck) {
+
+    studentCheck.isMouseIn = true;
+    studentCheck.setShowCurrentAbsent(this.selectedAbsence);
+
+    studentCheck.setShowCurrentAbsent(this.selectedAbsence);
+  }
+  /**滑鼠移進除去時顯示 不要顯示的 */
+  hideCurrentAbsType(studentCheck: StudentCheck) {
+    studentCheck.isMouseIn = false;
+    studentCheck.clearShowCurrentAbsent();
+  }
+
   selectedAbsenceItem(abbr) {
-    // console.log(abbr);
     this.selectedAbsence = abbr.Name;
   }
 
 
   //取得學生出席率 
   async loadAbsencreRate() {
-    
-    if(this.groupInfo.type=='Course')
+
+    if (this.groupInfo.type == 'Course')
       this.absenceRates = await this.dsa.getAbsenceRate(this.groupInfo.id);
     else
-    this.absenceRates = {};
- 
-    console.log("課程ID", this.groupInfo.id);
+      this.absenceRates = {};
+
   }
 }

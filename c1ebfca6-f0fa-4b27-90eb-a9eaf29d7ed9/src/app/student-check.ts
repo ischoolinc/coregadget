@@ -9,7 +9,8 @@ export class StudentCheck {
     private _status: PeriodStatus;
     private _isDirty: boolean;
     private _absenceRate :Number;
-  
+      showCurrentAbsType :string  ="";
+      isMouseIn :boolean =false ;
     /**
      * 
      * @param stu 學生資料。
@@ -80,5 +81,19 @@ export class StudentCheck {
     public setAttenddacneRate( ansenceRate:number) 
     {
         this._absenceRate = ansenceRate;
+    }
+
+    /**滑鼠移進來時可以顯示 當前假別 */
+    public setShowCurrentAbsent(currentAbsType :string )
+    {
+     this .showCurrentAbsType = currentAbsType;
+    
+    }
+
+
+    public clearShowCurrentAbsent( )
+    {
+     this .showCurrentAbsType = "";
+    
     }
   }

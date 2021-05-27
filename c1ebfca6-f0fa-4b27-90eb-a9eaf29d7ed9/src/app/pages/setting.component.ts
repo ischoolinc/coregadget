@@ -58,7 +58,6 @@ export class SettingComponent implements OnInit {
 
       // 取得點名母數 
      this.isUseWeekFromCourse  =   await this.dsa.getAbsenRateDenominatorDepen() ;
-     console.log("isUseWeekFromCourse",this.isUseWeekFromCourse)
    
     } catch (error) {
        console.log("發生錯誤!");
