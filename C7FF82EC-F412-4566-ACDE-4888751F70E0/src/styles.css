@@ -31,3 +31,244 @@ ul.rwd-table .tr li.sticky-top {
 *{
     font-family: "微軟正黑體";
 }
+
+ .cuser{
+cursor: pointer;
+}
+.brad-5::before{
+    border-radius: 5px !important ;
+    cursor: pointer;
+}
+
+.font_weight{
+
+    font-weight: bold;
+}
+
+.btn_bul_rad{
+    border-radius:  10px !important;
+    background:#4da6ff !important;
+    font-size: 15px;
+ 
+   
+ }
+ 
+ .btn_red_rad{
+    border-radius:  10px;
+    background: #ff4d4d !important ;
+    font-size: 15px;
+  
+ 
+ }
+ .btn_white_rad{
+    border-radius:  10px;
+    background: #E7E9EB !important ;
+    font-size: 15px;
+ }
+ 
+ .btn_gray_rad{
+    border-radius:  10px;
+    font-size: 15px;
+ }
+
+ .fix-h-li{
+    display :inline-block  !important ;
+    height: 10px  !important ;
+ }
+
+ .fix-h {
+    height: 10px  !important ;
+ }
+.question_title {
+    font-size:  16px;
+ }
+ /* 顯示必填的星號 預留位置 讓畫面不會動來去*/
+ .star_place {
+    width:10px;
+    height: 10px; 
+    display: inline-block; 
+ }
+.rad-5{
+    border-radius  :5px;   
+ }
+.fontsize-18{
+    font-size: 18px;
+ }
+ /* 紅色的字 */
+.word_red{
+    color : #ff5050 ;   
+    cursor:pointer ;
+ }
+ /* 灰色的字 */
+.word_gray{
+    color : gray ;
+    cursor: not-allowed
+ }
+ /* 藍色的字  */
+ .word_blue{
+   color : #4d94ff ;
+   cursor:pointer
+ }
+
+
+ .table-hreder{
+ background :#f2dac3 !important
+
+ }
+
+ 
+ ul.rwd-table ol:nth-child(even) {
+	/* background: #f5f5f5; */
+	/* background : #f2f4c3  !important; */
+	background : #94d0cc45  !important;  
+	/* background : #aec49f  !important;  #cfdac8  */
+
+	/* background : #d4faf8  !important;   */   
+
+    /* e4efe7 f2f4c3  d2e69c d5ecc2 91c788 96bb7c beca5c eff8ff     aee6e6 adb36e cee397    bbd196*/
+    
+    cursor: pointer;
+}
+ul.rwd-table ol:nth-child(even):hover{
+    color :black;
+    font-weight: 200 !important;
+}
+
+
+.main-header{
+    color :#2b3240  !important;
+    font-size :16px !important;
+
+}
+.cbs {
+
+    padding-top: 3px;
+}
+.btn-light {
+    /* background-color: #8cb1ff; */
+    border: 2.5px solid #5db39f52 !important;
+    box-shadow: none !important;
+    border-radius: 5px !important;
+    color: #3e495f !important;
+    font-size: 16px !important;
+    background: white  !important;
+}
+
+.btn-deep{
+    font-size: 17px !important ;
+    background:  #505d75 !important ;
+    border-radius: 5px !important;
+    color :white !important;
+
+}
+
+ul.rwd-table .tr li.sticky-top {
+
+    background:  #94d0cc !important  ;
+    color :#3e495f ;
+    font-size: 16px;
+}
+ul.rwd-table .thead li {
+
+    background:  #94d0cc !important  ;
+    color :#3e495f ;
+    font-size: 16px;
+
+ 
+
+}
+
+
+.nav-tabs .nav-link.active{
+
+    color: #2e334a !important;
+    font-size: 18px !important;
+    background: #94d0cc17 !important;
+
+}
+
+.card {
+    transition: none !important;
+    box-shadow: none !important; 
+    border :2px solid #00000024!important
+}
+
+
+.move_search {
+    width: 100px;
+    height: 100px;
+    background: pink;
+    position: relative;
+    animation: mymove 5s infinite;
+  }
+  
+  @keyframes mymove {
+    from {left: 0px;}
+    to {left: 200px;}
+  }
+
+
+
+
+  .dropdown-menu{
+    box-shadow: none  !important;
+    border: 2px solid #00000024  !important;
+    border-radius: 3px !important;
+
+  }
+  .dropdown-menu::before{
+    box-shadow: none  !important;
+    /* border: 2.5px solid #00000024  !important; */
+
+
+  }
+
+
+
+
+  .list-group-item.active {
+    background-color: #e1f2ef !important;
+    color: #000000de;
+    font-weight: 900;
+    font-size: 17.5px;
+}
+
+.base-class-header 
+{
+    padding-left: 10px;
+    /* background: #f5fbfa; */
+    border-bottom: 2px solid #94d0cc;
+    margin-bottom: 15px;
+    padding-top: 0px;
+}
+
+
+.sm-title
+ {
+    padding-left: 10px;
+    font-size: 15.7px;
+    margin-bottom: 6px;
+ }
+
+
+
+ .expansion-panel {
+   box-shadow: none !important;
+   border  :2px solid #eeeeee !important ;
+   background: #eeeeee !important;
+ }
+
+.expansion-panel-toggler{
+    box-shadow: none !important;
+    border-bottom :2px solid #eeeeee !important ;
+    background: #eeeeee !important ;
+}
+
+
+.btn-edit {
+    background-color: #94d0cc !important;
+    color: #464d59 !important;
+    border: 1.5px solid #94d0cc !important;
+    border-radius: 3px !important;
+    box-shadow: none !important ;
+}

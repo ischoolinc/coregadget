@@ -1,75 +1,74 @@
 <div *ngIf="!isLoading; else tmpLoading">
   <div class="tab-pane fade-in"
        id="listTwo">
-    <div class="d-md-flex align-items-center sub-title mb-3">
-      <h4 class="mb-0 mr-auto">基本資料</h4>
+    <div class="d-md-flex align-items-center sub-title  base-class-header">
+      <h4 class="mb-0 mr-auto"><b>基本資料</b></h4>
     </div>
-
+   
     <ng-container *ngIf="currentStudentBaseInfo.StudentID.length === 0">
       <div class="row justify-content-center">沒有資料。</div>
     </ng-container>
 
     <ng-container *ngIf="currentStudentBaseInfo.StudentID.length > 0">
 
-      <div class="font-weight-bold mb-2">
+      <div class="font_weight sm-title">
         基本資料
       </div>
       <div class="card mb-3">
         <div class="card-body row">
           <div class="col-md-2">
-            <img class="w-100 card-img-top"
+            <img class="w-75 card-img-top rad-5"
                  src="{{ currentStudentBaseInfo.PhotoUrl }}" />
           </div>
           <div class="col-md-10">
+            <div class="mt-2">
+             <div class="row"> <!--第一行-->
+                <div class="col-4 col-md-1 mb-3 font_weight fontsize-18">姓名：</div>
+                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Name }}</div>
+                <div class="col-4 col-md-2 mb-3 font_weight fontsize-18 ">身分證號：</div>
+                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.IDNumber }}</div>
+             </div>
+             <div class="row">
+                <div class="col-4 col-md-1 mb-3 font_weight fontsize-18">性別：</div>
+                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Gender }}</div>
+                <div class="col-4 col-md-2 mb-3 font_weight fontsize-18">生日：</div>
+                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Birthdate }}</div>
+             </div>
+
+ 
+          
             <div class="row">
-              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-              <div class="col-8 col-md-4 mb-3"></div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-              <div class="col-8 col-md-4 mb-3"></div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-              <div class="col-8 col-md-4 mb-3"></div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-              <div class="col-8 col-md-4 mb-3"></div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">姓名</div>
-              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.Name }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">身分證號</div>
-              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.IDNumber }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">性別</div>
-              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.Gender }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">生日</div>
-              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.Birthdate }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">學號</div>
-              <div class="col-8 col-md-4 mb-3">{{ currentStudentBaseInfo.StudentNumber }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-              <div class="col-8 col-md-4 mb-3"></div>
+              <div class="col-4 col-md-1 mb-3 font_weight fontsize-18">學號：</div>
+              <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.StudentNumber }}</div>
+            </div>
             </div>
           </div>
         </div>
       </div>
-      <br>
-      <div class="font-weight-bold mb-2">
+   
+      <div class="font_weight sm-title">
         緊急聯絡資料
       </div>
       <div class="card mb-2">
         <table class="table table-sm table-bordered">
           <tbody>
             <tr>
-              <td class="text-left"
+              <td class="text-left "
                   scope="col"
                   width="10%">聯絡人</td>
-              <td class="text-left"
+              <td class="text-left "
                   scope="col"
                   width="10%"> 稱謂</td>
-              <td class="text-left"
+              <td class="text-left "
                   scope="col"
                   width="20%"> 姓名</td>
-              <td class="text-left"
+              <td class="text-left "
                   scope="col"
                   width="20%"> 電話(H)</td>
-              <td class="text-left"
+              <td class="text-left "
                   scope="col"
                   width="20%"> 電話(M)</td>
-              <td class="text-left"
+              <td class="text-left "
                   scope="col"
                   width="20%"> 電話(O)</td>
             </tr>
@@ -118,8 +117,8 @@
           </tbody>
         </table>
       </div>
-      <br>
-      <div class="font-weight-bold mb-2">
+     
+      <div class="font_weight sm-title">
         聯絡資料
       </div>
       <div class="card">
@@ -182,8 +181,8 @@
         </table>
 
       </div>
-      <br>
-      <div class="font-weight-bold mb-2">
+ 
+      <div class="font_weight sm-title mb-2">
         父、母、監護人資料
       </div>
       <div class="card mb-3">
@@ -254,8 +253,8 @@
           </tbody>
         </table>
       </div>
-      <br>
-      <div class="font-weight-bold mb-2">
+      
+      <div class="font_weight sm-title">
         前籍畢業資訊
       </div>
       <div class="card mb-3">
@@ -296,8 +295,8 @@
         </table>
 
       </div>
-      <br>
-      <div class="font-weight-bold mb-2">
+   
+      <div class="font_weight mb-2">
         異動資料
       </div>
       <div class="card mb-3">

@@ -4,7 +4,7 @@ import { DsaService } from "../../dsa.service";
 import { CounselDetailComponent } from "../counsel-detail.component";
 import { GlobalService } from "../../global.service";
 import { RoleService } from "../../role.service";
-import { CounselStudentService, CounselClass } from "../../counsel-student.service";
+import { CounselStudentService, CounselClass, CounselStudent } from "../../counsel-student.service";
 import { CaseInterview, SemesterInfo } from "./case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
 import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
@@ -21,6 +21,8 @@ export class CounselItemDetailComponent implements OnInit {
   caseViewInfoList: CaseViewInfo[] = [];
   _StudentID: string = "";
   isLoading = false;
+  currentStudent: CounselStudent;
+  
   // 個案資料
   caseList: CaseStudent[];
   isDeleteButtonDisable: boolean = true;
@@ -44,7 +46,14 @@ export class CounselItemDetailComponent implements OnInit {
     this._StudentID = "";
     this.isDeleteButtonDisable = true;
     this._StudentID = this.counselDetailComponent.currentStudent.StudentID;
+    this.currentStudent =this.counselDetailComponent.currentStudent ;
+    this.currentStudent.PhotoUrl =`${
+      this.dsaService.AccessPoint
+      }/GetStudentPhoto?stt=Session&sessionid=${
+      this.dsaService.SessionID
+      }&parser=spliter&content=StudentID:${this._StudentID}`;
 
+    
     await this.loadData();
   }
 
@@ -140,6 +149,11 @@ export class CounselItemDetailComponent implements OnInit {
 
   // 修改
   editInterviewModal(caseInterview: CaseInterview) {
+  if(caseInterview.isEditDisable) // 不能編編輯 
+  {
+    return 
+  }
+
     this._addInterview._editMode = "edit";
     this._addInterview.editModeString = "修改";
     this._addInterview._CaseInterview = caseInterview;
@@ -181,7 +195,7 @@ export class CounselItemDetailComponent implements OnInit {
     this.caseViewInfoList = [];
     let ServiceName: string = "GetStudentCase";
 
-
+  
     let resp = await this.dsaService.send(ServiceName, {
       Request: {
         StudentID: this.counselDetailComponent.currentStudent.StudentID

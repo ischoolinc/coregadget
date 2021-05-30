@@ -82,6 +82,8 @@ import { BatchCounselDocComponentComponent } from './counsel-statistics/reports/
 import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-doc2-bat/counsel-doc2-bat.component';
 import { CounselInterviewDocComponent } from './simple-page/print/counsel-interview-doc/counsel-interview-doc.component';
 import { CounselDoc2BaseComponent } from './counsel-statistics/reports/counsel-doc2-base/counsel-doc2-base.component';
+import { WorkServiceComponent } from './work-service/work-service.component';
+import { NewWorkModalComponent } from './work-service/new-work-modal/new-work-modal.component';
 
 @NgModule({
   declarations: [
@@ -128,7 +130,9 @@ import { CounselDoc2BaseComponent } from './counsel-statistics/reports/counsel-d
     BatchCounselDocComponentComponent,
     CounselDoc2BatComponent,
     CounselInterviewDocComponent,
-    CounselDoc2BaseComponent
+    CounselDoc2BaseComponent,
+    WorkServiceComponent,
+    NewWorkModalComponent
   ],
   imports: [
     BrowserModule,
@@ -157,6 +161,7 @@ import { CounselDoc2BaseComponent } from './counsel-statistics/reports/counsel-d
     MatProgressSpinnerModule,
     SharedModule,
     CaseModule,
+    
   ],
   providers: [ ],
   bootstrap: [AppComponent]

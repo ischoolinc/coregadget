@@ -1,0 +1,24 @@
+.btn_bul_rad{
+   border-radius:  10px;
+   background:#4da6ff ;
+   font-size: 15px;
+
+  
+}
+
+.btn_red_rad{
+   border-radius:  10px;
+   background: #ff4d4d  ;
+   font-size: 15px;
+ 
+
+}
+.btn_white_rad{
+   border-radius:  10px;
+   font-size: 15px;
+}
+
+
+.font_weight{
+    font-weight: bold;
+}

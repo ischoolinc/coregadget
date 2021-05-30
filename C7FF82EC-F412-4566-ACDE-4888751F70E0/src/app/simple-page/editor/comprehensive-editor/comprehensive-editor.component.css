@@ -17,8 +17,8 @@
   .sentence-input:hover,
   .sentence-input:focus
    {
-      border-color: #869923;
-      box-shadow: inset 0 -2px 0 -1px #869923;
+      border-color: #94d0cc;
+      box-shadow: inset 0 -2px 0 -1px #94d0cc;
   }
   
   .sentence-textarea {
@@ -28,8 +28,8 @@
   
   .sentence-textarea:hover,
   .sentence-textarea:focus{
-    border-color: #869923;
-    box-shadow: inset 2px 2px 0 -1px #869923, inset -2px -2px 0 -1px #869923;
+    border-color: #94d0cc;
+    box-shadow: inset 2px 2px 0 -1px #94d0cc, inset -2px -2px 0 -1px #94d0cc;
   }
   
   input:focus {

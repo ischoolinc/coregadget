@@ -262,7 +262,7 @@ export class CaseInterview {
         answer_checked: false
       },
       {
-        answer_text: "網路成癮",
+        answer_text: "網路成迷",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,
@@ -283,7 +283,7 @@ export class CaseInterview {
         answer_checked: false
       },
       {
-        answer_text: "心理疾病",
+        answer_text: "精神疾患",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,

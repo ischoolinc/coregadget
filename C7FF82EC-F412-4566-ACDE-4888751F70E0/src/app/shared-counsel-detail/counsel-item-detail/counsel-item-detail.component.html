@@ -1,136 +1,186 @@
+<div class= "ml-2">
 <div *ngIf="!isLoading; else tmpLoading">
   <!-- 學生個人 - 輔導紀錄 -->
-  <div class="tab-pane fade-in"
-       id="listOne">
-    <div class="d-md-flex align-items-center sub-title mb-3">
-      <h4 class="mb-0 mr-auto">晤談紀錄</h4>
+  <div class="tab-pane fade-in" id="listOne">
+    <div class="d-md-flex align-items-center sub-title base-class-header ">
+      <h4 class="mb-0 mr-auto"><b>晤談紀錄</b></h4>
     </div>
-
+<!-- 第二頁 -->
+    <!-- <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div> -->
     <ng-container *ngIf="caseList.length === 0">
       <div class="row justify-content-center">沒有資料。</div>
     </ng-container>
 
+
     <!-- 判斷注意 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
                 當學生是認輔學生，才會顯示此 div 區塊。
             ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
+    <!-- 顯示照片 -->
+    <!-- <div class ="row ml-3">
+      <div style ="width: 150px ;height: 150px;">
+        <img class="w-75 img_radioue align-middle" src="{{this.currentStudent.PhotoUrl}}" />
+      </div>
+    
+      {{this.currentStudent.StudentName}}
+    </div> -->
+ 
     <ng-container *ngFor="let item of caseList">
-      <div class="card mb-3">
-        <div class="card-body row">
-          <div class="col-md-2 mb-3 mb-md-0">
-            <img class="w-100"
-                 src="{{ item.PhotoUrl }}" />
-          </div>
-          <div class="col-md-10">
+      <div class="card mb-1" style="   border-radius: 10px;">
+        <div class="card-body row ">
+          <!-- <div class="text-center col-md-2 mb-3 mb-md-0 ">
+            <img class="w-50 img_radioue align-middle" src="{{ item.PhotoUrl }}" />
+          </div> -->
+          <div class="container-fluid ">
+            <!-- 第一行 -->
             <div class="row">
-              <div class="col-4 col-md-2 mb-3 font-weight-bold"></div>
-              <div class="col-8 col-md-4 mb-3"></div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">
-              </div>
-              <div class="col-8 col-md-4 mb-3">
-                <ng-container *ngIf="item.IsClosed ==='否'">
-                  <button class="btn btn-info"
-                          data-toggle="modal"
-                          data-backdrop="static"
-                          (click)="addInterviewModal(item)"
-                          [disabled]="item.isEditDisable">
-                    <i class="material-icons">add</i> 新增
-                  </button>
-                </ng-container>
-              </div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">個案編號</div>
-              <div class="col-8 col-md-4 mb-3">{{ item.CaseNo }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">個案來源</div>
-              <div class="col-8 col-md-4 mb-3">{{ item.CaseSource }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">個案日期</div>
-              <div class="col-8 col-md-4 mb-3">
+       
+            </div>
+            <!-- 第一行 -->
+            <div class="row mt-3" >
+              <div class="col-3 col-md-1 mb-3 font_weight">個案編號：</div>
+              <div class="col-9 col-md-2 mb-3">{{ item.CaseNo  }}</div>
+              <div class="col-3 col-md-1 mb-3 font_weight">個案來源：</div>
+              <div class="col-9 col-md-2 mb-3">{{ item.CaseSource }}</div>
+
+
+            </div>
+            <!-- 第二行 -->
+            <div class="row ">
+              <div class="col-3 col-md-1 mb-3 font_weight">個案日期：</div>
+              <div class="col-9 col-md-2 mb-3">
                 {{ item.OccurDate | date: "yyyy/MM/dd" }}
               </div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">班導師</div>
-              <div class="col-8 col-md-4 mb-3">{{ item.TeacherName }}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">學生身分</div>
-              <div class="col-8 col-md-4 mb-3">{{ item.StudentIdentity }}</div>
+              <div class="col-4 col-md-1 mb-3 font_weight">班導師：</div>
+              <div class="col-8 col-md-2 mb-3">{{ item.TeacherName }}</div>
 
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">是否結案</div>
-              <div class="col-8 col-md-4 mb-3">{{item.IsClosed}}</div>
-              <div class="col-4 col-md-2 mb-3 font-weight-bold">結案日期</div>
-              <div class="col-8 col-md-4 mb-3"> {{ item.CloseDate | date: "yyyy/MM/dd" }}</div>
             </div>
+            <div class="row ">
+              <div class="col-4 col-md-1 mb-3 font_weight">學生身分：</div>
+              <div class="col-8 col-md-2 mb-3">{{ item.StudentIdentity }}</div>
+
+              <div class="col-4 col-md-1 mb-3 font_weight">是否結案：</div>
+              <div class="col-8 col-md-2 mb-3">{{item.IsClosed}}</div>
+            </div>
+
+            <div class="row " >
+              <div class="col-4 col-md-1  font_weight">結案日期：</div>
+              <div class="col-8 col-md-2 "> {{ item.CloseDate | date: "yyyy/MM/dd" }}</div>
+             <div class="col-8 col-md-9" >
+               <ng-container *ngIf="item.IsClosed ==='否'">
+                  <button class="btn btn-info btn_bul_rad float-right " [ngClass]="item.isEditDisable?'btn_white_rad':'btn_bul_rad'"  data-toggle="modal" data-backdrop="static"
+                    (click)="addInterviewModal(item)" [disabled]="item.isEditDisable">
+                    <b><i class="material-icons  ">add</i> 新增
+                    </b> </button>
+                </ng-container>
+             </div> 
+            </div>
+         
+          
+            <!-- <hr *ngIf="caseViewInfoList.length>0">
+{{caseViewInfoList.length}} -->
+
+
+            <ng-container *ngFor="let caseView of caseViewInfoList">
+              <ng-container *ngIf="caseView.CaseID === item.UID">
+                <ng-container *ngFor="let semInfo of caseView.SemesterInfoList">
+
+                  <hr  class="float-left" style ="width:100%" >
+                  <div class="font-weight-bold mb-2 ml-1 ">
+                    <div class="float-left mb-2">
+                      <span class="align-middle"> 
+                        <h5>
+                          {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
+                       </h5> 
+                      </span>
+                    </div>
+                  </div>
+             
+            
+                  <ul class="rwd-table">
+                    <li class="thead">
+                      <ol class="tr">
+                        <li style="width: 10%">晤談日期</li>
+                        <li style="width: 10%">晤談對象</li>
+                        <li style="width: 10%">晤談方式</li>
+                        <li style="width: 10%">記錄者</li>
+                        <li style="width: 40%">內容說明</li>
+                        <li style="width: 20%"></li>
+                      </ol>
+                    </li>
+
+                    <li class="tbody point" *ngFor="let casseitem of caseView.CaseInterviewList">
+                      <ng-container *ngIf="casseitem.SchoolYear === semInfo.SchoolYear &&
+    semInfo.Semester === casseitem.Semester">
+                        <ol class="tr" data-toggle="modal">
+                          <li data-title="日期" (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date:
+                            "yyyy/MM/dd" }}</li>
+                          <li class="text-normal" data-title="對象" (click)="viewInterviewModal(casseitem)">
+                            {{ casseitem.ContactName }}
+                          </li>
+                          <li class="text-normal" data-title="方式" (click)="viewInterviewModal(casseitem)">
+                            {{ casseitem.CounselType }}
+                          </li>
+                          <li data-title="記錄者" (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
+                          <li data-title="內容說明" title="{{casseitem.Content}}" (click)="viewInterviewModal(casseitem)">
+                            <div style="width:100%;position: relative;">
+                              <div
+                                style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                                class="text-left">
+                                {{ casseitem.Content }}
+                              </div>
+                            </div>
+                          </li>
+                          <li data-title="">
+                            <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
+                              <!-- <button class="btn btn-sm  btn-light btn_white_rad"
+                          data-toggle="modal"
+                          (click)="editInterviewModal(casseitem)"
+                          [disabled]="casseitem.isEditDisable">
+                    修改
+                  </button> -->
+                              <!-- <button class="btn btn-sm btn-danger btn_red_rad"
+                          data-toggle="modal"
+                          style="margin-left: 10px"
+                          (click)="deleteInterviewModal(casseitem)"
+                          [disabled]="isDeleteButtonDisable">
+                    刪除
+                
+                  </button> -->
+
+                              <mat-icon aria-hidden="false" aria-label="Example home icon"
+                              [ngClass] ="casseitem.isEditDisable ? 'word_gray':'word_blue'"
+                             (click)="editInterviewModal(casseitem)">
+                                mode_edit
+                              </mat-icon>
+                              <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
+                                style="color: #ff5050; cursor:pointer ;" (click)="deleteInterviewModal(casseitem)">
+                                <!-- 處理disable 部分 -->
+                                delete_forever
+                              </mat-icon>
+
+                            </ng-container>
+                          </li>
+                        </ol>
+                      </ng-container>
+                    </li>
+                  </ul>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+
           </div>
         </div>
       </div>
-      <ng-container *ngFor="let caseView of caseViewInfoList">
-        <ng-container *ngIf="caseView.CaseID === item.UID">
-          <ng-container *ngFor="let semInfo of caseView.SemesterInfoList">
-            <div class="font-weight-bold mb-2">
-              {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
-            </div>
-            <ul class="rwd-table">
-              <li class="thead">
-                <ol class="tr">
-                  <li style="width: 10%">晤談日期</li>
-                  <li style="width: 10%">晤談對象</li>
-                  <li style="width: 10%">晤談方式</li>
-                  <li style="width: 10%">記錄者</li>
-                  <li style="width: 40%">內容說明</li>
-                  <li style="width: 20%"></li>
-                </ol>
-              </li>
 
-              <li class="tbody point"
-                  *ngFor="let casseitem of caseView.CaseInterviewList">
-                <ng-container *ngIf="casseitem.SchoolYear === semInfo.SchoolYear &&
-          semInfo.Semester === casseitem.Semester">
-                  <ol class="tr"
-                      data-toggle="modal">
-                    <li data-title="日期"
-                        (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date: "yyyy/MM/dd" }}</li>
-                    <li class="text-normal"
-                        data-title="對象"
-                        (click)="viewInterviewModal(casseitem)">
-                      {{ casseitem.ContactName }}
-                    </li>
-                    <li class="text-normal"
-                        data-title="方式"
-                        (click)="viewInterviewModal(casseitem)">
-                      {{ casseitem.CounselType }}
-                    </li>
-                    <li data-title="記錄者"
-                        (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
-                    <li data-title="內容說明"
-                        title="{{casseitem.Content}}"
-                        (click)="viewInterviewModal(casseitem)">
-                      <div style="width:100%;position: relative;">
-                        <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                             class="text-left">
-                          {{ casseitem.Content }}
-                        </div>
-                      </div>
-                    </li>
-                    <li data-title="">
-                      <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
-                        <button class="btn btn-light"
-                                data-toggle="modal"
-                                (click)="editInterviewModal(casseitem)"
-                                [disabled]="casseitem.isEditDisable">
-                          修改
-                        </button>
-                        <button class="btn btn-danger"
-                                data-toggle="modal"
-                                style="margin-left: 10px"
-                                (click)="deleteInterviewModal(casseitem)"
-                                [disabled]="isDeleteButtonDisable">
-                          刪除
-                        </button>
-                      </ng-container>
-                    </li>
-                  </ol>
-                </ng-container>
-              </li>
-            </ul>
-          </ng-container>
-        </ng-container>
-      </ng-container>
-      <br /><br /><br />
+      <br />
     </ng-container>
   </div>
 </div>
@@ -139,10 +189,9 @@
 <app-view-case-interview-modal #viewCaseInterview></app-view-case-interview-modal>
 <app-del-case-interview-modal #delCaseInterview></app-del-case-interview-modal>
 
-<ng-template #tmpLoading
-             class="container">
-  <div class="row justify-content-center"
-       style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>
+</div>

@@ -186,7 +186,7 @@ export class CounselInterview {
         answer_checked: false
       },
       {
-        answer_text: "心理疾病",
+        answer_text: "精神疾患",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,

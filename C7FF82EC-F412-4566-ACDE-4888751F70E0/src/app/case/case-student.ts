@@ -23,7 +23,8 @@ export class CaseStudent {
   SpecialCategory: string; // 特殊生類別
   HasDisabledBook: string; // 是否領有身心障礙手冊
   DeviantBehavior: string; // 偏差行為
-  ProblemCategory: string; // 個案類別
+  ProblemCategory: string; // 個案類別(副) 
+  ProblemMainCategory:string ; // 個案類別(主) 20210503 新增
   ProbleDescription: string; // 問題描述
   SpecialSituation: string; // 特殊狀況
   EvaluationResult: string; // 評估結果
@@ -52,7 +53,8 @@ export class CaseStudent {
   selectCaseTeacers: SelectCaseTeacher[];
 
   deviant_behavior: QOption[]; // 偏差行為
-  problem_category: QOption[]; // 	個案類別
+  problem_category: QOption[]; // 	個案類別 (副)
+  problem_main_category:QOption[];  // 個案類別(主) 根據月報表規則修改 就資料指向下相容副類別
   proble_description: QOption[]; //	問題描述
   special_situation: QOption[]; //	特殊狀況
   evaluation_result: QOption[]; //	評估結果
@@ -75,23 +77,32 @@ export class CaseStudent {
   isDisplay: boolean = false;
   isDeviantBehaviorHasValue: boolean = false;
   isProblemCategoryHasValue: boolean = false;
+  isProblemMainCategoryHasValue: boolean = false;
   isProbleDescriptionHasValue: boolean = false;
   isEvaluationResultHasValue: boolean = false;
 
   // 當透過轉介建立才會在值，儲存輔導紀錄 uid
   RefCounselInterviewID: string = "";
 
+  //偏差行為
   caseQuestionTemplate: CaseQuestionTemplate = new CaseQuestionTemplate();
   // 使用預設題目項目樣版
   public useQuestionOptionTemplate() {
-    this.loadDeviantBehaviorTemplate();
-    this.loadEvaluationResultTemplate();
-    this.loadProbleDescriptionTemplate();
-    this.loadProblemCategoryTemplate();
-    this.loadSpecialSituationTemplate();
+    this.loadDeviantBehaviorTemplate();   // 1. 取得 偏差行為之樣板
+    this.loadEvaluationResultTemplate();  // 2. 取得 【評估結果】之選項
+    this.loadProbleDescriptionTemplate(); // 3. 【問題描述】的選項
+    this.loadProblemCategoryTemplate();   // 4. 取得 【個案類別(副)】
+    this.loadProblemMainCategoryTemplate(); // 5 取得 【個案類別(主)】
+    this.loadSpecialSituationTemplate();  // 6. 取得 【特殊狀況】
   }
 
-  // 設定個案輔導層級
+  /** 清空個案類別(主類別) T :點選個案類別(主)時 */
+  clearAllProblemMainCategory(item:QOption){
+    this.problem_main_category.forEach( x=>{x.answer_checked = false});
+    item.answer_checked = true;
+  }
+
+  /** 設定個案輔導層級 */ 
   SetCaseLevel(level: string) {
     this.isCaseLevel1Checked = false;
     this.isCaseLevel2Checked = false;
@@ -116,6 +127,7 @@ export class CaseStudent {
     return ta.join(',');
   }
 
+  /**偏差行為 */
   public loadDeviantBehaviorTemplate() {
     this.deviant_behavior = []; // 偏差行為
     let deviant_behaviorT = this.caseQuestionTemplate.getDeviantBehavior();
@@ -134,6 +146,7 @@ export class CaseStudent {
     }
   }
 
+  /** 取得個案類別 */
   public loadProblemCategoryTemplate() {
     let num: number = 1;
     this.problem_category = []; // 	個案類別
@@ -152,6 +165,43 @@ export class CaseStudent {
       this.problem_category.push(qo);
     }
   }
+
+
+
+ 
+
+
+
+/**取得個案類別 (主) */
+public loadProblemMainCategoryTemplate()
+{
+  console.log("個案類別(主) 載入.....");
+  let num: number = 1;
+  this.problem_main_category = []; // 	個案類別
+  let problem_categoryT = this.caseQuestionTemplate.getProblemCategory();
+// debugger 
+   console.log("個案類別...",problem_categoryT)
+  for (let item of problem_categoryT) {
+    let qo: QOption = new QOption();
+    qo.answer_code = `problem_category${num}`;
+    qo.answer_martix = [];
+    qo.answer_text = item.answer_text;
+    qo.answer_checked = item.answer_checked;
+    qo.answer_complete = item.answer_complete;
+    qo.answer_value = item.answer_value;
+
+    num += 1;
+    this.problem_main_category.push(qo);
+  }
+
+
+  console.log("裝好了 ",  this.problem_main_category)
+
+}
+
+
+
+  /** 問題描述 */
   public loadProbleDescriptionTemplate() {
     this.proble_description = []; //	問題描述
     let proble_descriptionT = this.caseQuestionTemplate.getProbleDescription();
@@ -169,6 +219,7 @@ export class CaseStudent {
       this.proble_description.push(qo);
     }
   }
+  /** 特殊狀況 */
   public loadSpecialSituationTemplate() {
     this.special_situation = []; //	特殊狀況
     let special_situationT = this.caseQuestionTemplate.getSpecialSituation();
@@ -220,7 +271,7 @@ export class CaseStudent {
     return value;
   }
 
-  // 將問答結果字串轉成 list
+  /** 將問答結果字串轉成 list*/
   public LoadQuestionOptionStringToList() {
     if (this.DeviantBehavior) {
       this.deviant_behavior = this.parseQuestioOptionToArray(
@@ -230,12 +281,25 @@ export class CaseStudent {
       this.loadDeviantBehaviorTemplate();
     }
     if (this.ProblemCategory) {
+      
       this.problem_category = this.parseQuestioOptionToArray(
         this.ProblemCategory
       );
+
     } else {
       this.loadProblemCategoryTemplate();
     }
+
+    //新增個案類別(主) 
+    if(this.ProblemMainCategory)
+    {
+      this.problem_main_category = this.parseQuestioOptionToArray(
+        this.ProblemMainCategory 
+      );
+    }else{
+      this.loadProblemMainCategoryTemplate();
+    }
+   
 
     this.isProbleDescriptionHasValue = false;
     if (this.ProbleDescription) {
@@ -290,8 +354,21 @@ export class CaseStudent {
         value.push(item.answer_value);
       }
     }
-    return value.join(",");
+    return value.join("、");
   }
+
+  /**讀取個案類別主類別 */
+  public getProblemMainCategoryCheckedValue() {
+    let value = [];
+    for (const item of this.problem_main_category) {
+      if (item.answer_checked) {
+        value.push(item.answer_value);
+      }
+    }
+    return value.join("、");
+  }
+
+
 
   // 讀取 問題描述 有勾選值
   public getProbleDescriptionCheckedValue() {
@@ -351,7 +428,9 @@ export class CaseStudent {
     }
   }
 
+  /** 處理UI 檢查是否可以按下使用*/ 
   checkValue() {
+   // debugger
     if (this.OccurDate) {
       this.isOccurDateHasValue = true;
     } else {
@@ -396,12 +475,20 @@ export class CaseStudent {
       }
     }
 
-    // 	個案類別
+    // 個案類別(主)
+    for (const cc of this.problem_main_category) {
+      if (cc.answer_checked) {
+        this.isProblemMainCategoryHasValue = true;
+      }
+    }
+
+    // 個案類別(副)
     for (const cc of this.problem_category) {
       if (cc.answer_checked) {
         this.isProblemCategoryHasValue = true;
       }
     }
+
     //	評估結果
     for (const cc of this.evaluation_result) {
       if (cc.answer_checked) {
@@ -421,8 +508,9 @@ export class CaseStudent {
       // this.isCaseNoHasValue &&
       this.isGuidanceTeacherHasValue &&
       this.isCaseSourceHasValue &&
-      this.isDeviantBehaviorHasValue &&
-      this.isProblemCategoryHasValue &&
+      // this.isDeviantBehaviorHasValue && 20210510 依據需求改為非必填
+      // this.isProblemCategoryHasValue && 20210513 副類別改為非必填
+      this.isProblemMainCategoryHasValue &&
       this.isProbleDescriptionHasValue &&
       this.isEvaluationResultHasValue &&
       this.isCaseLevelHasValue &&

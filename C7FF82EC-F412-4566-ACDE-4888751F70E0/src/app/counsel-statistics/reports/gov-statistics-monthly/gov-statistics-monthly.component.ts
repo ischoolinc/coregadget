@@ -149,7 +149,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.TeacherID = rspRec.TeacherID;
       rec.TeacherNickName = rspRec.TeacherNickName;
       rec.OccurDate = rspRec.OccurDate;
-      rec.Category = rspRec.Category;
+      rec.Category = rspRec.SecondCategory;
+      rec.CaseMainCategory = rspRec.CaseMainCategory;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
@@ -157,14 +158,26 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
       rec.CLevel = rspRec.CLevel;
-      if (rspRec.Category != "") {
-        let Category = JSON.parse(rspRec.Category);
+      // 處理多個項目
+      if (rspRec.SecondCategory != "") {
+        let Category = JSON.parse(rspRec.SecondCategory);
         Category.forEach(proRec => {
           if (proRec.answer_checked) {
             rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
           }
         });
+      
+      }
 
+     // 處理主類別
+      if( rspRec.CaseMainCategory!="")
+      {
+      let CaseMainCatagory =JSON.parse(rspRec.CaseMainCategory) ;
+       CaseMainCatagory.forEach(proRec => {
+        if(proRec.answer_checked){
+          rec.MainCategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+     }
+   });
       }
 
       data.push(rec);
@@ -192,6 +205,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.CLevel = rspRec.CLevel;
         map.set(key, rec);
       }
+
 
 
       if (rspRec.StudentGender === '男') {
@@ -228,10 +242,11 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           '教師編碼': tno,
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
-          '個案類別': da.CategoryValue.join(','),
+          '個案類別(主)' : da.MainCategoryValue.join(','),
+          '個案類別(副)': da.CategoryValue.join(','),
           '新案舊案': da.Status,
-          '晤談次數': da.Count,
-          '其他服務次數': 0
+          '晤談次數': da.Count
+          // '其他服務次數': 0
         };
         data1.push(item);
       })
@@ -251,14 +266,26 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         data2_d.push(item);
       })
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+    
+   
+      var ws = XLSX.utils.json_to_sheet([
+        { A: "          輔導教師工作成果(當月個案填報)" }
+      ] , {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+  
+      // 合併儲存格
+      ws["!merges"] =[{s:{c:0, r:0}, e:{c:6, r:0}}] ;
+      var wscols = [
+        { hpx:18}
+       ]; // 設定第一版 
+    
+      ws['!rows'] = wscols;
+      XLSX.utils.sheet_add_json (ws,data1,  { skipHeader: false,origin: {r:1,c:0}});// 寫入資料 從第二列開始
       const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+    
       XLSX.utils.book_append_sheet(wb, ws, "1.當月個案");
       XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
-
-
     } else {
       alert("沒有資料");
     }
@@ -284,10 +311,12 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       case '學習困擾': value = 12; break;
       case '生涯輔導': value = 13; break;
       case '偏差行為': value = 14; break;
-      case '網路成癮': value = 15; break;
+      case '網路沉迷': value = 15; break; 
+      case '網路成癮': value = 15; break; // 舊用詞向下相容
       case '中離(輟)拒學': value = 16; break;
       case '藥物濫用': value = 17; break;
-      case '心理疾病': value = 18; break;
+      case '精神疾患': value = 18; break;
+      case '心理疾病': value = 18; break; // 舊用詞 向下相容
       case '其他': value = 19; break;
     }
     return value;
@@ -311,10 +340,10 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         case '學習困擾': value = 'T12'; break;
         case '生涯輔導': value = 'T13'; break;
         case '偏差行為': value = 'T14'; break;
-        case '網路成癮': value = 'T15'; break;
+        case '網路成迷': value = 'T15'; break;
         case '中離(輟)拒學': value = 'T16'; break;
         case '藥物濫用': value = 'T17'; break;
-        case '心理疾病': value = 'T18'; break;
+        case '精神疾患': value = 'T18'; break;
         case '其他': value = 'T19'; break;
       }
       return value;

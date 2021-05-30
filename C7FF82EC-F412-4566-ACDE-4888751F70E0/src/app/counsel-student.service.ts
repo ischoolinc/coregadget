@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { DsaService } from './dsa.service';
 
@@ -9,6 +10,8 @@ export class CounselStudentService {
   public studentMap: Map<string, CounselStudent>;
   public classMap = new Map<string, CounselClass>();
   public counselClass: CounselClass[];
+  public counselClassByGrade : Map<string,CounselClass> =new Map();
+
   public teacherInfo: TeacherInfo = new TeacherInfo();
 
   public getCounselClass(targetRole: string) {

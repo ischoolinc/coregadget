@@ -6,6 +6,7 @@ import { DsaService } from "../dsa.service";
 import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.component";
 import { GlobalService } from "../global.service";
 import { DelCaseModalComponent } from "./del-case-modal/del-case-modal.component"
+import { asLiteral } from "@angular/compiler/src/render3/view/util";
 
 @Component({
   selector: "app-case",
@@ -122,6 +123,9 @@ export class CaseComponent implements OnInit {
   // 刪除
   delCaseModal(caseStudent: CaseStudent) {
 
+    if(this.isDeleteButtonDisable){ // 如果不能編輯
+      return ;
+    }
     this.del_case_modal._CaseStudent = caseStudent;
     $("#delCaseModal").modal("show");
     // 關閉畫面
@@ -238,6 +242,7 @@ export class CaseComponent implements OnInit {
         Request: {}
       });
 
+      console.log("458.",resp.Case );
       [].concat(resp.Case || []).forEach(caseRec => {
         // 建立認輔資料
         let rec: CaseStudent = new CaseStudent();
@@ -261,6 +266,7 @@ export class CaseComponent implements OnInit {
         rec.HasDisabledBook = caseRec.HasDisabledBook;
         rec.DeviantBehavior = caseRec.DeviantBehavior;
         rec.ProblemCategory = caseRec.ProblemCategory;
+        rec.ProblemMainCategory = caseRec.ProblemMainCategory ;
         rec.ProbleDescription = caseRec.ProbleDescription;
         rec.SpecialSituation = caseRec.SpecialSituation;
         rec.EvaluationResult = caseRec.EvaluationResult;
@@ -290,6 +296,7 @@ export class CaseComponent implements OnInit {
 
         data.push(rec);
       });
+      console.log("data....",data);
       this.caseList = data;
 
       // 放入可選班級
@@ -307,7 +314,7 @@ export class CaseComponent implements OnInit {
     this.isLoading = false;
   }
 
-  // 取得個案輔導老師
+  /** 取得個案老師 */
   async GetCaseTeacher() {
     try {
       let data: CaseTeacher[] = [];
@@ -329,5 +336,57 @@ export class CaseComponent implements OnInit {
     } catch (err) {
       alert("取得個案認輔老師失敗(GetCaseTeacher):" + err.dsaError.message);
     }
+  }
+
+
+
+
+ /** 依照 (sourTarget)  排序 */
+  sortBy(sortTarget:string){
+  alert ('@@')
+    if(sortTarget=="class"){
+      this.caseList.sort((item1,item2)=>{
+        // console.log("item1.ClassID ? item2.ClassID",item1.ClassName +"?"+ item2.ClassName)
+      
+        if ( item1.ClassName < item2.ClassName ){
+          // console.log("item1.ClassID < item2.ClassID",item1.ClassName +"?"+ item2.ClassName)
+          return -1;
+        }
+        if (item1.ClassName > item2.ClassName ){
+          // console.log("item1.ClassID > item2.ClassID",item1.ClassName +"?"+ item2.ClassName)
+          return 1;
+        }
+        return 0;
+      
+      })
+      
+    }else if(sortTarget=='caseType'){
+      this.caseList.sort((item1,item2)=>{
+        if ( item1.ProblemMainCategory < item2.ProblemMainCategory ){
+          return -1;
+        }
+        if (item1.ProblemMainCategory > item2.ProblemMainCategory ){
+          return 1;
+        }
+        return 0;
+      
+      }
+      
+      )
+    }else if(sortTarget =='teacher'){
+      this.caseList.sort((item1,item2)=>{
+        if ( item1.GetTeacherNames() < item2.GetTeacherNames() ){
+      
+          return -1;
+        }
+        if (item1.GetTeacherNames() > item2.GetTeacherNames() ){
+      
+          return 1;
+        }
+        return 0;
+      }      )
+
+    }
+    console.log("sort result ", this.caseList)
   }
 }

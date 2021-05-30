@@ -18,7 +18,7 @@ import { SemesterScoreDetailComponent } from './semester-score-detail/semester-s
 import { SharedModule } from '../shared/shared.module';
 import { RenderModule } from '../render';
 import { SetCounselInterviewPrintItemComponent } from './set-counsel-interview-print-item/set-counsel-interview-print-item.component';
-
+import {MatIconModule} from '@angular/material/icon';
 @NgModule({
   declarations: [
     CounselDetailComponent,
@@ -42,6 +42,7 @@ import { SetCounselInterviewPrintItemComponent } from './set-counsel-interview-p
     RouterModule,
     SharedModule,
     RenderModule,
+    MatIconModule
   ],
   exports: [
     CounselDetailComponent,

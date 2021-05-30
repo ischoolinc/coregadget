@@ -10,6 +10,8 @@ import {
   SemesterInfo
 } from "../../counsel-student.service";
 import { QOption } from "../case-question-data-modal";
+import { asLiteral } from "@angular/compiler/src/render3/view/util";
+import { conforms } from "lodash";
 
 @Component({
   selector: "app-new-case-modal",
@@ -28,21 +30,34 @@ export class NewCaseModalComponent implements OnInit {
   editModeString: string = "新增";
   public caseStudent: CaseStudent;
 
-  // 認輔老師
+  /**用詞修正對應 "舊的用詞˙":"'新的用詞'" */
+  updateCataTerms : Map<string,string>;
+
+  /**認輔老師*/
   selectCaseTeachersValue: string = "請選擇認輔老師";
-  // 班級
+  /**所選年級 */
+  selectGradeValue: string ="請選擇年級";
+  /**所選班級 */
   selectClassNameValue: string;
-  // 座號
+  /**所選座號 */
   selectSeatNoValue: string;
-  // 姓名
+  /**所選學生姓名 */
   selectStudentName: string;
-  // 結案人員
+  /**所選教師姓名*/
   closedTeacherName: string;
   selectCaseSourceValue: string;
+  /**班級 */
   canSelectClassList: CounselClass[];
-  canSelectNoList: CounselStudent[];
-  canSelectCaseSourceList: string[];
+  /** 可選班級By年級分類 */
+  canSelectClassByMap: Map<string,CounselClass[]> =new Map ();
+  /** 顯示可選年級 */
+  canSelectGradeYear:string [] =[];
 
+  canSelectNoList: CounselStudent[];
+  /** 個案來源[選項] */
+  canSelectCaseSourceList: string[];
+  photoShowBig: boolean = false ;  // 需求來源:學校覺得照片太大有隱私問題 => 預設照片為小size 點擊照片可以變大 (toogle)  
+  photoIsShow :boolean = true ;
   // 輔導老師清單
   CounselTeacherList: CounselTeacher[];
 
@@ -59,12 +74,9 @@ export class NewCaseModalComponent implements OnInit {
     this.selectCaseTeachersValue = "請選擇認輔老師";
     this.selectCaseSourceValue = "請選擇個案來源";
     this.canSelectCaseSourceList = [];
-    this.canSelectCaseSourceList.push("導師轉介");
-    this.canSelectCaseSourceList.push("主動求助");
-    this.canSelectCaseSourceList.push("親友代為求助");
-    this.canSelectCaseSourceList.push("輔導教師主動發現");
-    this.canSelectCaseSourceList.push("其他處室轉介");
-    this.canSelectCaseSourceList.push("其他");
+    this.loadCaseSource(); //載入個案來源
+    this.loadUpdateCataTerm();//載入有修正
+
 
     await this.GetDefault();
 
@@ -82,13 +94,39 @@ export class NewCaseModalComponent implements OnInit {
     }
   }
 
+  /** 修正分類用詞 2021/05 因月報表格式有修改 */
+  loadUpdateCataTerm(){ 
+    this.updateCataTerms = new Map();
+    this.updateCataTerms.set('心理疾病','精神疾患');
+    this.updateCataTerms.set('網路成癮','網路沉迷');
+   // this.updateCataTerms = [{oldTerm:['心理疾病'] ,newTerm :'精神疾患'},{oldTerm:["網路成癮"],newTerm :'網路沉迷'}] ;
+  }
+
+  /** 【畫面 初始化】載入 預設個案來源 供選擇*/
+  loadCaseSource(){
+     const caseSource =["導師轉介","主動求助","親友代為求助","輔導教師主動發現","其他處室轉介","其他"]
+     caseSource.forEach(sourceeName =>{
+     this.canSelectCaseSourceList.push(sourceeName);
+     });
+  }
+
   setCaseSource(item: string) {
     this.selectCaseSourceValue = item;
     this.caseStudent.CaseSource = item;
     this.caseStudent.checkValue();
   }
 
-  // 設定班級名稱
+  /** 選擇年級 */
+  selectGrade( grade:string){
+    this.selectGradeValue =grade;
+    this.selectClassNameValue ="請選擇班級";
+    this.selectSeatNoValue = "請選擇座號";
+    this.canSelectClassList = this.canSelectClassByMap.get(grade);
+  }
+
+
+
+  /** 選擇班級名稱 */ 
   setClassName(item: CounselClass) {
     $("#newCase").modal("handleUpdate");
     this.selectClassNameValue = item.ClassName;
@@ -111,15 +149,20 @@ export class NewCaseModalComponent implements OnInit {
 
   //設定座號
   setSeatNo(item: CounselStudent) {
+    console.log("ssssss",item)
     this.selectSeatNoValue = item.SeatNo;
     this.selectStudentName = item.StudentName;
     // this.caseStudent = new CaseStudent();
+    this.caseStudent.ClassName =item.ClassName;
     this.caseStudent.Name = item.StudentName;
     this.caseStudent.PhotoUrl = item.PhotoUrl;
     this.caseStudent.SeatNo = item.SeatNo;
     this.caseStudent.Gender = item.Gender;
     this.caseStudent.StudentID = item.StudentID;
     this.caseStudent.StudentIdentity = item.Status;
+
+
+    console.log("ssssss",  this.caseStudent);
     this.counselStudentService.counselClass.forEach(clas => {
       if (clas.ClassName === item.ClassName) {
         this.caseStudent.TeacherName = clas.HRTeacherName;
@@ -166,12 +209,30 @@ export class NewCaseModalComponent implements OnInit {
     this.setCaseSource('導師轉介');
   }
 
-  checkChange(qq, item: CaseStudent) {
+  /** 點選項目 */
+  checkChange(qq:QOption  , item: CaseStudent,title = null,target =null) {
 
-    if (qq.value == "") {
-      item.isProbleDescriptionHasValue = false;
-    } else {
-      item.isProbleDescriptionHasValue = true;
+    if(title =="個案類別(副)"){
+      if(this.updateCataTerms.has(qq.answer_text)){
+        // 處理替換
+        if(confirm("「"+ qq.answer_text + "」 已更改為 「"+this.updateCataTerms.get(qq.answer_text)+"」， \n 是否變更用詞 ?"))
+        {
+          qq.answer_text  = this.updateCataTerms.get(qq.answer_text) ;
+          qq.answer_value = this.updateCataTerms.get(qq.answer_text) ;
+        }
+      }
+    }
+  
+    // 這段不知道要做甚麼
+    // console.log("qq",qq)
+    if(title =="問題描述")
+    {
+      if (target.value=="") 
+      {
+        item.isProbleDescriptionHasValue = false;
+      } else {
+        item.isProbleDescriptionHasValue = true;
+      }
     }
     item.checkValue();
   }
@@ -211,6 +272,7 @@ export class NewCaseModalComponent implements OnInit {
 
   async save() {
     this.isCancel = false;
+    // alert("儲存!")
 
     // 經過討論不檢查個案編號
 
@@ -363,8 +425,21 @@ export class NewCaseModalComponent implements OnInit {
       this.counselStudentService.counselClass.forEach(data => {
         if (data.Role.indexOf("輔導老師") > -1) {
           this.canSelectClassList.push(data);
+          console.log("data",data)
+          // 依年級 放入 Map
+          if(!this.canSelectClassByMap.has(data.GradeYear)){
+            console.log("dat22",data)
+            // 1 .如果沒有就放入
+            this.canSelectClassByMap.set(data.GradeYear,[]);
+            this.canSelectGradeYear.push(data.GradeYear); 
+          }
+            // 2.  
+            this.canSelectClassByMap.get(data.GradeYear).push(data);
         }
+       
       });
+
+  
     } catch (err) {
       alert("GetCounselTeacherRole error:" + err.dsaError.message);
     }
@@ -392,6 +467,7 @@ export class NewCaseModalComponent implements OnInit {
 
   }
 
+  /** 把 answer_martix 塞 */
   parseCaseOptions(data: QOption[]) {
     for (let da of data) {
       if (da.answer_martix.length > 0) {
@@ -420,11 +496,13 @@ export class NewCaseModalComponent implements OnInit {
     data.proble_description = this.parseCaseOptions(data.proble_description);
     data.special_situation = this.parseCaseOptions(data.special_situation);
     data.evaluation_result = this.parseCaseOptions(data.evaluation_result);
+    data.problem_main_category=this.parseCaseOptions(data.problem_main_category);
     data.DeviantBehavior = JSON.stringify(data.deviant_behavior);
     data.ProblemCategory = JSON.stringify(data.problem_category);
     data.ProbleDescription = JSON.stringify(data.proble_description);
     data.SpecialSituation = JSON.stringify(data.special_situation);
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
+    data.ProblemMainCategory =JSON.stringify(data.problem_main_category);
     data.CloseDescription = "";
 
     // 當沒有輔導 uid 寫入 null
@@ -461,6 +539,7 @@ export class NewCaseModalComponent implements OnInit {
       HasDisabledBook: data.HasDisabledBook,
       DeviantBehavior: data.DeviantBehavior,
       ProblemCategory: data.ProblemCategory,
+      ProblemMainCategory :data.ProblemMainCategory,
       ProbleDescription: data.ProbleDescription,
       SpecialSituation: data.SpecialSituation,
       EvaluationResult: data.EvaluationResult,
@@ -492,6 +571,7 @@ export class NewCaseModalComponent implements OnInit {
     }
     data.DeviantBehavior = JSON.stringify(data.deviant_behavior);
     data.ProblemCategory = JSON.stringify(data.problem_category);
+    data.ProblemMainCategory = JSON.stringify(data.problem_main_category);
     data.ProbleDescription = JSON.stringify(data.proble_description);
     data.SpecialSituation = JSON.stringify(data.special_situation);
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
@@ -522,6 +602,7 @@ export class NewCaseModalComponent implements OnInit {
         CloseDescription: data.CloseDescription,
         DeviantBehavior: data.DeviantBehavior,
         ProblemCategory: data.ProblemCategory,
+        ProblemMainCategory: data.ProblemMainCategory,
         ProbleDescription: data.ProbleDescription,
         SpecialSituation: data.SpecialSituation,
         EvaluationResult: data.EvaluationResult,
@@ -529,7 +610,7 @@ export class NewCaseModalComponent implements OnInit {
         CaseTeacher: reqCaseTeacher
       };
 
-      //  console.log(req);
+       console.log('REQUEST',req);
       try {
         let resp = await this.dsaService.send("UpdateCase", {
           Request: req

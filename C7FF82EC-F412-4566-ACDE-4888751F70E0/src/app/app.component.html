@@ -1,6 +1,8 @@
 <router-outlet name="simple-page"></router-outlet>
 <div id="appcomponent"
-     class="container-fluid cbs d-flex justify-content-between flex-column">
+     class="container-fluid cbs d-flex justify-content-between flex-column"
+     style="padding-top: 0px;"
+     >
   <div id="index"
        page>
     <nav aria-label="breadcrumb text-nowrap text-truncate">
@@ -18,16 +20,27 @@
              [attr.data-toggle]="roleService.enableCounsel?'tab':null"
              (click)="!roleService.enableCounsel || routeTo('/counsel')"
              [ngClass]="{'active': currentComponent == 'counsel', 'disabled': !roleService.enableCounsel}">
-            {{counselStudentStr}}</a>
+            <b>{{counselStudentStr}} </b></a>
+        </li>
+      </ng-container>
+      <!-- 增加管理頁簽 -->
+      <ng-container *ngIf=" false">
+        <li class="nav-item">
+          <a class="nav-link"
+             [attr.data-toggle]="roleService.enableCounsel?'tab':null"
+             (click)="!roleService.enableCounsel || routeTo('/work_service')"
+             [ngClass]="{'active': currentComponent == 'work_service', 'disabled': !roleService.enableCounsel}">
+            <b>工作管理 </b></a>
         </li>
       </ng-container>
       <ng-container *ngIf="counsel_statisticsVisable === true">
         <li class="nav-item">
-          <a class="nav-link" 
+         <a class="nav-link" 
              [attr.data-toggle]="roleService.enableCounselStatistics?'tab':null"
              (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
              [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">
-            輔導統計</a>
+             <b> 輔導統計 </b></a>
+         
         </li>
       </ng-container>
       <ng-container *ngIf="referralVisable === true">
@@ -36,7 +49,7 @@
              [attr.data-toggle]="roleService.enableReferral?'tab':null"
              (click)="!roleService.enableReferral || routeTo('/referral')"
              [ngClass]="{'active': currentComponent == 'referral', 'disabled': !roleService.enableReferral}">
-            轉介學生
+             <b>   轉介學生</b>
             <span class="d-none badge badge-pill badge-danger">1</span>
           </a>
         </li>
@@ -47,7 +60,7 @@
              [attr.data-toggle]="globalService.enableCase?'tab':null"
              (click)="!globalService.enableCase || routeTo('/case')"
              [ngClass]="{'active': currentComponent == 'case', 'disabled': !globalService.enableCase}">
-            個案資料</a>
+             <b>   個案資料 </b></a>
         </li>
       </ng-container>
 
@@ -64,17 +77,17 @@
              [attr.data-toggle]="roleService.enableComprehensive?'tab':null"
              (click)="!roleService.enableComprehensive || routeTo('/comprehensive')"
              [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
-            {{comprehensiveStr}}</a>
+             <b>   {{comprehensiveStr}}</b></a>
         </li>
       </ng-container>
 
       <ng-container *ngIf="psychologicalTestVisable === true">
-        <li class="nav-item">
+        <li class="nav-item " >
           <a class="nav-link"
              [attr.data-toggle]="roleService.enableCase?'tab':null"
              (click)="!roleService.enablePsychologicalTest || routeTo('/psychological_test')"
              [ngClass]="{'active': currentComponent == 'psychological-test', 'disabled': !roleService.enablePsychologicalTest}">
-            心理測驗</a>
+             <b>  心理測驗</b></a>
         </li>
       </ng-container>
       <ng-container *ngIf="adminVisable === true">
@@ -83,9 +96,22 @@
              [attr.data-toggle]="roleService.enableAdmin?'tab':null"
              (click)="!roleService.enableAdmin || routeTo('/admin')"
              [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
-            系統管理</a>
+             <b> 系統管理</b></a>
         </li>
       </ng-container>
+
+
+
+<!-- todo -->
+      <!-- <ng-container *ngIf="adminVisable === true">
+        <li class="nav-item">
+          <a class="nav-link"
+             [attr.data-toggle]="roleService.enableAdmin?'tab':null"
+             (click)="!roleService.enableAdmin || routeTo('/admin')"
+             [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
+            <b> 工作管理</b></a>
+        </li>
+      </ng-container> -->
     </ul>
     <router-outlet></router-outlet>
   </div>

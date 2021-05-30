@@ -12,7 +12,7 @@
       <div class="modal-header">
         <h5 class="modal-title"
             id="addInterviewLabel">
-          {{ editModeString }}輔導紀錄 - {{ _studentName }}
+          {{ editModeString }}輔導紀錄 kk- {{ _studentName }}
         </h5>
         <button type="button"
                 class="close"
@@ -92,7 +92,11 @@
                    (click)="_CounselInterview.setCounselType('聯絡簿')">聯絡簿</a>
                 <a class="dropdown-item"
                    (click)="_CounselInterview.setCounselType('個別約談家長')">個別約談家長</a>
-                <a class="dropdown-item"
+                   <a class="dropdown-item"
+                   (click)="_CounselInterview.setCounselType('會議')">會議</a>
+                   <a class="dropdown-item"
+                   (click)="_CounselInterview.setCounselType('E-mail')">E-mail</a>
+                   <a class="dropdown-item"
                    (click)="_CounselInterview.setCounselType('其他')">其他</a>
               </div>
             </div>

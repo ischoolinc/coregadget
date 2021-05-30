@@ -8,10 +8,10 @@
    letter-spacing: 1.3px;
    font-weight: bold;
    cursor: pointer;
-   color :#869923
+   color :#94d0cc
 }
 .IsChecked{
-    color :#869923;
+    color :#94d0cc;
     font-weight: bold;
    
 }
@@ -77,14 +77,14 @@ right: 0;
 
 
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    background-color: #869923 !important;
+    background-color: #94d0cc !important;
 }
 
 
 
 
 .mat-form-field.mat-focused .mat-form-field-ripple{
-    background: #869923;
+    background: #94d0cc;
 }
 /* loading的spinner */
 .mat-progress-spinner circle, .mat-spinner circle {

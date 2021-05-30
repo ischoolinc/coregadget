@@ -2,8 +2,10 @@
   <!-- 學生個人 - 輔導紀錄 -->
   <div class="tab-pane fade-in"
        id="listOne">
-    <div class="d-md-flex align-items-center sub-title mb-3">
-      <h4 class="mb-0 mr-auto">輔導紀錄</h4>
+    <div class="d-md-flex align-items-center sub-title base-class-header ">
+      <h4 class="mb-0 mr-auto">
+     <b>輔導紀錄</b>   
+      </h4>
       <div class="d-flex mb-3 mb-md-0">
         <div class="dropdown">
           <!-- <button aria-expanded="false"
@@ -31,7 +33,7 @@
           </div>
         </div>
         <!-- 新增-輔導 -->
-        <button class="btn btn-info"
+        <button class="btn btn-info btn_bul_rad"
                 (click)="addInterviewModal()">
           <i class="material-icons">add</i> 新增
         </button>
@@ -42,7 +44,7 @@
     </ng-container>
     <ng-container *ngFor="let semInfo of _semesterInfo">
       <div class="font-weight-bold mb-2">
-        {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
+     <b>{{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期</b>   
       </div>
       <ul class="rwd-table">
         <li class="thead">
@@ -103,19 +105,32 @@
               </ng-container>
 
               <li data-title="">
-                <button class="btn btn-light"
+
+
+                <mat-icon aria-hidden="false" aria-label="Example home icon"
+                style="color:  #4d94ff; cursor:pointer " (click)="editInterviewModal(counselRec)">
+                mode_edit
+              </mat-icon>
+              <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
+                style="color: #ff5050; cursor:pointer ;" (click)="delInterviewModal(counselRec)">
+                <!-- 處理disable 部分 -->
+                delete_forever
+              </mat-icon>
+
+
+                <!-- <button class="btn btn-light"
                         data-toggle="modal"
                         (click)="editInterviewModal(counselRec)"
                         [disabled]="counselRec.isEditDisable">
                   修改
                 </button>
-                <button class="btn btn-danger"
+                <button class="btn btn-danger btn_red_rad"
                         data-toggle="modal"
                         style="margin-left: 10px"
                         (click)="delInterviewModal(counselRec)"
                         [disabled]="isDeleteButtonDisable">
                   刪除
-                </button>
+                </button> -->
               </li>
             </ol>
           </ng-container>

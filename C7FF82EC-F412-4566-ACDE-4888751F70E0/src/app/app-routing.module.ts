@@ -30,7 +30,8 @@ import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setu
 import { CounselHistoryComponent } from './simple-page/print/counsel-history/counsel-history.component';
 import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-doc2-bat/counsel-doc2-bat.component';
 import { CounselInterviewDocComponent } from './simple-page/print/counsel-interview-doc/counsel-interview-doc.component';
-
+import { MatIconModule } from '@angular/material/icon';
+import { WorkServiceComponent } from './work-service/work-service.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -47,12 +48,18 @@ const routes: Routes = [
       }
     ]
   },
+  // 增加工作報表
+  {
+    path: "work_service", component: WorkServiceComponent
+
+  },
   {
     path: "counsel_statistics", component: CounselStatisticsComponent
 
   },
-  { 
-    path: "counsel_doc2/:classID/:printDocumentID/:title", component: CounselDoc2BatComponent },
+  {
+    path: "counsel_doc2/:classID/:printDocumentID/:title", component: CounselDoc2BatComponent
+  },
 
   { path: "referral", loadChildren: './referral/referral.module#ReferralModule' },
   { path: "case", component: CaseComponent },
@@ -94,7 +101,7 @@ const routes: Routes = [
       { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
       { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent },
       { path: "print/counsel_history/:studentID", component: CounselHistoryComponent },
-      { path: "print/counsel-interview-doc/:param", component:CounselInterviewDocComponent},
+      { path: "print/counsel-interview-doc/:param", component: CounselInterviewDocComponent },
       { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
       { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
     ]
@@ -102,7 +109,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true, anchorScrolling: 'enabled' })],
+  imports: [RouterModule.forRoot(routes, { useHash: true, anchorScrolling: 'enabled' })
+    , MatIconModule
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

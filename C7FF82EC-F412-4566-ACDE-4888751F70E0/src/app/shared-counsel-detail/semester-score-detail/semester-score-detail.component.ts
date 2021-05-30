@@ -118,9 +118,16 @@ export class SemesterScoreDetailComponent implements OnInit {
           this.selectSchoolYearSemester = this.semesterList[0];
       }
 
-      this.parseScoreSH();
+      try
+      {
+        this.parseScoreSH();
+
+      }catch(err){
+
+     
+      }
     } catch (err) {
-      alert('無法取得高中學期成績：' + err.dsaError.message);
+      alert('無法取得高中學期成績：' + err.dsaError);
     }
   }
 
@@ -131,7 +138,7 @@ export class SemesterScoreDetailComponent implements OnInit {
 
     this.semesterScoreSource.forEach(semsScore => {
       if (semsScore.EntryScore) {
-        semsScore.EntryScore.forEach(entryScore => {
+        [].concat(semsScore.EntryScore||[]).forEach(entryScore => {
           // 學期分項成績
           if (this.selectSchoolYearSemester.SchoolYear == entryScore.school_year && this.selectSchoolYearSemester.Semester == entryScore.semester) {
             if (entryScore.學業成績)

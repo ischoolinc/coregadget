@@ -2,7 +2,10 @@
 export class CaseMonthlyStatistics {
     constructor() { }
     OccurDate: string;
+    /**個案類別(副) */
     Category: string;
+    /** 個案類別(主) */
+    CaseMainCategory:string ;
     StudentID: string;
     TeacherName: string;
     GradeYear: string;
@@ -10,6 +13,7 @@ export class CaseMonthlyStatistics {
     Status: string; // 新或舊
     Count: number = 0;
     CategoryValue: any[] = [];
+    MainCategoryValue :any[] =[];
     OtherCount: number = 0; // 其他服務
     OtherDetailCount: CaseMonthlyItemCount[] = [];
     CLevel: string; // 一級或二級輔導

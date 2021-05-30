@@ -43,6 +43,10 @@ export class CounselListComponent implements OnInit {
         this.getList();
       }
     );
+
+
+    console.log("mod",this.mod);
+    console.log("target",this.target)
   }
 
   async getList() {

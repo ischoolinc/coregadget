@@ -5,7 +5,9 @@
     <div *ngIf="!roleService.isLoading && globalService.enableCase"
          class="tab-pane fade show active">
 
-      <div class="d-flex">
+      <div class="d-flex justify-content-between">
+        <div class="d-flex">
+     
         <div class="dropdown">
           <button class="btn btn-light dropdown-toggle"
                   type="button"
@@ -37,33 +39,87 @@
                (click)="SetSelectItemClass(item)">{{ item }}</a>
           </div>
         </div>
-        <button class="btn btn-info ml-auto"
-                data-toggle="modal"
-                data-backdrop="static"
-                data-target="#newCase"
-                (click)="setNewCaseModal()">
-          <i class="material-icons">add</i> 建立新個案
-        </button>
       </div>
+        <div class =" float-right">
+          <button class="btn  btn-info btn-deep "
+          data-toggle="modal"
+          data-backdrop="static"
+          data-target="#newCase"
+          (click)="setNewCaseModal()">
+    <i class="material-icons">add</i> 建立新個案
+         </button>
+        </div >
+      </div>
+
+
+<!-- table 部分 -->
+      
       <ul class="rwd-table">
-        <li class="thead">
-          <ol class="tr">
-            <li class="sticky-top">班級</li>
+        <li class="thead  ">
+          <ol class="tr ">
+            <li class="sticky-top align-bottom ">
+              <span >班級</span> 
+           <!-- <mat-icon (click) ="sortBy('class')" 
+              class = " cuser"  
+              style ="font-size: 18px ;color :gray;"
+              aria-hidden="false" aria-label="Example home icon">
+              arrow_drop_down
+          </mat-icon>
+   -->
+            <!-- <mat-icon (click) ="sortBy('class')" 
+                      class = " cuser"  
+                      style ="font-size: 18px  ;color :gray;"
+                      aria-hidden="false" aria-label="Example home icon">
+                      arrow_drop_up
+
+            </mat-icon>
+                   -->
+             
+            </li>
             <li class="sticky-top">座號</li>
             <li class="sticky-top">姓名</li>
             <li class="sticky-top">性別</li>
             <li class="sticky-top">學生身份</li>
+            <li class="sticky-top">個案日期</li>
             <li class="sticky-top">個案編號</li>
-            <li class="sticky-top">個案類別</li>
+            <li class="sticky-top">個案類別(主) 
+              <!-- <mat-icon (click) ="sortBy('caseType')" 
+              class = " cuser"  
+              style ="font-size: 18px ;color :gray;"
+              aria-hidden="false" aria-label="Example home icon">
+              arrow_drop_down
+             </mat-icon> -->
+            </li>
+            <li class="sticky-top">個案類別(副)</li>
             <li class="sticky-top"
-                style="white-space: pre-wrap;word-break: break-all;">負責老師</li>
+                style="white-space: pre-wrap;word-break: break-all;">負責老師
+                <!-- <mat-icon (click) ="sortBy('teacher')" 
+                class = " cuser"  
+                style ="font-size: 18px ;color :gray;"
+                aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_down
+  
+              </mat-icon>
+    
+              <mat-icon (click) ="sortBy('teacher')" 
+                        class = " cuser"  
+                        style ="font-size: 18px  ;color :gray;"
+                        aria-hidden="false" aria-label="Example home icon">
+                  arrow_drop_up
+  
+              </mat-icon> -->
+                        
+              
+              
+          </li>
             <li class="sticky-top">輔導次數</li>
             <li class="sticky-top">結案</li>
-            <li class="sticky-top"></li>
+            <li class="sticky-top">編輯   <span class="ml-3">刪除</span>  </li>
+        
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr"
+          <ol class="tr " 
               *ngFor="let item of caseList">
             <ng-container *ngIf="item.isDisplay === true">
               <li data-title="班級">{{ item.ClassName }}</li>
@@ -71,12 +127,18 @@
               <li data-title="姓名">{{ item.Name }}</li>
               <li data-title="性別">{{ item.Gender }}</li>
               <li data-title="學生身份">{{ item.StudentIdentity }}</li>
+              <li data-title="學生身份">{{ item.OccurDate }}</li>
               <li data-title="個案編號">{{ item.CaseNo }}</li>
-              <li class="text-left text-normal"
-                  data-title="個案類別"
+              <li class="text-left text-normal "
+                  data-title="個案類別(主)"
                   style="white-space: pre-wrap;word-break: break-all;">
-                {{ item.getProblemCategoryCheckedValue() }}
+                {{ item.getProblemMainCategoryCheckedValue() }}
               </li>
+              <li  class="text-left text-normal"
+              data-title="個案類別(副)"
+              style="overflow: hidden;">
+            {{ item.getProblemCategoryCheckedValue() }}
+          </li>
               <li data-title="認輔老師"
                   style="white-space: pre-wrap;word-break: break-all;">
                 {{ item.GetTeacherNames() }}
@@ -84,20 +146,38 @@
               <li data-title="輔導次數">{{ item.CaseCount }}</li>
               <li data-title="結案">{{item.GetClosedString()}}</li>
               <li data-title="">
-                <button class="btn btn-light"
+                <!-- <button class="btn btn-light"
                         data-toggle="modal"
                         data-backdrop="static"
                         data-target="#newCase"
                         (click)="setEditCaseModal(item)">
                   編輯
-                </button>
-                <button class="btn btn-danger"
-                        data-toggle="modal"
+               
+                </button> -->
+                <mat-icon aria-hidden="false" 
+                          aria-label="Example home icon" 
+                          style ="color:  #797dca; cursor:pointer " 
+                          (click)="setEditCaseModal(item)">mode_edit
+                </mat-icon>
+                <!-- <button class="btn btn-danger"
+                             data-toggle="modal"
                         style="margin-left: 10px"
                         (click)="delCaseModal(item)"
                         [disabled]="isDeleteButtonDisable">
                   刪除
-                </button>
+                </button> -->
+                              
+
+           
+                <mat-icon class="ml-4"
+                          aria-hidden="false" 
+                          aria-label="Example home icon" 
+                          [ngClass] ="isDeleteButtonDisable?'word_gray':'word_red'"
+                            
+                          (click)="delCaseModal(item)">
+                          delete_forever
+                </mat-icon>
+
               </li>
             </ng-container>
 
