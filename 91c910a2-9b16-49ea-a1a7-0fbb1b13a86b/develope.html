@@ -2,10 +2,15 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script>
+  <!-- <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script> -->
+  <script src="js/gadget.js"></script>
   <script>
     init({
       application: "dev.sh_d",
+      oAuth: {
+                clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+                clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+            },
       paramValues: {}
     });
   </script>
@@ -45,6 +50,20 @@
                   </tr>
                   </tbody>
               </table>
+              <!-- 增加學校網址 -->
+              <table class="table my-table2">
+                <tbody>
+                  <tr >
+                    <th>校園首頁網址</th>
+                    <td colspan="6" style="min-width: 557.091px;">
+                      <input class="input-xxlarge" type="text" id="edit-WebUrl" placeholder="請輸入校園首頁網址...">
+                    </td>
+                  </tr>
+                  
+                  </tbody>
+              </table>
+
+
               <table class="table my-table2">
                 <tbody>
                   <tr>

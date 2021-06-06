@@ -1,6 +1,8 @@
 var _gg = _gg || {};
 _gg.connection = gadget.getContract("ischool.CampusLite.staff");
+ _gg.connection2 =  gadget.getContract("1campus.mobile.v2.admin");
 _gg.schoolinfo = {};
+_gg.schoolVersion = {} ;
 
 jQuery(function () {
     $('#cancel').click(function() {
@@ -49,6 +51,8 @@ jQuery(function () {
             error.insertAfter(element);
         }
     });
+
+
 
     _gg.connection.send({
         service: "schoolInformation.GetSchoolInfo",
@@ -106,9 +110,38 @@ jQuery(function () {
                 }
             }
         }
-    });
+    },_gg.getWebURL() );
 
 });
+
+/**取得學校網址*/  
+_gg.getWebURL =function(){
+
+        //  取得學校網頁URL
+        _gg.connection2.send( 
+            { service: "_.GetSchoolVision",
+                body: '',
+              result: function (response, error, http) {
+                _gg.schoolVersion.OldWebURL ='';
+                _gg.schoolVersion.BannerURL ='' ;
+                _gg.schoolVersion.SchoolUrlUID = ''; 
+            if (error !== null) {
+                _gg.set_error_message('#mainMsg', 'GetSchoolVision', error);
+            } else {
+            if(response.Response)
+            {
+                //將後面可能用到的資料
+                _gg.schoolVersion.OldWebURL = response.Response.weburl||'' ;
+                _gg.schoolVersion.BannerURL = response.Response.bannerurl ||'' ;
+                _gg.schoolVersion.SchoolUrlUID = response.Response.uid||''; 
+                $('#edit-WebUrl').val(response.Response.weburl)
+            
+            }
+        }
+    }});
+}
+
+
 
 _gg.saveSchoolInfo = function() {
     var request = [];
@@ -182,9 +215,27 @@ _gg.saveSchoolInfo = function() {
                 };
             }
         }
-    });
+    },_gg.setWebUrl());
 
 };
+
+/**設定學校WebURL*/
+_gg.setWebUrl = function()
+{
+    _gg.connection2.send( 
+        { service: "_.SetSchoolVision",
+            body:  '<Request><UID>'+_gg.schoolVersion.SchoolUrlUID +'</UID><BannerUrl>'+_gg.schoolVersion.BannerURL+ '</BannerUrl><WebUrl>' + ($('#edit-WebUrl').val()||'')+ '</WebUrl></Request>',
+          result: function (response, error, http) {
+        if (error !== null) {
+            _gg.set_error_message('#mainMsg', 'SetSchoolVision', error);
+            $('#edit-WebUrl').val( _gg.schoolinfo.WebURL)//錯誤就將舊值填入
+        } else { 
+            if(response.successItem){ // 新增或修改成功
+                _gg.schoolVersion.SchoolUrlUID=response.successItem.uid || '' ; //成功新增後把UID記下
+             }
+    }
+}});
+}
 
 // TODO: 錯誤訊息
 _gg.set_error_message = function(select_str, serviceName, error) {
