@@ -1,4 +1,4 @@
-<div class="container-fluid cbs d-flex justify-content-between flex-column">
+<div class="container-fluid cbs d-flex justify-content-between flex-column" style ="padding-top :0px ;">
     <div id="index" class="h-100" page>
         <nav aria-label="breadcrumb text-nowrap text-truncate">
             <ol class="breadcrumb">
@@ -20,11 +20,20 @@
                             </a>
                         </div>
                     </div>
+<div>
+    <button type="button" class="btn   btn-primary  ml-3  " aria-haspopup="true" aria-expanded="false"
+    (click)="exportData('#ClassSemesterScoreTable')">
+    匯出
+</button>
+
+</div>
+                 
                     <div class="flex-fill ml-5 align-self-end">
                         <p class="text-start">成績輸入截止時間：{{deadline}}</p>
                     </div>
+
                 </div>
-                <table class="table table-bordered table-striped table-hover">
+                <table  id ="ClassSemesterScoreTable"class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <th>班級</th>

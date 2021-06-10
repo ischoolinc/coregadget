@@ -10,6 +10,9 @@ import * as moment from 'moment';
 })
 export class AppComponent implements OnInit {
 
+
+  currentSchoolYear:string ;
+  currentSemester:string;
   isLoading: boolean;
   contract: any;
 
@@ -52,6 +55,9 @@ export class AppComponent implements OnInit {
   async getMyCourse() {
     try {
       const rsp = await this.contract.send('GetMyCourse', {});
+      // 存取學年度學期
+      this.currentSchoolYear =rsp.SchoolYear||'';
+      this.currentSemester =rsp.Semester||'';
       this.courseList = [].concat(rsp.Courses || []);
       
       if (this.courseList.length > 0) {
@@ -164,6 +170,47 @@ export class AppComponent implements OnInit {
       return;
     }
   }
+
+  exportData(selector) {
+    var downloadLink;
+    var dataType = 'application/octet-stream';
+    var tableSelect = document.querySelector(selector);
+    var tableHTML = encodeURIComponent(`  <meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'/><style> table, td {border:1px solid #dee2e6;  text-align: center;} table {border-collapse:collapse}</style>`+
+    `特殊生課程總成績-${this.currentSchoolYear}學年度 第${this.currentSemester}學期 ${this.curCourse.name}` +
+    tableSelect.outerHTML
+    +` <br> 教師簽名: `);
+    
+    // Specify file name
+    var filename ='特殊生課程總成績'+'.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    
+    if(navigator.msSaveOrOpenBlob){
+      
+        var blob = new Blob([tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    } else {
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+  }
+
+
+
+
+
 }
 
 interface CourseRec {
