@@ -478,9 +478,12 @@ export class AppComponent implements OnInit {
     const result = await this.basicSrv.saveDailyLifeScore(body);
     if (result.Response.EffectRows) {
       // 重新取的學生成績資料
+      $('#saveSuccess').modal('show');
       this.scoreDataReload();
+      this.isLoading = false;  
     } else {
       console.log(result);
+      this.isLoading = false;  
     }
   }
 
