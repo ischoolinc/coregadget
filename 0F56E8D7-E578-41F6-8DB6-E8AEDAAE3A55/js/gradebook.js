@@ -89,6 +89,19 @@
             TextCatalog: '分類'
         };
 
+
+              // 目前物件
+              $scope.Previous = {
+                SelectMode: "Seq.",
+                SelectSeatNo: "",
+                Value: "",
+                Student: null,
+                Exam: null,
+                Course: null,
+                /**文字評量分類 */
+                TextCatalog: '分類'
+            };
+
         // 模式清單
         $scope.modeList = ['成績管理', '平時評量'];
         // 設定目前資料顯示模式：成績管理 or 平時評量
@@ -1250,11 +1263,15 @@
          * 設定目前學生、試別
          */
         $scope.setCurrent = function (student, exam, setCondition, setFocus) {
+            //處理顯示
+        
+            
             $scope.current.Exam = exam;
             $scope.current.Student = student;
             if(student[exam.ExamID]){
                 var val = student[exam.ExamID];
             }
+            $scope.setfacus();
 
             $scope.current.Value = (angular.isNumber(val) ? val : (val || ''));
             if (setCondition && student) {
@@ -1334,28 +1351,49 @@
             return pass;
         }
 
+        $scope.setfacus = function() {
+            $scope.studentList.forEach(x=>{
+           
+               x.IsCurrent = false ; 
+               x.CurrentExam    =  $scope.current.Exam.ExamID
+               if(x.StudentID ==   $scope.current.Student.StudentID)
+               {
+                 x.IsCurrent = true ;
+               }
+     
+                 });
+        }
+
+
+
+
         /**
           * 成績輸入
           * 1. 資料驗證
           * 2. 執行submitGrade
           */
         $scope.enterGrade = function (event) {
-            console.log("enter.....")
-            // 成績管理
-            if ($scope.current.mode == $scope.modeList[0]) {
-                if (event && (event.keyCode !== 13 || $scope.isMobile)) {
+         
+    
+            //
+            $scope.setfacus()
+     
 
-                    if(event.keyCode == 38)
-                    {
-                        $scope.goPrev();
+            if (event && (event.keyCode !== 13 || $scope.isMobile)) {
 
-                    }else if(event.keyCode == 40)
-                    {
-                        $scope.goNext();
-                        
-                    }
-                    return;
+                if(event.keyCode == 38)
+                {
+                    $scope.goPrev();
+
+                }else if(event.keyCode == 40)
+                {
+                    $scope.goNext();
+                    
                 }
+                return;
+            }
+            if ($scope.current.mode == $scope.modeList[0]) {
+             
                 var flag = false;
                 // 成績評量輸入
                 if ($scope.current.Exam.Type == 'Number' && $scope.current.Exam.SubName != '努力程度') {
@@ -2783,7 +2821,7 @@
             $('.pg-grade-textbox:visible').focus();
             $timeout(function () {
                 $('.pg-grade-textbox:visible').select();
-            }, 1);
+            }, 100);
         }
 
         $scope.goNext = function () {

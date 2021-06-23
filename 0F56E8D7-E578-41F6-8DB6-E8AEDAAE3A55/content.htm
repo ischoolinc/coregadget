@@ -11,7 +11,7 @@
         init({
             //application: "test.kh.edu.tw", 
             // "dev.jh_kh",//"test.kh.edu.tw",//
-             application: "1admin_debug", 
+             application: "test.kh.edu.tw", 
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
                 //"第一次期中考Round": "1",
@@ -23,8 +23,7 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                // account: 'bubu@debug.ischool.com.tw',
-                // password: '1234'//window.prompt('password:')
+         
             }
         });
     </script>
@@ -196,7 +195,7 @@
                 </a>
             </div>
         </div>
-        <div style="clear: both;"
+        <div style="clear: both;  margin-top: 8px"
              ng-if="current.mode !=='平時評量'">
             <span>{{current.Course.SchoolYear}}學年度 第{{current.Course.Semester}}學期 </span>
             開放時間：
@@ -205,9 +204,10 @@
                 {{current.Exam.InputStartTime || '未指定'}} ~ {{current.Exam.InputEndTime || '未指定'}}
             </span>
             <span ng-show="!current.Exam.InputStartTime && !current.Exam.InputEndTime">未開放</span>
+            <span  style=" float: right; width: auto; color :#D83A56" > 若缺考為0分者，請記得輸入0分</span>
         </div>
 
-        <div style="clear: both;"
+        <div style="clear: both;  margin-top: 8px"
              ng-if="current.mode ==='平時評量'">
             <span>{{current.Course.SchoolYear}}學年度 第{{current.Course.Semester}}學期 </span>
             開放時間：
@@ -216,6 +216,8 @@
                 {{current.Course.TemplateExtension.Extension.OrdinarilyStartTime || '未指定'}} ~ {{current.Course.TemplateExtension.Extension.OrdinarilyEndTime || '未指定'}}
             </span>
             <span ng-show="!current.Course.TemplateExtension.Extension.OrdinarilyStartTime && !current.Course.TemplateExtension.Extension.OrdinarilyEndTime">未開放</span>
+
+            <span  style=" float: right; width: auto; color :#D83A56" > 若缺考為0分者，請記得輸入0分</span>
         </div>
 
         <div class="hidden-xs"
@@ -292,10 +294,12 @@
                                 <td>目前學生</td>
                                 <td>
                                     <span ng-if="current.Student.ClassName">
-                                        {{current.Student.ClassName}}
+                                   {{current.Student.ClassName}}   
                                         <span ng-if="current.Student.SeatNo">({{current.Student.SeatNo}})</span>
                                     </span>
-                                    <span>{{current.Student.StudentName}}</span>
+                                    <span>
+                                    <b>{{current.Student.StudentName}}</b>    
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
@@ -410,7 +414,8 @@
                                                 </a>
                                             </span>
                                             <span class="input-group-btn">
-                                                <a ng-click="enterGrade()"
+                                                <a 
+                                                ng-click="enterGrade()"
                                                    class="btn btn-default">
                                                     送出
                                                 </a>
@@ -486,7 +491,7 @@
                                 <span ng-if="!exam.Group"
                                       style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
                                     {{exam.Name}} <span ng-if="exam.Percentage.length > 0"
-                                          class="text-red">({{exam.Percentage}})</span>
+                                          class="text-blue">({{exam.Percentage}})</span>
                                 </span>
                                 <span ng-if="exam.Name == '平時評量'"
                                       style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis; padding-left:5px;">
@@ -536,6 +541,7 @@
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center"
+                                ng-class="{'isCurrent':stuRec.IsCurrent&&stuRec.CurrentExam==exam.ExamID }" 
                                 style="position:relative;"
                                 ng-if="!exam.Group || exam.SubVisible"
                                 ng-click="setCurrent(stuRec, exam, true, true)">
@@ -606,7 +612,10 @@
                         <tr ng-repeat="student in studentList"
                             ng-class="{'warning':student.StudentID == current.Student.StudentID}"
                             style="cursor:pointer;">
-                            <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.ClassName}}</td>
+                            <td ng-click="setCurrent(student, current.Exam, true, true)">
+                                {{student.ClassName}}
+                              
+                            </td>
                             <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.SeatNumber}}</td>
                             <td ng-click="setCurrent(student, current.Exam, true, true)">{{student.StudentName}}</td>
                             <td class="text-center"
@@ -629,7 +638,9 @@
                                 </div>
                                 {{student['QuizResult_努力程度']}}
                             </td>
-                            <td ng-repeat="item in gradeItemList"
+                            <td 
+                                 ng-repeat="item in gradeItemList"
+                                 ng-class="{'isCurrent':student.IsCurrent&&student.CurrentExam==item.ExamID }" 
                                 class="text-center"
                                 style="position:relative;"
                                 ng-click="setCurrent(student, item, true, true)">
@@ -639,6 +650,7 @@
                                 </div>
                                 <span score-stress="{{student[item.ExamID]}}"
                                       data-score-type="{{current.Exam.Type}}"
+                                     
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
                                     {{student[item.ExamID]}}
                                 </span>
