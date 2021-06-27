@@ -14,7 +14,10 @@ export class CounselListComponent implements OnInit {
   public deny: boolean;
   public mod: string;
   public target: string;
+  /**顯示的list <可能有條件塞選>(view use) */ 
   public targetList: CounselStudent[];
+  /**來源<無條件塞選> */
+  public scrList: CounselStudent[];
   currentSchoolYear: number;
   currentSemester: number;
 
@@ -115,7 +118,8 @@ export class CounselListComponent implements OnInit {
 
           }
         });
-        this.targetList = this.counselStudentService.guidanceStudent;
+        this.targetList = this.counselStudentService.guidanceStudent; 
+        this.scrList = this.counselStudentService.guidanceStudent ;// 可以塞選
       }
 
       if (this.mod === "search") {
@@ -147,5 +151,21 @@ export class CounselListComponent implements OnInit {
       }
       setTimeout(this.getList, 100);
     }
+  }
+
+
+
+
+  /**依所選條件 選取*/
+  getListByCondition(){
+  
+  // 暫存起來後
+  let  temp  = Object.assign({},this.targetList);
+  // asign 給 要顯示的 targetList 
+  if(temp && temp.length>0){
+ 
+
+  }
+
   }
 }

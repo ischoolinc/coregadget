@@ -1,0 +1,7 @@
+.sp-control-input:checked ~ .custom-control-label::after {
+    color: #ff4081d6;
+}
+.font-weiht-hover:hover{
+font-weight: 550;
+
+}

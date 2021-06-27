@@ -23,6 +23,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   buttonDisable: boolean = true;
   dsnsName: string = "";
   schoolType;
+  schoolName ='';
 
   constructor(@Optional()
   private appComponent: AppComponent, private dsaService: DsaService, private http: HttpClient) { }
@@ -53,8 +54,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     }
   }
 
-  exportRepot(item) {
-
+  async exportRepot(item) {
+   //取得學校資訊 (學校名稱)
+   await this.getSchoolInfo();
     // 檢查年,月
     var selYear = Number(this.selectYear);
     var selMonth = Number(this.selectMonth);
@@ -115,8 +117,24 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       return value;
     }
   }
+// 
 
 
+  /**取得學校資訊 主要是取得學校名稱 */
+  async getSchoolInfo(){
+   let  rsp =  await this.dsaService.send("Statistics.GetSchoolInfo", {
+      Request: {
+     
+      }
+    });
+
+    if(rsp.result)
+    {
+      this.schoolName =rsp.result.school_name ;
+    }
+    console.log("schoolInfo", this.schoolName)
+
+  }
   // 輔導工作月統計報表-教育部版
   async GetCaseMonthlyStatistics1() {
 
@@ -266,10 +284,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         data2_d.push(item);
       })
       const wb = XLSX.utils.book_new();
-    
-   
       var ws = XLSX.utils.json_to_sheet([
-        { A: "          輔導教師工作成果(當月個案填報)" }
+        { A: `[${(this.selectYear-1911)}-${this.selectMonth}] ${this.schoolName} 輔導教師工作成果(當月個案填報)` }
       ] , {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
   
       // 合併儲存格
@@ -340,7 +356,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         case '學習困擾': value = 'T12'; break;
         case '生涯輔導': value = 'T13'; break;
         case '偏差行為': value = 'T14'; break;
-        case '網路成迷': value = 'T15'; break;
+        case '網路沉迷': value = 'T15'; break;
         case '中離(輟)拒學': value = 'T16'; break;
         case '藥物濫用': value = 'T17'; break;
         case '精神疾患': value = 'T18'; break;

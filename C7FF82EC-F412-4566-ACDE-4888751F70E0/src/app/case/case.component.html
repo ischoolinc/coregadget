@@ -57,57 +57,68 @@
       <ul class="rwd-table">
         <li class="thead  ">
           <ol class="tr ">
-            <li class="sticky-top align-bottom ">
-              <span >班級</span> 
-           <!-- <mat-icon (click) ="sortBy('class')" 
+            <li class="sticky-top ">
+            班級 
+           <mat-icon *ngIf="sortType=='Asc'||''" (click) ="sortByDesc('ClassName')" 
               class = " cuser"  
               style ="font-size: 18px ;color :gray;"
               aria-hidden="false" aria-label="Example home icon">
               arrow_drop_down
           </mat-icon>
-   -->
-            <!-- <mat-icon (click) ="sortBy('class')" 
+          
+            <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click) ="sortByAsc('ClassName')" 
                       class = " cuser"  
                       style ="font-size: 18px  ;color :gray;"
                       aria-hidden="false" aria-label="Example home icon">
                       arrow_drop_up
 
             </mat-icon>
-                   -->
+       
              
             </li>
             <li class="sticky-top">座號</li>
             <li class="sticky-top">姓名</li>
             <li class="sticky-top">性別</li>
             <li class="sticky-top">學生身份</li>
-            <li class="sticky-top">個案日期</li>
-            <li class="sticky-top">個案編號</li>
-            <li class="sticky-top">個案類別(主) 
-              <!-- <mat-icon (click) ="sortBy('caseType')" 
+            <li class="sticky-top "style ="width:auto">個案日期
+              <mat-icon *ngIf="sortType=='Asc'||''" (click) ="sortByDesc('OccurDate')" 
               class = " cuser"  
               style ="font-size: 18px ;color :gray;"
               aria-hidden="false" aria-label="Example home icon">
               arrow_drop_down
-             </mat-icon> -->
+          </mat-icon>
+          
+            <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click) ="sortByAsc('OccurDate')" 
+                      class = " cuser"  
+                      style ="font-size: 18px  ;color :gray;"
+                      aria-hidden="false" aria-label="Example home icon">
+                      arrow_drop_up
+
+            </mat-icon>
+
+            </li>
+            <li class="sticky-top">個案編號</li>
+            <li class="sticky-top">個案類別(主) 
+            
             </li>
             <li class="sticky-top">個案類別(副)</li>
             <li class="sticky-top"
-                style="white-space: pre-wrap;word-break: break-all;">負責老師
-                <!-- <mat-icon (click) ="sortBy('teacher')" 
+                style="" >負責老師
+                <mat-icon  *ngIf="sortType=='Asc'" (click) ="sortByDesc('CaseTeacherString')" 
                 class = " cuser"  
-                style ="font-size: 18px ;color :gray;"
+                style ="font-size: 16px ;color :gray;"
                 aria-hidden="false" aria-label="Example home icon">
                 arrow_drop_down
   
               </mat-icon>
     
-              <mat-icon (click) ="sortBy('teacher')" 
+              <mat-icon *ngIf="sortType=='Desc'||sortType==''"  (click) ="sortByAsc('CaseTeacherString')" 
                         class = " cuser"  
                         style ="font-size: 18px  ;color :gray;"
                         aria-hidden="false" aria-label="Example home icon">
                   arrow_drop_up
   
-              </mat-icon> -->
+              </mat-icon>
                         
               
               

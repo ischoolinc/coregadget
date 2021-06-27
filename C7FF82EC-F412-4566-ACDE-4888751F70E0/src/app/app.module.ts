@@ -84,6 +84,7 @@ import { CounselInterviewDocComponent } from './simple-page/print/counsel-interv
 import { CounselDoc2BaseComponent } from './counsel-statistics/reports/counsel-doc2-base/counsel-doc2-base.component';
 import { WorkServiceComponent } from './work-service/work-service.component';
 import { NewWorkModalComponent } from './work-service/new-work-modal/new-work-modal.component';
+import { ConditionModalComponent } from './counsel-statistics/reports/case-interview-report/condition-modal/condition-modal.component';
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { NewWorkModalComponent } from './work-service/new-work-modal/new-work-mo
     CounselInterviewDocComponent,
     CounselDoc2BaseComponent,
     WorkServiceComponent,
-    NewWorkModalComponent
+    NewWorkModalComponent,
+    ConditionModalComponent
   ],
   imports: [
     BrowserModule,

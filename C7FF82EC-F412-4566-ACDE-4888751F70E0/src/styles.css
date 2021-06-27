@@ -213,7 +213,7 @@ ul.rwd-table .thead li {
   .dropdown-menu{
     box-shadow: none  !important;
     border: 2px solid #00000024  !important;
-    border-radius: 3px !important;
+    border-radius: 5px !important;
 
   }
   .dropdown-menu::before{
@@ -271,4 +271,9 @@ ul.rwd-table .thead li {
     border: 1.5px solid #94d0cc !important;
     border-radius: 3px !important;
     box-shadow: none !important ;
+}
+
+.border-gray{
+border :2px solid #eee
+
 }

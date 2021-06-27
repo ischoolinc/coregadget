@@ -262,7 +262,7 @@ export class CaseInterview {
         answer_checked: false
       },
       {
-        answer_text: "網路成迷",
+        answer_text: "網路沉迷",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,

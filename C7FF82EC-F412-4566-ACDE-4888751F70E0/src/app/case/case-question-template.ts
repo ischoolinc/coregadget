@@ -143,7 +143,7 @@ export class CaseQuestionTemplate {
   }
 
   // 個案類別
-  public getProblemCategory() {
+  public getProblemCategory():IOptionInfo[] {
     let data = [
       {
         answer_text: "人際困擾",
@@ -244,7 +244,7 @@ export class CaseQuestionTemplate {
         answer_checked: false
       },
       {
-        answer_text: "網路成迷",
+        answer_text: "網路沉迷",
         answer_value: "",
         answer_martix: [],
         answer_complete: false,
@@ -431,3 +431,26 @@ export class CaseQuestionTemplate {
     return [].concat(data || []);
   }
 }
+
+/**選項得介面 */
+export interface IOptionInfo{
+  answer_text :string;
+  answer_value :string;
+  answer_martix :string[];
+  answer_complete;
+  answer_checked ;
+}
+
+export class OptionInfo implements IOptionInfo{
+  answer_text;
+  answer_value;
+  answer_martix;
+  answer_complete;
+  answer_checked ;
+}
+// /** 簡單的*/
+// export interface SimpOptionInfo{
+//   answer_text :string ;
+//   answer_checked :boolean ;
+
+// }

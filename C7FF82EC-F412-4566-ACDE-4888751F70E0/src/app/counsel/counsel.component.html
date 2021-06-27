@@ -24,6 +24,7 @@
                     style="min-width: 180px; ">
                   <h6 class="dropdown-header"
                       *ngIf="roleService.role.indexOf('班導師') >= 0">班導師</h6>
+                  
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('班導師')"
                      [routerLink]="['list', 'class', classRec.ClassID]"
                      [ngClass]="{ active: selectItem === classRec.ClassName }"

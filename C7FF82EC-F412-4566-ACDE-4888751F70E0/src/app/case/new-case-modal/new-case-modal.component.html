@@ -161,7 +161,7 @@
                       aria-expanded="false">
                 {{ selectCaseSourceValue }}
               </button>
-              <div class="dropdown-menu brad-5 "style=" border-radius:30px !important;  "
+              <div class="dropdown-menu brad-5 "
                    aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item cuser" 
                    (click)="setCaseSource(item)"
@@ -190,7 +190,7 @@
                      [id]="item.answer_code +'main'"
                      [checked]="item.answer_checked"
                      (click)="caseStudent.clearAllProblemMainCategory(item)"
-                     (change)="checkChange(item,caseStudent)" />
+                     (change)="checkChange(item,caseStudent,'個案類別(主)')" />
               <label class="custom-control-label cuser"
                      [for]="item.answer_code+'main'">
                      <!-- {{item.answer_checked}} -->

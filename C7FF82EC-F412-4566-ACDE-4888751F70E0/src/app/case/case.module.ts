@@ -7,7 +7,6 @@ import { DelCaseModalComponent } from './del-case-modal/del-case-modal.component
 import { RenderModule } from '../render';
 import {MatIconModule} from '@angular/material/icon';
 
-
 @NgModule({
   declarations: [
     CaseComponent,
@@ -18,7 +17,8 @@ import {MatIconModule} from '@angular/material/icon';
     CommonModule,
     SharedModule,
     RenderModule,
-    MatIconModule
+    MatIconModule,
+  
   ],
   exports: [
     NewCaseModalComponent,

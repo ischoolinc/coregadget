@@ -21,6 +21,8 @@ export class BaseInfoDetailComponent implements OnInit {
 
   async ngOnInit() {
     this.counselDetailComponent.setCurrentItem('base_info_detail');
+    debugger
+    console.log(' this.counselDetailComponent', this.counselDetailComponent.currentStudent)
     this.isLoading = true;
     // 取得學制
     await this.GetSchoolCoreInfo();
@@ -65,10 +67,11 @@ export class BaseInfoDetailComponent implements OnInit {
 
       let Data = [].concat(resp.Student || []);
       Data.forEach(item => {
-
+     
         let studInfo: StudentBaseInfo = new StudentBaseInfo();
         studInfo.StudentID = item.StudentID;
         studInfo.Name = item.Name;
+        studInfo.EnglishName = item.EnglishName;
         studInfo.Birthdate = item.Birthdate;
         studInfo.IDNumber = item.IDNumber;
         studInfo.StudentNumber = item.StudentNumber;
@@ -100,7 +103,10 @@ export class BaseInfoDetailComponent implements OnInit {
         studInfo.ThirdContactPhone = item.ThirdContactPhone;
         studInfo.ThirdContactMobile = item.ThirdContactMobile;
         studInfo.ThirdContactOffice = item.ThirdContactOffice;
-
+        //Email
+        studInfo.MotherEmail =  item.MotherEmail ;
+        studInfo.FatherEmail = item.FatherEmail ;
+        studInfo.GuardianEmail =item.GuardianEmail;
         // 緊急聯絡人
         studInfo.ContactName = item.ContactName;
         studInfo.ContactTitle = item.ContactTitle;

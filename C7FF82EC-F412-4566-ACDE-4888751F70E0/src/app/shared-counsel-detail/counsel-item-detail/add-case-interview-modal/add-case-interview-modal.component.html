@@ -100,7 +100,11 @@
                    (click)="_CaseInterview.setCounselType('個別約談家長')">個別約談家長</a>
                 <a class="dropdown-item"
                    (click)="_CaseInterview.setCounselType('其他')">其他</a>
-              </div>
+              <a class="dropdown-item"
+              (click)="_CaseInterview.setCounselType('E-mail')">E-mail</a>
+              <a class="dropdown-item"
+              (click)="_CaseInterview.setCounselType('其他')">其他</a>
+        </div>
             </div>
             <ng-container *ngIf="_CaseInterview.isCounselTypeOtherDisable === false">
               <input type="text"
@@ -215,6 +219,10 @@
                               [(ngModel)]="item.answer_martix"></app-sentence>
               </label>
             </div>
+
+
+          <p class ="mt-3"style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報表內，工作月統計報表之統計為個案上之個案類別。</p>
+
           </div>
         </div>
       </div>

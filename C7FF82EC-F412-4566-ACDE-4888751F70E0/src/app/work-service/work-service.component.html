@@ -1,0 +1,40 @@
+<p>
+  <!-- 輔導教師工作成果(相關服務填報) -->
+</p>
+<!--  -->
+<button class="btn  btn-info btn-deep float-right "
+          data-toggle="modal"
+          data-backdrop="static"
+          data-target="#newWork"
+          (click)="addNewWorkService()">
+    <i class="material-icons">add</i> 新增工作項目
+         </button>
+
+         <app-new-work-modal #work_modal></app-new-work-modal>
+
+        <br>
+
+
+         <div class="list-group nav-list w-25">
+          <ng-container *ngIf="true">
+            <a class="list-group-item list-group-item-action d-flex"
+               data-toggle="list"
+              >
+              相關服務
+            </a>
+          </ng-container>
+          <ng-container *ngIf="true">
+            <a class="list-group-item list-group-item-action d-flex"
+               data-toggle="list"
+              >
+              --
+            </a>
+          </ng-container>
+    
+          <div class="col-md-9">
+            <div class="tab-content">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+
+        </div>

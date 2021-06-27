@@ -154,6 +154,37 @@ export class ComprehensiveComponent implements OnInit {
             return;
           }
         }
+        // 檢查 學校年級 是否正確在(1-6範圍內)
+        let isNeedAdjustGrade = false ;
+        let adjusctGradeSapn ;
+        try{
+             let  showText ='校務系統年級非1-6年級 \n本作業會自動對應，對應如下: \n';
+             let rsp =   await this.dsaService.send("GetAllGradeYearAdjustInfo", {
+          });
+              let showTextlist= [].concat(rsp.Result||[]);
+              if(showTextlist.length>0) //如果有需要調整的年級
+              {
+                isNeedAdjustGrade =true ;
+                
+                showTextlist.forEach(item =>{
+                  adjusctGradeSapn =item.AdjustSpan ;
+                  showText += ` ${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
+    
+               });
+               if(!confirm(showText+'如對應有誤請點選"取消"， \n如正確請點選"確定"繼續執行!'))
+               {
+                return
+               }debugger
+    
+
+              }
+       
+        }catch(err)
+        {
+          alert('資料庫查詢發生錯誤!')
+        }
+   
+
         if (this.isSaving || this.isLoading) { return; }
         this.isSaving = true;
         this.progress = 0;
@@ -163,25 +194,43 @@ export class ComprehensiveComponent implements OnInit {
         let index = 0;
         for (const classRec of classList) {
 
-          if (!parseInt(classRec.GradeYear, 10) || parseInt(classRec.GradeYear, 10 ) > 6 ) { // 因為恩正設計 是 1-6年級 所以年級有誤時 會提醒使用者並不展開
-            alert(classRec.ClassName + " 年級有誤! 無法產生題目。");
-            continue;
-          }
+          // if (!parseInt(classRec.GradeYear, 10) || parseInt(classRec.GradeYear, 10 ) > 6 ) { // 因為恩正設計 是 1-6年級 所以年級有誤時 會提醒使用者並不展開
+          //   alert(classRec.ClassName + " 年級有誤! 無法產生題目。");
+          //   continue;
+          // }
+         
           this.currentClass = classRec.ClassName + " 題目展開中 ...";
-          console.log("GenerateFillInData" + JSON.stringify({
-            SchoolYear: this.schoolYear
-            , Semester: this.semester
-            , ClassID: classRec.ClassID
-          }));
-          try {
-            await this.dsaService.send("GenerateFillInData", {
-              SchoolYear: this.schoolYear
-              , Semester: this.semester
-              , ClassID: classRec.ClassID
-            });
-          } catch (err) {
-            console.log(err);
+          // console.log("GenerateFillInData" + JSON.stringify({
+          //   SchoolYear: this.schoolYear
+          //   , Semester: this.semester
+          //   , ClassID: classRec.ClassID
+          // }));
+          if(!isNeedAdjustGrade) //如果不需要調整對應
+          {
+            try {
+              await this.dsaService.send("GenerateFillInData", {
+                SchoolYear: this.schoolYear
+                , Semester: this.semester
+                , ClassID: classRec.ClassID
+              });
+              debugger
+            } catch (err) {
+              console.log(err);
+            }
+          }else{ //如需調整年級
+            try {
+              await this.dsaService.send("GenerateFillInDataForSpecificGrade", {
+                SchoolYear: this.schoolYear
+                , Semester: this.semester
+                , ClassID: classRec.ClassID
+                , AdjusctGradeSapn :adjusctGradeSapn
+              });
+              debugger
+            } catch (err) {
+              console.log(err);
+            }
           }
+        
           this.progress = Math.round((++index) * 100 / classList.length);
         }
         this.isSaving = false;

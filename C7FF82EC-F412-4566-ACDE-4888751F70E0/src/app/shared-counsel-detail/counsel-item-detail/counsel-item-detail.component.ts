@@ -219,6 +219,7 @@ export class CounselItemDetailComponent implements OnInit {
       rec.HasDisabledBook = caseRec.HasDisabledBook;
       rec.DeviantBehavior = caseRec.DeviantBehavior;
       rec.ProblemCategory = caseRec.ProblemCategory;
+      rec.ProblemMainCategory = caseRec.ProblemMainCategory;
       rec.ProbleDescription = caseRec.ProbleDescription;
       rec.SpecialSituation = caseRec.SpecialSituation;
       rec.EvaluationResult = caseRec.EvaluationResult;

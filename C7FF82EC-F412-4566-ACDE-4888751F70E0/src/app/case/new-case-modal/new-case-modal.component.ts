@@ -212,6 +212,17 @@ export class NewCaseModalComponent implements OnInit {
   /** 點選項目 */
   checkChange(qq:QOption  , item: CaseStudent,title = null,target =null) {
 
+    // if(title =="個案類別(主)"){
+    //   if(this.updateCataTerms.has(qq.answer_text)){
+    //     // 處理替換
+    //     if(confirm("「"+ qq.answer_text + "」 已更改為 「"+this.updateCataTerms.get(qq.answer_text)+"」， \n 是否變更用詞 ?"))
+    //     {
+    //       qq.answer_text  = this.updateCataTerms.get(qq.answer_text) ;
+    //       qq.answer_value = this.updateCataTerms.get(qq.answer_text) ;
+    //     }
+    //   }
+    // }
+
     if(title =="個案類別(副)"){
       if(this.updateCataTerms.has(qq.answer_text)){
         // 處理替換
@@ -289,6 +300,7 @@ export class NewCaseModalComponent implements OnInit {
       // 更新
       try {
         // 新增個案
+        console.log('888',this.caseStudent)
         await this.UpdateCase(this.caseStudent);
         $("#newCase").modal("hide");
         this.caseStudent.isSaveButtonDisable = false;
@@ -301,6 +313,7 @@ export class NewCaseModalComponent implements OnInit {
       this.caseStudent.isSaveButtonDisable = true;
       try {
         // 新增個案
+        console.log('999',this.caseStudent)
         await this.AddCase(this.caseStudent);
         $("#newCase").modal("hide");
         this.caseStudent.isSaveButtonDisable = false;
@@ -569,6 +582,7 @@ export class NewCaseModalComponent implements OnInit {
     if (!data.IsClosed) {
       data.IsClosed = "f";
     }
+    data.problem_main_category=this.parseCaseOptions(data.problem_main_category);//因為這欄位是後來加的
     data.DeviantBehavior = JSON.stringify(data.deviant_behavior);
     data.ProblemCategory = JSON.stringify(data.problem_category);
     data.ProblemMainCategory = JSON.stringify(data.problem_main_category);

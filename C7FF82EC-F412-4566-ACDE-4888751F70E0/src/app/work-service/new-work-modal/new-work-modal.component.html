@@ -1,0 +1,173 @@
+<div class="modal fade"
+     id="newWork"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby=""
+     aria-hidden="true">
+
+
+
+    <div class="modal-dialog modal-lg"
+    role="document">
+ <div class="modal-content">
+   <div class="modal-header" >
+     <h5 class="modal-title"
+         id="newCaseLabel">
+     <b> 建立工作項目 </b>  
+     </h5>
+
+     <button type="button"
+             class="close brad-5" style="border-radius: 5px  !important;"
+             data-dismiss="modal"
+             aria-label="Close">
+       <span aria-hidden="true">&times;</span>
+     </button>
+   </div>
+   
+   <div class="modal-body">
+   
+    <div class="form-group">
+      <label for="semester"
+             class="col-form-label p-0">
+        <span class="text-samll text-danger"  style="width:10px; height: 10px; display: inline-block; "
+            >
+             <ng-container *ngIf="true">*</ng-container> 
+            </span>
+       <b class ="question_title"> 服務項目 : </b> 
+      </label>
+   
+      <div class="d-flex flex-wrap ml-3">
+        <div class="custom-control custom-checkbox w-25 "
+             *ngFor="let item of ['團體輔導','入班輔導','家長諮詢','教師諮詢','個案會議','安心服務','家庭處遇','資源連結','系統會談','.學生諮詢','臨案協處','方案計畫','各項宣講','危機處理']">
+          <input type="checkbox"
+                 class="custom-control-input cuser"
+                 [id]="item"
+                 
+                 (click)="checkChange()"
+                 (change)="checkChange(item)" />
+          <label class="custom-control-label cuser"
+                 [for]="item.answer_code+'main'">
+                 {{item}}
+            <app-sentence [text]="item.answer_text"
+                          [(ngModel)]="item.answer_martix"></app-sentence>
+          </label>
+        </div>
+
+
+
+<!--  -->
+
+
+
+
+<!--  -->
+
+        
+      </div>
+    </div>
+<!-- 日期 -->
+<hr>
+<div class ="row">
+  <div class="form-group">
+  
+  <div class="dropdown " >
+        <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+      請選擇對象
+        </button>
+        <div class="dropdown-menu brad-5 "style=" border-radius:30px !important;  "
+             aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item cuser" 
+             (click)="setAccessObject()"
+             *ngFor="let item of accessObjects">{{ item }}</a>
+        </div>
+      </div>
+
+</div>
+
+<!-- 男生人數 -->
+<div class="form-group ml-3">
+  
+
+  <label class="custom-control-label cuser"
+  for="maleNum">
+ 
+  <b class ="question_title">服務人次(男) :</b>  
+
+  <app-sentence [text]=""
+ ></app-sentence>
+</label>
+
+<div class="custom-control    ">
+    <input type="number"
+        class=" form-control cuser"
+        id="maleNum"
+        (click)="checkChange()"
+        />
+
+     
+        
+      </div>
+      </div>
+
+
+
+<!-- 女生人數 -->
+<div class="form-group">
+  
+
+  <label class="custom-control-label cuser"
+  for="maleNum">
+ 
+  <b class ="question_title">服務人次(女) :</b>  
+
+  <app-sentence [text]=""
+ ></app-sentence>
+</label>
+
+<div class="custom-control   ">
+    <input type="number"
+        class=" form-control cuser"
+        id="maleNum"
+        (click)="checkChange()"
+        />
+
+     
+        
+      </div>
+      </div>
+
+
+<!--  -->
+
+    
+      <div class="form-group col-md-4">
+        <label for="OccurDate"
+               class="col-form-label">
+          <span class="text-samll text-danger"
+                *ngIf="">*</span>
+        <b>日期</b>  
+        </label>
+        <input type="date"
+               class="form-control"
+               id="OccurDate"
+               name="OccurDate"
+               placeholder="請輸入個案日期"
+               [(ngModel)]="currentWork.occurDate"
+               (keyup)="currentWork.checkValue()" />
+      </div>
+
+
+    </div>
+
+<!--  -->
+<br>
+     <b> <span class="input-group-text">內容描述 :</span></b>
+      <textarea class="form-control" aria-label="With textarea"></textarea>
+   </div>
+
+</div>

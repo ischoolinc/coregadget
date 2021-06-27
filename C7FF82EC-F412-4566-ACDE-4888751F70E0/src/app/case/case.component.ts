@@ -34,6 +34,8 @@ export class CaseComponent implements OnInit {
 
   // 個案認輔老師
   caseTeacherList: CaseTeacher[];
+
+  sortType ='';
   isLoading = false;
   constructor(
     public roleService: RoleService,
@@ -266,7 +268,9 @@ export class CaseComponent implements OnInit {
         rec.HasDisabledBook = caseRec.HasDisabledBook;
         rec.DeviantBehavior = caseRec.DeviantBehavior;
         rec.ProblemCategory = caseRec.ProblemCategory;
+        console.log('11', caseRec.ProblemMainCategory)
         rec.ProblemMainCategory = caseRec.ProblemMainCategory ;
+        console.log('22',rec.ProblemMainCategory)
         rec.ProbleDescription = caseRec.ProbleDescription;
         rec.SpecialSituation = caseRec.SpecialSituation;
         rec.EvaluationResult = caseRec.EvaluationResult;
@@ -342,51 +346,43 @@ export class CaseComponent implements OnInit {
 
 
  /** 依照 (sourTarget)  排序 */
-  sortBy(sortTarget:string){
-  alert ('@@')
-    if(sortTarget=="class"){
-      this.caseList.sort((item1,item2)=>{
-        // console.log("item1.ClassID ? item2.ClassID",item1.ClassName +"?"+ item2.ClassName)
+  sortByAsc(sortTarget:string){
+    this.sortType ='Asc' ;
+    this.caseList.sort((item1,item2)=>{
       
-        if ( item1.ClassName < item2.ClassName ){
-          // console.log("item1.ClassID < item2.ClassID",item1.ClassName +"?"+ item2.ClassName)
-          return -1;
-        }
-        if (item1.ClassName > item2.ClassName ){
-          // console.log("item1.ClassID > item2.ClassID",item1.ClassName +"?"+ item2.ClassName)
+      
+      if ( item1[sortTarget] < item2[sortTarget] ){
+        return -1;
+      }
+      if (item1[sortTarget]> item2[sortTarget] ){
+      
+        return 1;
+      }
+      return 0;
+    
+    })
+    
+
+  }
+
+
+
+  /** 小到大 */
+  sortByDesc(sortTarget:string){
+      this.sortType ='Desc' ;
+      this.caseList.sort((item1,item2)=>{
+      
+        if ( item1[sortTarget] < item2[sortTarget] ){
           return 1;
+        }
+        if (item1[sortTarget]> item2[sortTarget] ){
+        
+          return -1;
         }
         return 0;
       
       })
       
-    }else if(sortTarget=='caseType'){
-      this.caseList.sort((item1,item2)=>{
-        if ( item1.ProblemMainCategory < item2.ProblemMainCategory ){
-          return -1;
-        }
-        if (item1.ProblemMainCategory > item2.ProblemMainCategory ){
-          return 1;
-        }
-        return 0;
-      
-      }
-      
-      )
-    }else if(sortTarget =='teacher'){
-      this.caseList.sort((item1,item2)=>{
-        if ( item1.GetTeacherNames() < item2.GetTeacherNames() ){
-      
-          return -1;
-        }
-        if (item1.GetTeacherNames() > item2.GetTeacherNames() ){
-      
-          return 1;
-        }
-        return 0;
-      }      )
 
-    }
-    console.log("sort result ", this.caseList)
   }
 }

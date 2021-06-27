@@ -3,6 +3,7 @@ import * as node2json from 'nodexml';
 export class StudentBaseInfo {
     StudentID: string = "";
     Name: string = "";
+    EnglishName :string ="";
     Birthdate: string = "";
     IDNumber: string = "";
     StudentNumber: string = "";
@@ -56,6 +57,13 @@ export class StudentBaseInfo {
     CustodianRelationship: string = "";
     CustodianJob: string = "";
     CustodianPhone: string = "";
+    // Email 
+    MotherEmail : string ="" ;
+    FatherEmail  : string ="" ;
+    GuardianEmail : string ="";
+
+
+
 
     // 異動資料
     UpdateRecordList: UpdateRecordInfo[] = [];

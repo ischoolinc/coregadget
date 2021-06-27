@@ -17,28 +17,32 @@
       <div class="card mb-3">
         <div class="card-body row">
           <div class="col-md-2">
-            <img class="w-75 card-img-top rad-5"
+            <img class=" card-img-top rad-5" style ="width: 159px;"
                  src="{{ currentStudentBaseInfo.PhotoUrl }}" />
           </div>
           <div class="col-md-10">
             <div class="mt-2">
              <div class="row"> <!--第一行-->
-                <div class="col-4 col-md-1 mb-3 font_weight fontsize-18">姓名：</div>
+                <div class="col-4 col-md-3 mb-3 font_weight fontsize-18">姓名：</div>
                 <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Name }}</div>
-                <div class="col-4 col-md-2 mb-3 font_weight fontsize-18 ">身分證號：</div>
-                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.IDNumber }}</div>
+                <div class="col-4 col-md-3 mb-3 font_weight fontsize-18">英文姓名：</div>
+                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.EnglishName }}</div>
              </div>
              <div class="row">
-                <div class="col-4 col-md-1 mb-3 font_weight fontsize-18">性別：</div>
+              <div class="col-4 col-md-3 mb-3 font_weight fontsize-18 ">身分證號：</div>
+              <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.IDNumber }}</div>
+                <div class="col-4 col-md-3 mb-3 font_weight fontsize-18">性別：</div>
                 <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Gender }}</div>
-                <div class="col-4 col-md-2 mb-3 font_weight fontsize-18">生日：</div>
-                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Birthdate }}</div>
+                <!-- <div class="col-4 col-md-2 mb-3 font_weight fontsize-18">生日：</div>
+                <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Birthdate }}</div> -->
              </div>
 
  
           
             <div class="row">
-              <div class="col-4 col-md-1 mb-3 font_weight fontsize-18">學號：</div>
+              <div class="col-4 col-md-3 mb-3 font_weight fontsize-18">生日：</div>
+              <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.Birthdate }}</div>
+              <div class="col-4 col-md-3 mb-3 font_weight fontsize-18">學號：</div>
               <div class="col-8 col-md-3 mb-3">{{ currentStudentBaseInfo.StudentNumber }}</div>
             </div>
             </div>
@@ -121,7 +125,7 @@
       <div class="font_weight sm-title">
         聯絡資料
       </div>
-      <div class="card">
+      <div class="card mb-3">
         <table class="table table-sm table-bordered">
           <tbody>
             <tr>
@@ -182,7 +186,7 @@
 
       </div>
  
-      <div class="font_weight sm-title mb-2">
+      <div class="font_weight sm-title ">
         父、母、監護人資料
       </div>
       <div class="card mb-3">
@@ -194,19 +198,22 @@
                   width="10%"></td>
               <td class="text-left"
                   scope="col"
-                  width="20%"> 姓名</td>
+                  width="15%"> 姓名</td>
               <td class="text-left"
                   scope="col"
                   width="10%"> 稱謂</td>
               <td class="text-left"
                   scope="col"
-                  width="25%"> 電話</td>
+                  width="15%"> 電話</td>
               <td class="text-left"
                   scope="col"
                   width="15%"> 國籍</td>
               <td class="text-left"
                   scope="col"
-                  width="20%"> 職業</td>
+                  width="10%"> 職業</td>
+              <td class="text-left"
+                  scope="col"
+                  width="25%"> Email</td>
             </tr>
             <tr>
               <td class="text-left"
@@ -221,6 +228,8 @@
                   scope="col">{{currentStudentBaseInfo.FatherNationality}}</td>
               <td class="text-left"
                   scope="col">{{currentStudentBaseInfo.FatherJob}}</td>
+              <td class="text-left"
+              scope="col">{{currentStudentBaseInfo.FatherEmail}}</td>
             </tr>
             <tr>
               <td class="text-left"
@@ -235,6 +244,8 @@
                   scope="col">{{currentStudentBaseInfo.MotherNationality}}</td>
               <td class="text-left"
                   scope="col">{{currentStudentBaseInfo.MotherJob}}</td>
+                <td class="text-left"
+                scope="col">{{currentStudentBaseInfo.MotherEmail}}</td>
             </tr>
             <tr>
               <td class="text-left"
@@ -249,6 +260,8 @@
                   scope="col">{{currentStudentBaseInfo.CustodianNationality}}</td>
               <td class="text-left"
                   scope="col">{{currentStudentBaseInfo.CustodianJob}}</td>
+              <td class="text-left"
+              scope="col">{{currentStudentBaseInfo.GuardianEmail}}</td>
             </tr>
           </tbody>
         </table>
@@ -296,7 +309,7 @@
 
       </div>
    
-      <div class="font_weight mb-2">
+      <div class="font_weight sm-title">
         異動資料
       </div>
       <div class="card mb-3">

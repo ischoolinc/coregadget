@@ -38,6 +38,7 @@ export class CaseStudent {
   CaseCount: string; // 個案輔導次數
   PhotoUrl: string;
   CaseTeachers: CaseTeacher[];
+  CaseTeacherString : string ;
 
   // 個案輔導等級相關
   isCaseLevel1Checked: boolean = false;
@@ -124,6 +125,7 @@ export class CaseStudent {
     this.CaseTeachers.forEach(item => {
       ta.push(item.TeacherName);
     });
+    this.CaseTeacherString =ta.join(',');
     return ta.join(',');
   }
 
@@ -164,6 +166,8 @@ export class CaseStudent {
       num += 1;
       this.problem_category.push(qo);
     }
+
+    console.log('副類別..',  this.problem_category)
   }
 
 
@@ -179,11 +183,11 @@ public loadProblemMainCategoryTemplate()
   let num: number = 1;
   this.problem_main_category = []; // 	個案類別
   let problem_categoryT = this.caseQuestionTemplate.getProblemCategory();
-// debugger 
+debugger 
    console.log("個案類別...",problem_categoryT)
   for (let item of problem_categoryT) {
     let qo: QOption = new QOption();
-    qo.answer_code = `problem_category${num}`;
+    qo.answer_code = `problem_main_category${num}`;
     qo.answer_martix = [];
     qo.answer_text = item.answer_text;
     qo.answer_checked = item.answer_checked;
@@ -291,12 +295,17 @@ public loadProblemMainCategoryTemplate()
     }
 
     //新增個案類別(主) 
+    console.log('this',this)
+    console.log('this,',this.ProblemMainCategory)
     if(this.ProblemMainCategory)
     {
+   
       this.problem_main_category = this.parseQuestioOptionToArray(
         this.ProblemMainCategory 
       );
+    
     }else{
+     
       this.loadProblemMainCategoryTemplate();
     }
    
@@ -361,7 +370,14 @@ public loadProblemMainCategoryTemplate()
   public getProblemMainCategoryCheckedValue() {
     let value = [];
     for (const item of this.problem_main_category) {
+      // console.log('problem');
+      // debugger
+      console.log('problem00',item.answer_text+item.answer_checked);
       if (item.answer_checked) {
+      console.log('problem00',item.answer_text+item.answer_checked);
+      console.log('problem00)value',item.answer_value+item.answer_checked);
+
+
         value.push(item.answer_value);
       }
     }

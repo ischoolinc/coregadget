@@ -15,12 +15,15 @@ export class CounselStudentService {
   public teacherInfo: TeacherInfo = new TeacherInfo();
 
   public getCounselClass(targetRole: string) {
+    // debugger
     let list: CounselClass[] = [];
     this.counselClass.forEach((item) => {
       if (item.Role.indexOf(targetRole) >= 0)
         list.push(item);
+        // console.log('item',item);
     });
     return list;
+    
   }
 
   // 目前學年度

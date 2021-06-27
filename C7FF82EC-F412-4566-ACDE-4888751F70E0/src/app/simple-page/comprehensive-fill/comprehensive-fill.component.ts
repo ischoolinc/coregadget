@@ -64,6 +64,7 @@ export class ComprehensiveFillComponent implements OnInit {
 
   async getFillInData(closeModal) {
     console.log('-----');
+    debugger
     if (this.loadingFillInData) return;
     this.loadingFillInData = true;
 
@@ -71,9 +72,10 @@ export class ComprehensiveFillComponent implements OnInit {
     this.studentInfo = null;
     this.questionSubject = [];
 
-    try{
+    // try{
       var rsp = await this.send(this.dsns + "/1campus.counsel.public", "GetFillInData", { FillInKey: this.fillInKey });
       if (rsp.QuestionSubject) {
+        debugger
         if (closeModal)
           $("#modal-key").modal('hide');
         rsp.QuestionSubject = [].concat(rsp.QuestionSubject || []);
@@ -130,8 +132,9 @@ export class ComprehensiveFillComponent implements OnInit {
                       option.AnswerChecked = true;
                       break;
                   }
-  
+             
                   option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
+                  // console.log(    option.AnswerMatrix)
                   option.IsTextArea = false;
                   option.Template = [];
                   //分割OptionText進Template
@@ -189,16 +192,17 @@ export class ComprehensiveFillComponent implements OnInit {
         this.sectionInfo = rsp.Section;
         this.studentInfo = rsp.Student;
         this.questionSubject = rsp.QuestionSubject;
+        debugger
         this.refreshMark('');
-      }
+ }
       else{
         alert("代碼錯誤");
       }
-    }
-    catch (err) {
-      console.log(err);
-      alert("取得資料發生錯誤：\n" + JSON.stringify(err, null, 4));
-    }
+    // }
+    // catch (err) {
+    //   console.log(err);
+    //   alert("取得資料發生錯誤：\n" + JSON.stringify(err, null, 4));
+    // }
     this.loadingFillInData = false;
   }
 
@@ -331,7 +335,7 @@ export class ComprehensiveFillComponent implements OnInit {
         }
       }
     }
-    console.log(options);
+    // console.log(options);
     try {
       var rsp = await this.send(this.dsns + "/1campus.counsel.public", "SetFillInData", {
         FillInKey: this.fillInKey,

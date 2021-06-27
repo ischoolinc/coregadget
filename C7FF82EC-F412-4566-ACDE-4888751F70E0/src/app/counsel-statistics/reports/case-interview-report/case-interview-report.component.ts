@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { OptionInfo } from 'src/app/case/case-question-template';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
 import { DsaService } from "../../../dsa.service";
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
+import { ConditionModalComponent } from './condition-modal/condition-modal.component';
+import { result } from 'lodash';
 
 @Component({
   selector: 'app-case-interview-report',
@@ -11,6 +14,7 @@ import * as XLSX from 'xlsx';
 })
 export class CaseInterviewReportComponent implements OnInit {
 
+  @ViewChild("condition_modal") condition_modal:ConditionModalComponent 
   tmpGradeYear: number[] = [];
   tmpClass: CounselClass[] = [];
   isSelectAllItem: boolean = false;
@@ -19,7 +23,13 @@ export class CaseInterviewReportComponent implements OnInit {
   isSaveButtonDisable: boolean = false;
   startDate: string = "";
   endDate: string = "";
-
+  /**塞選條件 性別*/
+  conditionGender :string[]=[];
+   /**塞選條件 個案類別*/
+  conditionProblemCatag :string[]=[]; 
+   /**塞選條件 性別*/
+   isUseGenderFilter :boolean = false;
+   isUseProblemCatagFilter :boolean = false;
   constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
@@ -46,7 +56,8 @@ export class CaseInterviewReportComponent implements OnInit {
 
   report() {
 
-    let chkDataPass: boolean = true;
+ 
+   let chkDataPass: boolean = true;
 
     this.selectClassIDs = [];
     this.SelectGradeYearList.forEach(item => {
@@ -81,6 +92,13 @@ export class CaseInterviewReportComponent implements OnInit {
   }
 
   async exportReport() {
+
+    
+    this.isUseGenderFilter =this.condition_modal.filterByGender ;
+    this.isUseProblemCatagFilter =this.condition_modal.filterByProblemCata ;
+    this.conditionGender =this.condition_modal.selectGender ;
+    this.conditionProblemCatag =this.condition_modal.selectedItemsText ;
+    console.log('1..',this.conditionProblemCatag)
     try {
       let StartDate = this.startDate.replace('T', ' ');
       let EndDate = this.endDate.replace('T', ' ');
@@ -94,17 +112,57 @@ export class CaseInterviewReportComponent implements OnInit {
           ClassIDs: this.selectClassIDs
         }
       });
-
+      console.log('resp',resp);
+      debugger 
       let data = [].concat(resp.CaseInterview || []);
 
       if (data.length > 0) {
         let data1: any[] = [];
         data.forEach(item => {
 
+          let ProblemCategoryString:string =""
+          //整理個案類別(主) (副)
+        if(item.ProblemCategory){
+          ProblemCategoryString = this.getProblemCatString(JSON.parse(item.ProblemCategory)).join('、');
+        }
+        let ProblemMainCategoryString  :string =""
+       if(item.ProblemMainCategory){
+        ProblemMainCategoryString  =this.getProblemCatString(JSON.parse(item.ProblemMainCategory)).join('、');
+       }
+         
+
+        
+           //#region 是否要列印
+           let isPrint =false 
+           if(this.isUseGenderFilter && this.isUseProblemCatagFilter) // 兩個塞選條件都有
+           {
+              isPrint = 
+              (this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemCategory)))
+              ||this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemMainCategory))))
+              &&this.conditionGender.includes(item.Gender);
+
+           }else if(this.isUseGenderFilter && !this.isUseProblemCatagFilter){ //只塞選男女
+            isPrint  = this.conditionGender.includes(item.Gender);
+
+
+           }else if(!this.isUseGenderFilter && this.isUseProblemCatagFilter) // 只塞選個案類別
+           {
+            isPrint =   
+              (this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemCategory)))
+              ||this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemMainCategory))))
+
+           }else //都沒有選 
+           {    
+             //印全部!! 
+             isPrint =true ;
+           }
+           //#endregion 
+
           let item1 = {
             '晤談紀錄ID': item.CaseInterviewID,
             '班級': item.ClassName,
             '座號': item.SeatNo,
+            '性別': item.Gender,
             '學號': item.StudentNumber,
             '姓名': item.Name,
             '個案編號': item.CaseNo,
@@ -116,23 +174,69 @@ export class CaseInterviewReportComponent implements OnInit {
             '訪談對象': item.ContactName,
             '訪談方式': item.CounselType,
             '內容': item.Content,
-            '登錄教師': item.TeacherName
+            '登錄教師': item.TeacherName,
+            '個案類別(主)':ProblemMainCategoryString,
+            '個案類別(副)':ProblemCategoryString
           };
-          data1.push(item1);
+
+
+
+          if(isPrint) //增加條件塞選
+          {
+            data1.push(item1);
+          }
+       
         });
+
+        if(data1.length ==0){
+          alert("沒有資料符和條件之資料!");
+          return ;
+        }
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(data1, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
         XLSX.utils.book_append_sheet(wb, ws, wsName);
         //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
         XLSX.writeFile(wb, fileName);
       } else {
-        alert("沒有資料");
+        alert("沒有資料!");
       }
     }
     catch (err) {
-      alert(err.dsaError.message);
+      console.log('#001',err);
+      alert('發生錯誤 :' +'\n' +'錯誤代碼 :#001');
     }
   }
+
+  /**取得個案類別字串 */
+ getProblemCatString(ProblemCatgs:OptionInfo[]):string[]
+ {
+   let result =[] ;
+  ProblemCatgs.forEach(option=>{
+   if(option.answer_checked) {
+    result.push(option.answer_value);
+   }
+  });
+  return result;
+ }
+
+
+ /**確認是否要列印 ByCondition */
+ checkIsPrintByCondition(ProblemCatgs:string[] ){
+  let result =false ;
+  //先跑
+  debugger
+  ProblemCatgs.forEach(item=>{
+     if( this.conditionProblemCatag.includes(item)){
+      result = true ;
+     }
+    })
+
+
+  return result ;
+ 
+}
+
+
 
   // 取得教師輔導班級
   async GetCounselClass() {
@@ -198,4 +302,19 @@ export class CaseInterviewReportComponent implements OnInit {
     });
   }
 
+
+// 
+  openCondictionModal()
+  {
+    this.condition_modal.title='請選擇產出條件'
+    // alert("ho") ; 
+    $("#conditionModal").modal("show");
+    // 關閉畫面
+    $("#conditionModal").on("hide.bs.modal", () => {
+      // 重整資料
+      if (true)
+        this.loadData();
+      $("#conditionModal").off("hide.bs.modal");
+    });
+}
 }
