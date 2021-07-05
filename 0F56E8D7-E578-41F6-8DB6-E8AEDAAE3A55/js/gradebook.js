@@ -2125,6 +2125,7 @@
                         , SubExamID: ''
                         , Index: $scope.gradeItemConfig.Item.length + 1
                         , ExamID: ''
+                        , isNewOne :true
                     });
                 }
                 , JSONMode: function () {
