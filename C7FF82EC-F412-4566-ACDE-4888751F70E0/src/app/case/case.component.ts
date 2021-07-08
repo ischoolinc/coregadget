@@ -346,21 +346,36 @@ export class CaseComponent implements OnInit {
 
 
  /** 依照 (sourTarget)  排序 */
-  sortByAsc(sortTarget:string){
+  sortByAsc(sortTarget:string ,isNum =false){
+    
     this.sortType ='Asc' ;
-    this.caseList.sort((item1,item2)=>{
-      
-      
-      if ( item1[sortTarget] < item2[sortTarget] ){
+    
+    
+    if(isNum){ // 如果需要轉成數字排序
+       this.caseList.sort((item1,item2)=>{
+       if ( parseInt(item1[sortTarget]) < parseInt(item2[sortTarget]) ){
         return -1;
       }
-      if (item1[sortTarget]> item2[sortTarget] ){
+      if ( parseInt(item1[sortTarget])> parseInt( item2[sortTarget])){
       
         return 1;
       }
       return 0;
-    
     })
+    }else{
+      this.caseList.sort((item1,item2)=>{
+        if ( item1[sortTarget] < item2[sortTarget] ){
+          return -1;
+        }
+        if (item1[sortTarget]> item2[sortTarget] ){
+        
+          return 1;
+        }
+        return 0;
+      
+      })
+    }
+
     
 
   }
@@ -368,21 +383,44 @@ export class CaseComponent implements OnInit {
 
 
   /** 小到大 */
-  sortByDesc(sortTarget:string){
+  sortByDesc(sortTarget:string ,isNum =false ){
       this.sortType ='Desc' ;
-      this.caseList.sort((item1,item2)=>{
+      if(isNum )
+      {
+
+        this.caseList.sort((item1,item2)=>{
       
-        if ( item1[sortTarget] < item2[sortTarget] ){
-          return 1;
-        }
-        if (item1[sortTarget]> item2[sortTarget] ){
+          if ( parseInt(item1[sortTarget])<  parseInt(item2[sortTarget] )){
+            return 1;
+          }
+          if ( parseInt(item1[sortTarget])>  parseInt(item2[sortTarget]) ){
+          
+            return -1;
+          }
+          return 0;
         
-          return -1;
-        }
-        return 0;
+        })
+        
+
+      }else{
+
+        this.caseList.sort((item1,item2)=>{
       
-      })
-      
+          if ( item1[sortTarget] < item2[sortTarget] ){
+            return 1;
+          }
+          if (item1[sortTarget]> item2[sortTarget] ){
+          
+            return -1;
+          }
+          return 0;
+        
+        })
+        
+
+
+      }
+
 
   }
 }

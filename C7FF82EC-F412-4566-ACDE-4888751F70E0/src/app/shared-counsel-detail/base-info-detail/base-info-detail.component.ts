@@ -21,7 +21,7 @@ export class BaseInfoDetailComponent implements OnInit {
 
   async ngOnInit() {
     this.counselDetailComponent.setCurrentItem('base_info_detail');
-    debugger
+    // debugger
     console.log(' this.counselDetailComponent', this.counselDetailComponent.currentStudent)
     this.isLoading = true;
     // 取得學制

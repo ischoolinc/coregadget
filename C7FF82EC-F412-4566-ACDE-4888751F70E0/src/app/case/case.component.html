@@ -76,7 +76,29 @@
        
              
             </li>
-            <li class="sticky-top">座號</li>
+            <li class="sticky-top">座號
+              <mat-icon *ngIf="sortType=='Asc'||''" (click) ="sortByDesc('SeatNo',true)" 
+              class = " cuser"  
+              style ="font-size: 18px ;color :gray;"
+              aria-hidden="false" aria-label="Example home icon">
+              arrow_drop_down
+          </mat-icon>
+          
+            <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click) ="sortByAsc('SeatNo',true)" 
+                      class = " cuser"  
+                      style ="font-size: 18px  ;color :gray;"
+                      aria-hidden="false" aria-label="Example home icon">
+                      arrow_drop_up
+  
+            </mat-icon>
+
+
+            </li>
+
+            
+
+
+
             <li class="sticky-top">姓名</li>
             <li class="sticky-top">性別</li>
             <li class="sticky-top">學生身份</li>
@@ -123,7 +145,26 @@
               
               
           </li>
-            <li class="sticky-top">輔導次數</li>
+            <li class="sticky-top">
+              輔導次數
+              <mat-icon  *ngIf="sortType=='Asc'" (click) ="sortByDesc('CaseCount',true)" 
+              class = " cuser"  
+              style ="font-size: 16px ;color :gray;"
+              aria-hidden="false" aria-label="Example home icon">
+              arrow_drop_down
+
+            </mat-icon>
+  
+            <mat-icon *ngIf="sortType=='Desc'||sortType==''"  (click) ="sortByAsc('CaseCount',true)" 
+                      class = " cuser"  
+                      style ="font-size: 18px  ;color :gray;"
+                      aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_up
+
+            </mat-icon>
+                      
+
+            </li>
             <li class="sticky-top">結案</li>
             <li class="sticky-top">編輯   <span class="ml-3">刪除</span>  </li>
         

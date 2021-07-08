@@ -105,6 +105,8 @@ export class CounselListComponent implements OnInit {
           }
         }
         let tmp = [];
+        // debugger 
+        // console.log(' this.counselStudentService.guidanceStudent', this.counselStudentService.guidanceStudent)
         this.counselStudentService.guidanceStudent.forEach(data => {
           let key = `${data.SchoolYearVG}_${data.SemesterVG}`;
           if (!tmp.includes(key)) {

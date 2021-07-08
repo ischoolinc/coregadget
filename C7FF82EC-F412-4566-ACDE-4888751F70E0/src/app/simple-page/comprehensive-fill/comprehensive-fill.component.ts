@@ -63,8 +63,7 @@ export class ComprehensiveFillComponent implements OnInit {
 
 
   async getFillInData(closeModal) {
-    console.log('-----');
-    debugger
+    
     if (this.loadingFillInData) return;
     this.loadingFillInData = true;
 
@@ -75,7 +74,6 @@ export class ComprehensiveFillComponent implements OnInit {
     // try{
       var rsp = await this.send(this.dsns + "/1campus.counsel.public", "GetFillInData", { FillInKey: this.fillInKey });
       if (rsp.QuestionSubject) {
-        debugger
         if (closeModal)
           $("#modal-key").modal('hide');
         rsp.QuestionSubject = [].concat(rsp.QuestionSubject || []);
@@ -192,7 +190,7 @@ export class ComprehensiveFillComponent implements OnInit {
         this.sectionInfo = rsp.Section;
         this.studentInfo = rsp.Student;
         this.questionSubject = rsp.QuestionSubject;
-        debugger
+        // debugger
         this.refreshMark('');
  }
       else{

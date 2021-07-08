@@ -113,7 +113,6 @@ export class CaseInterviewReportComponent implements OnInit {
         }
       });
       console.log('resp',resp);
-      debugger 
       let data = [].concat(resp.CaseInterview || []);
 
       if (data.length > 0) {
@@ -136,10 +135,17 @@ export class CaseInterviewReportComponent implements OnInit {
            let isPrint =false 
            if(this.isUseGenderFilter && this.isUseProblemCatagFilter) // 兩個塞選條件都有
            {
-              isPrint = 
-              (this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemCategory)))
-              ||this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemMainCategory))))
-              &&this.conditionGender.includes(item.Gender);
+             try{
+               isPrint = 
+               (this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemCategory)))
+               ||this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemMainCategory||null))))
+               &&this.conditionGender.includes(item.Gender);
+
+
+             }catch(ex){
+              // debugger 
+              
+             }
 
            }else if(this.isUseGenderFilter && !this.isUseProblemCatagFilter){ //只塞選男女
             isPrint  = this.conditionGender.includes(item.Gender);
@@ -188,6 +194,8 @@ export class CaseInterviewReportComponent implements OnInit {
        
         });
 
+        debugger
+        console.log("hi~~")
         if(data1.length ==0){
           alert("沒有資料符和條件之資料!");
           return ;
@@ -224,7 +232,6 @@ export class CaseInterviewReportComponent implements OnInit {
  checkIsPrintByCondition(ProblemCatgs:string[] ){
   let result =false ;
   //先跑
-  debugger
   ProblemCatgs.forEach(item=>{
      if( this.conditionProblemCatag.includes(item)){
       result = true ;
