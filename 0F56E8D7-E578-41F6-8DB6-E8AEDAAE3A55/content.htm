@@ -23,7 +23,7 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-         
+
             }
         });
     </script>
@@ -486,7 +486,7 @@
                                 ng-repeat="exam in examList | filter: filterPermission"
                                 ng-click="showSubExam(exam)"
                                 class="text-center"
-                                style ="{{exam.Group?'padding: 8px 2px;border: none':'padding: 8px 2px;'}}"
+                                style = "{{exam.Group?'padding: 8px 2px;border: none':'padding: 8px 2px;'}}"
                                 rowspan="{{exam.Group?1:2}}">
                                 <span ng-if="!exam.Group"
                                       style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
@@ -853,10 +853,17 @@
                                 <td class="text-center"
                                     style="position:relative; padding:0px">
                                     <div style="white-space: nowrap;overflow: hidden;">
-                                        <input ng-model="item.Name"
+                                        <input ng-if="!item.isNewOne" ng-model="item.Name"
                                                type="text"
                                                class="form-control pg-grade-textbox ng-pristine ng-valid"
-                                               select-on-click="">
+                                               select-on-click=""
+                                               readonly>
+                                    <!-- 如果是新項目 -->
+                                        <input ng-if="item.isNewOne" ng-model="item.Name"
+                                               type="text"
+                                               class="form-control pg-grade-textbox ng-pristine ng-valid"
+                                               select-on-click=""
+                                        >
                                     </div>
                                 </td>
                                 <td class="text-center"
@@ -900,7 +907,12 @@
                               type="text"
                               class="form-control pg-grade-textbox ng-scope ng-pristine ng-valid">
                     </textarea>
+                    <span style ="color: #af3939 ;">如欲刪除評分項目,請先匯出成績做備份。
+
+                    </span>
                 </div>
+                
+             
                 <div class="modal-footer">
                     <!-- <a ng-if="gradeItemConfig.Mode=='Editor'"
                        ng-click="gradeItemConfig.JSONMode()"
