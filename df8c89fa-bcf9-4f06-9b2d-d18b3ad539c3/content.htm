@@ -9,15 +9,15 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "demo.ischool.j",
+            application: "1admin_debug5",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
             },
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'bubu@debug.ischool.com.tw',
-                password: '1234'//window.prompt('password:')
+                account: '',
+                password: ''//window.prompt('password:')
             }
         });
     </script>
@@ -373,7 +373,7 @@
                                             <span class="input-group-btn">
                                                 <a ng-click="enterGrade()"
                                                     class="btn btn-default">
-                                                    送出
+                                                    送出AA
                                                 </a>
                                             </span>
                                         </div>
@@ -502,7 +502,7 @@
                             <th ng-repeat="exam in examList | filter: filterPermission"
                                 class="text-center" colspan="{{exam.Name === '文字評量' ? 2 : 1}}">
                                 <span ng-class="{'sub-item': exam.isSubItem}">
-                                    {{exam.Name}}
+                                    {{exam.Name}} 
                                     <span ng-if="exam.Name === '定期評量'" class="text-red">{{current.Course.courseScorePercentage}}%</span>
                                     <span ng-if="exam.Name === '平時評量'" class="text-red">{{current.Course.courseAssignmentPercentage}}%</span>
                                 </span>
@@ -538,7 +538,7 @@
                                 </div>
                                 <span score-stress="{{stuRec[exam.ExamID]}}" data-score-type="{{exam.Type}}"
                                       style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
-                                    {{stuRec[exam.ExamID]}}
+                                    {{stuRec[exam.ExamID]}} 
                                 </span>
                             </td>
                         </tr>

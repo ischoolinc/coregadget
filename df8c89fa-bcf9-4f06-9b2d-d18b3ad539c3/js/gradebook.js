@@ -616,6 +616,8 @@
                                     studentMapping[studentRec.StudentID] = studentRec;
                                 });
                             });
+
+                            // console.log('--',$scope.studentList)
                         }
 
                         var getCourseExamScoreFinish = false;
@@ -944,6 +946,9 @@
             if (flag) {
                 $scope.submitGrade();
             }
+
+
+            // console.log("studentList",$scope.studentList);
         }
 
         /**
@@ -957,7 +962,10 @@
                 if ($scope.current.template.isSubScoreMode) {
                     var ps = $scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
                     var cs = $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
-                    $scope.current.Student['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                    if($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID]||$scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID]){ // 如果(讀卡系統)試卷成績不是NULL 才要結算
+                       $scope.current.Student['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                    }
+                    
                 }
                 // 資料同步
                 const targetStu = $scope.studentList.find(stu => stu.StudentID === $scope.current.Student.StudentID);
