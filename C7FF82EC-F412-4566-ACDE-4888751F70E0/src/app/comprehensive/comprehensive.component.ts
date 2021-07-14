@@ -157,31 +157,47 @@ export class ComprehensiveComponent implements OnInit {
         // 檢查 學校年級 是否正確在(1-6範圍內)
         let isNeedAdjustGrade = false ;
         let adjusctGradeSapn ;
+        let schoolSystem = "";
+        let extensionGrade:string[]=[];
+        // 取得學制 
+        try{
+         let rsp = await this.dsaService.send("GetSchoolCoreInfo");
+         schoolSystem = rsp.SchoolCoreInfo.學制 ;
+        }catch(ex){
+         console.log('取得學制發生錯誤!',ex);
+         alert('取得學制發生錯誤!');
+        } 
+       // 取得年級
         try{
              let  showText ='校務系統年級非1-6年級 \n本作業會自動對應，對應如下: \n';
+             showText+=`學制:${schoolSystem}\n`;
              let rsp =   await this.dsaService.send("GetAllGradeYearAdjustInfo", {
           });
               let showTextlist= [].concat(rsp.Result||[]);
               if(showTextlist.length>0) //如果有需要調整的年級
               {
                 isNeedAdjustGrade =true ;
-                
                 showTextlist.forEach(item =>{
-                  adjusctGradeSapn =item.AdjustSpan ;
-                  showText += ` ${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
-    
+                  if(schoolSystem=="國中" && item.AdjustSpan =='6')
+                  {
+                    adjusctGradeSapn =item.AdjustSpan ;
+                    showText += `${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
+                    extensionGrade.push(item.OrgGradeYear) ;
+                  }else if(schoolSystem=="高中" &&item.AdjustSpan =='9'){
+                    adjusctGradeSapn =item.AdjustSpan ;
+                    showText += `${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
+                    extensionGrade.push(item.OrgGradeYear) ;
+                  }else{
+                    showText += `${item.OrgGradeYear}年級之班級，不會展開 (年級與學制不符)。\n`
+                  }
                });
                if(!confirm(showText+'如對應有誤請點選"取消"， \n如正確請點選"確定"繼續執行!'))
                {
                 return
-               }debugger
-    
-
+               }
               }
-       
-        }catch(err)
-        {
-          alert('資料庫查詢發生錯誤!')
+        }catch(err){
+          alert('資料庫查詢學制或年級有誤!');
         }
    
 
@@ -192,6 +208,9 @@ export class ComprehensiveComponent implements OnInit {
         let classList = await this.dsaService.send("GetClass", {});
         classList = [].concat(classList.Class || []);
         let index = 0;
+        console.log("999",classList);
+        debugger 
+        
         for (const classRec of classList) {
 
           // if (!parseInt(classRec.GradeYear, 10) || parseInt(classRec.GradeYear, 10 ) > 6 ) { // 因為恩正設計 是 1-6年級 所以年級有誤時 會提醒使用者並不展開
@@ -199,7 +218,7 @@ export class ComprehensiveComponent implements OnInit {
           //   continue;
           // }
          
-          this.currentClass = classRec.ClassName + " 題目展開中 ...";
+      
           // console.log("GenerateFillInData" + JSON.stringify({
           //   SchoolYear: this.schoolYear
           //   , Semester: this.semester
@@ -213,19 +232,27 @@ export class ComprehensiveComponent implements OnInit {
                 , Semester: this.semester
                 , ClassID: classRec.ClassID
               });
-              debugger
+              this.currentClass = classRec.ClassName + " 題目展開中 ...";
+              // debugger
             } catch (err) {
               console.log(err);
             }
           }else{ //如需調整年級
             try {
-              await this.dsaService.send("GenerateFillInDataForSpecificGrade", {
+              debugger 
+              console.log('array',extensionGrade);
+              if(extensionGrade.includes(classRec.GradeYear)) //有允許展開的年級才會展開
+              {   
+                await this.dsaService.send("GenerateFillInDataForSpecificGrade", {
                 SchoolYear: this.schoolYear
                 , Semester: this.semester
                 , ClassID: classRec.ClassID
                 , AdjusctGradeSapn :adjusctGradeSapn
+                
               });
-              debugger
+                  this.currentClass = classRec.ClassName + " 題目展開中 ...";
+              }
+              // debugger
             } catch (err) {
               console.log(err);
             }
