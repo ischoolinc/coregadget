@@ -55,7 +55,11 @@
                             response.SubjectList = response.SubjectList || {};
                             $scope.Subject = [].concat(response.SubjectList.Subject || []);
                             $scope.Subject.forEach(function (item) {
-                                item.FullName = (item.SubjectName || '') + ' ' + $.arabic2roman(item.SubjectLevel || '');
+                                if($.arabic2roman(item.SubjectLevel || '')!=""){
+                                    item.FullName = (item.SubjectName || '') + ' ' + $.arabic2roman(item.SubjectLevel || '');
+                                }else{
+                                    item.FullName = (item.SubjectName || '')
+                                }
                                 if (parseInt(item.FailGradeYear) && parseInt(item.FailSemester)) {
                                     item.FailSemester = ["一", "二", "三", "四"][parseInt(item.FailGradeYear) - 1] + ["上", "下"][parseInt(item.FailSemester) - 1];
                                 }
@@ -79,7 +83,12 @@
                             $scope.SubjectHistory = [];
                             [].concat(response.SubjectList.Subject || []).forEach(function (item) {
                                 var key = item.SchoolYear + "^^" + item.Semester + "^^" + item.Round;
-                                item.FullName = (item.SubjectName || '') + ' ' + $.arabic2roman(item.SubjectLevel || '');
+                                if($.arabic2roman(item.SubjectLevel || '')!=""){
+                                    item.FullName = (item.SubjectName || '') + ' ' + $.arabic2roman(item.SubjectLevel || '');
+                                }else{
+                                    item.FullName = (item.SubjectName || '')
+                                }
+
                                 if (!roundMapping[key]) {
                                     var list = [];
                                     roundMapping[key] = list;
