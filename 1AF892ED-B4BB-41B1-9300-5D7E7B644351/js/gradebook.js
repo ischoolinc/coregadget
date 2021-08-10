@@ -76,6 +76,7 @@
         $scope.modeList = ['成績管理', '平時評量'];
         $scope.current.mode = '成績管理';
         $scope.connection = gadget.getContract("ta");
+        $scope.connection2 = gadget.getContract("1campus.log.teacher");
 
         // 四捨五入
         function rounding(val, precision) {
@@ -272,7 +273,7 @@
                     //     temp.Lock = !(new Date(temp.InputStartTime) < new Date(rsp.Timestamp.Now) && new Date(rsp.Timestamp.Now) < new Date(temp.InputEndTime));
                     //     return temp;
                     // });
-               
+
                     // 處理不需要評分不顯示
                     [].concat(course.Scores.Score || []).forEach(function (temp) {
                         if (temp.UseScore === "是") {
@@ -490,6 +491,7 @@
                         var studentMapping = {};
                         $scope.$apply(function () {
                             $scope.studentList = [];
+                            $scope.OrginStudentList = [];
                             [].concat(response.Students.Student || []).forEach(function (studentRec, index) {
                                 studentRec.SeatNo = studentRec.SeatNumber;
                                 studentRec.StudentScoreTag = "預設";
@@ -522,8 +524,12 @@
                                     });
                                 }
                                 $scope.studentList.push(studentRec);
+                                $scope.OrginStudentList.push(Object.assign({}, studentRec));
                                 studentMapping[studentRec.StudentID] = studentRec;
                             });
+                            console.log('1');
+
+                            console.log('$scope.OrginStudentList', $scope.OrginStudentList);
 
                             // 已透過 Service 處理，這段不需要
                             // // 學生排序
@@ -714,6 +720,12 @@
                                 $scope.dataBackUp();
                             });
                         });
+
+
+                        //  $scope.OrginStudentList =$scope.studentList.slice();
+
+                        // console.log('$scope.OrginStudentList', $scope.OrginStudentList);
+
                     }
                 }
             });
@@ -1042,8 +1054,13 @@
          * 儲存學期成績(課程成績) SetCourseSemesterScore
          */
         $scope.saveAll = function () {
+            /**log用 字串*/
+
             // 儲存定期評量成績
             var SetCourseExamScoreWithExtension = function () {
+                let isChange =false
+                let logManangers =[];
+                let logDescription = `課程：${$scope.current.Course.CourseName}  【評量成績】　\n`;
                 return new Promise((r, j) => {
                     var body = {
                         Content: {
@@ -1052,6 +1069,8 @@
                         }
                     };
                     $scope.templateList.forEach(function (examRec, index) {
+
+                    
                         if (!examRec.Lock) {
                             var eItem = {
                                 '@ExamID': examRec.ExamID,
@@ -1070,16 +1089,50 @@
                                         }
                                     }
                                 };
-                                // 是否為讀卡子成績項目
-                                if (examRec.isSubScoreMode) {
-                                    data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
-                                    data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
+
+                                if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
+                                    isChange=true ;
+                                    if (logManangers.length== 0 || !(logManangers.find(x=>{return x.key ==`Exam_${examRec.ExamID}` }))) { //第一次
+
+                                    var logBySubItem = {
+                                        key: `Exam_${examRec.ExamID}` ,
+                                        title : "",
+                                        descriptSection :[]
+                       
+                                   };
+                                   logBySubItem.title = `\n 輸入【${examRec.Name}】成績: \n`;
+                                   logBySubItem.descriptSection =[];
+                                   logManangers.push(logBySubItem);
                                 }
+                               
+                                var temp =logManangers.find(x=>{return x.key ==`Exam_${examRec.ExamID}`});
+                                var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${studentRec['Exam' + examRec.ExamID + 'Origin'] || '  '} => ${studentRec['Exam' + examRec.ExamID]}  `;
+                                
+                                temp.descriptSection.push(descriptByItem);
+                                
+                            }
+                            
+                            
+                            // 是否為讀卡子成績項目
+                            if (examRec.isSubScoreMode) {
+                                data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
+                                data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
+                            
+                            }
+
                                 eItem.Student.push(data);
                             });
                             body.Content.Exam.push(eItem);
                         }
                     });
+
+                    
+                    logManangers.forEach(x=>{
+                        logDescription += x.title ;
+                        logDescription += x.descriptSection.join('\n');
+                    });
+
+                    // 評量成績
                     $scope.connection.send({
                         service: 'TeacherAccess.SetCourseExamScoreWithExtension',
                         autoRetry: true,
@@ -1094,11 +1147,37 @@
                             }
                         }
                     });
+
+                    /**log */
+                    if(isChange){
+                        $scope.connection2.send({
+                            service: "_.InsertLogFromWeb",
+                            body: `<Request>
+                            <ActionType>${'insert'}</ActionType>
+                            <Action>${'修改成績'}</Action>
+                            <TargetCategory>${'teacher'}</TargetCategory>
+                            <ActionBy>${'web:成績輸入'}</ActionBy>
+                            <Description>${logDescription}</Description>
+                        </Request>`,
+                            result: function (response, error, http) {
+                                if (error !== null) {
+                                    alert(error);
+                                } else {
+                                    console.log('成功輸入!');
+                                }
+                            }
+                        });
+                    }
+                
                 });
             }
 
             // 儲存學期成績(課程成績)
             var SetCourseSemesterScore = function () {
+               
+                var isChange = false ;
+                var descriptString = `修改 ${$scope.current.Course.CourseName} 【學期成績】 \n` ;
+               
                 return new Promise((r, j) => {
                     var body = {
                         Content: {
@@ -1109,8 +1188,13 @@
                         }
                     };
                     [].concat($scope.studentList || []).forEach(function (studentRec) {
-                        //  studentRec['Exam學期成績']
-                        
+                        // studentRec['Exam學期成績']
+                        // log用
+                        if(studentRec['Exam學期成績']!=studentRec['Exam學期成績Origin']){
+                         descriptString +=  `  ${studentRec.ClassName}班 ${studentRec.SeatNo}號  ${studentRec.StudentName}  ,${studentRec['Exam學期成績Origin']} => ${studentRec['Exam學期成績']} \n`
+                         isChange = true ;   
+                        }
+
                         var obj = {
                             '@StudentID': studentRec.StudentID,
                             '@Score': studentRec['Exam學期成績']
@@ -1131,6 +1215,27 @@
                             }
                         }
                     });
+
+                    if(isChange){
+                        $scope.connection2.send({
+                            service: "_.InsertLogFromWeb",
+                            body: `<Request>
+                            <ActionType>${'insert'}</ActionType>
+                            <Action>${'修改成績'}</Action>
+                            <TargetCategory>${'teacher'}</TargetCategory>
+                            <ActionBy>${'web:成績輸入'}</ActionBy>
+                            <Description>${descriptString}</Description>
+                        </Request>`,
+                            result: function (response, error, http) {
+                                if (error !== null) {
+                                    alert('11');
+                                    alert(error);
+                                } else {
+                                    console.log('成功輸入!');
+                                }
+                            }
+                        });
+                    }
                 });
             }
 
@@ -1149,15 +1254,19 @@
 
         /** 儲存平時評量 */
         $scope.saveGradeItemScore = function () {
-
+            let logDescription = `課程：${$scope.current.Course.CourseName} 【平時評量】　\n`;
             var body = {
                 Request: {
                     SCAttendExtension: []
                 }
             };
             // 資料整理
+            // log 資料整理
+            logManangers =[];
+            // 看使否有印過子項目(log用)
             [].concat($scope.studentList || []).forEach(function (stuRec, index) {
 
+              
                 // 學生
                 var student = {
                     '@CourseID': $scope.current.Course.CourseID,
@@ -1178,13 +1287,35 @@
 
                     // 小考成績
                     var targetItemList = $scope.gradeItemList.filter(item => item.Name !== '平時評量' && item.RefExamID == template.ExamID && item.Permission !== 'Program');
+                  
                     [].concat(targetItemList || []).forEach(item => {
-                        var item = {
+                        var _item = {
                             '@SubExamID': item.SubExamID,
                             '@Score': stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`] == undefined ? '' : stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`]
                         }
+                        /**log [平時評量] */
+                        if (stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`] != stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}Origin`]) {
+                           
+                            if (logManangers.length== 0 || !(logManangers.find(x=>{return x.key ==`Exam_${item.RefExamID}_Quiz_${item.SubExamID}` }))) { //第一次
 
-                        exam.Item.push(item);
+                                var logBySubItem = {
+                                    key: `Exam_${item.RefExamID}_Quiz_${item.SubExamID}` ,
+                                    title : "",
+                                    descriptSection :[]
+                   
+                               };
+                               logBySubItem.title = `\n 輸入【${template.Name}】【${item.Name}】成績: \n`;
+                               logBySubItem.descriptSection =[];
+                               logManangers.push(logBySubItem);
+                            }
+                            
+                     
+                            var temp =logManangers.find(x=>{return x.key ==`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`});
+                            var descriptByItem = `　${stuRec.ClassName}班  ${stuRec.SeatNo}號  ${stuRec.StudentName}  , ${stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}Origin`] || '  '} => ${stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`]} `;
+                            temp.descriptSection.push(descriptByItem);
+                        }
+                        /**以上為log */
+                        exam.Item.push(_item);
                     });
 
                     student.Extension.Exam.push(exam);
@@ -1192,6 +1323,16 @@
 
                 body.Request.SCAttendExtension.push(student);
             });
+
+
+            //整理log 
+            logManangers.forEach(x=>{
+                logDescription += x.title ;
+                logDescription += x.descriptSection.join('\n');
+            });
+            
+   
+
             $scope.connection.send({
                 service: "TeacherAccess.SetSCAttendExtensions",
                 autoRetry: true,
@@ -1204,6 +1345,9 @@
                             $scope.studentList.forEach(function (stuRec, index) {
                                 // 原始資料更新
                                 $scope.gradeItemList.forEach(function (item) {
+                                    // 處理log 
+                                    console.log('stuRec_', stuRec);
+
                                     stuRec[item.ExamID + 'Origin'] = stuRec[item.ExamID];
                                 });
                             });
@@ -1213,6 +1357,25 @@
                         $scope.dataReload();
 
                         alert('儲存完成。');
+                    }
+                }
+            });
+
+            //紀錄log [自訂項目]
+            $scope.connection2.send({
+                service: "_.InsertLogFromWeb",
+                body: `<Request>
+                <ActionType>${'insert'}</ActionType>
+                <Action>${'修改成績'}</Action>
+                <TargetCategory>${'teacher'}</TargetCategory>
+                <ActionBy>${'web:成績輸入'}</ActionBy>
+                <Description>${logDescription}</Description>
+            </Request>`,
+                result: function (response, error, http) {
+                    if (error !== null) {
+                        alert(error);
+                    } else {
+                        console.log('成功輸入!');
                     }
                 }
             });
@@ -1330,7 +1493,7 @@
          * 儲存評分項目
          */
         $scope.saveGradeItemConfig = function () {
-
+          var   logDescription ="編輯後評分項目 : \n" ;
             var body = {
                 Content: {
                     CourseExtension: {
@@ -1350,6 +1513,7 @@
             var examNameList = [];
             var dataRepeat = false;
             var repeatExamName = '';
+            console.log("gradeItemConfig.Item",$scope.gradeItemConfig.Item);
             $scope.gradeItemConfig.Item.forEach(function (item) {
 
                 var pass = true;
@@ -1369,8 +1533,11 @@
                         dataRepeat = true;
                         repeatExamName = item.Name;
                     }
-                    examNameList.push(item.RefExamID + '_' + item.Name);
+                    if( $scope.current.template.ExamID == item.RefExamID)
+                    {
+                        logDescription += $scope.current.Course.CourseName +" : "+ $scope.current.template.Name+ ":" +item.Name + "\n";
 
+                    }
                     body.Content.CourseExtension.Extension.GradeItem.Item.push({
                         '@ExamID': item.RefExamID,
                         '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
@@ -1397,6 +1564,7 @@
                                     $scope.gradeItemList.forEach(item => {
                                         if (item.RefExamID == $scope.current.template.ExamID) {
                                             $scope.current.gradeItemList.push(item);
+                                           
                                         }
                                     });
 
@@ -1419,6 +1587,25 @@
                         }
                     }
                 });
+                // log [評分項目]
+                $scope.connection2.send({
+                    service: "_.InsertLogFromWeb",
+                    body: `<Request>
+                    <ActionType>${'insert'}</ActionType>
+                    <Action>${'編輯評分項目'}</Action>
+                    <TargetCategory>${'teacher'}</TargetCategory>
+                    <ActionBy>${'web:成績輸入'}</ActionBy>
+                    <Description>${logDescription}</Description>
+                </Request>`,
+                    result: function (response, error, http) {
+                        if (error !== null) {
+                            alert(error);
+                        } else {
+                            console.log('成功輸入!');
+                        }
+                    }
+                });
+
             }
             else {
                 var errMsg = '';

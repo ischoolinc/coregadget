@@ -1,4 +1,4 @@
-/// <reference path="../include/jquery-1.7.2.min.js"/>
+/// <reference path="jquery.min.js"/>
 
 (function ($) {
 	$.sort = function () {
