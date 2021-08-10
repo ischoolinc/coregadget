@@ -1,0 +1,45 @@
+<span class="iconify close-window text-left" data-icon="eva:close-fill" data-inline="false"></span>
+<div class="h-full px-4 overflow-y-auto">
+  <p class="text-xl font-semibold mb-4">Behavior</p>
+  <div class="h-86 overflow-y-scroll">
+    <div>
+      <div class="mb-2 flex flex-row items-center">
+        <div class="h-4 border-l-4 border-primary rounded-full"></div>
+        <p class="px-2 text-gray font-medium">From</p>
+      </div>
+      <div class="ml-3 -mt-2 flex flex-row items-center">
+        <p>{{this.showItem?.TeacherName}}</p>
+        <span class="iconify ml-2 text-secondary-light text-lg cursor-pointer" data-icon="ic:outline-email"
+          data-inline="false"></span>
+      </div>
+    </div>
+    <div>
+      <div class="mt-4 mb-2 flex flex-row items-center">
+        <div class="h-4 border-l-4 border-primary rounded-full"></div>
+        <p class="px-2 text-gray font-medium">Time</p>
+      </div>
+      <p class="ml-3 -mt-2">{{this.showItem?.CreateDate2}}</p>
+
+    </div>
+    <div>
+      <div class="mt-4 mb-2 flex flex-row items-center">
+        <div class="h-4 border-l-4 border-primary rounded-full"></div>
+        <p class="px-3 text-gray font-medium">Comment</p>
+      </div>
+      <p class="p-2 border border-gray-lightest rounded">
+              {{this.showItem?.Comment}}
+      </p>
+    </div>
+  </div>
+  <div class="flex flex-row mt-8 justify-between">
+    <button (click)="prev()" class="btn btn-primary flex flex-row items-center justify-center w-24 mr-0">
+      <span class="iconify t-icon2 cursor-pointer text-2xl -ml-2"
+      data-icon="ic-round-navigate-next" data-inline="false" data-rotate="180deg"></span>Prev
+    </button>
+    <button (click)="next()" class="btn btn-primary flex flex-row items-center justify-center w-24 mr-0">Next
+      <span class="iconify t-icon2 cursor-pointer text-2xl -mr-2"
+      data-icon="ic-round-navigate-next" data-inline="false"></span>
+    </button>
+  </div>
+
+</div>

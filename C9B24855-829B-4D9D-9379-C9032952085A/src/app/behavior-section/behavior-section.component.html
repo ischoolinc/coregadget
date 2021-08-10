@@ -1,0 +1,28 @@
+
+
+<div class="grid place-items-center">
+  <div class="mt-8 pb-14">
+    <div class="flex flex-row items-center text-gray-text3 text-sm">
+      <!-- <p class="text-secondary underline mr-1"><a [routerLink]="['']">Grades and Behavior</a></p> -->
+      <!-- <span class="iconify mr-1" data-icon="ic:round-navigate-next" data-inline="false">Behavior</span>
+      <p>Behavior</p> -->
+    </div>
+    <p class="mt-2 mb-4 text-2xl font-semibold">Behavior</p>
+    <div class="mt-2 flex flex-row items-center">
+      <div class="flex-wrap">
+        <button (click)="openBehaviorDetail(i)"
+          class="xs:w-48 w-56 mb-4 min-h-max border border-gray-lightest rounded-lg overflow-x-hidden mr-4 hover:shadow-md"
+          *ngFor="let behavior of behaviorRecordsList ;let i = index q">
+          <p class="w-full h-10 pl-6 py-2 text-white text-left bg-primary-light rounded-t-lg">{{behavior?.CreateDate2}}</p>
+          <div class="mt-4 mb-2 px-4 flex flex-row items-center">
+            <div class="h-4 border-l-4 border-primary rounded-full"></div>
+            <p class="px-2 text-sm text-gray-text3 font-medium">Comment</p>
+          </div>
+          <p class="px-4 mb-4 text-left line-clamp-5 leading-5">
+          {{behavior?.Comment}}
+          </p>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
