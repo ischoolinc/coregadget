@@ -12,11 +12,11 @@ import { BehaviorModalComponent } from '../behavior-modal/behavior-modal.compone
   styleUrls: ['./behavior-section.component.scss']
 })
 export class BehaviorSectionComponent implements OnInit {
-  courseID :string  |null | undefined ;
-  loading =false ;
-  error :any ={} ;
-  behaviorRecordsList :Behavior[] =[];
-  currentIndex :number|undefined;
+  courseID: string | null | undefined;
+  loading = false;
+  error: any = {};
+  behaviorRecordsList: Behavior[] = [];
+  currentIndex: number | undefined;
 
   constructor(
     private gadget: GadgetService,
@@ -29,7 +29,6 @@ export class BehaviorSectionComponent implements OnInit {
     this.route.paramMap.subscribe(
       (params: ParamMap): void => {
         this.courseID = params.get("course_id");
-        console.log("11", this.courseID );
         this.getBehaviorRecord();
       })
 
@@ -38,20 +37,20 @@ export class BehaviorSectionComponent implements OnInit {
 
 
   /**取得behavior的資料 */
-  async getBehaviorRecord(){
+  async getBehaviorRecord() {
     try {
       this.loading = true;
       // 取得 contract 連線。
       const contract = await this.gadget.getContract('1campus.esl.student');
       // 呼叫 service。
-      let rsp  = await contract.send('GetBehaviorRecordByCourseID',  {
-      CourseID:  this.courseID
+      let rsp = await contract.send('GetBehaviorRecordByCourseID', {
+        CourseID: this.courseID
       });
 
-      console.log('behavior ', rsp);
+
       // 整理一下
-     this.behaviorRecordsList= [].concat(rsp.BehaviorData) ;
-     console.log("this.behaviorRecordsList",this.behaviorRecordsList);
+      this.behaviorRecordsList = [].concat(rsp.BehaviorData);
+
     } catch (err) {
       this.error = err;
     } finally {
@@ -60,14 +59,15 @@ export class BehaviorSectionComponent implements OnInit {
   }
 
 
-   /**跳出 modal 視窗 */
-  openBehaviorDetail(index :number){
-      const dialogRef = this.dialog.open(BehaviorModalComponent, {
+  /**跳出 modal 視窗 */
+  openBehaviorDetail(index: number) {
+    const dialogRef = this.dialog.open(BehaviorModalComponent, {
       width: '450px',
-      data: { name: ""
-            , BehaviorList: this.behaviorRecordsList
-            , currentIndex: index}
+      data: {
+        name: ""
+        , BehaviorList: this.behaviorRecordsList
+        , currentIndex: index
+      }
     });
-      console.log("behavior",index);
   }
 }

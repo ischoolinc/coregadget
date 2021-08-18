@@ -1,4 +1,6 @@
-
+<!-- <div id="Chart">
+  <canvas #chart id="myChart" width="400" height="400"></canvas>
+</div> -->
 <div class="mt-10">
   <ul class="flex border-b items-end">
     <!-- tab1 Midterm-->
@@ -182,7 +184,9 @@
                           </div>
                         </td>
                       </tr>
-                      <tr *ngIf="customAssessment.isCheck">
+                      <!-- <tr [style.display]="!customAssessment.isCheck?'none':'block'"> -->
+                      <tr >
+
                         <td   colspan="5">
                           <!-- 手風琴 下開成績分佈圖 -->
                           <div class="panel w-full py-2 bg-primary-bg hidden md2:block">
@@ -210,7 +214,13 @@
                                     </div>
 
                                     <!-- 圖表圖片代用 -->
-                                    <div><img src="../assets/img/grade_graph.png" alt="圖條"></div>
+                                    <!-- test  -->
+                                    <div class="Chart">
+                                      <canvas #chart [id]="customAssessment.customAssessName+'_md'" width="400" height="400"></canvas>
+                                    </div>
+
+
+                                    <!-- <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
 
                                     <div class="line my-8 relative">
                                       <!-- Tooltip -->
@@ -369,7 +379,11 @@
                     </div>
                   </div>
 
-                  <div><img src="../assets/img/grade_graph.png" alt="圖條"></div>
+
+                  <div class="Chart">
+                    <canvas #chart [id]="this.currentItem?.currentCustomAssessment?.customAssessName+'_bg'" width="400" height="600"></canvas>
+                  </div>
+                <!-- // <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
 
                   <div class="line my-8 relative">
                     <!-- Tooltip -->

@@ -19,37 +19,31 @@ export class AppComponent {
   schoolInfo: any;
   myCourse: ICourseInfo[] = [];
   currentItem: CurrentItem = new CurrentItem();
-  showTarget :string ="";
-  // eslScoreInfoMap: Map<string, ITermInfo> = new Map();
-  // eslScoreInfoList :ITermInfo[] =[]
+  showTarget: string = "";
   error: any;
   constructor(
     private gadget: GadgetService
-    ,private tool: ToolService
-    ,private router: Router
-    ,private activeRoute: ActivatedRoute
-    ) {
+    , private tool: ToolService
+    , private router: Router
+    , private activeRoute: ActivatedRoute
+  ) {
   }
 
   async ngOnInit() {
-    this.showTarget ="esl_score";
-    this.currentItem.currentShowSection ="Score"
+    this.showTarget = "esl_score";
+    this.currentItem.currentShowSection = "Score";
     await this.getschoolInfo();
-
     await this.getStudentCourse();
-
     this.routeTo(this.showTarget); //顯示show target 的畫面
-
     await this.getEslTemplateByCourseID();
-   // await this.getESLScoreInfoByCourID();
-    //console.log('11')
+
   }
 
   /** 取得學生資訊 */
   async getStudentESLInfo() {
     const contract = await this.gadget.getContract('1campus.esl.student');
     const rsp = contract.send('getESLscore');
-    console.log('rsp', rsp);
+
   }
 
   /** 取得學校資訊*/
@@ -67,7 +61,7 @@ export class AppComponent {
         Name: '學校資訊'
       });
 
-      console.log('學校資訊', this.schoolInfo);
+
     } catch (err) {
       this.error = err;
     } finally {
@@ -87,8 +81,6 @@ export class AppComponent {
       // 呼叫 service。
       let rsp = await contract.send('GetMyCourses');
 
-      console.log('rsp', rsp.CoursesInfo);
-
       this.myCourse = [].concat(rsp.CoursesInfo);
       // 設定default
       if (this.myCourse.length > 0) {
@@ -106,44 +98,42 @@ export class AppComponent {
     }
   }
 
-/** 取得 評分樣版 */
-async getEslTemplateByCourseID (){
-  try {
-    this.loading = true;
+  /** 取得 評分樣版 */
+  async getEslTemplateByCourseID() {
+    try {
+      this.loading = true;
 
-    // 取得 contract 連線。
-    const contract = await this.gadget.getContract('1campus.esl.student');
-    // 呼叫 service。
-    let rsp = await contract.send('GetEslTemplate',{
-      CourseID: this.currentItem?.selectedCourse?.CourseID
-    });
-
-    console.log('rsp GetEslTemplate', rsp.CoursesInfo);
-
-  } catch (ex) {
+      // 取得 contract 連線。
+      const contract = await this.gadget.getContract('1campus.esl.student');
+      // 呼叫 service。
+      let rsp = await contract.send('GetEslTemplate', {
+        CourseID: this.currentItem?.selectedCourse?.CourseID
+      });
 
 
-  } finally {
-    this.loading = false;
+    } catch (ex) {
+
+
+    } finally {
+      this.loading = false;
+    }
+
   }
 
-}
 
+  /** 切換要顯示 成績還是behavior */
+  changeShowSection(sectionName: string) {
 
-/** 切換要顯示 成績還是behavior */
-changeShowSection(sectionName :string){
-  console.log("sectionName" ,sectionName);
-  if(sectionName =="Score")
-  {
-    this.routeTo("esl_score");
+    if (sectionName == "Score") {
+      this.routeTo("esl_score");
 
-  }else if(sectionName =="Behavior"){
-    this.routeTo("behavior");
+    } else if (sectionName == "Behavior") {
+      this.routeTo("behavior");
+    }
+
   }
 
-}
-
-/** 選擇課程改變的時候*/
+  /** 選擇課程改變的時候*/
   changeCourse(courseInfo: any) {
     this.courseSelectIsOpen = false;
     this.currentItem.selectedCourse = courseInfo;
@@ -152,11 +142,9 @@ changeShowSection(sectionName :string){
 
   }
 
+  /** */
+  async routeTo(to: any) {
+    await this.router.navigate([to, this.currentItem.selectedCourse?.CourseID])
 
-
-/** */
- async routeTo(to :any  ) {
-   await this.router.navigate([to, this.currentItem.selectedCourse?.CourseID ])
-    console.log("要去哪裡",this.currentItem.selectedCourse?.CourseID) ;
   }
 }
