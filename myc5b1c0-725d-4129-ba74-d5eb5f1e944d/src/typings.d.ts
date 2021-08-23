@@ -11,3 +11,4 @@ declare interface ElementCompact {
 declare interface Element {
 }
 
+declare const xml2json: any;

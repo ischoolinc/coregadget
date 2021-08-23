@@ -179,8 +179,14 @@ export class Jsonx implements Iterable<Jsonx> {
         return !!child!;
     }
 
-    public toXml(rootName?: string) {
+    /** 轉換成 Xml 字串格式。 */
+    public toXmlString(rootName?: string) {
         return toXml(this.data, rootName);
+    }
+
+    /** 轉換成簡單 JSON 格式。*/
+    public toCompactJson() {
+        return xml2json.parser(this.toXmlString());
     }
 
     // 是否為陣列，不是的話就 Throw Error，沒有傳參數代表判斷物件自身。

@@ -20,9 +20,10 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     this.http.get('/service/gadget/selected_context').subscribe(console.log);
 
-    const contract = await this.dsa.getConnection('demo.h.cynthia.chen', '1campus.mobile.v2.guest');
-    const rsp = await contract?.send('GetModuleConfig');
-    console.log(rsp?.toXml());
+    const contract = await this.dsa.getConnection('dev.sh_d', 'web3.my_course.v2.public');
+    const rsp = await contract?.send('test', { Powerful: 'what???' });
+    const rspxml = rsp?.toCompactJson();
+    console.log(rspxml);
 
     this.login.getMyInfo().subscribe(console.log);
     this.login.getAccessToken().subscribe(console.log);

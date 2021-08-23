@@ -85,7 +85,7 @@ export class Envelope {
             this.m_header.raw(SecurityToken.Name, this.credential.data);
         }
 
-        return this.envelope.toXml(RootName);
+        return this.envelope.toXmlString(RootName);
     }
 }
 
