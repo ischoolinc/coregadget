@@ -77,7 +77,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "ssl": true,
+            "ssl": false,
             "sslCert": "dev.1campus.net.pem",
             "sslKey": "dev.1campus.net-key.pem"
           },
