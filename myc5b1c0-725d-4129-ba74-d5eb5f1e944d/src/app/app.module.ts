@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
 import { DSA_ACCESSTOKEN } from './dsutil-ng/credential_provider';
 import { RootAccessTokenService } from './root-access-token.service';
+import { CoreModule } from './core/core.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -18,6 +19,7 @@ import { RootAccessTokenService } from './root-access-token.service';
     HttpClientModule,
     BrowserAnimationsModule,
     DSUtilNgModule,
+    CoreModule,
   ],
   providers: [{
     provide: DSA_ACCESSTOKEN,
