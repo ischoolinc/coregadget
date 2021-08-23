@@ -9,6 +9,7 @@ import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
 import { DSA_ACCESSTOKEN } from './dsutil-ng/credential_provider';
 import { RootAccessTokenService } from './root-access-token.service';
 import { CoreModule } from './core/core.module';
+import { NgxsModule } from '@ngxs/store';
 @NgModule({
   declarations: [
     AppComponent
@@ -20,6 +21,7 @@ import { CoreModule } from './core/core.module';
     BrowserAnimationsModule,
     DSUtilNgModule,
     CoreModule,
+    NgxsModule.forRoot([]),
   ],
   providers: [{
     provide: DSA_ACCESSTOKEN,
