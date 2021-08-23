@@ -5,6 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
+import { DSA_ACCESSTOKEN } from './dsutil-ng/credential_provider';
+import { RootAccessTokenService } from './root-access-token.service';
 @NgModule({
   declarations: [
     AppComponent
@@ -14,8 +17,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    DSUtilNgModule,
   ],
-  providers: [],
+  providers: [{
+    provide: DSA_ACCESSTOKEN,
+    useClass: RootAccessTokenService
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
