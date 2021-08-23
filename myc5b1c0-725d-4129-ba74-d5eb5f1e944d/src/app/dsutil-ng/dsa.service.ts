@@ -43,7 +43,7 @@ export class DSAService {
     // 有取快就直接用。
     const cacheKey = this.genKey(dsns, contract);
     if(this.#connCache.has(cacheKey)) {
-      return this.#connCache.get(cacheKey);
+      return this.#connCache.get(cacheKey)!;
     }
 
     const atoken = await  creden.getCredential().pipe(
