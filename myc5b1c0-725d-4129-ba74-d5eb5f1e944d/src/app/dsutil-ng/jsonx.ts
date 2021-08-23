@@ -184,7 +184,7 @@ export class Jsonx implements Iterable<Jsonx> {
         return toXml(this.data, rootName);
     }
 
-    /** 轉換成簡單 JSON 格式。*/
+    /** 轉換成簡單 JSON 格式，無法處理數字型別，所有的值都會是字串。*/
     public toCompactJson() {
         return xml2json.parser(this.toXmlString());
     }

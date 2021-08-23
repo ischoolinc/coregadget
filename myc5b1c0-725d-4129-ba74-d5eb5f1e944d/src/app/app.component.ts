@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { LoginService } from './core/login.service';
+import { DsatestService } from './dsatest.service';
 import { DSAService } from './dsutil-ng/dsa.service';
+import { DSAError } from './dsutil-ng/errors';
+import { Jsonx } from './dsutil-ng/jsonx';
 
 @Component({
   selector: 'app-root',
@@ -12,20 +15,15 @@ export class AppComponent implements OnInit {
   title = 'mycourse';
 
   constructor(
-    private http: HttpClient,
-    private dsa: DSAService,
+    private test: DsatestService,
     private login: LoginService
   ) {}
 
   async ngOnInit() {
-    this.http.get('/service/gadget/selected_context').subscribe(console.log);
-
-    const contract = await this.dsa.getConnection('dev.sh_d', 'web3.my_course.v2.public');
-    const rsp = await contract?.send('test', { Powerful: 'what???' });
-    const rspxml = rsp?.toCompactJson();
-    console.log(rspxml);
-
     this.login.getMyInfo().subscribe(console.log);
-    this.login.getAccessToken().subscribe(console.log);
+
+    await this.test.getTimetable();
+    await this.test.setTimetable();
   }
+
 }

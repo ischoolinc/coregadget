@@ -2,6 +2,7 @@ import { SecurityToken, Envelope, SessionSecurityToken } from './envelope';
 import { AccessPoint } from './access_point';
 import { DSAHttpClient } from './dsa_http_client';
 import { Jsonx } from './jsonx';
+import { DSAError } from './errors';
 
 export const ConnectService = 'DS.Base.Connect';
 
@@ -44,7 +45,7 @@ export class Connection {
         const rspenv = new Envelope(rsp.body!)
 
         if(rspenv.code !== '0') {
-            throw new Error(rspenv.message);
+            throw new DSAError(rspenv.message, rspenv.code);
         }
 
         const rspbody = rspenv.getBody();
@@ -96,7 +97,7 @@ export class Connection {
         const rspenv = new Envelope(rsp.body!)
 
         if(rspenv.code !== '0') {
-            throw new Error(rspenv.message);
+            throw new DSAError(rspenv.message, rspenv.code);
         }
 
         return rspenv.getBody();
