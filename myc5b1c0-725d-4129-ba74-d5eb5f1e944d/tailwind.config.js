@@ -1,12 +1,12 @@
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
 const { createCompilerHost } = require('typescript');
-const plugin = require('tailwindcss/plugin')
+const plugin = require('tailwindcss/plugin');
 
 module.exports = {
   mode: 'jit',
   purge: {
     content: [
-      './src/**/*.{html,ts}',
+      './src/**/*.{html,ts,scss}',
     ]
   },
   darkMode: false, // or 'media' or 'class'
@@ -46,8 +46,8 @@ module.exports = {
           DEFAULT: '#F43F5E',
           dark: '#dc3955',
           darker: '#BE123C4',
-        },  
-      },  
+        },
+      },
 
       screens: {
         'xs': '496px',
@@ -69,14 +69,14 @@ module.exports = {
         '15': '15',
         '16': '16',
         '17': '17',
-       },      
+       },
 
        spacing: {
         '55': '13.3rem',
         '104': '418px',
         '5.5': '22px',
         '0.25': '1px',
-      
+
       },
 
       minWidth: {

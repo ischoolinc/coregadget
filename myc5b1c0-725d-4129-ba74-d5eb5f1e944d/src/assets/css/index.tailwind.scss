@@ -94,7 +94,7 @@
   }
 
   .drop_listbox {
-    @apply origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
+    @apply origin-top-right mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
 
     .list_options {
       @apply text-gray-text3 block px-4 py-2 text-sm hover:bg-primary-lighter;

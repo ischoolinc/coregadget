@@ -3,25 +3,11 @@
 
   <div class="flex flex-row items-center mb-4">
     <!-- 學期下拉 -->
-    <div class="relative inline-block text-left">
-      <div>
-        <button type="button" class="dropdown_box2 bg-white" id="menu-button" aria-expanded="true"
-          aria-haspopup="true">
-          <p>109學年度第1學期</p>
-          <span class="iconify ml-2 text-2xl" data-icon="eva:arrow-ios-back-fill" data-inline="false"
-            data-rotate="270deg"></span>
-        </button>
-      </div>
-      <div id="term" class="drop_listbox2 hidden" role="menu" aria-orientation="vertical"
-        aria-labelledby="menu-button" tabindex="-1">
-        <div class="py-1" role="none">
-          <a href="#" class="list_options text-white bg-primary" role="menuitem" tabindex="-1"
-            id="menu-item-0">109學年度第1學期</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-1">108學年度第2學期</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-2">108學年度第1學期</a>
-        </div>
-      </div>
-    </div>
+    <app-select #semester
+      [rowSource]="semesterRowSource"
+      [displayWith]="displaySemester"
+      (change)="semesterChange($event)"
+    ></app-select>
 
     <!-- 已更新過按鈕 -->
     <div class="ml-4 hidden">

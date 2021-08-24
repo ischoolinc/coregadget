@@ -11,7 +11,10 @@ import { RootAccessTokenService } from './root-access-token.service';
 import { CoreModule } from './core/core.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxsModule } from '@ngxs/store';
+import { SelectModule } from './shared/select/select.module';
+import { SnackbarModule } from './shared/snackbar/snackbar.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { NgxsModule } from '@ngxs/store';
     CoreModule,
     MatDialogModule,
     MatMenuModule,
+    MatSlideToggleModule,
+    SnackbarModule,
     NgxsModule.forRoot([]),
+    SelectModule,
   ],
   providers: [{
     provide: DSA_ACCESSTOKEN,
