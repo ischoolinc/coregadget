@@ -2,7 +2,7 @@
 export interface Course {
     uid:       string;
     course_id: string;
-    period:    Period[];
+    periods:    Period[];
 }
 
 export interface Period {
