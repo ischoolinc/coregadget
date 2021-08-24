@@ -97,7 +97,7 @@
     @apply origin-top-right mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
 
     .list_options {
-      @apply text-gray-text3 block px-4 py-2 text-sm hover:bg-primary-lighter;
+      @apply text-gray-text3 block px-4 py-2 text-base hover:bg-primary-lighter;
     }
   }
 
@@ -106,7 +106,11 @@
   }
 
   .tab-group label {
-    @apply relative inline-block px-8 py-2 text-gray cursor-pointer;
+    @apply hidden relative xs:inline-block px-4 py-2 rounded mt-2 ml-2 text-gray cursor-pointer;
+  }
+
+  .tab-group2 label {
+    @apply inline-block;
   }
 
   .content {
@@ -126,6 +130,13 @@
     color: #5ec1c7;
   }
 
+  #addlink:checked ~ .tab-group2 [for="addlink"],
+  #editlink:checked ~ .tab-group2 [for="editlink"] {
+    border-bottom-width: 4px;
+    border-color: #5ec1c7;
+    color: #5ec1c7;
+  }
+
   #tab1:checked ~ .content-group .content1,
   #tab2:checked ~ .content-group .content2,
   #tab3:checked ~ .content-group .content3,
@@ -137,18 +148,10 @@
     display: block;
   }
 
-  #addlink:checked ~ .tab-group [for="addlink"],
-  #editlink:checked ~ .tab-group [for="editlink"] {
-    border-bottom-width: 4px;
-    border-color: #5ec1c7;
-    color: #5ec1c7;
-  }
-
   #addlink:checked ~ .content-group .content2,
   #editlink:checked ~ .content-group .content1 {
     display: block;
   }
-
 
   .tb-title {
     @apply px-6 py-4 text-center text-sm font-semibold text-white tracking-wider;

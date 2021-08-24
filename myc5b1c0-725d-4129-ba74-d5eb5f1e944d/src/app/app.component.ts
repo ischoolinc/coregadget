@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { LoginService } from './core/login.service';
 import { TimetableService } from './core/timetable.service';
-import { HttpClient } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-// import dj from 'dayjs';
+import dj from 'dayjs';
 import { GoogleClassroomCourse, GoogleClassroomService, GoogleCourseState } from './core/google-classroom.service';
 import { MyCourseRec, MyCourseService, MyCourseTeacherRec, Semester } from './core/my-course.service';
 import { DSAService } from './dsutil-ng/dsa.service';
@@ -13,6 +12,8 @@ import { SelectComponent } from './shared/select/select/select.component';
 import { SnackbarService } from './shared/snackbar/snackbar.service';
 import { MyInfo, SelectedContext } from './core/data/login';
 import { ConnectedSettingService } from './core/connected-setting.service';
+import { ClassroomService } from './core/classroom.service';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -40,7 +41,7 @@ export class AppComponent implements OnInit {
   courses: MyCourseRec[] = [];
   googleCourses: GoogleClassroomCourse[] = [];
 
-  // #updateTimestamp = dj();
+  #updateTimestamp = dj();
   classroomUpdateRequired = false;
   classroomUpdating = false;
   googleClassroomLink = new FormControl(''); // 使用者提供的 Google Classroom Link。
@@ -54,7 +55,6 @@ export class AppComponent implements OnInit {
   constructor(
     private timetable: TimetableService,
     private login: LoginService,
-    private http: HttpClient,
     private dsa: DSAService,
     private myCourseSrv: MyCourseService,
     private gClassroomSrv: GoogleClassroomService,
@@ -62,7 +62,7 @@ export class AppComponent implements OnInit {
     private snackbarSrv: SnackbarService,
     private changeDetector: ChangeDetectorRef,
     private ConnectedSettingSrv: ConnectedSettingService,
-    // private crsrv: ClassroomService,
+    private crSrv: ClassroomService,
   ) {}
 
   async ngOnInit() {
@@ -115,26 +115,16 @@ export class AppComponent implements OnInit {
       this.loading = false;
     }
 
-    // interval(2000).subscribe(v => {
-    //   this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
-    // });
-
-    // const { store } = this;
-    // const current = store.selectSnapshot(GadgetState.selectedGadget);
-    // let params = { alternative_teacher: '' };
-    // try {
-    //   params = JSON.parse(current.params);
-    // } catch (err) { }
-    // if(params.alternative_teacher) {
-    //   this.#classroom_url = params.alternative_teacher;
-    // }
+    interval(2000).subscribe(v => {
+      this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
+    });
   }
 
 
   private displayCourses(sourceCourses: MyCourseRec[]) {
     sourceCourses.forEach(v => { v.GoogleIsReady = false; v.Alias = this.formatCourseAlias(v); });
     this.courses = sourceCourses;
-    // this.mappingClassroomLive();
+    this.mappingClassroomLive();
     this.mappingGoogleClassroom();
   }
 
@@ -204,36 +194,36 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // async mappingClassroomLive(force: boolean = false) {
+  async mappingClassroomLive(force: boolean = false) {
 
-  //   this.classroomUpdating = true;
-  //   // this.#updateTimestamp = dj();
+    this.classroomUpdating = true;
+    this.#updateTimestamp = dj();
 
-  //   try {
-  //     const courses = this.courses.map(v => v.CourseId);
-  //     const crlist = await this.crsrv.queryOpenStatus({
-  //       dsns: this.dsns,
-  //       courses
-  //     }, force);
+    try {
+      const courses = this.courses.map(v => v.CourseId);
+      const crlist = await this.crSrv.queryOpenStatus({
+        dsns: this.dsns,
+        courses
+      }, force);
 
-  //     this.courses.forEach(v => v.live = false);
-  //     this.courses.forEach(v => {
-  //       for (const cr of crlist) {
-  //         if (v.CourseId === cr.target.uid) {
-  //           v.live = cr.isOpen;
-  //         }
-  //       }
-  //     });
+      this.courses.forEach(v => v.live = false);
+      this.courses.forEach(v => {
+        for (const cr of crlist) {
+          if (v.CourseId === cr.target.uid) {
+            v.live = cr.isOpen;
+          }
+        }
+      });
 
-  //     this.courses = this.courses.sort((x, y) => {
-  //       return (y.live + '').localeCompare(x.live + '');
-  //     });
-  //   } catch { }
-  //   finally {
-  //     this.classroomUpdating = false;
-  //     this.classroomUpdateRequired = false;
-  //   }
-  // }
+      this.courses = this.courses.sort((x, y) => {
+        return (y.live + '').localeCompare(x.live + '');
+      });
+    } catch { }
+    finally {
+      this.classroomUpdating = false;
+      this.classroomUpdateRequired = false;
+    }
+  }
 
   async getGoogleClassroomCourse(course: MyCourseRec) {
     try {
