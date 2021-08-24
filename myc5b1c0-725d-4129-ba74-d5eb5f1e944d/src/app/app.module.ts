@@ -15,6 +15,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxsModule } from '@ngxs/store';
 import { SelectModule } from './shared/select/select.module';
 import { SnackbarModule } from './shared/snackbar/snackbar.module';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { SnackbarModule } from './shared/snackbar/snackbar.module';
     MatMenuModule,
     MatSlideToggleModule,
     SnackbarModule,
-    NgxsModule.forRoot([]),
+    NgxsModule.forRoot([], { developmentMode: !environment.production }),
     SelectModule,
   ],
   providers: [{
