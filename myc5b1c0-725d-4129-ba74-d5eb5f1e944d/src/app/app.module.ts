@@ -9,7 +9,10 @@ import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
 import { DSA_ACCESSTOKEN } from './dsutil-ng/credential_provider';
 import { RootAccessTokenService } from './root-access-token.service';
 import { CoreModule } from './core/core.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { NgxsModule } from '@ngxs/store';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -21,6 +24,8 @@ import { NgxsModule } from '@ngxs/store';
     BrowserAnimationsModule,
     DSUtilNgModule,
     CoreModule,
+    MatDialogModule,
+    MatMenuModule,
     NgxsModule.forRoot([]),
   ],
   providers: [{

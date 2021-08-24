@@ -8,11 +8,13 @@ import { TimetableService } from './core/timetable.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'mycourse';
+
+  table_row = [...Array(3).keys()];
 
   constructor(
     private timetable: TimetableService,
     private login: LoginService
+    // private dialog: MatDialog,
   ) {}
 
   async ngOnInit() {

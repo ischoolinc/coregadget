@@ -1,2 +1,862 @@
-<h1 class="bg-red-400">Page works!</h1>
-<h1 class="text-warning">Page real works!</h1>
+<div class="container mx-auto">
+  <div class="gadget_bigtitle mb-6">我的課程</div>
+
+  <div class="flex flex-row items-center mb-4">
+    <!-- 學期下拉 -->
+    <div class="relative inline-block text-left">
+      <div>
+        <button type="button" class="dropdown_box2 bg-white" id="menu-button" aria-expanded="true"
+          aria-haspopup="true">
+          <p>109學年度第1學期</p>
+          <span class="iconify ml-2 text-2xl" data-icon="eva:arrow-ios-back-fill" data-inline="false"
+            data-rotate="270deg"></span>
+        </button>
+      </div>
+      <div id="term" class="drop_listbox2 hidden" role="menu" aria-orientation="vertical"
+        aria-labelledby="menu-button" tabindex="-1">
+        <div class="py-1" role="none">
+          <a href="#" class="list_options text-white bg-primary" role="menuitem" tabindex="-1"
+            id="menu-item-0">109學年度第1學期</a>
+          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-1">108學年度第2學期</a>
+          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-2">108學年度第1學期</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 已更新過按鈕 -->
+    <div class="ml-4 hidden">
+      <button type="button" class="btn h-10 px-6 text-gray text-sm">更新雲端教室狀態</button>
+    </div>
+    <!-- 可以更新按鈕 -->
+    <div class="ml-4">
+      <button type="button" class="btn btn-warn py-3 text-sm">更新雲端教室狀態</button>
+    </div>
+  </div>
+
+  <!-- 星期tab -->
+  <div class="panel-group">
+    <input class="panel-control" type="radio" name="week-day" id="tab1" checked>
+    <input class="panel-control" type="radio" name="week-day" id="tab2">
+    <input class="panel-control" type="radio" name="week-day" id="tab3">
+    <input class="panel-control" type="radio" name="week-day" id="tab4">
+    <input class="panel-control" type="radio" name="week-day" id="tab5">
+    <input class="panel-control" type="radio" name="week-day" id="tab6">
+    <input class="panel-control" type="radio" name="week-day" id="tab7">
+    <input class="panel-control" type="radio" name="week-day" id="tab8">
+
+    <div class="tab-group">
+      <label for="tab1">所有時段</label>
+      <label for="tab2">星期一</label>
+      <label for="tab3">星期二</label>
+      <label for="tab4">星期三</label>
+      <label for="tab5">星期四</label>
+      <label for="tab6">星期五</label>
+      <label for="tab7">星期六</label>
+      <label for="tab8">星期日</label>
+    </div>
+
+    <div class="content-group">
+      <div class="content content1">
+        <!-- 所有時段表格 -->
+        <div class="flex flex-col mt-4 w-full">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
+                <table class="w-full">
+                  <thead class="bg-primary">
+                    <tr>
+                      <th scope="col" class="tb-title">課程名稱</th>
+                      <th scope="col" class="tb-title">時段/節次</th>
+                      <th scope="col" class="tb-title">雲端服務</th>
+                      <th scope="col" class="tb-title">雲端服務管理</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr *ngFor="let item of table_row">
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">資一甲 英文I 所以我是個超級無敵長的課程名稱拉！</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            資一甲 英文I 所以我是個超級無敵長的課程名稱拉！
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="mr-2">二</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
+                          </div>
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="mr-2">三</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content content2">
+        <!-- 星期一時段表格 -->
+        <div class="flex flex-col mt-4 w-full">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
+                <table class="w-full">
+                  <thead class="bg-primary">
+                    <tr>
+                      <th scope="col" class="tb-title">課程名稱</th>
+                      <th scope="col" class="tb-title">節次</th>
+                      <th scope="col" class="tb-title">雲端服務</th>
+                      <th scope="col" class="tb-title">雲端服務管理</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content content3">
+        <!-- 無課程空白頁 -->
+        <img class="mx-auto mt-28" src="../assets/img/no_class.svg" alt="">
+      </div>
+      <div class="content content4">
+        <!-- 星期三時段表格 -->
+        <div class="flex flex-col mt-4 w-full">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
+                <table class="w-full">
+                  <thead class="bg-primary">
+                    <tr>
+                      <th scope="col" class="tb-title">課程名稱</th>
+                      <th scope="col" class="tb-title">節次</th>
+                      <th scope="col" class="tb-title">雲端服務</th>
+                      <th scope="col" class="tb-title">雲端服務管理</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content content5">
+        <!-- 星期四時段表格 -->
+        <div class="flex flex-col mt-4 w-full">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
+                <table class="w-full">
+                  <thead class="bg-primary">
+                    <tr>
+                      <th scope="col" class="tb-title">課程名稱</th>
+                      <th scope="col" class="tb-title">節次</th>
+                      <th scope="col" class="tb-title">雲端服務</th>
+                      <th scope="col" class="tb-title">雲端服務管理</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content content6">
+        <!-- 星期五時段表格 -->
+        <div class="flex flex-col mt-4 w-full">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
+                <table class="w-full">
+                  <thead class="bg-primary">
+                    <tr>
+                      <th scope="col" class="tb-title">課程名稱</th>
+                      <th scope="col" class="tb-title">節次</th>
+                      <th scope="col" class="tb-title">雲端服務</th>
+                      <th scope="col" class="tb-title">雲端服務管理</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                        <div class="has-tooltip relative">
+                          <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
+                          <div class="font-semibold text-gray-text1 line-clamp-2">
+                            總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                        <div class="flex flex-row flex-wrap items-center justify-center">
+                          <!-- 時段tag -->
+                          <div
+                            class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
+                            <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
+                          </div>
+                          <!-- 時段管理btn -->
+                          <div class="has-tooltip">
+                            <span class="tooltip -ml-8">管理時段</span>
+                            <button (click)="openClassTime()"
+                              class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                              <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                data-inline="false"></span>
+                              <p class="text-sm">管理</p>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-5">OHA雲端教室</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
+                            alt="OHAClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-10">Google Classroom</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
+                            alt="GoogleClassroom">
+                        </div>
+                        <div class="has-tooltip lg:mr-4">
+                          <span class="tooltip -ml-2">1Know</span>
+                          <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                            alt="1know">
+                        </div>
+                        <div class="has-tooltip lg:mr-4 xl:mr-0">
+                          <span class="tooltip -ml-3">外部連結</span>
+                          <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+                            <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item class="menu">
+                              <a href="" class="menu-list">師培班</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                            <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
+                              <a href="" class="menu-list">雲端教育</a>
+                              <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+                                data-inline="false"></span>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                      <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                        <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                          (click)="openEditCloudService()">
+                          <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                            data-inline="false"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content content7">
+        <!-- 無課程空白頁 -->
+        <img class="mx-auto mt-28" src="../assets/img/no_class.svg" alt="">
+      </div>
+      <div class="content content8">
+        <!-- 無課程空白頁 -->
+        <img class="mx-auto mt-28" src="../assets/img/no_class.svg" alt="">
+      </div>
+    </div>
+  </div>
+</div>
