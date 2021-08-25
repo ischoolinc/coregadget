@@ -6,7 +6,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import dj from 'dayjs';
 import { GoogleClassroomCourse, GoogleClassroomService, GoogleCourseState } from './core/google-classroom.service';
-import { MyCourseRec, MyCourseService, MyCourseTeacherRec, Semester } from './core/my-course.service';
+import { GadgetCustomCloudServiceRec, MyCourseRec, MyCourseService, MyCourseTeacherRec, MyTargetBaseRec, Semester } from './core/my-course.service';
 import { DSAService } from './dsutil-ng/dsa.service';
 import { SelectComponent } from './shared/select/select/select.component';
 import { SnackbarService } from './shared/snackbar/snackbar.service';
@@ -15,6 +15,8 @@ import { ConnectedSettingService } from './core/connected-setting.service';
 import { ClassroomService } from './core/classroom.service';
 import { interval } from 'rxjs';
 
+type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -22,13 +24,14 @@ import { interval } from 'rxjs';
 })
 export class AppComponent implements OnInit {
 
-  table_row = [...Array(3).keys()];
-
   loading = true;
   saving = false;
   dialogRef?: MatDialogRef<any>;
+  dialogRefManage?: MatDialogRef<any>;
+  dialogRefAsync?: MatDialogRef<any>;
+
   errorMsg = '';
-  processState = 1;
+  processState = 101;
   processErrorMsg = '';
   progressBar = { max: 0, current: 0 };
   createStudentMsg = '';
@@ -49,6 +52,23 @@ export class AppComponent implements OnInit {
   #classroom_url = 'https://oha.1campus.net';
 
   semesterRowSource: Semester[] = [];
+  tabs = [
+    { value: 0, tabId: 'tab1', tabTitle: '所有時段', checked: false },
+    { value: 1, tabId: 'tab2', tabTitle: '星期一', checked: false },
+    { value: 2, tabId: 'tab3', tabTitle: '星期二', checked: false },
+    { value: 3, tabId: 'tab4', tabTitle: '星期三', checked: false },
+    { value: 4, tabId: 'tab5', tabTitle: '星期四', checked: false },
+    { value: 5, tabId: 'tab6', tabTitle: '星期五', checked: false },
+    { value: 6, tabId: 'tab7', tabTitle: '星期六', checked: false },
+    { value: 7, tabId: 'tab8', tabTitle: '星期日', checked: false },
+  ];
+  curTab = 0;
+  curCourseList: MyCourseRec[] = [];
+
+  manageProcessState = 301;
+  manageProcessErrorMsg = '';
+
+  curCSTab = 'editlink';
 
   @ViewChild('semester', { static: true }) semester: SelectComponent = {} as SelectComponent;
 
@@ -108,7 +128,12 @@ export class AppComponent implements OnInit {
       const sourceCourses = await this.getCourses(school_year, semester);
 
       await this.checkConnected();
-      this.displayCourses(sourceCourses);
+      await this.displayCourses(sourceCourses);
+
+      let dayOfWeek = dj().day() // 0: 星期日 1: 星期一 6: 星期六
+      dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
+      this.curTab = dayOfWeek;
+      this.toggleTab();
     } catch (error) {
       console.log(error);
     } finally {
@@ -122,10 +147,26 @@ export class AppComponent implements OnInit {
 
 
   private displayCourses(sourceCourses: MyCourseRec[]) {
-    sourceCourses.forEach(v => { v.GoogleIsReady = false; v.Alias = this.formatCourseAlias(v); });
+    sourceCourses.forEach(v => {
+      v.GoogleIsReady = false;
+      v.Alias = this.formatCourseAlias(v);
+      v.SystemCloudService = this.createDefaultSystemCloudService();
+      v.CustomCloudService = [];
+      v.TargetId = v.CourseId;
+      v.TargetType = 'COURSE';
+      v.TargetName = v.ClassName;
+    });
     this.courses = sourceCourses;
     this.mappingClassroomLive();
     this.mappingGoogleClassroom();
+  }
+
+  createDefaultSystemCloudService() {
+    return new Map([
+      ['google_classroom', { Enabled: true } as GadgetCustomCloudServiceRec],
+      ['1campus_oha', { Enabled: true } as GadgetCustomCloudServiceRec],
+      ['custom', { Enabled: true } as GadgetCustomCloudServiceRec]
+    ]);
   }
 
   async semesterChange(sems: Semester) {
@@ -234,18 +275,13 @@ export class AppComponent implements OnInit {
     }
   }
 
-  addService(course: MyCourseRec, template: TemplateRef<any>) {
+  manageService(target: MyCourseRec, template: TemplateRef<any>) {
+    this.manageProcessErrorMsg = '';
+    this.manageProcessState = 301;
     this.processErrorMsg = '';
     this.processState = 101;
-    this.dialogRef = this.dialog.open(template, {
-      data: { course },
-      width: '480px',
-    });
-  }
-
-  manageService(course: MyCourseRec, template: TemplateRef<any>) {
-    this.dialogRef = this.dialog.open(template, {
-      data: { course },
+    this.dialogRefManage = this.dialog.open(template, {
+      data: { target },
       width: '480px',
     });
   }
@@ -494,41 +530,41 @@ export class AppComponent implements OnInit {
     if (promiseList.length === 0) { this.reportProgress(50); }
   }
 
-  toggleGoogleClassroomCourse(e: MatSlideToggleChange, course: MyCourseRec) {
-    if (e.checked) {
-      this.enabledGoogleClassroomCourse(course);
-    } else {
-      this.disabledGoogleClassroomCourse(course);
-    }
-  }
+  // toggleGoogleClassroomCourse(e: MatSlideToggleChange, course: MyCourseRec) {
+  //   if (e.checked) {
+  //     this.enabledGoogleClassroomCourse(course);
+  //   } else {
+  //     this.disabledGoogleClassroomCourse(course);
+  //   }
+  // }
 
-  async enabledGoogleClassroomCourse(course: MyCourseRec) {
-    if (this.saving) { return; }
+  // async enabledGoogleClassroomCourse(course: MyCourseRec) {
+  //   if (this.saving) { return; }
 
-    try {
-      this.saving = true;
-      const rsp = await this.patchGoogleClassroomCourse(course, 'ACTIVE');
-      course.GoogleExt = rsp;
-    } catch (error) {
-      this.snackbarSrv.show('啟用 Google Classroom 發生錯誤！');
-    } finally {
-      this.saving = false;
-    }
-  }
+  //   try {
+  //     this.saving = true;
+  //     const rsp = await this.patchGoogleClassroomCourse(course, 'ACTIVE');
+  //     course.GoogleExt = rsp;
+  //   } catch (error) {
+  //     this.snackbarSrv.show('啟用 Google Classroom 發生錯誤！');
+  //   } finally {
+  //     this.saving = false;
+  //   }
+  // }
 
-  async disabledGoogleClassroomCourse(course: MyCourseRec) {
-    if (this.saving) { return; }
+  // async disabledGoogleClassroomCourse(course: MyCourseRec) {
+  //   if (this.saving) { return; }
 
-    try {
-      this.saving = true;
-      const rsp = await this.patchGoogleClassroomCourse(course, 'ARCHIVED'); // 封存課程
-      course.GoogleExt = rsp;
-    } catch (error) {
-      this.snackbarSrv.show('關閉 Google Classroom 發生錯誤！');
-    } finally {
-      this.saving = false;
-    }
-  }
+  //   try {
+  //     this.saving = true;
+  //     const rsp = await this.patchGoogleClassroomCourse(course, 'ARCHIVED'); // 封存課程
+  //     course.GoogleExt = rsp;
+  //   } catch (error) {
+  //     this.snackbarSrv.show('關閉 Google Classroom 發生錯誤！');
+  //   } finally {
+  //     this.saving = false;
+  //   }
+  // }
 
   async patchGoogleClassroomCourse(course: MyCourseRec, courseState: GoogleCourseState) {
     return this.gClassroomSrv.patchCourse(this.dsns, 'google_classroom_admin', course.Alias || '', {
@@ -560,6 +596,35 @@ export class AppComponent implements OnInit {
       return record ? `${record.school_year}學年度第${record.semester}學期` ?? '請選擇項目' : 'Loading...';
     } else {
       return '無資料';
+    }
+  }
+
+  toggleTab() {
+    this.curCourseList = this.courses; // TODO: 當前 weekday
+  }
+
+  checkSystemServiceEnabled(item: MyCourseRec, service: GadgetSystemService) {
+    if (item.SystemCloudService.has(service)) {
+      return item.SystemCloudService.get(service)?.Enabled;
+    } else {
+      return true;
+    }
+  }
+
+  async toggleSystemCloudService(e: MatSlideToggleChange, target: MyTargetBaseRec, service: GadgetSystemService) {
+    try {
+      if (target.SystemCloudService.has(service)) {
+        // await this.myCourseSrv.setWeb3SystemCloudService(this.dsns, {
+        //   TargetType: target.TargetType,
+        //   TargetId: target.TargetId,
+        //   Title: service,
+        //   Link: service,
+        //   Enabled: e.checked,
+        // });
+        target.SystemCloudService.get(service)!.Enabled = e.checked;
+      }
+    } catch (error) {
+      target.SystemCloudService.get(service)!.Enabled = !e.checked;
     }
   }
 

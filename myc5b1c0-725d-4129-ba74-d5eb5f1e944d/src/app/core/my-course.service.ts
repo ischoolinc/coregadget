@@ -134,24 +134,6 @@ export class MyCourseService {
   }
 }
 
-export interface MyCourseRec {
-  ClassName: string;
-  ClassStudentCount: number;
-  CourseId: number;
-  CourseName: string;
-  RefClassId: number;
-  SchoolYear: number;
-  Semester: number;
-  GoogleIsReady: boolean;
-  GoogleExt?: GoogleClassroomCourse;
-  TeacherId?: number;
-  TeacherName?: string;
-  TeacherSequence?: string;
-  Teachers?: MyCourseTeacherRec[];
-  Alias?: string;
-  live: boolean
-}
-
 export interface MyCourseTeacherRec {
   TeacherId: number;
   TeacherName: string;
@@ -169,4 +151,45 @@ export interface AttendSemesters {
 export interface Semester {
   semester:    number;
   school_year: number;
+}
+
+type TargetType = 'COURSE' | 'CLASS';
+type GadgetCloudServiceType = 'SYSTEM' | 'CUSTOM';
+
+export class MyTargetBaseRec {
+  Alias?: string;
+  TargetId?: number;
+  TargetName?: string;
+  TargetType?: TargetType;
+  SystemCloudService: Map<string, GadgetCustomCloudServiceRec> = new Map();
+  CustomCloudService: GadgetCustomCloudServiceRec[] = [];
+  GoogleIsReady: boolean = false;
+  GoogleExt?: GoogleClassroomCourse;
+  TeacherId?: number;
+  StudentId?: number;
+  live: boolean = false;
+}
+
+export class MyCourseRec extends MyTargetBaseRec {
+  ClassName: string = '';
+  ClassStudentCount: number = 0;
+  CourseId: number = 0;
+  CourseName: string = '';
+  RefClassId?: number;
+  SchoolYear?: number;
+  Semester?: number;
+  TeacherName: string = '';
+  TeacherSequence: number = 0;
+  Teachers?: MyCourseTeacherRec[];
+}
+
+export interface GadgetCustomCloudServiceRec {
+  UID?: string;
+  Provider?: GadgetCloudServiceType;
+  TargetType: TargetType;
+  TargetId: number;
+  Title: string;
+  Link: string;
+  Enabled: boolean;
+  Sequence?: string;
 }

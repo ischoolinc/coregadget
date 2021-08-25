@@ -58,31 +58,24 @@
       <div *ngIf="!this.adminConnectedGoogle.success" class="text-danger">系統管理者尚未啟用 Google Classroom 雲端服務</div>
       <!-- 星期tab -->
       <div class="panel-group">
-        <input class="panel-control" type="radio" name="week-day" id="tab1" checked>
-        <input class="panel-control" type="radio" name="week-day" id="tab2">
-        <input class="panel-control" type="radio" name="week-day" id="tab3">
-        <input class="panel-control" type="radio" name="week-day" id="tab4">
-        <input class="panel-control" type="radio" name="week-day" id="tab5">
-        <input class="panel-control" type="radio" name="week-day" id="tab6">
-        <input class="panel-control" type="radio" name="week-day" id="tab7">
-        <input class="panel-control" type="radio" name="week-day" id="tab8">
+        <input *ngFor="let tab of tabs"
+          class="panel-control" type="radio" name="week-day"
+          [id]="tab.tabId"
+          [value]="tab.value"
+          [(ngModel)]="curTab"
+          (change)="toggleTab()"
+        >
 
         <div class="tab-group mx-3 xs:ml-0">
-          <label for="tab1">所有時段</label>
-          <label for="tab2">星期一</label>
-          <label for="tab3">星期二</label>
-          <label for="tab4">星期三</label>
-          <label for="tab5">星期四</label>
-          <label for="tab6">星期五</label>
-          <label for="tab7">星期六</label>
-          <label for="tab8">星期日</label>
+          <label *ngFor="let tab of tabs" [for]="tab.tabId">
+            {{tab.tabTitle}}</label>
         </div>
 
         <div class="content-group">
-          <div class="content content1">
+          <div class="content">
             <!-- 所有時段表格 -->
             <!-- web -->
-            <div class="hidden xs:flex flex-col mt-4 w-full">
+            <div class="xs:flex flex-col mt-4 w-full">
               <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
                   <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
@@ -96,7 +89,7 @@
                         </tr>
                       </thead>
                       <tbody class="bg-white divide-y divide-gray-200">
-                        <tr *ngFor="let course of courses">
+                        <tr *ngFor="let course of curCourseList">
                           <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
                             <div class="has-tooltip relative">
                               <span class="tooltip left-6">{{course.CourseName}}</span>
@@ -187,7 +180,7 @@
                           </td>
                           <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
                             <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
+                              (click)="manageService(course, tplManageService)">
                               <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
                                 data-inline="false"></span>
                             </button>
@@ -200,7 +193,7 @@
               </div>
             </div>
             <!-- App -->
-            <div *ngFor="let course of courses" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
+            <div *ngFor="let course of curCourseList" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
               <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
                 {{course.CourseName}}</p>
               <div class="px-4 py-3 flex flex-row itmes-center">
@@ -287,990 +280,6 @@
               </div>
             </div>
           </div>
-          <div class="content content2">
-            <!-- 星期一時段表格 -->
-            <!-- web -->
-            <div class="hidden xs:flex flex-col mt-4 w-full">
-              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
-                  <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
-                    <table class="w-full">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th scope="col" class="tb-title">課程名稱</th>
-                          <th scope="col" class="tb-title">節次</th>
-                          <th scope="col" class="tb-title">雲端服務</th>
-                          <th scope="col" class="tb-title">雲端服務管理</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- App -->
-            <div *ngFor="let item of table_row" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
-              <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
-                資一甲 英文I
-                所以我是個超級無敵長的課程名稱拉！</p>
-              <div class="px-4 py-3 flex flex-row itmes-center">
-                <p class="w-16 text-gray-text2 font-medium">時段<br>節次</p>
-                <div class="flex flex-row flex-wrap itmes-center">
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">2</p>
-                  </div>
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">4</p>
-                  </div>
-                  <div class="has-tooltip my-2">
-                    <span class="tooltip -ml-8">管理時段</span>
-                    <button (click)="openClassTime()"
-                      class="px-3 py-1 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                      <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                        data-inline="false"></span>
-                      <p class="text-sm">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
-                <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
-                <div class="flex flex-row flex-grow items-center justify-between">
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-5">OHA雲端教室</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/oha.svg" alt="OHAClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-10">Google Classroom</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                      alt="GoogleClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-2">1Know</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg" alt="1know">
-                  </div>
-                  <div class="has-tooltip lg:mr-4 xl:mr-0">
-                    <span class="tooltip -ml-3">外部連結</span>
-                    <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                      <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                    </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item class="menu">
-                        <a href="" class="menu-list">師培班</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                      <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                        <a href="" class="menu-list">雲端教育</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                    </mat-menu>
-                  </div>
-                  <div>
-                    <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                      (click)="openEditCloudService()">
-                      <span class="iconify text-2xl" data-icon="ant-design:setting-filled" data-inline="false"></span>
-                      <p class="text-xs text-center">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="content content3">
-            <!-- 無課程空白頁 -->
-            <img class="mx-auto mt-28" src="../assets/img/no_class.svg" alt="">
-          </div>
-          <div class="content content4">
-            <!-- 星期三時段表格 -->
-            <!-- web -->
-            <div class="hidden xs:flex flex-col mt-4 w-full">
-              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
-                  <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
-                    <table class="w-full">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th scope="col" class="tb-title">課程名稱</th>
-                          <th scope="col" class="tb-title">節次</th>
-                          <th scope="col" class="tb-title">雲端服務</th>
-                          <th scope="col" class="tb-title">雲端服務管理</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- App -->
-            <div *ngFor="let item of table_row" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
-              <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
-                資一甲 英文I
-                所以我是個超級無敵長的課程名稱拉！</p>
-              <div class="px-4 py-3 flex flex-row itmes-center">
-                <p class="w-16 text-gray-text2 font-medium">時段<br>節次</p>
-                <div class="flex flex-row flex-wrap itmes-center">
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">2</p>
-                  </div>
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">4</p>
-                  </div>
-                  <div class="has-tooltip my-2">
-                    <span class="tooltip -ml-8">管理時段</span>
-                    <button (click)="openClassTime()"
-                      class="px-3 py-1 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                      <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                        data-inline="false"></span>
-                      <p class="text-sm">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
-                <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
-                <div class="flex flex-row flex-grow items-center justify-between">
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-5">OHA雲端教室</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/oha.svg" alt="OHAClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-10">Google Classroom</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                      alt="GoogleClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-2">1Know</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg" alt="1know">
-                  </div>
-                  <div class="has-tooltip lg:mr-4 xl:mr-0">
-                    <span class="tooltip -ml-3">外部連結</span>
-                    <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                      <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                    </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item class="menu">
-                        <a href="" class="menu-list">師培班</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                      <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                        <a href="" class="menu-list">雲端教育</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                    </mat-menu>
-                  </div>
-                  <div>
-                    <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                      (click)="openEditCloudService()">
-                      <span class="iconify text-2xl" data-icon="ant-design:setting-filled" data-inline="false"></span>
-                      <p class="text-xs text-center">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="content content5">
-            <!-- 星期四時段表格 -->
-            <!-- web -->
-            <div class="hidden xs:flex flex-col mt-4 w-full">
-              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
-                  <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
-                    <table class="w-full">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th scope="col" class="tb-title">課程名稱</th>
-                          <th scope="col" class="tb-title">節次</th>
-                          <th scope="col" class="tb-title">雲端服務</th>
-                          <th scope="col" class="tb-title">雲端服務管理</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- App -->
-            <div *ngFor="let item of table_row" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
-              <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
-                資一甲 英文I
-                所以我是個超級無敵長的課程名稱拉！</p>
-              <div class="px-4 py-3 flex flex-row itmes-center">
-                <p class="w-16 text-gray-text2 font-medium">時段<br>節次</p>
-                <div class="flex flex-row flex-wrap itmes-center">
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">2</p>
-                  </div>
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">4</p>
-                  </div>
-                  <div class="has-tooltip my-2">
-                    <span class="tooltip -ml-8">管理時段</span>
-                    <button (click)="openClassTime()"
-                      class="px-3 py-1 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                      <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                        data-inline="false"></span>
-                      <p class="text-sm">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
-                <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
-                <div class="flex flex-row flex-grow items-center justify-between">
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-5">OHA雲端教室</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/oha.svg" alt="OHAClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-10">Google Classroom</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                      alt="GoogleClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-2">1Know</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg" alt="1know">
-                  </div>
-                  <div class="has-tooltip lg:mr-4 xl:mr-0">
-                    <span class="tooltip -ml-3">外部連結</span>
-                    <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                      <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                    </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item class="menu">
-                        <a href="" class="menu-list">師培班</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                      <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                        <a href="" class="menu-list">雲端教育</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                    </mat-menu>
-                  </div>
-                  <div>
-                    <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                      (click)="openEditCloudService()">
-                      <span class="iconify text-2xl" data-icon="ant-design:setting-filled" data-inline="false"></span>
-                      <p class="text-xs text-center">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="content content6">
-            <!-- 星期五時段表格 -->
-            <!-- web -->
-            <div class="hidden xs:flex flex-col mt-4 w-full">
-              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
-                  <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
-                    <table class="w-full">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th scope="col" class="tb-title">課程名稱</th>
-                          <th scope="col" class="tb-title">節次</th>
-                          <th scope="col" class="tb-title">雲端服務</th>
-                          <th scope="col" class="tb-title">雲端服務管理</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                總二乙 英文1 我是另一個超級無敵長的課程名稱拉:P
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
-                              </div>
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="openClassTime()"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg"
-                                alt="OHAClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-10">Google Classroom</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                                alt="GoogleClassroom">
-                            </div>
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div>
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
-                          </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="openEditCloudService()">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- App -->
-            <div *ngFor="let item of table_row" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
-              <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
-                資一甲 英文I
-                所以我是個超級無敵長的課程名稱拉！</p>
-              <div class="px-4 py-3 flex flex-row itmes-center">
-                <p class="w-16 text-gray-text2 font-medium">時段<br>節次</p>
-                <div class="flex flex-row flex-wrap itmes-center">
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">2</p>
-                  </div>
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">4</p>
-                  </div>
-                  <div class="has-tooltip my-2">
-                    <span class="tooltip -ml-8">管理時段</span>
-                    <button (click)="openClassTime()"
-                      class="px-3 py-1 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                      <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                        data-inline="false"></span>
-                      <p class="text-sm">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
-                <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
-                <div class="flex flex-row flex-grow items-center justify-between">
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-5">OHA雲端教室</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/oha.svg" alt="OHAClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-10">Google Classroom</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg"
-                      alt="GoogleClassroom">
-                  </div>
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-2">1Know</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg" alt="1know">
-                  </div>
-                  <div class="has-tooltip lg:mr-4 xl:mr-0">
-                    <span class="tooltip -ml-3">外部連結</span>
-                    <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                      <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                    </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item class="menu">
-                        <a href="" class="menu-list">師培班</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                      <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                        <a href="" class="menu-list">雲端教育</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                    </mat-menu>
-                  </div>
-                  <div>
-                    <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                      (click)="openEditCloudService()">
-                      <span class="iconify text-2xl" data-icon="ant-design:setting-filled" data-inline="false"></span>
-                      <p class="text-xs text-center">管理</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="content content7">
-            <!-- 無課程空白頁 -->
-            <img class="mx-auto mt-28" src="../assets/img/no_class.svg" alt="無課程">
-          </div>
-          <div class="content content8">
-            <!-- 無課程空白頁 -->
-            <img class="mx-auto mt-28" src="../assets/img/no_class.svg" alt="無課程">
-          </div>
         </div>
       </div>
       <p *ngIf="!courses.length" class="mt-4">目前無課程</p>
@@ -1278,46 +287,142 @@
   </div>
 </div>
 
-<ng-template #tplAddService let-data>
-  <div>
+<ng-template #tplManageService let-data>
+  <div class="w-104 rounded-2xl">
     <div class="text-right">
       <button mat-dialog-close><span class="iconify text-2xl text-gray-text1" data-icon="eva:close-fill" data-inline="false"></span></button>
     </div>
+    <!-- 管理雲端服務主畫面 -->
+    <div class="mx-2" *ngIf="manageProcessState === 301">
+      <p class="text-2xl font-semibold text-gray-text1 mt-4">管理雲端服務</p>
+      <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">已開啟的雲端服務</p>
+      <p class="text-base text-gray-text3 px-3 mt-2">若開啟服務，學生將可以看到該服務；反之，若關閉後，學生將無法看見此服務。</p>
+      <div class="gird grid-rows-5 px-2 mt-3">
+        <div class="flex flex-row items-center mb-2">
+          <div class="flex-grow"></div>
+          <div class="text-gray-text3 text-sm">關/開</div>
+          <div class="text-gray-text3 text-sm ml-4">設定</div>
+        </div>
+
+        <div class="flex flex-row items-center mb-6">
+          <div class="flex-grow w-full">
+            <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+              src="/assets/img/oha.svg" alt="OHA雲端教室">OHA雲端教室</span>
+          </div>
+          <div>
+            <mat-slide-toggle
+              color="primary"
+              [checked]="checkSystemServiceEnabled(data.target, '1campus_oha')"
+              [disabled]="saving"
+              (change)="toggleSystemCloudService($event, data.target, '1campus_oha')"
+            ></mat-slide-toggle>
+          </div>
+          <div class="ml-4">
+            <span class="iconify text-2xl text-gray-text3" style="opacity: 0.3;" data-icon="uil:setting" data-inline="false"></span>
+          </div>
+        </div>
+
+        <div class="flex flex-row items-center mb-6">
+          <div class="flex-grow flex flex-row items-center w-full">
+            <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+              src="/assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
+            <span *ngIf="data.target.AlternateLink">
+              (<a href="javascript:;" (click)="asyncService(data.target, tplAsyncService)"
+                  class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
+            </span>
+          </div>
+          <div>
+            <mat-slide-toggle
+              color="primary"
+              [checked]="checkSystemServiceEnabled(data.target, 'google_classroom')"
+              [disabled]="saving"
+              (change)="toggleSystemCloudService($event, data.target, 'google_classroom')"
+            ></mat-slide-toggle>
+          </div>
+          <a href="javascript:;" class="ml-4" (click)="manageProcessState = (!!!(data?.course?.GoogleExt)) ? 302 : 303; processState = 101;">
+            <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+              data-inline="false"></span>
+          </a>
+        </div>
+
+        <div class="flex flex-row items-center mb-6">
+          <div class="flex-grow w-full">
+            <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+                src="/assets/img/link.svg" alt="links">外部連結</span>
+          </div>
+          <div>
+            <mat-slide-toggle
+              color="primary"
+              [checked]="checkSystemServiceEnabled(data.target, 'custom')"
+              [disabled]="saving"
+              (change)="toggleSystemCloudService($event, data.target, 'custom')"
+            ></mat-slide-toggle>
+          </div>
+          <a href="javascript:;" class="ml-4" (click)="manageProcessState = 304">
+            <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+              data-inline="false"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- 第一次進入顯示：新增教室 -->
+    <ng-container *ngIf="manageProcessState === 302">
+      <div *ngTemplateOutlet="tplAddGCService; context: {$implicit: data}"></div>
+    </ng-container>
+    <!-- 建立過教室後 -->
+    <ng-container *ngIf="manageProcessState === 303">
+      <div *ngTemplateOutlet="tplEditGCService; context: {$implicit: data}"></div>
+    </ng-container>
+    <!-- 外部連結設定 -->
+    <ng-container *ngIf="manageProcessState === 304">
+      <div *ngTemplateOutlet="tplCustomService; context: {$implicit: data}"></div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #tplAddGCService let-data>
+  <div class="text-primary mt-2 mb-8 cursor-pointer">
+    <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
+      data-inline="false"></span>
+    <p class="text-base inline-block" (click)="manageProcessState = 301">返回</p>
+  </div>
+  <div>
     <div *ngIf="processState === 101" class="mx-2">
-      <p class="text-2xl font-semibold text-gray-text1 mt-4">新增雲端服務</p>
+      <p class="text-2xl font-semibold text-gray-text1 mt-4">新增Google Classroom</p>
       <p class="text-base text-gray-text3 px-2 mt-2" style="color: #F43F5E">課程成員限 Google 教育帳號</p>
-      <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">新增 Google Classroom</p>
-      <p class="text-sm mt-6">建立課程({{ data.course.CourseName }})</p>
-      <button class="w-full btn btn-primary mt-6 mb-10"
-        [ngClass]="{'disabled': !this.adminConnectedGoogle.success}"
-        [disabled]="!this.adminConnectedGoogle.success"
-        (click)="asyncGoogleClassroomCourse(data.course, 'create')">開始建立</button>
-      <div class="mt-6"></div>
-      <div class="mt-6 text-center">
-        <p class="text-gray-text3 text-sm">- 或 -</p>
+      <p class="text-base font-semibold text-gray-text1 px-2 mt-10 border-l-4 border-primary">建立新的教室
+      <div>
+        <p class="text-sm ml-2 mt-2 mb-4 text-gray-text3 px-1">建立教室 ({{ data.target.TargetName }})</p>
+        <button class="w-full btn btn-primary mt-2 mb-10 cursor-not-allowed"
+          [ngClass]="{'disabled': !this.adminConnectedGoogle.success}"
+          [disabled]="!this.adminConnectedGoogle.success"
+          (click)="asyncGoogleClassroomCourse(data.target, 'create')">開始建立</button>
+      </div>
+      <div class="mt-8 text-center">
+        <p class="text-gray text-sm overflow-hidden">--- 或 ---</p>
       </div>
       <div>
-        <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">連結現有 Google Classroom</p>
+        <p class="text-base font-semibold text-gray-text1 px-2 mt-10 border-l-4 border-primary">連結現有教室
+        <p class="text-sm ml-2 mt-2 mb-4 text-gray-text3 px-1">更改「教室連結」即可更換不同雲端教室</p>
         <input type="text"
           [formControl]="googleClassroomLink"
-          class="mt-6 w-full text-gray-text1 border border-gray-light rounded h-10 focus:border-primary focus:ring-0 focus:ring-offset-transparent"
+          class="w-full text-gray-text1 border border-gray-light rounded h-10 focus:border-primary no-ring"
           placeholder="請提供 Google Classroom 超連結">
-        <button class="w-full btn mt-4 mb-10 btn btn-primary"
-        [ngClass]="{'disabled': !this.adminConnectedGoogle.success}"
-        [disabled]="!this.adminConnectedGoogle.success"
-        (click)="asyncGoogleClassroomCourse(data.course, 'link')">開始連結</button>
+        <button class="w-full btn btn-primary mt-6 mb-10 cursor-not-allowed"
+          [ngClass]="{'disabled': !this.adminConnectedGoogle.success}"
+          [disabled]="!this.adminConnectedGoogle.success"
+          (click)="asyncGoogleClassroomCourse(data.target, 'link')">開始連結</button>
       </div>
-      <div class="mt-6"></div>
     </div>
     <div *ngIf="processState === 102" class="mt-36 mb-52">
-      <img class="mx-auto" src="/assets/my-course/img/loading.svg" alt="loading">
+      <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
       <p class="text-2xl font-semibold text-center mt-4">正在建立課程
         <br>請稍候
         <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
       </p>
     </div>
     <div *ngIf="processState === 103" class="mt-36 mb-52">
-      <img class="mx-auto" src="/assets/my-course/img/loading.svg" alt="loading">
+      <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
       <p class="text-2xl font-semibold text-center mt-4">正在連結課程
         <br>請稍候
         <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
@@ -1326,21 +431,21 @@
     <div *ngIf="processState === 201" class="mx-2">
       <p class="text-2xl font-semibold text-gray-text1 mt-4">同步雲端服務</p>
       <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">管理Google Classroom</p>
-      <p class="text-sm mt-6">同步學生({{ data.course.CourseName }})</p>
+      <p class="text-sm mt-6">同步學生({{ data.target.TargetName }})</p>
       <button class="w-full btn btn-primary mt-6 mb-10"
         [ngClass]="{'disabled': !this.adminConnectedGoogle.success}"
-        (click)="asyncGoogleClassroomCourse(data.course, 'update')">開始同步</button>
+        (click)="asyncGoogleClassroomCourse(data.target, 'update')">開始同步</button>
       <div class="mt-6"></div>
     </div>
     <div *ngIf="processState === 202" class="mt-36 mb-52">
-      <img class="mx-auto" src="/assets/my-course/img/loading.svg" alt="loading">
+      <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
       <p class="text-2xl font-semibold text-center mt-4">正在同步
         <br>請稍候
         <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
       </p>
     </div>
     <div *ngIf="processState === 2000" class="mt-20">
-      <img class="mx-auto mb-4" src="/assets/my-course/img/success.svg" alt="loading">
+      <img class="mx-auto mb-4" src="/assets/img/success.svg" alt="loading">
       <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
       <div class="text-center mb-4">{{createStudentMsg}}</div>
       <div class="flex justify-around mb-20 text-sm text-gray-text3">
@@ -1356,24 +461,24 @@
         <button mat-dialog-close
           class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"
           >關閉</button>
-        <a class="inline-block btn btn-primary px-4" [href]="googleSigninChooserUrl(data.course.GoogleExt?.alternateLink)"
+        <a class="inline-block btn btn-primary px-4" [href]="googleSigninChooserUrl(data.target.GoogleExt?.alternateLink)"
           target="_blank" rel="noreferrer noopener">開啟服務</a>
       </div>
     </div>
     <div *ngIf="processState === 2100" class="mt-20">
-      <img class="mx-auto mb-4" src="/assets/my-course/img/success.svg" alt="loading">
+      <img class="mx-auto mb-4" src="/assets/img/success.svg" alt="loading">
       <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
       <div class="text-center mb-4">{{createStudentMsg}}</div>
       <div class="text-right mb-2">
         <button mat-dialog-close
           class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"
           >關閉</button>
-        <a class="inline-block btn btn-primary px-4" [href]="googleSigninChooserUrl(data.course.GoogleExt?.alternateLink)"
+        <a class="inline-block btn btn-primary px-4" [href]="googleSigninChooserUrl(data.target.GoogleExt?.alternateLink)"
           target="_blank" rel="noreferrer noopener">開啟服務</a>
       </div>
     </div>
     <div *ngIf="processState === 9999" class="mt-36">
-      <img class="mx-auto mb-4" src="/assets/my-course/img/error.svg" alt="loading">
+      <img class="mx-auto mb-4" src="/assets/img/error.svg" alt="loading">
       <p class="text-xl font-semibold text-center text-warning mb-48">
         <span *ngIf="!processErrorMsg">哎呀！出了一點問題<br>請稍後再嘗試一次</span>
         <span *ngIf="processErrorMsg">{{processErrorMsg}}</span>
@@ -1387,49 +492,217 @@
   </div>
 </ng-template>
 
-<ng-template #tplManageService let-data>
+<ng-template #tplEditGCService let-data>
+  <div class="text-primary mt-2 mb-8 cursor-pointer">
+    <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
+      data-inline="false"></span>
+    <p class="text-base inline-block" (click)="manageProcessState = 301">返回</p>
+  </div>
   <div>
-    <div class="text-right">
-      <button mat-dialog-close><span class="iconify text-2xl text-gray-text1" data-icon="eva:close-fill" data-inline="false"></span></button>
+    <p class="text-2xl font-semibold text-gray-text1 mt-4">設定</p>
+    <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-4 border-primary">現有班級管理</p>
+    <p class="text-sm text-gray-text3 px-3 mt-2">更改「課程連結」即可更換不同的雲端教室；若解除教室連結，之後需要再次重新連結。</p>
+    <div class="mt-6">
+      <label for="inputCourseName" class="pr-2 text-gray-text1 text-sm">課程名稱</label>
+      <span>
+        <input id="inputCourseName"
+          class="w-full mt-2 bg-gray-light text-gray-text3 overflow-ellipsis border-transparent rounded h-10 cursor-not-allowed focus:border-transparent focus:ring-0 focus:ring-offset-transparent"
+          type="text" [placeholder]="data.target.TargetName" readonly>
+      </span>
     </div>
-    <div class="mx-2">
-      <p class="text-2xl font-semibold text-gray-text1 mt-4">管理雲端服務</p>
-      <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">已開啟的雲端服務</p>
-      <p class="text-base text-gray-text3 px-2 mt-2">若開啟服務，學生將可以看到該服務；反之，若關閉後，該服務將不會顯示在學生的頁面上</p>
-      <p class="text-base text-gray-text3 px-2 mt-2">若解除連結 Google Classroom 之後需要重新連結，可以透過新增服務功能重新連結。</p>
-      <div class="gird grid-rows-5 px-2 mt-3">
+    <div class="mt-6">
+      <label for="inputCourseLink" class="pr-2 text-gray-text1 text-sm">課程連結</label>
+      <span>
+        <input id="inputCourseLink"
+          class="w-full mt-2 text-gray-text1 border border-gray-light rounded h-10 focus:border-primary focus:ring-0 focus:ring-offset-transparent overflow-ellipsis"
+          type="text" [placeholder]="data.target.GoogleExt?.alternateLink">
+      </span>
+    </div>
+    <div class="mt-8 mb-16">
+      <button class="btn btn-second2" (click)="dislinkGoogleClassroom(data.target)">
+        {{ dislinkingGoogle ? '解除中...' : '解除教室連結'}}
+      </button>
+    </div>
+    <div class="text-right mb-2">
+      <button
+        class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"
+        (click)="manageProcessState = 301">取消</button>
+    </div>
+  </div>
+</ng-template>
 
-        <div class="flex flex-row items-center mb-2">
-          <div class="flex-grow"></div>
-          <div class="text-gray-text3 text-sm">關/開</div>
+<ng-template #tplCustomService let-data>
+  <div class="mx-2">
+    <div class="text-primary mt-2 mb-8 cursor-pointer">
+      <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
+        data-inline="false"></span>
+      <p class="text-base inline-block" (click)="manageProcessState = 301">返回</p>
+    </div>
+    <p class="text-2xl font-semibold text-gray-text1 mt-4">外部連結設定</p>
+
+    <div class="panel-group">
+      <input class="panel-control" type="radio" name="week-day" id="editlink" value="editlink" [(ngModel)]="curCSTab">
+      <input class="panel-control" type="radio" name="week-day" id="addlink" value="addlink" [(ngModel)]="curCSTab">
+
+      <div class="tab-group tab-group2 mt-4 flex flex-row">
+        <label for="editlink" class="w-1/2 text-center">管理</label>
+        <label for="addlink" class="w-1/2 text-center">新增</label>
+      </div>
+
+      <div class="content-group">
+        <div class="content" *ngIf="curCSTab === 'editlink'">
+          <!-- 管理連結 -->
+          <p class="text-base font-semibold text-gray-text1 px-2 mt-10 border-l-4 border-primary">管理外部連結</p>
+          <!-- 說明文 -->
+          <div class="flex flex-row items-center pr-7">
+            <div class="flex-grow"></div>
+            <div class="text-gray-text3 text-sm">關/開</div>
+            <div class="text-gray-text3 ml-8 text-sm">設定</div>
+          </div>
+          <!-- table -->
+          <div class="h-72 overflow-y-scroll">
+            <table class="w-full">
+              <tbody class="bg-white mb-6">
+                <tr class="flex flex-row items-center border-b border-gray-light">
+                  <td>
+                    <span class="iconify cursor-move text-gray" data-icon="ic:round-menu"></span>
+                  </td>
+                  <td class="px-4 py-4 flex flex-grow flex-col">
+                    <input type="text" class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer"
+                      placeholder="師培班">
+                    <input type="text"
+                      class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer mt-2"
+                      placeholder="http://wefblaiuweglkjberlgqiurgl.com">
+                  </td>
+                  <td class="px-4 py-4 flex flex-row flex-wrap items-center justify-end ml-auto">
+                    <div class="mr-3">
+                      <mat-slide-toggle
+                        color="primary"
+                      ></mat-slide-toggle>
+                    </div>
+                    <button class="no-ring text-2xl mr-2">
+                      <span class="iconify text-gray-text3 hover:text-primary" data-icon="entypo:save"
+                        data-inline="false"></span>
+                    </button>
+                    <button class="no-ring text-2xl">
+                      <span class="iconify text-gray-text3 hover:text-warning" data-icon="fluent:delete-20-filled"
+                        data-inline="false"></span>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngFor="let item of [1,2,3]" class="flex flex-row items-center border-b border-gray-light">
+                  <td>
+                    <span class="iconify cursor-move text-gray" data-icon="ic:round-menu"></span>
+                  </td>
+                  <td class="px-4 py-4 flex flex-grow flex-col">
+                    <input type="text" class="border-0 overflow-ellipsis no-ring cursor-default" placeholder="師培班">
+                    <input type="text" class="border-0 overflow-ellipsis no-ring cursor-default mt-2"
+                      placeholder="http://wefblaiuweglkjberlgqiurgl.com">
+                  </td>
+                  <td class="px-4 py-4 flex flex-row flex-wrap items-center justify-end ml-auto">
+                    <div class="mr-3">
+                      <mat-slide-toggle
+                        color="primary"
+                      ></mat-slide-toggle>
+                    </div>
+                    <button class="no-ring text-2xl mr-2">
+                      <span class="iconify text-gray-text3 hover:text-primary" data-icon="akar-icons:edit"
+                        data-inline="false"></span>
+                    </button>
+                    <button class="no-ring text-2xl">
+                      <span class="iconify text-gray-text3 hover:text-warning" data-icon="fluent:delete-20-filled"
+                        data-inline="false"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="flex flex-row items-center mb-6">
-          <div class="flex-grow w-full">
-            <span class="text-gray-text1 text-base flex flex-row items-center"><img
-                   class="pr-2"
-                   src="/assets/my-course/img/google_classroom_logo.svg"
-                   alt="GoogleClassroom">Google Classroom
-              <ng-container *ngIf="data?.course?.GoogleExt && !dislinkingGoogle">
-                (<a href="javascript:;"
-                   (click)="dislinkGoogleClassroom(data.course)"
-                   class="text-secondary hover:text-secondary-light focus:outline-none">解除連結</a>)
-              </ng-container>
-              <ng-container *ngIf="dislinkingGoogle">
-                (<span class="text-secondary focus:outline-none">解除中...</span>)
-              </ng-container>
+        <div class="content" *ngIf="curCSTab === 'addlink'">
+          <!-- 新增連結 -->
+          <p class="text-base font-semibold text-gray-text1 px-2 mt-8 border-l-4 border-primary">新增外部連結</p>
+          <div class="mt-6">
+            <label for="" class="pr-2 text-gray-text1 text-sm">連結名稱</label>
+            <span>
+              <input
+                class="w-full mt-1 text-gray-text1 border border-gray-light rounded h-10 focus:border-primary overflow-ellipsis no-ring"
+                type="text" placeholder="請輸入名稱" readonly>
             </span>
           </div>
-          <div>
-            <mat-slide-toggle
-              color="primary"
-              [checked]="data.course.GoogleExt?.courseState === 'ACTIVE'"
-              [disabled]="saving"
-              (change)="toggleGoogleClassroomCourse($event, data.course)"
-            ></mat-slide-toggle>
+          <div class="mt-4">
+            <label for="" class="pr-2 text-gray-text1 text-sm">URL</label>
+            <span>
+              <input
+                class="w-full mt-1 text-gray-text1 border border-gray-light rounded h-10 focus:border-primary overflow-ellipsis no-ring"
+                type="text" placeholder="請貼上URL">
+            </span>
+          </div>
+          <div class="text-right mt-4 mb-6">
+            <button class="inline-block btn btn-primary px-4">新增連結</button>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </ng-template>
+
+<ng-template #tplAsyncService let-data>
+  <div>
+    <div class="text-right">
+      <button mat-dialog-close><span class="iconify text-2xl text-gray-text1" data-icon="eva:close-fill" data-inline="false"></span></button>
+    </div>
+    <div *ngIf="processState === 201" class="mx-2">
+      <p class="text-2xl font-semibold text-gray-text1 mt-4">同步雲端服務</p>
+      <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">管理Google Classroom</p>
+      <p class="text-sm mt-6">同步學生({{ data.target.TargetName }})</p>
+      <button class="w-full btn btn-primary mt-6 mb-10"
+        [ngClass]="{'disabled': !this.adminConnectedGoogle.success}"
+        (click)="asyncGoogleClassroomCourse(data.target, 'update')">開始同步</button>
+      <div class="mt-6"></div>
+    </div>
+    <div *ngIf="processState === 202" class="mt-36 mb-52">
+      <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
+      <p class="text-2xl font-semibold text-center mt-4">正在同步
+        <br>請稍候
+        <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
+      </p>
+    </div>
+    <div *ngIf="processState === 2000" class="mt-20">
+      <img class="mx-auto mb-4" src="/assets/img/success.svg" alt="loading">
+      <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
+      <div class="text-center mb-4">{{createStudentMsg}}</div>
+      <div class="flex justify-around mb-20 text-sm text-gray-text3">
+        <div></div>
+        <div>
+          <div class="leading-7">1. 已加入的學生不會重複建立</div>
+          <div class="leading-7">2. 非 Google 教育帳號不能被加入</div>
+          <div class="leading-7">3. 學生異動後，可使用同步功能自動加入</div>
+        </div>
+        <div></div>
+      </div>
+      <div class="text-right mb-2">
+        <button mat-dialog-close
+          class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"
+          >關閉</button>
+        <a class="inline-block btn btn-primary px-4" [href]="googleSigninChooserUrl(data.target.AlternateLink)"
+          target="_blank" rel="noreferrer noopener">開啟服務</a>
+      </div>
+    </div>
+    <div *ngIf="processState === 9999" class="mt-36">
+      <img class="mx-auto mb-4" src="/assets/img/error.svg" alt="loading">
+      <p class="text-xl font-semibold text-center text-warning mb-48">
+        <span *ngIf="!processErrorMsg">哎呀！出了一點問題<br>請稍後再嘗試一次</span>
+        <span *ngIf="processErrorMsg">{{processErrorMsg}}</span>
+      </p>
+      <div class="text-right mb-2">
+        <button
+          class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"></button>
+        <button mat-dialog-close class="inline-block btn btn-primary px-4">關閉</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+

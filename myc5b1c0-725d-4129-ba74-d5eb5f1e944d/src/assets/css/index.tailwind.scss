@@ -113,9 +113,9 @@
     @apply inline-block;
   }
 
-  .content {
-    @apply hidden;
-  }
+  // .content {
+  //   @apply hidden;
+  // }
 
   #tab1:checked ~ .tab-group [for="tab1"],
   #tab2:checked ~ .tab-group [for="tab2"],
@@ -137,21 +137,21 @@
     color: #5ec1c7;
   }
 
-  #tab1:checked ~ .content-group .content1,
-  #tab2:checked ~ .content-group .content2,
-  #tab3:checked ~ .content-group .content3,
-  #tab4:checked ~ .content-group .content4,
-  #tab5:checked ~ .content-group .content5,
-  #tab6:checked ~ .content-group .content6,
-  #tab7:checked ~ .content-group .content7,
-  #tab8:checked ~ .content-group .content8 {
-    display: block;
-  }
+  // #tab1:checked ~ .content-group .content1,
+  // #tab2:checked ~ .content-group .content2,
+  // #tab3:checked ~ .content-group .content3,
+  // #tab4:checked ~ .content-group .content4,
+  // #tab5:checked ~ .content-group .content5,
+  // #tab6:checked ~ .content-group .content6,
+  // #tab7:checked ~ .content-group .content7,
+  // #tab8:checked ~ .content-group .content8 {
+  //   display: block;
+  // }
 
-  #addlink:checked ~ .content-group .content2,
-  #editlink:checked ~ .content-group .content1 {
-    display: block;
-  }
+  // #addlink:checked ~ .content-group .content2,
+  // #editlink:checked ~ .content-group .content1 {
+  //   display: block;
+  // }
 
   .tb-title {
     @apply px-6 py-4 text-center text-sm font-semibold text-white tracking-wider;
