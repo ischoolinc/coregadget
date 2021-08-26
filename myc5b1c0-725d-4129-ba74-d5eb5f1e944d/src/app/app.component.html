@@ -377,13 +377,18 @@
         [dsns]="dsns"
         [adminConnectedGoogle]="adminConnectedGoogle.success"
         [account]="myInfo.account"
-        [data]="data"
-      ></app-add-google-classroom>
+        [data]="data">
+      </app-add-google-classroom>
       <!-- <div *ngTemplateOutlet="tplAddGCService; context: {$implicit: data}"></div> -->
     </ng-container>
     <!-- 解除或更改「課程連結」 -->
     <ng-container *ngIf="manageProcessState === 303">
-      <div *ngTemplateOutlet="tplEditGCService; context: {$implicit: data}"></div>
+      <app-edit-google-classroom
+        [dsns]="dsns"
+        [adminConnectedGoogle]="adminConnectedGoogle.success"
+        [data]="data">
+      </app-edit-google-classroom>
+      <!-- <div *ngTemplateOutlet="tplEditGCService; context: {$implicit: data}"></div> -->
     </ng-container>
     <!-- 外部連結設定 -->
     <ng-container *ngIf="manageProcessState === 304">

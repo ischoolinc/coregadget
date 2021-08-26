@@ -19,11 +19,13 @@ import { SelectModule } from './shared/select/select.module';
 import { SnackbarModule } from './shared/snackbar/snackbar.module';
 import { environment } from '../environments/environment';
 import { AddGoogleClassroomComponent } from './add-google-classroom/add-google-classroom.component';
+import { EditGoogleClassroomComponent } from './edit-google-classroom/edit-google-classroom.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AddGoogleClassroomComponent
+    AddGoogleClassroomComponent,
+    EditGoogleClassroomComponent
   ],
   imports: [
     BrowserModule,
