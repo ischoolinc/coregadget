@@ -14,6 +14,9 @@ import { MyInfo, SelectedContext } from './core/data/login';
 import { ConnectedSettingService } from './core/connected-setting.service';
 import { ClassroomService } from './core/classroom.service';
 import { interval } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { Context } from './core/states/context.actions';
+import { ContextState } from './core/states/context.state';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -83,9 +86,14 @@ export class AppComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private ConnectedSettingSrv: ConnectedSettingService,
     private crSrv: ClassroomService,
+    private store: Store
   ) {}
 
   async ngOnInit() {
+
+    // 將相關資料放進 Store 裡面。
+    await this.store.dispatch(Context.FetchAll).toPromise();
+
     const rsp1 = await this.timetable.getTimetable('dev.sh_d');
     // const rsp2 = await this.timetable.setTimetable('dev.sh_d', {
     //   "course_id": "11729",
