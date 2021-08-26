@@ -16,10 +16,10 @@ import { ClassroomService } from './core/classroom.service';
 import { concat, interval } from 'rxjs';
 import { Actions, ofActionCompleted, ofActionSuccessful, Store } from '@ngxs/store';
 import { Context } from './core/states/context.actions';
-import { ContextState } from './core/states/context.state';
+import { ContextState, ContextStateModel } from './core/states/context.state';
 import { Timetable } from './core/states/timetable.actions';
 import { TimetableState } from './core/states/timetable.state';
-import { concatMap, concatMapTo, withLatestFrom } from 'rxjs/operators';
+import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -97,10 +97,17 @@ export class AppComponent implements OnInit {
     const { store, actions$ } = this;
 
     // 將相關資料放進 Store 裡面。
-    await this.store.dispatch(new Context.FetchAll()).pipe(
-      concatMap(() => actions$.pipe(ofActionSuccessful(Context.FetchAll))),
-      concatMap(() => store.dispatch(new Timetable.FetchAll())),
+    await store.dispatch(new Context.FetchAll()).pipe(
+      concatMap(() => store.dispatch(new Timetable.FetchAll()))
     ).toPromise();
+
+    store.dispatch(new Timetable.SetCourse({
+      course_id: '11729', 
+      periods: [{ weekday: '3', period: '5' }, { weekday: '3', period: '4' }]
+    })).pipe(
+      concatMap(() => store.selectOnce(TimetableState.getCourse)),
+      map(fn => fn(11729))
+    ).subscribe(console.log);
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)
     // 確認管理者是否已設定連結 Google 帳號

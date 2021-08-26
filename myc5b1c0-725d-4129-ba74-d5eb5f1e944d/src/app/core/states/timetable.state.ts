@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Action, State, StateContext, StateToken, Store } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
+import { from } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 import { Course } from '../data/timetable';
 import { TimetableService } from '../timetable.service';
 import { ContextState } from './context.state';
@@ -17,28 +19,54 @@ const TIMETABLE_STATE_TOKEN = new StateToken<TimetableStateModel>('Timetable');
 @Injectable()
 export class TimetableState {
 
+  #dsns!: string;
+
   constructor(
     private store: Store,
     private timetable: TimetableService
-  ) { }
+  ) {
+    store.select(ContextState.dsns).subscribe(v => this.#dsns = v);
+  }
 
+  /** 從 Server 讀取全部資料。 */
   @Action(Timetable.FetchAll)
   async fetchAll({ setState }: StateContext<TimetableStateModel>) {
-    const { store, timetable } = this;
-
-    const dsns = store.selectSnapshot(ContextState.dsns);
-    if (!dsns) { throw new Error('dsns 未準備好。') }
-
-    const tt = await timetable.getTimetable(dsns);
+    const { timetable } = this;
+    const tt = await timetable.getTimetable(this.#dsns);
     setState(tt);
   }
 
-  @Action(Timetable.SetPeriods)
-  setPeriods(ctx: StateContext<TimetableStateModel>) {
-    const { store, timetable } = this;
+  /** 從 Server 讀取指定課程資料。 */
+  @Action(Timetable.FetchCourse)
+  async fetchCourse(ctx: StateContext<TimetableStateModel>, action: Timetable.FetchCourse) {
+    const { timetable } = this;
     const state = ctx.getState();
+    const tt = await timetable.getTimetable(this.#dsns, action.payload);
 
-    
-    
+    const found = state.find(v => (+v.course_id) == (+action.payload));
+
+    if(!found) {
+      ctx.setState([...state, ...tt])
+    } else {
+      const newState = state.filter(v => v.course_id != action.payload);
+      ctx.setState([...newState, ...tt]);
+    }
+  }
+
+  /** 設定課程資料。 */
+  @Action(Timetable.SetCourse)
+  setCourse(ctx: StateContext<TimetableStateModel>, action: Timetable.SetCourse) {
+    const { store, timetable } = this;
+
+    return from(timetable.setTimetable(this.#dsns, action.payload)).pipe(
+      concatMap(() => store.dispatch(new Timetable.FetchCourse(action.payload.course_id)))
+    )
+  }
+
+  @Selector()
+  static getCourse(state: TimetableStateModel) {
+    return (courseId: string | number) => {
+      return state.find(v => v.course_id == courseId);
+    }
   }
 }

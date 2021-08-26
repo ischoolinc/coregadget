@@ -17,8 +17,12 @@ export class TimetableService {
     const contract = await this.dsa.getConnection(dsns, TeacherContract);
 
     const req = {
-      "course": course
+      "course": {
+        ...course,
+        period: course.periods // 會由加 s 變成不加 s 跟 xml 結構有關。
+      }
     };
+
     const rsp = await contract.send('mycourse.setTimetable', req);
 
     const rspjson = rsp?.toCompactJson();
