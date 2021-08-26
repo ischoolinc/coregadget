@@ -141,13 +141,13 @@
 
                             <div class="has-tooltip lg:mr-4">
                               <span class="tooltip -ml-10">Google Classroom</span>
-                              <ng-container *ngIf="course.GoogleExt?.courseState === 'ACTIVE'">
+                              <ng-container *ngIf="course.GoogleExt?.id">
                                 <a [href]="googleSigninChooserUrl(course.GoogleExt?.alternateLink || '')"
                                   target="_blank" rel="noreferrer noopener">
                                   <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg" alt="GoogleClassroom">
                                 </a>
                               </ng-container>
-                              <ng-container *ngIf="course.GoogleExt?.courseState !== 'ACTIVE'">
+                              <ng-container *ngIf="!course.GoogleExt?.id">
                                 <img class="h-10 w-10 mb-2 mx-1" src="/assets/img/google_classroom_logo2.svg" alt="GoogleClassroom">
                               </ng-container>
                             </div>
@@ -237,13 +237,13 @@
 
                   <div class="has-tooltip lg:mr-4">
                     <span class="tooltip -ml-10">Google Classroom</span>
-                    <ng-container *ngIf="course.GoogleExt?.courseState === 'ACTIVE'">
+                    <ng-container *ngIf="course.GoogleExt?.id">
                       <a [href]="googleSigninChooserUrl(course.GoogleExt?.alternateLink || '')"
                         target="_blank" rel="noreferrer noopener">
                         <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg" alt="GoogleClassroom">
                       </a>
                     </ng-container>
-                    <ng-container *ngIf="course.GoogleExt?.courseState !== 'ACTIVE'">
+                    <ng-container *ngIf="!course.GoogleExt?.id">
                       <img class="h-10 w-10 my-1 mx-1" src="/assets/img/google_classroom_logo2.svg" alt="GoogleClassroom">
                     </ng-container>
                   </div>
@@ -326,7 +326,7 @@
           <div class="flex-grow flex flex-row items-center w-full">
             <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
               src="/assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
-            <span *ngIf="data.target.AlternateLink">
+            <span *ngIf="data.target.GoogleExt?.id">
               (<a href="javascript:;" (click)="asyncService(data.target, tplAsyncService)"
                   class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
             </span>
@@ -339,7 +339,7 @@
               (change)="toggleSystemCloudService($event, data.target, 'google_classroom')"
             ></mat-slide-toggle>
           </div>
-          <a href="javascript:;" class="ml-4" (click)="manageProcessState = (!!!(data?.course?.GoogleExt)) ? 302 : 303; processState = 101;">
+          <a href="javascript:;" class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
             <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
               data-inline="false"></span>
           </a>
@@ -365,11 +365,23 @@
         </div>
       </div>
     </div>
-    <!-- 第一次進入顯示：新增教室 -->
+    <div *ngIf="manageProcessState !== 301"
+      class="text-primary mt-2 mb-8 cursor-pointer">
+      <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
+        data-inline="false"></span>
+      <p class="text-base inline-block" (click)="manageProcessState = 301">返回</p>
+    </div>
+    <!-- 新增教室 -->
     <ng-container *ngIf="manageProcessState === 302">
-      <div *ngTemplateOutlet="tplAddGCService; context: {$implicit: data}"></div>
+      <app-add-google-classroom
+        [dsns]="dsns"
+        [adminConnectedGoogle]="adminConnectedGoogle.success"
+        [account]="myInfo.account"
+        [data]="data"
+      ></app-add-google-classroom>
+      <!-- <div *ngTemplateOutlet="tplAddGCService; context: {$implicit: data}"></div> -->
     </ng-container>
-    <!-- 建立過教室後 -->
+    <!-- 解除或更改「課程連結」 -->
     <ng-container *ngIf="manageProcessState === 303">
       <div *ngTemplateOutlet="tplEditGCService; context: {$implicit: data}"></div>
     </ng-container>
@@ -493,11 +505,6 @@
 </ng-template>
 
 <ng-template #tplEditGCService let-data>
-  <div class="text-primary mt-2 mb-8 cursor-pointer">
-    <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
-      data-inline="false"></span>
-    <p class="text-base inline-block" (click)="manageProcessState = 301">返回</p>
-  </div>
   <div>
     <p class="text-2xl font-semibold text-gray-text1 mt-4">設定</p>
     <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-4 border-primary">現有班級管理</p>
@@ -507,7 +514,7 @@
       <span>
         <input id="inputCourseName"
           class="w-full mt-2 bg-gray-light text-gray-text3 overflow-ellipsis border-transparent rounded h-10 cursor-not-allowed focus:border-transparent focus:ring-0 focus:ring-offset-transparent"
-          type="text" [placeholder]="data.target.TargetName" readonly>
+          type="text" [placeholder]="data.target.GoogleExt?.name" readonly>
       </span>
     </div>
     <div class="mt-6">

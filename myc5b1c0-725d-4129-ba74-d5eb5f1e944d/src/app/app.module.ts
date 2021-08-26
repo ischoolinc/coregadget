@@ -18,10 +18,12 @@ import { CoreModule } from './core/core.module';
 import { SelectModule } from './shared/select/select.module';
 import { SnackbarModule } from './shared/snackbar/snackbar.module';
 import { environment } from '../environments/environment';
+import { AddGoogleClassroomComponent } from './add-google-classroom/add-google-classroom.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AddGoogleClassroomComponent
   ],
   imports: [
     BrowserModule,
