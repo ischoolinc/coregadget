@@ -1,33 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
 import { tap, withLatestFrom } from 'rxjs/operators';
+import { MyInfo, SelectedContext } from '../data/login';
 import { LoginService } from '../login.service';
 import { Context } from './context.actions';
 
 export interface ContextStateModel {
-  /** 登入帳號。 */
-  account: string
-  /** 在 Auth 上的姓名。 */
-  name: string;
   /** OAuth AccessToken */
   accessToken: string;
-  /** DSNS */
-  dsns: string;
-  /** 目前選擇的角色。 */
-  role: string;
+
+  /** 目前選擇的學校、角色。 */
+  context: SelectedContext;
+
+  /** 個人資訊 */
+  personal: MyInfo
+
 }
 
 const CONTEXT_STATE_TOKEN = new StateToken<ContextStateModel>('Context');
 
 @State<ContextStateModel>({
   name: CONTEXT_STATE_TOKEN,
-  defaults: {
-    account: '',
-    name: '',
-    accessToken: '',
-    dsns: '',
-    role: '',
-  }
 })
 @Injectable()
 export class ContextState {
@@ -47,10 +40,8 @@ export class ContextState {
         next: ([[token, selctx], info]) => {
           ctx.setState({
             accessToken: token,
-            name: info.name,
-            account: info.account,
-            dsns: selctx.dsns,
-            role: selctx.role
+            context: selctx,
+            personal: info,
           });
         }
       })
@@ -63,8 +54,20 @@ export class ContextState {
     return accessToken
   }
 
+  /** 取得當前使用者帳號。 */
   @Selector()
-  static account({ account }: ContextStateModel) {
+  static account({ personal: { account } }: ContextStateModel) {
     return account;
+  }
+
+  /** 取得當前 DSNS */
+  @Selector()
+  static dsns({ context: { dsns } }: ContextStateModel) {
+    return dsns;
+  }
+
+  @Selector()
+  static personalInfo({ personal }: ContextStateModel) {
+    return personal;
   }
 }

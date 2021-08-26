@@ -17,6 +17,9 @@ import { interval } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { Context } from './core/states/context.actions';
 import { ContextState } from './core/states/context.state';
+import { Timetable } from './core/states/timetable.actions';
+import { TimetableState } from './core/states/timetable.state';
+import { concatMap, withLatestFrom } from 'rxjs/operators';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -92,24 +95,9 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
 
     // 將相關資料放進 Store 裡面。
-    await this.store.dispatch(Context.FetchAll).toPromise();
-
-    const rsp1 = await this.timetable.getTimetable('dev.sh_d');
-    // const rsp2 = await this.timetable.setTimetable('dev.sh_d', {
-    //   "course_id": "11729",
-    //   "periods": [
-    //     {
-    //       "weekday": "1",
-    //       "period": "1"
-    //     },
-    //     {
-    //       "weekday": "1",
-    //       "period": "2"
-    //     }
-    //   ]
-    // });
-
-    console.log(rsp1);
+    await this.store.dispatch(new Context.FetchAll()).pipe(
+      concatMap(() => this.store.dispatch(new Timetable.FetchAll())),
+    ).toPromise();
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)
     // 確認管理者是否已設定連結 Google 帳號
@@ -117,15 +105,9 @@ export class AppComponent implements OnInit {
     // 比對 Google Classroom 中的 alias，符合「d:dsns@course@courseId」就代表此課程有啟用 Google Classroom
     // 組合兩者的資訊
 
-    this.login.getSelectedContext().subscribe(console.log);
-    const contract = await this.dsa.getConnection('demo.h.cynthia.chen', '1campus.mobile.v2.guest');
-    const rsp = await contract?.send('GetModuleConfig');
-    console.log(rsp.toXmlString());
-    this.login.getMyInfo().subscribe(console.log);
-    this.login.getAccessToken().subscribe(console.log);
-
     try {
-      this.myInfo = await this.login.getMyInfo().toPromise() as MyInfo;
+      const info = this.store.selectSnapshot(ContextState.personalInfo);
+      this.myInfo = info;
 
       this.curSelectedContext = await this.login.getSelectedContext().toPromise() as SelectedContext;
       this.dsns = this.curSelectedContext.dsns;

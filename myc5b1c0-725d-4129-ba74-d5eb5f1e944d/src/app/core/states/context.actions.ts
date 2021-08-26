@@ -1,4 +1,3 @@
-import { Course } from "../data/timetable";
 
 /** 系統當前的狀態資訊，例如登入的 dsns、角色、個人資訊… */
 export namespace Context {
