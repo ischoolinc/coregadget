@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
-import { tap, withLatestFrom } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { combineAll, tap, withLatestFrom } from 'rxjs/operators';
 import { MyInfo, SelectedContext } from '../data/login';
 import { LoginService } from '../login.service';
 import { Context } from './context.actions';
@@ -33,19 +34,22 @@ export class ContextState {
   fetechAll(ctx: StateContext<ContextStateModel>) {
     const { login } = this;
 
-    return login.getAccessToken().pipe(
-      withLatestFrom(login.getSelectedContext()),
-      withLatestFrom(login.getMyInfo()),
-      tap({
-        next: ([[token, selctx], info]) => {
-          ctx.setState({
-            accessToken: token,
-            context: selctx,
-            personal: info,
-          });
-        }
-      })
-    )
+    return forkJoin(
+      [ // 這三個 Service 同時呼叫，並且都完成才 continue。
+        login.getAccessToken(),
+        login.getSelectedContext(),
+        login.getMyInfo()
+      ]).pipe(
+        tap({
+          next: ([token, selctx, info]) => {
+            ctx.setState({
+              accessToken: token,
+              context: selctx,
+              personal: info,
+            });
+          }
+        })
+      );
   }
 
   /** 取得快取的 AccessToken。 */

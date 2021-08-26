@@ -13,13 +13,13 @@ import { SnackbarService } from './shared/snackbar/snackbar.service';
 import { MyInfo, SelectedContext } from './core/data/login';
 import { ConnectedSettingService } from './core/connected-setting.service';
 import { ClassroomService } from './core/classroom.service';
-import { interval } from 'rxjs';
-import { Store } from '@ngxs/store';
+import { concat, interval } from 'rxjs';
+import { Actions, ofActionCompleted, ofActionSuccessful, Store } from '@ngxs/store';
 import { Context } from './core/states/context.actions';
 import { ContextState } from './core/states/context.state';
 import { Timetable } from './core/states/timetable.actions';
 import { TimetableState } from './core/states/timetable.state';
-import { concatMap, withLatestFrom } from 'rxjs/operators';
+import { concatMap, concatMapTo, withLatestFrom } from 'rxjs/operators';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -89,14 +89,17 @@ export class AppComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private ConnectedSettingSrv: ConnectedSettingService,
     private crSrv: ClassroomService,
-    private store: Store
+    private store: Store,
+    private actions$: Actions
   ) {}
 
   async ngOnInit() {
+    const { store, actions$ } = this;
 
     // 將相關資料放進 Store 裡面。
     await this.store.dispatch(new Context.FetchAll()).pipe(
-      concatMap(() => this.store.dispatch(new Timetable.FetchAll())),
+      concatMap(() => actions$.pipe(ofActionSuccessful(Context.FetchAll))),
+      concatMap(() => store.dispatch(new Timetable.FetchAll())),
     ).toPromise();
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)

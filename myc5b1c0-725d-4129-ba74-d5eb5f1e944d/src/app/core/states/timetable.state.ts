@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Action, State, StateContext, StateToken, Store } from '@ngxs/store';
-import { concatMap, tap, withLatestFrom } from 'rxjs/operators';
 import { Course } from '../data/timetable';
 import { TimetableService } from '../timetable.service';
 import { ContextState } from './context.state';
@@ -12,26 +11,34 @@ export interface TimetableStateModel extends Array<Course> {
 const TIMETABLE_STATE_TOKEN = new StateToken<TimetableStateModel>('Timetable');
 
 @State<TimetableStateModel>({
-    name: TIMETABLE_STATE_TOKEN,
-    defaults: []
-  })
-  @Injectable()
-  export class TimetableState {
+  name: TIMETABLE_STATE_TOKEN,
+  defaults: []
+})
+@Injectable()
+export class TimetableState {
 
-    constructor(
-      private store: Store,
-      private timetable: TimetableService
-    ) {}
+  constructor(
+    private store: Store,
+    private timetable: TimetableService
+  ) { }
 
-    @Action(Timetable.FetchAll)
-    async fetchAll({ setState }: StateContext<TimetableStateModel>) {
-      const { store, timetable } = this;
+  @Action(Timetable.FetchAll)
+  async fetchAll({ setState }: StateContext<TimetableStateModel>) {
+    const { store, timetable } = this;
 
-      const dsns = store.selectSnapshot(ContextState.dsns);
+    const dsns = store.selectSnapshot(ContextState.dsns);
+    if (!dsns) { throw new Error('dsns 未準備好。') }
 
-      if (!dsns) { throw new Error('dsns 未準備好。') }
-
-      const tt = await timetable.getTimetable(dsns);
-      setState(tt);
-    }
+    const tt = await timetable.getTimetable(dsns);
+    setState(tt);
   }
+
+  @Action(Timetable.SetPeriods)
+  setPeriods(ctx: StateContext<TimetableStateModel>) {
+    const { store, timetable } = this;
+    const state = ctx.getState();
+
+    
+    
+  }
+}
