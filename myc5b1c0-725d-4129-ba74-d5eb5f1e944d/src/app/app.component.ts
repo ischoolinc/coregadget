@@ -6,7 +6,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import dj from 'dayjs';
 import { GoogleClassroomCourse, GoogleClassroomService, GoogleCourseState } from './core/google-classroom.service';
-import { GadgetCustomCloudServiceRec, MyCourseRec, MyCourseService, MyCourseTeacherRec, MyTargetBaseRec, Semester } from './core/my-course.service';
+import { MyCourseService } from './core/my-course.service';
+import { MyCourseRec, MyCourseTeacherRec, MyTargetBaseRec, Semester } from './core/data/my-course';
+import { GadgetCustomCloudServiceRec } from './core/data/cloudservice';
 import { DSAService } from './dsutil-ng/dsa.service';
 import { SelectComponent } from './shared/select/select/select.component';
 import { SnackbarService } from './shared/snackbar/snackbar.service';
@@ -130,13 +132,12 @@ export class AppComponent implements OnInit {
       const { school_year, semester } = this.getHeadSemester();
       const sourceCourses = await this.getCourses(school_year, semester);
 
-      await this.checkConnected();
-      await this.displayCourses(sourceCourses);
-
       let dayOfWeek = dj().day() // 0: 星期日 1: 星期一 6: 星期六
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
       this.curTab = dayOfWeek;
-      this.toggleTab();
+
+      await this.checkConnected();
+      await this.displayCourses(sourceCourses);
     } catch (error) {
       console.log(error);
     } finally {
@@ -149,7 +150,7 @@ export class AppComponent implements OnInit {
   }
 
 
-  private displayCourses(sourceCourses: MyCourseRec[]) {
+  private async displayCourses(sourceCourses: MyCourseRec[]) {
     sourceCourses.forEach(v => {
       v.GoogleIsReady = false;
       v.Alias = this.formatCourseAlias(v);
@@ -160,8 +161,9 @@ export class AppComponent implements OnInit {
       v.TargetName = v.ClassName;
     });
     this.courses = sourceCourses;
-    this.mappingClassroomLive();
-    this.mappingGoogleClassroom();
+    await this.mappingClassroomLive();
+    await this.mappingGoogleClassroom();
+    this.toggleTab();
   }
 
   createDefaultSystemCloudService() {
