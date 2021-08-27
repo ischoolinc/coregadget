@@ -6,27 +6,28 @@
 <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
 <link href="css/base.css" rel="stylesheet" />
 <link href="css/defalut.css" rel="stylesheet" />
+    <script type='text/javascript'>
+        var gadget = window.opener?window.opener.gadget:window.parent.getGadgetProxy((function () {
+            var vars = [], hash;
+            var p = window.location.href.slice(window.location.href.indexOf('?') + 1);
+            if (p.indexOf("#") >= 0)
+                p = p.substring(0, p.indexOf("#"));
+            var hashes = p.split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = decodeURIComponent(hashes[i]);
+                var key = hash.substring(0, hash.indexOf("="));
+                vars.push(key);
+                vars[key] = hash.substring(hash.indexOf("=") + 1);
+            }
+            return vars;
+        }()).id);
+        try { window.parent = null; } catch (exc) { }
+    </script>
 <script src="js/angular.min.js"></script>
 <script src="js/jquery-1.8.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/default.js"></script>
 <script src="js/gadget.js"></script>
-<script>
-     init({
-      application: "dev.sh_d",
-      paramValues: {
-        "system_type": "kh",
-        "system_exam_must_enddate": "true",
-        "system_fix_must_enddate": "true",
-        "system_show_model": "subject",
-        "system_position": "parent"
-      },
-      oAuth: {
-        clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-        clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-      }
-    });
-  	</script>
 </head>
 
 <body ng-controller="MenuCtrl" ng-switch="pageView">
@@ -123,8 +124,8 @@
 					  <!-- List group -->
 					  <ul class="list-group my-em">
 						<li class="list-group-item"><em>監護人電話</em>{{activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone + " " + activeStudent.CustodianName}}</li>
-						<li class="list-group-item"><em>父親電話</em>{{activeStudent.FatherOtherInfo.FatherOtherInfo.Phone + " " + activeStudent.FatherName}}</li>
-						<li class="list-group-item"><em>母親電話</em>{{activeStudent.MotherOtherInfo.MotherOtherInfo.Phone + " " + activeStudent.MotherName}}</li>
+						<li class="list-group-item"><em>家長一電話</em>{{activeStudent.FatherOtherInfo.FatherOtherInfo.Phone + " " + activeStudent.FatherName}}</li>
+						<li class="list-group-item"><em>家長二電話</em>{{activeStudent.MotherOtherInfo.MotherOtherInfo.Phone + " " + activeStudent.MotherName}}</li>
 					  </ul>
 					</div>
 				</div>
