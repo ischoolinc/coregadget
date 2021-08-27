@@ -107,7 +107,7 @@ export class AppComponent implements OnInit {
       concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
     ).toPromise();
 
-     // store.dispatch(new Timetable.SetCourse({
+    // store.dispatch(new Timetable.SetCourse({
     //   course_id: '11729',
     //   periods: [{ weekday: '3', period: '5' }, { weekday: '3', period: '4' }]
     // })).pipe(
