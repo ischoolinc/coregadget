@@ -74,4 +74,9 @@ export class ContextState {
   static personalInfo({ personal }: ContextStateModel) {
     return personal;
   }
+
+  @Selector()
+  static role({ context }: ContextStateModel) {
+    return context.role;
+  }
 }

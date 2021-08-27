@@ -1,6 +1,6 @@
 export interface SelectedContext {
     dsns: string;
-    role: string;
+    role: 'teacher' | 'student';
     id:   number;
 }
 
