@@ -1,0 +1,125 @@
+<div class="mx-2">
+  <p class="text-2xl font-semibold text-gray-text1 mt-4">外部連結設定</p>
+
+  <div class="panel-group">
+    <input class="panel-control" type="radio" name="week-day" id="editlink" value="editlink" [(ngModel)]="curCSTab">
+    <input class="panel-control" type="radio" name="week-day" id="addlink" value="addlink" [(ngModel)]="curCSTab">
+
+    <div class="tab-group tab-group2 mt-4 flex flex-row">
+      <label for="editlink" class="w-1/2 text-center">管理</label>
+      <label for="addlink" class="w-1/2 text-center">新增</label>
+    </div>
+
+    <div class="content-group">
+      <div class="content" *ngIf="curCSTab === 'editlink'">
+        <!-- 管理連結 -->
+        <p class="text-base font-semibold text-gray-text1 px-2 mt-10 border-l-4 border-primary">管理外部連結</p>
+        <!-- 說明文 -->
+        <div class="flex flex-row items-center pr-7">
+          <div class="flex-grow"></div>
+          <div class="text-gray-text3 text-sm">關/開</div>
+          <div class="text-gray-text3 ml-8 text-sm">設定</div>
+        </div>
+        <!-- table -->
+        <div class="h-72 overflow-y-scroll">
+          <table class="w-full">
+            <tbody class="bg-white mb-6">
+              <!-- <tr class="flex flex-row items-center border-b border-gray-light">
+                <td>
+                  <span class="iconify cursor-move text-gray" data-icon="ic:round-menu"></span>
+                </td>
+                <td class="px-4 py-4 flex flex-grow flex-col">
+                  <input type="text" class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer"
+                    placeholder="師培班">
+                  <input type="text"
+                    class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer mt-2"
+                    placeholder="http://wefblaiuweglkjberlgqiurgl.com">
+                </td>
+                <td class="px-4 py-4 flex flex-row flex-wrap items-center justify-end ml-auto">
+                  <div class="mr-3">
+                    <mat-slide-toggle
+                      color="primary"
+                    ></mat-slide-toggle>
+                  </div>
+                  <button class="no-ring text-2xl mr-2">
+                    <span class="iconify text-gray-text3 hover:text-primary" data-icon="entypo:save"
+                      data-inline="false"></span>
+                  </button>
+                  <button class="no-ring text-2xl">
+                    <span class="iconify text-gray-text3 hover:text-warning" data-icon="fluent:delete-20-filled"
+                      data-inline="false"></span>
+                  </button>
+                </td>
+              </tr> -->
+              <tr *ngFor="let item of services"
+                class="flex flex-row items-center border-b border-gray-light">
+                <!-- <td>
+                  <span class="iconify cursor-move text-gray" data-icon="ic:round-menu"></span>
+                </td> -->
+                <td class="px-4 py-4 flex flex-grow flex-col">
+                  <ng-container *ngIf="!item.inEdit">
+                    <span>{{item.title}}</span>
+                  </ng-container>
+                  <ng-container *ngIf="item.inEdit">
+                    <input type="text" class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer"
+                      placeholder="連結名稱" [(ngModel)]="item.title">
+                    <input type="text"
+                      class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer mt-2"
+                      placeholder="連結網址" [(ngModel)]="item.link">
+                  </ng-container>
+                </td>
+                <td class="px-4 py-4 flex flex-row flex-wrap items-center justify-end ml-auto">
+                  <div class="mr-3">
+                    <mat-slide-toggle
+                      color="primary"
+                      [checked]="item.enabled"
+                    ></mat-slide-toggle>
+                  </div>
+                  <button *ngIf="!item.inEdit" class="no-ring text-2xl mr-2" (click)="item.inEdit = true">
+                    <span class="iconify text-gray-text3 hover:text-primary" data-icon="akar-icons:edit"
+                      data-inline="false"></span>
+                  </button>
+                  <button *ngIf="item.inEdit" class="no-ring text-2xl mr-2" (click)="doSave(item)">
+                    <span class="iconify text-gray-text3 hover:text-primary" data-icon="entypo:save"
+                      data-inline="false"></span>
+                  </button>
+                  <button class="no-ring text-2xl" (click)="doDel(item)">
+                    <span class="iconify text-gray-text3 hover:text-warning" data-icon="fluent:delete-20-filled"
+                      data-inline="false"></span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content" *ngIf="curCSTab === 'addlink'">
+        <!-- 新增連結 -->
+        <p class="text-base font-semibold text-gray-text1 px-2 mt-8 border-l-4 border-primary">新增外部連結</p>
+        <div class="mt-6">
+          <label for="" class="pr-2 text-gray-text1 text-sm">連結名稱</label>
+          <span>
+            <input
+              class="w-full mt-1 text-gray-text1 border border-gray-light rounded h-10 focus:border-primary overflow-ellipsis no-ring"
+              type="text" placeholder="請輸入連結名稱"
+              [(ngModel)]="newTitle">
+          </span>
+        </div>
+        <div class="mt-4">
+          <label for="" class="pr-2 text-gray-text1 text-sm">連結網址</label>
+          <span>
+            <input
+              class="w-full mt-1 text-gray-text1 border border-gray-light rounded h-10 focus:border-primary overflow-ellipsis no-ring"
+              type="text" placeholder="請輸入連結網址"
+              [(ngModel)]="newLink">
+          </span>
+        </div>
+        <div class="text-right mt-4 mb-6">
+          <button class="inline-block btn btn-primary px-4" (click)="doAdd()">新增連結</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

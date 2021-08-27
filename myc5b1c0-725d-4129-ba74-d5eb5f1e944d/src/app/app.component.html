@@ -358,7 +358,7 @@
               (change)="toggleSystemCloudService($event, data.target, 'custom')"
             ></mat-slide-toggle>
           </div>
-          <a href="javascript:;" class="ml-4" (click)="manageProcessState = 304">
+          <a href="javascript:;" class="ml-4" (click)="manageProcessState = 305">
             <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
               data-inline="false"></span>
           </a>
@@ -400,7 +400,10 @@
     </ng-container>
     <!-- 外部連結設定 -->
     <ng-container *ngIf="manageProcessState === 305">
-      <div *ngTemplateOutlet="tplCustomService; context: {$implicit: data}"></div>
+      <app-custom-service-manage>
+
+      </app-custom-service-manage>
+      <!-- <div *ngTemplateOutlet="tplCustomService; context: {$implicit: data}"></div> -->
     </ng-container>
   </div>
 </ng-template>

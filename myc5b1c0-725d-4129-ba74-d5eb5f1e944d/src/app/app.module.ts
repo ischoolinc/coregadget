@@ -21,13 +21,16 @@ import { environment } from '../environments/environment';
 import { AddGoogleClassroomComponent } from './add-google-classroom/add-google-classroom.component';
 import { EditGoogleClassroomComponent } from './edit-google-classroom/edit-google-classroom.component';
 import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-google-classroom.component';
+import { CustomServiceManageComponent } from './custom-service-manage/custom-service-manage.component';
+import { DialogModule } from './shared/dialog/dialog.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddGoogleClassroomComponent,
     EditGoogleClassroomComponent,
-    AsyncGoogleClassroomComponent
+    AsyncGoogleClassroomComponent,
+    CustomServiceManageComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +47,7 @@ import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-go
     MatSlideToggleModule,
     SnackbarModule,
     SelectModule,
+    DialogModule,
   ],
   providers: [{
     provide: DSA_ACCESSTOKEN,
