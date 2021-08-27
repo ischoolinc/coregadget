@@ -327,7 +327,7 @@
             <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
               src="/assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
             <span *ngIf="data.target.GoogleExt?.id">
-              (<a href="javascript:;" (click)="asyncService(data.target, tplAsyncService)"
+              (<a href="javascript:;" (click)="manageProcessState = 304"
                   class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
             </span>
           </div>
@@ -390,8 +390,16 @@
       </app-edit-google-classroom>
       <!-- <div *ngTemplateOutlet="tplEditGCService; context: {$implicit: data}"></div> -->
     </ng-container>
-    <!-- 外部連結設定 -->
+    <!-- 同步Google Classroom學生 -->
     <ng-container *ngIf="manageProcessState === 304">
+      <app-async-google-classroom
+        [dsns]="dsns"
+        [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+        [data]="data">
+      </app-async-google-classroom>
+    </ng-container>
+    <!-- 外部連結設定 -->
+    <ng-container *ngIf="manageProcessState === 305">
       <div *ngTemplateOutlet="tplCustomService; context: {$implicit: data}"></div>
     </ng-container>
   </div>

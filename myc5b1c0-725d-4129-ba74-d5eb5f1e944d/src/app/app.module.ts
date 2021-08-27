@@ -20,12 +20,14 @@ import { SnackbarModule } from './shared/snackbar/snackbar.module';
 import { environment } from '../environments/environment';
 import { AddGoogleClassroomComponent } from './add-google-classroom/add-google-classroom.component';
 import { EditGoogleClassroomComponent } from './edit-google-classroom/edit-google-classroom.component';
+import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-google-classroom.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddGoogleClassroomComponent,
-    EditGoogleClassroomComponent
+    EditGoogleClassroomComponent,
+    AsyncGoogleClassroomComponent
   ],
   imports: [
     BrowserModule,

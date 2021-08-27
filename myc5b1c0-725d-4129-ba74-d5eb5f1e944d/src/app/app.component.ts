@@ -25,6 +25,7 @@ import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom
 import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
 import { CourseConfState } from './core/states/conf.state';
+import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-google-classroom.component';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -107,7 +108,7 @@ export class AppComponent implements OnInit {
     ).toPromise();
 
      // store.dispatch(new Timetable.SetCourse({
-    //   course_id: '11729', 
+    //   course_id: '11729',
     //   periods: [{ weekday: '3', period: '5' }, { weekday: '3', period: '4' }]
     // })).pipe(
     //   concatMap(() => store.selectOnce(TimetableState.getCourse)),
