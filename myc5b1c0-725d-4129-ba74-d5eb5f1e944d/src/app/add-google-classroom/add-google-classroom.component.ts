@@ -17,7 +17,7 @@ export class AddGoogleClassroomComponent implements OnInit {
   progressBar = { max: 0, current: 0 };
   createStudentMsg = '';
 
-  @Input() adminConnectedGoogle = false;
+  @Input() adminIsConnectedGoogle = false;
   @Input() dsns = '';
   @Input() account = '';
   @Input() data: { target: MyCourseRec } = { target: {} as MyCourseRec };
@@ -32,8 +32,8 @@ export class AddGoogleClassroomComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  async asyncGoogleClassroomCourse(course: MyCourseRec, action: 'create' | 'update' | 'link') {
-    if (!this.adminConnectedGoogle) { return; }
+  async asyncGoogleClassroomCourse(course: MyCourseRec, action: 'create' | 'link') {
+    if (!this.adminIsConnectedGoogle) { return; }
     if ([102, 202].indexOf(this.processState) !== -1) { return; }
     if (action === 'link' && !this.googleClassroomLink.value) { this.inputLink.nativeElement.focus(); return; }
 
@@ -43,11 +43,9 @@ export class AddGoogleClassroomComponent implements OnInit {
     // 4. 將 Google Classroom 課程資訊補充到 course
 
     this.processErrorMsg = '';
-    this.processState = (
-      action === 'create' ? 102 :
-        action === 'update' ? 202 : 103);
-
+    if (action === 'create') { this.processState = 102; }
     if (action === 'link') {
+      this.processState = 103;
       this.progressBar = {
         max: 100, // 一個步驟 => 50
         current: 0,

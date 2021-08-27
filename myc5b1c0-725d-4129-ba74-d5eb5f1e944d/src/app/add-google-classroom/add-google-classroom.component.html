@@ -6,8 +6,8 @@
     <div>
       <p class="text-sm ml-2 mt-2 mb-4 text-gray-text3 px-1">建立教室 ({{ data.target.TargetName }})</p>
       <button class="w-full btn btn-primary mt-2 mb-10"
-        [ngClass]="{'btn-disable cursor-not-allowed': !adminConnectedGoogle}"
-        [disabled]="!adminConnectedGoogle"
+        [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
+        [disabled]="!adminIsConnectedGoogle"
         (click)="asyncGoogleClassroomCourse(data.target, 'create')">開始建立</button>
     </div>
     <div class="mt-8 text-center">
@@ -21,8 +21,8 @@
         class="w-full text-gray-text1 border border-gray-light rounded h-10 focus:border-primary no-ring"
         placeholder="請提供 Google Classroom 超連結">
       <button class="w-full btn btn-primary mt-6 mb-10"
-        [ngClass]="{'btn-disable cursor-not-allowed': !adminConnectedGoogle}"
-        [disabled]="!adminConnectedGoogle"
+        [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
+        [disabled]="!adminIsConnectedGoogle"
         (click)="asyncGoogleClassroomCourse(data.target, 'link')">開始連結</button>
     </div>
   </div>
@@ -36,22 +36,6 @@
   <div *ngIf="processState === 103" class="mt-36 mb-52">
     <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
     <p class="text-2xl font-semibold text-center mt-4">正在連結課程
-      <br>請稍候
-      <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
-    </p>
-  </div>
-  <div *ngIf="processState === 201" class="mx-2">
-    <p class="text-2xl font-semibold text-gray-text1 mt-4">同步雲端服務</p>
-    <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">管理Google Classroom</p>
-    <p class="text-sm mt-6">同步學生({{ data.target.TargetName }})</p>
-    <button class="w-full btn btn-primary mt-6 mb-10"
-      [ngClass]="{'btn-disable cursor-not-allowed': !adminConnectedGoogle}"
-      (click)="asyncGoogleClassroomCourse(data.target, 'update')">開始同步</button>
-    <div class="mt-6"></div>
-  </div>
-  <div *ngIf="processState === 202" class="mt-36 mb-52">
-    <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
-    <p class="text-2xl font-semibold text-center mt-4">正在同步
       <br>請稍候
       <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
     </p>

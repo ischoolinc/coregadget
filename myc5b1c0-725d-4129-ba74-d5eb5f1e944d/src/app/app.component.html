@@ -328,7 +328,7 @@
               src="/assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
             <span *ngIf="data.target.GoogleExt?.id">
               (<a href="javascript:;" (click)="manageProcessState = 304"
-                  class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
+                class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
             </span>
           </div>
           <div>
@@ -375,8 +375,8 @@
     <ng-container *ngIf="manageProcessState === 302">
       <app-add-google-classroom
         [dsns]="dsns"
-        [adminConnectedGoogle]="adminConnectedGoogle.success"
-        [account]="myInfo.account"
+        [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+        [account]="myInfo?.account || ''"
         [data]="data">
       </app-add-google-classroom>
       <!-- <div *ngTemplateOutlet="tplAddGCService; context: {$implicit: data}"></div> -->
@@ -385,7 +385,7 @@
     <ng-container *ngIf="manageProcessState === 303">
       <app-edit-google-classroom
         [dsns]="dsns"
-        [adminConnectedGoogle]="adminConnectedGoogle.success"
+        [adminIsConnectedGoogle]="adminConnectedGoogle.success"
         [data]="data">
       </app-edit-google-classroom>
       <!-- <div *ngTemplateOutlet="tplEditGCService; context: {$implicit: data}"></div> -->

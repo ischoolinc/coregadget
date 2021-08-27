@@ -13,7 +13,7 @@ export class EditGoogleClassroomComponent implements OnInit {
   processState = 101;
   processErrorMsg = '';
 
-  @Input() adminConnectedGoogle = false;
+  @Input() adminIsConnectedGoogle = false;
   @Input() dsns = '';
   @Input() data: { target: MyCourseRec } = { target: {} as MyCourseRec };
 
@@ -25,7 +25,7 @@ export class EditGoogleClassroomComponent implements OnInit {
   }
 
   async dislinkGoogleClassroom() {
-    if (!this.adminConnectedGoogle) { return; }
+    if (!this.adminIsConnectedGoogle) { return; }
     if (this.dislinkingGoogle) { return; }
 
     const { GoogleExt } = this.data.target;

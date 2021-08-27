@@ -20,7 +20,10 @@
       </span>
     </div>
     <div class="text-right mb-2">
-      <button class="inline-block btn btn-primary px-4 mr-2 " (click)="dislinkGoogleClassroom()">
+      <button class="inline-block btn btn-primary px-4 mr-2"
+        [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
+        [disabled]="!adminIsConnectedGoogle"
+        (click)="dislinkGoogleClassroom()">
         {{ dislinkingGoogle ? '解除中...' : '解除教室連結'}}
       </button>
       <button mat-dialog-close
