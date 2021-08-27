@@ -34,4 +34,21 @@ export class CourseConfState {
     setState(allConf);
   }
 
+    /** 從 Server 讀取指定課程資料。 */
+    @Action(Conf.FetchConf)
+    async fetchCourse(ctx: StateContext<CourseConfStateModel>, action: Conf.FetchConf) {
+      // const { timetable } = this;
+      // const state = ctx.getState();
+      // const tt = await timetable.getTimetable(this.#dsns, action.payload);
+  
+      // const found = state.find(v => (+v.course_id) == (+action.payload));
+  
+      // if(!found) {
+      //   ctx.setState([...state, ...tt])
+      // } else {
+      //   const newState = state.filter(v => v.course_id != action.payload);
+      //   ctx.setState([...newState, ...tt]);
+      // }
+    }
+
 }

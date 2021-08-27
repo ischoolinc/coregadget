@@ -13,13 +13,16 @@ import { SnackbarService } from './shared/snackbar/snackbar.service';
 import { MyInfo, SelectedContext } from './core/data/login';
 import { ConnectedSettingService } from './core/connected-setting.service';
 import { ClassroomService } from './core/classroom.service';
-import { concat, interval } from 'rxjs';
+import { concat, forkJoin, interval } from 'rxjs';
 import { Actions, ofActionCompleted, ofActionSuccessful, Store } from '@ngxs/store';
 import { Context } from './core/states/context.actions';
 import { ContextState, ContextStateModel } from './core/states/context.state';
 import { Timetable } from './core/states/timetable.actions';
 import { TimetableState } from './core/states/timetable.state';
 import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { ConfService } from './core/conf.service';
+import { Conf } from './core/states/conf.actions';
+import { CourseConfState } from './core/states/conf.state';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -90,24 +93,24 @@ export class AppComponent implements OnInit {
     private ConnectedSettingSrv: ConnectedSettingService,
     private crSrv: ClassroomService,
     private store: Store,
-    private actions$: Actions
+    private conf: ConfService
   ) {}
 
   async ngOnInit() {
-    const { store, actions$ } = this;
+    const { store, conf } = this;
 
     // 將相關資料放進 Store 裡面。
     await store.dispatch(new Context.FetchAll()).pipe(
-      concatMap(() => store.dispatch(new Timetable.FetchAll()))
+      concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
     ).toPromise();
 
-    store.dispatch(new Timetable.SetCourse({
-      course_id: '11729', 
-      periods: [{ weekday: '3', period: '5' }, { weekday: '3', period: '4' }]
-    })).pipe(
-      concatMap(() => store.selectOnce(TimetableState.getCourse)),
-      map(fn => fn(11729))
-    ).subscribe(console.log);
+     // store.dispatch(new Timetable.SetCourse({
+    //   course_id: '11729', 
+    //   periods: [{ weekday: '3', period: '5' }, { weekday: '3', period: '4' }]
+    // })).pipe(
+    //   concatMap(() => store.selectOnce(TimetableState.getCourse)),
+    //   map(fn => fn(11729))
+    // ).subscribe(console.log);
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)
     // 確認管理者是否已設定連結 Google 帳號
