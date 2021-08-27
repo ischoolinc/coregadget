@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MyCourseRec } from '../core/data/my-course';
 import { GoogleClassroomService } from '../core/google-classroom.service';
+import { ConfirmDialogService } from '../shared/dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-edit-google-classroom',
@@ -19,25 +20,36 @@ export class EditGoogleClassroomComponent implements OnInit {
 
   constructor(
     private gClassroomSrv: GoogleClassroomService,
+    private confirmSrv: ConfirmDialogService,
   ) { }
 
   ngOnInit(): void {
   }
 
-  async dislinkGoogleClassroom() {
+  dislinkGoogleClassroom() {
     if (!this.adminIsConnectedGoogle) { return; }
     if (this.dislinkingGoogle) { return; }
 
+    this.confirmSrv.show({
+      message: '您確定要刪除嗎？',
+      accept: () => {
+        this.confirmSrv.hide();
+        this.delCourseAlias();
+      },
+    });
+  }
+
+  async delCourseAlias() {
     const { GoogleExt } = this.data.target;
 
     try {
       this.dislinkingGoogle = true;
+
       const rsp = await this.gClassroomSrv.delCourseAlias(this.dsns,
         'google_classroom_admin',
         GoogleExt?.id || '',
         this.data.target.Alias || '');
 
-      console.log(rsp);
       this.data.target.GoogleExt = undefined;
       this.processState = 2000;
     } catch(err) {
