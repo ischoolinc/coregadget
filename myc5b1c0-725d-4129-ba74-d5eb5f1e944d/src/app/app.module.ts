@@ -25,6 +25,7 @@ import { CustomServiceManageComponent } from './custom-service-manage/custom-ser
 import { DialogModule } from './shared/dialog/dialog.module';
 import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
 import { LauncherGoogleClassroomComponent } from './launcher-google-classroom/launcher-google-classroom.component';
+import { LauncherCustomizeComponent } from './launcher-customize/launcher-customize.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { LauncherGoogleClassroomComponent } from './launcher-google-classroom/la
     CustomServiceManageComponent,
     LauncherOhaComponent,
     LauncherGoogleClassroomComponent,
+    LauncherCustomizeComponent,
   ],
   imports: [
     BrowserModule,

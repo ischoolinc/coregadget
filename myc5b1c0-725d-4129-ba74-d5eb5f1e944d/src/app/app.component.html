@@ -145,24 +145,7 @@
                                 alt="1know">
                             </div> -->
 
-                            <div class="has-tooltip lg:mr-4 xl:mr-0">
-                              <span class="tooltip -ml-3">外部連結</span>
-                              <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item class="menu">
-                                  <a href="" class="menu-list">師培班</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                                <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                                  <a href="" class="menu-list">雲端教育</a>
-                                  <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-                                    data-inline="false"></span>
-                                </button>
-                              </mat-menu>
-                            </div>
+                            <app-launcher-customize></app-launcher-customize>
                           </td>
                           <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
                             <button class="text-secondary hover:text-secondary-light focus:outline-none"
@@ -226,22 +209,8 @@
                     <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg" alt="1know">
                   </div> -->
 
-                  <div class="has-tooltip lg:mr-4 xl:mr-0">
-                    <span class="tooltip -ml-3">外部連結</span>
-                    <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-                      <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/link.svg" alt="Links">
-                    </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item class="menu">
-                        <a href="" class="menu-list">師培班</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                      <button mat-menu-item class="focus:outline-none text-secondary flex flex-row">
-                        <a href="" class="menu-list">雲端教育</a>
-                        <span class="iconify menu-icon" data-icon="eva:external-link-outline" data-inline="false"></span>
-                      </button>
-                    </mat-menu>
-                  </div>
+                  <app-launcher-customize></app-launcher-customize>
+
                   <div>
                     <button class="text-secondary hover:text-secondary-light focus:outline-none"
                       (click)="manageService(course, tplManageService)">
