@@ -121,7 +121,9 @@ export class GoogleClassroomService {
     return this.http.delete(`${this.config.API_BASE}/google_classroom/courses/${courseId}/aliases/${alias}?dsns=${dsns}&service_type=${serviceType}`).toPromise();
   }
 
-
+  public getGoogleSigninChooserUrl(url: string = '') {
+    return `https://accounts.google.com/ServiceLogin/signinchooser?service=accountsettings&continue=${url}`;
+  }
 }
 
 export type GoogleCourseState = 'COURSE_STATE_UNSPECIFIED' | 'ACTIVE' | 'ARCHIVED' | 'PROVISIONED' | 'DECLINED' | 'SUSPENDE';

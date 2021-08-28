@@ -253,6 +253,6 @@ export class AddGoogleClassroomComponent implements OnInit {
   }
 
   googleSigninChooserUrl(url: string = '') {
-    return `https://accounts.google.com/ServiceLogin/signinchooser?service=accountsettings&continue=${url}`;
+    return this.gClassroomSrv.getGoogleSigninChooserUrl(url);
   }
 }

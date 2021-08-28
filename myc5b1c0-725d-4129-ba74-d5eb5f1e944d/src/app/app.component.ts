@@ -280,8 +280,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  googleSigninChooserUrl(url: string) {
-    return `https://accounts.google.com/ServiceLogin/signinchooser?service=accountsettings&continue=${url}`;
+  googleSigninChooserUrl(url: string = '') {
+    return this.gClassroomSrv.getGoogleSigninChooserUrl(url);
   }
 
   classroomUrl(course: MyCourseRec) {
