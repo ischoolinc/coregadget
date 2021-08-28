@@ -1,6 +1,6 @@
 
 
-<div class="grid place-items-center">
+<div class="grid  float-left" *ngIf="behaviorRecordsList.length > 0;else noData" >
   <div class="mt-8 pb-14">
     <div class="flex flex-row items-center text-gray-text3 text-sm">
       <!-- <p class="text-secondary underline mr-1"><a [routerLink]="['']">Grades and Behavior</a></p> -->
@@ -9,7 +9,7 @@
     </div>
     <p class="mt-2 mb-4 text-2xl font-semibold">Behavior</p>
     <div class="mt-2 flex flex-row items-center">
-      <div class="flex-wrap">
+      <div  class="flex-wrap">
         <button (click)="openBehaviorDetail(i)"
           class="xs:w-48 w-56 mb-4 min-h-max border border-gray-lightest rounded-lg overflow-x-hidden mr-4 hover:shadow-md"
           *ngFor="let behavior of behaviorRecordsList ;let i = index q">
@@ -22,7 +22,23 @@
           {{behavior?.Comment}}
           </p>
         </button>
+
       </div>
+
+
     </div>
   </div>
 </div>
+
+
+<ng-template #noData>
+ <div class ="content-center">
+  <div class="flex-wrap font-semibold content-center">
+    <span  class="iconify ml-2 text-2xl text-secondary-light" data-icon="system-uicons:document-stack"
+    data-inline="false"></span>
+    尚無資料
+  </div>
+
+ </div>
+
+</ng-template>

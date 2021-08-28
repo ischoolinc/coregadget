@@ -8,7 +8,15 @@ import { BehaviorSectionComponent } from './behavior-section/behavior-section.co
 import {MatDialogModule} from '@angular/material/dialog';
 import { BehaviorModalComponent } from './behavior-modal/behavior-modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SelectModule } from './select/select.module';
+import { Routes, RouterModule } from '@angular/router';
+import { Router, Scroll } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
+import { filter } from 'rxjs/operators';
+import {MatTooltipModule} from '@angular/material/tooltip';
+const routes: Routes = [
 
+];
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +29,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserModule,
     AppRoutingModule,
     MatDialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    SelectModule,
+    MatTooltipModule,
+    RouterModule.forRoot(routes, { useHash: true })
 
 
 
@@ -32,4 +43,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(router: Router, viewportScroller: ViewportScroller) {
+    viewportScroller.setOffset([0, 60]);
+    router.events.pipe(filter(e => e instanceof Scroll)).subscribe((e: Scroll|any) => {
+      if (e.anchor) {
+        // anchor navigation
+        setTimeout(() => {
+          viewportScroller.scrollToAnchor(e.anchor);
+        })
+      } else if (e.position) {
+        // backward navigation
+        viewportScroller.scrollToPosition(e.position);
+      } else {
+        // forward navigation
+        viewportScroller.scrollToPosition([0, 0]);
+      }
+    });
+  }
+
+}

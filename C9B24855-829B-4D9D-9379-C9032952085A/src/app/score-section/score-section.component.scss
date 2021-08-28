@@ -2,3 +2,10 @@
 
 
 }
+::ng-deep .mat-tooltip {
+  /* your own custom styles here */
+  /* e.g. */
+  color: #547cb4 !important;
+  background-color:#ccd8e9 ;
+  font-size: 16px;
+}

@@ -32,6 +32,7 @@ export interface IeslRecord{
   AssessmentWeight:string;
   Date :string ;
   Description:string ;
+  UID:string;
 }
 
 
@@ -68,6 +69,7 @@ export interface IAssessment {
   score :string ;
   customAssessmentsMap: Map<string, ICustomAssessment>;
   customAssessmentsList: ICustomAssessment[];
+  isExpand? :boolean ;
   [propName: string]: any;
 
 }
@@ -79,7 +81,8 @@ export interface ICustomAssessment {
   customAssessmentScore :string ;
   date :string ;
   description:string ;
-  [propName: string]: any;
+  isCheck? :boolean ;
+  // [propName: string]: any;
 
 }
 

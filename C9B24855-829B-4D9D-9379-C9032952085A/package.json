@@ -27,7 +27,6 @@
     "@tailwindcss/typography": "^0.4.1",
     "chart.js": "^3.5.0",
     "rxjs": "~6.6.0",
-    "tailwind": "^4.0.0",
     "tailwindcss": "^2.2.7",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

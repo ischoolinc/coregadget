@@ -1,0 +1,32 @@
+
+<button (click)="toggleOverlay()" type="button"  [ngClass]="styleName.btnClass"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin">
+    <span>{{_displaySelected()}}</span>
+
+    <svg class="vector inline-block ml-1" width="10" height="5" viewBox="0 0 10 5" fill="none"
+         xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.66669 0.780003C9.66703 0.8796 9.64504 0.978006 9.60236 1.06799C9.55967 1.15798 9.49737 1.23726 9.42002 1.3L5.42002 4.52C5.30073 4.61806 5.1511 4.67166 4.99669 4.67166C4.84227 4.67166 4.69264 4.61806 4.57335 4.52L0.573354 1.18667C0.43721 1.07351 0.351594 0.910903 0.335341 0.734619C0.319087 0.558335 0.373529 0.382814 0.486688 0.24667C0.599847 0.110525 0.762454 0.0249095 0.938739 0.00865602C1.11502 -0.00759697 1.29054 0.046844 1.42669 0.160003L5.00002 3.14L8.57335 0.260004C8.67121 0.178481 8.79037 0.126697 8.91674 0.110777C9.0431 0.0948572 9.17139 0.115469 9.2864 0.170172C9.40142 0.224876 9.49836 0.311383 9.56576 0.419456C9.63315 0.52753 9.66817 0.652647 9.66669 0.780003Z"
+              fill="#5EC1C7" />
+    </svg>
+</button>
+
+<ng-template #tplItemList="cdkConnectedOverlay" cdkConnectedOverlay
+             [cdkConnectedOverlayOrigin]="trigger"
+             [cdkConnectedOverlayHasBackdrop]="true"
+             cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+             (backdropClick)="toggleOverlay()"
+             [cdkConnectedOverlayOpen]="isOpen"
+             [ngClass]="styleName.btnClass">
+    <ol class="semesters-pane">
+        <ng-container *ngIf="_hasData() else noRowSource">
+            <li *ngFor="let record of rowSource" (click)="emitSelect(record)"
+                [ngClass]="{'selected': selected === record}"
+            class="list_options text-white bg-primary">
+                {{_displayWith(record)}}</li>
+        </ng-container>
+        <ng-template #noRowSource  >
+            <div style="margin: 10px;">無資料！</div>
+        </ng-template>
+    </ol>
+</ng-template>

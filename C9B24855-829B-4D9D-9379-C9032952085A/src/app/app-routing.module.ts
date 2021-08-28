@@ -1,7 +1,7 @@
 import { BehaviorSectionComponent } from './behavior-section/behavior-section.component';
 import { NgModule } from '@angular/core';
 import { GadgetService } from './gadget.service';
-import { Routes, RouterModule } from '@angular/router';
+import {ExtraOptions, Routes, RouterModule } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { ScoreSectionComponent } from './score-section/score-section.component';
 
@@ -11,6 +11,11 @@ const routes: Routes = [
 {path :"behavior/:course_id" ,component :BehaviorSectionComponent}
 
 ];
+const routerOptions :ExtraOptions
+={
+scrollPositionRestoration:'enabled',
+anchorScrolling:'enabled'
+}
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

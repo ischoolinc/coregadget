@@ -49,7 +49,7 @@ export class BehaviorSectionComponent implements OnInit {
 
 
       // 整理一下
-      this.behaviorRecordsList = [].concat(rsp.BehaviorData);
+      this.behaviorRecordsList = [].concat(rsp.BehaviorData||[]);
 
     } catch (err) {
       this.error = err;

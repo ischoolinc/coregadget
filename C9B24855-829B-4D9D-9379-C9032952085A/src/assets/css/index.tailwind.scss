@@ -58,7 +58,7 @@
   }
 
   .dropdown_box {
-    @apply inline-flex justify-center items-center w-min rounded-full border-2 border-primary shadow-sm px-6 py-2 bg-white text-2xl font-medium text-primary hover:bg-primary-lighter focus:outline-none;
+    @apply inline-flex justify-center items-center  rounded-full border-2 border-primary shadow-sm px-6 py-2 bg-white text-2xl font-medium text-primary hover:bg-primary-lighter focus:outline-none;
   }
 
   .drop_listbox {
@@ -92,18 +92,18 @@
   .tab-group label {
     @apply relative inline-block px-8 py-2 text-gray hover:text-primary-light;
   }
-  
+
   .content {
     @apply hidden;
   }
 
   #tab1:checked ~ .tab-group [for="tab1"],
-  #tab2:checked ~ .tab-group [for="tab2"]{    
+  #tab2:checked ~ .tab-group [for="tab2"]{
     border-bottom-width: 4px;
     border-color: #5ec1c7;
     color: #5ec1c7;
   }
-  
+
   #tab1:checked ~ .content-group .content1,
   #tab2:checked ~ .content-group .content2{display: block;}
 
@@ -111,5 +111,5 @@
 }
 
 @layer utilities {
- 
+
 }

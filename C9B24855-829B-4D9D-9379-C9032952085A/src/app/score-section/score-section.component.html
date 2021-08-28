@@ -1,373 +1,478 @@
-<!-- <div id="Chart">
-  <canvas #chart id="myChart" width="400" height="400"></canvas>
+<!-- <div class="example-container" cdkScrollable>
+  <div
+    style ="background:pink"
+     mat-raised-button #tooltip="matTooltip" [matTooltip]="'88'" [matTooltipPosition]="position.value"
+    matTooltipHideDelay="100"
+    aria-label="Button that displays a tooltip that hides when scrolled out of the container" class="example-button">
+    Action
+  </div>
 </div> -->
-<div class="mt-10">
-  <ul class="flex border-b items-end">
-    <!-- tab1 Midterm-->
-    <li class="relative -mb-px mr-1" label for="tab1">
-      <div class="border-l border-t border-r rounded-t">
-        <div class="relative inline-block text-left">
-          <button type="button"
-            class="flex outline-none items-center justify-center py-3 px-4 w-32 rounded-t bg-white text-primary font-semibold"
-            id="tab4" aria-expanded="true" aria-haspopup="true">
-            <p>{{currentItem?.currentTerm?.termName}}</p>
-            <span class="inline-block iconify ml-2 text-base" data-icon="eva:arrow-ios-back-fill"
-              data-inline="false" data-rotate="270deg"></span>
-          </button>
-          <!-- 選項 -->
-          <div id="s" class="drop_listbox w-28 z-50 " role="menu" aria-orientation="vertical"
-            aria-labelledby="menu-button" tabindex="-1">
-            <div class="py-1" role="none">
-              <a *ngFor="let item of eslScoreInfoList" href="#" class="list_options text-sm text-white bg-primary" role="menuitem" tabindex="-1"
-                id="menu-item-0">{{item?.termName}}</a>
-
-            </div>
-          </div>
-        </div>
-
-        <!-- 如果有子科目才會出現的dropdown -->
-        <div class="relative inline-block text-left">
-          <button type="button"
-            class="flex items-center justify-center outline-none py-3 px-4 w-32 rounded-t bg-white text-gray hover:text-primary-light font-semibold"
-            id="tab3" aria-expanded="true" aria-haspopup="true">
-            <p>{{currentItem?.currentSubj?.subjectName}}</p>
-            <span class="inline-block iconify ml-2 text-base" data-icon="eva:arrow-ios-back-fill"
-              data-inline="false" data-rotate="270deg"></span>
-          </button>
-          <div id="sub.subject" class="drop_listbox w-28 z-50 " role="menu" aria-orientation="vertical"
-            aria-labelledby="menu-button" tabindex="-1">
-            <div class="py-1" role="none">
-              <a *ngFor="let item of currentItem?.currentTerm?.SubjectInfosList" href="#" class="list_options text-sm text-white bg-primary" role="menuitem" tabindex="-1"
-                id="menu-item-0">{{item.subjectName}}</a>
-
-            </div>
-          </div>
-        </div>
-
-
-
-
-      </div>
-             <!--  -->
-
-    </li>
-    <li class="relative
-            -left-1
-            mr-1
-            w-3
-            h-9
-            rounded-tr
-            border-t
-            border-r
-            border-gray-lighter
-            bg-gray-lightest">　
-       </li>
-
-
-       <li class="relative
-            -right-1
-            mr-1
-            w-3
-            h-9
-            rounded-tr
-            border-t
-            border-r
-           ">　
-       </li>
-  </ul>
-
-
-
-
-
-  <div>
-
 
 <!-- 年級tab -->
-<div class="panel-group mt-6 w-full">
+<div *ngIf="currentItem?.currentSubj  ;else noScoreData " class="panel-group mt-6 w-full">
   <input class="panel-control" type="radio" name="year-class" id="tab1" checked>
   <input class="panel-control" type="radio" name="year-class" id="tab2">
 
   <div class="tab-group text-center">
-    <!-- <label for="tab1">Grades</label>
-    <label for="tab2">Behavior</label> -->
+
   </div>
 
   <div class="content-group">
     <div class="content content1">
       <!-- 分數欄 -->
-      <div class="flex flex-row items-center mt-10">
+      <div class="flex  items-center mt-10 flex-wrap">
         <div class="flex flex-col justify-center items-center">
-          <p class="pb-2 text-sm leading-3 text-gray-text3">Preview</p>
-          <div class="p-5 text-center align-middle bg-secondary rounded-md text-white text-xl font-semibold">{{currentItem?.currentSubj?.subjScore }}</div>
-          <p class="pt-2 text-sm leading-3 text-center w-16">Term Score</p>
+          <div class=" text-center w-24  h-10  pb-2 text-sm leading-3 text-gray-text3">Preview</div>
+          <div
+            class="w-24 h-20  my-6 p-5 text-center align-middle bg-secondary rounded-md text-white text-xl font-semibold">
+            {{currentItem?.currentSubj?.subjectName}}</div>
+          <div class=" w-24  h-10  pt-2 text-sm leading-3 text-center   overflow-ellipsis  overflow-hidden">Term Score
+            <br>
+            ({{currentItem?.currentSubj?.subjectName}})
+          </div>
         </div>
         <span class="iconify mx-2" data-icon="ic:round-equals" data-inline="false"></span>
-        <div class="flex flex-col justify-center items-center">
-          <p class="pb-2 text-sm leading-3 text-gray-text3">70%</p>
-          <p class="p-5 text-center align-middle bg-secondary-lighter rounded-md text-secondary text-xl font-semibold">
-            78.00</p>
-          <p class="pt-2 text-sm leading-3 text-center w-16">In-class score</p>
-        </div>
-        <span class="iconify mx-2" data-icon="ic-round-plus" data-inline="false"></span>
-        <div class="flex flex-col justify-center items-center">
-          <p class="pb-2 text-sm leading-3 text-gray-text3">30%</p>
-          <p class="p-5 text-center align-middle bg-secondary-lighter rounded-md text-secondary text-xl font-semibold">
-            90.00</p>
-          <p class="pt-2 text-sm leading-3 text-center w-16">Midterm Score</p>
-        </div>
+
+        <ng-container class="flex-wrap" *ngFor="let assessment of currentItem?.currentSubj?.AssessmentsList ; let i = index" style="background:yellow">
+          <div>
+            <span *ngIf="i!==0" class="iconify mx-2"
+            data-icon="ic-round-plus" data-inline="false"></span>
+          </div>
+
+          <!-- {{i}} &&{{currentItem?.currentSubj?.AssessmentsList?.length}}***{{i!=0}} -->
+          <div class="flex flex-col justify-center items-center" >
+            <div class=" w-24 text-center  h-10 pb-2 text-sm leading-3 text-gray-text3">{{assessment.weight}}%</div>
+            <div
+              class=" w-24 h-20 my-6 overflow-ellipsis overflow-hidden p-5 text-center align-middle bg-secondary-lighter rounded-md text-xl font-semibold"
+              [ngClass]="getColor(assessment.score)"
+
+              mat-raised-button #tooltip="matTooltip" [matTooltip]="assessment.score" [matTooltipPosition]="position.value"
+             matTooltipHideDelay="10">
+              <a (click)="navigateToSection('an'+ i)">{{assessment.score}}</a>
+            </div>
+            <div class=" w-24 text-center h-10 pt-2 text-sm leading-3   overflow-ellipsis  overflow-hidden ">
+              {{assessment.assessmentName}}</div>
+          </div>
+
+        </ng-container>
+
+
+
       </div>
 
       <!-- 成績詳情展示 -->
       <div class="flex flex-row w-full h-full">
         <div class="my-8 flex-shrink flex-col w-full h-full">
           <!-- 資料1 70％ -->
-          <div *ngFor="let assessment of currentItem?.currentSubj?.AssessmentsList" class="mb-6">
+          <div *ngFor="let assessment of currentItem?.currentSubj?.AssessmentsList ; index as i" class="mb-6">
             <div class="flip flex flex-row items-center">
               <p class="text-lg font-semibold">{{assessment.assessmentName}} ({{assessment.weight}}%)</p>
-              <span class="iconify ml-2 cursor-pointer" data-icon="codicon:triangle-down" data-inline="false"></span>
-            </div>
-            <!-- 表格式，目前先全部資料展開，沒有y-scroll -->
-            <div class="flex flex-col rounded mt-2 xs:hidden">
-              <!-- <div class="h-64 overflow-y-scroll overflow-x-scroll border border-gray-lightest rounded-lg"> -->
-              <div class="  overflow-x-scroll border border-gray-lightest rounded-lg">
 
-                <table class="w-full">
-                  <!-- 標題 -->
-                  <thead class="bg-primary-light">
-                    <tr>
-                      <th scope="col" class="t-title">
-                        Date
-                      </th>
-                      <th scope="col" class="t-title">
-                        Title
-                      </th>
-                      <th scope="col" class="t-title">
-                        Description
-                      </th>
-                      <th scope="col" class="t-title">
-                        Grade
-                      </th>
-                      <th scope="col" class="t-title pl-6 pr-10">
-                        Detail
-                      </th>
-                    </tr>
-                  </thead>
-                  <!-- 內容 -->
-                  <tbody class="bg-white">
-                    <ng-container  *ngFor="let customAssessment of assessment.customAssessmentsList ">
+                <span
+                (click)=" assessment.isExpand = !assessment.isExpand"
+                class="iconify ml-2 cursor-pointer"
+                data-icon="codicon:triangle-down" data-inline="false"></span>
+              </div>
 
-                      <tr  class="h-12 hover:bg-primary-lighter focus:text-white focus:bg-primary">
-                        <td class="t-content">
-                          <div class="t-word">date</div>
-                        </td>
-                        <td class="t-content">
-                          <div class="t-word">{{customAssessment.customAssessName}}</div>
-                        </td>
-                        <td class="t-content">
-                          <div class="t-word">description.</div>
-                        </td>
-                        <td class="t-content">
-                          <div class="t-word text-secondary">{{customAssessment.customAssessmentScore}}</div>
-                        </td>
-                        <td class="text-center">
-                          <button class="flip t-icon mr-3">
-                            <span class="iconify t-icon2 cursor-pointer hover:text-primary focus:text-primary"
-                              data-icon="ion:chevron-back-circle-outline"
-                              data-inline="false"
-                              data-rotate="180deg"
-                              (click)="openDetail(customAssessment)">open</span>
-                          </button>
-                          <div class="panel hidden">
-                            <!-- 手風琴 下開成績分佈圖 -->
 
-                          </div>
-                        </td>
+
+            <ng-container *ngIf="!assessment.isExpand">
+
+
+
+
+              <div [id]="'an'+i"
+               class="flex flex-col rounded mt-2 xs:hidden">
+                <!-- <div class="h-64 overflow-y-scroll overflow-x-scroll border border-gray-lightest rounded-lg"> -->
+                <div class="  overflow-x-scroll border border-gray-lightest rounded-lg">
+
+                  <table class="w-full">
+                    <!-- 標題 -->
+                    <thead class="bg-primary-light">
+                      <tr>
+                        <th scope="col" class="t-title">
+                          Date
+                        </th>
+                        <th scope="col" class="t-title">
+                          Title
+                        </th>
+                        <th scope="col" class="t-title">
+                          Description
+                        </th>
+                        <th scope="col" class="t-title">
+                          Grade
+                        </th>
+                        <th scope="col" class="t-title pl-6 pr-10">
+                          Detail
+                        </th>
                       </tr>
-                      <!-- <tr [style.display]="!customAssessment.isCheck?'none':'block'"> -->
-                      <tr >
+                    </thead>
+                    <!-- 內容 -->
+                    <tbody *ngIf="assessment.customAssessmentsList.length>0 ;else noCustomAssessData" class="bg-white">
+                      <ng-container *ngFor="let customAssessment of assessment.customAssessmentsList ">
 
-                        <td   colspan="5">
-                          <!-- 手風琴 下開成績分佈圖 -->
-                          <div class="panel w-full py-2 bg-primary-bg hidden md2:block">
-                            <div class="w-full mb-2 bg-primary-bg">
-                              <div class="w-full px-4" x-data="app()" x-cloak>
-                                <div class="w-full grid grid-cols-2">
-                                  <div class="w-full shadow p-6 rounded-lg bg-white">
-                                    <div
-                                      class="p-5 max-w-min text-center align-middle bg-warning-dark rounded-md text-white text-xl font-semibold">
-                                      {{ this.currentItem?.currentCustomAssessment?.customAssessmentScore}}</div>
-                                    <div class="md:flex md:justify-between md:items-center">
-                                      <div class="mt-3">
-                                        <h2 class="mb-1 text-gray-text3 text-sm leading-tight">{{ this.currentItem?.currentCustomAssessment?.date}}</h2>
-                                        <p class="mb-1  text-xl text-gray-text1 font-bold">{{ this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
-                                        <p class="mb-3 text-gray-text3 text-sm">{{ this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
-                                      </div>
+                        <tr class="h-12 hover:bg-primary-lighter focus:text-white focus:bg-primary">
+                          <td class="t-content">
+                            <div class="t-word">{{customAssessment.date}}</div>
+                          </td>
+                          <td class="t-content">
+                            <div class="t-word">{{customAssessment.customAssessName}}</div>
+                          </td>
+                          <td class="t-content">
+                            <div class="t-word">{{customAssessment.description}}</div>
+                          </td>
+                          <td class="t-content">
+                            <div class="t-word text-secondary">{{customAssessment.customAssessmentScore}}</div>
+                          </td>
+                          <td class="text-center">
+                            <button class="flip t-icon mr-3" (click)="openDetail(assessment,customAssessment)">
+                              <span class="iconify t-icon2 cursor-pointer hover:text-primary focus:text-primary"
+                                data-icon="ion:chevron-back-circle-outline" data-inline="false"
+                                data-rotate="180deg"></span>
+                            </button>
+                            <div class="panel hidden">
+                              <!-- 手風琴 下開成績分佈圖 -->
 
-                                      <!-- Legends -->
-                                      <div class="mt-4">
-                                        <div class="flex items-center">
-                                          <div class="w-2 h-2 bg-primary mr-2 rounded-full"></div>
-                                          <div class="text-sm text-gray-text2">Grade</div>
+                            </div>
+                          </td>
+                        </tr>
+                        <!-- <tr [style.display]="!customAssessment.isCheck?'none':'block'"> -->
+                        <tr>
+
+                          <td colspan="5">
+                            <!-- 手風琴 下開成績分佈圖 -->
+                            <div class="panel w-full py-2 bg-primary-bg hidden md2:block">
+                              <div class="w-full mb-2 bg-primary-bg">
+                                <div class="w-full px-4" x-data="app()" x-cloak>
+                                  <div class="w-full grid grid-cols-2">
+                                    <div class="w-full shadow p-6 rounded-lg bg-white ">
+                                      <div
+                                        class="p-5 max-w-min text-center align-middle  rounded-md text-white text-xl font-semibold"
+                                        [ngClass]="getColor(this.currentItem?.currentCustomAssessment?.customAssessmentScore)">
+                                        {{ this.currentItem?.currentCustomAssessment?.customAssessmentScore}}</div>
+                                      <div class="md:flex md:justify-between md:items-center">
+                                        <div class="mt-3">
+                                          <h2 class="mb-1 text-gray-text3 text-sm leading-tight">{{
+                                            this.currentItem?.currentCustomAssessment?.date}}</h2>
+                                          <p class="mb-1  text-xl text-gray-text1 font-bold">{{
+                                            this.currentItem?.currentCustomAssessment?.description}}</p>
+                                          <p class="mb-3 text-gray-text3 text-sm">{{
+                                            this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
+                                        </div>
+
+                                        <!-- Legends -->
+                                        <div class="mt-4">
+                                          <div class="flex items-center">
+                                            <div class="w-2 h-2 bg-primary mr-2 rounded-full"></div>
+                                            <div class="text-sm text-gray-text2">Grade</div>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
 
-                                    <!-- 圖表圖片代用 -->
-                                    <!-- test  -->
-                                    <div class="Chart">
-                                      <canvas #chart [id]="customAssessment.customAssessName+'_md'" width="400" height="400"></canvas>
-                                    </div>
+                                      <!-- 圖表圖片代用 -->
+                                      <!-- test  -->
+                                      <div *ngIf="currentItem.currentCustomAssessment?.isCheck" class="Chart">
+                                        <canvas #chart [id]="customAssessment.customAssessName+'_md'" width="400"
+                                          height="400"></canvas>
+                                      </div>
+
+                                      <!-- <div *ngIf="currentItem.currentCustomAssessment?.isCheck" class="Chart">
+                                        <canvas #chart [id]="customAssessment.customAssessName+'_md'" width="400"
+                                          height="400"></canvas>
+                                      </div> -->
 
 
-                                    <!-- <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
 
-                                    <div class="line my-8 relative">
-                                      <!-- Tooltip -->
-                                      <template x-if="tooltipOpen == true">
-                                        <div x-ref="tooltipContainer"
-                                          class="p-0 m-0 z-10 shadow-lg rounded-lg absolute h-auto block"
-                                          :style="`bottom: ${tooltipY}px; left: ${tooltipX}px`">
-                                          <div class="shadow-xs rounded-lg bg-white p-2">
-                                            <div class="flex items-center justify-between text-sm">
-                                              <div>Sales:</div>
-                                              <div class="font-bold ml-2">
-                                                <span x-html="tooltipContent"></span>
+                                      <!-- <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
+
+                                      <div class="line my-8 relative">
+                                        <!-- Tooltip -->
+                                        <template x-if="tooltipOpen == true">
+                                          <div x-ref="tooltipContainer"
+                                            class="p-0 m-0 z-10 shadow-lg rounded-lg absolute h-auto block"
+                                            :style="`bottom: ${tooltipY}px; left: ${tooltipX}px`">
+                                            <div class="shadow-xs rounded-lg bg-white p-2">
+                                              <div class="flex items-center justify-between text-sm">
+                                                <div>Sales:</div>
+                                                <div class="font-bold ml-2">
+                                                  <span x-html="tooltipContent"></span>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
-                                        </div>
-                                      </template>
-
-                                      <!-- Bar Chart -->
-                                      <div class="flex -mx-2 items-end mb-2">
-                                        <template x-for="data in chartData">
-
-                                          <div class="px-2 w-1/6">
-                                            <div
-                                              class="transition ease-in duration-200 bg-primary hover:bg-primary-light relative">
-                                              <!-- @mouseenter="showTooltip($event); tooltipOpen = true"
-                                          @mouseleave="hideTooltip($event)" -->
-                                              <div x-text="data"
-                                                class="text-center absolute top-0 left-0 right-0 -mt-6 text-gray-text1 text-sm">
-                                              </div>
-                                            </div>
-                                          </div>
-
                                         </template>
-                                      </div>
 
-                                      <!-- Labels -->
-                                      <div class="border-t border-gray-light mx-auto"
-                                        :style="`height: 1px; width: ${ 100 - 1/chartData.length*100 + 3}%`"></div>
-                                      <div class="flex -mx-2 items-end">
-                                        <template x-for="data in labels">
-                                          <div class="px-2 w-1/6">
-                                            <div class="bg-warning relative">
+                                        <!-- Bar Chart -->
+                                        <div class="flex -mx-2 items-end mb-2">
+                                          <template x-for="data in chartData">
+
+                                            <div class="px-2 w-1/6">
                                               <div
-                                                class="text-center absolute top-0 left-0 right-0 h-2 -mt-px bg-gray-lightest mx-auto"
-                                                style="width: 1px"></div>
-                                              <div x-text="data"
-                                                class="text-center absolute top-0 left-0 right-0 mt-3 text-gray-text2 text-sm">
+                                                class="transition ease-in duration-200 bg-primary hover:bg-primary-light relative">
+                                                <!-- @mouseenter="showTooltip($event); tooltipOpen = true"
+                                            @mouseleave="hideTooltip($event)" -->
+                                                <div x-text="data"
+                                                  class="text-center absolute top-0 left-0 right-0 -mt-6 text-gray-text1 text-sm">
+                                                </div>
                                               </div>
                                             </div>
-                                          </div>
-                                        </template>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <div class="ml-4 mb-2 shadow p-6 rounded-lg bg-white">
-                                      <div class="flex flex-row items-center">
-                                        <div class="h-5 border-l-4 border-primary rounded-full"></div>
-                                        <p class="px-2 text-lg font-semibold">Scores statistics</p>
-                                      </div>
-                                      <div class=" mt-2 flex flex-row items-center">
-                                        <div>The highest score</div>
-                                        <p class="ml-auto text-secondary font-medium">94.99</p>
-                                      </div>
-                                      <div class="mt-1 flex flex-row items-center">
-                                        <div>The lowest score</div>
-                                        <p class="ml-auto text-secondary font-medium">34.88</p>
-                                      </div>
-                                      <div class="mt-1 flex flex-row items-center">
-                                        <div>Average</div>
-                                        <p class="ml-auto text-secondary font-medium">66.17</p>
-                                      </div>
-                                    </div>
 
+                                          </template>
+                                        </div>
+
+                                        <!-- Labels -->
+                                        <div class="border-t border-gray-light mx-auto"
+                                          :style="`height: 1px; width: ${ 100 - 1/chartData.length*100 + 3}%`"></div>
+                                        <div class="flex -mx-2 items-end">
+                                          <template x-for="data in labels">
+                                            <div class="px-2 w-1/6">
+                                              <div class="bg-warning relative">
+                                                <div
+                                                  class="text-center absolute top-0 left-0 right-0 h-2 -mt-px bg-gray-lightest mx-auto"
+                                                  style="width: 1px"></div>
+                                                <div x-text="data"
+                                                  class="text-center absolute top-0 left-0 right-0 mt-3 text-gray-text2 text-sm">
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </template>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div class="ml-4 mb-2 shadow p-6 rounded-lg bg-white">
+                                        <div class="flex flex-row items-center">
+                                          <div class="h-5 border-l-4 border-primary rounded-full"></div>
+                                          <p class="px-2 text-lg font-semibold">Scores statistics</p>
+                                        </div>
+                                        <div class=" mt-2 flex flex-row items-center">
+                                          <div>The highest score</div>
+                                          <p class="ml-auto text-secondary font-medium">哈哈{{scoreRange.max}}</p>
+                                        </div>
+                                        <div class="mt-1 flex flex-row items-center">
+                                          <div>The lowest score</div>
+                                          <p class="ml-auto text-secondary font-medium">34.88</p>
+                                        </div>
+                                        <div class="mt-1 flex flex-row items-center">
+                                          <div>Average</div>
+                                          <p class="ml-auto text-secondary font-medium">66.17</p>
+                                        </div>
+                                      </div>
+
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                      </tr>
+                          </td>
+                        </tr>
 
-                    </ng-container>
+                      </ng-container>
 
 
-                  </tbody>
-                </table>
+                    </tbody>
+
+
+                    <ng-template #noCustomAssessData>
+                      <tbody class="bg-white">
+                        <tr class="h-12 hover:bg-primary-lighter focus:text-white focus:bg-primary">
+                          <td class="text-center t-word" colspan="5">
+
+                            無資料...
+                          </td>
+
+                        </tr>
+                      </tbody>
+                    </ng-template>
+
+                  </table>
+                </div>
               </div>
-            </div>
+
+
+            </ng-container>
+
 
             <!-- 手機版卡片式 -->
             <div class="hidden xs:block mt-2" *ngFor="let customAssessment of assessment.customAssessmentsList">
               <div class="w-full flex flex-col border border-gray-light rounded-lg">
-                <p class="py-2 pl-4 bg-primary-light text-white rounded-t-md">2021/03/18</p>
+                <p class="py-2 pl-4 bg-primary-light text-white rounded-t-md">{{customAssessment.date}}</p>
                 <div class="flex flex-row items-center justify-between py-2 border-b border-gray-light">
                   <div class="ml-4 w-60">
                     <p class="text-gray-text2 font-medium truncate">{{customAssessment.customAssessName}}</p>
-                    <p class="text-gray-text2 text-sm truncate">Ch 4. Vocabulary Quiz for everyonedsfijgowe</p>
+                    <p class="text-gray-text2 text-sm truncate">{{customAssessment.description}}</p>
                   </div>
                   <div class="px-4 py-2 mr-4 bg-secondary-lighter rounded text-secondary font-medium text-center">
-                    {{ this.currentItem?.currentCustomAssessment?.customAssessmentScore}}</div>
+                    {{ customAssessment.customAssessmentScore}}</div>
                 </div>
-                <button class="btn flex flex-row items-center justify-center hover:text-primary">
+                <button *ngIf="customAssessment.isCheck" (click)="openDetail(assessment,customAssessment)"
+                  class="btn flex flex-row items-center justify-center hover:text-primary">
                   <p>Details</p>
                   <span class="iconify t-icon2 cursor-pointer ml-2" data-icon="ion:chevron-back-circle-outline"
                     data-inline="false" data-rotate="180deg"></span>
-                  <router-outlet></router-outlet>
+                  {{customAssessment.isCheck}}
+                  <!-- <router-outlet></router-outlet> -->
+
+                  <!-- 顯示組距之類等detail -->
+
                 </button>
+
+
+                <button
+                  *ngIf="!customAssessment.isCheck"
+                   (click)="openDetail(assessment,customAssessment)"
+                class="btn flex flex-row items-center justify-center hover:text-primary">
+                <p>Close</p>
+                <span class="iconify t-icon2 cursor-pointer ml-2" data-icon="ion:chevron-back-circle-outline"
+                  data-inline="false" data-rotate="180deg"></span>
+                {{customAssessment.isCheck}}
+                <!-- <router-outlet></router-outlet> -->
+
+                <!-- 顯示組距之類等detail -->
+
+              </button>
+
+                <div *ngIf="customAssessment.isCheck" style="width: 500px; height: 60px ; background: pink;"></div>
+
+                <!-- <div *ngIf="customAssessment.isCheck"> -->
+                  <div
+                    class="overflow-y-scroll flex-grow w-104 ml-4 mt-17 mb-8 rounded-lg border border-gray-lightest bg-gray-lightest md2:hidden">
+                    <div class="overflow-y-scroll relative overflow-x-auto">
+                      <div x-data="app()" x-cloak class="px-4">
+                        <div class="max-w-lg py-4">
+                          <div class="shadow p-6 rounded-lg bg-white">
+                            <div
+                              class="p-5 max-w-min text-center align-middle bg-secondary rounded-md text-white text-xl font-semibold">
+                              {{ this.currentItem?.currentCustomAssessment?.customAssessmentScore}}</div>
+                            <div class="md:flex md:justify-between md:items-center">
+                              <div class="mt-3">
+                                <h2 class="mb-1 text-gray-text3 text-sm leading-tight">{{
+                                  this.currentItem?.currentCustomAssessment?.date}}</h2>
+                                <p class="mb-1  text-xl text-gray-text1 font-bold">{{
+                                  this.currentItem?.currentCustomAssessment?.description}}</p>
+                                <p class="mb-3 text-gray-text3 text-sm">{{
+                                  this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
+                              </div>
+
+                              <!-- Legends -->
+                              <div class="mb-4">
+                                <div class="flex items-center">
+                                  <div class="w-2 h-2 bg-primary mr-2 rounded-full"></div>
+                                  <div class="text-sm text-gray-text2">Grade</div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="Chart">
+                              <canvas #chart [id]="this.currentItem?.currentCustomAssessment?.customAssessName+'_sm'"
+                                width="400" height="600"></canvas>
+                            </div>
+                            <!-- // <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
+
+                            <div class="line my-8 relative">
+                              <!-- Tooltip -->
+                              <template x-if="tooltipOpen == true">
+                                <div x-ref="tooltipContainer"
+                                  class="p-0 m-0 z-10 shadow-lg rounded-lg absolute h-auto block"
+                                  :style="`bottom: ${tooltipY}px; left: ${tooltipX}px`">
+                                  <div class="shadow-xs rounded-lg bg-white p-2">
+                                    <div class="flex items-center justify-between text-sm">
+                                      <div>Sales:</div>
+                                      <div class="font-bold ml-2">
+                                        <span x-html="tooltipContent"></span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </template>
+
+                              <!-- Bar Chart -->
+                              <div class="flex -mx-2 items-end mb-2">
+                                <template x-for="data in chartData">
+
+                                  <div class="px-2 w-1/6">
+                                    <div
+                                      class="transition ease-in duration-200 bg-primary hover:bg-primary-light relative">
+
+                                      <div x-text="data"
+                                        class="text-center absolute top-0 left-0 right-0 -mt-6 text-gray-text1 text-sm">
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </template>
+                              </div>
+
+                              <!-- Labels -->
+                              <div class="border-t border-gray-light mx-auto"
+                                :style="`height: 1px; width: ${ 100 - 1/chartData.length*100 + 3}%`"></div>
+                              <div class="flex -mx-2 items-end">
+                                <template x-for="data in labels">
+                                  <div class="px-2 w-1/6">
+                                    <div [ngClass]="'bg-warning relative'">
+                                      <div
+                                        class="text-center absolute top-0 left-0 right-0 h-2 -mt-px bg-gray-lightest mx-auto"
+                                        style="width: 1px"></div>
+                                      <div x-text="data"
+                                        class="text-center absolute top-0 left-0 right-0 mt-3 text-gray-text2 text-sm">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </template>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-4 shadow p-6 rounded-lg bg-white">
+                            <div class="flex flex-row items-center">
+                              <div class="h-5 border-l-4 border-primary rounded-full"></div>
+                              <p class="px-2 text-lg font-semibold">Scores statistics</p>
+                            </div>
+                            <div class=" mt-2 flex flex-row items-center">
+                              <div>The highest score</div>
+                              <p class="ml-auto text-secondary font-medium">{{scoreRange.max}}</p>
+                            </div>
+                            <div class="mt-1 flex flex-row items-center">
+                              <div>The lowest score</div>
+                              <p class="ml-auto text-secondary font-medium">{{scoreRange.min}}</p>
+                            </div>
+                            <div class="mt-1 flex flex-row items-center">
+                              <div>Average</div>
+                              <p class="ml-auto text-secondary font-medium">{{scoreRange.avg}}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
               </div>
             </div>
-            <!-- <div class="hidden xs:block mt-4 mb-4 mx-auto w-30 py-2 text-center border border-primary rounded-full">
-              <button class="text-primary hover:text-primary-light">Load more</button>
-            </div> -->
-
           </div>
-<!-- cut section -->
-
-          <!-- 資料2 30％ -->
-
         </div>
 
-        <!-- 成績分布 -->
-        <!-- dufual的文字 -->
-        <div
-          class="hidden flex-grow w-104 ml-4 mt-17 rounded-lg bg-gray-lightest overflow-x-scroll overflow-y-scroll md2:hidden">
-          <p
-            class="opacity-0 absolute h-full flex items-center justify-center text-center px-8 overflow-auto text-xl font-semibold text-gray-text2">
-            請先點選左側的<br>一門考試
-          </p>
-        </div>
+
 
         <!-- 選了一門考試後的詳細資料 -->
         <div
-          class="overflow-y-scroll flex-grow w-104 ml-4 mt-17 mb-8 rounded-lg border border-gray-lightest bg-gray-lightest md2:hidden">
-          <div class="overflow-y-scroll relative overflow-x-auto">
+          class="  flex-grow w-104 ml-4 mt-17 mb-8 rounded-lg border border-gray-lightest bg-gray-lightest md2:hidden">
+          <div class=" ">
             <div x-data="app()" x-cloak class="px-4">
-              <div class="max-w-lg py-4">
+
+              <div *ngIf="currentItem.currentCustomAssessment?.isCheck; else pleaseClick"
+                class="max-w-lg py-4"
+                style="background:pink">
                 <div class="shadow p-6 rounded-lg bg-white">
                   <div
                     class="p-5 max-w-min text-center align-middle bg-secondary rounded-md text-white text-xl font-semibold">
                     {{ this.currentItem?.currentCustomAssessment?.customAssessmentScore}}</div>
                   <div class="md:flex md:justify-between md:items-center">
                     <div class="mt-3">
-                      <h2 class="mb-1 text-gray-text3 text-sm leading-tight">{{ this.currentItem?.currentCustomAssessment?.date}}</h2>
-                      <p class="mb-1  text-xl text-gray-text1 font-bold">{{ this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
-                      <p class="mb-3 text-gray-text3 text-sm">{{ this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
+                      <h2 class="mb-1 text-gray-text3 text-sm leading-tight">{{
+                        this.currentItem?.currentCustomAssessment?.date}}</h2>
+                      <p class="mb-1  text-xl text-gray-text1 font-bold">{{
+                        this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
+                      <p class="mb-3 text-gray-text3 text-sm">{{
+                        this.currentItem?.currentCustomAssessment?.customAssessName}}</p>
                     </div>
 
                     <!-- Legends -->
@@ -381,12 +486,13 @@
 
 
                   <div class="Chart">
-                    <canvas #chart [id]="this.currentItem?.currentCustomAssessment?.customAssessName+'_bg'" width="400" height="600"></canvas>
+                    <canvas #chart [id]="this.currentItem?.currentCustomAssessment?.customAssessName+'_bg'" width="400"
+                      height="600"></canvas>
                   </div>
-                <!-- // <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
+                  <!-- // <div><img src="../assets/img/grade_graph.png" alt="圖條"></div> -->
 
-                  <div class="line my-8 relative">
-                    <!-- Tooltip -->
+                  <!-- <div class="line my-8 relative">
+
                     <template x-if="tooltipOpen == true">
                       <div x-ref="tooltipContainer" class="p-0 m-0 z-10 shadow-lg rounded-lg absolute h-auto block"
                         :style="`bottom: ${tooltipY}px; left: ${tooltipX}px`">
@@ -401,7 +507,7 @@
                       </div>
                     </template>
 
-                    <!-- Bar Chart -->
+
                     <div class="flex -mx-2 items-end mb-2">
                       <template x-for="data in chartData">
 
@@ -416,13 +522,12 @@
                       </template>
                     </div>
 
-                    <!-- Labels -->
                     <div class="border-t border-gray-light mx-auto"
                       :style="`height: 1px; width: ${ 100 - 1/chartData.length*100 + 3}%`"></div>
                     <div class="flex -mx-2 items-end">
                       <template x-for="data in labels">
                         <div class="px-2 w-1/6">
-                          <div class="bg-warning relative">
+                          <div [ngClass]="'bg-warning relative'">
                             <div class="text-center absolute top-0 left-0 right-0 h-2 -mt-px bg-gray-lightest mx-auto"
                               style="width: 1px"></div>
                             <div x-text="data"
@@ -431,7 +536,7 @@
                         </div>
                       </template>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="mt-4 shadow p-6 rounded-lg bg-white">
                   <div class="flex flex-row items-center">
@@ -440,28 +545,42 @@
                   </div>
                   <div class=" mt-2 flex flex-row items-center">
                     <div>The highest score</div>
-                    <p class="ml-auto text-secondary font-medium">94</p>
+                    <p class="ml-auto text-secondary font-medium">{{scoreRange.max}}</p>
                   </div>
                   <div class="mt-1 flex flex-row items-center">
                     <div>The lowest score</div>
-                    <p class="ml-auto text-secondary font-medium">34</p>
+                    <p class="ml-auto text-secondary font-medium">{{scoreRange.min}}</p>
                   </div>
                   <div class="mt-1 flex flex-row items-center">
                     <div>Average</div>
-                    <p class="ml-auto text-secondary font-medium">66.1</p>
+                    <p class="ml-auto text-secondary font-medium">{{scoreRange.avg}}</p>
                   </div>
                 </div>
 
               </div>
+
+              <ng-template #pleaseClick>
+                <div class="w-full flex-grow  mt-17 rounded-lg bg-gray-lightest" style="background: yellow;">
+                  <p
+                    class=" h-full flex items-center justify-center text-center px-8  text-xl font-semibold text-gray-text2">
+                    請先點選左側的<br>一門考試
+                  </p>
+
+                </div>
+              </ng-template>
             </div>
           </div>
         </div>
       </div>
-      <div class="border-b border-gray-lightest w-full"></div>
-    </div>
-    <div class="content content2">
-      <!-- Behavior -->
-
+      <!-- <div class="border-b border-gray-lightest w-full"></div> -->
     </div>
   </div>
 </div>
+
+<ng-template #noScoreData>
+
+  <div>
+     沒有成績資訊
+  </div>
+
+</ng-template>

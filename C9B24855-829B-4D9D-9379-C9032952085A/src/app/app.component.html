@@ -1,65 +1,118 @@
 <!--  -->
 
 
+<!-- <app-select></app-select> -->
 
 <!-- 以上自己寫 -->
 
 <div class="container mx-auto">
   <div class="px-12 lg:px-4 mb-18">
     <div class="gadget_bigtitle mt-10 tracking-wide"><a [routerLink]="['']">Grades and Behavior</a></div>
-    <div class="flex flex-row mt-8  sm:px-4 sm:pt-6 sm:pb-4 sm:bg-primary-bg rounded-lg">
+
+    <!--  -->
+    <div class="flex flex-row mt-8 flex-wrap sm:px-4 sm:pt-6 sm:pb-4 sm:bg-primary-bg rounded-lg">
       <div class="mr-6">
         <div class="relative inline-block text-left">
-          <div>
-            <div class="container mx-auto">
-              <div>
-                <button (click)="courseSelectIsOpen = !courseSelectIsOpen" class="block dropdown_box">
-                  {{currentItem?.selectedCourse?.CourseName}}
-                </button>
-                <div id="subject" *ngIf="courseSelectIsOpen" class="bg-white p-4 py-2 w-64">
-                  <a *ngFor="let item of myCourse" class=" list_options text-white bg-primary"
-                    (click)="changeCourse(item)">{{item.CourseName}} </a>
-                </div>
-              </div>
+          <app-select #course
+          [selected]="myCourse[0]"
+          [styleName] ="{btnClass:'block dropdown_box',ngTemplateClass:'bg-white p-4 py-2 w-64'}"
+          [rowSource]="myCourse"
+          [displayWith]="displayCourse"
+          (change)="courseChange($event)"
+          class="course_select"
+         ></app-select>
 
-            </div>
-          </div>
-          <div class="flex-grow flex flex-col">
-            <div class="flex flex-row items-center">
-              <div class="border border-l-2 border-primary h-5 mr-4 rounded-full"></div>
-              <p class="text-lg xs:text-base"> {{currentItem?.selectedCourse?.TeacherName}}</p>
-            </div>
-            <div class="flex flex-row items-center">
-              <div class="border border-l-2 border-primary h-5 mr-4 rounded-full"></div>
-              <p class="text-lg xs:text-base"> {{currentItem?.selectedCourse?.Email}}</p>
-              <span class="iconify ml-2 text-2xl text-secondary-light" data-icon="ic:outline-email"
-                data-inline="false"></span>
-            </div>
-          </div>
         </div>
-
-
-
-        <!-- 以上課程區 -->
-        <div>
-
-          <div id="subject" class="bg-white p-4 py-2 w-64">
-            <a *ngFor="let showSectionName of ['Score','Behavior']" class=" list_options text-white bg-primary"
-              (click)="changeShowSection(showSectionName)">{{showSectionName}} </a>
-          </div>
-        </div>
-
-
-
-        <!-- <app-score-section [subjData]="currentItem?.currentSubj"></app-score-section> -->
       </div>
 
-      <br>
+      <div class="flex-grow flex flex-col">
+        <div class="flex flex-row items-center">
+          <div class="border border-l-2 border-primary h-5 mr-4 rounded-full"></div>
+          <p class="text-lg xs:text-base"> {{currentItem?.selectedCourse?.TeacherName}}</p>
+        </div>
+        <div class="flex flex-row items-center">
+          <div class="border border-l-2 border-primary h-5 mr-4 rounded-full"></div>
+          <p class="text-lg xs:text-base"> {{currentItem?.selectedCourse?.Email}}</p>
 
+          <div  (click)="copyEmail(currentItem?.selectedCourse?.Email)">
+            <span class="iconify ml-2 text-2xl text-secondary-light" data-icon="ic:outline-email"
+            data-inline="false"></span>
+
+          </div>
+        </div>
+      </div>
+      <!-- <div class="flex-grow flex flex-col">
+        <div class="flex flex-row items-center">
+          <div class="border border-l-2 border-primary h-5 mr-4 rounded-full"></div>
+          <p class="text-lg xs:text-base">Adam Whitman</p>
+        </div>
+        <div class="flex flex-row items-center">
+          <div class="border border-l-2 border-primary h-5 mr-4 rounded-full"></div>
+          <p class="text-lg xs:text-base">adam.whitman@ischool.com.tw</p>
+          <span class="iconify ml-2 text-2xl text-secondary-light" data-icon="ic:outline-email"
+            data-inline="false"></span>
+        </div>
+      </div> -->
     </div>
 
 
+    <div class="mt-10">
+      <ul class="flex border-b items-end">
+        <!-- tab1 Midterm-->
+        <li class="relative -mb-px mr-1" label for="tab1">
+          <div class="border-l border-t border-r rounded-t">
+            <div class="relative inline-block text-left" (click)="changeShowSection('Score')">
 
-    <router-outlet>
+              <!-- term 下拉式選單 -->
+              <app-select #term
+                [styleName]="{ btnClass:'flex outline-none items-center justify-center py-3 px-4  w-auto w-32 rounded-t bg-white text-primary font-semibold',ngTemplateClass:'bg-white p-4 py-2 w-64'}"
+                [rowSource]="eslScoreInfoList"
+                [displayWith]="displayTerm" (change)="termChange($event)"
+                [isLock]="islock"
+                [selected] ="eslScoreInfoList?.[0]"
+                class="course_select inline-block "></app-select>
+              <!-- subject 下拉式選單 -->
+              <app-select #subject
+                [styleName]="{ btnClass:'flex outline-none items-center justify-center py-3 px-4 w-auto rounded-t bg-white text-primary font-semibold',ngTemplateClass:'bg-white p-4 py-2 w-64'}"
+                [rowSource]="currentItem.currentTerm?.SubjectInfosList" [displayWith]="displaySubj" (change)="subjChange($event)"
+                [isLock]="islock"
+                [selected]="currentItem.currentTerm?.SubjectInfosList?.[0]"
+                class="course_select inline-block"></app-select>
 
-    </router-outlet>
+            </div>
+            <!-- <app-select #semester [rowSource]="eslScoreInfoList" [displayWith]="currentItem?.currentTerm?.termName" (change)="termChange($event)" style="margin-left: 20px;"></app-select> -->
+
+            <!-- 如果有子科目才會出現的dropdown -->
+            <div class="relative inline-block text-left">
+            </div>
+          </div>
+          <!--  -->
+
+        </li>
+        <li class="relative -mb-px mr-2" label for="tab2">
+          <div class="border-l border-t border-r border-b rounded-t inline-block  ">
+            <button type="button"
+
+              class=" flex outline-none items-center justify-center py-3 px-4 w-32 rounded-t bg-white text-primary font-semibold"
+              id="tab2"
+              aria-expanded="true"
+              aria-haspopup="true"
+              (click)="changeShowSection('Behavior')"
+              >
+              Behavior
+            </button>
+          </div>
+        </li>
+
+
+      </ul>
+    </div>
+
+      <router-outlet>
+
+      </router-outlet>
+</div>
+
+
+    </div>
+
