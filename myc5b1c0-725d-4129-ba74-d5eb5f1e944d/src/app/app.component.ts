@@ -243,17 +243,17 @@ export class AppComponent implements OnInit {
         courses
       }, force);
 
-      this.courses.forEach(v => v.live = false);
+      this.courses.forEach(v => v.Live = false);
       this.courses.forEach(v => {
         for (const cr of crlist) {
           if (v.CourseId === cr.target.uid) {
-            v.live = cr.isOpen;
+            v.Live = cr.isOpen;
           }
         }
       });
 
       this.courses = this.courses.sort((x, y) => {
-        return (y.live + '').localeCompare(x.live + '');
+        return (y.Live + '').localeCompare(x.Live + '');
       });
     } catch { }
     finally {
@@ -282,16 +282,6 @@ export class AppComponent implements OnInit {
 
   googleSigninChooserUrl(url: string = '') {
     return this.gClassroomSrv.getGoogleSigninChooserUrl(url);
-  }
-
-  classroomUrl(course: MyCourseRec) {
-    const roleName = this.curSelectedContext.role;
-    const target = `${this.#classroom_url}?dsns=${this.dsns}&type=course&uid=${course.CourseId}&role=${roleName}`;
-    return this.login.getLinkout(target);
-  }
-
-  classroomToLive(course: MyCourseRec) {
-    course.live = true;
   }
 
   displaySemester(record: Semester) {

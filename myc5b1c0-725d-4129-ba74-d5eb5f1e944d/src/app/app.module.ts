@@ -23,6 +23,7 @@ import { EditGoogleClassroomComponent } from './edit-google-classroom/edit-googl
 import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-google-classroom.component';
 import { CustomServiceManageComponent } from './custom-service-manage/custom-service-manage.component';
 import { DialogModule } from './shared/dialog/dialog.module';
+import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { DialogModule } from './shared/dialog/dialog.module';
     EditGoogleClassroomComponent,
     AsyncGoogleClassroomComponent,
     CustomServiceManageComponent,
+    LauncherOhaComponent,
   ],
   imports: [
     BrowserModule,

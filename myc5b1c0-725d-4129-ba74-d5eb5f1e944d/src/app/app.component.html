@@ -129,15 +129,11 @@
                           <td
                             class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
 
-                            <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-5">OHA雲端教室</span>
-                              <a [href]="classroomUrl(course)"
-                                (click)="classroomToLive(course)"
-                                target="_blank" rel="noreferrer noopener" class="classroom_online">
-                                <img *ngIf="course.live" class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/oha.svg" alt="OHAClassroom">
-                                <img *ngIf="!course.live" class="h-10 w-10 mb-2 mx-1" src="/assets/img/oha_off.svg" alt="OHAClassroom">
-                              </a>
-                            </div>
+                            <app-launcher-oha
+                              [dsns]="dsns"
+                              [roleName]="curSelectedContext.role"
+                              [course]="course">
+                            </app-launcher-oha>
 
                             <div class="has-tooltip lg:mr-4">
                               <span class="tooltip -ml-10">Google Classroom</span>
@@ -225,15 +221,11 @@
               <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
                 <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
                 <div class="flex flex-row flex-grow items-center justify-between">
-                  <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-5">OHA雲端教室</span>
-                    <a [href]="classroomUrl(course)"
-                      (click)="classroomToLive(course)"
-                      target="_blank" rel="noreferrer noopener" class="classroom_online">
-                      <img *ngIf="course.live" class="h-10 w-10 my-1 mx-1 cursor-pointer" src="/assets/img/oha.svg" alt="OHAClassroom">
-                      <img *ngIf="!course.live" class="h-10 w-10 my-1 mx-1" src="/assets/img/oha_off.svg" alt="OHAClassroom">
-                    </a>
-                  </div>
+                  <app-launcher-oha
+                    [dsns]="dsns"
+                    [roleName]="curSelectedContext.role"
+                    [course]="course">
+                  </app-launcher-oha>
 
                   <div class="has-tooltip lg:mr-4">
                     <span class="tooltip -ml-10">Google Classroom</span>
