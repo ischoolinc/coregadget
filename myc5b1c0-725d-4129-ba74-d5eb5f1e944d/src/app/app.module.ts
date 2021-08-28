@@ -24,6 +24,7 @@ import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-go
 import { CustomServiceManageComponent } from './custom-service-manage/custom-service-manage.component';
 import { DialogModule } from './shared/dialog/dialog.module';
 import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
+import { LauncherGoogleClassroomComponent } from './launcher-google-classroom/launcher-google-classroom.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
     AsyncGoogleClassroomComponent,
     CustomServiceManageComponent,
     LauncherOhaComponent,
+    LauncherGoogleClassroomComponent,
   ],
   imports: [
     BrowserModule,

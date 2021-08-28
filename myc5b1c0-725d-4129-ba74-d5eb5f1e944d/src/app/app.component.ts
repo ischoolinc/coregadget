@@ -280,10 +280,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  googleSigninChooserUrl(url: string = '') {
-    return this.gClassroomSrv.getGoogleSigninChooserUrl(url);
-  }
-
   displaySemester(record: Semester) {
     if(record && record.school_year && record.semester) {
       return record ? `${record.school_year}學年度第${record.semester}學期` ?? '請選擇項目' : 'Loading...';
