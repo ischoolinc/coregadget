@@ -1,0 +1,191 @@
+@layer base {
+  body {
+    color: #323232;
+    font-size: 16px;
+    font-weight: normal;
+    font-family: "Helvetica", "Arial", "PingFangTC-Regular", "LiHei Pro", "黑體-繁", "微軟正黑體", sans-serif;
+    letter-spacing: 0.025em;
+  }
+}
+
+@layer components {
+  .gadget_bigtitle {
+    @apply mt-8 text-gray-text1 text-2xl font-semibold tracking-widest;
+  }
+
+  .btn {
+    @apply block py-2 px-6 border-primary rounded-full focus:outline-none;
+  }
+
+  .no-ring {
+    @apply focus:outline-none focus:ring-transparent focus:ring-offset-transparent;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white text-base hover:bg-primary-light;
+  }
+
+  .btn-disable {
+    @apply bg-gray-light text-white text-base cursor-not-allowed;
+  }
+
+  .btn-second {
+    @apply bg-white text-primary hover:bg-primary-light;
+  }
+
+  .btn-second2 {
+    @apply bg-white text-primary border border-primary-light rounded-full hover:bg-primary-light hover:text-white;
+  }
+
+  .btn-warn {
+    @apply bg-warning text-white;
+  }
+
+  .header-footer {
+    @apply flex flex-row px-2 pt-4 pb-4 h-20 max-w-7xl mx-auto;
+
+    .search-bar {
+      @apply flex flex-row flex-grow h-10 mr-2 my-auto rounded bg-gray-lightest active:bg-white active:shadow;
+    }
+
+    .search-input {
+      @apply flex w-full border-transparent bg-transparent focus:ring-transparent focus:border-transparent;
+    }
+  }
+
+  .tooltip {
+    @apply invisible absolute rounded shadow-md text-xs py-1 px-2 bg-gray-text2 text-white -mt-8;
+  }
+
+  .has-tooltip:hover .tooltip {
+    @apply visible z-50;
+  }
+
+  .toggle-bg {
+    @apply w-11 h-6 rounded-full bg-gray-light inline-block align-middle;
+  }
+
+  .toggle-bg .toggle-btn {
+    @apply w-5 h-5 rounded-full bg-white inline-block align-text-top shadow-lg -mt-0.25 ml-0.5 transition;
+  }
+
+  .checkbox {
+    @apply absolute hidden;
+  }
+
+  .checkbox:checked + .toggle-bg .toggle-btn {
+    @apply ml-5.5;
+  }
+
+  .checkbox:checked + .toggle-bg {
+    @apply bg-primary-light;
+  }
+
+  .dropdown_box {
+    @apply inline-flex justify-center w-40 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-text3 hover:bg-gray-50 focus:outline-none focus:border-primary;
+
+    .dropdown_arrow {
+      @apply -mr-1 ml-2 h-5 w-5;
+    }
+  }
+
+  .dropdown_box2 {
+    @apply inline-flex justify-center items-center rounded-full border-2 border-primary shadow-sm px-6 py-2 bg-white text-lg font-medium text-primary hover:bg-primary-lighter focus:outline-none;
+  }
+
+  .drop_listbox {
+    @apply origin-top-right mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
+
+    .list_options {
+      @apply text-gray-text3 block px-4 py-2 text-base hover:bg-primary-lighter;
+    }
+  }
+
+  .panel-control {
+    @apply absolute hidden;
+  }
+
+  .tab-group label {
+    @apply hidden relative xs:inline-block px-4 py-2 rounded mt-2 ml-2 text-gray cursor-pointer;
+  }
+
+  .tab-group2 label {
+    @apply inline-block;
+  }
+
+  // .content {
+  //   @apply hidden;
+  // }
+
+  #tab1:checked ~ .tab-group [for="tab1"],
+  #tab2:checked ~ .tab-group [for="tab2"],
+  #tab3:checked ~ .tab-group [for="tab3"],
+  #tab4:checked ~ .tab-group [for="tab4"],
+  #tab5:checked ~ .tab-group [for="tab5"],
+  #tab6:checked ~ .tab-group [for="tab6"],
+  #tab7:checked ~ .tab-group [for="tab7"],
+  #tab8:checked ~ .tab-group [for="tab8"] {
+    border-bottom-width: 4px;
+    border-color: #5ec1c7;
+    color: #5ec1c7;
+  }
+
+  #addlink:checked ~ .tab-group2 [for="addlink"],
+  #editlink:checked ~ .tab-group2 [for="editlink"] {
+    border-bottom-width: 4px;
+    border-color: #5ec1c7;
+    color: #5ec1c7;
+  }
+
+  // #tab1:checked ~ .content-group .content1,
+  // #tab2:checked ~ .content-group .content2,
+  // #tab3:checked ~ .content-group .content3,
+  // #tab4:checked ~ .content-group .content4,
+  // #tab5:checked ~ .content-group .content5,
+  // #tab6:checked ~ .content-group .content6,
+  // #tab7:checked ~ .content-group .content7,
+  // #tab8:checked ~ .content-group .content8 {
+  //   display: block;
+  // }
+
+  // #addlink:checked ~ .content-group .content2,
+  // #editlink:checked ~ .content-group .content1 {
+  //   display: block;
+  // }
+
+  .tb-title {
+    @apply px-6 py-4 text-center text-sm font-semibold text-white tracking-wider;
+  }
+
+  .menu {
+    @apply focus:outline-none text-secondary;
+  }
+
+  .menu-list {
+    @apply text-sm mr-1 inline-block underline;
+  }
+
+  .menu-icon {
+    @apply text-sm inline-block;
+  }
+
+  .t-r td {
+    @apply px-3 py-1 border border-gray-light;
+  }
+
+  .alesson {
+    @apply w-full border-0 no-ring cursor-pointer;
+  }
+
+  .alesson:checked {
+    @apply bg-primary focus:bg-primary;
+  }
+}
+
+@layer utilities {
+  @media (min-width: 512px) {
+    .xs\:card-product {
+      @apply p-4 w-55 m-2;
+    }
+  }
+}

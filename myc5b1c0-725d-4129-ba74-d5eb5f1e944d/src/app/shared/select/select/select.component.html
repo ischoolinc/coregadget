@@ -1,0 +1,35 @@
+<button type="button" class="dropdown_box2 bg-white"
+  aria-expanded="true"
+  aria-haspopup="true"
+  #trigger="cdkOverlayOrigin"
+  cdkOverlayOrigin
+  (click)="toggleOverlay()">
+  <p>{{_displaySelected()}}</p>
+  <span class="iconify ml-2 text-2xl" data-icon="eva:arrow-ios-back-fill" data-inline="false"
+    data-rotate="270deg"></span>
+</button>
+<ng-template
+  #tplItemList="cdkConnectedOverlay"
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  (backdropClick)="toggleOverlay()"
+  [cdkConnectedOverlayOpen]="isOpen">
+  <div class="drop_listbox" role="menu" aria-orientation="vertical"
+    aria-labelledby="menu-button" tabindex="-1">
+    <ng-container *ngIf="_hasData() else noRowSource">
+      <div class="py-1" role="none">
+        <a href="javascript:;" *ngFor="let record of rowSource"
+          (click)="emitSelect(record)"
+          class="list_options"
+          [ngClass]="{'text-white bg-primary': selected === record}"
+          role="menuitem" tabindex="-1">
+          {{_displayWith(record)}}</a>
+      </div>
+    </ng-container>
+  </div>
+  <ng-template #noRowSource>
+    <div style="margin: 10px;">無資料！</div>
+  </ng-template>
+</ng-template>

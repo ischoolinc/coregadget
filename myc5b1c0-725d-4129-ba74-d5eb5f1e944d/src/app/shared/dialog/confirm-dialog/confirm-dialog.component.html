@@ -1,0 +1,16 @@
+<div>
+  <h2 class="mat-dialog-title text-center">{{args.header}}</h2>
+  <mat-dialog-content>
+    <h3>{{args.message}}</h3>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-dialog-close
+      *ngIf="args.rejectVisible"
+      [class]="args.rejectButtonStyleClass"
+      (click)="args.reject ? args.reject(ref) : false">{{args.rejectLabel}}</button>
+    <button
+      *ngIf="args.acceptVisible"
+      [class]="args.acceptButtonStyleClass"
+      (click)="args.accept(ref)">{{args.acceptLabel}}</button>
+  </mat-dialog-actions>
+</div>
