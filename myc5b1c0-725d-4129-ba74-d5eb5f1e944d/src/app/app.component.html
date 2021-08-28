@@ -307,11 +307,11 @@
         </div>
       </div>
     </div>
-    <div *ngIf="manageProcessState !== 301"
+    <div *ngIf="manageProcessState !== 301" (click)="manageProcessState = 301"
       class="text-primary mt-2 mb-8 cursor-pointer">
       <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
         data-inline="false"></span>
-      <p class="text-base inline-block" (click)="manageProcessState = 301">返回</p>
+      <p class="text-base inline-block">返回</p>
     </div>
     <!-- 新增教室 -->
     <ng-container *ngIf="manageProcessState === 302">

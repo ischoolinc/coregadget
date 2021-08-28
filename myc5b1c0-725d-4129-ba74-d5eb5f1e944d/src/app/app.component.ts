@@ -1,13 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { LoginService } from './core/login.service';
 import { TimetableService } from './core/timetable.service';
-import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import dj from 'dayjs';
-import { GoogleClassroomCourse, GoogleClassroomService, GoogleCourseState } from './core/google-classroom.service';
+import { GoogleClassroomCourse, GoogleClassroomService } from './core/google-classroom.service';
 import { MyCourseService } from './core/my-course.service';
-import { MyCourseRec, MyCourseTeacherRec, MyTargetBaseRec, Semester } from './core/data/my-course';
+import { MyCourseRec, MyTargetBaseRec, Semester } from './core/data/my-course';
 import { GadgetCustomCloudServiceRec } from './core/data/cloudservice';
 import { DSAService } from './dsutil-ng/dsa.service';
 import { SelectComponent } from './shared/select/select/select.component';
@@ -25,7 +24,6 @@ import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom
 import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
 import { CourseConfState } from './core/states/conf.state';
-import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-google-classroom.component';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -53,7 +51,6 @@ export class AppComponent implements OnInit {
   #updateTimestamp = dj();
   classroomUpdateRequired = false;
   classroomUpdating = false;
-  #classroom_url = 'https://oha.1campus.net';
 
   semesterRowSource: Semester[] = [];
   tabs = [
