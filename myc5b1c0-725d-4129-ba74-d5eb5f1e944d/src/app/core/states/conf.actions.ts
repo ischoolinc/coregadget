@@ -1,4 +1,4 @@
-import { Course } from "../data/timetable";
+import { ServiceConf } from "../data/service-conf";
 
 export namespace Conf {
 
@@ -12,7 +12,7 @@ export namespace Conf {
         static readonly type = '[Conf] FetchConf';
 
         constructor(
-            public payload: string | number
+            public payload: Pick<ServiceConf, 'course_id'>
         ) {}
     }
 
@@ -21,7 +21,7 @@ export namespace Conf {
         static readonly type = '[Conf] SetConf';
 
         constructor(
-            public payload: Omit<Course, 'uid'>
+            public payload: Omit<ServiceConf, 'uid'>
         ) {}
     }
 }

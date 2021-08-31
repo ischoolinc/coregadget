@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import { ConfService } from '../conf.service';
-import { CourseConf } from '../data/conf';
+import { ServiceConf } from '../data/service-conf';
 import { Conf } from './conf.actions';
 import { ContextState } from './context.state';
 
-export interface CourseConfStateModel extends Array<CourseConf> {
+export interface ServiceConfStateModel extends Array<ServiceConf> {
 }
 
-const CONF_STATE_TOKEN = new StateToken<CourseConfStateModel>('CourseConf');
+const CONF_STATE_TOKEN = new StateToken<ServiceConfStateModel>('CourseConf');
 
-@State<CourseConfStateModel>({
+@State<ServiceConfStateModel>({
   name: CONF_STATE_TOKEN,
   defaults: []
 })
 @Injectable()
-export class CourseConfState {
+export class ServiceConfState {
 
   #dsns!: string;
 
@@ -28,27 +28,30 @@ export class CourseConfState {
 
   /** 從 Server 讀取全部資料。 */
   @Action(Conf.FetchAll)
-  async fetchAll({ setState }: StateContext<CourseConfStateModel>) {
+  async fetchAll({ setState }: StateContext<ServiceConfStateModel>) {
     const { conf } = this;
     const allConf = await conf.getConf(this.#dsns);
     setState(allConf);
   }
 
-    /** 從 Server 讀取指定課程資料。 */
-    @Action(Conf.FetchConf)
-    async fetchCourse(ctx: StateContext<CourseConfStateModel>, action: Conf.FetchConf) {
-      // const { timetable } = this;
-      // const state = ctx.getState();
-      // const tt = await timetable.getTimetable(this.#dsns, action.payload);
-  
-      // const found = state.find(v => (+v.course_id) == (+action.payload));
-  
-      // if(!found) {
-      //   ctx.setState([...state, ...tt])
-      // } else {
-      //   const newState = state.filter(v => v.course_id != action.payload);
-      //   ctx.setState([...newState, ...tt]);
-      // }
+  /** 從 Server 讀取指定課程資料。 */
+  @Action(Conf.FetchConf)
+  async fetchCourse(ctx: StateContext<ServiceConfStateModel>, action: Conf.FetchConf) {
+    const { conf } = this;
+    const state = ctx.getState();
+    const tt = await conf.getConf(this.#dsns, {
+      course_id: action.payload?.course_id,
+    });
+
+    const found = state.find(v => (+v.course_id) == (+action.payload.course_id));
+
+    if(!found) {
+      ctx.setState([...state, ...tt])
+    } else {
+      // 去掉原來在陣列中的元素。
+      const newState = state.filter(v => v.course_id != action.payload.course_id);
+      ctx.setState([...newState, ...tt]);
     }
+  }
 
 }

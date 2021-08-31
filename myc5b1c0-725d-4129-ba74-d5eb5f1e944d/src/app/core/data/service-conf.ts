@@ -1,5 +1,5 @@
 
-export interface CourseConf {
+export interface ServiceConf {
     uid:        string;
     course_id:  string;
     service_id: string;

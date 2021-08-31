@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DSAService } from '../dsutil-ng/dsa.service';
-import { CourseConf } from './data/conf';
+import { ServiceConf } from './data/service-conf';
 
 const TeacherContract = 'web3.v1.teacher';
 
@@ -14,7 +14,7 @@ export class ConfService {
   ) { }
 
   /** 設定課程組態，course_id、service_id 是必要欄位。 */
-  public async setConf(dsns: string, conf: Partial<Omit<CourseConf, 'uid'>>) {
+  public async setConf(dsns: string, conf: Partial<Omit<ServiceConf, 'uid'>>) {
     const contract = await this.dsa.getConnection(dsns, TeacherContract);
 
     const req = {
@@ -45,7 +45,8 @@ export class ConfService {
 
     const confs = rsp?.toCompactJson()?.conf ?? [];
 
-    for(const conf of  ([] as any[]).concat(confs)) {
+    const ensureArray = ([] as any[]).concat(confs)
+    for(const conf of ensureArray) {
       try { conf.conf = JSON.parse(conf.conf); }
       catch { conf.conf = {}; }
   
@@ -53,6 +54,6 @@ export class ConfService {
       catch { conf.enabled = true; }
     }
 
-    return confs;
+    return ensureArray;
   }
 }

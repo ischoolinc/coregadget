@@ -23,7 +23,6 @@ import { TimetableState } from './core/states/timetable.state';
 import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
-import { CourseConfState } from './core/states/conf.state';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -90,8 +89,11 @@ export class AppComponent implements OnInit {
 
     // 將相關資料放進 Store 裡面。
     await store.dispatch(new Context.FetchAll()).pipe(
-      concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
+      // concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
+      concatMap(() => store.dispatch([new Timetable.FetchAll()]))
     ).toPromise();
+
+    store.dispatch(new Conf.FetchConf({course_id: '25441'})).subscribe(console.log);
 
     // store.dispatch(new Timetable.SetCourse({
     //   course_id: '11729',
