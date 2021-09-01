@@ -21,7 +21,7 @@ export namespace Conf {
         static readonly type = '[Conf] SetConf';
 
         constructor(
-            public payload: Omit<ServiceConf, 'uid'>
+            public payload: Partial<Omit<ServiceConf, 'uid'>>
         ) {}
     }
 }

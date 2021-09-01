@@ -23,6 +23,7 @@ import { TimetableState } from './core/states/timetable.state';
 import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
+import { ServiceConfState } from './core/states/conf.state';
 
 type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
 
@@ -89,11 +90,32 @@ export class AppComponent implements OnInit {
 
     // 將相關資料放進 Store 裡面。
     await store.dispatch(new Context.FetchAll()).pipe(
-      // concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
-      concatMap(() => store.dispatch([new Timetable.FetchAll()]))
+      concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
+      // concatMap(() => store.dispatch([new Timetable.FetchAll()]))
     ).toPromise();
 
-    store.dispatch(new Conf.FetchConf({course_id: '25441'})).subscribe(console.log);
+    // store.dispatch(new Conf.FetchConf({course_id: '25441'}));
+
+    // 取得指定 course 的所有 service 設定。
+    store.select(ServiceConfState.getServicesConf).pipe(
+      map(fn => fn('25441'))
+    ).subscribe();
+
+    // 取得單個
+    store.select(ServiceConfState.getServiceConf).pipe(
+      map(fn => fn('25441', '1know'))
+    ).subscribe();
+
+    // 修改之後取得單個 Service
+    await store.dispatch(new Conf.SetConf({
+      course_id: '25441',
+      service_id: '1know',
+      conf: { female: 'power zoe 0' }
+    })).toPromise();
+
+    store.selectOnce(ServiceConfState.getServiceConf).pipe(
+      map(fn => fn('25441', '1know'))
+    ).subscribe(console.log);
 
     // store.dispatch(new Timetable.SetCourse({
     //   course_id: '11729',
@@ -112,7 +134,6 @@ export class AppComponent implements OnInit {
     try {
       const info = this.store.selectSnapshot(ContextState.personalInfo);
       this.myInfo = info;
-      console.log(info);
 
       this.curSelectedContext = await this.login.getSelectedContext().toPromise() as SelectedContext;
       this.dsns = this.curSelectedContext.dsns;
