@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../shared/dialog/confirm-dialog.service';
 
 @Component({
-  selector: 'app-custom-service-manage',
-  templateUrl: './custom-service-manage.component.html',
-  styleUrls: ['./custom-service-manage.component.scss']
+  selector: 'app-customize-service-manage',
+  templateUrl: './customize-service-manage.component.html',
+  styleUrls: ['./customize-service-manage.component.scss']
 })
-export class CustomServiceManageComponent implements OnInit {
+export class CustomizeServiceManageComponent implements OnInit {
 
   saving = false;
   curCSTab = 'editlink';

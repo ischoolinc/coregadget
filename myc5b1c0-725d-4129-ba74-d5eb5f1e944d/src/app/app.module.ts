@@ -21,7 +21,7 @@ import { environment } from '../environments/environment';
 import { AddGoogleClassroomComponent } from './add-google-classroom/add-google-classroom.component';
 import { EditGoogleClassroomComponent } from './edit-google-classroom/edit-google-classroom.component';
 import { AsyncGoogleClassroomComponent } from './async-google-classroom/async-google-classroom.component';
-import { CustomServiceManageComponent } from './custom-service-manage/custom-service-manage.component';
+import { CustomizeServiceManageComponent } from './customize-service-manage/customize-service-manage.component';
 import { DialogModule } from './shared/dialog/dialog.module';
 import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
 import { LauncherGoogleClassroomComponent } from './launcher-google-classroom/launcher-google-classroom.component';
@@ -33,7 +33,7 @@ import { LauncherCustomizeComponent } from './launcher-customize/launcher-custom
     AddGoogleClassroomComponent,
     EditGoogleClassroomComponent,
     AsyncGoogleClassroomComponent,
-    CustomServiceManageComponent,
+    CustomizeServiceManageComponent,
     LauncherOhaComponent,
     LauncherGoogleClassroomComponent,
     LauncherCustomizeComponent,

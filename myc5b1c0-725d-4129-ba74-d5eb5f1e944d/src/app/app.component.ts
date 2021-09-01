@@ -96,26 +96,26 @@ export class AppComponent implements OnInit {
 
     // store.dispatch(new Conf.FetchConf({course_id: '25441'}));
 
-    // 取得指定 course 的所有 service 設定。
-    store.select(ServiceConfState.getServicesConf).pipe(
-      map(fn => fn('25441'))
-    ).subscribe();
+    // // 取得指定 course 的所有 service 設定。
+    // store.select(ServiceConfState.getServicesConf).pipe(
+    //   map(fn => fn('25441'))
+    // ).subscribe();
 
-    // 取得單個
-    store.select(ServiceConfState.getServiceConf).pipe(
-      map(fn => fn('25441', '1know'))
-    ).subscribe();
+    // // 取得單個
+    // store.select(ServiceConfState.getServiceConf).pipe(
+    //   map(fn => fn('25441', '1know'))
+    // ).subscribe();
 
-    // 修改之後取得單個 Service
-    await store.dispatch(new Conf.SetConf({
-      course_id: '25441',
-      service_id: '1know',
-      conf: { female: 'power zoe 0' }
-    })).toPromise();
+    // // 修改之後取得單個 Service
+    // await store.dispatch(new Conf.SetConf({
+    //   course_id: '25441',
+    //   service_id: '1know',
+    //   conf: { female: 'power zoe 0' }
+    // })).toPromise();
 
-    store.selectOnce(ServiceConfState.getServiceConf).pipe(
-      map(fn => fn('25441', '1know'))
-    ).subscribe(console.log);
+    // store.selectOnce(ServiceConfState.getServiceConf).pipe(
+    //   map(fn => fn('25441', '1know'))
+    // ).subscribe(console.log);
 
     // store.dispatch(new Timetable.SetCourse({
     //   course_id: '11729',
