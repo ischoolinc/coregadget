@@ -217,6 +217,7 @@ export class DSAService {
     }catch(ex)
     {
       alert("取得課程出席率母數發生錯誤: \n"+ex);
+      console.log(ex)
     }
     return  result;
   }
