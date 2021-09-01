@@ -35,7 +35,7 @@ export class StudentPickComponent implements OnInit {
     private config: ConfigService,
     private change: ChangeDetectorRef,
     private router: Router
- 
+
   ) {
     this.today = dsa.getToday();
   }
@@ -165,34 +165,60 @@ export class StudentPickComponent implements OnInit {
   }
 
   getAttendanceText(stu: StudentCheck) {
-    let value = stu.status ? stu.status.AbsenceType : 'Present';
-    // let value = stu.status ? stu.status.AbsenceType : 'Check';
-    for (let xx of this.periodConf.Absence) {
-      if (xx.english_name && xx.Name === value) {
-        value = xx.english_name;
+    try {
+      let value = stu.status ? stu.status.AbsenceType : 'Present';
+      // let value = stu.status ? stu.status.AbsenceType : 'Check';
+
+      if (stu.status) {
+        if (this.config.getAbsence(stu.status.AbsenceType)) //判斷假別設定是否有
+        {
+          value = this.config.getAbsence(stu.status.AbsenceType).Name;
+        } else {
+          value = 'Present'
+        }
+
+      } else {
+        value = 'Present'
       }
+
+      for (let xx of this.periodConf.Absence) {
+        if (xx.english_name && xx.Name === value) {
+          value = xx.english_name;
+        }
+      }
+      return value;
+    } catch (ex) {
+
+      alert(stu.data.Name + "'s data get problem ,please contact administrator.")
+      console.log(ex)
     }
-    return value;
   }
 
   getAttendanceStyle(stu: StudentCheck) {
 
-    let bgColor = 'white';
-    let fgColor = 'rgba(0,0,0,.12)';
+    try {
 
-    if (stu.status) {
-      const absType = stu.status.AbsenceType;
-      const absConf = this.config.getAbsence(absType);
-      if (absConf.Abbr) {
-        bgColor = this.config.getAbsenceColor(absConf.Abbr);
+
+      let bgColor = 'white';
+      let fgColor = 'rgba(0,0,0,.12)';
+
+      if (stu.status) {
+        const absType = stu.status.AbsenceType;
+        const absConf = this.config.getAbsence(absType);
+        if (absConf.Abbr) {
+          bgColor = this.config.getAbsenceColor(absConf.Abbr);
+        }
+
+        fgColor = 'white';
       }
 
-      fgColor = 'white';
-    }
+      return {
+        "background-color": bgColor,
+        "color": fgColor,
+      }
+    } catch (ex) {
+      // alert(stu.data.Name+" 取得假別顏色發生錯誤")
 
-    return {
-      "background-color": bgColor,
-      "color": fgColor,
     }
   }
 
