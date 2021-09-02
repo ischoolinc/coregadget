@@ -126,26 +126,30 @@
                               </div>
                             </div>
                           </td>
-                          <td
-                            class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+                          <td class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+                            <ng-container *ngFor="let item of course.ServiceConfig">
+                              <app-launcher-oha
+                                *ngIf="item.service_id === '1campus_oha' && item.enabled"
+                                [dsns]="dsns"
+                                [roleName]="curSelectedContext.role"
+                                [course]="course">
+                              </app-launcher-oha>
 
-                            <app-launcher-oha
-                              [dsns]="dsns"
-                              [roleName]="curSelectedContext.role"
-                              [course]="course">
-                            </app-launcher-oha>
+                              <app-launcher-google-classroom
+                                *ngIf="item.service_id === 'google_classroom' && item.enabled"
+                                [course]="course">
+                              </app-launcher-google-classroom>
 
-                            <app-launcher-google-classroom
-                              [course]="course">
-                            </app-launcher-google-classroom>
+                              <!-- <div class="has-tooltip lg:mr-4">
+                                <span class="tooltip -ml-2">1Know</span>
+                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
+                                  alt="1know">
+                              </div> -->
 
-                            <!-- <div class="has-tooltip lg:mr-4">
-                              <span class="tooltip -ml-2">1Know</span>
-                              <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/1know_logo.svg"
-                                alt="1know">
-                            </div> -->
-
-                            <app-launcher-customize></app-launcher-customize>
+                              <app-launcher-customize
+                                *ngIf="item.service_id === 'customize' && item.enabled"
+                              ></app-launcher-customize>
+                            </ng-container>
                           </td>
                           <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
                             <button class="text-secondary hover:text-secondary-light focus:outline-none"
@@ -246,65 +250,72 @@
           <div class="text-gray-text3 text-sm ml-4">設定</div>
         </div>
 
-        <div class="flex flex-row items-center mb-6">
-          <div class="flex-grow w-full">
-            <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
-              src="/assets/img/oha.svg" alt="OHA雲端教室">OHA雲端教室</span>
-          </div>
-          <div>
-            <mat-slide-toggle
-              color="primary"
-              [checked]="checkSystemServiceEnabled(data.target, '1campus_oha')"
-              [disabled]="saving"
-              (change)="toggleSystemCloudService($event, data.target, '1campus_oha')"
-            ></mat-slide-toggle>
-          </div>
-          <div class="ml-4">
-            <span class="iconify text-2xl text-gray-text3" style="opacity: 0.3;" data-icon="uil:setting" data-inline="false"></span>
-          </div>
-        </div>
+        <ng-container *ngFor="let item of data.target.ServiceConfig">
 
-        <div class="flex flex-row items-center mb-6">
-          <div class="flex-grow flex flex-row items-center w-full">
-            <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
-              src="/assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
-            <span *ngIf="data.target.GoogleExt?.id">
-              (<a href="javascript:;" (click)="manageProcessState = 304"
-                class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
-            </span>
+          <div *ngIf="item.service_id === '1campus_oha'"
+            class="flex flex-row items-center mb-6">
+            <div class="flex-grow w-full">
+              <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+                src="/assets/img/oha.svg" alt="OHA雲端教室">OHA雲端教室</span>
+            </div>
+            <div>
+              <mat-slide-toggle
+                color="primary"
+                [checked]="item.enabled"
+                [disabled]="saving"
+                (change)="toggleEnabledService($event, data.target, item)"
+              ></mat-slide-toggle>
+            </div>
+            <div class="ml-4">
+              <span class="iconify text-2xl text-gray-text3" style="opacity: 0.3;" data-icon="uil:setting" data-inline="false"></span>
+            </div>
           </div>
-          <div>
-            <mat-slide-toggle
-              color="primary"
-              [checked]="checkSystemServiceEnabled(data.target, 'google_classroom')"
-              [disabled]="saving"
-              (change)="toggleSystemCloudService($event, data.target, 'google_classroom')"
-            ></mat-slide-toggle>
-          </div>
-          <a href="javascript:;" class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
-            <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
-              data-inline="false"></span>
-          </a>
-        </div>
 
-        <div class="flex flex-row items-center mb-6">
-          <div class="flex-grow w-full">
-            <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
-                src="/assets/img/link.svg" alt="links">外部連結</span>
+          <div *ngIf="item.service_id === 'google_classroom'"
+            class="flex flex-row items-center mb-6">
+            <div class="flex-grow flex flex-row items-center w-full">
+              <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+                src="/assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
+              <span *ngIf="data.target.GoogleExt?.id">
+                (<a href="javascript:;" (click)="manageProcessState = 304"
+                  class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
+              </span>
+            </div>
+            <div>
+              <mat-slide-toggle
+                color="primary"
+                [checked]="item.enabled"
+                [disabled]="saving"
+                (change)="toggleEnabledService($event, data.target, item)"
+              ></mat-slide-toggle>
+            </div>
+            <a href="javascript:;" class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
+              <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+                data-inline="false"></span>
+            </a>
           </div>
-          <div>
-            <mat-slide-toggle
-              color="primary"
-              [checked]="checkSystemServiceEnabled(data.target, 'custom')"
-              [disabled]="saving"
-              (change)="toggleSystemCloudService($event, data.target, 'custom')"
-            ></mat-slide-toggle>
+
+          <div *ngIf="item.service_id === 'customize'"
+            class="flex flex-row items-center mb-6">
+            <div class="flex-grow w-full">
+              <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+                  src="/assets/img/link.svg" alt="links">外部連結</span>
+            </div>
+            <div>
+              <mat-slide-toggle
+                color="primary"
+                [checked]="item.enabled"
+                [disabled]="saving"
+                (change)="toggleEnabledService($event, data.target, item)"
+              ></mat-slide-toggle>
+            </div>
+            <a href="javascript:;" class="ml-4" (click)="manageProcessState = 305">
+              <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+                data-inline="false"></span>
+            </a>
           </div>
-          <a href="javascript:;" class="ml-4" (click)="manageProcessState = 305">
-            <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
-              data-inline="false"></span>
-          </a>
-        </div>
+
+        </ng-container>
       </div>
     </div>
     <div *ngIf="manageProcessState !== 301" (click)="manageProcessState = 301"
@@ -313,7 +324,7 @@
         data-inline="false"></span>
       <p class="text-base inline-block">返回</p>
     </div>
-    <!-- 新增教室 -->
+    <!-- 新增Google Classroom教室 -->
     <ng-container *ngIf="manageProcessState === 302">
       <app-add-google-classroom
         [dsns]="dsns"
@@ -322,7 +333,7 @@
         [data]="data">
       </app-add-google-classroom>
     </ng-container>
-    <!-- 解除或更改「課程連結」 -->
+    <!-- 解除Google Classroom教室連結 -->
     <ng-container *ngIf="manageProcessState === 303">
       <app-edit-google-classroom
         [dsns]="dsns"
@@ -340,8 +351,9 @@
     </ng-container>
     <!-- 外部連結設定 -->
     <ng-container *ngIf="manageProcessState === 305">
-      <app-customize-service-manage>
-
+      <app-customize-service-manage
+        [data]="data"
+      >
       </app-customize-service-manage>
     </ng-container>
   </div>

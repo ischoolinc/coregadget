@@ -24,8 +24,7 @@ import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom
 import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
 import { ServiceConfState } from './core/states/conf.state';
-
-type GadgetSystemService = 'google_classroom' | '1campus_oha' | 'custom';
+import { ServiceConf } from './core/data/service-conf';
 
 @Component({
   selector: 'app-root',
@@ -140,15 +139,13 @@ export class AppComponent implements OnInit {
 
       this.semesterRowSource = await this.getAttendSemesters();
       this.semester.selected = this.getHeadSemester();
-      const { school_year, semester } = this.getHeadSemester();
-      const sourceCourses = await this.getCourses(school_year, semester);
+      this.semesterChange(this.semester.selected);
 
       let dayOfWeek = dj().day() // 0: 星期日 1: 星期一 6: 星期六
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
       this.curTab = dayOfWeek;
 
       await this.checkConnected();
-      await this.displayCourses(sourceCourses);
     } catch (error) {
       console.log(error);
     } finally {
@@ -165,24 +162,37 @@ export class AppComponent implements OnInit {
     sourceCourses.forEach(v => {
       v.GoogleIsReady = false;
       v.Alias = this.formatCourseAlias(v);
-      v.SystemCloudService = this.createDefaultSystemCloudService();
-      v.CustomCloudService = [];
+      v.ServiceConfig = [];
       v.TargetId = v.CourseId;
       v.TargetType = 'COURSE';
       v.TargetName = v.ClassName;
+
+      this.store.select(ServiceConfState.getServicesConf).pipe(
+        map(fn => fn(v.CourseId))
+      ).subscribe(storeSC => {
+        this.setDefaultSystemCloudService(v.CourseId).forEach(defSC => {
+          const found = storeSC.findIndex(sc => sc.service_id === defSC.service_id);
+          if (found === -1) {
+            storeSC.push(defSC);
+          }
+        });
+        v.ServiceConfig = storeSC;
+      });
     });
+
     this.courses = sourceCourses;
     await this.mappingClassroomLive();
     await this.mappingGoogleClassroom();
     this.toggleTab();
   }
 
-  createDefaultSystemCloudService() {
-    return new Map([
-      ['google_classroom', { Enabled: true } as GadgetCustomCloudServiceRec],
-      ['1campus_oha', { Enabled: true } as GadgetCustomCloudServiceRec],
-      ['custom', { Enabled: true } as GadgetCustomCloudServiceRec]
-    ]);
+  // 設定雲端服務初始值，如果沒設定過，資料庫不會有資料
+  setDefaultSystemCloudService(courseId: number) {
+    return [
+      { uid: '', course_id: courseId, service_id: '1campus_oha', conf: null, link: '', enabled: true, order: 1 },
+      { uid: '', course_id: courseId, service_id: 'google_classroom', conf: null, link: '', enabled: true, order: 2 },
+      { uid: '', course_id: courseId, service_id: 'customize', conf: {}, link: '', enabled: true, order: 3 },
+    ];
   }
 
   async semesterChange(sems: Semester) {
@@ -312,28 +322,20 @@ export class AppComponent implements OnInit {
     this.curCourseList = this.courses; // TODO: 當前 weekday
   }
 
-  checkSystemServiceEnabled(item: MyCourseRec, service: GadgetSystemService) {
-    if (item.SystemCloudService.has(service)) {
-      return item.SystemCloudService.get(service)?.Enabled;
-    } else {
-      return true;
-    }
+  checkServiceIsEnabled(scs: ServiceConf[], service_id: string) {
+    const serviceConf = scs.find(item => item.service_id === service_id);
+    return serviceConf?.enabled;
   }
 
-  async toggleSystemCloudService(e: MatSlideToggleChange, target: MyTargetBaseRec, service: GadgetSystemService) {
+  async toggleEnabledService(e: MatSlideToggleChange, target: MyTargetBaseRec, sc: ServiceConf) {
     try {
-      if (target.SystemCloudService.has(service)) {
-        // await this.myCourseSrv.setWeb3SystemCloudService(this.dsns, {
-        //   TargetType: target.TargetType,
-        //   TargetId: target.TargetId,
-        //   Title: service,
-        //   Link: service,
-        //   Enabled: e.checked,
-        // });
-        target.SystemCloudService.get(service)!.Enabled = e.checked;
-      }
+      await this.store.dispatch(new Conf.SetConf({
+        course_id: target.TargetId,
+        service_id: sc.service_id,
+        enabled: e.checked,
+        order: sc.order,
+      })).toPromise();
     } catch (error) {
-      target.SystemCloudService.get(service)!.Enabled = !e.checked;
     }
   }
 

@@ -24,33 +24,6 @@
         <div class="h-72 overflow-y-auto">
           <table class="w-full">
             <tbody class="bg-white mb-6">
-              <!-- <tr class="flex flex-row items-center border-b border-gray-light">
-                <td>
-                  <span class="iconify cursor-move text-gray" data-icon="ic:round-menu"></span>
-                </td>
-                <td class="px-4 py-4 flex flex-grow flex-col">
-                  <input type="text" class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer"
-                    placeholder="師培班">
-                  <input type="text"
-                    class="border border-primary rounded overflow-ellipsis no-ring cursor-pointer mt-2"
-                    placeholder="http://wefblaiuweglkjberlgqiurgl.com">
-                </td>
-                <td class="px-4 py-4 flex flex-row flex-wrap items-center justify-end ml-auto">
-                  <div class="mr-3">
-                    <mat-slide-toggle
-                      color="primary"
-                    ></mat-slide-toggle>
-                  </div>
-                  <button class="no-ring text-2xl mr-2">
-                    <span class="iconify text-gray-text3 hover:text-primary" data-icon="entypo:save"
-                      data-inline="false"></span>
-                  </button>
-                  <button class="no-ring text-2xl">
-                    <span class="iconify text-gray-text3 hover:text-warning" data-icon="fluent:delete-20-filled"
-                      data-inline="false"></span>
-                  </button>
-                </td>
-              </tr> -->
               <tr *ngFor="let item of services"
                 class="flex flex-row items-center border-b border-gray-light">
                 <!-- <td>
@@ -73,9 +46,12 @@
                     <mat-slide-toggle
                       color="primary"
                       [checked]="item.enabled"
+                      [disabled]="saving"
+                      [(ngModel)]="item.enabled"
+                      (change)="toggleEnabledCustomizeService(item)"
                     ></mat-slide-toggle>
                   </div>
-                  <button *ngIf="!item.inEdit" class="no-ring text-2xl mr-2" (click)="item.inEdit = true">
+                  <button *ngIf="!item.inEdit" class="no-ring text-2xl mr-2" (click)="item.inEdit = !item.inEdit">
                     <span class="iconify text-gray-text3 hover:text-primary" data-icon="akar-icons:edit"
                       data-inline="false"></span>
                   </button>
@@ -83,7 +59,7 @@
                     <span class="iconify text-gray-text3 hover:text-primary" data-icon="entypo:save"
                       data-inline="false"></span>
                   </button>
-                  <button class="no-ring text-2xl" (click)="doDel(item)">
+                  <button class="no-ring text-2xl" (click)="confirmDel(item)">
                     <span class="iconify text-gray-text3 hover:text-warning" data-icon="fluent:delete-20-filled"
                       data-inline="false"></span>
                   </button>
@@ -91,6 +67,7 @@
               </tr>
             </tbody>
           </table>
+          <p class="text-center" *ngIf="!services.length">目前無資料</p>
         </div>
       </div>
 

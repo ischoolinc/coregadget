@@ -38,7 +38,7 @@ export class ConfService {
     return rspjson;
   }
 
-  public async getConf(dsns: string, cond?: {service_id?: string, course_id?: string}) {
+  public async getConf(dsns: string, cond?: {service_id?: string, course_id?: number}) {
     const contract = await this.dsa.getConnection(dsns, TeacherContract);
 
     const rsp = await contract.send('mycourse.getConf', cond);
@@ -49,7 +49,7 @@ export class ConfService {
     for(const conf of ensureArray) {
       try { conf.conf = JSON.parse(conf.conf); }
       catch { conf.conf = {}; }
-  
+
       try { conf.enabled = (conf.enabled == 't' ? true : false); }
       catch { conf.enabled = true; }
     }

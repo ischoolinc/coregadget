@@ -45,7 +45,7 @@ export class ServiceConfState {
 
     const found = state.find(v => (+v.course_id) == (+action.payload.course_id));
 
-    if(!found) {
+    if (!found) {
       ctx.setState([...state, ...tt])
     } else {
       // 去掉原來在陣列中的元素。
@@ -54,61 +54,56 @@ export class ServiceConfState {
     }
   }
 
-    /** 寫入 service conf。 */
-    @Action(Conf.SetConf)
-    async setConf(ctx: StateContext<ServiceConfStateModel>, action: Conf.SetConf) {
-      const { conf } = this;
-      const { payload } = action;
-      const state = ctx.getState();
-      const tt = await conf.setConf(this.#dsns, payload);
-      const compose = { ...tt, course_id: payload.course_id, service_id: payload.service_id };
-  
-      console.log('comose:');
-      console.log(compose);
-      const found = state.find(v => {
-        return (+v.course_id) == (+payload.course_id!)
-          && v.service_id == payload.service_id
+  /** 寫入 service conf。 */
+  @Action(Conf.SetConf)
+  async setConf(ctx: StateContext<ServiceConfStateModel>, action: Conf.SetConf) {
+    const { conf } = this;
+    const { payload } = action;
+    const state = ctx.getState();
+    const tt = await conf.setConf(this.#dsns, payload);
+    const compose = { ...tt, course_id: payload.course_id, service_id: payload.service_id };
+
+    const found = state.find(v => {
+      return (+v.course_id == +payload.course_id!)
+        && v.service_id == payload.service_id;
+    });
+
+    if (!found) {
+      return ctx.setState([...state, compose]);
+    } else {
+      // 去掉原來在陣列中的元素。
+      const newState = state.filter(v => {
+        return !!!((+v.course_id == +payload.course_id!)
+          && v.service_id == payload.service_id);
       });
-  
-      if(!found) {
-        return ctx.setState([...state, compose])
-      } else {
-        // 去掉原來在陣列中的元素。
-        const newState = state.filter(v => {
-          return (+v.course_id) == (+payload.course_id!)
-            && v.service_id == payload.service_id
-        });
-        
-        console.log('xyz');
-        console.log(newState, compose);
-        return ctx.setState([...newState, compose]);
-      }
-      console.log('compose success');
+
+      return ctx.setState([...newState, compose]);
     }
+  }
 
   @Selector()
   static getServicesConf(state: ServiceConfStateModel) {
     return (courseId: string | number) => {
       return state.filter(v => {
-        if(v.course_id == courseId) {
+        if (v.course_id == courseId) {
           return true;
         } else {
           return false;
         }
-      })
+      });
     }
   }
 
   @Selector()
   static getServiceConf(state: ServiceConfStateModel) {
-    return (courseId: string | number, serviceId: string) => {
+    return (courseId: string | number, serviceId: 'google_classroom' | '1campus_oha' | 'customize') => {
       return state.find(v => {
-        if(v.course_id == courseId && v.service_id == serviceId) {
+        if (v.course_id == courseId && v.service_id == serviceId) {
           return true;
         } else {
           return false;
         }
-      })
+      });
     }
   }
 }

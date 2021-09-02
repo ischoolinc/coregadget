@@ -1,5 +1,6 @@
 import { GoogleClassroomCourse } from "../google-classroom.service";
 import { GadgetCustomCloudServiceRec } from "./cloudservice";
+import { ServiceConf } from "./service-conf";
 
 export interface MyCourseTeacherRec {
   TeacherId: number;
@@ -27,8 +28,7 @@ export class MyTargetBaseRec {
   TargetId?: number;
   TargetName?: string;
   TargetType?: TargetType;
-  SystemCloudService: Map<string, GadgetCustomCloudServiceRec> = new Map();
-  CustomCloudService: GadgetCustomCloudServiceRec[] = [];
+  ServiceConfig: ServiceConf[] = [];
   GoogleIsReady: boolean = false;
   GoogleExt?: GoogleClassroomCourse;
   TeacherId?: number;
