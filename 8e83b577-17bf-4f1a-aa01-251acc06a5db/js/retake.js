@@ -181,7 +181,14 @@ _gg.SetSubject = function() {
                             timetableid = item.TimetableID;
                         }
 
-                        var tmp_subjectname = (item.SubjectName || '') + $.arabic2roman(item.SubjectLevel || '');
+                        // var tmp_subjectname = (item.SubjectName || '') + $.arabic2roman(item.SubjectLevel || '');
+                        var tmp_subjectname = '';
+                        if ($.arabic2roman(item.SubjectLevel || '')!=""){
+                            tmp_subjectname = (item.SubjectName || '') + $.arabic2roman(item.SubjectLevel || '')
+                        }else{
+                            tmp_subjectname = (item.SubjectName || '')
+                        }
+
                         var tmp_periods_id = '', _ref, _ref1;
                         if ((_ref = item.PeriodContent) != null ? (_ref1 = _ref.Periods) != null ? _ref1.Period : void 0 : void 0) {
                             var tmp_obj = item.PeriodContent.Periods.Period;
