@@ -1,5 +1,5 @@
 
-export interface Course {
+export interface CourseTimetable {
   uid:       string;
   course_id: string | number;
   periods:    Period[];

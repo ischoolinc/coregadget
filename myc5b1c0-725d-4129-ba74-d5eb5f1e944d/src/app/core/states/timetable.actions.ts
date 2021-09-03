@@ -1,4 +1,4 @@
-import { Course } from "../data/timetable";
+import { CourseTimetable } from "../data/timetable";
 
 export namespace Timetable {
 
@@ -20,7 +20,7 @@ export namespace Timetable {
     static readonly type = '[Timetable] SetCourse';
 
     constructor(
-      public payload: Omit<Course, 'uid'>
+      public payload: Omit<CourseTimetable, 'uid'>
     ) { }
   }
 }

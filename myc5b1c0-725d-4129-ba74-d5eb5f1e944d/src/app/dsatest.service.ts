@@ -1,6 +1,6 @@
 import { stringify } from '@angular/compiler/src/util';
 import { Injectable } from '@angular/core';
-import { Course } from './core/data/timetable';
+import { CourseTimetable } from './core/data/timetable';
 import { DSAService } from './dsutil-ng/dsa.service';
 import { DSAError } from './dsutil-ng/errors';
 

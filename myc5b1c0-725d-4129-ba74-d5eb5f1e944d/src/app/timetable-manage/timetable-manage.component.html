@@ -1,0 +1,38 @@
+<div class="rounded-2xl">
+  <div class="text-right">
+    <button mat-dialog-close><span class="iconify text-2xl text-gray-text1" data-icon="eva:close-fill" data-inline="false"></span></button>
+  </div>
+  <div class="mx-2">
+    <p class="text-2xl font-semibold text-gray-text1 mt-4">課程時段設定</p>
+    <p class="font-semibold text-gray-text1 px-2 mt-4 border-l-4 border-primary">新增/管理時段節次</p>
+    <p class="text-sm text-gray-text1 px-3 mt-2">課程：<span class="text-primary font-semibold">{{course.CourseName}}</span></p>
+    <p class="text-sm text-gray-text3 px-3 mt-1">點擊時段所屬的空格即可新增/刪除節次</p>
+    <!-- 課表table -->
+    <div class="mt-6 w-full h-80 overflow-y-scroll overflow-x-scroll">
+      <table class="text-center border border-gray-light" cellspacing="0">
+        <tbody>
+          <tr class="t-r">
+            <th></th>
+            <th *ngFor="let item of weekdays" class="text-sm">{{item.name}}</th>
+          </tr>
+          <tr *ngFor="let period of periods" class="t-r">
+            <td>{{period}}</td>
+            <!-- [ngClass]="{'bg-primary': getIsChecked(dayOfweek.value, period)}" -->
+            <td *ngFor="let dayOfweek of weekdays"
+              class="cursor-pointer"
+              (click)="toggleTimetableChecked(dayOfweek.value, period)"
+            >
+              <input type="checkbox" class="alesson" [checked]="getIsChecked(dayOfweek.value, period)">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-right mt-8 mb-2">
+      <button mat-dialog-close
+        class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none">取消</button>
+      <button class="inline-block btn btn-primary px-4" (click)="saveTimetable()">儲存</button>
+    </div>
+  </div>
+</div>

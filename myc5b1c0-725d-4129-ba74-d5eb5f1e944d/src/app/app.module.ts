@@ -26,6 +26,7 @@ import { DialogModule } from './shared/dialog/dialog.module';
 import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
 import { LauncherGoogleClassroomComponent } from './launcher-google-classroom/launcher-google-classroom.component';
 import { LauncherCustomizeComponent } from './launcher-customize/launcher-customize.component';
+import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { LauncherCustomizeComponent } from './launcher-customize/launcher-custom
     LauncherOhaComponent,
     LauncherGoogleClassroomComponent,
     LauncherCustomizeComponent,
+    TimetableManageComponent,
   ],
   imports: [
     BrowserModule,

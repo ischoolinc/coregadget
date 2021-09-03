@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import { from } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-import { Course } from '../data/timetable';
+import { CourseTimetable } from '../data/timetable';
 import { TimetableService } from '../timetable.service';
 import { ContextState } from './context.state';
 import { Timetable } from './timetable.actions';
 
-export interface TimetableStateModel extends Array<Course> {
+export interface TimetableStateModel extends Array<CourseTimetable> {
 }
 
 const TIMETABLE_STATE_TOKEN = new StateToken<TimetableStateModel>('Timetable');

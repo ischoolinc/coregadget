@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DSAService } from '../dsutil-ng/dsa.service';
-import { Course } from './data/timetable';
+import { CourseTimetable } from './data/timetable';
 
 const TeacherContract = 'web3.v1.teacher';
 
@@ -13,7 +13,7 @@ export class TimetableService {
     private dsa: DSAService,
   ) { }
 
-  public async setTimetable(dsns: string, course: Omit<Course, 'uid'>) {
+  public async setTimetable(dsns: string, course: Omit<CourseTimetable, 'uid'>) {
     const contract = await this.dsa.getConnection(dsns, TeacherContract);
 
     const req = {
@@ -35,9 +35,9 @@ export class TimetableService {
 
     const req = courseId ? { course_id: courseId, } : null;
     const rsp = await contract.send('mycourse.getTimetable', req);
-   
-    const courses: Course[] = rsp?.toCompactJson()?.course ?? [];
 
-    return ([] as Course[]).concat(courses);
+    const courses: CourseTimetable[] = rsp?.toCompactJson()?.course ?? [];
+
+    return ([] as CourseTimetable[]).concat(courses);
   }
 }

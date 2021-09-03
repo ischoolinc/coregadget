@@ -25,6 +25,7 @@ import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
 import { ServiceConfState } from './core/states/conf.state';
 import { ServiceConf } from './core/data/service-conf';
+import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
 
 @Component({
   selector: 'app-root',
@@ -339,6 +340,9 @@ export class AppComponent implements OnInit {
     }
   }
 
-  openClassTime() {
+  manageTimeTable(course: MyCourseRec) {
+    this.dialogRefManage = this.dialog.open(TimetableManageComponent, {
+      data: { course },
+    });
   }
 }
