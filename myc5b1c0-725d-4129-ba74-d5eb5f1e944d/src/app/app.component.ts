@@ -6,7 +6,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import dj from 'dayjs';
 import { GoogleClassroomCourse, GoogleClassroomService } from './core/google-classroom.service';
 import { MyCourseService } from './core/my-course.service';
-import { MyCourseRec, MyTargetBaseRec, Semester } from './core/data/my-course';
+import { MyCourseRec, MyTargetBaseRec, PeriodRec, Semester } from './core/data/my-course';
 import { GadgetCustomCloudServiceRec } from './core/data/cloudservice';
 import { DSAService } from './dsutil-ng/dsa.service';
 import { SelectComponent } from './shared/select/select/select.component';
@@ -26,6 +26,7 @@ import { Conf } from './core/states/conf.actions';
 import { ServiceConfState } from './core/states/conf.state';
 import { ServiceConf } from './core/data/service-conf';
 import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
+import { CourseTimetable, Period } from './core/data/timetable';
 
 @Component({
   selector: 'app-root',
@@ -142,7 +143,7 @@ export class AppComponent implements OnInit {
       this.semester.selected = this.getHeadSemester();
       this.semesterChange(this.semester.selected);
 
-      let dayOfWeek = dj().day() // 0: 星期日 1: 星期一 6: 星期六
+      let dayOfWeek = dj().day() // 0 ~ 6，0 是星期日
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
       this.curTab = dayOfWeek;
 
@@ -164,6 +165,7 @@ export class AppComponent implements OnInit {
       v.GoogleIsReady = false;
       v.Alias = this.formatCourseAlias(v);
       v.ServiceConfig = [];
+      v.Timetable = new Map();
       v.TargetId = v.CourseId;
       v.TargetType = 'COURSE';
       v.TargetName = v.ClassName;
@@ -178,6 +180,25 @@ export class AppComponent implements OnInit {
           }
         });
         v.ServiceConfig = storeSC;
+      });
+
+      this.store.select(TimetableState.getCourse).pipe(
+        map(fn => fn(v.CourseId))
+      ).subscribe(courseTimetable => {
+        const colTimetable: Map<number, PeriodRec> = new Map();
+        new Array().concat(courseTimetable || []).forEach((tt: CourseTimetable) => {
+          tt.periods.forEach(obj => {
+            const intWeekday = +obj.weekday;
+            if (!colTimetable.has(intWeekday)) {
+              colTimetable.set(intWeekday, { Weekday: intWeekday, Periods: []});
+            }
+            colTimetable.get(intWeekday)!.Periods.push(+obj.period);
+          });
+        });
+        colTimetable.forEach(item => {
+          item.Periods = item.Periods.sort();
+        });
+        v.Timetable = new Map([...colTimetable].sort());
       });
     });
 
@@ -320,7 +341,17 @@ export class AppComponent implements OnInit {
   }
 
   toggleTab() {
-    this.curCourseList = this.courses; // TODO: 當前 weekday
+    if (this.curTab === 0) { // 所有時段
+      this.curCourseList = this.courses;
+    } else {
+      this.curCourseList = this.courses.filter(v => {
+        if (v.Timetable.has(this.curTab)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
   }
 
   checkServiceIsEnabled(scs: ServiceConf[], service_id: string) {

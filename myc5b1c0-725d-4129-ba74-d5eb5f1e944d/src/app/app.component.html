@@ -75,7 +75,7 @@
           <div class="content">
             <!-- 所有時段表格 -->
             <!-- web -->
-            <div class="hidden xs:flex flex-col mt-4 w-full">
+            <div *ngIf="curCourseList.length;else tplNoClass" class="hidden xs:flex flex-col mt-4 w-full">
               <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
                   <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
@@ -83,7 +83,7 @@
                       <thead class="bg-primary">
                         <tr>
                           <th scope="col" class="tb-title">課程名稱</th>
-                          <th scope="col" class="tb-title">時段/節次</th>
+                          <th scope="col" class="tb-title">{{this.curTab === 0 ? '時段/節次' : '節次'}}</th>
                           <th scope="col" class="tb-title">雲端服務</th>
                           <th scope="col" class="tb-title">雲端服務管理</th>
                         </tr>
@@ -101,19 +101,14 @@
                           <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
                             <div class="flex flex-row flex-wrap items-center justify-center">
                               <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="mr-2">二</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">2</p>
-                              </div>
-                              <!-- 時段tag -->
-                              <div
-                                class="px-3 py-1 mr-3 mb-2 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                                <p class="mr-2">三</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                                <p class="h-5 w-5 text-sm bg-secondary-lighter rounded-full my-auto">4</p>
-                              </div>
+                              <ng-container *ngFor="let item of course.Timetable | mapsToArray">
+                                <app-badge-period
+                                  *ngIf="this.curTab === 0 || item.Weekday === this.curTab"
+                                  [data]="item"
+                                  [showWeekday]="this.curTab === 0"
+                                ></app-badge-period>
+                              </ng-container>
+
                               <!-- 時段管理btn -->
                               <div class="has-tooltip">
                                 <span class="tooltip -ml-8">管理時段</span>
@@ -171,29 +166,16 @@
               <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
                 {{course.CourseName}}</p>
               <div class="px-4 py-3 flex flex-row itmes-center">
-                <p class="w-16 text-gray-text2 font-medium">時段<br>節次</p>
+                <p class="w-16 text-gray-text2 font-medium" *ngIf="this.curTab === 0">時段<br>節次</p>
+                <p class="w-16 text-gray-text2 font-medium" *ngIf="this.curTab !== 0">節次</p>
                 <div class="flex flex-row flex-wrap itmes-center">
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="mr-2">二</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">1</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">2</p>
-                  </div>
-                  <div
-                    class="px-3 py-1 mr-3 my-1 flex flex-row flex-wrap items-center font-medium text-secondary border border-secondary rounded-full">
-                    <p class="mr-2">三</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto mr-1">3</p>
-                    <p class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto">4</p>
-                  </div>
-                  <div class="has-tooltip my-2">
-                    <span class="tooltip -ml-8">管理時段</span>
-                    <button (click)="manageTimeTable(course)"
-                      class="px-3 py-1 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                      <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                        data-inline="false"></span>
-                      <p class="text-sm">管理</p>
-                    </button>
-                  </div>
+                  <ng-container *ngFor="let item of course.Timetable | mapsToArray">
+                    <app-badge-period
+                      *ngIf="this.curTab === 0 || item.Weekday === this.curTab"
+                      [data]="item"
+                      [showWeekday]="this.curTab === 0"
+                    ></app-badge-period>
+                  </ng-container>
                 </div>
               </div>
               <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
@@ -358,4 +340,8 @@
       </app-customize-service-manage>
     </ng-container>
   </div>
+</ng-template>
+
+<ng-template #tplNoClass>
+  <img class="mx-auto mt-28" src="/assets/img/no_class.svg" alt="此時段沒有任何課程">
 </ng-template>

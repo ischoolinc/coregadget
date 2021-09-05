@@ -27,6 +27,8 @@ import { LauncherOhaComponent } from './launcher-oha/launcher-oha.component';
 import { LauncherGoogleClassroomComponent } from './launcher-google-classroom/launcher-google-classroom.component';
 import { LauncherCustomizeComponent } from './launcher-customize/launcher-customize.component';
 import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
+import { BadgePeriodComponent } from './badge-period/badge-period.component';
+import { PipesModule } from './shared/pipe/pipes.module';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { TimetableManageComponent } from './timetable-manage/timetable-manage.co
     LauncherGoogleClassroomComponent,
     LauncherCustomizeComponent,
     TimetableManageComponent,
+    BadgePeriodComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +59,7 @@ import { TimetableManageComponent } from './timetable-manage/timetable-manage.co
     SnackbarModule,
     SelectModule,
     DialogModule,
+    PipesModule,
   ],
   providers: [{
     provide: DSA_ACCESSTOKEN,

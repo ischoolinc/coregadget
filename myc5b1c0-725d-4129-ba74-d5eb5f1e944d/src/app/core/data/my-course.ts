@@ -1,6 +1,6 @@
 import { GoogleClassroomCourse } from "../google-classroom.service";
-import { GadgetCustomCloudServiceRec } from "./cloudservice";
 import { ServiceConf } from "./service-conf";
+import { Period } from "./timetable";
 
 export interface MyCourseTeacherRec {
   TeacherId: number;
@@ -29,6 +29,7 @@ export class MyTargetBaseRec {
   TargetName?: string;
   TargetType?: TargetType;
   ServiceConfig: ServiceConf[] = [];
+  Timetable: Map<number, PeriodRec> = new Map(); // key: weekday
   GoogleIsReady: boolean = false;
   GoogleExt?: GoogleClassroomCourse;
   TeacherId?: number;
@@ -47,4 +48,9 @@ export class MyCourseRec extends MyTargetBaseRec {
   TeacherName: string = '';
   TeacherSequence: number = 0;
   Teachers?: MyCourseTeacherRec[];
+}
+
+export interface PeriodRec {
+  Weekday: number;
+  Periods: number[];
 }
