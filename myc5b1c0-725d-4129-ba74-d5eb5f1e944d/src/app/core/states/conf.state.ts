@@ -69,7 +69,8 @@ export class ServiceConfState {
     });
 
     if (!found) {
-      return ctx.setState([...state, compose]);
+      const tmp = [...state, compose].sort((a, b) => a.order - b.order);
+      return ctx.setState(tmp);
     } else {
       // 去掉原來在陣列中的元素。
       const newState = state.filter(v => {
@@ -77,7 +78,8 @@ export class ServiceConfState {
           && v.service_id == payload.service_id);
       });
 
-      return ctx.setState([...newState, compose]);
+      const tmp = [...newState, compose].sort((a, b) => a.order - b.order);
+      return ctx.setState(tmp);
     }
   }
 
