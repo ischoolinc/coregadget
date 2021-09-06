@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { MyCourseRec } from '../core/data/my-course';
 import { CustomizeService } from '../core/data/service-conf';
 import { Conf } from '../core/states/conf.actions';
@@ -12,13 +13,14 @@ import { ConfirmDialogService } from '../shared/dialog/confirm-dialog.service';
   templateUrl: './customize-service-manage.component.html',
   styleUrls: ['./customize-service-manage.component.scss']
 })
-export class CustomizeServiceManageComponent implements OnInit {
+export class CustomizeServiceManageComponent implements OnInit, OnDestroy {
 
   saving = false;
   curCSTab = 'editlink';
   services: CustomizeService[] = [];
   newTitle = '';
   newLink = '';
+  unSubscribe$ = new Subject();
 
   @Input() data: { target: MyCourseRec } = { target: {} as MyCourseRec };
 
@@ -30,6 +32,7 @@ export class CustomizeServiceManageComponent implements OnInit {
   ngOnInit(): void {
     this.store.select(ServiceConfState.getServiceConf).pipe(
       map(fn => fn(this.data.target.CourseId, 'customize'))
+      , takeUntil(this.unSubscribe$)
     ).subscribe(v => {
       // 1. 將資料庫的內容記入 this.services
       // 2. 再將資料庫的內容再次記入 this.services.source，儲存時以 source 為主
@@ -49,6 +52,10 @@ export class CustomizeServiceManageComponent implements OnInit {
       }
       this.services = services;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unSubscribe$.next();
   }
 
   async doSave(item: CustomizeService) {

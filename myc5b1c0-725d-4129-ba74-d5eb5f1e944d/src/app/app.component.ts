@@ -1,10 +1,10 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngxs/store';
 import dj from 'dayjs';
-import { interval } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { interval, Subject } from 'rxjs';
+import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { LoginService } from './core/login.service';
 import { GoogleClassroomCourse, GoogleClassroomService } from './core/google-classroom.service';
 import { MyCourseService } from './core/my-course.service';
@@ -29,7 +29,7 @@ import { CourseTimetable } from './core/data/timetable';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   loading = true;
   saving = false;
@@ -64,6 +64,7 @@ export class AppComponent implements OnInit {
 
   manageProcessState = 301;
   manageProcessErrorMsg = '';
+  unSubscribe$ = new Subject();
 
   @ViewChild('semester', { static: true }) semester: SelectComponent = {} as SelectComponent;
 
@@ -115,11 +116,16 @@ export class AppComponent implements OnInit {
       this.loading = false;
     }
 
-    interval(2000).subscribe(v => {
+    interval(2000).pipe(
+      takeUntil(this.unSubscribe$)
+    ).subscribe(v => {
       this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
     });
   }
 
+  ngOnDestroy(): void {
+    this.unSubscribe$.next();
+  }
 
   private async displayCourses(sourceCourses: MyCourseRec[]) {
     sourceCourses.forEach(v => {
@@ -129,10 +135,11 @@ export class AppComponent implements OnInit {
       v.Timetable = new Map();
       v.TargetId = v.CourseId;
       v.TargetType = 'COURSE';
-      v.TargetName = v.ClassName;
+      v.TargetName = v.CourseName;
 
       this.store.select(ServiceConfState.getServicesConf).pipe(
         map(fn => fn(v.CourseId))
+        , takeUntil(this.unSubscribe$)
       ).subscribe(storeSC => {
         this.setDefaultSystemCloudService(v.CourseId).forEach(defSC => {
           const found = storeSC.findIndex(sc => sc.service_id === defSC.service_id);
@@ -145,6 +152,7 @@ export class AppComponent implements OnInit {
 
       this.store.select(TimetableState.getCourse).pipe(
         map(fn => fn(v.CourseId))
+        , takeUntil(this.unSubscribe$)
       ).subscribe(courseTimetable => {
         const colTimetable: Map<number, PeriodRec> = new Map();
         new Array().concat(courseTimetable || []).forEach((tt: CourseTimetable) => {

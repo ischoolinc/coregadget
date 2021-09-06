@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngxs/store';
-import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { MyCourseRec } from '../core/data/my-course';
 import { Period } from '../core/data/timetable';
 import { Timetable } from '../core/states/timetable.actions';
@@ -12,7 +13,7 @@ import { TimetableState } from '../core/states/timetable.state';
   templateUrl: './timetable-manage.component.html',
   styleUrls: ['./timetable-manage.component.scss']
 })
-export class TimetableManageComponent implements OnInit {
+export class TimetableManageComponent implements OnInit, OnDestroy {
 
   saving = false;
   weekdays = [
@@ -27,6 +28,7 @@ export class TimetableManageComponent implements OnInit {
   periods = Array.from({ length: 12 }, (_, i) => i + 1 );
   timetableMap: Map<string, { dayOfweek: number, period: number, isChecked: boolean }> = new Map();
   course: MyCourseRec = {} as MyCourseRec;
+  unSubscribe$ = new Subject();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -39,6 +41,7 @@ export class TimetableManageComponent implements OnInit {
   ngOnInit(): void {
     this.store.select(TimetableState.getCourse).pipe(
       map(fn => fn(this.course.CourseId))
+      , takeUntil(this.unSubscribe$)
     ).subscribe(timetable => {
       new Array().concat(timetable?.periods || []).forEach((v: Period) => {
         const key = this.getKey(v.weekday, v.period);
@@ -49,6 +52,10 @@ export class TimetableManageComponent implements OnInit {
         })
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unSubscribe$.next();
   }
 
   getKey(dayOfweek: string | number, period: string | number) {
@@ -90,9 +97,9 @@ export class TimetableManageComponent implements OnInit {
     this.store.dispatch(new Timetable.SetCourse({
       course_id: this.course.CourseId,
       periods: newData,
-    })).subscribe(() => {
-      this.saving = false;
-      this.dialogRef.close();
-    })
+    })).toPromise();
+
+    this.saving = false;
+    this.dialogRef.close();
   }
 }
