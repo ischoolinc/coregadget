@@ -1,6 +1,5 @@
 import { GoogleClassroomCourse } from "../google-classroom.service";
 import { ServiceConf } from "./service-conf";
-import { Period } from "./timetable";
 
 export interface MyCourseTeacherRec {
   TeacherId: number;

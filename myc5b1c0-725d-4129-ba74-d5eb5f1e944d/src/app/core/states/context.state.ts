@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
 import { forkJoin } from 'rxjs';
-import { combineAll, tap, withLatestFrom } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { MyInfo, SelectedContext } from '../data/login';
 import { LoginService } from '../login.service';
 import { Context } from './context.actions';

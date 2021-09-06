@@ -1,32 +1,28 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { LoginService } from './core/login.service';
-import { TimetableService } from './core/timetable.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { Store } from '@ngxs/store';
 import dj from 'dayjs';
+import { interval } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
+import { LoginService } from './core/login.service';
 import { GoogleClassroomCourse, GoogleClassroomService } from './core/google-classroom.service';
 import { MyCourseService } from './core/my-course.service';
 import { MyCourseRec, MyTargetBaseRec, PeriodRec, Semester } from './core/data/my-course';
-import { GadgetCustomCloudServiceRec } from './core/data/cloudservice';
-import { DSAService } from './dsutil-ng/dsa.service';
 import { SelectComponent } from './shared/select/select/select.component';
 import { SnackbarService } from './shared/snackbar/snackbar.service';
 import { MyInfo, SelectedContext } from './core/data/login';
 import { ConnectedSettingService } from './core/connected-setting.service';
 import { ClassroomService } from './core/classroom.service';
-import { concat, forkJoin, interval } from 'rxjs';
-import { Actions, ofActionCompleted, ofActionSuccessful, Store } from '@ngxs/store';
 import { Context } from './core/states/context.actions';
-import { ContextState, ContextStateModel } from './core/states/context.state';
+import { ContextState } from './core/states/context.state';
 import { Timetable } from './core/states/timetable.actions';
 import { TimetableState } from './core/states/timetable.state';
-import { concatMap, concatMapTo, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { ConfService } from './core/conf.service';
 import { Conf } from './core/states/conf.actions';
 import { ServiceConfState } from './core/states/conf.state';
 import { ServiceConf } from './core/data/service-conf';
 import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
-import { CourseTimetable, Period } from './core/data/timetable';
+import { CourseTimetable } from './core/data/timetable';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +33,6 @@ export class AppComponent implements OnInit {
 
   loading = true;
   saving = false;
-  dialogRef?: MatDialogRef<any>;
   dialogRefManage?: MatDialogRef<any>;
 
   errorMsg = '';
@@ -73,9 +68,7 @@ export class AppComponent implements OnInit {
   @ViewChild('semester', { static: true }) semester: SelectComponent = {} as SelectComponent;
 
   constructor(
-    private timetable: TimetableService,
     private login: LoginService,
-    private dsa: DSAService,
     private myCourseSrv: MyCourseService,
     private gClassroomSrv: GoogleClassroomService,
     private dialog: MatDialog,
@@ -83,48 +76,16 @@ export class AppComponent implements OnInit {
     private ConnectedSettingSrv: ConnectedSettingService,
     private crSrv: ClassroomService,
     private store: Store,
-    private conf: ConfService
   ) {}
 
   async ngOnInit() {
-    const { store, conf } = this;
+    const { store } = this;
 
     // 將相關資料放進 Store 裡面。
     await store.dispatch(new Context.FetchAll()).pipe(
       concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
       // concatMap(() => store.dispatch([new Timetable.FetchAll()]))
     ).toPromise();
-
-    // store.dispatch(new Conf.FetchConf({course_id: '25441'}));
-
-    // // 取得指定 course 的所有 service 設定。
-    // store.select(ServiceConfState.getServicesConf).pipe(
-    //   map(fn => fn('25441'))
-    // ).subscribe();
-
-    // // 取得單個
-    // store.select(ServiceConfState.getServiceConf).pipe(
-    //   map(fn => fn('25441', '1know'))
-    // ).subscribe();
-
-    // // 修改之後取得單個 Service
-    // await store.dispatch(new Conf.SetConf({
-    //   course_id: '25441',
-    //   service_id: '1know',
-    //   conf: { female: 'power zoe 0' }
-    // })).toPromise();
-
-    // store.selectOnce(ServiceConfState.getServiceConf).pipe(
-    //   map(fn => fn('25441', '1know'))
-    // ).subscribe(console.log);
-
-    // store.dispatch(new Timetable.SetCourse({
-    //   course_id: '11729',
-    //   periods: [{ weekday: '3', period: '5' }, { weekday: '3', period: '4' }]
-    // })).pipe(
-    //   concatMap(() => store.selectOnce(TimetableState.getCourse)),
-    //   map(fn => fn(11729))
-    // ).subscribe(console.log);
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)
     // 確認管理者是否已設定連結 Google 帳號
@@ -360,6 +321,9 @@ export class AppComponent implements OnInit {
   }
 
   async toggleEnabledService(e: MatSlideToggleChange, target: MyTargetBaseRec, sc: ServiceConf) {
+    if (this.saving) { return; }
+
+    this.saving = true;
     try {
       await this.store.dispatch(new Conf.SetConf({
         course_id: target.TargetId,
@@ -368,6 +332,8 @@ export class AppComponent implements OnInit {
         order: sc.order,
       })).toPromise();
     } catch (error) {
+    } finally {
+      this.saving = false;
     }
   }
 
