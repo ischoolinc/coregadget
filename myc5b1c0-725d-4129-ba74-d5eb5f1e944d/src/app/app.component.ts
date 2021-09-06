@@ -141,13 +141,14 @@ export class AppComponent implements OnInit, OnDestroy {
         map(fn => fn(v.CourseId))
         , takeUntil(this.unSubscribe$)
       ).subscribe(storeSC => {
-        this.setDefaultSystemCloudService(v.CourseId).forEach(defSC => {
-          const found = storeSC.findIndex(sc => sc.service_id === defSC.service_id);
-          if (found === -1) {
-            storeSC.push(defSC);
+        const defaultServices = this.setDefaultSystemCloudService(v.CourseId);
+        defaultServices.forEach(defSC => {
+          const found = storeSC.find(sc => sc.service_id === defSC.service_id);
+          if (found) {
+            Object.assign(defSC, found);
           }
         });
-        v.ServiceConfig = storeSC;
+        v.ServiceConfig = defaultServices;
       });
 
       this.store.select(TimetableState.getCourse).pipe(
