@@ -18,6 +18,7 @@ const CONF_STATE_TOKEN = new StateToken<ServiceConfStateModel>('CourseConf');
 export class ServiceConfState {
 
   #dsns!: string;
+  #role!: string;
 
   constructor(
     private store: Store,
@@ -30,7 +31,7 @@ export class ServiceConfState {
   @Action(Conf.FetchAll)
   async fetchAll({ setState }: StateContext<ServiceConfStateModel>) {
     const { conf } = this;
-    const allConf = await conf.getConf(this.#dsns);
+    const allConf = await conf.getConf(this.#dsns, this.#role);
     setState(allConf);
   }
 
@@ -39,7 +40,7 @@ export class ServiceConfState {
   async fetchServices(ctx: StateContext<ServiceConfStateModel>, action: Conf.FetchConf) {
     const { conf } = this;
     const state = ctx.getState();
-    const tt = await conf.getConf(this.#dsns, {
+    const tt = await conf.getConf(this.#dsns, this.#role, {
       course_id: action.payload?.course_id,
     });
 

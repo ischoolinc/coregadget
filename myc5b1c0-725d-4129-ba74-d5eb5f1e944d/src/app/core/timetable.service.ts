@@ -3,6 +3,7 @@ import { DSAService } from '../dsutil-ng/dsa.service';
 import { CourseTimetable } from './data/timetable';
 
 const TeacherContract = 'web3.v1.teacher';
+const StudentContract = 'web3.v1.student';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +31,9 @@ export class TimetableService {
     return rspjson as { result: { action: string, count: number }[] };
   }
 
-  public async getTimetable(dsns: string, courseId?: string | number) {
-    const contract = await this.dsa.getConnection(dsns, TeacherContract);
+  public async getTimetable(dsns: string, role: string, courseId?: string | number) {
+    const usedContract = (role === 'teacher') ? TeacherContract : StudentContract;
+    const contract = await this.dsa.getConnection(dsns, usedContract);
 
     const req = courseId ? { course_id: courseId, } : null;
     const rsp = await contract.send('mycourse.getTimetable', req);

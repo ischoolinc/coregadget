@@ -85,7 +85,7 @@
                           <th scope="col" class="tb-title">課程名稱</th>
                           <th scope="col" class="tb-title">{{this.curTab === 0 ? '時段/節次' : '節次'}}</th>
                           <th scope="col" class="tb-title">雲端服務</th>
-                          <th scope="col" class="tb-title">雲端服務管理</th>
+                          <th scope="col" class="tb-title" *ngIf="role==='teacher'">雲端服務管理</th>
                         </tr>
                       </thead>
                       <tbody class="bg-white divide-y divide-gray-200">
@@ -110,7 +110,7 @@
                               </ng-container>
 
                               <!-- 時段管理btn -->
-                              <div class="has-tooltip">
+                              <div class="has-tooltip" *ngIf="role==='teacher'">
                                 <span class="tooltip -ml-8">管理時段</span>
                                 <button (click)="manageTimeTable(course)"
                                   class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
@@ -147,7 +147,8 @@
                               ></app-launcher-customize>
                             </ng-container>
                           </td>
-                          <td class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                          <td *ngIf="role==='teacher'"
+                            class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
                             <button class="text-secondary hover:text-secondary-light focus:outline-none"
                               (click)="manageService(course, tplManageService)">
                               <span class="iconify text-2xl" data-icon="ant-design:setting-filled"

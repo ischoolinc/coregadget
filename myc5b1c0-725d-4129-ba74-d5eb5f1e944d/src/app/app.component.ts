@@ -39,6 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   curSelectedContext: SelectedContext = {} as SelectedContext;
   dsns = '';
+  role = '';
   myInfo: MyInfo = {} as MyInfo;
   adminConnectedGoogle: { success: boolean, message: string } = { success: false, message: '' };
   curSemester: Semester = {} as Semester;
@@ -100,6 +101,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.curSelectedContext = await this.login.getSelectedContext().toPromise() as SelectedContext;
       this.dsns = this.curSelectedContext.dsns;
+      this.role = this.curSelectedContext.role;
 
       this.semesterRowSource = await this.getAttendSemesters();
       this.semester.selected = this.getHeadSemester();
@@ -202,11 +204,35 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async getCourses(schoolYear: number, semester: number) {
-    try {
-      return this.myCourseSrv.teacherGetCourses(this.dsns, schoolYear, semester);
-    } catch (error) {
-      this.snackbarSrv.show('取得課程發生錯誤！');
-      return [];
+    if (this.role === 'teacher') {
+      try {
+        return this.myCourseSrv.teacherGetCourses(this.dsns, schoolYear, semester);
+      } catch (error) {
+        this.snackbarSrv.show('取得課程發生錯誤！');
+        return [];
+      }
+    } else {
+      try {
+        const rsp = await this.myCourseSrv.studentGetCourses(this.dsns, schoolYear, semester);
+        const courseMap: Map<string, MyCourseRec> = new Map();
+        new Array().concat(rsp || []).forEach(v => {
+          const alias = this.formatCourseAlias(v);
+          if (!courseMap.has(alias)) {
+            courseMap.set(alias, { ...v, Teachers: [] });
+          }
+          const item = courseMap.get(alias);
+          item!.Teachers!.push({
+            TeacherId: v.TeacherId,
+            TeacherName: v.TeacherName,
+            LinkAccount: v.LinkAccount,
+            TeacherSequence: v.TeacherSequence,
+          });
+        });
+        return [ ...courseMap.values() ];
+      } catch (error) {
+        this.snackbarSrv.show('取得課程發生錯誤！');
+        return [];
+      }
     }
   }
 
@@ -222,11 +248,20 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async getAttendSemesters() {
-    try {
-      return (await this.myCourseSrv.teacherGetSemesters(this.dsns))?.semesters ?? [];
-    } catch (error) {
-      this.snackbarSrv.show('取得授課學年期發生錯誤！');
-      return [];
+    if (this.role === 'teacher') {
+      try {
+        return (await this.myCourseSrv.teacherGetSemesters(this.dsns))?.semesters ?? [];
+      } catch (error) {
+        this.snackbarSrv.show('取得授課學年期發生錯誤！');
+        return [];
+      }
+    } else {
+      try {
+        return (await this.myCourseSrv.studentGetSemesters(this.dsns))?.semesters ?? [];
+      } catch (error) {
+        this.snackbarSrv.show('取得學年期發生錯誤！');
+        return [];
+      }
     }
   }
 

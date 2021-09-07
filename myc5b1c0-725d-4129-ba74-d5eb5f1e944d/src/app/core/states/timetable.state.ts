@@ -20,6 +20,7 @@ const TIMETABLE_STATE_TOKEN = new StateToken<TimetableStateModel>('Timetable');
 export class TimetableState {
 
   #dsns!: string;
+  #role!: string;
 
   constructor(
     private store: Store,
@@ -32,7 +33,7 @@ export class TimetableState {
   @Action(Timetable.FetchAll)
   async fetchAll({ setState }: StateContext<TimetableStateModel>) {
     const { timetable } = this;
-    const tt = await timetable.getTimetable(this.#dsns);
+    const tt = await timetable.getTimetable(this.#dsns, this.#role);
     setState(tt);
   }
 
@@ -41,7 +42,7 @@ export class TimetableState {
   async fetchCourse(ctx: StateContext<TimetableStateModel>, action: Timetable.FetchCourse) {
     const { timetable } = this;
     const state = ctx.getState();
-    const tt = await timetable.getTimetable(this.#dsns, action.payload);
+    const tt = await timetable.getTimetable(this.#dsns, this.#role, action.payload);
 
     const found = state.find(v => (+v.course_id) == (+action.payload));
 

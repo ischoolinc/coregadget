@@ -3,6 +3,7 @@ import { DSAService } from '../dsutil-ng/dsa.service';
 import { ServiceConf } from './data/service-conf';
 
 const TeacherContract = 'web3.v1.teacher';
+const StudentContract = 'web3.v1.student';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +39,9 @@ export class ConfService {
     return rspjson;
   }
 
-  public async getConf(dsns: string, cond?: {service_id?: string, course_id?: number}) {
-    const contract = await this.dsa.getConnection(dsns, TeacherContract);
+  public async getConf(dsns: string, role: string,  cond?: {service_id?: string, course_id?: number}) {
+    const usedContract = (role === 'teacher') ? TeacherContract : StudentContract;
+    const contract = await this.dsa.getConnection(dsns, usedContract);
 
     const rsp = await contract.send('mycourse.getConf', cond);
 
