@@ -31,7 +31,7 @@ export class EditGoogleClassroomComponent implements OnInit {
     if (this.dislinkingGoogle) { return; }
 
     this.confirmSrv.show({
-      message: '您確定要刪除嗎？',
+      message: '您確定要解除嗎？',
       accept: () => {
         this.confirmSrv.hide();
         this.delCourseAlias();
