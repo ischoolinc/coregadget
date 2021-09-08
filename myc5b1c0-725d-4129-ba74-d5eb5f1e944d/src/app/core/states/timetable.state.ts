@@ -4,7 +4,7 @@ import { from } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { CourseTimetable } from '../data/timetable';
 import { TimetableService } from '../timetable.service';
-import { ContextState } from './context.state';
+import { ContextState, ContextStateModel } from './context.state';
 import { Timetable } from './timetable.actions';
 
 export interface TimetableStateModel extends Array<CourseTimetable> {
@@ -26,7 +26,10 @@ export class TimetableState {
     private store: Store,
     private timetable: TimetableService
   ) {
-    store.select(ContextState.dsns).subscribe(v => this.#dsns = v);
+    store.select<ContextStateModel>(ContextState).subscribe(v => {
+      this.#dsns = v?.context?.dsns;
+      this.#role = v?.context?.role;
+    });
   }
 
   /** 從 Server 讀取全部資料。 */

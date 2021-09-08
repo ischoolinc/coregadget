@@ -55,7 +55,7 @@ export class ContextState {
   /** 取得快取的 AccessToken。 */
   @Selector()
   static accessToken({ accessToken }: ContextStateModel) {
-    return accessToken
+    return accessToken;
   }
 
   /** 取得當前使用者帳號。 */

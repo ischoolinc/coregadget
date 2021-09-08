@@ -3,7 +3,7 @@ import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/
 import { ConfService } from '../conf.service';
 import { ServiceConf } from '../data/service-conf';
 import { Conf } from './conf.actions';
-import { ContextState } from './context.state';
+import { ContextState, ContextStateModel } from './context.state';
 
 export interface ServiceConfStateModel extends Array<ServiceConf> {
 }
@@ -24,7 +24,11 @@ export class ServiceConfState {
     private store: Store,
     private conf: ConfService
   ) {
-    store.select(ContextState.dsns).subscribe(v => this.#dsns = v);
+    store.select<ContextStateModel>(ContextState).subscribe(v => {
+      console.log(v);
+      this.#dsns = v?.context?.dsns;
+      this.#role = v?.context?.role;
+    });
   }
 
   /** 從 Server 讀取全部資料。 */

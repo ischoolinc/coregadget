@@ -159,12 +159,14 @@ export class AppComponent implements OnInit, OnDestroy {
       ).subscribe(courseTimetable => {
         const colTimetable: Map<number, PeriodRec> = new Map();
         new Array().concat(courseTimetable || []).forEach((tt: CourseTimetable) => {
-          tt.periods.forEach(obj => {
-            const intWeekday = +obj.weekday;
-            if (!colTimetable.has(intWeekday)) {
-              colTimetable.set(intWeekday, { Weekday: intWeekday, Periods: []});
+          new Array().concat(tt.periods).forEach(obj => {
+            if (obj) {
+              const intWeekday = +obj.weekday;
+              if (!colTimetable.has(intWeekday)) {
+                colTimetable.set(intWeekday, { Weekday: intWeekday, Periods: []});
+              }
+              colTimetable.get(intWeekday)!.Periods.push(+obj.period);
             }
-            colTimetable.get(intWeekday)!.Periods.push(+obj.period);
           });
         });
         colTimetable.forEach(item => {
