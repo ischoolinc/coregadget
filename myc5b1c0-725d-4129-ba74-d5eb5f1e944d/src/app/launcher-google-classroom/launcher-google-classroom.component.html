@@ -3,10 +3,10 @@
   <ng-container *ngIf="course.GoogleExt?.id">
     <a [href]="googleSigninChooserUrl(course.GoogleExt?.alternateLink || '')"
       target="_blank" rel="noreferrer noopener">
-      <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="/assets/img/google_classroom_logo.svg" alt="GoogleClassroom">
+      <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/google_classroom_logo.svg" alt="GoogleClassroom">
     </a>
   </ng-container>
   <ng-container *ngIf="!course.GoogleExt?.id">
-    <img class="h-10 w-10 mb-2 mx-1" src="/assets/img/google_classroom_logo2.svg" alt="GoogleClassroom">
+    <img class="h-10 w-10 mb-2 mx-1" src="assets/img/google_classroom_logo2.svg" alt="GoogleClassroom">
   </ng-container>
 </div>

@@ -31,7 +31,7 @@
     </div>
   </div>
   <div *ngIf="processState === 2000" class="mt-20">
-    <img class="mx-auto mb-4" src="/assets/img/success.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
     <div class="text-right mb-2">
       <button mat-dialog-close
@@ -40,7 +40,7 @@
     </div>
   </div>
   <div *ngIf="processState === 9999" class="mt-36">
-    <img class="mx-auto mb-4" src="/assets/img/error.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/error.svg" alt="loading">
     <p class="text-xl font-semibold text-center text-warning mb-48">
       <span *ngIf="!processErrorMsg">哎呀！出了一點問題<br>請稍後再嘗試一次</span>
       <span *ngIf="processErrorMsg">{{processErrorMsg}}</span>

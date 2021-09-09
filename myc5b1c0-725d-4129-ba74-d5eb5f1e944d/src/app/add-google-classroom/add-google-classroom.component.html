@@ -27,21 +27,21 @@
     </div>
   </div>
   <div *ngIf="processState === 102" class="mt-36 mb-52">
-    <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
+    <img class="mx-auto" src="assets/img/loading.svg" alt="loading">
     <p class="text-2xl font-semibold text-center mt-4">正在建立課程
       <br>請稍候
       <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
     </p>
   </div>
   <div *ngIf="processState === 103" class="mt-36 mb-52">
-    <img class="mx-auto" src="/assets/img/loading.svg" alt="loading">
+    <img class="mx-auto" src="assets/img/loading.svg" alt="loading">
     <p class="text-2xl font-semibold text-center mt-4">正在連結課程
       <br>請稍候
       <br>{{((progressBar.current * 100) / progressBar.max).toFixed()}}%
     </p>
   </div>
   <div *ngIf="processState === 2000" class="mt-20">
-    <img class="mx-auto mb-4" src="/assets/img/success.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
     <div class="text-center mb-4">{{createStudentMsg}}</div>
     <div class="flex justify-around mb-20 text-sm text-gray-text3">
@@ -62,7 +62,7 @@
     </div>
   </div>
   <div *ngIf="processState === 2100" class="mt-20">
-    <img class="mx-auto mb-4" src="/assets/img/success.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
     <div class="text-center mb-4">{{createStudentMsg}}</div>
     <div class="text-right mb-2">
@@ -74,7 +74,7 @@
     </div>
   </div>
   <div *ngIf="processState === 9999" class="mt-36">
-    <img class="mx-auto mb-4" src="/assets/img/error.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/error.svg" alt="loading">
     <p class="text-xl font-semibold text-center text-warning mb-48">
       <span *ngIf="!processErrorMsg">哎呀！出了一點問題<br>請稍後再嘗試一次</span>
       <span *ngIf="processErrorMsg">{{processErrorMsg}}</span>
