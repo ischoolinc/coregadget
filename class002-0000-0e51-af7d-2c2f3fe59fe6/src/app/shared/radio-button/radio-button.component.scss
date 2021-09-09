@@ -1,0 +1,17 @@
+.candy-radio {
+  @apply box-border inline-block relative rounded-full w-5 h-5 border-2 border-solid border-gray-text1 mr-2;
+
+  &.disabled,
+  &.disabled ~ span {
+    @apply border-gray text-gray;
+  }
+
+  &.checked::before {
+    content: '';
+    @apply absolute box-border bg-gray-text1 rounded-full left-0 top-0 right-0 bottom-0 transform scale-50;
+  }
+
+  &.disabled.checked::before {
+    @apply bg-gray;
+  }
+}

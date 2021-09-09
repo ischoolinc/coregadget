@@ -1,0 +1,145 @@
+@layer base {
+  body {
+    color: #323232;
+    font-size: 16px;
+    font-weight: normal;
+    // font-family: "Helvetica", "Arial", "PingFangTC-Regular", "LiHei Pro", "黑體-繁", "微軟正黑體", sans-serif;
+    letter-spacing: 0.025em;
+  }
+
+  button {
+    @apply focus:outline-none focus:ring-offset-transparent focus:ring-transparent;
+  }
+
+  [type='text'], [type='email'], [type='url'], [type='password'], [type='number'], [type='date'], [type='datetime-local'], [type='month'], [type='search'], [type='tel'], [type='time'], [type='week'], [multiple], textarea, select {
+    @apply border-gray-300 rounded focus:ring-offset-transparent focus:ring-transparent focus:border-primary hover:bg-gray-50
+  }
+}
+
+@layer components {
+  .gadget_bigtitle {
+    @apply text-gray-text1 text-2xl font-semibold tracking-widest;
+  }
+
+  .close-window {
+    @apply ml-auto text-gray-text1 text-2xl;
+  }
+
+  .discription {
+    @apply text-gray-text3 mt-2;
+  }
+
+  .input-outline {
+    @apply w-full h-10 border-gray-300 rounded focus:ring-offset-transparent focus:ring-transparent focus:border-primary hover:bg-gray-50;
+  }
+
+  .search-bar {
+    @apply flex flex-row h-10 ml-auto rounded bg-gray-lightest;
+
+    .search-icon {
+      @apply flex my-auto ml-4 text-2xl text-gray-text2;
+    }
+
+    .search-input {
+      @apply flex border-transparent bg-transparent focus:ring-transparent focus:border-transparent;
+    }
+  }
+
+  .tool-row {
+    @apply flex flex-row items-center;
+  }
+
+  .btw-divider {
+    @apply border-r-2 border-gray-light h-6 mr-4;
+  }
+
+  .t-icon-row {
+    @apply pl-4 pr-8 py-6 text-center flex flex-row items-center justify-center;
+
+    .t-icon {
+      @apply relative focus:ring-offset-transparent focus:ring-transparent focus:outline-none;
+    }
+
+    .t-icon2 {
+      @apply text-2xl text-secondary mx-2;
+    }
+  }
+
+  .tooltip {
+    @apply invisible absolute rounded shadow-md text-xs py-1 px-2 bg-gray-text2 text-white;
+  }
+
+  .tooltip1 {
+    @apply z-50 -ml-8 -mt-14 whitespace-nowrap;
+  }
+
+  .has-tooltip:hover .tooltip {
+    @apply visible;
+  }
+
+
+  .btn {
+    @apply py-2 px-4 hover:bg-gray-text1 hover:bg-opacity-30 focus:outline-none focus:ring-opacity-70;
+    @apply inline-flex flex-row flex-nowrap justify-center items-center;
+
+    &:disabled {
+      @apply bg-gray-light text-white text-base cursor-not-allowed hover:bg-gray-light;
+    }
+  }
+
+  .btn-primary {
+    @apply text-white bg-primary hover:bg-primary hover:bg-opacity-70;
+  }
+
+  .btn-secondary {
+    @apply text-white bg-secondary hover:bg-secondary hover:bg-opacity-70;
+  }
+
+  .table {
+    @apply border-collapse w-full;
+
+    thead {
+      th {
+        @apply p-3 bg-primary text-white font-normal first:rounded-tl-md last:rounded-tr-md;
+      }
+    }
+
+    tbody {
+      tr {
+        @apply h-20;
+
+        td {
+         @apply p-3 text-center;
+        }
+      }
+    }
+
+  }
+
+  .table-striped {
+    tbody {
+      tr {
+        @apply even:bg-gray-lightest;
+      }
+    }
+  }
+
+  .table-hover {
+    tbody {
+      tr {
+        @apply hover:bg-primary hover:bg-opacity-40 cursor-pointer;
+      }
+    }
+  }
+
+  .form-control {
+    @apply block px-2 py-2 bg-white placeholder-gray border border-gray rounded focus:outline-none;
+  }
+
+  .text-line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

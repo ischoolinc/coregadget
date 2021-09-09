@@ -1,0 +1,46 @@
+<div class="w-160">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+  </span>
+  <ng-container *ngIf="mode === 'edit'">
+    <p class="gadget_bigtitle">編輯班級</p>
+    <p class="discription">您正在編輯：<span class="text-primary">{{className}}</span></p>
+  </ng-container>
+  <ng-container *ngIf="mode !== 'edit'">
+    <p class="gadget_bigtitle">新增班級</p>
+    <p class="discription">請填寫以下資訊以新增一門班級</p>
+  </ng-container>
+
+  <div class="form-row">
+    <div>
+      <label class="font-medium text-gray-text2">班級名稱<span class="text-danger">*</span></label>
+      <input type="text" required name="edit-class-name" placeholder="班級名稱..."
+        [(ngModel)]="cRec.ClassName" autocomplete="off"
+        class="input-outline mt-1" style="height: 3.7rem;">
+    </div>
+    <div>
+      <label class="font-medium text-gray-text2">年級</label>
+      <input type="text" required name="edit-class-name" placeholder="年級..."
+        [(ngModel)]="cRec.GradeYear" autocomplete="off"
+        class="input-outline mt-1" style="height: 3.7rem;">
+    </div>
+  </div>
+  <div class="form-row mb-4">
+    <div>
+      <label class="font-medium text-gray-text2">班導師</label>
+      <div>
+        <app-select-ateacher
+          [defaultValue]="teacherId"
+          (doChange)="setTeacherId($event)"
+        ></app-select-ateacher>
+      </div>
+    </div>
+  </div>
+  <div class="mt-6">
+    <p class="text-warning">{{errMsg}}</p>
+    <div class="flex flex-row items-end justify-end">
+      <button class="btn btn-second" mat-dialog-close>取消</button>
+      <button class="btn btn-primary mr-0" (click)="updateClass()">儲存</button>
+    </div>
+  </div>
+</div>

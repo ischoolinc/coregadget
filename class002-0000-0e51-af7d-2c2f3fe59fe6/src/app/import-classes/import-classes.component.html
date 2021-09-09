@@ -1,0 +1,86 @@
+<div class="text-gray-text1 mx-4 w-160">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+  </span>
+  <div>
+    <p class="gadget_bigtitle">匯入班級</p>
+    <p class="discription">匯入格式限定 .xls, .xlsx 檔案，內容輸入請參考範例下載連結</p>
+  </div>
+  <p class="text-right">
+    <a class="discription text-sm text-secondary text-rightunderline underline" download href="assets/doc/import_class_sample.xlsx">下載匯入班級範本檔</a>
+  </p>
+  <div class="dialog-content mt-2 h-104">
+    <div class="overflow-scroll">
+      <form [formGroup]="myForm">
+        <div>
+          <p class="text-warning" *ngIf="!loadSuccess">檔案讀取失敗！</p>
+          <p class="text-warning" *ngIf="exceedLimit">單次限{{limitRec}}筆，請分批匯入！</p>
+          <div class="flex justify-center border border-gray border-dashed bg-gray-lightest rounded-lg h-32">
+            <button (click)="fileInput.click()"
+              class="flex flex-row items-center focus:ring-offset-transparent focus:ring-transparent focus:outline-none">
+              <span class="iconify text-secondary text-3xl mr-2" data-icon="akar-icons:cloud-upload"
+                data-inline="false"></span>
+              <p class="discription text-secondary text-right underline">{{fileName || '請選擇要匯入的檔案'}}</p>
+              <input type="file" #fileInput (click)="inputClick($event)" (change)="onFileChange($event)" style="display:none;"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+            </button>
+          </div>
+          <fieldset class="mt-6 border border-gray rounded-lg p-4">
+            <legend class="font-medium mx-4 px-2">選擇匯入方式</legend>
+            <div class="px-2 py-2" appRadioGroup [formControl]="getFormCtrl('mode')" (change)="changeMode()">
+              <app-radio-button class="inline-block" name="modeCtrl" value="ADD" class="mr-2">
+                新增班級資料
+              </app-radio-button>
+              <p class="text-muted text-sm font-normal ml-8">此選項是將所有資料新增到資料庫中，不會對現有的資料進行任何修改動作。</p>
+
+              <app-radio-button class="inline-block mt-4" name="modeCtrl" value="EDIT">
+                更新班級資料
+              </app-radio-button>
+              <p class="text-muted text-sm font-normal ml-8">此選項將修改資料庫中的現有資料，會依據您所指定的識別欄位修改資料庫中具有相同識別的資料。</p>
+            </div>
+          </fieldset>
+          <fieldset class="mt-6 border border-gray rounded-lg p-4" *ngIf="myForm.get('mode')?.value === 'EDIT'">
+            <legend class="font-medium mx-4 px-2">識別欄位</legend>
+            <div class="px-2 py-2" appRadioGroup [formControl]="getFormCtrl('idt')" (change)="changeMode()">
+              <app-radio-button class="mr-4" name="idtCtrl" value="ClassId">班級系統編號</app-radio-button>
+              <app-radio-button class="mr-4" name="idtCtrl" value="ClassName">班級名稱</app-radio-button>
+            </div>
+          </fieldset>
+          <fieldset class="my-6 border border-gray rounded-lg p-4">
+            <legend class="font-medium mx-4 px-2">要匯入的欄位</legend>
+            <div class="px-2 py-2">
+              <app-checkbox
+                *ngFor="let item of getFromAry('impts')['controls'] let idx=index;"
+                class="mr-4"
+                [hidden]="item.value.hidden"
+                [formControl]="$any(item)">{{item.value.name}}</app-checkbox>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+      <div class="flex flex-col items-stretch md:flex-row md:items-center md:justify-start mb-10">
+        <button class="btn btn-blue mr-4" (click)="onValidate()">開始驗證</button>
+        <button class="btn btn-blue rounded"
+          [ngClass]="{'disabled': currentState !== 'validationFinish' || !!!errorResult.size}"
+          [disabled]="currentState !== 'validationFinish' || !!!errorResult.size"
+          (click)="previewErrorResult()">檢視結果</button>
+        <p *ngIf="currentState === 'validating' || currentState === 'importing'" class="mt-2 text-sm text-center md:mt-0 md:text-left">處理中...</p>
+        <p *ngIf="currentState === 'validationFinish'" class="mt-2 text-sm text-center md:mt-0 md:text-left"
+          [ngClass]="{'text-warning': validationMsg || errorResult.size }">
+          {{ validationMsg ? validationMsg : '錯誤數量： ' + errorResult.size + ' 筆'}}</p>
+        <p *ngIf="currentState === 'importFinish'" class="mt-2 text-sm text-center md:mt-0 md:text-left"
+          [ngClass]="{ 'text-warning': !importSuccess }">
+          {{ importSuccess ? '匯入成功！' : '匯入失敗！' + importMsg }}
+        </p>
+      </div>
+      <div class="flex flex-row items-end justify-end mt-6 mb-8">
+        <button class="btn btn-second" (click)="closeDialog()">關閉</button>
+        <button class="btn btn-primary mr-0"
+          [ngClass]="{'disabled': errorResult.size > 0}"
+          [disabled]="!validSuccess || source.length === 0"
+          (click)="importData()">匯入</button>
+      </div>
+    </div>
+  </div>
+
+</div>

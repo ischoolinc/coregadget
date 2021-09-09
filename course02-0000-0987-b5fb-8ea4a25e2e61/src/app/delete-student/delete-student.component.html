@@ -1,0 +1,22 @@
+<div class="w-106">
+  <div class="mt-8 px-2">
+    <img class="mx-auto" src="assets/img/big_delete.svg" alt="delete">
+    <p class="big-title text-xl mt-6 text-center">您確定要刪除修課學生嗎？</p>
+    <p class="discription text-center">課學生、成績記錄<br />將被永久刪除，並且無法恢復：</p>
+    <ul class="list-disc list-inside mt-4 text-center">
+      <li *ngIf="data.mode === 'BATCH'">{{data.students.length}} 名修課學生資料</li>
+      <li *ngIf="data.mode === 'SINGLE'">{{data.students[0].StudentName}}</li>
+     <li>{{sceTakeTotal}} 筆成績資料</li>
+    </ul>
+    <p class="discription mt-10">請輸入“確認刪除”來執行動作</p>
+    <input #checkInput class="input-outline mt-2 focus:border-warning" type="text" [(ngModel)]="doubleCheckValue">
+    <p class="text-gray text-xs mt-2">※ 請注意！此刪除動作將會一併刪除成績記錄</p>
+  </div>
+</div>
+<div class="mt-6">
+  <p class="text-warning">{{delErrMsg}}</p>
+  <div class="flex flex-row items-end justify-end mr-2 mb-2">
+    <button class="btn btn-second" mat-dialog-close>取消</button>
+    <button class="btn btn-primary mr-0" (click)="delStudent()">刪除</button>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<mat-form-field appearance="outline" class="w-full">
+  <mat-select [formControl]="optionCtrl" #singleSelect>
+    <mat-option>
+      <ngx-mat-select-search
+        [formControl]="optionFilterCtrl"
+        [noEntriesFoundLabel]="'無符合的資料'"
+        [placeholderLabel]="'輸入教師姓名'"
+      ></ngx-mat-select-search>
+    </mat-option>
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      {{option.Nickname ? option.TeacherName + '(' + option.Nickname + ')' : option.TeacherName}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

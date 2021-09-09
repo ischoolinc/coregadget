@@ -1,0 +1,68 @@
+<div class="dailog">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+  </span>
+  <ng-container *ngIf="mode === 'edit'">
+    <p class="gadget_bigtitle">編輯家長</p>
+    <p class="discription">您正在編輯：<span class="text-primary">{{studentName}}</span> 的家長</p>
+  </ng-container>
+  <ng-container *ngIf="mode !== 'edit'">
+    <p class="gadget_bigtitle">新增家長</p>
+    <p class="discription">請填寫以下資訊以新增一位學生家長</p>
+  </ng-container>
+
+  <div class="dialog-content mt-6">
+    <div class="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-6 md:gap-y-6 mb-6 md:mb-0">
+
+      <div>
+        <label class="inline-block font-medium">登入帳號<span class="text-warning">*</span></label>
+        <input type="text" name="edit-LinkAccount" placeholder="abc@ischool.com.tw"
+          [(ngModel)]="pRec.LinkAccount" autocomplete="off"
+          class="w-full input-outline mt-1" style="height: 3.7rem;">
+      </div>
+
+      <div class="flex-1">
+        <span class="inline-block font-medium">稱謂</span>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select [(ngModel)]="pRec.RelationName" >
+            <mat-option value="父親">父親</mat-option>
+            <mat-option value="母親">母親</mat-option>
+            <mat-option value="祖父">祖父</mat-option>
+            <mat-option value="祖母">祖母</mat-option>
+            <mat-option value="外祖父">外祖父</mat-option>
+            <mat-option value="外祖母">外祖母</mat-option>
+            <mat-option value="其他">其他</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <label class="inline-block font-medium">姓氏</label>
+        <input type="text" required name="edit-LastName" placeholder="姓氏..."
+          [(ngModel)]="pRec.LastName" autocomplete="off"
+          class="w-full input-outline mt-1" style="height: 3.7rem;">
+      </div>
+
+      <div>
+        <label class="inline-block font-medium">名字</label>
+        <input type="text" required name="edit-FirstName" placeholder="名字..."
+          [(ngModel)]="pRec.FirstName" autocomplete="off"
+          class="w-full input-outline mt-1" style="height: 3.7rem;">
+      </div>
+
+    </div>
+  </div>
+  <div class="mt-11">
+    <p class="text-warning">{{errMsg}}</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <button class="btn rounded-full text-sm text-warning hover:bg-warning hover:bg-opacity-30"
+          (click)="confirmDel()" *ngIf="mode === 'edit'">刪除家長</button>
+      </div>
+      <div>
+        <button class="btn text-gray-text3 hover:bg-gray-lightest rounded-full mr-2" mat-dialog-close>取消</button>
+        <button class="btn btn-primary rounded-full" (click)="updateParent()">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+.candy-checkbox {
+  @apply box-border inline-block relative rounded w-5 h-5 border-2 border-solid border-gray-text1 mr-2;
+
+  &.disabled,
+  &.disabled ~ span {
+    @apply border-gray text-gray;
+  }
+
+  &.checked::before {
+    content: "\2713";
+    font-family: "Microsoft JhengHei", "微軟正黑體", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, "PingFangTC-Regular", "Hiragino Sans TC", "Source Han Sans", "Noto Sans CJK TC", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    position: absolute;
+    font-size: 18px;
+    left: 0px;
+    top: -6px;
+    @apply text-gray-text1;
+  }
+
+  &.disabled.checked::before {
+    @apply text-gray;
+  }
+}

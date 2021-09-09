@@ -1,0 +1,204 @@
+@layer base {
+  body {
+    color: #323232;
+    font-size: 16px;
+    font-weight: normal;
+    // font-family: "Helvetica", "Arial", "PingFangTC-Regular", "LiHei Pro", "黑體-繁", "微軟正黑體", sans-serif;
+    letter-spacing: 0.025em;
+  }
+
+  button {
+    @apply focus:outline-none focus:ring-offset-transparent focus:ring-transparent;
+  }
+
+  [type='text'], [type='email'], [type='url'], [type='password'], [type='number'], [type='date'], [type='datetime-local'], [type='month'], [type='search'], [type='tel'], [type='time'], [type='week'], [multiple], textarea, select {
+    @apply border-gray-300 rounded focus:ring-offset-transparent focus:ring-transparent focus:border-primary hover:bg-gray-50
+  }
+}
+
+
+@layer components {
+  .gadget_bigtitle {
+    @apply text-gray-text1 text-2xl font-semibold tracking-widest;
+  }
+
+  .close-window {
+    @apply ml-auto text-gray-text1 text-2xl;
+  }
+
+  .discription {
+    @apply text-gray-text3 mt-2;
+  }
+
+  .tool-row {
+    @apply flex flex-row items-center mt-4;
+  }
+
+  .btn {
+    @apply block py-2 px-4 mr-4 border-primary rounded-full cursor-pointer focus:outline-none focus:ring-offset-transparent focus:ring-transparent;
+
+    &:disabled {
+      @apply bg-gray-light text-white text-base cursor-not-allowed hover:bg-gray-light;
+    }
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white text-base hover:bg-primary-light;
+  }
+
+  .btn-disable {
+    @apply bg-gray-light text-white text-base cursor-not-allowed;
+  }
+
+  .btn-second {
+    @apply bg-white text-gray-text3 hover:bg-gray-lightest;
+  }
+
+  .btn-warn {
+    @apply bg-warning text-white hover:bg-warning-darker;
+  }
+
+  .btn-blue {
+    @apply rounded bg-secondary text-white hover:bg-secondary-light;
+  }
+
+  .btn-icon {
+    @apply flex flex-row items-center;
+  }
+
+  .btw-divider {
+    @apply border-r-2 border-gray-light h-6 mr-4;
+  }
+
+  .header-footer {
+    @apply flex flex-row px-2 pt-4 pb-4 h-20 max-w-7xl mx-auto;
+  }
+
+  .search-bar {
+    @apply flex flex-row h-10 ml-auto rounded bg-gray-lightest;
+
+    .search-icon {
+      @apply flex my-auto ml-4 text-2xl text-gray-text2;
+    }
+
+    .search-input {
+      @apply flex border-transparent bg-transparent focus:ring-transparent focus:border-transparent;
+    }
+  }
+
+  .t-title {
+    @apply px-6 py-4 text-center text-sm font-semibold text-white tracking-wider;
+  }
+
+  .t-content {
+    @apply px-6 py-4 text-center whitespace-nowrap;
+  }
+
+  .t-word {
+    @apply text-sm text-gray-text2;
+  }
+
+  .t-icon-row {
+    @apply pl-4 pr-8 py-6 whitespace-nowrap text-center flex flex-row justify-between items-center;
+
+    .t-icon {
+      @apply relative focus:ring-offset-transparent focus:ring-transparent focus:outline-none;
+    }
+  }
+
+  .tooltip {
+    @apply invisible absolute rounded shadow-md text-xs py-1 px-2 bg-gray-text2 text-white;
+  }
+
+  .tooltip1 {
+    @apply z-50 -ml-8 -mt-14;
+  }
+
+  .tooltip2 {
+    @apply z-50 -right-0 -top-6 whitespace-nowrap;
+  }
+
+  .has-tooltip:hover .tooltip {
+    @apply visible;
+  }
+
+  .form-row {
+    @apply mt-4 grid grid-cols-2 gap-6;
+  }
+
+  .check_box {
+    @apply border-gray-300 rounded-sm mr-2 bg-transparent focus:ring-offset-transparent focus:ring-transparent focus:text-secondary;
+  }
+
+  .dropdown_box {
+    @apply inline-flex justify-center w-40 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-text3 hover:bg-gray-50 focus:outline-none focus:border-primary;
+
+    .dropdown_arrow {
+      @apply -mr-1 ml-2 h-5 w-5;
+    }
+  }
+
+  .drop_listbox {
+    @apply origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
+  }
+
+  .list_options {
+    @apply text-gray-text3 block px-4 py-2 rounded text-sm hover:bg-primary-lighter;
+  }
+
+  .dropbox-outline {
+    @apply inline-flex justify-center items-center w-full h-10 rounded border border-gray-300 shadow-sm bg-white text-gray-text3 hover:bg-gray-50 focus:outline-none focus:border-primary;
+  }
+
+  .drop-list {
+    @apply hidden flex-col rounded mt-1 p-2 text-gray-text1 w-full border border-gray-300 z-50;
+  }
+
+  .drop-option {
+    @apply px-4 py-2 hover:bg-primary-lighter rounded;
+  }
+
+  .input-outline {
+    @apply w-full h-10 border-gray-300 rounded focus:ring-offset-transparent focus:ring-transparent focus:border-primary hover:bg-gray-50;
+  }
+
+  .my-dialog-border .mat-dialog-container {
+    @apply border-t-8 border-warning rounded-lg;
+  }
+
+  .my-dialog-border-primary .mat-dialog-container {
+    @apply border-t-8 border-primary rounded-lg;
+  }
+
+  .check-option {
+    @apply font-medium mr-1 border-1.5 border-gray-text1 rounded-sm text-gray focus:ring-transparent focus:ring-offset-transparent;
+  }
+
+  .radio-btn {
+    @apply hidden;
+  }
+
+  .radio-on {
+    @apply hidden align-middle text-gray-text1 text-lg mr-1;
+  }
+
+  .radio-off {
+    @apply inline-block align-middle text-gray-text1 text-lg mr-1;
+  }
+
+  .radio-btn:checked ~ .radio-off {
+    @apply hidden;
+  }
+
+  .radio-btn:checked ~ .radio-on {
+    @apply inline;
+  }
+}
+
+@layer utilities {
+  @media (min-width: 512px) {
+    .xs\:card-product {
+      @apply p-4 w-55 m-2;
+    }
+  }
+}

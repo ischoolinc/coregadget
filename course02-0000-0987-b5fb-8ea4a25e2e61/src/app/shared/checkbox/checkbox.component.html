@@ -1,0 +1,17 @@
+<label [attr.for]="inputId" class="inline-flex items-center justify-start cursor-pointer">
+  <span class="candy-checkbox" [ngClass]="{checked: checked, disabled: disabled}"></span>
+  <input type="checkbox" class="cdk-visually-hidden"
+    [id]="inputId"
+    [(ngModel)]="checked"
+    [disabled]="disabled"
+    [tabIndex]="tabIndex"
+    [attr.name]="name"
+    [attr.value]="value"
+    [required]="required"
+    (change)="onInputChange($event)"
+    (click)="onInputClick($event)">
+  <!-- The label content for checkbox control. -->
+  <span>
+    <ng-content></ng-content>
+  </span>
+</label>

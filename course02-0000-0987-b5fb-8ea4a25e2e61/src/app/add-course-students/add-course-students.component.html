@@ -1,0 +1,65 @@
+<div class="text-gray-text1 mx-4 w-160">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+  </span>
+  <p class="gadget_bigtitle">批次新增修課學生</p>
+  <p class="discription mt-4">課程名稱：<span class="text-primary">{{data.course.CourseName}}</span></p>
+  <p class="discription mt-0">您可透過輸入以下資訊條件來新增多名學生</p>
+  <div class="dialog-content h-104">
+    <div class="mb-3 overflow-scroll">
+      <form [formGroup]="myForm">
+        <div>
+          <fieldset class="mt-6 border border-gray rounded-lg p-4">
+            <legend class="font-medium mx-4 px-2">識別欄位</legend>
+            <div class="px-2 py-2" appRadioGroup [formControl]="getFormCtrl('sidt')" (change)="changeMode()">
+              <app-radio-button class="mr-4" name="idtCtrl" value="StudentId">學生系統編號</app-radio-button>
+              <app-radio-button class="mr-4" name="idtCtrl" value="StudentNumber">學號</app-radio-button>
+              <app-radio-button class="mr-4" name="idtCtrl" value="LinkAccount">登入帳號</app-radio-button>
+            </div>
+          </fieldset>
+          <fieldset class="mt-6 border border-gray rounded-lg p-4">
+            <legend class="font-medium mx-4 px-2">分隔符號</legend>
+            <div class="px-2 py-2" appRadioGroup [formControl]="getFormCtrl('delimiter')" (change)="changeMode()">
+              <app-radio-button class="mr-4" name="idtCtrl" value="NewLine">斷行</app-radio-button>
+              <app-radio-button class="mr-4" name="idtCtrl" value="Semicolon">分號</app-radio-button>
+              <app-radio-button class="mr-4" name="idtCtrl" value="Comma">逗號</app-radio-button>
+              <app-radio-button class="mr-4" name="idtCtrl" value="Space">空隔</app-radio-button>
+            </div>
+          </fieldset>
+          <!-- 輸入資料 -->
+          <div class="my-6 border rounded-lg p-4 border-gray">
+            <textarea cols="30" rows="13"
+              class="w-full text-sm border-0 focus:ring-offset-transparent focus:ring-transparent focus:border-0 focus:outline-none"
+              [formControl]="getFormCtrl('textarea')" [placeholder]="inputPlaceholder"
+            ></textarea>
+          </div>
+        </div>
+      </form>
+      <div class="flex flex-col items-stretch md:flex-row md:items-center md:justify-start mb-10">
+        <button class="btn btn-blue mr-4" (click)="onValidate()">開始驗證</button>
+        <button class="btn rounded"
+          [ngClass]="{
+            'btn-blue': !(currentState !== 'validationFinish' || !!!errorResult.length)
+            , 'btn-disable': currentState !== 'validationFinish' || !!!errorResult.length
+          }"
+          [disabled]="currentState !== 'validationFinish' || !!!errorResult.length"
+          (click)="previewErrorResult()">檢視結果</button>
+        <p *ngIf="currentState === 'validationFinish'" class="mt-2 text-sm text-center md:mt-0 md:text-left"
+          [ngClass]="{'text-warning': validationMsg || errorResult.length }">
+          {{ validationMsg ? validationMsg : '錯誤數量： ' + errorResult.length + ' 筆'}}</p>
+        <p *ngIf="currentState === 'importFinish'" class="mt-2 text-sm text-center md:mt-0 md:text-left"
+          [ngClass]="{ 'text-warning': !importSuccess }">
+          {{ importSuccess ? '匯入成功！' : '匯入失敗！' + importMsg }}
+        </p>
+      </div>
+      <div class="flex flex-row items-end justify-end mt-6 mb-8">
+        <button class="btn btn-second" (click)="closeDialog()">關閉</button>
+        <button class="btn btn-primary mr-0"
+          [ngClass]="{'disabled': errorResult.length > 0}"
+          [disabled]="!validSuccess || source.length === 0"
+          (click)="importData()">匯入</button>
+      </div>
+    </div>
+  </div>
+
+</div>

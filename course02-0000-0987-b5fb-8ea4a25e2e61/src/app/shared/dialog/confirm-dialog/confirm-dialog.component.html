@@ -1,0 +1,18 @@
+<div class="dailog">
+  <div>
+    <h2 class="text-2xl font-medium">{{args.header}}</h2>
+  </div>
+  <div class="mt-6">
+    <p [innerHTML]="args.message | safe: 'html'"></p>
+  </div>
+  <div class="mt-11 text-right">
+    <button class="btn rounded-full md:mr-2" mat-dialog-close
+      *ngIf="args.rejectVisible"
+      [class]="args.rejectButtonStyleClass"
+      (click)="args.reject!()">{{args.rejectLabel}}</button>
+    <button class="btn btn-primary rounded-full"
+      *ngIf="args.acceptVisible"
+      [class]="args.acceptButtonStyleClass"
+      (click)="args.accept!()">{{args.acceptLabel}}</button>
+  </div>
+</div>

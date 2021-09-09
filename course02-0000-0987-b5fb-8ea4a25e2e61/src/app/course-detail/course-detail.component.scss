@@ -1,0 +1,3 @@
+.teachers .teacher:not(:first-child)::before {
+  content: '、';
+}

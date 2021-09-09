@@ -1,0 +1,14 @@
+<mat-form-field appearance="outline" class="w-full">
+  <mat-select [formControl]="optionCtrl" #singleSelect>
+    <mat-option>
+      <ngx-mat-select-search
+        [formControl]="optionFilterCtrl"
+        [noEntriesFoundLabel]="'無符合的資料'"
+        [placeholderLabel]="'輸入班級名稱'"
+      ></ngx-mat-select-search>
+    </mat-option>
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      {{option.ClassName}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

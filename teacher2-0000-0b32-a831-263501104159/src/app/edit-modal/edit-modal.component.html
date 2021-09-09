@@ -1,0 +1,76 @@
+<div class="dailog">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+  </span>
+  <ng-container *ngIf="mode === 'edit'">
+    <p class="gadget_bigtitle">編輯教師</p>
+    <p class="discription">您正在編輯：<span class="text-primary">{{nickname ? teacherName + '(' + nickname + ')' : teacherName }}</span></p>
+  </ng-container>
+  <ng-container *ngIf="mode !== 'edit'">
+    <p class="gadget_bigtitle">新增教師</p>
+    <p class="discription">請填寫以下資訊以新增一位教師</p>
+  </ng-container>
+
+  <div class="dialog-content mt-6">
+    <div class="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-6 md:gap-y-6 mb-6 md:mb-0">
+
+      <div>
+        <label class="inline-block font-medium">教師姓名<span class="text-warning">*</span></label>
+        <input type="text" required name="edit-TeacherName" placeholder="教師姓名..."
+          [(ngModel)]="tRec.TeacherName" autocomplete="off"
+          class="w-full input-outline mt-1" style="height: 3.7rem;">
+      </div>
+
+      <div>
+        <span class="inline-block font-medium">性別</span>
+        <div appRadioGroup [(ngModel)]="tRec.Gender"
+          class="flex items-center mt-1" style="height: 3.7rem;">
+          <app-radio-button name="gender" value="男" class="mr-6">男</app-radio-button>
+          <app-radio-button name="gender" value="女">女</app-radio-button>
+        </div>
+      </div>
+
+      <div>
+        <label class="inline-block font-medium">暱稱<span class="text-muted text-sm ml-2 font-normal">(姓名若重複，則必須設置暱稱)</span></label>
+        <input type="text" name="edit-Nickname" placeholder="暱稱..."
+          [(ngModel)]="tRec.Nickname" autocomplete="off"
+          class="w-full input-outline mt-1" style="height: 3.7rem;">
+      </div>
+
+      <div>
+        <label class="inline-block font-medium">登入帳號</label>
+        <input type="text" name="edit-LinkAccount" placeholder="abc@ischool.com.tw"
+          [(ngModel)]="tRec.LinkAccount" autocomplete="off"
+          class="w-full input-outline mt-1" style="height: 3.7rem;">
+      </div>
+
+      <div>
+        <label class="inline-block font-medium">教師代碼</label>
+        <div class="md:grid md:grid-cols-5 md:gap-4">
+          <input type="text" name="edit-TeacherCode" placeholder="教師代碼..."
+            [(ngModel)]="tRec.TeacherCode" autocomplete="off"
+            class="md:col-span-3 w-full input-outline mt-1 mr-0 md:mr-2" style="height: 3.7rem;">
+          <div class="md:col-span-2 flex flex-row items-center justify-between mt-2 md:mt-0">
+            <button class="w-full block btn btn-secondary rounded whitespace-nowrap mr-0 md:mr-4" (click)="getNewCode()">產生代碼</button>
+            <div class="cursor-pointer" (click)="tRec.TeacherCode = ''">
+              <span class="iconify text-2xl text-secondary" data-icon="fluent:delete-20-filled" data-inline="false"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-11">
+    <p class="text-warning">{{errMsg}}</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <button class="btn rounded-full text-sm text-warning hover:bg-warning hover:bg-opacity-30"
+          (click)="confirmDel()" *ngIf="mode === 'edit'">刪除教師</button>
+      </div>
+      <div>
+        <button class="btn text-gray-text3 hover:bg-gray-lightest rounded-full mr-2" mat-dialog-close>取消</button>
+        <button class="btn btn-primary rounded-full" (click)="updateTeacher()">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>

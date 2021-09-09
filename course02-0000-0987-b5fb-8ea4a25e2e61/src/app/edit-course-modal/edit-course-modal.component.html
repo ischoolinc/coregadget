@@ -1,0 +1,88 @@
+<div class="w-160">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+  </span>
+  <ng-container *ngIf="mode === 'edit'">
+    <p class="gadget_bigtitle">編輯課程</p>
+    <p class="discription">您正在編輯：<span class="text-primary">{{courseName}}</span></p>
+  </ng-container>
+  <ng-container *ngIf="mode !== 'edit'">
+    <p class="gadget_bigtitle">新增課程</p>
+    <p class="discription">請填寫以下資訊以新增一門課程</p>
+  </ng-container>
+
+  <div class="form-row">
+    <div>
+      <label class="font-medium text-gray-text2">學年度<span class="text-danger">*</span></label>
+      <input type="text" required name="edit-school-year" placeholder="學年度..."
+        [(ngModel)]="cRec.SchoolYear" autocomplete="off"
+        class="input-outline mt-1" style="height: 3.7rem;">
+    </div>
+    <div>
+      <label class="font-medium text-gray-text2">學期<span class="text-danger">*</span></label>
+      <input type="text" required name="edit-semester" placeholder="學期..."
+        [(ngModel)]="cRec.Semester" autocomplete="off"
+        class="input-outline mt-1" style="height: 3.7rem;">
+    </div>
+  </div>
+  <div class="form-row">
+    <div>
+      <label class="font-medium text-gray-text2">課程名稱<span class="text-danger">*</span></label>
+      <input type="text" required name="edit-course-name" placeholder="課程名稱..."
+        [(ngModel)]="cRec.CourseName" autocomplete="off"
+        class="input-outline mt-1" style="height: 3.7rem;">
+    </div>
+    <div>
+      <label class="font-medium text-gray-text2">修課班級</label>
+      <div>
+        <app-select-aclass
+          [defaultValue]="cRec.RefClassId"
+          (doChange)="setClassId($event)"
+        ></app-select-aclass>
+      </div>
+    </div>
+  </div>
+  <div class="form-row mb-4">
+    <div>
+      <label class="font-medium text-gray-text2">授課教師1</label>
+      <div>
+        <app-select-ateacher
+          [defaultValue]="teacherId1"
+          (doChange)="setTeacherId($event, '1')"
+        ></app-select-ateacher>
+      </div>
+    </div>
+    <div>
+      <label class="font-medium text-gray-text2">授課教師2</label>
+      <div class="flex flex-row items-center">
+        <app-select-ateacher
+          class="w-full"
+          [defaultValue]="teacherId2"
+          (doChange)="setTeacherId($event, '2')"
+        ></app-select-ateacher>
+        <!-- <span class="relative has-tooltip">
+          <span class="iconify text-2xl mx-2 cursor-pointer" data-icon="ic:round-person-add-alt" data-inline="false"></span>
+          <span class="tooltip tooltip2">新增教師</span>
+        </span> -->
+      </div>
+    </div>
+  </div>
+  <div class="form-row mb-4">
+    <div>
+      <label class="font-medium text-gray-text2">授課教師3</label>
+      <div>
+        <app-select-ateacher
+          [defaultValue]="teacherId3"
+          (doChange)="setTeacherId($event, '3')"
+        ></app-select-ateacher>
+      </div>
+    </div>
+  </div>
+  <div class="mt-6">
+    <p class="text-warning">{{errMsg}}</p>
+    <div class="flex flex-row items-end justify-end">
+      <button class="btn btn-second" mat-dialog-close>取消</button>
+      <button class="btn btn-primary mr-0" (click)="updateCourse()">儲存</button>
+    </div>
+  </div>
+</div>

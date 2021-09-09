@@ -1,0 +1,156 @@
+<div class="flex flex-row items-center text-gray-text3 text-sm pt-10">
+  <p class="text-secondary underline mr-1"><a [routerLink]="['/']">課程管理</a></p>
+  <span class="iconify mr-1" data-icon="ic:round-navigate-next" data-inline="false"></span>
+  <p>{{course?.CourseName}}</p>
+</div>
+
+<div *ngIf="loading" class="text-center">資料載入中...</div>
+
+<ng-container *ngIf="!loading">
+  <div class="gadget_bigtitle mt-4">{{course.CourseName}}</div>
+
+  <div class="tool-row">
+    <!-- 課程詳細 -->
+    <div class="border border-l-2 border-primary h-11 mr-4 rounded-full"></div>
+    <div class="flex flex-row flex-grow items-center">
+      <div class="flex flex-col mr-10">
+        <div class="font-semibold">{{course.SchoolYear}}學年度 第{{course.Semester}}學期</div>
+        <div class="mt-1">授課教師：<span class="font-semibold">
+          {{mainTeacher.TeacherNickname ? mainTeacher.TeacherName + '(' + mainTeacher.TeacherNickname + ')' : mainTeacher.TeacherName}}
+          </span>
+        </div>
+      </div>
+      <div class="flex flex-col mr-10">
+        <div>修課人數：<span class="font-semibold">{{students.length || 0}}</span></div>
+        <div class="mt-1">協同授課教師：
+          <span class="font-semibold teachers">
+            <span class="teacher" *ngIf="coTeacher2.TeacherId">
+              {{coTeacher2.TeacherNickname ? coTeacher2.TeacherName + '(' + coTeacher2.TeacherNickname + ')' : coTeacher2.TeacherName}}
+            </span>
+            <span class="teacher" *ngIf="coTeacher3.TeacherId">
+              {{coTeacher3.TeacherNickname ? coTeacher3.TeacherName + '(' + coTeacher3.TeacherNickname + ')' : coTeacher3.TeacherName}}
+            </span>
+            <span *ngIf="!!!coTeacher2.TeacherId && !!!coTeacher3.TeacherId">無</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- 批次刪除 -->
+    <div class="flex items-center">
+      <div class="flex items-center ml-4 mr-8">
+        <mat-checkbox
+          [checked]="allCheck"
+          [indeterminate]="someCheck()"
+          (change)="setAll($event.checked)">
+          全選
+        </mat-checkbox>
+        <div>
+          <span class="ml-4">
+            <button type="button" class="dropdown_box" [matMenuTriggerFor]="actionMenu">
+              執行動作
+              <svg class="dropdown_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                aria-hidden="true">
+                <path fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+            <mat-menu #actionMenu="matMenu" class="outline-none">
+              <a href="javascript:;" mat-menu-item (click)="delCheckedStudent()">批次刪除</a>
+            </mat-menu>
+          </span>
+        </div>
+      </div>
+      <!-- 新增學生 -->
+      <div class="btw-divider mr-8"></div>
+      <div class="btn btn-primary btn-icon" (click)="openAddAStudent()">
+        <p class="pr-1">新增修課學生</p>
+        <span class="iconify text-2xl text-white" data-icon="fluent:add-circle-16-regular" data-inline="false"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 表格 -->
+  <div class="flex flex-col mt-6">
+    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="pt-2 pb-8 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+        <div class="shadow-lg overflow-hidden border-b border-gray-light sm:rounded-lg">
+          <table class="min-w-full">
+            <!-- 標題 -->
+            <thead class="bg-primary-light">
+              <tr>
+                <th scope="col" class="relative px-6 py-3">
+                  <span class="sr-only">全選</span>
+                </th>
+                <th scope="col" class="relative px-6 py-3">
+                  <span class="sr-only">流水編號</span>
+                </th>
+                <th scope="col" class="t-title hidden">
+                  系統編號
+                </th>
+                <th scope="col" class="t-title">
+                  學號
+                </th>
+                <th scope="col" class="t-title">
+                  姓名
+                </th>
+                <th scope="col" class="t-title">
+                  座號
+                </th>
+                <th scope="col" class="t-title">
+                  班級
+                </th>
+                <th scope="col" class="t-title">
+                  帳號
+                </th>
+                <th scope="col" class="t-title pl-6 pr-8">
+                  操作
+                </th>
+              </tr>
+            </thead>
+            <!-- 內容 -->
+            <tbody class="bg-white">
+              <tr class="h-18" *ngFor="let item of students;let idx = index; let oddRecord = odd;" [ngClass]="{'bg-primary-lightest': oddRecord}">
+                <td class="t-content">
+                  <mat-checkbox
+                    [(ngModel)]="item.Checked"
+                    (ngModelChange)="updateAllCheck()">
+                  </mat-checkbox>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{idx + 1}}.</div>
+                </td>
+                <td class="t-content hidden">
+                  <div class="t-word">{{item.StudentId}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.StudentNumber}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.StudentName}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.SeatNo}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.ClassName}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.LinkAccount}}</div>
+                </td>
+                <td class="t-content pl-4">
+                  <button class="has-tooltip t-icon focus:outline-none" (click)="delCurStudent(item)">
+                    <span class="iconify text-2xl text-secondary" data-icon="fluent:delete-20-filled"
+                      data-inline="false"></span>
+                    <span class="tooltip tooltip1" style="margin-left: -3rem;">刪除修課學生</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-center" *ngIf="!students.length">目前無資料</p>
+    </div>
+  </div>
+</ng-container>

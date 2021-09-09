@@ -1,0 +1,14 @@
+<div class="search-bar">
+  <div class="flex justify-start items-center flex-1">
+    <span class="search-icon iconify" data-icon="fe:search" data-inline="false"></span>
+    <input type="text" autocomplete="off"
+      [placeholder]="placeHolder"
+      [(ngModel)]="value"
+      class="search-input w-full"
+      (input)="onInput($any($event.target).value)">
+    <div (click)="doClear()" class="mr-2 hover:opacity-70 cursor-pointer"
+      [ngClass]="{'opacity-30': !!!value}">
+      <span class="search-icon iconify" data-icon="fe:close" data-inline="false"></span>
+    </div>
+  </div>
+</div>

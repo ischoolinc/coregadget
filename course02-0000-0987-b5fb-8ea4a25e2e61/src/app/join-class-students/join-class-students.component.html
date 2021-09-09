@@ -1,0 +1,20 @@
+<div class="w-106">
+  <div class="mt-8 px-2">
+    <div><img class="mx-auto" src="assets/img/big_add_s.svg" style="max-width: 64px;" alt="加入"></div>
+    <p class="big-title text-xl mt-6 text-center">您確定要批次加入學生修課嗎？</p>
+    <p class="discription text-center">將所屬班級的學生批次加入該課程內：</p>
+    <ul class="list-disc list-inside mt-4 text-center">
+      <li *ngIf="data.mode === 'BATCH'">{{data.courses.length}} 筆課程資料</li>
+      <li *ngIf="data.mode === 'SINGLE'">{{data.courses[0].CourseName}}</li>
+    </ul>
+    <p class="discription mt-10">請輸入“確認加入”來執行動作</p>
+    <input #checkInput class="input-outline mt-2 focus:border-primary" type="text" [(ngModel)]="doubleCheckValue">
+  </div>
+</div>
+<div class="mt-6">
+  <p class="text-warning">{{joinErrMsg}}</p>
+  <div class="flex flex-row items-end justify-end mr-2 mb-2">
+    <button class="btn btn-second" mat-dialog-close>取消</button>
+    <button class="btn btn-primary mr-0" (click)="joinStudent()">加入</button>
+  </div>
+</div>

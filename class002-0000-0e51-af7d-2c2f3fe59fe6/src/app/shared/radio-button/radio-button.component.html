@@ -1,0 +1,17 @@
+<label [attr.for]="inputId" class="inline-flex items-center justify-start cursor-pointer">
+  <span class="candy-radio" [ngClass]="{checked: checked, disabled: disabled}"></span>
+  <input type="radio" class="cdk-visually-hidden"
+    [id]="inputId"
+    [checked]="checked"
+    [disabled]="_disabled"
+    [tabIndex]="tabIndex"
+    [attr.name]="name"
+    [attr.value]="value"
+    [required]="_required"
+    (change)="onInputChange($event)"
+    (click)="onInputClick($event)">
+  <!-- The label content for radio control. -->
+  <span>
+    <ng-content></ng-content>
+  </span>
+</label>

@@ -1,0 +1,33 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import '~@angular/material/theming';
+@include mat-core();
+$mat-candy-mint: (500: #5EC1C7, contrast: (500: white));
+$mat-candy-blue: (700: #547CB4, contrast: (700: white));
+$mat-candy-berry: (500: #F43F5E, contrast: (500: white));
+$candy-primary: mat-palette($mat-candy-mint, 500);
+$candy-accent: mat-palette($mat-candy-blue, 700);
+$candy-warn: mat-palette($mat-candy-berry, 500);
+$candy-theme: mat-light-theme($candy-primary, $candy-accent, $candy-warn);
+@include angular-material-theme($candy-theme);
+
+@import './assets/css/index.tailwind.scss';
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", "PingFangSC-Regular", "Microsoft JhengHei",sans-serif; }
+
+.mat-form-field-wrapper {
+  padding-bottom: 0!important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-start,
+.mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-end,
+.mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-gap {
+  border-width: 1px!important;
+  border-color: #d1d5db!important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-wrapper:hover {
+  background-color: #f9fafb!important;
+}
