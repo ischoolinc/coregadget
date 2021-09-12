@@ -32,7 +32,19 @@
 
   Exam = (function () {
     var ViewTimeConfig; // 2021-09-09 GetViewerConfig 取得使用者設定的試別開放時間
-    var Comparer, FloatFormat, FloatMath, avgScore, getCurrSemester, getStudentInfo, getStudentRuleSeme, interval_process, loadScore, myHandleArray, resetData, set_error_message, showInterval, showScore, switchLevel, _connection, _curr_schoolyear, _curr_semester, _exam_score, _keys, _math_type, _now, _places, _schoolYear, _semester, _student, _students, _system_exam_must_enddate, _system_fix_must_enddate, _system_position, _system_show_model, _system_type;
+    var isView; //function 
+    var Comparer, 
+    FloatFormat,
+     FloatMath,
+     avgScore,
+     getCurrSemester,
+     getStudentInfo,
+     getStudentRuleSeme,
+     interval_process,
+     loadScore, 
+     myHandleArray, 
+     resetData, 
+     set_error_message, showInterval, showScore, switchLevel, _connection, _curr_schoolyear, _curr_semester, _exam_score, _keys, _math_type, _now, _places, _schoolYear, _semester, _student, _students, _system_exam_must_enddate, _system_fix_must_enddate, _system_position, _system_show_model, _system_type;
     _system_type = gadget.params.system_type || "kh";
     _system_exam_must_enddate = gadget.params.system_exam_must_enddate || "true";
     _system_fix_must_enddate = gadget.params.system_fix_must_enddate || "true";
@@ -104,12 +116,11 @@
               _curr_arithmeticaveset = response.Item.ArithmeticAveSet || "";
               _curr_weightedaveset = response.Item.WeightedAveSet || "";
               console.log("_curr_weightedaveset", response.Item)
-              debugger
+         
 
               _system_exam_must_enddate = response.Item.EndDataSet || _system_exam_must_enddate.toLowerCase();
               _system_exam_must_enddate = _system_exam_must_enddate.toLowerCase();
 
-              alert(_system_exam_must_enddate);
               // 
               ViewTimeConfig = response.Item;
             }
@@ -212,7 +223,7 @@
       $("#ScoreInterval tbody").html("");
       return $("#ExamDropDown").find("ul").html("").end().find("a[data-toggle='dropdown']").html("");
     };
-    loadScore = function (schoolYear, semester) {
+    loadScore = function (schoolYear, semester,showScore) {
       var courseInterval, fixInterval, getAllStudentScoreReady, getCourseExamScoreReady, isCurrSemester, margeScore, request, request2;
       _schoolYear = schoolYear;
       _semester = semester;
@@ -401,7 +412,7 @@
                 aExamList.sort(function (a, b) {
                   return parseInt(a.ExamDisplayOrder, 10) > parseInt(b.ExamDisplayOrder, 10);
                 });
-                avgScore(_exam_score[_student.StudentID][schoolYear + semester], isCurrSemester);
+                avgScore(_exam_score[_student.StudentID][schoolYear + semester], isCurrSemester,exam_process);
               } else {
                 _exam_score[_student.StudentID][schoolYear + semester] = null;
               }
@@ -429,127 +440,12 @@
         });
       }
     };
-    avgScore = function (exam_data, isCurrSemester) {
-      var exam_process;
-      exam_process = function () {
-        var domain, domainName, exam, ii, key, pre_score, _ref, _ref1, _ref2;
-        $(exam_data.Course).each(function (key, course) {
-          var exam, ii, pre_score, _ref, _results;
-          pre_score = -1;
-          ii = 0;
-          _ref = course.Exams;
-          _results = [];
-          for (key in _ref) {
-            exam = _ref[key];
-            ii += 1;
-            if ((exam.Avg != null) && course.Subjec !== '體育') {
-              if (ii !== 1 && exam.Avg !== '未開放') {
-                if (exam.Avg > pre_score) {
-                  exam.Flag = 'up';
-                } else if (exam.Avg < pre_score) {
-                  exam.Flag = 'down';
-                }
-              }
-              _results.push(pre_score = exam.Avg);
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
-        });
-        $(exam_data.Course).each(function (key, course) {
-          var credit, exam, _ref, _results;
-          credit = course.Credit;
-          _ref = course.Exams;
-          _results = [];
-          for (key in _ref) {
-            exam = _ref[key];
-            if ((exam.Avg != null) && exam.Avg !== '未開放' && credit && course.Domain !== '彈性課程') {
-              exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCredit = FloatMath(credit, '+', exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCredit);
-              exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCScore = FloatMath(FloatMath(exam.Avg, '*', credit), '+', exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCScore);
-              exam_data.ExamList['exam:' + exam.ExamID].TotalECredit = FloatMath(credit, '+', exam_data.ExamList['exam:' + exam.ExamID].TotalECredit);
-              _results.push(exam_data.ExamList['exam:' + exam.ExamID].TotalEScore = FloatMath(FloatMath(exam.Avg, '*', credit), '+', exam_data.ExamList['exam:' + exam.ExamID].TotalEScore));
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
-        });
-        _ref = exam_data.Domain;
-        for (key in _ref) {
-          domain = _ref[key];
-          ii = 0;
-          domainName = domain.DomainName;
-          _ref1 = domain.Exams;
-          for (key in _ref1) {
-            exam = _ref1[key];
-            ii += 1;
-            if (exam.TotalCredit > 0) {
-              exam.AvgCScore = FloatFormat(FloatMath(exam.TotalCScore, '/', exam.TotalCredit), _math_type, _places);
-              console.log(" exam.AvgCScore:"+exam.AvgCScore +"\n",exam);
-              if (ii !== 1) {
-                if (exam.AvgCScore > pre_score) {
-                  exam.Flag = 'up';
-                } else if (exam.AvgCScore < pre_score) {
-                  exam.Flag = 'down';
-                }
-              }
-              pre_score = exam.AvgCScore;
-            }
-          }
-        }
-        ii = 0;
-        $(exam_data.ExamList).each(function (key, exam) {
-          console.log("   exam.TotalECredit",exam.TotalECredit);
-          if (exam.TotalECredit > 0) {
-            exam.AvgEScore = FloatFormat(FloatMath(exam.TotalEScore, '/', exam.TotalECredit), _math_type, _places);
-        
-            console.log("   exam.AvgEScore",exam)
-            ii += 1;
-            if (ii !== 1) {
-              if (exam.AvgEScore > pre_score) {
-                exam.Flag = 'up';
-              } else if (exam.AvgEScore < pre_score) {
-                exam.Flag = 'down';
-              }
-            }
-            return pre_score = exam.AvgEScore;
-          }
-        });
-        $(exam_data.Course).each(function (key, course) {
-          var credit, fix_score;
-          credit = course.Credit;
-          fix_score = course.FixScore;
-          if ((course.FixScore != null) && course.FixScore !== '未開放' && credit && course.Domain !== '彈性課程') {
-            exam_data.Domain["domain:" + course.Domain].TotalFCredit = FloatMath(credit, '+', exam_data.Domain["domain:" + course.Domain].TotalFCredit);
-            exam_data.Domain["domain:" + course.Domain].TotalFScore = FloatMath(FloatMath(fix_score, '*', credit), '+', exam_data.Domain["domain:" + course.Domain].TotalFScore);
-            exam_data.FixExam.TotalTFCredit = FloatMath(credit, '+', exam_data.FixExam.TotalTFCredit);
-            return exam_data.FixExam.TotalTFScore = FloatMath(FloatMath(fix_score, '*', credit), '+', exam_data.FixExam.TotalTFScore);
-          }
-        });
-        ii = 0;
-        _ref2 = exam_data.Domain;
-        for (key in _ref2) {
-          domain = _ref2[key];
-          if (domain.TotalFCredit > 0) {
-            domain.AvgFScore = FloatFormat(FloatMath(domain.TotalFScore, '/', domain.TotalFCredit), _math_type, _places);
-            pre_score = domain.AvgFScore;
-          }
-        }
-        if (exam_data.FixExam.TotalTFCredit) {
-          return exam_data.FixExam.AvgTFScore = FloatFormat(FloatMath(exam_data.FixExam.TotalTFScore, '/', exam_data.FixExam.TotalTFCredit), _math_type, _places);
-        }
-      };
-      alert(_system_exam_must_enddate === "viewtime")
-      debugger
+    avgScore = function (exam_data, isCurrSemester ,exam_process) {
+      exam_process(exam_data);
+  
       if (isCurrSemester && _system_exam_must_enddate === "viewtime")//2021-09-09 增加可依據評量所設定的開放查詢時間判斷是否顯示成績
-      {      //todo 加權平均顯示 //領域加權顯示
+      { //todo 加權平均顯示 //領域加權顯示
         $(exam_data.Course).each(function (key, course) {
-
-          console.log("course", course);
-          console.log("key", key);
-
-
           var examInfos = course.Exams; //該課程的試別評量成績資訊
           var _results = [];
 
@@ -561,9 +457,12 @@
             console.log('exam.Avg'+exam.Avg+'\n obj :' ,exam)
             if (ExamOpenTime) {
               if (new Date(ExamOpenTime.ViewTime) >= _now) {
-
+                exam_data.ExamList['exam:' + exam.ExamID].IsView = false ; // 如果有一科 加權平均就不要開放
                 _results.push(exam.Avg = '未開放');
+                exam_data
+
               } else {
+                exam_data.ExamList['exam:' + exam.ExamID].IsView = true ; ; //如果每一科都是開放 可以開放
                 _results.push(void 0);
               }
             } else {
@@ -588,23 +487,22 @@
               exam = _ref[key];
               if (exam.EndTime) {
                 if (new Date(exam.EndTime) >= _now) {
-
+                  exam_data.ExamList['exam:' + exam.ExamID].IsView = false ; // 如果有一科 加權平均就不要開放
                   _results.push(exam.Avg = '未開放');
                 } else {
+                  exam_data.ExamList['exam:' + exam.ExamID].IsView = true ; ; //如果每一科都是開放 可以開放
                   _results.push(void 0);
                 }
               } else {
                 _results.push(void 0);
               }
             }
-            // console.log("_results", _results)
-            // console.log("_ref", _ref)
             return _results;
           });
 
           //
           console.log('exam_data.Course', exam_data.Course);
-          debugger
+          // debugger
         }
         if (_system_fix_must_enddate === "true") {
           $(exam_data.Course).each(function (key, course) {
@@ -615,15 +513,144 @@
             }
           });
 
-          return exam_process();
+          // return exam_process();
         }
       }
 
       else {
-        return exam_process();
+        // return exam_process();
       }
     };
+
+    /** Jean 原本位置有點奇怪 把他移出來 
+     * 處理進退步
+    */
+    exam_process = function (exam_data) {
+      var domain, domainName, exam, ii, key, pre_score, _ref, _ref1, _ref2;
+      debugger
+      $(exam_data.Course).each(function (key, course) {
+        var exam, ii, pre_score, _ref, _results;
+        pre_score = -1;
+        ii = 0;
+        _ref = course.Exams;
+        _results = [];
+        for (key in _ref) {
+          exam = _ref[key];
+          ii += 1;
+          if ((exam.Avg != null) && course.Subjec !== '體育') {
+            if (ii !== 1 && exam.Avg !== '未開放') {
+              if (exam.Avg > pre_score) {
+                exam.Flag = 'up';
+              } else if (exam.Avg < pre_score) {
+                exam.Flag = 'down';
+              }
+            }
+            _results.push(pre_score = exam.Avg);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      });
+      $(exam_data.Course).each(function (key, course) {
+        var credit, exam, _ref, _results;
+        credit = course.Credit;
+        _ref = course.Exams;
+        _results = [];
+        for (key in _ref) {
+          exam = _ref[key];
+          if ((exam.Avg != null) && exam.Avg !== '未開放' && credit && course.Domain !== '彈性課程') {
+            exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCredit = FloatMath(credit, '+', exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCredit);
+            exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCScore = FloatMath(FloatMath(exam.Avg, '*', credit), '+', exam_data.Domain["domain:" + course.Domain].Exams[exam.ExamID].TotalCScore);
+            exam_data.ExamList['exam:' + exam.ExamID].TotalECredit = FloatMath(credit, '+', exam_data.ExamList['exam:' + exam.ExamID].TotalECredit);
+           console.log ("SS :", exam_data.ExamList);
+           console.log('SS exam_data.ExamList', exam_data.ExamList['exam:' + exam.ExamID]);
+            _results.push(exam_data.ExamList['exam:' + exam.ExamID].TotalEScore = FloatMath(FloatMath(exam.Avg, '*', credit), '+', exam_data.ExamList['exam:' + exam.ExamID].TotalEScore));
+          } else {
+            // debugger
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      });
+      _ref = exam_data.Domain;
+      for (key in _ref) {
+        domain = _ref[key];
+        ii = 0;
+        domainName = domain.DomainName;
+        _ref1 = domain.Exams;
+        for (key in _ref1) {
+          exam = _ref1[key];
+          ii += 1;
+          if (exam.TotalCredit > 0) {
+            exam.AvgCScore = FloatFormat(FloatMath(exam.TotalCScore, '/', exam.TotalCredit), _math_type, _places);
+            console.log(" exam.AvgCScore:"+exam.AvgCScore +"\n",exam);
+            if (ii !== 1) {
+              if (exam.AvgCScore > pre_score) {
+                exam.Flag = 'up';
+              } else if (exam.AvgCScore < pre_score) {
+                exam.Flag = 'down';
+              }
+            }
+            pre_score = exam.AvgCScore;
+          }
+        }
+      }
+      ii = 0;
+      $(exam_data.ExamList).each(function (key, exam) {
+        console.log("   exam.TotalECredit",exam.TotalECredit);
+        if (exam.TotalECredit > 0) {
+          exam.AvgEScore = FloatFormat(FloatMath(exam.TotalEScore, '/', exam.TotalECredit), _math_type, _places);
+      
+          console.log("   exam.AvgEScore",exam)
+          ii += 1;
+          if (ii !== 1) {
+            if (exam.AvgEScore > pre_score) {
+              exam.Flag = 'up';
+            } else if (exam.AvgEScore < pre_score) {
+              exam.Flag = 'down';
+            }
+          }
+          return pre_score = exam.AvgEScore;
+        }
+      });
+      $(exam_data.Course).each(function (key, course) {
+        var credit, fix_score;
+        credit = course.Credit;
+        fix_score = course.FixScore;
+        if ((course.FixScore != null) && course.FixScore !== '未開放' && credit && course.Domain !== '彈性課程') {
+          exam_data.Domain["domain:" + course.Domain].TotalFCredit = FloatMath(credit, '+', exam_data.Domain["domain:" + course.Domain].TotalFCredit);
+          exam_data.Domain["domain:" + course.Domain].TotalFScore = FloatMath(FloatMath(fix_score, '*', credit), '+', exam_data.Domain["domain:" + course.Domain].TotalFScore);
+          exam_data.FixExam.TotalTFCredit = FloatMath(credit, '+', exam_data.FixExam.TotalTFCredit);
+          return exam_data.FixExam.TotalTFScore = FloatMath(FloatMath(fix_score, '*', credit), '+', exam_data.FixExam.TotalTFScore);
+        }
+      });
+      ii = 0;
+      _ref2 = exam_data.Domain;
+      for (key in _ref2) {
+        domain = _ref2[key];
+        if (domain.TotalFCredit > 0) {
+          domain.AvgFScore = FloatFormat(FloatMath(domain.TotalFScore, '/', domain.TotalFCredit), _math_type, _places);
+          pre_score = domain.AvgFScore;
+        }
+      }
+      if (exam_data.FixExam.TotalTFCredit) {
+        return exam_data.FixExam.AvgTFScore = FloatFormat(FloatMath(exam_data.FixExam.TotalTFScore, '/', exam_data.FixExam.TotalTFCredit), _math_type, _places);
+      }
+    };
+
     showScore = function (exam_data, isCurrSemester) {
+      
+  //Jean
+  try 
+  {
+    console.log("JSON",JSON.stringify(exam_data));	
+
+  } catch(ex)
+  {
+    console.log("ex",ex)
+    alert("err")
+  }
       var pre_domain, tbody1, tbody_html, thead1, thead2, thead_html;
       thead1 = [];
       thead2 = [];
@@ -649,7 +676,7 @@
         }
         $(exam_data.Course).each(function (key, course) {
           var domain;
-          domain = exam_data.Domain['domain:' + course.Domain];
+          domain = exam_data.Domain['domain:' + course.Domain]; //取出 domain
           tbody1.push("<tr>");
           if (course.Domain !== pre_domain) {
             tbody1.push("<th rowspan=\"" + domain.CourseCount + "\">" + course.Domain + "</th>");
@@ -679,7 +706,8 @@
                     td_score = '';
                   }
               }
-              if (_system_show_model === "domain" && course.Domain !== pre_domain) {
+              //【畫面】【領域成績】
+              if (_system_show_model === "domain" && course.Domain !== pre_domain) { 
                 _ref = domain.Exams[exam.ExamID]           
                 console.log("_ref.AvgCScore",_ref.AvgCScore +"\n exam.ExamID:" +exam.ExamID)
                 if (((_ref = domain.Exams[exam.ExamID]) != null ? _ref.AvgCScore : void 0) != null) {//有試別 有成績
@@ -768,16 +796,25 @@
           return pre_domain = course.Domain;
         });
         tbody1.push("<tr><th colspan=\"3\">加權平均</th>");
+
+        //Jean todo
         $(exam_data.ExamList).each(function (key, exam) {
-          if (exam.TotalECredit) {
-            if ((exam.AvgEScore != null) && exam.AvgEScore < 60) {
+          // 如果有判斷是否可以顯示 => 可以
+          if( isView(isCurrSemester,_system_exam_must_enddate,ViewTimeConfig,"",exam.ExamID,"Avg",exam.IsView)){
+          if (exam.TotalECredit) { // Jean 如果有累加學分數 
+               //如果小於 60分
+             if ((exam.AvgEScore != null) && exam.AvgEScore < 60) {
               return tbody1.push("<td class=\"my-fail\" my-data=\"" + exam.ExamID + "\" colspan=\"2\">" + (Number(exam.AvgEScore).toFixed(_places)) + "</td>");
-            } else {
-              return tbody1.push("<td my-data=\"" + exam.ExamID + "\" colspan=\"2\">" + (Number(exam.AvgEScore).toFixed(_places)) + "</td>");
+            } else { //如果大於 60分
+              return tbody1.push("<td my-data=\"" + exam.ExamID + "\" colspan=\"2\">" + (Number(exam.AvgEScore).toFixed(_places))+  "</td>");
             }
-          } else {
+          } else { // 不顯示
             return tbody1.push("<td my-data=\"" + exam.ExamID + "\" colspan=\"2\"></td>");
-          }
+          } 
+        }else{ 
+          return tbody1.push("<td my-data=\"" + exam.ExamID + "\" colspan=\"2\">未開放</td>");
+        }
+
         });
         if (_system_type === "kh") {
           if (exam_data.FixExam.TotalTFCredit) {
@@ -1039,31 +1076,34 @@
       };
       return ComparerWithKeys(s1.Index, s2.Index);
     };
-
-  
+   
+       //Jean
       /**是否可以顯示未開放 */   //True=輸入截止後， False=即時查看，viewtime=依據設定時間查看
-      isView= function(isCurrSemester, _system_exam_must_enddate, viewTimeConfig, endate, examID)
-      {
-        if (isCurrSemester) {
-          if (_system_exam_must_enddate == "true") {
-            if (new Date(endate) >= _now) {
+      isView = function(isCurrSemester, _system_exam_must_enddate, viewTimeConfig, ExamTemplatendate, examID,type,canSee){
+        if(type=="Avg"){// 如果是加權平均的成績
+          return canSee ; //直接回傳該試別上的 isView
+        }else{
+
+          if (isCurrSemester) {
+            if (_system_exam_must_enddate == "true") {
+              if (new Date(ExamTemplatendate) >= _now) {
+                return false 
+              } else {
+                return true
+              }
+            } else if (_system_exam_must_enddate == "false") {
               return false
-            } else {
-              return true
+            } else if (_system_exam_must_enddate == "viewtime") {
+              var OpenTimeInfos = viewTimeConfig.Exams.find(x => x.ExamID == examID);
+              if (new Date(ExamOpenTime.ViewTime) >= _now) {
+                return false
+              } else {
+                return true
+              }
             }
-          } else if (_system_exam_must_enddate == "false") {
+          } else {
             return false
-          } else if (_system_exam_must_enddate == "viewtime") {
-            var OpenTimeInfos = viewTimeConfig.Exams.find(x => x.ExamID == examID);
-            if (new Date(ExamOpenTime.ViewTime) >= _now) {
-  
-              return false
-            } else {
-              return true
-            }
           }
-        } else {
-          return false
         }
       };
   
@@ -1085,11 +1125,11 @@
     getCurrSemester();
     return {
       'score': function (schoolYear, semester) {
-        return loadScore(schoolYear, semester);
+        return loadScore(schoolYear, semester,showScore);
       },
       'setModel': function (model) {
         _system_show_model = model;
-        loadScore(_schoolYear, _semester);
+        loadScore(_schoolYear, _semester,showScore,showScore);
         if (_system_show_model === "subject") {
           return $('#ExamDropDown, #ScoreInterval').removeClass('hidden');
         } else {
