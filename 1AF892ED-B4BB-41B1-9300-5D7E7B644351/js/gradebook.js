@@ -1188,7 +1188,6 @@
                         }
                     };
                     [].concat($scope.studentList || []).forEach(function (studentRec) {
-                        // studentRec['Exam學期成績']
                         // log用
                         if(studentRec['Exam學期成績']!=studentRec['Exam學期成績Origin']){
                          descriptString +=  `  ${studentRec.ClassName}班 ${studentRec.SeatNo}號  ${studentRec.StudentName}  ,${studentRec['Exam學期成績Origin']} => ${studentRec['Exam學期成績']} \n`
@@ -1228,7 +1227,6 @@
                         </Request>`,
                             result: function (response, error, http) {
                                 if (error !== null) {
-                                    alert('11');
                                     alert(error);
                                 } else {
                                     console.log('成功輸入!');
