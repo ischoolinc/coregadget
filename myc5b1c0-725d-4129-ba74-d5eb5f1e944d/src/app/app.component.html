@@ -156,6 +156,17 @@
                         [showWeekday]="curTab.value === 0"
                       ></app-badge-period>
                     </ng-container>
+
+                    <!-- 時段管理btn -->
+                    <div class="has-tooltip" *ngIf="role==='teacher'">
+                      <span class="tooltip -ml-8">管理時段</span>
+                      <button (click)="manageTimeTable(course)"
+                        class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                        <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                          data-inline="false"></span>
+                        <p class="text-sm">管理</p>
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
