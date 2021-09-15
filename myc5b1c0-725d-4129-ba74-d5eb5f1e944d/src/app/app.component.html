@@ -218,128 +218,130 @@
 </div>
 
 <ng-template #tplManageService let-data>
-  <div class="w-104 rounded-2xl">
+  <div class="rounded-2xl">
     <div class="text-right">
       <button mat-dialog-close><span class="iconify text-2xl text-gray-text1" data-icon="eva:close-fill" data-inline="false"></span></button>
     </div>
     <!-- 管理雲端服務主畫面 -->
-    <div class="mx-2" *ngIf="manageProcessState === 301">
-      <p class="text-2xl font-semibold text-gray-text1 mt-4">管理雲端服務</p>
-      <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">已開啟的雲端服務</p>
-      <p class="text-base text-gray-text3 px-3 mt-2">若開啟服務，學生將可以看到該服務；反之，若關閉後，學生將無法看見此服務。</p>
-      <div class="gird grid-rows-5 px-2 mt-3">
-        <div class="flex flex-row items-center mb-2">
-          <div class="flex-grow"></div>
-          <div class="text-gray-text3 text-sm">關/開</div>
-          <div class="text-gray-text3 text-sm ml-4">設定</div>
-        </div>
-
-        <ng-container *ngFor="let item of data.target.ServiceConfig">
-
-          <!-- <div *ngIf="item.service_id === '1campus_oha'"
-            class="flex flex-row items-center mb-6">
-            <div class="flex-grow w-full">
-              <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
-                src="assets/img/oha.svg" alt="OHA雲端教室">OHA雲端教室</span>
-            </div>
-            <div>
-              <mat-slide-toggle
-                color="primary"
-                [checked]="item.enabled"
-                [disabled]="saving"
-                (change)="toggleEnabledService($event, data.target, item)"
-              ></mat-slide-toggle>
-            </div>
-            <div class="ml-4">
-              <span class="iconify text-2xl text-gray-text3" style="opacity: 0.3;" data-icon="uil:setting" data-inline="false"></span>
-            </div>
-          </div> -->
-
-          <div *ngIf="item.service_id === 'google_classroom'"
-            class="flex flex-row items-center mb-6">
-            <div class="flex-grow flex flex-row items-center w-full">
-              <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
-                src="assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
-              <span *ngIf="data.target.GoogleExt?.id">
-                (<a href="javascript:;" (click)="manageProcessState = 304"
-                  class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
-              </span>
-            </div>
-            <div>
-              <mat-slide-toggle
-                color="primary"
-                [checked]="item.enabled"
-                [disabled]="saving"
-                (change)="toggleEnabledService($event, data.target, item)"
-              ></mat-slide-toggle>
-            </div>
-            <a href="javascript:;" class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
-              <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
-                data-inline="false"></span>
-            </a>
+    <div mat-dialog-content>
+      <div class="mx-2" *ngIf="manageProcessState === 301">
+        <p class="text-2xl font-semibold text-gray-text1 mt-4">管理雲端服務</p>
+        <p class="text-base font-semibold text-gray-text1 px-2 mt-4 border-l-2 border-primary">已開啟的雲端服務</p>
+        <p class="text-base text-gray-text3 px-3 mt-2">若開啟服務，學生將可以看到該服務；反之，若關閉後，學生將無法看見此服務。</p>
+        <div class="gird grid-rows-5 px-2 mt-3">
+          <div class="flex flex-row items-center mb-2">
+            <div class="flex-grow"></div>
+            <div class="text-gray-text3 text-sm">關/開</div>
+            <div class="text-gray-text3 text-sm ml-4">設定</div>
           </div>
 
-          <div *ngIf="item.service_id === 'customize'"
-            class="flex flex-row items-center mb-6">
-            <div class="flex-grow w-full">
-              <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+          <ng-container *ngFor="let item of data.target.ServiceConfig">
+
+            <!-- <div *ngIf="item.service_id === '1campus_oha'"
+              class="flex flex-row items-center mb-6">
+              <div class="flex-grow w-full">
+                <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+                  src="assets/img/oha.svg" alt="OHA雲端教室">OHA雲端教室</span>
+              </div>
+              <div>
+                <mat-slide-toggle
+                  color="primary"
+                  [checked]="item.enabled"
+                  [disabled]="saving"
+                  (change)="toggleEnabledService($event, data.target, item)"
+                ></mat-slide-toggle>
+              </div>
+              <div class="ml-4">
+                <span class="iconify text-2xl text-gray-text3" style="opacity: 0.3;" data-icon="uil:setting" data-inline="false"></span>
+              </div>
+            </div> -->
+
+            <div *ngIf="item.service_id === 'google_classroom'"
+              class="flex flex-row items-center mb-6">
+              <div class="flex-grow flex flex-row items-center w-full">
+                <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
+                  src="assets/img/google_classroom_logo.svg" alt="Google Classroom">Google Classroom</span>
+                <span *ngIf="data.target.GoogleExt?.id">
+                  (<a href="javascript:;" (click)="manageProcessState = 304"
+                    class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
+                </span>
+              </div>
+              <div>
+                <mat-slide-toggle
+                  color="primary"
+                  [checked]="item.enabled"
+                  [disabled]="saving"
+                  (change)="toggleEnabledService($event, data.target, item)"
+                ></mat-slide-toggle>
+              </div>
+              <a href="javascript:;" class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
+                <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+                  data-inline="false"></span>
+              </a>
+            </div>
+
+            <div *ngIf="item.service_id === 'customize'"
+              class="flex flex-row items-center mb-6">
+              <div class="flex-grow w-full">
+                <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
                   src="assets/img/link.svg" alt="links">外部連結</span>
+              </div>
+              <div>
+                <mat-slide-toggle
+                  color="primary"
+                  [checked]="item.enabled"
+                  [disabled]="saving"
+                  (change)="toggleEnabledService($event, data.target, item)"
+                ></mat-slide-toggle>
+              </div>
+              <a href="javascript:;" class="ml-4" (click)="manageProcessState = 305">
+                <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+                  data-inline="false"></span>
+              </a>
             </div>
-            <div>
-              <mat-slide-toggle
-                color="primary"
-                [checked]="item.enabled"
-                [disabled]="saving"
-                (change)="toggleEnabledService($event, data.target, item)"
-              ></mat-slide-toggle>
-            </div>
-            <a href="javascript:;" class="ml-4" (click)="manageProcessState = 305">
-              <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
-                data-inline="false"></span>
-            </a>
-          </div>
 
-        </ng-container>
+          </ng-container>
+        </div>
       </div>
+      <div *ngIf="manageProcessState !== 301" (click)="manageProcessState = 301"
+        class="text-primary mt-2 mb-8 cursor-pointer">
+        <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
+          data-inline="false"></span>
+        <p class="text-base inline-block">返回</p>
+      </div>
+      <!-- 新增Google Classroom教室 -->
+      <ng-container *ngIf="manageProcessState === 302">
+        <app-add-google-classroom
+          [dsns]="dsns"
+          [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+          [account]="myInfo?.account || ''"
+          [data]="data">
+        </app-add-google-classroom>
+      </ng-container>
+      <!-- 解除Google Classroom教室連結 -->
+      <ng-container *ngIf="manageProcessState === 303">
+        <app-edit-google-classroom
+          [dsns]="dsns"
+          [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+          [data]="data">
+        </app-edit-google-classroom>
+      </ng-container>
+      <!-- 同步Google Classroom學生 -->
+      <ng-container *ngIf="manageProcessState === 304">
+        <app-async-google-classroom
+          [dsns]="dsns"
+          [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+          [data]="data">
+        </app-async-google-classroom>
+      </ng-container>
+      <!-- 外部連結設定 -->
+      <ng-container *ngIf="manageProcessState === 305">
+        <app-customize-service-manage
+          [data]="data"
+        >
+        </app-customize-service-manage>
+      </ng-container>
     </div>
-    <div *ngIf="manageProcessState !== 301" (click)="manageProcessState = 301"
-      class="text-primary mt-2 mb-8 cursor-pointer">
-      <span class="iconify text-2xl inline-block pb-0.5" data-icon="eva:arrow-ios-back-fill"
-        data-inline="false"></span>
-      <p class="text-base inline-block">返回</p>
-    </div>
-    <!-- 新增Google Classroom教室 -->
-    <ng-container *ngIf="manageProcessState === 302">
-      <app-add-google-classroom
-        [dsns]="dsns"
-        [adminIsConnectedGoogle]="adminConnectedGoogle.success"
-        [account]="myInfo?.account || ''"
-        [data]="data">
-      </app-add-google-classroom>
-    </ng-container>
-    <!-- 解除Google Classroom教室連結 -->
-    <ng-container *ngIf="manageProcessState === 303">
-      <app-edit-google-classroom
-        [dsns]="dsns"
-        [adminIsConnectedGoogle]="adminConnectedGoogle.success"
-        [data]="data">
-      </app-edit-google-classroom>
-    </ng-container>
-    <!-- 同步Google Classroom學生 -->
-    <ng-container *ngIf="manageProcessState === 304">
-      <app-async-google-classroom
-        [dsns]="dsns"
-        [adminIsConnectedGoogle]="adminConnectedGoogle.success"
-        [data]="data">
-      </app-async-google-classroom>
-    </ng-container>
-    <!-- 外部連結設定 -->
-    <ng-container *ngIf="manageProcessState === 305">
-      <app-customize-service-manage
-        [data]="data"
-      >
-      </app-customize-service-manage>
-    </ng-container>
   </div>
 </ng-template>
 
