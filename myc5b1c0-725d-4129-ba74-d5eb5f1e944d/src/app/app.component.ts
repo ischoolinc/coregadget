@@ -56,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { value: 6, tabId: 'tab7', tabTitle: '星期六', checked: false },
     { value: 7, tabId: 'tab8', tabTitle: '星期日', checked: false },
   ];
-  curTab = 0;
+  curTab = { value: 0, tabId: 'tab1', tabTitle: '所有時段', checked: true };
   curCourseList: MyCourseRec[] = [];
 
   manageProcessState = 301;
@@ -64,6 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
   unSubscribe$ = new Subject();
 
   @ViewChild('semester', { static: true }) semester: SelectComponent = {} as SelectComponent;
+  @ViewChild('weekdayTab', { static: true }) weekdayTab: SelectComponent = {} as SelectComponent;
 
   constructor(
     private login: LoginService,
@@ -103,9 +104,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.semester.selected = this.getHeadSemester();
       this.semesterChange(this.semester.selected);
 
-      let dayOfWeek = dj().day() // 0 ~ 6，0 是星期日
+      let dayOfWeek = dj().day(); // 0 ~ 6，0 是星期日
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
-      this.curTab = dayOfWeek;
+      this.weekdayTabChange(this.tabs[dayOfWeek]);
 
       await this.checkConnected();
     } catch (error) {
@@ -305,12 +306,22 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  displayWeekdayTab(tab: { value: number, tabId: string, tabTitle: string, checked: boolean }) {
+    return tab?.tabTitle || '所有時段';
+  }
+
+  weekdayTabChange(tab: { value: number, tabId: string, tabTitle: string, checked: boolean }) {
+    this.tabs.forEach(v => v.checked = (v.tabId === tab.tabId));
+    this.curTab = tab;
+    this.toggleTab();
+  }
+
   toggleTab() {
-    if (this.curTab === 0) { // 所有時段
+    if (this.curTab.value === 0) { // 所有時段
       this.curCourseList = this.courses;
     } else {
       const tmp = this.courses.filter(v => {
-        if (v.Timetable.has(this.curTab)) {
+        if (v.Timetable.has(this.curTab.value)) {
           return true;
         } else {
           return false;
@@ -318,8 +329,8 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
       this.curCourseList = tmp.sort((a, b) => {
-        const x = a.Timetable.get(this.curTab)?.Periods;
-        const y = b.Timetable.get(this.curTab)?.Periods;
+        const x = a.Timetable.get(this.curTab.value)?.Periods;
+        const y = b.Timetable.get(this.curTab.value)?.Periods;
         return (x ? x[0] : 0) - (y ? y[0] : 0);
       });
     }

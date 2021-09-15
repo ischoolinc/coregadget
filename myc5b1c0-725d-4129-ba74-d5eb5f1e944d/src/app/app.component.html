@@ -1,7 +1,7 @@
 <div class="container w-full xs:mx-auto">
   <div class="gadget_bigtitle mb-6 mx-4 xs:mx-0">我的課程</div>
 
-  <div class=" flex flex-row items-baseline mb-2 flex-wrap">
+  <div class="flex flex-row items-baseline mb-2 flex-wrap">
     <!-- 學期下拉 -->
     <div class="relative text-left inline-block mb-3 ml-4 xs:ml-0">
       <app-select #semester
@@ -13,28 +13,12 @@
 
     <!-- 時段下拉 -->
     <div class="relative text-left inline-block mb-3 ml-4 xs:hidden">
-      <div>
-        <button type="button" class="dropdown_box2 bg-white" id="menu-button" aria-expanded="true"
-          aria-haspopup="true">
-          <p>所有時段</p>
-          <span class="iconify ml-2 text-2xl" data-icon="eva:arrow-ios-back-fill" data-inline="false"
-            data-rotate="270deg"></span>
-        </button>
-      </div>
-      <div id="term" class="drop_listbox2 hidden" role="menu" aria-orientation="vertical"
-        aria-labelledby="menu-button" tabindex="-1">
-        <div class="py-1" role="none">
-          <a href="#" class="list_options text-white bg-primary" role="menuitem" tabindex="-1"
-            id="menu-item-0">所有時段</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-1">星期一</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-2">星期二</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-1">星期三</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-2">星期四</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-1">星期五</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-2">星期六</a>
-          <a href="#" class="list_options" role="menuitem" tabindex="-1" id="menu-item-2">星期日</a>
-        </div>
-      </div>
+      <app-select #weekdayTab
+        [selected]="curTab"
+        [rowSource]="tabs"
+        [displayWith]="displayWeekdayTab"
+        (change)="weekdayTabChange($event)"
+      ></app-select>
     </div>
   </div>
 
@@ -53,7 +37,7 @@
         <input *ngFor="let tab of tabs"
           class="panel-control" type="radio" name="week-day"
           [id]="tab.tabId"
-          [value]="tab.value"
+          [value]="tab"
           [(ngModel)]="curTab"
           (change)="toggleTab()"
         >
@@ -67,144 +51,145 @@
           <div class="content">
             <!-- 所有時段表格 -->
             <!-- web -->
-            <div *ngIf="curCourseList.length;else tplNoClass" class="hidden xs:flex flex-col mt-4 w-full">
-              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
-                  <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
-                    <table class="w-full">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th scope="col" class="tb-title">課程名稱</th>
-                          <th scope="col" class="tb-title">{{this.curTab === 0 ? '時段/節次' : '節次'}}</th>
-                          <th scope="col" class="tb-title">雲端服務</th>
-                          <th scope="col" class="tb-title" *ngIf="role==='teacher'">雲端服務管理</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr *ngFor="let course of curCourseList">
-                          <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
-                            <div class="has-tooltip relative">
-                              <span class="tooltip left-6">{{course.CourseName}}</span>
-                              <div class="font-semibold text-gray-text1 line-clamp-2">
-                                {{course.CourseName}}
+            <ng-container *ngIf="curCourseList.length;else tplNoClass">
+              <div class="hidden xs:flex flex-col mt-4 w-full">
+                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
+                    <div class="shadow overflow-hidden border-b border-gray-light sm:rounded-lg">
+                      <table class="w-full">
+                        <thead class="bg-primary">
+                          <tr>
+                            <th scope="col" class="tb-title">課程名稱</th>
+                            <th scope="col" class="tb-title">{{curTab.value === 0 ? '時段/節次' : '節次'}}</th>
+                            <th scope="col" class="tb-title">雲端服務</th>
+                            <th scope="col" class="tb-title" *ngIf="role==='teacher'">雲端服務管理</th>
+                          </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                          <tr *ngFor="let course of curCourseList">
+                            <td class="px-6 py-4 text-center whitespace-pre-wrap xl:min-w-64">
+                              <div class="has-tooltip relative">
+                                <span class="tooltip left-6">{{course.CourseName}}</span>
+                                <div class="font-semibold text-gray-text1 line-clamp-2">
+                                  {{course.CourseName}}
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
-                            <div class="flex flex-row flex-wrap items-center justify-center">
-                              <!-- 時段tag -->
-                              <ng-container *ngFor="let item of course.Timetable | mapsToArray">
-                                <app-badge-period
-                                  *ngIf="this.curTab === 0 || item.Weekday === this.curTab"
-                                  [data]="item"
-                                  [showWeekday]="this.curTab === 0"
-                                ></app-badge-period>
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-nowrap border-l border-dashed border-gray-light">
+                              <div class="flex flex-row flex-wrap items-center justify-center">
+                                <!-- 時段tag -->
+                                <ng-container *ngFor="let item of course.Timetable | mapsToArray">
+                                  <app-badge-period
+                                    *ngIf="curTab.value === 0 || item.Weekday === curTab.value"
+                                    [data]="item"
+                                    [showWeekday]="curTab.value === 0"
+                                  ></app-badge-period>
+                                </ng-container>
+
+                                <!-- 時段管理btn -->
+                                <div class="has-tooltip" *ngIf="role==='teacher'">
+                                  <span class="tooltip -ml-8">管理時段</span>
+                                  <button (click)="manageTimeTable(course)"
+                                    class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
+                                    <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
+                                      data-inline="false"></span>
+                                    <p class="text-sm">管理</p>
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
+                              <ng-container *ngFor="let item of course.ServiceConfig">
+                                <app-launcher-oha
+                                  *ngIf="item.service_id === '1campus_oha' && item.enabled"
+                                  [dsns]="dsns"
+                                  [roleName]="curSelectedContext.role"
+                                  [course]="course">
+                                </app-launcher-oha>
+
+                                <app-launcher-google-classroom
+                                  *ngIf="item.service_id === 'google_classroom' && item.enabled"
+                                  [course]="course">
+                                </app-launcher-google-classroom>
+
+                                <!-- <div class="has-tooltip lg:mr-4">
+                                  <span class="tooltip -ml-2">1Know</span>
+                                  <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/1know_logo.svg"
+                                    alt="1know">
+                                </div> -->
+
+                                <app-launcher-customize
+                                  *ngIf="item.service_id === 'customize' && item.enabled"
+                                  [course]="course"
+                                ></app-launcher-customize>
                               </ng-container>
-
-                              <!-- 時段管理btn -->
-                              <div class="has-tooltip" *ngIf="role==='teacher'">
-                                <span class="tooltip -ml-8">管理時段</span>
-                                <button (click)="manageTimeTable(course)"
-                                  class="px-3 py-1 mb-2 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none">
-                                  <span class="iconify text-xl mr-1" data-icon="healthicons:i-schedule-school-date-time"
-                                    data-inline="false"></span>
-                                  <p class="text-sm">管理</p>
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 flex flex-row flex-wrap items-center justify-center border-l border-dashed border-gray-light">
-                            <ng-container *ngFor="let item of course.ServiceConfig">
-                              <app-launcher-oha
-                                *ngIf="item.service_id === '1campus_oha' && item.enabled"
-                                [dsns]="dsns"
-                                [roleName]="curSelectedContext.role"
-                                [course]="course">
-                              </app-launcher-oha>
-
-                              <app-launcher-google-classroom
-                                *ngIf="item.service_id === 'google_classroom' && item.enabled"
-                                [course]="course">
-                              </app-launcher-google-classroom>
-
-                              <!-- <div class="has-tooltip lg:mr-4">
-                                <span class="tooltip -ml-2">1Know</span>
-                                <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/1know_logo.svg"
-                                  alt="1know">
-                              </div> -->
-
-                              <app-launcher-customize
-                                *ngIf="item.service_id === 'customize' && item.enabled"
-                                [course]="course"
-                              ></app-launcher-customize>
-                            </ng-container>
-                          </td>
-                          <td *ngIf="role==='teacher'"
-                            class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
-                            <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                              (click)="manageService(course, tplManageService)">
-                              <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
-                                data-inline="false"></span>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                            </td>
+                            <td *ngIf="role==='teacher'"
+                              class="py-4 whitespace-nowrap text-center text-sm border-l border-dashed border-gray-light">
+                              <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                                (click)="manageService(course, tplManageService)">
+                                <span class="iconify text-2xl" data-icon="ant-design:setting-filled"
+                                  data-inline="false"></span>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- App -->
-            <div *ngFor="let course of curCourseList" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
-              <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
-                {{course.CourseName}}</p>
-              <div class="px-4 py-3 flex flex-row itmes-center">
-                <p class="w-16 text-gray-text2 font-medium" *ngIf="this.curTab === 0">時段<br>節次</p>
-                <p class="w-16 text-gray-text2 font-medium" *ngIf="this.curTab !== 0">節次</p>
-                <div class="flex flex-row flex-wrap itmes-center">
-                  <ng-container *ngFor="let item of course.Timetable | mapsToArray">
-                    <app-badge-period
-                      *ngIf="this.curTab === 0 || item.Weekday === this.curTab"
-                      [data]="item"
-                      [showWeekday]="this.curTab === 0"
-                    ></app-badge-period>
-                  </ng-container>
+              <!-- App -->
+              <div *ngFor="let course of curCourseList" class="xs:hidden flex flex-col rounded-lg border border-gray-light mx-5 mt-6 mb-4">
+                <p class=" px-4 py-2 text-white text-lg font-semibold overflow-auto line-clamp-2 rounded-t-lg bg-primary">
+                  {{course.CourseName}}</p>
+                <div class="px-4 py-3 flex flex-row itmes-center">
+                  <p class="w-16 text-gray-text2 font-medium" *ngIf="curTab.value === 0">時段<br>節次</p>
+                  <p class="w-16 text-gray-text2 font-medium" *ngIf="curTab.value !== 0">節次</p>
+                  <div class="flex flex-row flex-wrap itmes-center">
+                    <ng-container *ngFor="let item of course.Timetable | mapsToArray">
+                      <app-badge-period
+                        *ngIf="curTab.value === 0 || item.Weekday === curTab.value"
+                        [data]="item"
+                        [showWeekday]="curTab.value === 0"
+                      ></app-badge-period>
+                    </ng-container>
+                  </div>
                 </div>
-              </div>
-              <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
-                <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
-                <div class="flex flex-row flex-grow items-center justify-between">
-                  <app-launcher-oha
-                    [dsns]="dsns"
-                    [roleName]="curSelectedContext.role"
-                    [course]="course">
-                  </app-launcher-oha>
+                <div class="px-4 py-3 flex flex-row itmes-center border-t border-gray-light border-dashed">
+                  <p class="w-16 text-gray-text2 font-medium">雲端<br>服務</p>
+                  <div class="flex flex-row flex-grow items-center justify-between">
+                    <app-launcher-oha
+                      [dsns]="dsns"
+                      [roleName]="curSelectedContext.role"
+                      [course]="course">
+                    </app-launcher-oha>
 
-                  <app-launcher-google-classroom
-                    [course]="course">
-                  </app-launcher-google-classroom>
+                    <app-launcher-google-classroom
+                      [course]="course">
+                    </app-launcher-google-classroom>
 
-                  <!-- <div class="has-tooltip lg:mr-4">
-                    <span class="tooltip -ml-2">1Know</span>
-                    <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="assets/img/1know_logo.svg" alt="1know">
-                  </div> -->
+                    <!-- <div class="has-tooltip lg:mr-4">
+                      <span class="tooltip -ml-2">1Know</span>
+                      <img class="h-10 w-10 my-1 mx-1 cursor-pointer" src="assets/img/1know_logo.svg" alt="1know">
+                    </div> -->
 
-                  <app-launcher-customize></app-launcher-customize>
+                    <app-launcher-customize></app-launcher-customize>
 
-                  <div>
-                    <button class="text-secondary hover:text-secondary-light focus:outline-none"
-                      (click)="manageService(course, tplManageService)">
-                      <span class="iconify text-2xl" data-icon="ant-design:setting-filled" data-inline="false"></span>
-                      <p class="text-xs text-center">管理</p>
-                    </button>
+                    <div>
+                      <button class="text-secondary hover:text-secondary-light focus:outline-none"
+                        (click)="manageService(course, tplManageService)">
+                        <span class="iconify text-2xl" data-icon="ant-design:setting-filled" data-inline="false"></span>
+                        <p class="text-xs text-center">管理</p>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
       </div>
-      <p *ngIf="!courses.length" class="mt-4">目前無課程</p>
     </div>
   </div>
 </div>
@@ -336,5 +321,6 @@
 </ng-template>
 
 <ng-template #tplNoClass>
-  <img class="mx-auto mt-28" src="assets/img/no_class.svg" alt="此時段沒有任何課程">
+  <p *ngIf="curTab.value === 0" class="mt-4 text-center">無課程</p>
+  <img *ngIf="curTab.value !== 0" class="mx-auto mt-28" src="assets/img/no_class.svg" alt="此時段沒有任何課程">
 </ng-template>
