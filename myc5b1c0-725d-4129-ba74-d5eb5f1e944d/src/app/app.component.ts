@@ -45,10 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
   curSemester: Semester = {} as Semester;
   courses: MyCourseRec[] = [];
 
-  #updateTimestamp = dj();
-  classroomUpdateRequired = false;
-  classroomUpdating = false;
-
   semesterRowSource: Semester[] = [];
   tabs = [
     { value: 0, tabId: 'tab1', tabTitle: '所有時段', checked: false },
@@ -117,13 +113,7 @@ export class AppComponent implements OnInit, OnDestroy {
     } finally {
       this.loading = false;
     }
-
-      interval(2000).pipe(
-        takeUntil(this.unSubscribe$)
-      ).subscribe(v => {
-        this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
-      });
-    }
+  }
 
   ngOnDestroy(): void {
     this.unSubscribe$.next();
@@ -177,7 +167,6 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.courses = sourceCourses;
-    await this.mappingClassroomLive();
     await this.mappingGoogleClassroom();
     this.toggleTab();
   }
@@ -287,37 +276,6 @@ export class AppComponent implements OnInit, OnDestroy {
           course.GoogleIsReady = true;
         })
       }
-    }
-  }
-
-  async mappingClassroomLive(force: boolean = false) {
-
-    this.classroomUpdating = true;
-    this.#updateTimestamp = dj();
-
-    try {
-      const courses = this.courses.map(v => v.CourseId);
-      const crlist = await this.crSrv.queryOpenStatus({
-        dsns: this.dsns,
-        courses
-      }, force);
-
-      this.courses.forEach(v => v.Live = false);
-      this.courses.forEach(v => {
-        for (const cr of crlist) {
-          if (v.CourseId === cr.target.uid) {
-            v.Live = (this.role === 'teacher') ? cr.isOpen : cr.guessOpen();
-          }
-        }
-      });
-
-      this.courses = this.courses.sort((x, y) => {
-        return (y.Live + '').localeCompare(x.Live + '');
-      });
-    } catch { }
-    finally {
-      this.classroomUpdating = false;
-      this.classroomUpdateRequired = false;
     }
   }
 
