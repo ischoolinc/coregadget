@@ -26,8 +26,4 @@ export class LauncherOhaComponent implements OnInit {
     return this.login.getLinkout(target);
   }
 
-  classroomToLive(course: MyCourseRec) {
-    course.Live = true;
-  }
-
 }

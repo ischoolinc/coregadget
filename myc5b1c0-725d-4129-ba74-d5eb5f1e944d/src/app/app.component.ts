@@ -118,12 +118,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.loading = false;
     }
 
-    interval(2000).pipe(
-      takeUntil(this.unSubscribe$)
-    ).subscribe(v => {
-      this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
-    });
-  }
+      interval(2000).pipe(
+        takeUntil(this.unSubscribe$)
+      ).subscribe(v => {
+        this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
+      });
+    }
 
   ngOnDestroy(): void {
     this.unSubscribe$.next();
@@ -306,7 +306,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.courses.forEach(v => {
         for (const cr of crlist) {
           if (v.CourseId === cr.target.uid) {
-            v.Live = cr.isOpen;
+            v.Live = (this.role === 'teacher') ? cr.isOpen : cr.guessOpen();
           }
         }
       });
@@ -351,12 +351,18 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.curTab === 0) { // 所有時段
       this.curCourseList = this.courses;
     } else {
-      this.curCourseList = this.courses.filter(v => {
+      const tmp = this.courses.filter(v => {
         if (v.Timetable.has(this.curTab)) {
           return true;
         } else {
           return false;
         }
+      });
+
+      this.curCourseList = tmp.sort((a, b) => {
+        const x = a.Timetable.get(this.curTab)?.Periods;
+        const y = b.Timetable.get(this.curTab)?.Periods;
+        return (x ? x[0] : 0) - (y ? y[0] : 0);
       });
     }
   }
