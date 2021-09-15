@@ -3,8 +3,6 @@
   <span *ngIf="roleName === 'student'" class="tooltip -ml-5">進入OHA雲端教室</span>
   <a [href]="classroomUrl(course)"
     target="_blank" rel="noreferrer noopener" class="classroom_online">
-    <img *ngIf="roleName === 'teacher'" class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/oha.svg" alt="OHA雲端教室">
-    <img *ngIf="roleName !== 'teacher' && course.Live" class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/oha.svg" alt="OHA雲端教室">
-    <img *ngIf="roleName !== 'teacher' && !course.Live" class="h-10 w-10 mb-2 mx-1" src="assets/img/oha_off.svg" alt="OHA雲端教室">
+    <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/oha.svg" alt="OHA雲端教室">
   </a>
 </div>
