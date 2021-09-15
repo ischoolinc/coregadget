@@ -1,16 +1,24 @@
 <div class="has-tooltip lg:mr-4 xl:mr-0">
-  <span class="tooltip -ml-3">外部連結</span>
-  <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
-    <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/link.svg" alt="外部連結">
-  </button>
-  <mat-menu #menu="matMenu">
-    <button *ngFor="let item of services"
-      mat-menu-item
-      class="focus:outline-none text-secondary flex flex-row">
-      <a [href]="item.link" class="menu-list" target="_blank" rel="noreferrer noopener">{{item.title}}</a>
-      <span class="iconify menu-icon" data-icon="eva:external-link-outline"
-        data-inline="false"></span>
+  <span *ngIf="roleName === 'teacher' && services?.length" class="tooltip -ml-3">外部連結</span>
+  <span *ngIf="roleName === 'teacher' && !(services?.length)" class="tooltip -ml-3">外部連結<br>尚無連結，請至雲端<br>服務管理新增連結。</span>
+  <span *ngIf="roleName === 'student'" class="tooltip -ml-3">外部連結</span>
+
+  <ng-container *ngIf="services?.length;else tplNoService">
+    <button mat-button [matMenuTriggerFor]="menu" class="align-middle focus:outline-none">
+      <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/link.svg" alt="外部連結">
     </button>
-    <div mat-menu-item *ngIf="!services?.length" class="hover:cursor-default">無連結</div>
-  </mat-menu>
+    <mat-menu #menu="matMenu">
+      <button *ngFor="let item of services"
+        mat-menu-item
+        class="focus:outline-none text-secondary flex flex-row">
+        <a [href]="item.link" class="menu-list" target="_blank" rel="noreferrer noopener">{{item.title}}</a>
+        <span class="iconify menu-icon" data-icon="eva:external-link-outline"
+          data-inline="false"></span>
+      </button>
+    </mat-menu>
+  </ng-container>
 </div>
+
+<ng-template #tplNoService>
+  <img class="h-10 w-10 mb-2 mx-1" src="assets/img/no_link.svg" alt="外部連結">
+</ng-template>
