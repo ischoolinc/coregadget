@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>成績標準設定</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="./js/material.min.js"></script>
+    <script src="./js/rwd-tab.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.materialdesignicons.com/2.8.94/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <link href="./css/material.css" rel="stylesheet" type="text/css">
+    <link href="./css/default.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div class="container-fluid cbs d-flex justify-content-between flex-column">
+        <div id="index" class="h-100" page>
+            <nav aria-label="breadcrumb text-nowrap text-truncate">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">成績標準設定</li>
+                </ol>
+            </nav>
+            <div class="dropdown mb-3">
+                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">普201</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">普201</a>
+                    <a class="dropdown-item" href="#">普103</a>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>學號</th>
+                        <th>座號</th>
+                        <th>學生</th>
+                        <th>及格標準</th>
+                        <th>補考標準</th>
+                        <th>備註</th>
+                    </tr>
+                </thead>
+                <tbody class="point">
+                    <tr data-toggle="modal" data-target=".set-modal">
+                        <td>070101</td>
+                        <td>1</td>
+                        <td>王大明</td>
+                        <td>60</td>
+                        <td>60</td>
+                        <td></td>
+                    </tr>
+                    <tr data-toggle="modal" data-target=".set-modal" class="table-yellow">
+                        <td>070102</td>
+                        <td>2</td>
+                        <td>王大明</td>
+                        <td>50</td>
+                        <td>60</td>
+                        <td></td>
+                    </tr>
+                    <tr data-toggle="modal" data-target=".set-modal" class="table-yellow">
+                        <td>070103</td>
+                        <td>3</td>
+                        <td>王大明</td>
+                        <td>60</td>
+                        <td>60</td>
+                        <td></td>
+                    </tr>
+                    <tr data-toggle="modal" data-target=".set-modal">
+                        <td>070104</td>
+                        <td>4</td>
+                        <td>王大明</td>
+                        <td>60</td>
+                        <td>60</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 設定 Modal -->
+        <div class="modal fade set-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                    王大明(1)
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            及格標準
+                        </label>
+                        <input class="form-control" rows="1" placeholder="請輸入及格標準"></input>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            補考標準
+                        </label>
+                        <input class="form-control" rows="1" placeholder="請輸入補考標準"></input>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            備註
+                        </label>
+                        <textarea class="form-control" rows="1" placeholder="請輸入備註"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-info">儲存</button>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
