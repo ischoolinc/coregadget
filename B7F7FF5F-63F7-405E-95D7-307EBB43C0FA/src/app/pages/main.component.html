@@ -24,22 +24,22 @@
         <li *ngIf="conf?.Schedule && conf?.Schedule.length"
             class="list-group-item active d-flex align-items-center py-2 ">
 
-            <div class="col-9 text-nowrap">
+            <div class=" col-sm-6  col-md-9 col-6 text-nowrap">
                 <span class="pr-3">今日點名</span>
             </div>
-            <div class="col-1 text-nowrap text-center">節次</div>
-            <div class="col-1 text-center">已點名</div>
-            <div class="col-1 text-center">學生點名</div>
+            <div class=" col-sm-2 col-md-1 col-2 text-nowrap text-center">節次</div>
+            <div class=" col-sm-2  col-md-1 col-2 text-center">已點名</div>
+            <div class=" col-sm-2  col-md-1 col-2 text-center">學生點名</div>
         </li>
         <li class="list-group-item"
             *ngFor="let suggest of conf?.Schedule"
             (click)="openSchedule(suggest)">
             <div class="row">
-                <div class="col-9 text-nowrap">
+                <div class="col-sm-6  col-md-9  col-6 text-nowrap">
                     <span class="pr-3">{{suggest.ClassName?suggest.ClassName:suggest.CourseName}}</span>
                 </div>
-                <div class="col-1 text-nowrap text-center">{{suggest.Period}}</div>
-                <div class="col-1 text-center">
+                <div class=" col-sm-2 col-md-1 col-2  text-nowrap text-center">{{suggest.Period}}</div>
+                <div class=" col-sm-2 col-md-1 col-2 text-center">
                     <ng-container *ngIf="suggest.TeacherChecked=='true'">
                         <i class="material-icons"
                            style="color:#DB2B30">
@@ -53,7 +53,7 @@
                         </i>
                     </ng-container>
                 </div>
-                <div class="col-1 text-center">
+                <div class=" col-sm-2 col-md-1 col-2 text-center">
                     <ng-container *ngIf="suggest.StudentChecked=='true'">
                         <i class="material-icons"
                            style="color:#33691E">
