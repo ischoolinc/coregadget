@@ -1,0 +1,107 @@
+<div class="container-fluid cbs d-flex justify-content-between flex-column" style ="padding-top :0px ;">
+    <div id="index" class="h-100" page>
+        <nav aria-label="breadcrumb text-nowrap text-truncate">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page"> {{currSchoolYearName}}</li>
+            </ol>
+        </nav>
+        <ng-container *ngIf="!isLoading; else tplLoading">
+            <ng-container *ngIf="classList.length > 0; else tplNoData">
+                <div class="d-flex flex-row">
+                    <div class="dropdown mb-3">
+                        <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{curClass.class_name}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0)" *ngFor="let tClass of classList"
+                                (click)="setCurClass(tClass)">
+                                {{tClass.class_name}}
+                            </a>
+                        </div>
+                    </div>
+<div>
+    <button type="button" class="btn   btn-primary  ml-3  " aria-haspopup="true" aria-expanded="false"
+    (click)="exportData('#ClassSemesterScoreTable')">
+    匯出
+</button>
+</div>
+                    <div class="flex-fill ml-5 align-self-end">
+                        <p class="text-start">加減分輸入期間：{{startTime}} 至 {{endTime}} </p>
+                    </div>
+
+                </div>
+                <table  id ="ClassSemesterScoreTable"class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>學號</th>
+                            <th>座號</th>
+                            <th>學生</th>
+                            <th>德行加減分</th>
+                        </tr>
+                    </thead>
+                    <tbody class="point">
+                        <ng-container *ngIf="studentList.length > 0; else tplNostudent">
+                            <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)">
+                                <td>{{stu.StudentNumber}}</td>
+                                <td>{{stu.SeatNo}}</td>
+                                <td>{{stu.StudentName}}</td>
+                                <td>{{stu.SbDiff}}</td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #tplLoading>
+    <h4>資料載入中...</h4>
+</ng-template>
+
+<ng-template #tplNoData>
+    <h4>班導師未帶班級。</h4>
+</ng-template>
+
+<ng-template #tplNostudent>
+    <tr>
+        <td colspan="8">此班級無學生</td>
+    </tr>
+</ng-template>
+
+<ng-template #tplEditForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">{{curStudent.StudentName}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-form-label">
+                    請輸入德行加減分
+                </label>
+                <input class="form-control" rows="1" placeholder="請輸入德行加減分" [(ngModel)]="curStudent.SbDiff"
+                    (keyup)="validateMs()" [ngClass]="{'error': !curStudent.validate_ms}">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" (click)="save()">儲存</button>
+            <button type="button" class="btn btn-dark" (click)="modalRef.hide()">取消</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tplForbid>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">提醒</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-danger">
+        成績輸入時間已截止。
+    </div>
+</ng-template>

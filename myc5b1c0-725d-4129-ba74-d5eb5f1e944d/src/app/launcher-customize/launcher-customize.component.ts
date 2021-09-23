@@ -16,6 +16,7 @@ export class LauncherCustomizeComponent implements OnInit, OnDestroy {
   services: CustomizeService[] = [];
   unSubscribe$ = new Subject();
 
+  @Input() roleName = '';
   @Input() course: MyCourseRec = {} as MyCourseRec;
 
   constructor(

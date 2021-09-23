@@ -31,7 +31,7 @@
       <div class="btn-group dropdown mr-auto">
         <button [matMenuTriggerFor]="menu"
                 type="button"
-                class="btn btn-dark dropdown-toggle"
+                class="btn btn-dark dropdown-toggle "
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">
@@ -127,7 +127,7 @@
   <ng-template #save>
     <button (click)="saveRollCall()"
             type="button"
-            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary +')': '儲存'}}</button>
+            class="btn btn-lg btn-info mb-2">{{checkSummary? '儲存 (' + checkSummary +')': '儲存'}}</button>
   </ng-template>
 </div>
 

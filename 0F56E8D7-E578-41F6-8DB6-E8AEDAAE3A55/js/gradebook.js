@@ -1210,8 +1210,14 @@
                     } else {
                         exam = $scope.current.Exam;
                     }
+                    $scope.$apply(function () {
+                        let tryscore = $scope.examList.find(x => x.Name == '學期成績');
+                        $scope.showSubExam(tryscore);
+                    })
                 }
                 else if ($scope.current.mode == $scope.modeList[1]) { // 平時評量模式
+
+              
                     if (!$scope.current.Exam) {
                         [].concat($scope.current.gradeItemList || []).forEach(gradeItem => {
                             if (!exam && !gradeItem.Lock && gradeItem.Permission == 'Editor' && gradeItem.Type !== 'Program') {

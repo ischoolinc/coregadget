@@ -17,7 +17,7 @@
   (backdropClick)="toggleOverlay()"
   [cdkConnectedOverlayOpen]="isOpen">
   <div class="drop_listbox" role="menu" aria-orientation="vertical"
-    aria-labelledby="menu-button" tabindex="-1">
+    aria-labelledby="menu-button" tabindex="-1" style="max-height: 45vh; overflow: auto;">
     <ng-container *ngIf="_hasData() else noRowSource">
       <div class="py-1" role="none">
         <a href="javascript:;" *ngFor="let record of rowSource"

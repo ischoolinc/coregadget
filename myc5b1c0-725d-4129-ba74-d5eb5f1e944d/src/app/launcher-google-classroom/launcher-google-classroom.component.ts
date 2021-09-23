@@ -9,6 +9,7 @@ import { GoogleClassroomService } from '../core/google-classroom.service';
 })
 export class LauncherGoogleClassroomComponent implements OnInit {
 
+  @Input() roleName = '';
   @Input() course: MyCourseRec = {} as MyCourseRec;
 
   constructor(
