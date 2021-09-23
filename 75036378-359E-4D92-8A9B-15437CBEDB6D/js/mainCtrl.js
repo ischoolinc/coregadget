@@ -103,7 +103,7 @@
         };
 
         var dicClub = {};
-
+       
         var dicClub_Log = {};
         //var dicClub = [];
 
@@ -125,6 +125,8 @@
         $scope.VolunteerClub_Is_Changed = false;
 
         $scope.VolunteerClub_Changed_Record_Is_Saved = false;
+
+        $scope.running = false ;
 
         //$scope.CurrentView = "OriSet";
 
@@ -296,6 +298,7 @@
 
         //#region 儲存志願序
         $scope.SaveVolunteerClubList = function () {
+      
             var volunteer = [];
             for (var index in $scope.VolunteerClub) {
                 volunteer.push({
@@ -304,10 +307,14 @@
                     'Ref_Club_ID': $scope.VolunteerClub[index].ClubID
                 });
             }
+        
+      
+     
             gadget.getContract('ischool.universal_club_v2.student').send({
                 service: "_.SetVolunteer",
                 body: { Request: { Volunteer: { Content: { xml: { Club: volunteer } } } } },
                 result: function (response, error, http) {
+                    // $scope.running = false ;
                     if (error !== null) {
                         alert('SetVolunteer' + JSON.stringify(error));
                         $scope.VolunteerClub_Changed_Record_Is_Saved = true;
@@ -332,6 +339,12 @@
             return InVolunteer;
         }
         $scope.AddNewVolunteerClub = function (CurrentClub_info) {
+            if($scope.running){
+                alert('資料傳送中...')
+                return 
+            } 
+
+            $scope.running = true ;
             $scope.GetChoose_Club(function () {
                 var IsNewVoluteerClub = true;
                 var new_volunteer_club = [];
@@ -349,6 +362,7 @@
                         }
                     }
                     $scope.SaveVolunteerClubList();
+                    $scope.running = false ;  
                 }
                 else {
                     if (!IsNewVoluteerClub) {
