@@ -146,7 +146,11 @@ export class Classroom {
 
   /** 推測目前是否上課中。 */
   public guessOpen() {
-    return this.isOpen && this.getLiveTime('hour') <= 2;
+    if (this.status === 'open') {
+      return (this.getLiveTime('hour') <= 2) ? 'Live' : 'Enabled';
+    } else {
+      return (this.status) ? 'Enabled' : 'Disabled';
+    }
   }
 
   /** 課堂持續時間。 */

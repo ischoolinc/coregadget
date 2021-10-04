@@ -33,7 +33,7 @@ export class MyTargetBaseRec {
   GoogleExt?: GoogleClassroomCourse;
   TeacherId?: number;
   StudentId?: number;
-  Live: boolean = false;
+  Live: 'Enabled' | 'Disabled' | 'Live' = 'Enabled';
 }
 
 export class MyCourseRec extends MyTargetBaseRec {

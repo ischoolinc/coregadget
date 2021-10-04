@@ -45,6 +45,10 @@ export class AppComponent implements OnInit, OnDestroy {
   curSemester: Semester = {} as Semester;
   courses: MyCourseRec[] = [];
 
+  #updateTimestamp = dj();
+  classroomUpdateRequired = false;
+  classroomUpdating = false;
+
   semesterRowSource: Semester[] = [];
   tabs = [
     { value: 0, tabId: 'tab1', tabTitle: '所有時段', checked: false },
@@ -114,6 +118,13 @@ export class AppComponent implements OnInit, OnDestroy {
     } finally {
       this.loading = false;
     }
+
+    interval(2000).pipe(
+      takeUntil(this.unSubscribe$)
+    ).subscribe(v => {
+      this.classroomUpdateRequired = dj().diff(this.#updateTimestamp, 'second') > 55;
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -168,6 +179,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.courses = sourceCourses;
+    await this.mappingClassroomLive();
     await this.mappingGoogleClassroom();
     this.toggleTab();
   }
@@ -277,6 +289,44 @@ export class AppComponent implements OnInit, OnDestroy {
           course.GoogleIsReady = true;
         })
       }
+    }
+  }
+
+  /**
+   * 教師彩色無 Live；學生以下方邏輯運行：
+   * a. 灰色：教師完全沒有啟用教室。不能點擊。
+   * b. 彩色無 Live：教師有啟用教室，但不在教室中。可以點擊。
+   * c. 彩色有 Live：教師在教室中。可以點擊。
+   */
+  async mappingClassroomLive(force: boolean = false) {
+
+    this.classroomUpdating = true;
+    this.#updateTimestamp = dj();
+
+    try {
+      const courses = this.courses.map(v => v.CourseId);
+      const crlist = await this.crSrv.queryOpenStatus({
+        dsns: this.dsns,
+        courses
+      }, force);
+
+      this.courses.forEach(v => v.Live = 'Enabled');
+      this.courses.forEach(v => {
+        for (const cr of crlist) {
+          if (v.CourseId === cr.target.uid) {
+            if (this.role === 'teacher') v.Live = 'Enabled';
+            if (this.role === 'student') v.Live = cr.guessOpen();
+          }
+        }
+      });
+
+      this.courses = this.courses.sort((x, y) => {
+        return (y.Live + '').localeCompare(x.Live + '');
+      });
+    } catch { }
+    finally {
+      this.classroomUpdating = false;
+      this.classroomUpdateRequired = false;
     }
   }
 
