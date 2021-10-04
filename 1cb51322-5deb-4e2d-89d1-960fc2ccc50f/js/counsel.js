@@ -145,9 +145,9 @@ jQuery(function () {
         }
         if (_gg.Opening === "yes") {
             if (_gg.student.GradeYear && _gg.grade && (_gg.student.GradeYear === _gg.grade)) {
-                $('#B1 a[data-toggle=modal], #B2 a[data-toggle=modal], #B3 a[data-toggle=modal], #B4 a[data-toggle=modal], #B5 a[data-toggle=modal]').removeClass("disabled");
+                $('#B1 a[data-toggle=modal], #B2 a[data-toggle=modal], #B3 a[data-toggle=modal], #B4 a[data-toggle=modal], #B5 a[data-toggle=modal]').show();
             } else {
-                $('#B1 a[data-toggle=modal], #B2 a[data-toggle=modal], #B3 a[data-toggle=modal], #B4 a[data-toggle=modal], #B5 a[data-toggle=modal]').addClass("disabled");
+                $('#B1 a[data-toggle=modal], #B2 a[data-toggle=modal], #B3 a[data-toggle=modal], #B4 a[data-toggle=modal], #B5 a[data-toggle=modal]').hide();
             }
         }
     });
