@@ -122,7 +122,9 @@ export class GoogleClassroomService {
   }
 
   public getGoogleSigninChooserUrl(url: string = '') {
-    return `https://accounts.google.com/ServiceLogin/signinchooser?service=accountsettings&continue=${url}`;
+    const finalUrl = `https://accounts.google.com/ServiceLogin/signinchooser?service=accountsettings&continue=${url}`;
+    console.log(finalUrl);
+    return finalUrl;
   }
 }
 

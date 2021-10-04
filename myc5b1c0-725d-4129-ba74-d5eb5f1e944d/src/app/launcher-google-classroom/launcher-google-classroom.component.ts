@@ -19,7 +19,8 @@ export class LauncherGoogleClassroomComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  googleSigninChooserUrl(url: string = '') {
+  googleSigninChooserUrl(GoogleExt: any) {
+    const url = `${GoogleExt?.alternateLink}?cjc=${GoogleExt?.enrollmentCode}`;
     return this.gClassroomSrv.getGoogleSigninChooserUrl(url);
   }
 }
