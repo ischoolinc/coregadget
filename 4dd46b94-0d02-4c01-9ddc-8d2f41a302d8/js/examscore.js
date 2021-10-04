@@ -25,6 +25,11 @@
   });
 
   var Exam = (function () {
+    // 2021-09 裝「成績輸入截止後查看」模式，是否開放顯示平均
+    var isShowExamInfo = null;
+    // 2021-09 GetViewerConfig 取得使用者設定的試別開放時間
+    var ViewTimeConfig;
+
     var _system_exam_must_enddate = gadget.params.system_exam_must_enddate || "true";
     var _system_position = gadget.params.system_position || "student";
     var _students = null;
@@ -41,13 +46,13 @@
     var _schoolYear = null;
     // 介面目前學期
     var _semester = null;
-    var _connection = null; 
+    var _connection = null;
 
     //目前排名顯示設定
     var _curr_arithmeticaveset = null;
     var _curr_weightedaveset = null;
 
-    
+
     if (_system_position === "parent") {
       _connection = gadget.getContract("ischool.exam.parent");
     } else {
@@ -73,7 +78,7 @@
     };
 
     /**取得設定檔 */
-    getRankViewerConfig = function(){
+    getRankViewerConfig = function () {
       return _connection.send({
         service: "_.GetViewerConfig",
         body: {},
@@ -81,16 +86,17 @@
           if (error !== null) {
             return set_error_message('#mainMsg', 'GetViewerConfig', error);
           } else {
-            if(response.Item){
+            if (response.Item) {
               _curr_arithmeticaveset = response.Item.ArithmeticAveSet || "";
               _curr_weightedaveset = response.Item.WeightedAveSet || "";
               _system_exam_must_enddate = response.Item.EndDataSet || _system_exam_must_enddate.toLowerCase();
               _system_exam_must_enddate = _system_exam_must_enddate.toLowerCase();
-              
+
+              ViewTimeConfig = response.Item;
             }
+          }
         }
-      }
-    });
+      });
     };
     getRankViewerConfig();
     /** 取得小孩學生資訊(家長用) */
@@ -152,7 +158,7 @@
               service: "_.GetAllCourseSemester",
               body: request,
               result: function (response, error) {
-                var  _ref4;
+                var _ref4;
                 if (error !== null) {
                   return set_error_message("#mainMsg", "GetAllCourseSemester", error);
                 } else {
@@ -183,7 +189,7 @@
 
     /** 載入資料 */
     loadScore = function (schoolYear, semester) {
-      var isCurrSemester  = schoolYear === _curr_schoolyear && semester === _curr_semester;
+      var isCurrSemester = schoolYear === _curr_schoolyear && semester === _curr_semester;
       _schoolYear = schoolYear;
       _semester = semester;
       rankList = [];
@@ -210,7 +216,7 @@
         _connection.send({
           service: "_.GetCourseExamScore",
           body: request,
-          result: function(response, error) {
+          result: function (response, error) {
             if (error !== null) {
               j(set_error_message("#mainMsg", "GetCourseExamScore", error));
             } else {
@@ -232,7 +238,7 @@
         _connection.send({
           service: "_.GetRank",
           body: request2,
-          result: function(response, error) {
+          result: function (response, error) {
             if (error !== null) {
               j(set_error_message("#mainMsg", "GetRank", error));
             } else {
@@ -258,10 +264,11 @@
      * exam_data 學年度學期課程評量分數
      * isCurrSemester 是否為系統學年度學期
      */
-    showScore = function(exam_data, isCurrSemester) {
+    showScore = function (exam_data, isCurrSemester) {
       var curMatrix = '班級';
       var now = new Date();
       var exam_list = [];
+      exam_isShow_list = [];
       var thead1 = [];
       var thead2 = [];
       var dropdownList = [];
@@ -275,7 +282,11 @@
           [].concat(course.Exam || []).forEach((exam) => {
             if (exam.ExamID) {
               if (exam_list.findIndex((id) => id == exam.ExamID) === -1) {
-                exam_list.push(exam.ExamID);
+                exam_list.push(exam.ExamID); 
+                exam_isShow_list.push({
+                  examID: exam.ExamID,
+                  isAvgShow: true
+                })
                 thead1.push("<th colspan=\"3\">" + exam.ExamName + "</th>");
                 thead2.push("<th colspan=\"2\">成績</th>");
                 thead2.push("<th colspan=\"1\">排名</th>");
@@ -295,7 +306,7 @@
       });
 
       // 切換排名母群
-      $("#MatrixMenu").on("click", "a", function(event) {
+      $("#MatrixMenu").on("click", "a", function (event) {
         var matrix = $(this).text();
         $("#Matrix").html("排名：" + matrix);
         curMatrix = matrix;
@@ -346,6 +357,7 @@
             pre_score = -999;
             $(exam_list).each(function (key, value) {
               var exam = getIndex(value, course.Exam);
+
               var _ref;
               var endtime = null;
               var show_data = true;
@@ -357,17 +369,32 @@
               var td_score = null;
 
               if (exam) {
+                isShowExamInfo = exam_isShow_list.find(x => x.examID == exam.ExamID);
                 // 判斷成績是否開放查看
                 if (isCurrSemester) {
-                  if (_system_exam_must_enddate === "true") {
+                  if (_system_exam_must_enddate === "viewtime") { //2021-09增加可依據評量所設定的開放查詢時間判斷是否顯示成績
+                    var ExamOpenTimes = ViewTimeConfig.Exams;
+
+                    var ExamOpenTime = ExamOpenTimes.find(x => x.ExamID == exam.ExamID)
+
+                    if (((_ref = exam.ScoreDetail) != null ? ExamOpenTime.ViewTime : void 0) != null) {
+                      if (new Date(ExamOpenTime.ViewTime) >= now) {
+                        show_data = false;
+                      }
+                      endtime = ExamOpenTime.ViewTime;
+                    }
+                  }
+                  else if (_system_exam_must_enddate === "true") { //成績輸入截止後
                     if (((_ref = exam.ScoreDetail) != null ? _ref.EndTime : void 0) != null) {
                       if (new Date(exam.ScoreDetail.EndTime) >= now) {
                         show_data = false;
+                        isShowExamInfo.isAvgShow = false; //只要有一個科目是未開放 平均之分數就未開放
                       }
                       endtime = exam.ScoreDetail.EndTime;
                     }
                   }
                 }
+  
                 if (exam.ScoreDetail && show_data) {
                   // 成績資料
                   {
@@ -408,8 +435,9 @@
                     // 取得排名資料
                     const data = rankList.find((data) => data.item_name == course.Subject
                       && data.ref_exam_id == exam.ExamID && data.rank_type == switchMatrix(curMatrix));
-                    
+
                     if (data) {
+
                       tbody1.push("<td my-data=\"" + exam.ExamID + "\">" + data.rank + "</td>");
                     } else {
                       tbody1.push("<td my-data=\"" + exam.ExamID + "\"></td>");
@@ -419,6 +447,7 @@
                     return pre_score = avg_score;
                   }
                 } else if (show_data === false) {
+
                   return tbody1.push("<td colspan=\"3\" rel=\"tooltip\"\n  title=\"" + (endtime ? endtime + "後開放" : "尚未開放") + "\">\n  未開放</td>");
                 } else {
                   return tbody1.push("<td></td> <td></td> <td></td>");
@@ -427,41 +456,76 @@
                 return tbody1.push("<td></td> <td></td> <td></td>");
               }
             });
+
             return tbody1.push("</tr>");
           });
           //--
-          if ( _curr_arithmeticaveset === 'True') {
-        
-            subBody.push("<tr><th>" + "算術平均及排名" + "</th>");
-            
-            exam_list.forEach(examID => {
-              // 固定排名：算數平均＆排名
-              {
-                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均' 
-                  && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
-                  
-                if (data) {
-                  subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
-                } else {
+          if (_curr_arithmeticaveset === 'True') {
 
+            subBody.push("<tr><th>" + "算術平均及排名" + "</th>");
+
+            exam_list.forEach(examID => {
+              // 固定排名：算術平均＆排名
+              {
+                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '平均'
+                  && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
+
+                if (data) {
+                  if (isCurrSemester && _system_exam_must_enddate === "viewtime") {
+                    var ExamOpenTimes = ViewTimeConfig.Exams;
+                    var ExamOpenTime = ExamOpenTimes.find(x => x.ExamID == examID)
+                    if (new Date(ExamOpenTime.ViewTime) >= now) {
+                      subBody.push(`<td colspan="3">未開放</td>`);
+                    }
+                    else {
+                      subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                    }
+                  } else if (isCurrSemester && _system_exam_must_enddate === 'true') {
+                    if (isShowExamInfo.isAvgShow == false) {
+                      subBody.push(`<td colspan="3">未開放</td>`);
+                    } else {
+                      subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                    }
+                  }
+                  else {
+                    subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                  }
+                } else {
                   subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
                 }
               }
             });
             subBody.push(`</tr>`)
-          }else if(_curr_weightedaveset === 'True'){
+          } else if (_curr_weightedaveset === 'True') {
             subBody.push("<tr><th>" + "加權平均及排名" + "</th>");
-            
+
             exam_list.forEach(examID => {
               // 固定排名：加權平均＆排名
               {
-                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '加權平均' 
+                const data = rankList.find(data => data.item_type == '定期評量/總計成績' && data.item_name == '加權平均'
                   && data.ref_exam_id == examID && data.rank_type == switchMatrix(curMatrix));
-                  
-                if (data) {
-                  subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
-                } else {
 
+                if (data) {
+                  if (isCurrSemester && _system_exam_must_enddate === "viewtime") {
+                    var ExamOpenTimes = ViewTimeConfig.Exams;
+                    var ExamOpenTime = ExamOpenTimes.find(x => x.ExamID == examID)
+                    if (new Date(ExamOpenTime.ViewTime) >= now) {
+                      subBody.push(`<td colspan="3">未開放</td>`);
+                    } else {
+                      subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                    }
+                  } else if (isCurrSemester && _system_exam_must_enddate === 'true') {
+                    //todo
+
+                    if (isShowExamInfo.isAvgShow == false) {
+                      subBody.push(`<td colspan="3">未開放</td>`);
+                    } else {
+                      subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                    }
+                  } else {
+                    subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
+                  }
+                } else {
                   subBody.push(`<td colspan="2"></td><td colspan="1"></td>`);
                 }
               }
@@ -473,7 +537,7 @@
           //--
           thead_html = "<tr class=\"my-nofill\"><th rowspan=\"2\">科目名稱</th>" + (thead1.join("")) + "</tr>\n<tr class=\"my-nofill\">" + (thead2.join("")) + "</tr>";
           tbody_html = tbody1.join("");
-          
+
           $("#ExamScore")
             .find("thead").html(thead_html).end()
             .find("#BodyOne").html(tbody_html).end()
@@ -536,7 +600,7 @@
         var tbody1 = [];
         var tbody_html = "";
         var curr_examid = $("#ExamDropDown a[data-toggle='dropdown']").attr('my-examid');
-        
+
         if (curr_examid) {
           exam_data.forEach((course) => {
             var endtime, ext_score, my_level;
@@ -545,12 +609,20 @@
             {
               // 檢查課程試別是否有排名資料 
               var exam = [].concat(course.Exam || []).find((data) => data.ExamID == curr_examid);
-              var rank = rankList.find((data) => data.item_name == course.Subject 
+              var rank = rankList.find((data) => data.item_name == course.Subject
                 && data.ref_exam_id == curr_examid && data.rank_type == switchMatrix(curMatrix));
               if (rank) {
                 // 判斷成績是否開放查看
                 if (isCurrSemester) {
-                  if (exam && _system_exam_must_enddate === 'true') {
+                  if (exam && _system_exam_must_enddate === 'viewtime') {
+                    var ExamOpenTimes = ViewTimeConfig.Exams;
+                    var ExamOpenTime = ExamOpenTimes.find(x => x.ExamID == exam.ExamID)
+                    if (new Date(ExamOpenTime.ViewTime) >= now) {
+                      show_data = false;
+                    }
+                    endtime = ExamOpenTime.ViewTime;
+                  }
+                  else if (exam && _system_exam_must_enddate === 'true') {
                     if (new Date(exam.ScoreDetail.EndTime) >= now) {
                       show_data = false;
                     }
@@ -586,7 +658,7 @@
         }
       };
 
-      if (isCurrSemester && _system_exam_must_enddate === "true") {
+      if (isCurrSemester && (_system_exam_must_enddate === "true" || _system_exam_must_enddate === "viewtime")) {
         return getNow(function (d1) {
           now = d1;
           return exam_process();
