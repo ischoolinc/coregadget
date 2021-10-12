@@ -1959,7 +1959,7 @@
                                         flag = true;
                                         importProcess.ParseValues[i] = '';
                                     } else if (importProcess.ParseValues[i] == "缺") {
-                                        importProcess.ParseValues[i] = -1;
+                                        // importProcess.ParseValues[i] = -1;
                                         flag = true;
                                     }
 
@@ -2038,8 +2038,9 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
+                               
                                 importProcess.ParseString = importProcess.ParseString || '';
-                                importProcess.ParseValues = importProcess.ParseString.split("\n");
+                                importProcess.Values = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
                                 for (var i = 0; i < importProcess.ParseValues.length; i++) {
                                     var flag = false;
