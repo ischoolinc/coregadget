@@ -36,7 +36,7 @@ export class AddInterviewModalComponent implements OnInit {
     this.loadDefaultData();
   }
 
-  // 載入預設資料
+  /**載入預設資料*/
   loadDefaultData() {
     if (this.counselDetailComponent.currentStudent) {
       if (this._editMode === "edit" && this._CounselInterview) {

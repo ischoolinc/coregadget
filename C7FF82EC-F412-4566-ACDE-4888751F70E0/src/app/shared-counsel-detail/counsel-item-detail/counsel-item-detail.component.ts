@@ -9,7 +9,6 @@ import { CaseInterview, SemesterInfo } from "./case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
 import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
 import { ViewCaseInterviewModalComponent } from "./view-case-interview-modal/view-case-interview-modal.component";
-
 @Component({
   selector: "app-counsel-item-detail",
   templateUrl: "./counsel-item-detail.component.html",
@@ -30,6 +29,7 @@ export class CounselItemDetailComponent implements OnInit {
   @ViewChild("addCaseInterview") _addInterview: AddCaseInterviewModalComponent;
   @ViewChild("delCaseInterview") _delCaseInterview: DelCaseInterviewModalComponent;
   @ViewChild("viewCaseInterview") _viewCaseInterview: ViewCaseInterviewModalComponent;
+
 
   constructor(
     private dsaService: DsaService,
@@ -187,6 +187,23 @@ export class CounselItemDetailComponent implements OnInit {
       $("#delCaseInterview").off("hide.bs.modal");
     });
   }
+
+
+  // 轉介單 
+   referralRromModal(){
+    $("#delCaseInterview").modal("show");
+    // 關閉畫面
+    $("#delCaseInterview").on("hide.bs.modal", () => {
+      if (!this._delCaseInterview.isCancel) {
+        // 重整資料
+        this.loadData();
+      }
+      $("#delCaseInterview").off("hide.bs.modal");
+    });
+  
+
+
+   }
 
   // 取得學生個案
   async GetStudentCase() {

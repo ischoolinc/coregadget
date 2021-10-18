@@ -101,8 +101,18 @@
               </li>
               <ng-container *ngIf="referralVisible === true">
                 <li data-title="轉介狀況"
-                    (click)="viewInterviewModal(counselRec)">{{ counselRec.getIsReferralString() }}</li>
-              </ng-container>
+                    >{{ counselRec.getIsReferralString() }}
+                    <mat-icon *ngIf=" counselRec.getIsReferralString()!=''"
+                    class = " ml-4 cuser"  
+                    style ="font-size: 18px ;color :gray;"
+                    aria-hidden="false" aria-label="Example home icon"
+                    style="color:  #4d94ff; cursor:pointer " (click)="referralRromModal(counselRec)"
+                    >
+                    post_add
+                   </mat-icon>
+                  </li>
+            
+                  </ng-container>
 
               <li data-title="">
 
@@ -117,20 +127,7 @@
                 delete_forever
               </mat-icon>
 
-
-                <!-- <button class="btn btn-light"
-                        data-toggle="modal"
-                        (click)="editInterviewModal(counselRec)"
-                        [disabled]="counselRec.isEditDisable">
-                  修改
-                </button>
-                <button class="btn btn-danger btn_red_rad"
-                        data-toggle="modal"
-                        style="margin-left: 10px"
-                        (click)="delInterviewModal(counselRec)"
-                        [disabled]="isDeleteButtonDisable">
-                  刪除
-                </button> -->
+           
               </li>
             </ol>
           </ng-container>
@@ -152,3 +149,4 @@
 <app-add-interview-modal #addInterview></app-add-interview-modal>
 <app-view-interview-modal #viewInterview></app-view-interview-modal>
 <app-del-interview-modal #delInterview></app-del-interview-modal>
+<app-add-referral-form #referralForm [_CounselInterview]="currentInterview" ></app-add-referral-form>

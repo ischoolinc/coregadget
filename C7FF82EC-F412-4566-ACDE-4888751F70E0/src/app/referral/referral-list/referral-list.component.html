@@ -31,9 +31,10 @@
         </ol>
       </li>
       <li class="tbody">
+        <ng-container   *ngFor="let item of ReferralStudentList">
         <ol class="tr"
-            *ngFor="let item of ReferralStudentList">
-          <ng-container *ngIf="item.isDisplay">
+        *ngIf="item.isDisplay" >
+          <!-- <ng-container> -->
             <li data-title="班級"
                 (click)="toCounselDetail(item)">
               {{ item.ClassName }}
@@ -73,14 +74,14 @@
               {{ item.ReferralReplyDate }}
             </li>
             <li data-title="">
-              <button class="btn btn-light"
+              <button class="btn btn-light font_size_m"
                       (click)="setGrantModal(item)"
                       data-toggle="modal"
                       data-backdrop="static"
                       data-target="#grant">
                 編輯授理狀況
               </button>
-              <button class="btn btn-light"
+              <button class="btn btn-light font_size_m"
                       data-toggle="modal"
                       data-backdrop="static"
                       data-target="#newCase"
@@ -89,9 +90,17 @@
                       [disabled]="item.isAddCaseButtonDisable">
                 建立個案
               </button>
+              <button class="btn btn-light ml-2 font_size_m"
+              (click)="referralRromModal(item)"
+              data-toggle="modal"
+              data-backdrop="static"
+              data-target="#grant">
+              轉介單
+            </button>
             </li>
-          </ng-container>
+          <!-- </ng-container> -->
         </ol>
+      </ng-container>
       </li>
     </ul>
   </div>
@@ -107,3 +116,6 @@
 
 <app-grant-modal #grant_modal></app-grant-modal>
 <app-new-case-modal #case_modal></app-new-case-modal>
+<!-- Jean8 -->
+<!-- <app-add-referral-form #referralForm [_CounselInterview]="currentInterview" ></app-add-referral-form> -->
+<app-add-referral-form #referralForm  [currentinterviewID]="currentReferralStudent.UID"></app-add-referral-form>

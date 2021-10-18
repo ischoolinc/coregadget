@@ -69,6 +69,9 @@ export class CounselDetailComponent implements OnInit {
       // 新生特有
       this.comprehensiveStr = "填報資料";
     }
+    //Jean
+
+ 
 
     // 判斷 個人輔導紀錄 功能只有管理者才可以使用
     this.setCounselPrintItemVisible = false;
@@ -86,7 +89,12 @@ export class CounselDetailComponent implements OnInit {
       }
     );
   }
-  
+ //Jean
+/**取得轉介是否有資料 */
+
+
+
+
   /**
    * 打開視窗連到新的頁面 
    */

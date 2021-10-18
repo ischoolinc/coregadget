@@ -55,7 +55,8 @@
                      style="position: absolute; top:-17px; left:-12px; z-index: 100;">
                   <small>{{stuRec.Status}}</small>
                 </div>
-                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
+                  <div class="w-100 align-baseline">
                   {{ stuRec.StudentName }}
                 </div>
               </div>
@@ -72,7 +73,8 @@
             <li data-title="對象"
                 title="{{stuRec.LastInterviewContact}}">
               <div style="width:100%;position: relative;">
-                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
+                  <div  class="w-100 align-baseline">
                   {{ stuRec.LastInterviewContact }}
                 </div>
               </div>
@@ -80,7 +82,8 @@
             <li data-title="方式"
                 title="{{stuRec.LastInterviewType+stuRec.LastInterviewTypeOther}}">
               <div style="width:100%;position: relative;">
-                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
+                <div  class="w-100 align-baseline">
                   {{ stuRec.LastInterviewType }}{{ stuRec.LastInterviewTypeOther }}
                 </div>
               </div>
@@ -88,8 +91,8 @@
             <li data-title="聯絡事項/內容"
                 title="{{(stuRec.LastInterviewContactItem?'聯絡事項:\n  '+stuRec.LastInterviewContactItem:'')+(stuRec.LastInterviewContactItem&&stuRec.LastInterviewContent?'\n':'')+(stuRec.LastInterviewContent?'內容:\n  '+stuRec.LastInterviewContent:'')}}">
               <div style="width:100%;position: relative;">
-                <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                     class="text-left">
+                <div  class="w-100 align-baselinetext-left" >
+                     
                   {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }}
                 </div>
               </div>

@@ -85,6 +85,8 @@ import { CounselDoc2BaseComponent } from './counsel-statistics/reports/counsel-d
 import { WorkServiceComponent } from './work-service/work-service.component';
 import { NewWorkModalComponent } from './work-service/new-work-modal/new-work-modal.component';
 import { ConditionModalComponent } from './counsel-statistics/reports/case-interview-report/condition-modal/condition-modal.component';
+// import { AddReferralFormComponent } from './shared-counsel-detail/interview-detail/add-referral-form/add-referral-form.component';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -134,7 +136,8 @@ import { ConditionModalComponent } from './counsel-statistics/reports/case-inter
     CounselDoc2BaseComponent,
     WorkServiceComponent,
     NewWorkModalComponent,
-    ConditionModalComponent
+    ConditionModalComponent,
+    // AddReferralFormComponent
   ],
   imports: [
     BrowserModule,
@@ -163,6 +166,7 @@ import { ConditionModalComponent } from './counsel-statistics/reports/case-inter
     MatProgressSpinnerModule,
     SharedModule,
     CaseModule,
+    MatBadgeModule
     
   ],
   providers: [ ],

@@ -91,7 +91,7 @@ export class CaseComponent implements OnInit {
     this.changeDisplay();
   }
 
-  // 選擇後改變顯示
+ /** 查看未結案或全部 */
   changeDisplay() {
     this.caseList.forEach(item => {
       item.isDisplay = false;

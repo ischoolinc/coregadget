@@ -130,10 +130,12 @@
                           </li>
                           <li data-title="記錄者" (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
                           <li data-title="內容說明" title="{{casseitem.Content}}" (click)="viewInterviewModal(casseitem)">
+                         
                             <div style="width:100%;position: relative;">
-                              <div
+                         <div class ="w-100 align-baseline text-left" >
+                              <!-- <div
                                 style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                                class="text-left">
+                                class="text-left"> -->
                                 {{ casseitem.Content }}
                               </div>
                             </div>

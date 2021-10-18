@@ -1,6 +1,6 @@
 <!-- 新增／修改輔導 Modal -->
 
-<div class="modal fade"
+<div *ngIf="true"  class="modal fade"
      id="addInterview"
      tabindex="-1"
      role="dialog"
@@ -29,7 +29,7 @@
                    class="col-form-label">
               <span *ngIf="!_CounselInterview.isSchoolYearHasValue"
                     class="text-samll text-danger">*</span>
-              學年度
+           <b>學年度</b>   
             </label>
             <input type="text"
                    class="form-control"
@@ -44,7 +44,7 @@
                    class="col-form-label">
               <span class="text-samll text-danger"
                     *ngIf="!_CounselInterview.isSemesterHasValue">*</span>
-              學期
+             <b>學期</b> 
             </label>
             <input type="text"
                    class="form-control"
@@ -58,7 +58,7 @@
                    class="col-form-label">
               <span class="text-samll text-danger"
                     *ngIf="!_CounselInterview.isOccurDateHasValue">*</span>
-              日期
+             <b> 日期</b>
             </label>
             <input type="date"
                    class="form-control"
@@ -69,7 +69,9 @@
                    (ngModelChange)="_CounselInterview.checkValue()" />
           </div>
         </div>
-        <div class="form-group">
+        <div class="d-flex flex-row">
+<!--方式  -->
+        <div class="form-group ">
           <label class="col-form-label">
             <span class="text-samll text-danger"
                   *ngIf="!_CounselInterview.isCounselTypeHasValue">*</span>  <b>方式</b>
@@ -108,7 +110,7 @@
             </ng-container>
           </div>
         </div>
-
+<!-- 對象 -->
         <div class="form-group">
           <label class="col-form-label">
             <span class="text-samll text-danger"
@@ -145,6 +147,18 @@
           </div>
         </div>
 
+<!-- 紀錄者 -->
+        <div class="form-group">
+          <label for="recorder"
+                 class="col-form-label">
+            <span class="text-samll text-danger"></span> <b>記錄者</b>
+          </label>
+          <label class="form-control"
+                 id="recorder">{{
+            _CounselInterview.AuthorName
+            }}</label>
+        </div>
+      </div>
         <div class="form-row">
           <!-- <div class="form-group col-md-6">
             <label for="interviewee"
@@ -160,7 +174,7 @@
                    [(ngModel)]="_CounselInterview.ContactName"
                    (keyup)="_CounselInterview.checkValue()" />
           </div> -->
-          <div class="form-group col-md-6">
+          <div class="form-group ">
             <div class="custom-control custom-checkbox">
               <input type="checkbox"
                      class="custom-control-input"
@@ -169,27 +183,18 @@
                      (keyup)="_CounselInterview.checkValue()"
                      [(ngModel)]="_CounselInterview.isPublic" />
               <label class="custom-control-label"
-                     for="isPublic">公開</label>
+                     for="isPublic">輔導資料公開給輔導室，以利銜接。</label>
             </div>
           </div>
 
-          <div class="form-group col-md-6">
-            <label for="recorder"
-                   class="col-form-label">
-              <span class="text-samll text-danger"></span> <b>記錄者</b>
-            </label>
-            <label class="form-control"
-                   id="recorder">{{
-              _CounselInterview.AuthorName
-              }}</label>
-          </div>
+       
         </div>
         <div class="form-group">
           <label for="contactMatter"
                  class="col-form-label">
             <span class="text-samll text-danger"
                   *ngIf="!_CounselInterview.isContactItemHasValue">*</span>
-            聯絡事項
+        <b>聯絡事項</b>    
           </label>
           <textarea class="form-control"
                     id="contactMatter"
@@ -203,7 +208,7 @@
                  class="col-form-label">
             <span class="text-samll text-danger"
                   *ngIf="!_CounselInterview.isContentHasValue">*</span>
-            輔導內容
+          <b>輔導內容</b>  
             <span class="text-muted">（會顯示於輔導記錄卡）</span>
           </label>
           <textarea class="form-control"
@@ -251,6 +256,21 @@
             <label class="custom-control-label"
                    for="referral">轉介輔導室</label>
           </div>
+          <!-- 新增轉介輔導室 -->
+<!-- 
+          <button type="button" class="btn btn-outline-primary">
+            <mat-icon 
+            class = " cuser"  
+            style ="font-size: 18px ;color :gray;"
+            aria-hidden="false" aria-label="Example home icon">
+            transfer_within_a_station
+           </mat-icon>
+           轉介輔導室
+           </button> -->
+          <div>
+
+          </div>
+
           <div class="form-group"
                *ngIf="_CounselInterview.isReferralValue">
             <label for="referralDescription"
@@ -281,3 +301,10 @@
     </div>
   </div>
 </div>
+
+
+
+
+<!--    proto 用 -->
+
+

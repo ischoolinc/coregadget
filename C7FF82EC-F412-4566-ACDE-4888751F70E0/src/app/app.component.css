@@ -1,3 +1,25 @@
 a{
   cursor: pointer; 
 }
+
+
+@keyframes mymove{
+  50% {
+    opacity: 1;
+    transition-property: opacity;
+    animation-duration: 0.15;
+  animation-timing-function:step-start;
+
+  } 
+  /* 50% {
+    opacity: 1;
+    transition-property: opacity;
+ 
+
+  }  */
+
+  100% {  
+    -moz-animation-duration: 1s;
+    opacity: 0;
+    transition-property: opacity;
+  }}

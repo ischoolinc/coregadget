@@ -19,6 +19,10 @@ import { SharedModule } from '../shared/shared.module';
 import { RenderModule } from '../render';
 import { SetCounselInterviewPrintItemComponent } from './set-counsel-interview-print-item/set-counsel-interview-print-item.component';
 import {MatIconModule} from '@angular/material/icon';
+import { AddReferralFormComponent } from './interview-detail/add-referral-form/add-referral-form.component';
+// import { AddReferralFormComponent } from './interview-detail/add-referral-form/add-referral-form.component';
+// import { SharedCounselDetailComponent } from './shared-counsel-detail.component';
+// import { AddReferralFormComponent } from './interview-detail/add-referral-form/add-referral-form.component';
 @NgModule({
   declarations: [
     CounselDetailComponent,
@@ -37,6 +41,8 @@ import {MatIconModule} from '@angular/material/icon';
     PsychologicalTestDetailComponent,
     SemesterScoreDetailComponent,
     SetCounselInterviewPrintItemComponent,
+    // SharedCounselDetailComponent,
+    AddReferralFormComponent,
   ],
   imports: [
     RouterModule,
@@ -60,6 +66,9 @@ import {MatIconModule} from '@angular/material/icon';
     DelInterviewModalComponent,
     PsychologicalTestDetailComponent,
     SemesterScoreDetailComponent,
+    AddReferralFormComponent,
+     
+
   ]
 })
 export class SharedCounselDetailModule { }

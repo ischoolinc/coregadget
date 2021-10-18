@@ -5,7 +5,7 @@
 }
 .hover-a:hover
 {
-   letter-spacing: 1.3px;
+   /* letter-spacing: 1.3px; */
    font-weight: bold;
    cursor: pointer;
    color :#94d0cc

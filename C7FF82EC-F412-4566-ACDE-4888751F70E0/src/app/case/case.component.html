@@ -171,9 +171,9 @@
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr " 
-              *ngFor="let item of caseList">
-            <ng-container *ngIf="item.isDisplay === true">
+          <ng-container *ngFor="let item of caseList">
+          <ol class="tr " *ngIf="item.isDisplay === true"       >
+         
               <li data-title="班級">{{ item.ClassName }}</li>
               <li data-title="座號">{{ item.SeatNo }}</li>
               <li data-title="姓名">{{ item.Name }}</li>
@@ -231,9 +231,10 @@
                 </mat-icon>
 
               </li>
-            </ng-container>
+      
 
           </ol>
+        </ng-container>
         </li>
       </ul>
     </div>

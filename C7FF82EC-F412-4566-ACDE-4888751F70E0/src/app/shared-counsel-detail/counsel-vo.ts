@@ -1,3 +1,5 @@
+// import { ReferralForm } from './counsel-vo';
+import { ReferralStudent } from './../referral/referral-student';
 // 輔導資料
 export class CounselInterview {
   constructor() { }
@@ -43,6 +45,7 @@ export class CounselInterview {
   _category: QOption[]; // 	類別
   // 是否可以看到
   isCanView: boolean = false;
+  ReferralForm?: ReferralForm; //轉介單資訊
 
   public loadCategoryTemplate() {
     let num: number = 1;
@@ -297,7 +300,7 @@ export class CounselInterview {
     } else {
       this.isCounselTypeOtherDisable = true;
     }
-   
+
   }
 
   // 設定訪談方式
@@ -392,6 +395,146 @@ export class CounselInterview {
   }
 }
 
+
+
+export interface IReferralForm {
+  homeStartTime: string;
+  homeEndTime: string;
+  ProblemExpectation: string;
+  Strategy: string;
+  RefInterviewId: string;
+  UID: string;
+}
+
+/** 轉介單內容 */
+export class ReferralForm {
+  constructor(refRerral: IReferralForm = undefined) {
+    if (refRerral) {
+      this.UID = refRerral.UID;
+      this.HomeTeacherStartDate = refRerral.homeStartTime;
+      this.HomeTeacherEndDate = refRerral.homeEndTime;
+      this.ProbblemAndExpectation = refRerral.ProblemExpectation;
+      this.Strategy = refRerral.Strategy;
+      this.InterViewID = refRerral.RefInterviewId;
+      // debugger 
+      // console.log(this.InterViewID)
+      this.loadStrategyTemplate(); //將題目字串轉成題目
+    }
+  }
+
+  // constructor( ){
+  // }
+  /**取得題目選項 */
+  getStrategys(): any[] {
+
+    let data = [
+      {
+        "answer_text": "與學生晤談%text1%次",
+        "answer_value": "",
+        "answer_martix": [],
+        "answer_complete": false,
+        "answer_checked": false
+      },
+      {
+        "answer_text": "與家長聯繫%text1%次",
+        "answer_value": "",
+        "answer_martix": [],
+        "answer_complete": false,
+        "answer_checked": false
+
+      },
+      {
+
+        "answer_text": "家訪%text1%次",
+        "answer_value": "",
+        "answer_martix": [],
+        "answer_complete": false,
+        "answer_checked": false
+
+      },
+      {
+        "answer_text": "其他(請條列說明)%text2%",
+        "answer_value": "",
+        "answer_martix": [],
+        "answer_complete": false,
+        "answer_checked": false
+      }
+
+    ];
+    return [].concat(data || []);
+  }
+
+  checkValue(event: any) {
+
+  }
+  /**取得目前題目格式 */
+  public useQuestionOptionTemplate() {
+    this.loadStrategyTemplate();
+  }
+
+
+  /** 轉換日期至字串格式 */
+  public loadStrategyTemplate() {
+    let num: number = 1;
+    this._stratgy = []; // 	個案類別
+    let Strategy;
+    if (!this.UID) {
+      Strategy = this.getStrategys();
+
+    } else {
+      Strategy = JSON.parse(this.Strategy);
+    }
+    for (let item of Strategy) {
+      let qo: QOption = new QOption();
+      qo.answer_code = `Strategy${num}`;
+      qo.answer_martix = item.answer_martix;
+      qo.answer_text = item.answer_text;
+      qo.answer_checked = item.answer_checked;
+      qo.answer_complete = item.answer_complete;
+      qo.answer_value = item.answer_value;
+      num += 1;
+      this._stratgy.push(qo);
+    }
+  }
+  /** 轉換日期格式*/
+  public parseDate(dt: Date) {
+    let y = dt.getFullYear();
+    let m = dt.getMonth() + 1;
+    let d = dt.getDate();
+    let mStr = "" + m;
+    let dStr = "" + d;
+    if (m < 10) {
+      mStr = "0" + m;
+    }
+
+    if (d < 10) dStr = "0" + d;
+
+    return `${y}-${mStr}-${dStr}`;
+  }
+
+  isSaveDisable: boolean = true; // 是否可以儲存
+  /** UID update OR insert 判斷用 */
+  UID: string;
+  /** 學生ID */
+  StudentID: string;
+  /** 教師ID */
+  TeacherID: string;
+  /** 轉介ID */
+  InterViewID: string;
+  /** 班導師介入 開始時間 */
+  HomeTeacherStartDate: string = "2021/09/19";
+  /** 班導師介入 結束時間 */
+  HomeTeacherEndDate: string = "2021";
+  /** 輔導策略 顯示端 */
+  _stratgy: QOption[]; // 顯示用 
+  /** 輔導策略 資料庫端 */
+  Strategy: string; // 存入資料庫格式
+  /** 問題與期待 */
+  ProbblemAndExpectation: string
+  /** 最後更新日期 */
+  LastUpdate: string;
+  AuthorName: string;
+}
 export class SemesterInfo {
   SchoolYear: number;
   Semester: number;
@@ -408,6 +551,7 @@ export class QOption {
 
   public setAnswerCheck() {
     this.answer_checked = !this.answer_checked;
+    console.log('sss', this);
   }
 }
 

@@ -22,9 +22,10 @@ export class NewWorkModalComponent implements OnInit {
     this.accessObjects =this.accessObjectStudent.concat(this.accessObjectOther);
   }
 
-  checkChange(){}
+  checkChange() {
 
 
+  }
 
  /** 設定受訪對象 */
  setAccessObject()

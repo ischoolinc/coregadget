@@ -8,6 +8,8 @@ import { CounselDetailComponent } from "../counsel-detail.component";
 import { DelInterviewModalComponent } from "./del-interview-modal/del-interview-modal.component";
 import { RoleService } from "../../role.service";
 import { GlobalService } from "../../global.service";
+import { AddReferralFormComponent } from "./add-referral-form/add-referral-form.component";
+import { CommunicationService } from "src/app/referral/service/communication.service";
 
 @Component({
   selector: "app-interview-detail",
@@ -21,15 +23,17 @@ export class InterviewDetailComponent implements OnInit {
   _StudentID: string = "";
   isLoading = false;
   isDeleteButtonDisable: boolean = true;
-
+  currentInterview: CounselInterview;
+  refferalNotDealCount :number ;
   public referralVisible: boolean = false;
 
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("viewInterview") _viewInterview: ViewInterviewModalComponent;
   @ViewChild("delInterview") _delInterview: DelInterviewModalComponent;
-
+  @ViewChild("referralForm") _referralForm: AddReferralFormComponent;
 
   constructor(
+    private communicationService: CommunicationService,
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     public roleService: RoleService,
@@ -58,6 +62,34 @@ export class InterviewDetailComponent implements OnInit {
     this.loadCounselInterview(
       this.counselDetailComponent.currentStudent.StudentID
     );
+  }
+
+  async onReferStateChange() {
+    await this.getRefList();
+  
+    this.communicationService.emitChange(this.refferalNotDealCount)
+
+
+  }
+
+  async getRefList() {
+    try {
+      let resp = await this.dsaService.send("GetReferralStudent", {
+        Request: {}
+      });
+      const refferals = [].concat(resp.ReferralStudent || [])
+      if (refferals.length > 0) {
+        refferals.forEach(x => {
+        })
+        let refNotDeal = refferals.filter(x => {
+          return x.ReferralStatus == "未處理"
+        })
+        this.refferalNotDealCount = refNotDeal.length
+        return this.refferalNotDealCount
+      }
+    } catch (ex) {
+      alert("取得轉借資料發生錯誤");
+    }
   }
 
   // 取得學生輔導資料
@@ -120,6 +152,7 @@ export class InterviewDetailComponent implements OnInit {
     $("#addInterview").on("hide.bs.modal", () => {
       if (!this._addInterview.isCancel) {
         // 重整資料
+        this.onReferStateChange();
         this.counselStudentService.reload();
         this.loadCounselInterview(this._StudentID);
       }
@@ -142,6 +175,7 @@ export class InterviewDetailComponent implements OnInit {
     $("#addInterview").on("hide.bs.modal", () => {
       if (!this._addInterview.isCancel) {
         // 重整資料
+        this.onReferStateChange();
         this.counselStudentService.reload();
         this.loadCounselInterview(this._StudentID);
       } else {
@@ -162,10 +196,29 @@ export class InterviewDetailComponent implements OnInit {
     $("#delInterview").on("hide.bs.modal", () => {
       if (!this._delInterview.isCancel) {
         // 重整資料
+        this.onReferStateChange();
         this.counselStudentService.reload();
         this.loadCounselInterview(this._StudentID);
       }
       $("#delInterview").off("hide.bs.modal");
+    });
+  }
+
+  // 轉介單 Jean8
+  async referralRromModal(counselView: CounselInterview) {
+
+
+     this._referralForm._CounselInterview =counselView ;
+
+    await this._referralForm.loadingInitInfo("");
+    $("#referralForm").modal("show");
+    // 關閉畫面
+    $("#referralForm").on("hide.bs.modal", () => {
+      // if (!this._delCaseInterview.isCancel) {
+      //   // 重整資料
+      //   this.loadData();
+      // }
+      $("#referralForm").off("hide.bs.modal");
     });
   }
 

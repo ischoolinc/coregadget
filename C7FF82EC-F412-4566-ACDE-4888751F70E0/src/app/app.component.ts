@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RoutesRecognized } from "@angular/router";
 import { RoleService } from "./role.service";
 import { GlobalService } from "./global.service";
 import { DsaService } from "./dsa.service";
+import { CommunicationService } from "./referral/service/communication.service";
 
 @Component({
   selector: "app-root",
@@ -11,7 +12,7 @@ import { DsaService } from "./dsa.service";
 })
 export class AppComponent implements OnInit {
 
-
+  public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
   public comprehensiveStr: string = "綜合紀錄表"
   public counselVisable: boolean = false;
@@ -27,10 +28,21 @@ export class AppComponent implements OnInit {
     private router: Router,
     public roleService: RoleService,
     public globalService: GlobalService,
-    private dsaService: DsaService
-  ) { }
+    private dsaService: DsaService,
+    private deetect: ChangeDetectorRef,
+    private communicationService: CommunicationService,
+  ) {
+    communicationService.changeEmitted$.subscribe(data => {
+      console.log("  this.refferalNotDealCount ",data)
+      this.refferalNotDealCount = data ;
+      deetect.detectChanges();
+    })
+
+
+   }
 
   async ngOnInit() {
+    console.log("123")
 
     // 預設功能畫面文字
     this.counselStudentStr = "輔導學生";
@@ -75,10 +87,34 @@ export class AppComponent implements OnInit {
       this.counselStudentStr = "學生資料";
       this.comprehensiveStr = "填報資料"
     }
+    if (gadget.params.system_counsel_position === 'referral') {
+      this.getRefList();
 
+    }
     //console.log(gadget.params.system_counsel_position);
   }
+  /** 取得轉借學生 */
+  async getRefList() {
+    try {
+      let resp = await this.dsaService.send("GetReferralStudent", {
+        Request: {}
+      });
+      const refferals = [].concat(resp.ReferralStudent || [])
+      if (refferals.length > 0) {
+        refferals.forEach(x => {
+        })
+        let refNotDeal = refferals.filter(x => {
+          return x.ReferralStatus == "未處理"
+        })
+        this.refferalNotDealCount = refNotDeal.length
+      }
+    } catch (ex) {
+      alert("取得轉借資料發生錯誤");
+    }
+  }
 
+
+  
   async GetMyCounselTeacherRole() {
     this.globalService.MyCounselTeacherRole = '';
     //  this.globalService.enableCase = false;
@@ -114,4 +150,8 @@ export class AppComponent implements OnInit {
       this._CurrentComponent = currentComponent;
     });
   }
+
+  
+
 }
+

@@ -9,7 +9,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"
-            id="grantLabel">編輯授理狀況</h5>
+            id="grantLabel">編輯授理狀況：</h5>
         <button type="button"
                 class="close"
                 data-dismiss="modal"
@@ -17,28 +17,31 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="row bg-light border p-3">
-          <div class="col-md-2 mb-3 font-weight-bold">班級座號</div>
-          <div class="col-md-4 mb-3">
+      <div class="modal-body w-100" style="width: 100% !important; padding: 0px !important;">
+        <div class="row bg-light p-4  ">
+          <div class="col-md-3 mb-3 font-weight-bold">　<b>班級座號：</b></div>
+          <div class="col-md-3 mb-3">
             {{ referralStudent.ClassName }} {{ referralStudent.SeatNo }}號
           </div>
-          <div class="col-md-2 mb-3 font-weight-bold">姓名(性別)</div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3 font-weight-bold"><b>姓名(性別)：</b></div>
+          <div class="col-md-3 mb-3">
             {{ referralStudent.Name }}({{ referralStudent.Gender }})
           </div>
-          <div class="col-md-2 mb-3 font-weight-bold">班導師</div>
-          <div class="col-md-4 mb-3">{{ referralStudent.TeacherName }}</div>
-          <div class="col-md-2 mb-3 font-weight-bold">轉介日期</div>
-          <div class="col-md-4 mb-3">{{ referralStudent.OccurDate }}</div>
-          <div class="col-md-2 font-weight-bold">轉介說明</div>
-          <div class="col-md-10"  style="white-space: pre-wrap;word-break: break-all;">{{ referralStudent.ReferralDesc }}</div>
+          <div class="col-md-3 mb-3 font-weight-bold"><b>班導師：</b></div>
+          <div class="col-md-3 mb-3">{{ referralStudent.TeacherName }}</div>
+          <div class="col-md-3 mb-3 font-weight-bold"><b>轉介日期：</b></div>
+          <div class="col-md-3 mb-3">{{ referralStudent.OccurDate }}</div>
+          <div class="col-md-12 font-weight-bold"><b>轉介說明：</b></div>
+          <div class="col-md-12"  style="white-space: pre-wrap;word-break: break-all;">{{ referralStudent.ReferralDesc }}</div>
         </div>
+
+
+        <div class="p-4">
         <div class="form-group">
           <label for="contactMatter"
                  class="col-form-label">
             <span class="text-samll text-danger"
-                  *ngIf="!isReferralReplyHasValue">*</span> 輔導室接受情形
+                  *ngIf="!isReferralReplyHasValue">*</span> <b>輔導室接受情形：</b>
           </label>
           <textarea class="form-control"
                     id="contactMatter"
@@ -51,7 +54,7 @@
         <div class="form-group">
           <label for="semester"
                  class="col-form-label">
-             授理狀況
+            <b>授理狀況：</b> 
           </label>
           <div>
             <div class="custom-control custom-radio custom-control-inline">
@@ -90,7 +93,8 @@
           <label for="interviewDate"
                  class="col-form-label">
             <span class="text-samll text-danger"
-                  *ngIf="!isReferralReplyDateHasValue">*</span> 授理日期
+                  *ngIf="!isReferralReplyDateHasValue">*</span> 
+                  <b>授理日期:</b>
           </label>
           <input type="date"
                  class="form-control"
@@ -104,7 +108,8 @@
           <label for="contactMatter"
                  class="col-form-label">
             <span class="text-samll text-danger"
-                  *ngIf="!isReferralReplyDescHasValue">*</span> 授理說明
+                  *ngIf="!isReferralReplyDescHasValue">*</span>
+                  <b>授理說明：</b> 
           </label>
           <textarea class="form-control"
                     id="contactMatter"
@@ -113,6 +118,8 @@
                     [(ngModel)]="ReferralReplyDesc"
                     (keyup)="checkValue()"></textarea>
         </div>
+      </div>
+
       </div>
       <div class="modal-footer">
         <button type="button"

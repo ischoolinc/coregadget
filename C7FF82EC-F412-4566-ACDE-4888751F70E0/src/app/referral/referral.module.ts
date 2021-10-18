@@ -8,6 +8,8 @@ import { ReferralDetailComponent } from './referral-detail/referral-detail.compo
 import { ReferralListComponent } from './referral-list/referral-list.component';
 import { CaseModule } from '../case/case.module';
 import { RefferralRoutingModule } from './referral-routing.module';
+// import { AddReferralFormComponent } from '../shared-counsel-detail/interview-detail/add-referral-form/add-referral-form.component';
+import { RenderModule } from '../render';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,7 @@ import { RefferralRoutingModule } from './referral-routing.module';
     GrantModalComponent,
     ReferralDetailComponent,
     ReferralListComponent,
+ 
   ],
   imports: [
     RouterModule,
@@ -22,6 +25,8 @@ import { RefferralRoutingModule } from './referral-routing.module';
     RefferralRoutingModule,
     SharedCounselDetailModule,
     CaseModule,
+    RenderModule
+    // SharedCounselDetailModule
   ]
 })
 export class ReferralModule { }

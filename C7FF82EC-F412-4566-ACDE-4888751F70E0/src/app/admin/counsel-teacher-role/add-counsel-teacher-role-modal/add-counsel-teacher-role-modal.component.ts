@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA ,Component, OnInit } from '@angular/core';
 import { TeacherCounselRole } from "../counsel-teacher-role-vo";
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';

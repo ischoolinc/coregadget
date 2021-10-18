@@ -277,3 +277,53 @@ ul.rwd-table .thead li {
 border :2px solid #eee
 
 }
+
+
+
+
+.modal-header {
+background: #e1f2ef !important;
+
+}
+
+.border-left-color{
+border-left:2px solid #94d0cc  ;
+
+}
+.custom-control-input:checked ~ .custom-control-label::after{
+
+    color :#FD6F96 !important
+}
+.custom-radio .custom-control-label::after {
+font-size: 16.5px !important;
+padding :2px;
+margin: 3px;
+
+
+}
+
+
+.custom-checkbox .custom-control-label::after {
+    font-size: 16.5px !important;
+    padding :2px;
+    margin: 3px;
+    
+    
+    }
+
+
+    .remind_point{
+
+        background: #e52143;
+        width:  7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-bottom: 7px;
+        margin-left: 2px;
+    }
+
+    .font_size_m {
+        font-size :11px !important
+
+    }

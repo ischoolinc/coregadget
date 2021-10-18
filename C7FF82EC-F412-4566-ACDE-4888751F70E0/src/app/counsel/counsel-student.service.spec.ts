@@ -6,7 +6,7 @@
 //   beforeEach(() => TestBed.configureTestingModule({}));
 
 //   it('should be created', () => {
-//     const service: CounselStudentService = TestBed.get(CounselStudentService);
+//     const service: CounselStuden3tService = TestBed.get(CounselStudentService);
 //     expect(service).toBeTruthy();
 //   });
 // });

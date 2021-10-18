@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { GrantModalComponent } from "../grant-modal/grant-modal.component";
 import { NewCaseModalComponent } from "../../case/new-case-modal/new-case-modal.component";
 import { DsaService } from "../../dsa.service";
@@ -8,6 +8,8 @@ import {
   ParamMap,
   Router,
 } from "@angular/router";
+import { AddReferralFormComponent } from "src/app/shared-counsel-detail/interview-detail/add-referral-form/add-referral-form.component";
+import { CommunicationService } from "../service/communication.service";
 
 @Component({
   selector: "app-referral-list",
@@ -17,7 +19,9 @@ import {
 export class ReferralListComponent implements OnInit {
   // 2019-03-15 和佳樺討論後，將未結案、已結案 改回原來三項：未處理、處理中、已處理
 
+  // @Output() onReferalStateChange =new EventEmitter<any>();
   isLoading: boolean = false;
+  refferalNotDealCount;
   public mod: string;
   public itemList: string[];
   public selectItem: string;
@@ -25,13 +29,45 @@ export class ReferralListComponent implements OnInit {
   currentReferralStudent: ReferralStudent;
   @ViewChild("grant_modal") grant_modal: GrantModalComponent;
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
+  @ViewChild("referralForm") _referralForm: AddReferralFormComponent;
   ReferralStudentList: ReferralStudent[];
 
   constructor(
+    private communicationService: CommunicationService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService
-  ) { }
+  ) {
+
+
+  }
+
+  async onReferStateChange() {
+    await this.getRefList();
+    this.communicationService.emitChange(this.refferalNotDealCount)
+
+
+  }
+
+  async getRefList() {
+    try {
+      let resp = await this.dsaService.send("GetReferralStudent", {
+        Request: {}
+      });
+      const refferals = [].concat(resp.ReferralStudent || [])
+      if (refferals.length > 0) {
+        refferals.forEach(x => {
+        })
+        let refNotDeal = refferals.filter(x => {
+          return x.ReferralStatus == "未處理"
+        })
+        this.refferalNotDealCount = refNotDeal.length
+        return this.refferalNotDealCount
+      }
+    } catch (ex) {
+      alert("取得轉借資料發生錯誤");
+    }
+  }
 
   async ngOnInit() {
     this.currentReferralStudent = new ReferralStudent();
@@ -52,7 +88,12 @@ export class ReferralListComponent implements OnInit {
   }
 
   setSelectItem(item: string) {
+
+
+
     this.selectItem = item;
+
+    //
     this.ReferralStudentList.forEach(data => {
       if (data.ReferralStatus === item) {
         data.isDisplay = true;
@@ -106,8 +147,27 @@ export class ReferralListComponent implements OnInit {
     });
   }
 
+  /** */
+  async referralRromModal(refStudent: ReferralStudent) {
+    this._referralForm.currentinterviewID = refStudent.UID;
+    await this._referralForm.loadingInitInfo("view");
+    $("#referralForm").modal("show");
+    // 關閉畫面
+    $("#referralForm").on("hide.bs.modal", () => {
+      // if (!this._delCaseInterview.isCancel) {
+      //   // 重整資料
+      //   this.loadData();
+      // }
+      $("#referralForm").off("hide.bs.modal");
+    });
+  }
+
+
   async loadData() {
     await this.GetReferralStudent();
+    // 同步通知上面
+    await this.onReferStateChange();
+
   }
 
   async GetReferralStudent() {

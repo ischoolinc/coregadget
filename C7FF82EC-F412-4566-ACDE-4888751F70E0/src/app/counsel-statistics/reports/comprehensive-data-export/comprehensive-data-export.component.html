@@ -19,7 +19,7 @@
   </button></div>
 <div class="container-xl mx-5 align-items-center" style="width: 95%;">
   <mat-tab-group dynamicHeight>
-    <mat-tab class="tabText" label="step1 基本選項 >">
+    <mat-tab class="tabText" label="step1 學年度學期 >">
       <div class="row">
         <div class="col-sm">
 
@@ -137,11 +137,10 @@
               </span>
               請點擊題目或標題。</b> <b class="my-3 " style=" font-size: 18px; color:#94d0cc  ; ">題數上限：10題 。</b> </span>
         </div>     
-        <mat-divider></mat-divider>
         <ng-container>
      
 
-          <div class="" *ngIf="this.GetQuestionSubjectMapValue().length>0; else tmpLoading">
+          <div style ="border:1.5px solid #e1e1e1"class="" *ngIf="this.GetQuestionSubjectMapValue().length>0; else tmpLoading">
             <ng-container *ngFor="let subject of this.GetQuestionSubjectMapValue() ">
               <div class=" mb-2 px-3 mt-2 questionSheet">
                 <h4 (click)="selectSubject(subject)" class="hover-a" [ngClass]="{'IsChecked':subject.IsChecked }">
@@ -162,13 +161,13 @@
                         
                         scope="col">
                       
-                          <span *ngIf="!query.ShowChecked" style="color:transparent" class="material-icons">
+                          <span *ngIf="!query.ShowChecked" style="color:transparent ;font-size: 9px;" class="material-icons">
                             check_circle_outline
                           </span>
 
                           <div   (click)="selectQuery(query)"  class="can_click ">
                           <span *ngIf="query.ShowChecked"   
-                            class=" material-icons posit"  style="color: #ccc">
+                            class=" material-icons posit"  style="color: #ccc ;font-size: 9px;">
                             check_circle_outline
                           </span>
                           <span  class ="hover-a" [ngClass]="{'IsChecked':query.IsChecked }">
@@ -183,7 +182,7 @@
                               <!-- <span class="ml-2 mr-3"></span> -->
 
                               <span *ngIf="questionText.QuestionText">
-                                <span *ngIf="!questionText.IsChecked" style="color:transparent"
+                                <span *ngIf="!questionText.IsChecked" style="color:transparent  ;font-size: 9px;"
                                 class="material-icons  posit">
                                 check_circle_outline
                               </span>
@@ -191,7 +190,7 @@
                                 
                               
                                 <div class ="can_click" style="display: inline;" (click)="selectQuestionText(questionText)" >
-                                  <span *ngIf="questionText.IsChecked" style="color: #ccc"
+                                  <span *ngIf="questionText.IsChecked" style="color: #ccc  ;font-size: 9px;"
                                   class="material-icons posit">
                                   check_circle_outline
                                 </span>
@@ -234,7 +233,7 @@
 
     </mat-tab>
 
-    s
+
   </mat-tab-group>
 
   <!-- 年級班級顯示section -->
