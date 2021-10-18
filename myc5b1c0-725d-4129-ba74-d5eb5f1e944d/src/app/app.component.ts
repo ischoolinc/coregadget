@@ -106,7 +106,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.semesterRowSource = await this.getAttendSemesters();
       this.semester.selected = this.getHeadSemester();
-      this.semesterChange(this.semester.selected);
+      await this.semesterChange(this.semester.selected);
 
       let dayOfWeek = dj().day(); // 0 ~ 6，0 是星期日
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
