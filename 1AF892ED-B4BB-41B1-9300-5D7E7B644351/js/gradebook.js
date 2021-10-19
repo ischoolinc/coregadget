@@ -1008,7 +1008,7 @@
                         var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
 
                         // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
-                        var score = (ps == '' && cs == '') ? '' : add(+ps, +cs);
+                        var score = (ps === '' && cs === '') ? '' : add(+ps, +cs);
                         $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
@@ -1054,7 +1054,6 @@
          * 儲存學期成績(課程成績) SetCourseSemesterScore
          */
         $scope.saveAll = function () {
-            /**log用 字串*/
 
             // 儲存定期評量成績
             var SetCourseExamScoreWithExtension = function () {
@@ -2145,7 +2144,7 @@
                                         var cs = stuRec['Exam' + examRec.Group.ExamID + 'CScore'];
                                         var ps = stuRec['Exam' + examRec.Group.ExamID + 'PScore'];
                                         // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
-                                        var score = (ps == '' && cs == '') ? '' : add(+ps, +cs);
+                                        var score = (ps === '' && cs === '') ? '' : add(+ps, +cs);
                                         // 更新試卷成績：試卷成績 = 小考結算成績
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.Group.ExamID];
                                         // 更新定期評量成績：定期評量成績 = 讀卡 + 試卷
