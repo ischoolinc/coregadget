@@ -1160,7 +1160,7 @@
                         </Request>`,
                             result: function (response, error, http) {
                                 if (error !== null) {
-                                    alert(error);
+                                    alert("log發生錯誤 :[001]");
                                 } else {
                                     console.log('成功輸入!');
                                 }
@@ -1226,7 +1226,7 @@
                         </Request>`,
                             result: function (response, error, http) {
                                 if (error !== null) {
-                                    alert(error);
+                                    alert("log發生錯誤[004]");
                                 } else {
                                     console.log('成功輸入!');
                                 }
@@ -1370,7 +1370,7 @@
             </Request>`,
                 result: function (response, error, http) {
                     if (error !== null) {
-                        alert(error);
+                        alert("log發生錯誤[002]");
                     } else {
                         console.log('成功輸入!');
                     }
@@ -1596,7 +1596,7 @@
                 </Request>`,
                     result: function (response, error, http) {
                         if (error !== null) {
-                            alert(error);
+                            alert("log發生錯誤:[003]");
                         } else {
                             console.log('成功輸入!');
                         }
@@ -1941,6 +1941,7 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
+                         
                                 importProcess.ParseString = importProcess.ParseString || '';
                                 importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
@@ -2037,9 +2038,9 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
-                               
+                           
                                 importProcess.ParseString = importProcess.ParseString || '';
-                                importProcess.Values = importProcess.ParseString.split("\n");
+                                importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
                                 for (var i = 0; i < importProcess.ParseValues.length; i++) {
                                     var flag = false;
