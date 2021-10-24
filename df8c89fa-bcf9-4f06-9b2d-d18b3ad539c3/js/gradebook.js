@@ -959,11 +959,16 @@
         $scope.submitGrade = function (matchNext) {
             if ($scope.current.mode == '成績管理') {
                 $scope.current.Student[$scope.current.Exam.ExamID] = $scope.current.Value;
+              //  console.log("current.templare",$scope.current.template)//current Template 
                 if ($scope.current.template.isSubScoreMode) {
                     var ps = $scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
                     var cs = $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
-                    if($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID]||$scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID]){ // 如果(讀卡系統)試卷成績不是NULL 才要結算
+                    if($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] || $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID]){ // 如果(讀卡系統)試卷成績不是NULL 才要結算
                        $scope.current.Student['Score_' + $scope.current.Exam.TemplateID] = ps + cs;
+                    }
+                    if(!$scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] && !$scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID])// 如果(讀卡系統)試卷成績不是NULL 才要結算
+                    { 
+                       $scope.current.Student['Score_' + $scope.current.Exam.TemplateID] = "";
                     }
                     
                 }
