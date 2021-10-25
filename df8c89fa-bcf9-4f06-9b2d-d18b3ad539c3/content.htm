@@ -81,7 +81,7 @@
     <div ng-if="haveNoCourse"
          style="position:absolute;top:50%;left:50%;margin-top:-20px;margin-left:-50px;">本學期沒有設定任何課程，請洽教務處行政人員</div>
 
-    <div id="gadget" class="my-page" >
+    <div id="gadget" class="my-page" style="min-height:660px ;height:100%;" >
         <h1 class="hidden-xs">{{current.mode}}</h1>
          <!--按鈕列-->
         <div>
@@ -218,7 +218,7 @@
             <span ng-show="!current.template.InputStartTime && !current.template.InputEndTime">未開放</span>
         </div>
         <!--資料表-->
-        <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="margin-top:10px;">
+        <div ng-if="examList.length > 0 && studentList.length > 0" class="hidden-xs" style="min-height :600px ;margin-top:10px;">
             <div style="position:relative;float:right;width:260px;">
                 <div id="scoreContainer">
                     <!-- 成績輸入 -->
@@ -657,20 +657,25 @@
                                 <div ng-repeat="stuRec in studentList"
                                      ng-if="$index < studentList.length*col/4 && $index >= studentList.length*(col-1)/4">
                                     <div class="importStudentPreview"
-                                         style="display:flex">
-                                        <span class="studentInfo">
+                                         style="">
+                                        <span class="studentInfo " >
                                             <span ng-if="stuRec.SeatNo"
                                                   style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                            <span>{{stuRec.StudentName}}</span>
+                                            <span>{{stuRec.StudentName}} </span>
                                         </span>
-                                        <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
-                                             class="pull-right label label-danger"
-                                             style="font-size:inherit;">錯誤</div>
-                                        <div ng-if="importTarget.ParseValues[$index]===''"
-                                             class="pull-right text-danger">--</div>
-                                        <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
-                                             class="pull-right"
-                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
+                                        
+                                        <span   >
+                                            <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
+                                            class="pull-right  label label-danger"
+                                            style="font-size:inherit;">錯誤</div>
+                                       <div ng-if="importTarget.ParseValues[$index]===''"
+                                            class="pull-right text-danger">--</div>
+                                       <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
+                                            class="pull-right"
+                                        
+                                            score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
+                                        </span>
+                  
                                     </div>
                                 </div>
                             </div>
@@ -684,7 +689,7 @@
                                         <span class="studentInfo">
                                             <span ng-if="stuRec.SeatNo"
                                                   style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                            <span>{{stuRec.StudentName}}</span>
+                                            <span>{{stuRec.StudentName}} SS</span>
                                         </span>
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
@@ -707,7 +712,7 @@
                                         <span class="studentInfo">
                                             <span ng-if="stuRec.SeatNo"
                                                   style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                            <span>{{stuRec.StudentName}}</span>
+                                            <span class ="ml-3">{{stuRec.StudentName}}DD</span>
                                         </span>
                                         <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
