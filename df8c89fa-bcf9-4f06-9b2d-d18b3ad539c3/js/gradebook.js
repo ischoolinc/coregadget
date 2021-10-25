@@ -964,9 +964,10 @@
                     var cs = $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
 
  
-                    if($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID]!=="" || $scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID]!=="")
+                    if($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID]!=="" || $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID]!=="")
                     {
-                        if ($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] == "缺") //如果試卷填寫為缺
+
+                        if ($scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] == "缺" ||$scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID] == "") //如果試卷填寫為缺
                         {
                             if($scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID]!="")
                             {
@@ -1424,17 +1425,13 @@
                             // todo 
                             // 匯入試卷成績 更新定期評量成績
                             if ($scope.current.template.isSubScoreMode && exam.Name === '試卷') {
-                                console.log('  $scope.studentList',  $scope.studentList)
-                                debugger
+                 
                                 $scope.studentList.forEach(function (stuRec) {
-                                    if( stuRec['Score_PS_' + $scope.current.Exam.TemplateID]  =='--')
-                                    {
-debugger
-                                    }
+
                                     var ps = stuRec['Score_PS_' + $scope.current.Exam.TemplateID] * 1;
                                     var cs = stuRec['Score_CS_' + $scope.current.Exam.TemplateID] * 1;
 
-                                   if(stuRec['Score_PS_' + $scope.current.Exam.TemplateID]!=="" || $scope.current.Student['Score_PS_' + $scope.current.Exam.TemplateID]!=="")
+                                   if(stuRec['Score_PS_' + $scope.current.Exam.TemplateID]!=="" || $scope.current.Student['Score_CS_' + $scope.current.Exam.TemplateID]!=="")
                                    {
                                         if (stuRec['Score_PS_' + $scope.current.Exam.TemplateID] == "缺"||stuRec['Score_PS_' + $scope.current.Exam.TemplateID] == "") //如果試卷填寫為缺
                                         {
@@ -2341,7 +2338,7 @@ debugger
 
         // 找出符合規則的字串，將文字代碼取代成文字
         $scope.codeConvertText = function (value) {
-            debugger
+ 
             const re = new RegExp(/([\d\w]+)/, 'g');
             return (value || '').replace(re, function (match, g1) { return $scope.examTextList[g1] || g1 });
         };
