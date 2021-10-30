@@ -9,10 +9,10 @@
     <script src="js/gadget.js"></script>
     <script>
         init({
-           application: "demo.h.beibei.lai",
+        //    application: "demo.h.beibei.lai",
         // application: "demo.h.vicky.chang",
         // application: "dev.sh_d",
-        // application: "demo.h.vicky.chang",
+        application: "demo.h.cynthia.chen",
         // application: "demo.h.beibei.lai",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
@@ -25,8 +25,7 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: '',
-                password: ''
+  
             }
         });
     </script>
@@ -458,7 +457,7 @@
                                 </div>
                                 <!--只有再點選學期成績才顯示-->
                                 <div ng-if="current.Course.InputStartTime && current.Exam.ExamID =='學期成績' "
-                                     style="">
+                                     style = "">
                                     <small class="text-danger"
                                            style="width: 260px;">
                                      <b>學期成績輸入開放時間:</b>
@@ -650,7 +649,7 @@
                             <li>使用"解析"按鈕，進行解析</li>
                             <li>預覽資料確認成績正確</li>
                             <li>
-                                <span>使用"匯入"按鈕，進行匯入</span>
+                                <span>使用"匯入"按鈕，進行匯入!</span>
                                 <ul>
                                     <li class="text-danger">如果輸入資料有錯誤，將無法匯入</li>
                                 </ul>

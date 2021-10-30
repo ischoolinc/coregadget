@@ -1008,7 +1008,7 @@
                         var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
 
                         // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
-                        var score = (ps == '' && cs == '') ? '' : add(+ps, +cs);
+                        var score = (ps === '' && cs === '') ? '' : add(+ps, +cs);
                         $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
@@ -1054,7 +1054,6 @@
          * 儲存學期成績(課程成績) SetCourseSemesterScore
          */
         $scope.saveAll = function () {
-            /**log用 字串*/
 
             // 儲存定期評量成績
             var SetCourseExamScoreWithExtension = function () {
@@ -1161,7 +1160,7 @@
                         </Request>`,
                             result: function (response, error, http) {
                                 if (error !== null) {
-                                    alert(error);
+                                    alert("log發生錯誤 :[001]");
                                 } else {
                                     console.log('成功輸入!');
                                 }
@@ -1227,7 +1226,7 @@
                         </Request>`,
                             result: function (response, error, http) {
                                 if (error !== null) {
-                                    alert(error);
+                                    alert("log發生錯誤[004]");
                                 } else {
                                     console.log('成功輸入!');
                                 }
@@ -1371,7 +1370,7 @@
             </Request>`,
                 result: function (response, error, http) {
                     if (error !== null) {
-                        alert(error);
+                        alert("log發生錯誤[002]");
                     } else {
                         console.log('成功輸入!');
                     }
@@ -1597,7 +1596,7 @@
                 </Request>`,
                     result: function (response, error, http) {
                         if (error !== null) {
-                            alert(error);
+                            alert("log發生錯誤:[003]");
                         } else {
                             console.log('成功輸入!');
                         }
@@ -1942,6 +1941,7 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
+                         
                                 importProcess.ParseString = importProcess.ParseString || '';
                                 importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
@@ -2038,9 +2038,9 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
-                               
+                           
                                 importProcess.ParseString = importProcess.ParseString || '';
-                                importProcess.Values = importProcess.ParseString.split("\n");
+                                importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
                                 for (var i = 0; i < importProcess.ParseValues.length; i++) {
                                     var flag = false;
@@ -2145,7 +2145,7 @@
                                         var cs = stuRec['Exam' + examRec.Group.ExamID + 'CScore'];
                                         var ps = stuRec['Exam' + examRec.Group.ExamID + 'PScore'];
                                         // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
-                                        var score = (ps == '' && cs == '') ? '' : add(+ps, +cs);
+                                        var score = (ps === '' && cs === '') ? '' : add(+ps, +cs);
                                         // 更新試卷成績：試卷成績 = 小考結算成績
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.Group.ExamID];
                                         // 更新定期評量成績：定期評量成績 = 讀卡 + 試卷
