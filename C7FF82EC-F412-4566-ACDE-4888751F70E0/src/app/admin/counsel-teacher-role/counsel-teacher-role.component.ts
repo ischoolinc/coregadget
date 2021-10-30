@@ -44,6 +44,8 @@ export class CounselTeacherRoleComponent implements OnInit {
     this.counselRole.push('專任輔導');
     this.counselRole.push('兼任輔導');
     this.counselRole.push('認輔老師');
+    // 根據華商需求調整 
+    this.counselRole.push('校外心理師');
 
     this.loadData();
   }

@@ -126,7 +126,7 @@ export class AppComponent implements OnInit {
       this.globalService.MyCounselTeacherRole = TeacherRole.Role;
     });
 
-    if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師') {
+    if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師' && this.globalService.MyCounselTeacherRole != '校外心理師') {
       this.globalService.enableCase = true;
     } else
       this.globalService.enableCase = false;

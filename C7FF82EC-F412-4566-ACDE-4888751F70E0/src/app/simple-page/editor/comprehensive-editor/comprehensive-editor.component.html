@@ -39,7 +39,7 @@
                         <strong class="text-danger position-absolute"
                                 style="margin-left: -7px;margin-top: -7px;"
                                 *ngIf="query.ShowMark">*</strong>
-                        <span>{{query.Query}}</span></label>
+                        <span >{{query.Query}}</span></label>
                     </div>
                   </td>
                   <td class="text-left"
@@ -84,7 +84,7 @@
                                      [attr.id]="option.AnswerID"
                                      [checked]="option.AnswerChecked"
                                      (click)="option.change()" />
-                              <label class="custom-control-label"
+                              <label class="custom-control-label com-view-third-title"
                                      for="{{option.AnswerID}}">
                                 <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                               </label>
@@ -120,7 +120,7 @@
                                 </ng-template>
                               </ng-container>
                               <ng-template #normalPart>
-                                <span [ngStyle]="{'padding-top': option.IsTextArea?'1px':''}">{{optionPart}}</span>
+                                <span class="com-view-option" [ngStyle]="{'padding-top': option.IsTextArea?'1px':''}">{{optionPart}}</span>
                               </ng-template>
                             </ng-container>
                           </ng-template>
@@ -145,7 +145,7 @@
   <div>{{ sortingTitle }}</div>
   <div cdkDropList class="example-list" [cdkDropListData]="sortingItems" (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let item of sortingItems" cdkDrag>
-      {{ sortingType == "TEXT" ? item.Text : item.OptionText }}
+      {{ sortingType == "TEXT" ? item.Text : item.OptionText }} 99
     </div>
   </div>
 </div>

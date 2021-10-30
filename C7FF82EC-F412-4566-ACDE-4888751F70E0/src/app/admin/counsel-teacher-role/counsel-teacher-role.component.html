@@ -1,19 +1,26 @@
 <div *ngIf="!isLoading && adminComponent.isRoleEnable; else tmpLoading">
   <div class="tab-content">
     <div class="d-flex">
-      <button class="btn btn-info ml-auto btn_bul_rad"
-              data-toggle="modal"
-              data-backdrop="static"
-              (click)="Add()">
-        <i class="material-icons">add</i> 新增
-      </button>
+
     </div>
     <ul class="rwd-table">
       <li class="thead">
         <ol class="tr">
           <li class="sticky-top">{{teacherTypeStr}}</li>
           <li class="sticky-top">教師姓名</li>
-          <li class="sticky-top"></li>
+          <li class="sticky-top">       <button class="btn btn-info ml-auto btn_bul_rad pin"
+            style="
+          position: relative;
+          display: block;
+          top: 5%;
+          right: 11px;
+          z-index: 100;
+            "
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    (click)="Add()">
+              <i class="material-icons">add</i> 新增
+            </button></li>
         </ol>
       </li>
       <li class="tbody">
@@ -22,12 +29,21 @@
           <li data-title="身分">{{ item.Role }}</li>
           <li data-title="姓名">{{ item.TeacherName }}</li>
           <li data-title="刪除">
-            <button class="btn btn-danger ml-auto"
+            <!-- <button class="btn btn-danger ml-auto"
                     data-toggle="modal"
                     data-backdrop="static"
                     (click)="delete(item)">
               刪除
-            </button>
+            </button> -->
+            
+            <mat-icon class=""
+            aria-hidden="false" 
+            aria-label="Example home icon" 
+            [ngClass] ="false?'word_gray':'word_red'"
+              
+            (click)="delete(item)">
+            delete_forever
+  </mat-icon>
           </li>
 
         </ol>

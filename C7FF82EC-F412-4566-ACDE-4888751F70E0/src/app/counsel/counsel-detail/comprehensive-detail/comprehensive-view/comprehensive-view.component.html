@@ -2,19 +2,26 @@
 <div *ngIf="!isLoading; else tmpLoading">
   <ng-container *ngFor="let subject of fillInData">
     <div class="card mb-2">
-      <h4 class="m-2">{{subject.Subject}}</h4>
+      <!-- class="align-middle" -->
+      <div class="com-view-first-title align-middle">{{subject.Subject}}</div>
       <table class="table table-sm table-bordered">
         <ng-container *ngFor="let group of subject.QuestionGroup">
           <tr>
-            <th colspan="2"
-                class=" text-left">{{group.Group}}</th>
+            <th *ngIf="group.Group" colspan="2"
+                class=" text-left  ">
+                <div class ="com-view-second-title">
+                  {{group.Group}} 
+                </div>
+               </th>
           </tr>
           <ng-container *ngFor="let query of group.QuestionQuery">
             <tr>
               <td class="text-left pl-4"
                   style="width: 180px"
                   scope="col">
-                {{query.Query}}
+                  <div class ="com-view-third-title">
+                    {{query.Query}}
+                  </div>
               </td>
               <td class="text-left"
                   scope="col">
@@ -23,14 +30,14 @@
                     <span *ngIf="questionTextIndex > 0"
                           class="ml-2 mr-3">;</span>
                     <span *ngIf="questionText.Text">
-                      <span>{{questionText.Text}}</span>
+                      <span class="com-view-third-title">{{questionText.Text}} </span>
                       <span class="ml-1 mr-2">:</span>
                     </span>
                     <span *ngIf="!questionText.HasValue"
                           class="text-muted">未填寫</span>
                     <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
                       <span *ngIf="optionIndex > 0">、</span>
-                      <span style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
+                      <span  style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
                     </ng-container>
                   </span>
                   <!-- <pre>{{questionText | json}}</pre> -->

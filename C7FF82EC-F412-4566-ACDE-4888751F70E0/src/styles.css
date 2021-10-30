@@ -46,15 +46,16 @@ cursor: pointer;
 }
 
 .btn_bul_rad{
-    border-radius:  10px !important;
+    border-radius:  50px !important;
     background:#4da6ff !important;
     font-size: 15px;
+
  
    
  }
  
  .btn_red_rad{
-    border-radius:  10px;
+    border-radius:  50px;
     background: #ff4d4d !important ;
     font-size: 15px;
   
@@ -120,20 +121,37 @@ cursor: pointer;
  ul.rwd-table ol:nth-child(even) {
 	/* background: #f5f5f5; */
 	/* background : #f2f4c3  !important; */
-	background : #94d0cc45  !important;  
-	/* background : #aec49f  !important;  #cfdac8  */
-
-	/* background : #d4faf8  !important;   */   
-
-    /* e4efe7 f2f4c3  d2e69c d5ecc2 91c788 96bb7c beca5c eff8ff     aee6e6 adb36e cee397    bbd196*/
-    
+	background : #c1dad845  !important;  
+    border :none!important;  
+    cursor: pointer;
+}
+ul.rwd-table ol:nth-child(odd) {
+	/* background: #f5f5f5; */
+	/* background : #f2f4c3  !important; */
+	/* background : #94d0cc45  !important;   */
+    border :none!important;  
     cursor: pointer;
 }
 ul.rwd-table ol:nth-child(even):hover{
-    color :black;
-    font-weight: 200 !important;
+    background: #f5f5f5 !important;
+    /* border-left:  solid 2px rgb(115, 146, 185) !important; */
+    
+    /* font-weight: 200 !important; */
 }
 
+ul.rwd-table ol:nth-child(odd):hover{
+
+    background: #f5f5f5 !important;
+    /* border-left:  2px solid  rgb(115, 146, 185) !important; */
+
+    /* font-weight: 200 !important; */
+}
+
+
+ul.rwd-table .thead li, ul.rwd-table .tr li{
+    border :none!important;  
+    border-bottom: 1px solid gray;
+}
 
 .main-header{
     color :#2b3240  !important;
@@ -155,15 +173,15 @@ ul.rwd-table ol:nth-child(even):hover{
 }
 
 .btn-deep{
-    font-size: 17px !important ;
+    font-size: 15px !important ;
     background:  #505d75 !important ;
-    border-radius: 5px !important;
+    border-radius: 50px !important;
     color :white !important;
 
 }
 
 ul.rwd-table .tr li.sticky-top {
-
+    border :none !important;
     background:  #94d0cc !important  ;
     color :#3e495f ;
     font-size: 16px;
@@ -186,11 +204,19 @@ ul.rwd-table .thead li {
     background: #94d0cc17 !important;
 
 }
-
+/* 
 .card {
     transition: none !important;
     box-shadow: none !important; 
     border :2px solid #00000024!important
+} */
+
+.card {
+    box-shadow: none !important; 
+    transition: none !important;
+    border :1.5px solid #00000024!important
+    /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important  ; */
+    /* border-bottom :1px solid gray !important */
 }
 
 
@@ -233,8 +259,7 @@ ul.rwd-table .thead li {
     font-size: 17.5px;
 }
 
-.base-class-header 
-{
+.base-class-header {
     padding-left: 10px;
     /* background: #f5fbfa; */
     border-bottom: 2px solid #94d0cc;
@@ -243,8 +268,7 @@ ul.rwd-table .thead li {
 }
 
 
-.sm-title
- {
+.sm-title {
     padding-left: 10px;
     font-size: 15.7px;
     margin-bottom: 6px;
@@ -327,3 +351,56 @@ margin: 3px;
         font-size :11px !important
 
     }
+
+
+    .com-view-first-title {
+        background: #E4F1EF;
+        color:#3C4F81;
+         font-family: PingFang TC;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 28px;
+        margin: 0px !important ;
+        height: 52px;
+        letter-spacing: 0.05em;
+        padding-top : 13px;
+        border: #E4F1EF  2px;
+        padding-left: 10px;
+
+    }
+
+.com-view-second-title{
+    font-family: PingFang TC;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 17px;
+    line-height: 20px;
+    color:#3C4F81;
+    border-left: 2px solid #a1a9bd;
+    padding-left: 10px;
+
+}
+
+
+.com-view-third-title{
+    font-family: PingFang TC;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color:#3C4F81;
+    /* border-left: 2px solid #a1a9bd; */
+    padding-left: 15px;
+
+}
+.com-view-option{
+    font-family: PingFang TC;
+    font-size: 16px;
+    line-height: 20px;
+    color:#3C4F81;
+}
+ul.rwd-table{
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.07) !important;
+}
