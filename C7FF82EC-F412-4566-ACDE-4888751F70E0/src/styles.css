@@ -42,14 +42,16 @@ cursor: pointer;
 
 .font_weight{
 
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .btn_bul_rad{
     border-radius:  50px !important;
-    background:#4da6ff !important;
+    background:white !important;
     font-size: 15px;
-
+    border: 2px solid #2F86A6 !important;
+    color :#2F86A6 !important;
+    box-shadow: none !important;
  
    
  }
@@ -166,7 +168,7 @@ ul.rwd-table .thead li, ul.rwd-table .tr li{
     /* background-color: #8cb1ff; */
     border: 2.5px solid #5db39f52 !important;
     box-shadow: none !important;
-    border-radius: 5px !important;
+    border-radius: 50px !important;
     color: #3e495f !important;
     font-size: 16px !important;
     background: white  !important;
@@ -200,10 +202,13 @@ ul.rwd-table .thead li {
 .nav-tabs .nav-link.active{
 
     color: #2e334a !important;
-    font-size: 18px !important;
+    font-size: 16px !important;
     background: #94d0cc17 !important;
 
 }
+
+
+
 /* 
 .card {
     transition: none !important;
@@ -257,6 +262,12 @@ ul.rwd-table .thead li {
     color: #000000de;
     font-weight: 900;
     font-size: 17.5px;
+    /* box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.07) !important; */
+    
+}
+
+.list-group-item:hover{
+    background: #e1f2ef !important;
 }
 
 .base-class-header {
@@ -269,9 +280,14 @@ ul.rwd-table .thead li {
 
 
 .sm-title {
-    padding-left: 10px;
+    padding: 10px;
     font-size: 15.7px;
     margin-bottom: 6px;
+    background-color:#e1f2ef ;
+    display: inline;
+    width: auto;
+    border-radius: 2px 2px 0px  0px;
+    /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); */
  }
 
 
@@ -293,7 +309,7 @@ ul.rwd-table .thead li {
     background-color: #94d0cc !important;
     color: #464d59 !important;
     border: 1.5px solid #94d0cc !important;
-    border-radius: 3px !important;
+    border-radius: 50px !important;
     box-shadow: none !important ;
 }
 
@@ -375,7 +391,7 @@ margin: 3px;
     font-style: normal;
     font-weight: 800;
     font-size: 17px;
-    line-height: 20px;
+    line-height: 26px;
     color:#3C4F81;
     border-left: 2px solid #a1a9bd;
     padding-left: 10px;
@@ -403,4 +419,129 @@ margin: 3px;
 ul.rwd-table{
 
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.07) !important;
+}
+.list-group-item 
+{
+/* background: green !important; */
+box-shadow: none !important ;
+/* border-right: 1px solid rgb(233, 232, 232)  !important ; */
+border-radius: 0px  30px 30px 0px !important;
+background-color: transparent !important;
+
+}
+.list-group{
+    border-radius: 0px  30px 30px 0px !important;
+background-color: #f5f5f563 !important;
+}
+.nav-list
+{
+   
+}
+
+.right-section{
+
+    border-radius: 5px !important;
+    background-color: #f5f5f563 !important; 
+    margin-top: 0px !important;
+}
+.left-second{
+    margin: 16px  !important;
+    border-radius: 5px !important;
+    background-color: white !important; 
+    border: none !important;
+    
+}
+
+
+.all-class-select-section {
+    background: #D2E6E0;
+    border: 1px solid #D2E6E0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-family: SF Pro Display;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    /* identical to box height, or 150% */
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.374px;
+    color: #3C4F81;
+}
+
+
+
+.grade-select-section{
+    /* background: #FFFFFF; */
+    border: 1px solid #E0E0E0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    background: #F0F4F3;
+} 
+
+.class-select-section {
+
+/* BG */
+height: 42px;
+width: auto !important;
+min-width: 120px;
+background: #FFFFFF;
+/* Secondary 1 */
+
+border: 2px solid #5EC1C7;
+
+border-radius: 10px;
+font-family: SF Pro Display;
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height, or 150% */
+margin: 9px ;
+display: flex;
+align-items: center;
+letter-spacing: 0.374px;
+
+/* Secondary 1 */
+
+color: #5EC1C7;
+cursor: pointer;
+text-align: center !important;
+padding-left: 20px;
+padding-right: 20px;
+
+}
+.class-select-section-selected{
+        height: 42px;
+        width: auto;
+        min-width: 120px;
+        background: #5EC1C7;
+        /* Secondary 1 */
+
+        border: 2px solid #5EC1C7;
+      
+        border-radius: 10px;
+        font-family: SF Pro Display;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
+        /* identical to box height, or 150% */
+        margin: 9px ;
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.374px;
+
+        /* Secondary 1 */
+
+        color: white;
+        cursor: pointer;
+        text-align: center !important;
+        padding-left: 20px;
+        padding-right: 20px;
 }

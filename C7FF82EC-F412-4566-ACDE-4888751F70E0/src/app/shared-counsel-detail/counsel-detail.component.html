@@ -100,40 +100,40 @@
                 [ngClass]="{ 'disabled': !_interviewEnable }">
                 學期成績
               </a>
-              
+              <div class="list-group-item list-group-item-action  cuser " *ngIf="_interviewEnable"  data-toggle="dropdown">
+                <a class=" cuser  w-100" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false"> 
+                   <mat-icon style="color: gray;">
+                 print
+                  </mat-icon>  <span> 列印</span></a>
+                <div class="dropdown-menu">
+                  <ng-container *ngIf="printDocument && printDocument.length">
+                    <ng-container *ngFor="let doc of printDocument">
+                      <a class="dropdown-item" target="_blank" (click)='openWindow("A表",doc)'>
+                        {{doc.Name}}&nbsp;(&nbsp;{{doc.DocumentName}}&nbsp;)
+                      </a>
+                    </ng-container>
+    
+                  </ng-container>
+                  <ng-container *ngIf="counselVisible === true">
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" target="_blank" (click)='openWindow("B表")'>
+                      輔導紀錄表B表 ( 輔導紀錄表 )
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="setCounselPrintItemVisible
+             === true">
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" (click)="setCounselPrintItem(currentStudent.StudentID)">
+                      個人輔導紀錄
+                    </a>
+                  </ng-container>
+                </div>
+              </div>
             </ng-container>
           </div>
           <!-- 列印 -->
-          <div class="list-group-item list-group-item-action  cuser " *ngIf="_interviewEnable"  data-toggle="dropdown">
-            <a class=" cuser  w-100" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false"> 
-               <mat-icon style="color: gray;">
-             print
-              </mat-icon>  <span> 列印</span></a>
-            <div class="dropdown-menu">
-              <ng-container *ngIf="printDocument && printDocument.length">
-                <ng-container *ngFor="let doc of printDocument">
-                  <a class="dropdown-item" target="_blank" (click)='openWindow("A表",doc)'>
-                    {{doc.Name}}&nbsp;(&nbsp;{{doc.DocumentName}}&nbsp;)
-                  </a>
-                </ng-container>
-
-              </ng-container>
-              <ng-container *ngIf="counselVisible === true">
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" target="_blank" (click)='openWindow("B表")'>
-                  輔導紀錄表B表 ( 輔導紀錄表 )
-                </a>
-              </ng-container>
-              <ng-container *ngIf="setCounselPrintItemVisible
-         === true">
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" (click)="setCounselPrintItem(currentStudent.StudentID)">
-                  個人輔導紀錄
-                </a>
-              </ng-container>
-            </div>
-          </div>
+   
         </div>
       </div>
       <div class="col-md-10">

@@ -1,52 +1,36 @@
 <div *ngIf="
     !roleService.isLoading && !counselStudentService.isLoading;
     else tmpLoading
-  "
-     class="tab-content">
+  " class="tab-content">
    <app-permission-denied *ngIf="!roleService.enableCounsel"></app-permission-denied>
    <!-- TAB 1 輔導學生 -->
-   <ng-container *ngIf="baseVisible === true">
-      <div *ngIf="roleService.enableCounsel"
-           class="tab-pane fade show active "
-           >
-         <div class="input-group my-3" style="border-bottom:  2px solid #f5f5f5; padding-bottom: 10px;">
-            <div *ngIf="counselStudentService.counselClass"
-                 class="input-group-prepend">
-               <button class="btn btn-light dropdown-toggle btn-deep"
-              
-                       type="button"
-                       data-toggle="dropdown"
-                       aria-haspopup="true"
-                       aria-expanded="false">
+   <ng-container *ngIf="baseVisible === true" style="">
+      <div *ngIf="roleService.enableCounsel" class="tab-pane fade show active ">
+         <div class="input-group my-3" style="  padding-bottom: 10px;">
+            <div *ngIf="counselStudentService.counselClass" class="input-group-prepend">
+               <button class="btn btn-light dropdown-toggle btn-deep" type="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
                   {{ selectItem || "請選擇" }}
                </button>
-               <div class="dropdown-menu scrollable-menu"
-                    style="min-width: 180px; ">
-                  <h6 class="dropdown-header"
-                      *ngIf="roleService.role.indexOf('班導師') >= 0">班導師</h6>
-                  
+               <div class="dropdown-menu scrollable-menu" style="min-width: 180px; ">
+                  <h6 class="dropdown-header" *ngIf="roleService.role.indexOf('班導師') >= 0">班導師</h6>
+
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('班導師')"
                      [routerLink]="['list', 'class', classRec.ClassID]"
-                     [ngClass]="{ active: selectItem === classRec.ClassName }"
-                     class="dropdown-item">
+                     [ngClass]="{ active: selectItem === classRec.ClassName }" class="dropdown-item">
                      {{ classRec.ClassName }}
                   </a>
-                  <h6 class="dropdown-header"
-                  style ="border-top :2px solid #80808057"
-                      *ngIf="roleService.role.indexOf('認輔老師') >= 0">個案認輔教師 :</h6>
-                  <a class="dropdown-item"
-                     *ngIf="roleService.role.indexOf('認輔老師') >= 0"
-                     [routerLink]="['list', 'guidance', 'g']"
-                     [ngClass]="{ active: selectItem === '認輔學生' }">
+                  <h6 class="dropdown-header" style="border-top :2px solid #80808057"
+                     *ngIf="roleService.role.indexOf('認輔老師') >= 0">個案認輔教師 :</h6>
+                  <a class="dropdown-item" *ngIf="roleService.role.indexOf('認輔老師') >= 0"
+                     [routerLink]="['list', 'guidance', 'g']" [ngClass]="{ active: selectItem === '認輔學生' }">
                      個案認輔學生
                   </a>
-                  <h6 class="dropdown-header"
-                  style ="border-top :2px solid #80808057"
-                      *ngIf="roleService.role.indexOf('輔導老師') >= 0">輔導老師</h6>
+                  <h6 class="dropdown-header" style="border-top :2px solid #80808057"
+                     *ngIf="roleService.role.indexOf('輔導老師') >= 0">輔導老師</h6>
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('輔導老師')"
                      [routerLink]="['list', 'class', classRec.ClassID]"
-                     [ngClass]="{ active: selectItem === classRec.ClassName }"
-                     class="dropdown-item">
+                     [ngClass]="{ active: selectItem === classRec.ClassName }" class="dropdown-item">
                      {{ classRec.ClassName }}
                   </a>
 
@@ -100,16 +84,12 @@
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
             <!-- 搜尋功能 認輔老師 不給用  -->
             <ng-container *ngIf="roleService.role.indexOf('輔導老師') >= 0 || roleService.role.indexOf('班導師') >= 0">
-<div class="" style="width:45%  ">
-   
-   <input type="text"
-   class="form-control"
-   style ="width: 60%;"
-   placeholder="搜尋(學號,身分證號,姓名)"
-   (keydown.enter)="search()"
-   [(ngModel)]="searchText">
-</div>            
-             
+               <div class="" style="width:45%  ">
+
+                  <input type="text" class="form-control" style="width: 60%;" placeholder="搜尋(學號,身分證號,姓名)"
+                     (keydown.enter)="search()" [(ngModel)]="searchText">
+               </div>
+
             </ng-container>
          </div>
          <router-outlet></router-outlet>
@@ -117,10 +97,8 @@
    </ng-container>
 
 </div>
-<ng-template #tmpLoading
-             class="container">
-   <div class="row justify-content-center"
-        style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+   <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
       Loading...
    </div>
 </ng-template>
