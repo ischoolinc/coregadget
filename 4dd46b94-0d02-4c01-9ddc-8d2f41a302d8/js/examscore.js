@@ -26,7 +26,8 @@
 
   var Exam = (function () {
     // 2021-09 裝「成績輸入截止後查看」模式，是否開放顯示平均
-    var isShowExamInfo = null;
+    var isShowExamInfo;
+
     // 2021-09 GetViewerConfig 取得使用者設定的試別開放時間
     var ViewTimeConfig;
 
@@ -268,7 +269,7 @@
       var curMatrix = '班級';
       var now = new Date();
       var exam_list = [];
-      exam_isShow_list = [];
+      var exam_isShow_list = [];
       var thead1 = [];
       var thead2 = [];
       var dropdownList = [];
@@ -280,9 +281,10 @@
       if (exam_data) {
         [].concat(exam_data || []).forEach((course) => {
           [].concat(course.Exam || []).forEach((exam) => {
+
             if (exam.ExamID) {
               if (exam_list.findIndex((id) => id == exam.ExamID) === -1) {
-                exam_list.push(exam.ExamID); 
+                exam_list.push(exam.ExamID);
                 exam_isShow_list.push({
                   examID: exam.ExamID,
                   isAvgShow: true
@@ -369,9 +371,11 @@
               var td_score = null;
 
               if (exam) {
-                isShowExamInfo = exam_isShow_list.find(x => x.examID == exam.ExamID);
+
                 // 判斷成績是否開放查看
                 if (isCurrSemester) {
+                  isShowExamInfo = exam_isShow_list.find(x => x.examID == exam.ExamID);
+
                   if (_system_exam_must_enddate === "viewtime") { //2021-09增加可依據評量所設定的開放查詢時間判斷是否顯示成績
                     var ExamOpenTimes = ViewTimeConfig.Exams;
 
@@ -385,6 +389,7 @@
                     }
                   }
                   else if (_system_exam_must_enddate === "true") { //成績輸入截止後
+
                     if (((_ref = exam.ScoreDetail) != null ? _ref.EndTime : void 0) != null) {
                       if (new Date(exam.ScoreDetail.EndTime) >= now) {
                         show_data = false;
@@ -394,7 +399,7 @@
                     }
                   }
                 }
-  
+
                 if (exam.ScoreDetail && show_data) {
                   // 成績資料
                   {
@@ -481,7 +486,8 @@
                       subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
                     }
                   } else if (isCurrSemester && _system_exam_must_enddate === 'true') {
-                    if (isShowExamInfo.isAvgShow == false) {
+                    if (!(exam_isShow_list.find(x => { return x.examID == examID }) && exam_isShow_list.find(x => { return x.examID == examID }).isAvgShow)) {
+                      //if (isShowExamInfo.isAvgShow == false) {
                       subBody.push(`<td colspan="3">未開放</td>`);
                     } else {
                       subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
@@ -515,9 +521,9 @@
                       subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
                     }
                   } else if (isCurrSemester && _system_exam_must_enddate === 'true') {
-                    //todo
 
-                    if (isShowExamInfo.isAvgShow == false) {
+                    if (!(exam_isShow_list.find(x => { return x.examID == examID }) && exam_isShow_list.find(x => { return x.examID == examID }).isAvgShow)) {
+                      //if (isShowExamInfo.isAvgShow == false) {
                       subBody.push(`<td colspan="3">未開放</td>`);
                     } else {
                       subBody.push(`<td colspan="2">${Number.parseFloat(data.score).toFixed(2)}</td><td colspan="1">${data.rank}</td>`);
