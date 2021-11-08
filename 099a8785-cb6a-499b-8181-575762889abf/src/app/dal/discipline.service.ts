@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { promise } from 'protractor';
 import { ContractService } from './contract.service';
 
+/**註1 [非明細] 學校轉入生獎懲不會帶有事由等資訊 補登時會寫入與缺礦獎懲不童的table  */
 @Injectable({
   providedIn: 'root'
 })
@@ -84,7 +85,7 @@ export class DisciplineService {
       }
     }
     );
-    console.log(result);
+
     let studentDisciplineDetail = [];
     if (Array.isArray(result.result)) {
       studentDisciplineDetail = result.result;
@@ -177,6 +178,34 @@ export class StudentDisciplineStatistics {
 
 }
 
+/**  取得非明細(註1) :*/
+export class DisciplineWithOutDetail {
+ /* <rsp>
+	<id>47857</id>
+	<school_year>103</school_year>
+	<semester>1</semester>
+	<ref_student_id>54266</ref_student_id>
+	<merit_a>4</merit_a>
+	<merit_b>1</merit_b>
+	<merit_c>1</merit_c>
+	<demerit_a>2</demerit_a>
+	<demerit_b>1</demerit_b>
+	<demerit_c>1</demerit_c>
+  </rsp> */
+    id :string ;
+    school_year :string  ;
+    semester :string ;
+    ref_student_id :string ;
+    /** */
+    merit_a :string ;
+    merit_b :string ;
+    merit_c :string ;
+    demerit_a :string ;
+    demerit_b :string ;
+    demerit_c :string ;
+}
+
+
 class discipline {
   constructor() {
     this.A = 0;
@@ -186,6 +215,8 @@ class discipline {
   A: number;
   B: number;
   C: number;
+
+
 }
 
 export class classIdStudents {
@@ -239,6 +270,8 @@ export class studentInfoDetail {
   remark :string ;
 
   constructor(detail: parseXmlDisciplineDetail, seatNumber: string, name: string) {
+    // alert("detail"+ detail)
+    // console.log("detail",detail) ;
     this.date = detail.date;
     this.seatNumber = seatNumber;
     this.name = name;

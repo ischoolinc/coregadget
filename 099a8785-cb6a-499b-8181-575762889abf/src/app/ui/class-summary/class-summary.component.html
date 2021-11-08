@@ -9,7 +9,7 @@
         <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
           <mat-label>選擇班級</mat-label>
           <mat-select #className [(ngModel)]="selectedClass"
-                    (selectionChange)="querySemesters()">
+                    (selectionChange)="getSemesters()">
             <mat-option id="" [value]="cls"
                         *ngFor="let cls of classList">
               {{cls.ClassName}} </mat-option>

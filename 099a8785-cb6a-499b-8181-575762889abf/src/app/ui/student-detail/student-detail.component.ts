@@ -43,6 +43,7 @@ export class StudentDetailComponent implements OnInit {
     // 抓取欲查詢學生明細
     this.getStudentInfo();
     this.studentDetail = await this.disciplineService.getStudentDisciplineDetail(this.selectedId);
+    // 抓取非明細
     await this.parseDetail();
   }
   /**
@@ -79,7 +80,7 @@ export class StudentDetailComponent implements OnInit {
    */
   getSemester(content:string) {
     const text = content.split('_');
-    return `${text[0]}學年第${text[1]}學期`;
+    return `${text[0]}學年 第${text[1]}學期`;
   }
 
   /**

@@ -82,23 +82,23 @@ export class ClassSummaryComponent implements OnInit {
     this.isHeightSchool = this.disciplineService.schoolType == "高中" ;
     // console.log("isHeightSchool",this.disciplineService.schoolType);
 
-    // 1. get my classes
-    await this.queryClasses();
+    // 1. 取得班級資訊
+    await this.getClasseInfos();
 
-    // 2. get semesters by class.
-    await this.querySemesters();
+    // 2. 取得學年度學期
+    await this.getSemesters();
 
     // // 3. get students list and parse
     // await this.queryStudentAttendance();
   }
 
-  async queryClasses() {
+  async getClasseInfos() {
     this.classList = await this.disciplineService.getMyClasses();
-    console.log(this.classList);
+    console.log( "look what you get" ,this.classList);
     this.selectedClass = this.classList[0];
   }
 
-  async querySemesters() {
+  async getSemesters() {
     this.semesters = await this.disciplineService.getSemestersByClassID(this.selectedClass.ClassID);
     this.selectedSemester = this.semesters[0];
     if (this.selectedSemester) {
@@ -111,8 +111,11 @@ export class ClassSummaryComponent implements OnInit {
     }
   }
 
+  /** 取得學學生缺礦 */
   async queryStudentAttendance() {
+    /**  */
     this.studentList = await this.disciplineService.getStudentDisciplineByClass(this.selectedClass, this.selectedSemester);
+     console.log ("this.studentList", this.studentList);
     await this.parseStudentDetail(this.studentList);
   }
 
@@ -163,6 +166,12 @@ export class ClassSummaryComponent implements OnInit {
 
   getArray() {
     return Array.from(this.sortedMappingTable);
+  }
+
+  /** 取得非明細 */
+  getDescipleFromDetail(){
+
+
   }
 
   getSemesterString(s: SemesterInfo) {
@@ -251,6 +260,7 @@ export class ClassSummaryComponent implements OnInit {
    * @param studentInfo 提供至下一頁的學生資訊
    */
   nextPage(studentInfo: StudentDisciplineStatistics) {
+
     this.disciplineService.fillInStudentInfo(studentInfo);
   }
 }
