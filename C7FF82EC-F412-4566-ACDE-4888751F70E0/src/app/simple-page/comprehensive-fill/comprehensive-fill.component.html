@@ -2,32 +2,32 @@
   <div style="position: fixed;z-index: 1;top: 8px;right: 8px;">
     <button *ngIf="requireList&&requireList.length"
             class="btn btn-danger ml-1"
+            style="background-color: #FF865E;
+            box-shadow: none  !important;"
             (click)="showRequireList()">
       <span>尚有</span>
       <span class="mx-1">{{requireList.length}}</span>
       <span>個項目未填寫</span>
     </button>
-    <button *ngIf="questionSubject&&questionSubject.length"
-            class="btn btn-info ml-1"
-            (click)="save()"
-            [disabled]="isSaving">
-      <i class="material-icons">save_alt</i>
-      <span *ngIf="!isSaving">儲存</span>
-      <span *ngIf="isSaving">儲存中...</span>
-    </button>
+
   </div>
   <ng-container *ngIf="schoolInfo && sectionInfo">
     <ng-container *ngIf="questionSubject">
-      <h4>{{schoolInfo.SchoolName || '學校名稱未設定'}} {{sectionInfo.SchoolYear}}學年度 第{{sectionInfo.Semester}}學期 {{sectionInfo.Name}}</h4>
-      <h4>{{studentInfo.ClassName}}班 {{studentInfo.SeatNo}}號 {{studentInfo.Name}}</h4>
+      <div class="text-center " style="font-size: 22px; font-weight: 900; color: #7D7979 !important;">
+        <div>{{schoolInfo.SchoolName || '學校名稱未設定'}} {{sectionInfo.SchoolYear}}學年度 第{{sectionInfo.Semester}}學期 {{sectionInfo.Name}}</div>
+      </div>
+      <h4 style="   font-family: PingFang TC;">{{studentInfo.ClassName}}班 {{studentInfo.SeatNo}}號 {{studentInfo.Name}}</h4>
       <ng-container *ngFor="let subject of questionSubject">
         <div class="card mb-2">
-          <h4 class="m-2">{{subject.Subject}}</h4>
+          <h4 class=" com-view-first-title  ">{{subject.Subject}}</h4>
           <table class="table table-sm table-bordered">
             <ng-container *ngFor="let group of subject.QuestionGroup">
               <tr>
-                <th colspan="2"
-                    class=" text-left">{{group.Group}}</th>
+                <th  *ngIf="group.Group" colspan="2"
+                    class=" text-left ">
+                    <div class ="com-view-second-title">
+                    {{group.Group}}
+                  </div></th>
               </tr>
               <ng-container *ngFor="let query of group.QuestionQuery">
                 <tr>
@@ -39,7 +39,9 @@
                         <strong class="text-danger position-absolute"
                                 style="margin-left: -7px;margin-top: -7px;"
                                 *ngIf="query.ShowMark">*</strong>
-                        <span>{{query.Query}}</span></label>
+                                <div class ="com-view-third-title ">
+                                  {{query.Query}}
+                                </div></label>
                     </div>
                   </td>
                   <td class="text-left"
@@ -53,7 +55,7 @@
                           <strong class="text-danger position-absolute"
                                   style="margin-left: -7px;margin-top: -7px;"
                                   *ngIf="questionText.ShowMark">*</strong>
-                          <span>{{questionText.Text}}</span>
+                          <span class="com-view-third-title">{{questionText.Text}}</span>
                           <span class="mx-1">:</span>
                         </label>
                         <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
@@ -118,7 +120,7 @@
                                 </ng-template>
                               </ng-container>
                               <ng-template #normalPart>
-                                <span [ngStyle]="{'padding-top': option.IsTextArea?'1px':''}">{{optionPart}}</span>
+                                <span class="com-view-option" [ngStyle]="{'padding-top': option.IsTextArea?'1px':''}">{{optionPart}}</span>
                               </ng-template>
                             </ng-container>
                           </ng-template>
@@ -136,6 +138,18 @@
       </ng-container>
     </ng-container>
   </ng-container>
+  <div class="float-right  m-3" style ="position: fixed;z-index: 1;bottom: 8px;right: 8px; letter-spacing: .2rem;">
+    <button *ngIf="questionSubject&&questionSubject.length"
+    class="btn btn-info ml-1"
+    style="background: #4d89a3 !important; "
+    (click)="save()"
+    [disabled]="isSaving">
+  <!-- <i class="material-icons">save_alt</i> -->
+  <span style="letter-spacing: 2px;"*ngIf="!isSaving">儲存</span>
+  <span *ngIf="isSaving">儲存中...</span>
+  </button>
+  </div>
+
 </div>
 
 

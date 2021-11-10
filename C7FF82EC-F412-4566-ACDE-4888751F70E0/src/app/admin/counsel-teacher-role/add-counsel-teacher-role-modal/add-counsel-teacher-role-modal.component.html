@@ -17,21 +17,7 @@
       <div class="modal-body">
         <div class="d-flex flex-column">
 
-          <div class="dropdown mt-3" >
-            <button class="btn btn-light dropdown-toggle"
-                    type="button"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-              {{ selectRole }}
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item"
-                 *ngFor="let item of counselRole"
-                 [ngClass]="{ active: selectRole === item }"
-                 (click)="SetSelectRole(item)">{{ item }}</a>
-            </div>
-          </div>
+      
           <div style="height: 20px"></div>
           <mat-form-field class="example-full-width">
             <input type="text"
@@ -48,7 +34,21 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-
+          <div class="dropdown mt-3" >
+            <button class="btn btn-light dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              {{ selectRole }}
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item"
+                 *ngFor="let item of counselRole"
+                 [ngClass]="{ active: selectRole === item }"
+                 (click)="SetSelectRole(item)">{{ item }}</a>
+            </div>
+          </div>
 
         </div>
 

@@ -103,77 +103,85 @@
                     </div>
                   </div>
              
-            
-                  <ul class="rwd-table">
-                    <li class="thead">
-                      <ol class="tr">
-                        <li style="width: 10%">晤談日期</li>
-                        <li style="width: 10%">晤談對象</li>
-                        <li style="width: 10%">晤談方式</li>
-                        <li style="width: 10%">記錄者</li>
-                        <li style="width: 40%">內容說明</li>
-                        <li style="width: 20%"></li>
-                      </ol>
-                    </li>
+               <div>
+                <ul class="rwd-table">
+                  <li class="thead">
+                    <ol class="tr">
+                      <li style="width: 10%">晤談日期</li>
+                      <li style="width: 10%">晤談對象</li>
+                      <li style="width: 10%">晤談方式</li>
+                      <li style="width: 10%">記錄者</li>
+                      <li style="width: 40%">內容說明</li>
+                      <li style="width: 20%"></li>
+                    </ol>
+                  </li>
 
-                    <li class="tbody point" *ngFor="let casseitem of caseView.CaseInterviewList">
-                      <ng-container *ngIf="casseitem.SchoolYear === semInfo.SchoolYear &&
-    semInfo.Semester === casseitem.Semester">
-                        <ol class="tr" data-toggle="modal">
-                          <li data-title="日期" (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date:
-                            "yyyy/MM/dd" }}</li>
-                          <li class="text-normal" data-title="對象" (click)="viewInterviewModal(casseitem)">
-                            {{ casseitem.ContactName }}
-                          </li>
-                          <li class="text-normal" data-title="方式" (click)="viewInterviewModal(casseitem)">
-                            {{ casseitem.CounselType }}
-                          </li>
-                          <li data-title="記錄者" (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
-                          <li data-title="內容說明" title="{{casseitem.Content}}" (click)="viewInterviewModal(casseitem)">
-                         
-                            <div style="width:100%;position: relative;">
-                         <div class ="w-100 align-baseline text-left" >
-                              <!-- <div
-                                style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                                class="text-left"> -->
-                                {{ casseitem.Content }}
-                              </div>
+                  <li class="tbody point" *ngFor="let casseitem of caseView.CaseInterviewList">
+                    <ng-container *ngIf="casseitem.SchoolYear === semInfo.SchoolYear &&
+  semInfo.Semester === casseitem.Semester">
+                      <ol class="tr" data-toggle="modal">
+                        <li data-title="日期" (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date:
+                          "yyyy/MM/dd" }}</li>
+                        <li class="text-normal" data-title="對象" (click)="viewInterviewModal(casseitem)">
+                          {{ casseitem.ContactName }}
+                        </li>
+                        <li class="text-normal" data-title="方式" (click)="viewInterviewModal(casseitem)">
+                          {{ casseitem.CounselType }}
+                        </li>
+                        <li data-title="記錄者" (click)="viewInterviewModal(casseitem)">{{ casseitem.AuthorName }}</li>
+                        <li data-title="內容說明" title="{{casseitem.Content}}" (click)="viewInterviewModal(casseitem) " >
+                       
+                          <div style="      width:auto;  max-width:600px;">
+                       <div class ="w-100 align-baseline text-left"   style ="white-space: pre-wrap;
+                      word-break: break-all;
+                      width:100%;
+                      height: 20px;
+                       overflow-y:hidden;
+                       text-overflow: ellipsis; " >
+                            <!-- <div
+                              style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                              class="text-left"> -->
+                              {{ casseitem.Content }}
                             </div>
-                          </li>
-                          <li data-title="">
-                            <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
-                              <!-- <button class="btn btn-sm  btn-light btn_white_rad"
-                          data-toggle="modal"
-                          (click)="editInterviewModal(casseitem)"
-                          [disabled]="casseitem.isEditDisable">
-                    修改
-                  </button> -->
-                              <!-- <button class="btn btn-sm btn-danger btn_red_rad"
-                          data-toggle="modal"
-                          style="margin-left: 10px"
-                          (click)="deleteInterviewModal(casseitem)"
-                          [disabled]="isDeleteButtonDisable">
-                    刪除
-                
-                  </button> -->
+                          </div>
+                        </li>
+                        <li data-title="">
+                          <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
+                            <!-- <button class="btn btn-sm  btn-light btn_white_rad"
+                        data-toggle="modal"
+                        (click)="editInterviewModal(casseitem)"
+                        [disabled]="casseitem.isEditDisable">
+                  修改
+                </button> -->
+                            <!-- <button class="btn btn-sm btn-danger btn_red_rad"
+                        data-toggle="modal"
+                        style="margin-left: 10px"
+                        (click)="deleteInterviewModal(casseitem)"
+                        [disabled]="isDeleteButtonDisable">
+                  刪除
+              
+                </button> -->
 
-                              <mat-icon aria-hidden="false" aria-label="Example home icon"
-                              [ngClass] ="casseitem.isEditDisable ? 'word_gray':'word_blue'"
-                             (click)="editInterviewModal(casseitem)">
-                                mode_edit
-                              </mat-icon>
-                              <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
-                                style="color: #ff5050; cursor:pointer ;" (click)="deleteInterviewModal(casseitem)">
-                                <!-- 處理disable 部分 -->
-                                delete_forever
-                              </mat-icon>
+                            <mat-icon aria-hidden="false" aria-label="Example home icon"
+                            [ngClass] ="casseitem.isEditDisable ? 'word_gray':'word_blue'"
+                           (click)="editInterviewModal(casseitem)">
+                              mode_edit
+                            </mat-icon>
+                            <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
+                              style="color:  #E05D5D ; cursor:pointer ;" (click)="deleteInterviewModal(casseitem)">
+                              <!-- 處理disable 部分 -->
+                              highlight_off
+                            </mat-icon>
 
-                            </ng-container>
-                          </li>
-                        </ol>
-                      </ng-container>
-                    </li>
-                  </ul>
+                          </ng-container>
+                        </li>
+                      </ol>
+                    </ng-container>
+                  </li>
+                </ul>
+
+               </div>
+               
                 </ng-container>
               </ng-container>
             </ng-container>

@@ -29,16 +29,17 @@
       <!-- 新增-輔導 -->
   
     </div>
+    <button class="btn btn-info btn_bul_rad float-right"
+    (click)="addInterviewModal()">
+<i class="material-icons">add</i> 新增
+</button>
     <ng-container *ngIf="_semesterInfo.length === 0">
       <div class="row justify-content-center">沒有資料。</div>
     </ng-container>
     <ng-container *ngFor="let semInfo of _semesterInfo">
       <div class="font-weight-bold mb-2 ">
      <b>{{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期</b>   
-     <button class="btn btn-info btn_bul_rad float-right"
-     (click)="addInterviewModal()">
-<i class="material-icons">add</i> 新增
-</button>
+
       </div>
       <ul class="rwd-table">
         <li class="thead">
@@ -116,9 +117,9 @@
                 mode_edit
               </mat-icon>
               <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
-                style="color: #ff5050; cursor:pointer ;" (click)="delInterviewModal(counselRec)">
+                style="color: #E05D5D ; cursor:pointer ;" (click)="delInterviewModal(counselRec)">
                 <!-- 處理disable 部分 -->
-                delete_forever
+                highlight_off
               </mat-icon>
 
            

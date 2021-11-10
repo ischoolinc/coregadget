@@ -31,6 +31,12 @@ export class BatchCounselDocComponentComponent implements OnInit {
     this.GetCounselClass();
 
   }
+  openGradeSection(gradeClassInfo:GradeClassInfo){
+    
+ 
+    gradeClassInfo.isOpen =! gradeClassInfo.isOpen ;
+
+  }
 
   async loadPrintDocument() {
     var rsp = await this.dsaService.send("GetPrintDocumentTemplate");

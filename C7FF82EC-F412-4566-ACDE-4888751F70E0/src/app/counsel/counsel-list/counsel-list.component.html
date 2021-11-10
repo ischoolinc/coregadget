@@ -94,8 +94,16 @@
             <li data-title="聯絡事項/內容"
                 title="{{(stuRec.LastInterviewContactItem?'聯絡事項:\n  '+stuRec.LastInterviewContactItem:'')+(stuRec.LastInterviewContactItem&&stuRec.LastInterviewContent?'\n':'')+(stuRec.LastInterviewContent?'內容:\n  '+stuRec.LastInterviewContent:'')}}">
               <div style="width:100%;position: relative;">
-                <div  class="w-100 align-baselinetext-left" >
-                     
+                <div  class=" align-baseline" 
+                style ="white-space: pre-wrap;word-break: break-all;
+                overflow-y: hidden;
+                text-overflow: ellipsis; 
+                height: 28px;
+                line-height: 28px;
+                text-overflow: ellipsis
+                "  >
+                <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                class="text-left">   -->
                   {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }}
                 </div>
               </div>

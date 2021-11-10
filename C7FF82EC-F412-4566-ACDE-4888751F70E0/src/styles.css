@@ -49,10 +49,10 @@ cursor: pointer;
     border-radius:  50px !important;
     background:white !important;
     font-size: 15px;
-    border: 2px solid #2F86A6 !important;
-    color :#2F86A6 !important;
+    border: 2.5px solid #afccd6 !important;
+    color :#618794  !important;
     box-shadow: none !important;
- 
+    font-weight: 900;
    
  }
  
@@ -121,32 +121,24 @@ cursor: pointer;
 
  
  ul.rwd-table ol:nth-child(even) {
-	/* background: #f5f5f5; */
-	/* background : #f2f4c3  !important; */
+
 	background : #c1dad845  !important;  
     border :none!important;  
     cursor: pointer;
+    /* border : 1px  solid grey !important;   */
+    border :1px dotted #E3E1E1 !important ;
 }
 ul.rwd-table ol:nth-child(odd) {
-	/* background: #f5f5f5; */
-	/* background : #f2f4c3  !important; */
-	/* background : #94d0cc45  !important;   */
     border :none!important;  
+    border :1px dotted #E3E1E1 !important ;
     cursor: pointer;
 }
 ul.rwd-table ol:nth-child(even):hover{
     background: #f5f5f5 !important;
-    /* border-left:  solid 2px rgb(115, 146, 185) !important; */
-    
-    /* font-weight: 200 !important; */
 }
 
 ul.rwd-table ol:nth-child(odd):hover{
-
     background: #f5f5f5 !important;
-    /* border-left:  2px solid  rgb(115, 146, 185) !important; */
-
-    /* font-weight: 200 !important; */
 }
 
 
@@ -165,7 +157,7 @@ ul.rwd-table .thead li, ul.rwd-table .tr li{
     padding-top: 3px;
 }
 .btn-light {
-    /* background-color: #8cb1ff; */
+
     border: 2.5px solid #5db39f52 !important;
     box-shadow: none !important;
     border-radius: 50px !important;
@@ -194,8 +186,6 @@ ul.rwd-table .thead li {
     color :#3e495f ;
     font-size: 16px;
 
- 
-
 }
 
 
@@ -208,20 +198,10 @@ ul.rwd-table .thead li {
 }
 
 
-
-/* 
-.card {
-    transition: none !important;
-    box-shadow: none !important; 
-    border :2px solid #00000024!important
-} */
-
 .card {
     box-shadow: none !important; 
     transition: none !important;
     border :1.5px solid #00000024!important
-    /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important  ; */
-    /* border-bottom :1px solid gray !important */
 }
 
 
@@ -249,9 +229,6 @@ ul.rwd-table .thead li {
   }
   .dropdown-menu::before{
     box-shadow: none  !important;
-    /* border: 2.5px solid #00000024  !important; */
-
-
   }
 
 
@@ -262,8 +239,7 @@ ul.rwd-table .thead li {
     color: #000000de;
     font-weight: 900;
     font-size: 17.5px;
-    /* box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.07) !important; */
-    
+
 }
 
 .list-group-item:hover{
@@ -272,7 +248,6 @@ ul.rwd-table .thead li {
 
 .base-class-header {
     padding-left: 10px;
-    /* background: #f5fbfa; */
     border-bottom: 2px solid #94d0cc;
     margin-bottom: 15px;
     padding-top: 0px;
@@ -287,7 +262,6 @@ ul.rwd-table .thead li {
     display: inline;
     width: auto;
     border-radius: 2px 2px 0px  0px;
-    /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); */
  }
 
 
@@ -314,7 +288,7 @@ ul.rwd-table .thead li {
 }
 
 .border-gray{
-border :2px solid #eee
+    border :2px solid #eee
 
 }
 
@@ -327,33 +301,26 @@ background: #e1f2ef !important;
 }
 
 .border-left-color{
-border-left:2px solid #94d0cc  ;
+    border-left:2px solid #94d0cc  ;
 
 }
 .custom-control-input:checked ~ .custom-control-label::after{
-
     color :#FD6F96 !important
 }
 .custom-radio .custom-control-label::after {
-font-size: 16.5px !important;
-padding :2px;
-margin: 3px;
+    font-size: 16.5px !important;
+    padding :2px;
+    margin: 3px;
 
 
 }
-
-
 .custom-checkbox .custom-control-label::after {
     font-size: 16.5px !important;
     padding :2px;
     margin: 3px;
-    
-    
     }
 
-
     .remind_point{
-
         background: #e52143;
         width:  7px;
         height: 7px;
@@ -365,9 +332,7 @@ margin: 3px;
 
     .font_size_m {
         font-size :11px !important
-
     }
-
 
     .com-view-first-title {
         background: #E4F1EF;
@@ -398,7 +363,6 @@ margin: 3px;
 
 }
 
-
 .com-view-third-title{
     font-family: PingFang TC;
     font-style: normal;
@@ -406,10 +370,10 @@ margin: 3px;
     font-size: 16px;
     line-height: 20px;
     color:#3C4F81;
-    /* border-left: 2px solid #a1a9bd; */
     padding-left: 15px;
 
 }
+/* 綜合紀錄表 */
 .com-view-option{
     font-family: PingFang TC;
     font-size: 16px;
@@ -422,20 +386,14 @@ ul.rwd-table{
 }
 .list-group-item 
 {
-/* background: green !important; */
-box-shadow: none !important ;
-/* border-right: 1px solid rgb(233, 232, 232)  !important ; */
-border-radius: 0px  30px 30px 0px !important;
-background-color: transparent !important;
+    box-shadow: none !important ;
+    border-radius: 0px  30px 30px 0px !important;
+    background-color: transparent !important;
 
 }
 .list-group{
     border-radius: 0px  30px 30px 0px !important;
-background-color: #f5f5f563 !important;
-}
-.nav-list
-{
-   
+    background-color: #f5f5f563 !important;
 }
 
 .right-section{
@@ -454,26 +412,26 @@ background-color: #f5f5f563 !important;
 
 
 .all-class-select-section {
+    height:50px ;
     background: #D2E6E0;
     border: 1px solid #D2E6E0;
     box-sizing: border-box;
     border-radius: 4px;
     font-family: SF Pro Display;
     font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
+    font-weight: 700;
+    font-size: 18px;
     line-height: 24px;
-    /* identical to box height, or 150% */
     display: flex;
     align-items: center;
     letter-spacing: 0.374px;
     color: #3C4F81;
+    cursor: pointer !important;
 }
 
 
 
 .grade-select-section{
-    /* background: #FFFFFF; */
     border: 1px solid #E0E0E0;
     box-sizing: border-box;
     border-radius: 4px;
@@ -482,66 +440,140 @@ background-color: #f5f5f563 !important;
     font-size: 16px;
     line-height: 24px;
     background: #F0F4F3;
+    cursor: pointer !important;
 } 
 
 .class-select-section {
-
-/* BG */
-height: 42px;
-width: auto !important;
-min-width: 120px;
-background: #FFFFFF;
-/* Secondary 1 */
-
-border: 2px solid #5EC1C7;
-
-border-radius: 10px;
-font-family: SF Pro Display;
-font-style: normal;
-font-weight: 700;
-font-size: 16px;
-line-height: 24px;
-/* identical to box height, or 150% */
-margin: 9px ;
-display: flex;
-align-items: center;
-letter-spacing: 0.374px;
-
-/* Secondary 1 */
-
-color: #5EC1C7;
-cursor: pointer;
-text-align: center !important;
-padding-left: 20px;
-padding-right: 20px;
+    height: 42px;
+    width: auto !important;
+    min-width: 120px;
+    background: #FFFFFF;
+    border: 2px solid #5EC1C7;
+    border-radius: 10px;
+    font-family: SF Pro Display;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 9px ;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.374px;
+    color: #5EC1C7;
+    cursor: pointer;
+    text-align: center !important;
+    padding-left: 20px;
+    padding-right: 20px;
 
 }
 .class-select-section-selected{
-        height: 42px;
-        width: auto;
-        min-width: 120px;
-        background: #5EC1C7;
-        /* Secondary 1 */
+    height: 42px;
+    width: auto;
+    min-width: 120px;
+    background: #5EC1C7;
+    border: 2px solid #5EC1C7;
+    border-radius: 10px;
+    font-family: SF Pro Display;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 9px ;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.374px;
+    color: white;
+    cursor: pointer;
+    text-align: center !important;
+    padding-left: 20px;
+    padding-right: 20px;
+}
 
-        border: 2px solid #5EC1C7;
-      
-        border-radius: 10px;
-        font-family: SF Pro Display;
+
+.grade-schow-borad{
+
+    height: 50px;
+    background: #FFFFFF;
+    border: 1px solid #D2E6E0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    cursor: pointer;
+    padding-top :5px ;
+    border-left :5px solid #D2E6E0;
+    color : #3C4F81;
+}
+
+
+
+.small-icon {
+
+    font-size:  10px !important;
+}
+
+
+.export-btn {
+    background: #387C6D !important;
+    border-radius: 36px !important;
+    box-shadow: none !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+}
+
+.date-label 
+{
+    font-family: PingFang TC;
+    font-style: normal;
+    font-weight: 700 !important;
+    font-size: 16px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+
+    /* Text 1 */
+
+    color: #323232;
+
+}
+
+
+.pop-up-btn{
+        font-family: PingFang TC;
         font-style: normal;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 24px;
-        /* identical to box height, or 150% */
-        margin: 9px ;
-        display: flex;
-        align-items: center;
-        letter-spacing: 0.374px;
+        font-weight: 700 !important;
+        font-size: 18px !important;
+        line-height: 22px;
+        background:  white !important ;
+        border-radius: 5px !important;
 
-        /* Secondary 1 */
+        border :2.5px solid #b6bece !important ;
+        box-shadow:  none !important;
+        width :300px ;
+}
 
-        color: white;
-        cursor: pointer;
-        text-align: center !important;
-        padding-left: 20px;
-        padding-right: 20px;
+/* */
+.font-weight-900{
+    font-weight: 900;
+}
+
+
+
+.delete_btn_sm{
+    background-color:  #E05D5D !important;
+   border-radius: 50px !important;
+   font-size: 12px !important;
+   
+ 
+   color :#FFF8E5 !important ;
+}
+
+
+.delete_icon {
+
+} 
+
+div::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
 }

@@ -159,6 +159,7 @@ export class GradeClassInfo {
     SetGradeYearCheck() {
         this.Checked = !this.Checked;
     }
+    isOpen :boolean =false;
 }
 
 /**

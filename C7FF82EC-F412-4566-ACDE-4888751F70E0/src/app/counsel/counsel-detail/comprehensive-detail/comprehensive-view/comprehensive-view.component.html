@@ -1,4 +1,4 @@
-<!-- 學生個人 - 綜合紀錄表 -->
+<!-- 學生個人 - 綜合紀錄表  查看畫面-->
 <div *ngIf="!isLoading; else tmpLoading">
   <ng-container *ngFor="let subject of fillInData">
     <div class="card mb-2">
@@ -37,7 +37,7 @@
                           class="text-muted">未填寫</span>
                     <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
                       <span *ngIf="optionIndex > 0">、</span>
-                      <span  style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
+                      <span  class="font-weight-900" style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}} </span>
                     </ng-container>
                   </span>
                   <!-- <pre>{{questionText | json}}</pre> -->
