@@ -15827,3 +15827,51 @@ table.rwd-table tr:nth-child(even) {
 		padding-right: 1rem;
 	}
 }
+
+
+
+table.table-rwd thead th {
+  background: #86a7d93d;
+  color: #2e3f57;
+  font-weight: 900;
+  border: none;
+  font-size: 17px;
+}
+
+
+@media screen and (max-width: 576px){
+
+  table.table-rwd tbody tr td:first-child {
+    background: #86a7d93d;
+    color: #2e3f57;
+  }
+
+}
+
+.mid-title{
+  margin-left:  5px;
+  margin-bottom: 5px;
+  font-size: 18px !important;
+
+}
+.student-section{
+  margin-left:  5px;
+  color: #2e3f57;
+  font-weight: 700;
+  border-radius: 5px;
+   border: 2px solid  #86a7d97d; ;
+  font-size: 17px;
+  padding: 7px;
+
+  text-align: center;
+
+}
+
+.header{
+
+  background: #86a7d97d !important;
+  color: #2e3f57!important;
+  font-weight: 900!important;
+  border: none!important;
+  font-size: 17px!important;
+}
