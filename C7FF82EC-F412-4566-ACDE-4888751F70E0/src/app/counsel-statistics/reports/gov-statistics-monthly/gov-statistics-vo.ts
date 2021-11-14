@@ -6,6 +6,7 @@ export class CaseMonthlyStatistics {
     Category: string;
     /** 個案類別(主) */
     CaseMainCategory:string ;
+    TeacherCounselNumber;
     StudentID: string;
     TeacherName: string;
     GradeYear: string;
@@ -65,6 +66,7 @@ export class CaseMonthlyStatistics2 {
     constructor() { }
     TeacherID: string;
     TeacherNickName: string;
+    TeacherCounselNumber :string ;
     TeacherRole: string;    
     OccurDate: string;
     StudentID: string;
@@ -83,4 +85,13 @@ export class CaseMonthlyItemCount {
     }
     ItemName: string;
     Count: number = 0;
+}
+
+
+/** 產生報表時  教師代碼用  因為報表很多張(要分開去改 servie 很麻煩 一定從這邊抓) */
+export interface TeacherCounselRole{
+     TeacherID :string ;
+     TeacherName :string ;
+     Role :string ;
+     TeacherCounselNumber ;
 }

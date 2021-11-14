@@ -1,13 +1,18 @@
 export class TeacherCounselRole {
-    constructor() { }
+    
+    constructor() {
 
-
+     }
     TeacherID: string;
     Role: string;
     TeacherName: string;
+    /** 教師編碼 (月報表使用) */
+    TeacherCounselNumber:string ="";
+    /** 編輯模式 */
+    isAddMode :boolean  = false ;
     isChage: boolean = false;
     Order: number;
-
+    setAddMode(){ this.isAddMode = true }
     parseOrder() {
         if (this.Role === '輔導主任') {
             this.Order = 1;

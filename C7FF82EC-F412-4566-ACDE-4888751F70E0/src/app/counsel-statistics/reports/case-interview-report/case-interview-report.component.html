@@ -43,93 +43,60 @@
   </div>
 </div>
 </div>
-
-<!--  -->
 <div style="height: 20px"></div>
 <app-condition-modal #condition_modal></app-condition-modal>
-
 <div class="w-100  d-flex  justify-content-center">
-
   <div class="tab-content " style=" width:90%" >
     <!-- <div>選擇班級 : 已選{{selectNum}}</div>  -->
-    <div class=" all-class-select-section">
-      <span class="custom-control custom-checkbox w-25">
-        <!-- <input type="checkbox" class="custom-control-input" [id]="0" [checked]="isSelectAllItem"
-         /> -->
-  
-  
-        <mat-icon class="m-0  p-0  w-100 small-icon " style="display: inline;" [hidden]="!isSelectAllItem"
-          aria-hidden="false" aria-label="Examplehome icon">
-          done_all
-        </mat-icon>
-  
-  
-        <span (click)="SetSelectAllItem()">全選
-        </span>
-  
-      </span>
-  
-      <div class="d-flex flex-wrap pl-3">
-        <!-- <div class="custom-control custom-checkbox w-25 "
-             *ngFor="let item of SelectGradeYearList">
-          <input type="checkbox"
-                 class="custom-control-input"
-                 [id]="item.id"
-                 [checked]="item.Checked"
-                 (click)="SetSelectGradeItem(item.GradeYear)" />
-          <label class="custom-control-label"
-                 [for]="item.id">{{item.GradeYearStr}}
-          </label>
-        </div> -->
-      </div>
+    <div class=" all-class-select-section align-middle">
+        <div class =" align-middle">
+          <span (click)="SetSelectAllItem()">
+            <div style ="width: 20px; display: inline-block;">
+              <mat-icon class="m-0  p-0  ml-2 w-100 small-icon "
+                 style="display: inline;" [hidden]="!isSelectAllItem"
+              aria-hidden="false" aria-label="Examplehome icon">
+              done_all
+            </mat-icon>
+            </div>
+            全選
+          </span>
+          
+        </div>
     </div>
   
     <ng-container *ngFor="let item of SelectGradeYearList">
-      <div class="form-group  grade-select-section">
-        <div class=" grade-schow-borad " (click)="openGradeSection(item)">
-  
-          <mat-icon class="small-icon" *ngIf="!item.isOpen" class="" aria-hidden="false" aria-label="Example home icon">
-            add
-          </mat-icon>
-          <mat-icon class="small-icon" *ngIf="item.isOpen" class="" aria-hidden="false" aria-label="Example home icon">
-            remove
-          </mat-icon>
+      <div class=" grade-select-section">
+        <div class=" grade-schow-borad  align-middle"
+           (click)="openGradeSection(item)" style=" vertical-align: baseline">
           <!-- 年級section  -->
-          {{item.GradeYearStr}}
+          <div  class ="align-middle" style ="height :20px ; display: inline-block; ">
+          <span class =" align-middle" style ="height: 50px; ">                   
+           
+            <mat-icon class="small-icon" *ngIf="!item.isOpen" class="" aria-hidden="false" aria-label="Example home icon">
+              add
+            </mat-icon>
+
+            <mat-icon class="small-icon" *ngIf="item.isOpen" class="" aria-hidden="false" aria-label="Example home icon">
+              remove
+            </mat-icon>
+         
+            {{item.GradeYearStr}}
+          </span>
         </div>
-  
+
+      </div>
         <ng-container *ngIf="item.isOpen">
-  
-  
-  
           <div class="d-flex flex-wrap pl-3 ">
             <div class="text-center" (click)="SetSelectGradeItem(item.GradeYear)" [ngClass]="'class-select-section'">
-              <!-- <input type="checkbox"
-            class="custom-control-input"
-            [id]="item.id"
-            [checked]="item.Checked"
-            (click)="SetSelectGradeItem(item.GradeYear)" />
-    <label class="custom-control-label"
-            [for]="item.id">
-            <div> 所有班級</div> 
-    </label> -->
               所有班級
             </div>
           </div>
           <div class="d-flex flex-wrap pl-3">
-  
-  
-            <div class="text-center" [ngClass]="ClassItem.Checked?'class-select-section-selected':'class-select-section'"
+            <div class="text-center justify-content-center align-middle d-flex flex-column" [ngClass]="ClassItem.Checked?'class-select-section-selected':'class-select-section'"
               *ngFor="let ClassItem of item.ClassItems" (click)="ClassItem.SetClassCheck()">
-              <!-- <input type="checkbox" [hidden]="true"
-                   class="custom-control-input"
-                   [id]="ClassItem.id"
-                   [checked]="ClassItem.Checked"
-                   (click)="ClassItem.SetClassCheck()" /> -->
-              <!-- <label class="custom-control-label"
-                   [for]="ClassItem.id"> 
-            </label> -->
-              {{ClassItem.ClassName}}
+            <span class ="" >
+              {{ClassItem.ClassName}} 
+            </span>
             </div>
           </div>
   
@@ -137,7 +104,7 @@
   
       </div>
     </ng-container>
-    <div class="ml-auto align-self-center ml-3 float-right">
+    <div class="mt-2 ml-auto align-self-center ml-3 float-right">
       <button type="button " class="btn btn-info  export-btn" (click)="report()" [disabled]="isSaveButtonDisable">
         產出報表
       </button>

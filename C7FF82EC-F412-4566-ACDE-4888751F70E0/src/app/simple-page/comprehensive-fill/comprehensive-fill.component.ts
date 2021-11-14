@@ -278,6 +278,7 @@ export class ComprehensiveFillComponent implements OnInit {
     });
   }
 
+  
   showRequireList() {
     alert(this.requireList.join("\n"));
   }

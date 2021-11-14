@@ -22,6 +22,7 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   selectTeacherName: string = "請選擇教師";
   selectTeacherID: string = "";
   selectTeahcer: TeacherCounselRole;
+  TeacherCounselNumber :string;
   notTeachersCounselRole: TeacherCounselRole[] = [];
   counselRole: string[] = [];
 
@@ -93,7 +94,8 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
 
     let itItm = {
       TeacherID: this.selectTeacherID,
-      Role: this.selectRole
+      Role: this.selectRole,
+      TeacherCounselNumber :this.TeacherCounselNumber 
     }
     reqTeacherCounselRole.push(itItm);
     try {

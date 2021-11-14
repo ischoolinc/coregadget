@@ -29,7 +29,7 @@
       <!-- 新增-輔導 -->
   
     </div>
-    <button class="btn btn-info btn_bul_rad float-right"
+    <button class=" mb-2 btn btn-info btn_bul_rad float-right"
     (click)="addInterviewModal()">
 <i class="material-icons">add</i> 新增
 </button>
@@ -63,39 +63,42 @@
             semInfo.Semester === counselRec.Semester
           ">
             <ol class="tr"
-                data-toggle="modal">
-              <li data-title="日期"
+                data-toggle="modal ">
+              <li data-title="日期" 
+              class="  align-middle"
                   (click)="viewInterviewModal(counselRec)">
                 {{ counselRec.OccurDate | date: "yyyy/MM/dd" }}
               </li>
-              <li class="text-normal"
+              <li class="text-normal align-middle"
                   data-title="對象"
                   (click)="viewInterviewModal(counselRec)">
                 {{ counselRec.ContactName }}
               </li>
-              <li class="text-normal"
+              <li class="text-normal align-middle"
                   data-title="方式"
                   (click)="viewInterviewModal(counselRec)">
                 {{ counselRec.CounselType }}
               </li>
-              <li data-title="記錄者"
+              <li class="align-middle" data-title="記錄者"
                   (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
-              <li class="text-left text-normal"
+              <li class="text-left text-normal align-middle"
                   data-title="聯絡事項及內容"
                   (click)="viewInterviewModal(counselRec)">
-                <p *ngIf="counselRec.ContactItem"
+                <span *ngIf="counselRec.ContactItem"
+                class="align-middle"
                    style="white-space: pre-wrap;word-break: break-all;">
-                  <strong>聯絡事項：</strong>
-                  <span>{{ counselRec.ContactItem }}</span>
-                </p>
-                <p *ngIf="counselRec.Content"
+               
+                <strong>聯絡事項：</strong>{{ counselRec.ContactItem }}
+                </span>
+                <br>
+                <span class="mt-3" *ngIf="counselRec.Content"
                    style="white-space: pre-wrap;word-break: break-all;">
-                  <strong>內容：</strong>
-                  <span>{{ counselRec.Content }}</span>
-                </p>
+                 
+                 <strong>內容：</strong>{{ counselRec.Content }}
+                </span>
               </li>
               <ng-container *ngIf="referralVisible === true">
-                <li data-title="轉介狀況"
+                <li data-title="轉介狀況" class =" align-middle"
                     >{{ counselRec.getIsReferralString() }}
                     <mat-icon *ngIf=" counselRec.getIsReferralString()!=''"
                     class = " ml-4 cuser"  
@@ -109,7 +112,7 @@
             
                   </ng-container>
 
-              <li data-title="">
+              <li data-title="" class =" align-middle">
 
 
                 <mat-icon aria-hidden="false" aria-label="Example home icon"
