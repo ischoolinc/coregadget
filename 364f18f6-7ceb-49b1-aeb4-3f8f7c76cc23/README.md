@@ -30,9 +30,7 @@ gadget-評量成績(國中)
 
     //使用小工具者的身份
     "system_position": ["student"(學生，預設) || "parent"(家長)]
-    
-    //顯示組距 (目前只有康橋新竹國小p.kcis.hc.edu.tw有用此參數隱藏組距)
-    "show_grade": ["true"(預設) || "false"]
+
     
 
 **評量成績列表**
