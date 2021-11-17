@@ -165,22 +165,12 @@
       </span>
   
       <div class="d-flex flex-wrap pl-3">
-        <!-- <div class="custom-control custom-checkbox w-25 "
-             *ngFor="let item of SelectGradeYearList">
-          <input type="checkbox"
-                 class="custom-control-input"
-                 [id]="item.id"
-                 [checked]="item.Checked"
-                 (click)="SetSelectGradeItem(item.GradeYear)" />
-          <label class="custom-control-label"
-                 [for]="item.id">{{item.GradeYearStr}}
-          </label>
-        </div> -->
+   
       </div>
     </div>
   
     <ng-container *ngFor="let item of SelectGradeYearList">
-      <div class="form-group  grade-select-section">
+      <div class="  mt-2 grade-select-section">
         <div class=" grade-schow-borad " (click)="openGradeSection(item)">
   
           <mat-icon class="small-icon" *ngIf="!item.isOpen" class="" aria-hidden="false" aria-label="Example home icon">

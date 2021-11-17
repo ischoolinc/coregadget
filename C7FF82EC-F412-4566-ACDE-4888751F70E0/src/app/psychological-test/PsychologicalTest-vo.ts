@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import * as node2json from 'nodexml';
 import { getLocaleDayNames } from '@angular/common';
 
-// 心理測驗題目
+/** 心理測驗*/
 export class Quiz {
     uid: string;
     QuizName: string;

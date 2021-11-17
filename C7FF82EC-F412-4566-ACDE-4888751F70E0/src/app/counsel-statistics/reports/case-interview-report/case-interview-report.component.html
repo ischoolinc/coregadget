@@ -38,8 +38,9 @@
     <button class="btn  pop-up-btn " data-toggle="modal" data-backdrop="static" data-target="#newWork"
       (click)="openCondictionModal()">
   
-      <i class="material-icons" style="font-size: 14px;">filter_alt</i> 塞選條件
+      <i class="material-icons" style="font-size: 14px;">filter_alt</i> 篩選條件
     </button>
+    
   </div>
 </div>
 </div>
@@ -65,7 +66,7 @@
     </div>
   
     <ng-container *ngFor="let item of SelectGradeYearList">
-      <div class=" grade-select-section">
+      <div class=" grade-select-section mt-2">
         <div class=" grade-schow-borad  align-middle"
            (click)="openGradeSection(item)" style=" vertical-align: baseline">
           <!-- 年級section  -->

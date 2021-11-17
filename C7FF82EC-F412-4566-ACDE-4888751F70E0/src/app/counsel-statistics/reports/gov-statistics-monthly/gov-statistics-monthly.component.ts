@@ -133,24 +133,21 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
 }
 
-/** 取得教師編碼 如果沒有設定一樣顯示 教師名稱 */
-getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
+/** 取得教師編碼 如果沒有設定一樣顯示 教師名稱 【Mapping 資料】*/
+getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
 
-   alert("s" +teacherIDSor.TeacherID+teacherIDSor.TeacherName)
-   debugger
   if(this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID)){
-    
-   const teacherConNumber = this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
+    const teacherConNumber = this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
     if( teacherConNumber)
     {
       // alert("有資料" +teacherIDSor.TeacherID+teacherIDSor.TeacherName +teacherConNumber)
-      return this.TeacherCounselRole.find(x => x.TeacherID ==teacherIDSor.TeacherID).TeacherCounselNumber
+      return this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
 
     }else{
-      return `${teacherIDSor.TeacherName}  ${teacherIDSor.TeacherNickName} (未設教師編號)`
+      return `${teacherIDSor.TeacherName} (未設教師編碼)`
     }
   } else {
-    return `${teacherIDSor.TeacherName}  ${teacherIDSor.TeacherNickName}(已刪除)` ;
+    return `${teacherIDSor.TeacherName} (已刪除)` ;
   }
 }
 
@@ -208,7 +205,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
       rec.TeacherName = rspRec.TeacherName;
 
       
-      rec.TeacherCounselNumber = this.getStudentConNumberByTeacherID(rspRec),
+      rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec),
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
@@ -252,8 +249,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
         rec.TeacherID = rspRec.TeacherID;
         rec.TeacherNickName = rspRec.TeacherNickName;
-        // rec.TeacherCounselNumber =rspRec.TeacherCounselNumber;
-        rec.TeacherCounselNumber = this.getStudentConNumberByTeacherID(rspRec);
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
         rec.TeacherName = rspRec.TeacherName;
@@ -449,7 +445,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
       rec.Category = rspRec.Category;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
-      rec.TeacherCounselNumber =rspRec.TeacherCounselNumber;
+      rec.TeacherCounselNumber =this.getTeacherConNumberByTeacherID(rspRec);
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
@@ -492,6 +488,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         rec.TeacherNickName = rspRec.TeacherNickName;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.TeacherName = rspRec.TeacherName;        
         rec.ContactItem = rspRec.ContactItem;
         rec.ServiceItem = rspRec.ServiceItem;
@@ -532,7 +529,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         da.OtherCount = da.SumOtherDetailCount();
         let item = {
-          '教師編碼': tno,
+          '教師編碼': da.TeacherCounselNumber,
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別': da.CategoryValue.join(','),
@@ -608,6 +605,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherID = rspRec.TeacherID;
       rec.TeacherNickName = rspRec.TeacherNickName;
+      rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
       rec.TeacherRole = rspRec.TeacherRole;
       rec.OccurDate = rspRec.OccurDate;
       rec.Category = rspRec.Category;
@@ -644,6 +642,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         rec.TeacherRole = rspRec.TeacherRole;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.TeacherName = rspRec.TeacherName;
         rec.ContactItem = rspRec.ContactItem;
         rec.ServiceItem = rspRec.ServiceItem;
@@ -682,7 +681,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '職司編碼': tno,
+          '職司編碼': da.TeacherCounselNumber,
           '身份': da.TeacherRole,
           '學生年級':this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
@@ -697,7 +696,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
+            '職司編碼': da.TeacherCounselNumber, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);
@@ -744,6 +743,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherID = rspRec.TeacherID;
       rec.TeacherNickName = rspRec.TeacherNickName;
+      rec.TeacherCounselNumber =  this.getTeacherConNumberByTeacherID(rspRec);
       rec.TeacherRole = rspRec.TeacherRole;
       rec.OccurDate = rspRec.OccurDate;
       rec.Category = rspRec.Category;
@@ -777,6 +777,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
         rec.TeacherID = rspRec.TeacherID;
         rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.TeacherRole = rspRec.TeacherRole;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
@@ -818,7 +819,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '職司編碼': tno,
+          '職司編碼': da.TeacherCounselNumber,
           '身份': da.TeacherRole,
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
@@ -833,7 +834,7 @@ getStudentConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
+            '職司編碼': da.TeacherCounselNumber, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);

@@ -63,6 +63,8 @@ export class AdminComponent implements OnInit {
       this.isClassEnable = true;
       this.isPsyEnable = true;
     }
+
+    this.routeTo('counsel_teacher_role');
   }
 
   routeTo(to) {
