@@ -1,4 +1,4 @@
-<div *ngIf="!counselStudentService.isLoading; else tmpLoading">
+<div *ngIf="!counselStudentService?.isLoading; else tmpLoading">
   <app-permission-denied *ngIf="deny"></app-permission-denied>
   <div *ngIf="!deny">
     <!-- 班級輔導紀錄 -->
@@ -27,8 +27,8 @@
                 style="width: 70px">座號</li>
             <li class="sticky-top"
                 style="width: 120px">姓名</li>
-            <!-- <li class="sticky-top"
-                style="width: 70px">聯絡事項筆數</li> -->
+            <li class="sticky-top"
+                style="width: 70px">聯絡事項筆數</li>
             <li class="sticky-top"
                 style="width: 70px">輔導內容筆數</li>
             <li class="sticky-top"
@@ -38,15 +38,24 @@
             <li class="sticky-top"
                 style="width: 120px">方式</li>
             <li class="sticky-top">聯絡事項/內容</li>
+            <li class="sticky-top">新增一級輔導紀錄</li>
+
+            <!-- <li class="sticky-top"
+                style="width: 100px">轉介</li> -->
+                
             <li class="sticky-top"
-                style="width: 100px">轉介</li>
+            style="width: 100px">學生資訊</li>
           </ol>
         </li>
         <li class="tbody">
           <ol *ngFor="let stuRec of targetList"
               class="tr"
-              [routerLink]="['/counsel', 'detail', stuRec.StudentID]"
-              routerLink="/counsel/detail/123">
+            
+         
+             >
+
+              <!--  -->
+            
             <li data-title="座號">
               {{ stuRec.SeatNo }}
             </li>
@@ -64,9 +73,9 @@
                 </div>
               </div>
             </li>
-            <!-- <li data-title="聯絡事項筆數">
+            <li data-title="聯絡事項筆數">
               {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewContactItemCount }}
-            </li> -->
+            </li>
             <li data-title="輔導內容筆數">
               {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewContentCount }}
             </li>
@@ -95,7 +104,8 @@
                 title="{{(stuRec.LastInterviewContactItem?'聯絡事項:\n  '+stuRec.LastInterviewContactItem:'')+(stuRec.LastInterviewContactItem&&stuRec.LastInterviewContent?'\n':'')+(stuRec.LastInterviewContent?'內容:\n  '+stuRec.LastInterviewContent:'')}}">
               <div style="width:100%;position: relative;">
                 <div  class=" align-baseline" 
-                style ="white-space: pre-wrap;word-break: break-all;
+                style ="white-space: pre-wrap;
+                word-break: break-all;
                 overflow-y: hidden;
                 text-overflow: ellipsis; 
                 height: 28px;
@@ -104,12 +114,24 @@
                 "  >
                 <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
                 class="text-left">   -->
-                  {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }}
+                  {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }} 
                 </div>
               </div>
             </li>
-            <li data-title="轉介">
-              {{ stuRec.ReferralStatus }}
+   
+
+            <li>
+
+              <i class="material-icons"  (click)="addInterviews($event,stuRec)" style ="color :#799eb3 ;font-size: 19px;">  note_alt</i> 
+
+
+            </li>
+        
+            <li   [routerLink]="['/counsel', 'detail', stuRec.StudentID]">
+          <span> 
+            ...
+          </span>
+             
             </li>
           </ol>
         </li>
@@ -245,3 +267,5 @@
     Loading...
   </div>
 </ng-template>
+
+<app-add-interview-modal #addInterview></app-add-interview-modal>

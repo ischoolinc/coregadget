@@ -1,164 +1,111 @@
 <!-- 新增／修改輔導 Modal -->
 
-<div *ngIf="true"  class="modal fade"
-     id="addInterview"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="addInterviewLabel"
-     aria-hidden="true">
-  <div class="modal-dialog"
-       role="document">
+<div *ngIf="true" class="modal fade" id="addInterview" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"
-            id="addInterviewLabel">
+        <h5 class="modal-title" id="addInterviewLabel">
           {{ editModeString }}輔導紀錄 - {{ _studentName }}
         </h5>
-        <button type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-                (click)="cancel()">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group col-md-4">
-            <label for="schoolYear"
-                   class="col-form-label">
-              <span *ngIf="!_CounselInterview.isSchoolYearHasValue"
-                    class="text-samll text-danger">*</span>
-           <b>學年度</b>   
+            <label for="schoolYear" class="col-form-label">
+              <span *ngIf="!_currentCounselInterview.isSchoolYearHasValue" class="text-samll text-danger">*</span>
+              <b>學年度</b>
             </label>
-            <input type="text"
-                   class="form-control"
-                   id="schoolYear"
-                   placeholder="請輸入學年度"
-                   required
-                   [(ngModel)]="_CounselInterview.SchoolYear"
-                   (keyup)="_CounselInterview.checkValue()" />
+            <input type="text" class="form-control" id="schoolYear" placeholder="請輸入學年度" required
+              [(ngModel)]="_currentCounselInterview.SchoolYear" (keyup)="_currentCounselInterview.checkValue()" />
           </div>
           <div class="form-group col-md-4">
-            <label for="semester"
-                   class="col-form-label">
-              <span class="text-samll text-danger"
-                    *ngIf="!_CounselInterview.isSemesterHasValue">*</span>
-             <b>學期</b> 
+            <label for="semester" class="col-form-label">
+              <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isSemesterHasValue">*</span>
+              <b>學期</b>
             </label>
-            <input type="text"
-                   class="form-control"
-                   id="semester"
-                   placeholder="請輸入學期"
-                   [(ngModel)]="_CounselInterview.Semester"
-                   (keyup)="_CounselInterview.checkValue()" />
+            <input type="text" class="form-control" id="semester" placeholder="請輸入學期"
+              [(ngModel)]="_currentCounselInterview.Semester" (keyup)="_currentCounselInterview.checkValue()" />
           </div>
           <div class="form-group col-md-4">
-            <label for="interviewDate"
-                   class="col-form-label">
-              <span class="text-samll text-danger"
-                    *ngIf="!_CounselInterview.isOccurDateHasValue">*</span>
-             <b> 日期</b>
+            <label for="interviewDate" class="col-form-label">
+              <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
+              <b> 日期</b>
             </label>
-            <input type="date"
-                   class="form-control"
-                   id="interviewDate"
-                   placeholder="請輸入日期"
-                   [(ngModel)]="_CounselInterview.OccurDate"
-                   (keyup)="_CounselInterview.checkValue()"
-                   (ngModelChange)="_CounselInterview.checkValue()" />
+            <input type="date" class="form-control" id="interviewDate" placeholder="請輸入日期"
+              [(ngModel)]="_currentCounselInterview.OccurDate" (keyup)="_currentCounselInterview.checkValue()"
+              (ngModelChange)="_currentCounselInterview.checkValue()" />
           </div>
         </div>
         <div class="d-flex flex-row">
-<!--方式  -->
-        <div class="form-group ">
-          <label class="col-form-label">
-            <span class="text-samll text-danger"
-                  *ngIf="!_CounselInterview.isCounselTypeHasValue">*</span>  <b>方式</b>
-          </label>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <button class="btn btn-light dropdown-toggle"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
-                {{ _CounselInterview.selectCounselType }}
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('面談')">面談</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('電話')">電話</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('聯絡簿')">聯絡簿</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('個別約談家長')">個別約談家長</a>
-                   <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('會議')">會議</a>
-                   <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('E-mail')">E-mail</a>
-                   <a class="dropdown-item"
-                   (click)="_CounselInterview.setCounselType('其他')">其他</a>
+          <!--方式  -->
+          <div class="form-group ">
+            <label class="col-form-label">
+              <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isCounselTypeHasValue">*</span>
+              <b>方式</b>
+            </label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  {{ _currentCounselInterview.selectCounselType }}
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('面談')">面談</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('電話')">電話</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('聯絡簿')">聯絡簿</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('個別約談家長')">個別約談家長</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('會議')">會議</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('E-mail')">E-mail</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setCounselType('其他')">其他</a>
+                </div>
               </div>
+              <ng-container *ngIf="_currentCounselInterview.isCounselTypeOtherDisable === false">
+                <input type="text" id="CounselType" class="form-control"
+                  [(ngModel)]="_currentCounselInterview.CounselTypeOther" />
+              </ng-container>
             </div>
-            <ng-container *ngIf="_CounselInterview.isCounselTypeOtherDisable === false">
-              <input type="text"
-                     id="CounselType"
-                     class="form-control"
-                     [(ngModel)]="_CounselInterview.CounselTypeOther" />
-            </ng-container>
           </div>
-        </div>
-<!-- 對象 -->
-        <div class="form-group">
-          <label class="col-form-label">
-            <span class="text-samll text-danger"
-                  *ngIf="!_CounselInterview.isContactNameHasValue">*</span><b>對象</b> 
-          </label>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <button class="btn btn-light dropdown-toggle"
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
-                {{ _CounselInterview.selectContactName }}
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setContactName('學生')">學生</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setContactName('教職員')">教職員</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setContactName('家長')">家長</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setContactName('專業人員')">專業人員</a>
-                <a class="dropdown-item"
-                   (click)="_CounselInterview.setContactName('其他')">其他</a>
+          <!-- 對象 -->
+          <div class="form-group">
+            <label class="col-form-label">
+              <span class="text-samll text-danger"
+                *ngIf="!_currentCounselInterview.isContactNameHasValue">*</span><b>對象</b>
+            </label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  {{ _currentCounselInterview.selectContactName }}
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setContactName('學生')">學生</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setContactName('教職員')">教職員</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setContactName('家長')">家長</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setContactName('專業人員')">專業人員</a>
+                  <a class="dropdown-item" (click)="_currentCounselInterview.setContactName('其他')">其他</a>
+                </div>
               </div>
+              <ng-container *ngIf="_currentCounselInterview.isContactNameOtherDisable === false">
+                <input type="text" id="CounselType" class="form-control"
+                  [(ngModel)]="_currentCounselInterview.ContactNameOther" />
+              </ng-container>
             </div>
-            <ng-container *ngIf="_CounselInterview.isContactNameOtherDisable === false">
-              <input type="text"
-                     id="CounselType"
-                     class="form-control"
-                     [(ngModel)]="_CounselInterview.ContactNameOther" />
-            </ng-container>
           </div>
-        </div>
 
-<!-- 紀錄者 -->
-        <div class="form-group">
-          <label for="recorder"
-                 class="col-form-label">
-            <span class="text-samll text-danger"></span> <b>記錄者</b>
-          </label>
-          <label class="form-control"
-                 id="recorder">{{
-            _CounselInterview.AuthorName
-            }}</label>
+          <!-- 紀錄者 -->
+          <div class="form-group">
+            <label for="recorder" class="col-form-label">
+              <span class="text-samll text-danger"></span> <b>記錄者</b>
+            </label>
+            <label class="form-control" id="recorder">{{
+              _currentCounselInterview.AuthorName
+              }}</label>
+          </div>
         </div>
-      </div>
         <div class="form-row">
           <!-- <div class="form-group col-md-6">
             <label for="interviewee"
@@ -176,88 +123,63 @@
           </div> -->
           <div class="form-group ">
             <div class="custom-control custom-checkbox">
-              <input type="checkbox"
-                     class="custom-control-input"
-                     id="isPublic"
-                     (click)="_CounselInterview.checkValue()"
-                     (keyup)="_CounselInterview.checkValue()"
-                     [(ngModel)]="_CounselInterview.isPublic" />
-              <label class="custom-control-label"
-                     for="isPublic">輔導資料公開給輔導室，以利銜接。</label>
+              <input type="checkbox" class="custom-control-input" id="isPublic"
+                (click)="_currentCounselInterview.checkValue()" (keyup)="_currentCounselInterview.checkValue()"
+                [(ngModel)]="_currentCounselInterview.isPublic" />
+              <label class="custom-control-label" for="isPublic">輔導資料公開給輔導室，以利銜接。</label>
             </div>
           </div>
 
-       
+
         </div>
         <div class="form-group">
-          <label for="contactMatter"
-                 class="col-form-label">
-            <span class="text-samll text-danger"
-                  *ngIf="!_CounselInterview.isContactItemHasValue">*</span>
-        <b>聯絡事項</b>    
+          <label for="contactMatter" class="col-form-label">
+            <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContactItemHasValue">*</span>
+            <b>聯絡事項</b>
           </label>
-          <textarea class="form-control"
-                    id="contactMatter"
-                    rows="3"
-                    placeholder="請輸入聯絡事項"
-                    [(ngModel)]="_CounselInterview.ContactItem"
-                    (keyup)="_CounselInterview.checkValue()"></textarea>
+          <textarea class="form-control" id="contactMatter" rows="3" placeholder="請輸入聯絡事項"
+            [(ngModel)]="_currentCounselInterview.ContactItem"
+            (keyup)="_currentCounselInterview.checkValue()"></textarea>
         </div>
         <div class="form-group">
-          <label for="description"
-                 class="col-form-label">
-            <span class="text-samll text-danger"
-                  *ngIf="!_CounselInterview.isContentHasValue">*</span>
-          <b>輔導內容</b>  
+          <label for="description" class="col-form-label">
+            <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContentHasValue">*</span>
+            <b>輔導內容</b>
             <span class="text-muted">（會顯示於輔導記錄卡）</span>
           </label>
-          <textarea class="form-control"
-                    id="description"
-                    rows="3"
-                    placeholder="請輸入輔導內容"
-                    [(ngModel)]="_CounselInterview.Content"
-                    (keyup)="_CounselInterview.checkValue()"></textarea>
+          <textarea class="form-control" id="description" rows="3" placeholder="請輸入輔導內容"
+            [(ngModel)]="_currentCounselInterview.Content" (keyup)="_currentCounselInterview.checkValue()"></textarea>
         </div>
 
         <div class="form-group">
-          <label for="semester"
-                 class="col-form-label">
-            <span class="text-samll text-danger"
-                  *ngIf="!_CounselInterview.isCategoryHasValue">*</span>
-            <b>類別</b>  
+          <label for="semester" class="col-form-label">
+            <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isCategoryHasValue">*</span>
+            <b>類別</b>
           </label>
           <div class="d-flex flex-wrap">
-            <div class="custom-control custom-checkbox w-25"
-                 *ngFor="let item of _CounselInterview._category">
-              <input type="checkbox"
-                     class="custom-control-input"
-                     [id]="item.answer_code"
-                     [checked]="item.answer_checked"
-                     (click)="item.setAnswerCheck()"
-                     (change)="checkChange(item,_CounselInterview)" />
-              <label class="custom-control-label"
-                     [for]="item.answer_code">
-                <app-sentence [text]="item.answer_text"
-                              [(ngModel)]="item.answer_martix"></app-sentence>
+            <div class="custom-control custom-checkbox w-25" *ngFor="let item of _currentCounselInterview._category">
+              <input type="checkbox" class="custom-control-input" [id]="item.answer_code"
+                [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
+                (change)="checkChange(item,_currentCounselInterview)" />
+              <label class="custom-control-label" [for]="item.answer_code">
+                <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
               </label>
             </div>
           </div>
-          <p class ="mt-3"style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報內，工作月統計報表之統計為個案上之個案類別。</p>
+          <p class="mt-3" style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報內，工作月統計報表之統計為個案上之個案類別。</p>
         </div>
 
         <ng-container *ngIf="referralVisible === true">
           <div class="custom-control custom-checkbox">
-            <input type="checkbox"
-                   class="custom-control-input"
-                   id="referral"
-                   (click)="_CounselInterview.checkValue()"
-                   (keyup)="_CounselInterview.checkValue()"
-                   [(ngModel)]="_CounselInterview.isReferralValue" />
-            <label class="custom-control-label"
-                   for="referral">轉介輔導室</label>
+            <input type="checkbox" class="custom-control-input" id="referral"
+              (click)="_currentCounselInterview.checkValue()" (keyup)="_currentCounselInterview.checkValue()"
+              [(ngModel)]="_currentCounselInterview.isReferralValue" />
+            <label class="custom-control-label" for="referral">轉介輔導室</label>
           </div>
+
+
           <!-- 新增轉介輔導室 -->
-<!-- 
+          <!-- 
           <button type="button" class="btn btn-outline-primary">
             <mat-icon 
             class = " cuser"  
@@ -271,32 +193,79 @@
 
           </div>
 
-          <div class="form-group"
-               *ngIf="_CounselInterview.isReferralValue">
-            <label for="referralDescription"
-                   class="col-form-label">轉介說明(學生問題概述，轉介原因及希望協助的事項)</label>
-            <textarea class="form-control"
-                      id="referralDescription"
-                      rows="3"
-                      placeholder="請輸入轉介說明"
-                      [(ngModel)]="_CounselInterview.ReferralDesc"></textarea>
+          <div class="form-group" *ngIf="_currentCounselInterview.isReferralValue">
+            <label for="referralDescription" class="col-form-label">轉介說明(學生問題概述，轉介原因及希望協助的事項)</label>
+            <textarea class="form-control" id="referralDescription" rows="3" placeholder="請輸入轉介說明"
+              [(ngModel)]="_currentCounselInterview.ReferralDesc"></textarea>
           </div>
         </ng-container>
 
       </div>
       <div class="modal-footer">
-        <button type="button"
+        <!-- <button type="button"
                 class="btn btn-dark"
                 data-dismiss="modal"
                 (click)="cancel()">
           取消
-        </button>
-        <button type="button"
-                class="btn btn-info"
-                (click)="save()"
-                [disabled]="_CounselInterview.isSaveDisable">
-          儲存
-        </button>
+        </button> -->
+
+        <div style="padding-bottom :5px;" *ngIf="isAllowSerial" class="custom-control custom-checkbox float-left">
+          <input type="checkbox" class="custom-control-input" id="isSerials" (click)="setIsSerial()"
+            [(ngModel)]="isSerialMode" />
+          <label class="custom-control-label" for="isSerials">
+            <b>連續新增， 切換學生即儲存。</b></label>
+        </div>
+        <div>
+          <button *ngIf="!isSerialMode" type="button" class="btn btn-info" (click)="save()"
+            [disabled]="_currentCounselInterview.isSaveDisable">
+            <b>
+              儲存
+            </b>
+          </button>
+          <!-- <span *ngIf="isSerial">
+        
+          </span> -->
+        </div>
+
+      </div>
+      <div *ngIf="isSerialMode" id="nextAndPervious" class="d-flex justify-content-between  mb-2">
+        <div class="d-flex justify-content-center" (click)="pervious()"
+          style=" 
+           padding: 10px;
+           color :#203a47 ;
+           font-size: 17px;
+           height: 45px ;
+           width :200px ;
+           cursor: pointer;">
+
+          <div  *ngIf="perviousStudent?.StudentName">
+            <span> 
+              <i class="material-icons"> navigate_before</i>
+               {{ perviousStudent?.StudentName }} ({{perviousStudent?.SeatNo}})
+              </span>
+          </div>
+
+        </div>
+
+        <div  class="d-flex justify-content-center" (click)="next()"
+          style=" 
+          padding: 10px;  
+          color :#203a47 ;
+          font-size: 17px;
+          height: 45px ;
+          width :200px ; 
+          cursor: pointer; ">
+
+          <div  *ngIf="nextStudent?.StudentName">
+
+            <span>{{ nextStudent?.StudentName }} ({{nextStudent?.SeatNo}})
+              <i class="material-icons"> navigate_next</i>
+            </span>
+
+          </div>
+
+        </div>
+
       </div>
     </div>
   </div>
@@ -306,5 +275,3 @@
 
 
 <!--    proto 用 -->
-
-

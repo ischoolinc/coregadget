@@ -177,7 +177,8 @@ ul.rwd-table .thead li, ul.rwd-table .tr li{
 ul.rwd-table .tr li.sticky-top {
     border :none !important;
     /* background:  #94d0cc !important  ; */
-    background:  #94d0cc8c !important  ;
+    /* background:  #94d0cc8c !important  ; */
+    background:  #b9dedc !important  ;
     color :#3e495f ;
     font-size: 16px;
 }

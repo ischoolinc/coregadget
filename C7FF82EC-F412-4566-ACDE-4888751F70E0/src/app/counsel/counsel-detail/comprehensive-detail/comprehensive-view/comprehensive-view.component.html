@@ -55,7 +55,7 @@
 <ng-template #plugin>
   <ng-container *ngIf="!isLoading">
     <ng-container *ngIf="fillInSection.length == 1">
-      <div class="mb-2" style="background-color:pink;">
+      <div class="mb-2" >
         <button *ngIf="fillInSection[0].FillInSectionID" class="btn btn-info ml-1 btn-edit"
           [routerLink]="['../../../edit', fillInSection[0].FillInSectionID]">
           <i class="material-icons" style="font-size: 16px;">edit</i>
