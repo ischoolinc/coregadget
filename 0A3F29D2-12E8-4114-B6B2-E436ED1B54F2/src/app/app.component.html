@@ -1,0 +1,46 @@
+<!--
+{{getJSON (currentStudentRankInto)}}
+<hr>
+{{getJSON (currentStudent)}} -->
+<div class="container-fluid" style="width:80%; margin :auto;margin-top: 50px;">
+
+<div *ngIf="myChilern" >
+
+  <button *ngFor="let studentInfo of myChilern" type="button"
+           class="   "
+           [attr.Class]="getClassName(studentInfo)"
+           (click)="clickChild(studentInfo)">{{studentInfo.StudentName}}</button>
+</div>
+<div class="header" >
+  <div class="row align-items-start">
+    <div class="col-3  col-sm-2">
+
+    </div>
+    <div class="col-3 align-baseline   col-sm-2">
+
+    <div class=" align-baseline h-100 ">第一次段考</div>
+
+    </div>
+    <div class="col-3  col-sm-2">
+
+    </div>
+    </div>
+
+  </div>
+  <ng-container *ngFor="let rankInfo of currentStudentRankInto?.RankInfos">
+
+    <div class="row align-items-start mt-2 section align-baseline">
+      <div class="col-3  col-sm-2">
+      <span class="side_header">{{rankInfo.rank_type}} ({{rankInfo.rank_name}})</span>
+      </div>
+      <div class="col-3  col-sm-2">
+        {{rankInfo.rank}} / {{rankInfo.matrix_count}}
+      </div>
+      <div class="col-3  col-sm-2" >
+      </div>
+      </div>
+
+  </ng-container>
+
+<router-outlet></router-outlet>
+</div>
