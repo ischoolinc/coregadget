@@ -2,45 +2,229 @@
 {{getJSON (currentStudentRankInto)}}
 <hr>
 {{getJSON (currentStudent)}} -->
+
+
+
 <div class="container-fluid" style="width:80%; margin :auto;margin-top: 50px;">
 
-<div *ngIf="myChilern" >
 
-  <button *ngFor="let studentInfo of myChilern" type="button"
-           class="   "
-           [attr.Class]="getClassName(studentInfo)"
-           (click)="clickChild(studentInfo)">{{studentInfo.StudentName}}</button>
-</div>
-<div class="header" >
-  <div class="row align-items-start">
-    <div class="col-3  col-sm-2">
 
-    </div>
-    <div class="col-3 align-baseline   col-sm-2">
+  <div *ngIf="myChilern">
 
-    <div class=" align-baseline h-100 ">第一次段考</div>
-
-    </div>
-    <div class="col-3  col-sm-2">
-
-    </div>
-    </div>
-
+    <button *ngFor="let studentInfo of myChilern" type="button" class="   " [attr.Class]="getClassName(studentInfo)"
+      (click)="clickChild(studentInfo)">{{studentInfo.StudentName}}</button>
   </div>
-  <ng-container *ngFor="let rankInfo of currentStudentRankInto?.RankInfos">
+
+
+
+
+  <!-- <div class="header">
+    <div class="row align-items-start">
+      <div class="col-3  col-sm-2">
+
+      </div>
+
+
+
+
+      <div class="col-3 align-baseline   col-sm-2">
+
+        <div class=" align-baseline h-100 ">第一次段考</div>
+
+      </div>
+      <div class="col-3  col-sm-2">
+
+      </div>
+    </div>
+
+  </div> -->
+
+
+  <!-- <ng-container *ngFor="let rankInfo of currentStudentRankInto?.RankInfos">
 
     <div class="row align-items-start mt-2 section align-baseline">
       <div class="col-3  col-sm-2">
-      <span class="side_header">{{rankInfo.rank_type}} ({{rankInfo.rank_name}})</span>
+        <span class="side_header">{{rankInfo.rank_type}} ({{rankInfo.rank_name}})</span>
       </div>
       <div class="col-3  col-sm-2">
         {{rankInfo.rank}} / {{rankInfo.matrix_count}}
       </div>
-      <div class="col-3  col-sm-2" >
+      <div class="col-3  col-sm-2">
       </div>
-      </div>
+    </div>
 
-  </ng-container>
+  </ng-container> -->
 
-<router-outlet></router-outlet>
+
+
+  <!-- [(ngModel)]="classRankSelect" -->
+  <!-- 新版 -->
+  <div class="d-flex justify-content-end" >
+    <!-- <div *ngIf="isSmallScreen" class="btn-group mb-2 float-left" style ="height: 22px; font-size: 16px; padding: 0px;">
+      <button type="button" class="btn " data-bs-toggle="dropdown" aria-expanded="false" style ="margin :0px" >
+        Action
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+
+      </ul>
+    </div> -->
+    <div class="form-check">
+      <input   (change)="rankTypeSelected = '班排名'" [checked]="rankTypeSelected=='班排名'" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+      <label class="form-check-label" for="flexRadioDefault1">
+       班排
+      </label>
+    </div>
+ <div style ="width :12px"></div>
+    <div class=" form-check">
+      <input   (change)="rankTypeSelected = '類別1排名'" [checked]="rankTypeSelected=='類別1排名'" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+      <label class="form-check-label" for="flexRadioDefault2">
+      類排(年排名)
+      </label>
+    </div>
+
+  </div>
+
+
+
+  <!-- web 畫面 -->
+<div *ngIf="!isSmallScreen">
+  <table>
+    <thead>
+      <tr  class = "tr-section" style="font-size: 17px;">
+        <th style ="text-align:center;" >
+          科目
+        </th>
+        <th  style ="text-align:center;" *ngFor="let item of exams">
+
+          <span>
+            {{item.examName}}
+          </span>
+
+        </th>
+      </tr>
+      <!-- <tr class = "sub-section">
+        <th>
+        </th>
+        <th  style ="text-align:center;" *ngFor="let item of exams">
+               {{item.examName}}
+        </th>
+      </tr> -->
+    </thead>
+    <tbody>
+      <tr *ngFor="let subj of subjects">
+        <td style ="text-align:center; ">
+           <b style ="color: rgb(59, 72, 75)!important"> {{subj.subjectName}}</b>
+        </td>
+         <td  style ="text-align:center;" *ngFor="let exam of exams">
+         <ng-container *ngIf="getRankBySubjectAndType(subj.subjectName ,exam.examID)" >
+           {{getRankBySubjectAndType(subj.subjectName ,exam.examID)?.rank}}   /   {{getRankBySubjectAndType(subj.subjectName ,exam.examID)?.matrix_count}}
+         </ng-container>
+         </td>
+      </tr>
+      <tr class="total"  >
+       <td  style = "  text-align:center; font-size:17px ; color :rgb(138, 167, 199) !important ">
+         <div>
+          <b>加權總分</b>
+
+         </div>
+
+       </td>
+       <td  style ="text-align:center;  " *ngFor="let exam of exams">
+        <ng-container *ngIf="getRankBySubjectAndType('加權總分',exam.examID)" >
+        {{getRankBySubjectAndType('加權總分',exam.examID)?.rank}} /   {{getRankBySubjectAndType('加權總分',exam.examID)?.matrix_count}}
+      </ng-container>
+      </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+    <!-- App 畫面  -->
+<div *ngIf="isSmallScreen">
+  <table>
+    <thead>
+      <tr  class = "tr-section" style="font-size: 17px;">
+        <th style ="text-align:center;" >
+          科目
+        </th>
+        <th  class="d-flex justify-content-between jumbotron vertical-center" style =" text-align:center;">
+          <div class="container d-flex align-items-center">
+          <div class="row w-100 ">
+          <div class=" col-2"
+            >
+               <i   (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex-1)" [hidden]="!examSelectedHelper.previousExam" class="material-icons" style ="color:#6b809e">navigate_before</i>
+            </div>
+            <div class ="col-8 align-middle" style="text-align:center ">
+                {{examSelectedHelper.currentExam?.examName}}
+            </div>
+            <div
+              class="material-icons col-2"
+             >
+              <i   (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex + 1)" class="material-icons" [hidden] ="!examSelectedHelper.nextExam" style ="color:#6b809e">
+                navigate_next
+              </i>
+
+            </div>
+          </div>
+        </div>
+        </th>
+      </tr>
+
+    </thead>
+    <tbody>
+      <tr *ngFor="let subj of subjects">
+        <td style ="text-align:center; ">
+           <b style ="color: rgb(59, 72, 75)!important"> {{subj.subjectName}}</b>
+        </td>
+         <td  style ="text-align:center;" >
+         <ng-container *ngIf="getRankBySubjectAndType(subj.subjectName ,examSelectedHelper.currentExam?.examID)" >
+           {{getRankBySubjectAndType(subj.subjectName ,examSelectedHelper.currentExam?.examID)?.rank}}   /   {{getRankBySubjectAndType(subj.subjectName ,examSelectedHelper.currentExam?.examID)?.matrix_count}}
+         </ng-container>
+         </td>
+      </tr>
+      <tr class="total"  >
+       <td  style = "  text-align:center; font-size:17px ; color :rgb(138, 167, 199) !important ">
+         <div>
+          <b>加權總分</b>
+
+         </div>
+
+       </td>
+       <td  style ="text-align:center;  " >
+        <ng-container *ngIf="getRankBySubjectAndType('加權總分',examSelectedHelper.currentExam?.examID)" >
+        {{getRankBySubjectAndType('加權總分',examSelectedHelper.currentExam?.examID)?.rank}} /   {{getRankBySubjectAndType('加權總分',examSelectedHelper.currentExam?.examID)?.matrix_count}}
+      </ng-container>
+      </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- <div *ngIf="examSelectedHelper.previousExam" class ="perviousExam"
+  (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex-1)">
+          {{examSelectedHelper.previousExam?.examName}}
+  </div >
+
+  <div *ngIf="examSelectedHelper.nextExam"
+    class= "nextExam"
+    (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex+1)">
+    {{examSelectedHelper.nextExam?.examName}}
+  </div> -->
+
+</div>
+
+
+<div  style ="height: 20px; width: 100%;">
+
+
+  <router-outlet></router-outlet>
 </div>

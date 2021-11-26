@@ -21,11 +21,6 @@ export  class studentInfo
 {
   constructor()
   {
-    // this.ref_student_id = rankInfoSource.ref_student_id ;
-    // this.student_name = rankInfoSource.student_name ;
-    // this.class_name = rankInfoSource.class_name ;
-    // this.student_name =rankInfoSource.student_name ;
-    // this.seat_no =rankInfoSource.seat_no;
     this.RankInfos =[];
   }
     ref_student_id :string ="";
@@ -65,19 +60,23 @@ export interface RankInfoSource{
   matrix_count :string;
   /**排名名稱 */
   rank_name :string;
+  /** 試別ID */
+  ref_exam_id :string ;
+
+  /**科目名稱或 平均等等 */
+  item_name :string ;
+
 
 }
 
 export interface ChildInfo
 {
-StudentName:string ;
-StudentID :string ;
-StudentNumber:string;
-isSelected:boolean;
+    StudentName:string ;
+    StudentID :string ;
+    StudentNumber:string;
+    isSelected:boolean;
 
 }
-
-
 
 
 /**
@@ -100,3 +99,54 @@ isSelected:boolean;
 	<school_year>110</school_year>
  *
 */
+
+
+export class  Exam {
+constructor( examID :string ,examName :string ){
+  this.examID = examID ;
+  this.examName = examName ;
+}
+examID :string = "";
+examName :string = "";
+}
+
+export class  SubjectInfo{
+  constructor(subjectName :string ){
+
+  this.subjectName = subjectName ;
+  }
+
+  subjectName
+
+
+}
+
+
+/**service : _.GetExamsAndSubjects */
+export interface subjAndExamInfo{
+  student_id :string ;
+  student_name :string ;
+  seat_no :string ;
+  course_name :string ;
+  subject :string ;
+  template_name :string ;
+  exam_name :string ;
+  exam_id :string ;
+  exam_display_order:string  ;
+}
+/*
+
+<rs>
+	<name>王湘淇</name>
+	<seat_no>1</seat_no>
+	<course_name>國一1 國文</course_name>
+	<subject>國文</subject>
+	<template_name>一般科目</template_name>
+	<exam_name>第一次段考</exam_name>
+	<exam_display_order>1</exam_display_order>
+</rs>
+*/
+
+
+
+
