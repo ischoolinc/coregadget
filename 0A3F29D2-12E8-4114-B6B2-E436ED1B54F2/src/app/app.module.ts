@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {LayoutModule} from '@angular/cdk/layout';
 import { ExamSelectedHelper } from './helper/examSelectHelper';
 import {MatIconModule} from '@angular/material/icon';
+import { CustomizeLogyHelper } from './helper/CustomizeLogyHelper';
 @NgModule({
   declarations: [
 
@@ -22,7 +23,7 @@ import {MatIconModule} from '@angular/material/icon';
     LayoutModule,
     MatIconModule
   ],
-  providers: [GadgetService,ExamSelectedHelper],
+  providers: [GadgetService,ExamSelectedHelper,CustomizeLogyHelper],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

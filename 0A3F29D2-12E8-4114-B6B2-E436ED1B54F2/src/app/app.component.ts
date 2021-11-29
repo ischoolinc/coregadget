@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import { Contract, GadgetService } from './gadget.service';
+import { CustomizeLogyHelper } from './helper/CustomizeLogyHelper';
 import { ExamSelectedHelper } from './helper/examSelectHelper';
 import { RankInfo, studentInfo, RankInfoSource, ChildInfo, Exam, SubjectInfo, subjAndExamInfo } from './vo/vo';
 
@@ -46,6 +47,7 @@ export class AppComponent {
   //建構子
   constructor(
     public examSelectedHelper :ExamSelectedHelper ,
+    private customizeLogyHelper:CustomizeLogyHelper,
     private gadget: GadgetService
     ,breakpointObserver: BreakpointObserver) {
 
@@ -222,11 +224,13 @@ export class AppComponent {
       subjAndExamInfos.forEach(item => {
         // debugger
         const hasValue = this.exams.find(x => x.examID == item.exam_id)
-        if (!hasValue) {
+        if (!hasValue &&this.customizeLogyHelper.isExamShow(item.exam_name) ) {
           // 1.整理試別
           const exam = new Exam(item.exam_id, item.exam_name);
           // push
-          this.exams.push(exam);
+
+            this.exams.push(exam);
+
         }
 
          // 2.整理科目
@@ -241,6 +245,7 @@ export class AppComponent {
 
     }
   }
+
 
 
   /**取得 科目及 試別  【家長】*/
@@ -264,7 +269,7 @@ export class AppComponent {
       subjAndExamInfos.forEach(item => {
 
         const hasValue = this.exams.find(x => x.examID == item.exam_id)
-        if (!hasValue) {
+        if (!hasValue &&this.customizeLogyHelper.isExamShow(item.exam_name)) {
           // 1.整理試別
           const exam = new Exam(item.exam_id, item.exam_name);
           // push
