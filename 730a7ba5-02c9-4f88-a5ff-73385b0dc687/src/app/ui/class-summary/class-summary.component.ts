@@ -9,7 +9,7 @@ import FileSaver from 'file-saver';
   styleUrls: ['./class-summary.component.scss']
 })
 export class ClassSummaryComponent implements OnInit {
-
+  devsection :any ;
   studentsInfo: leaveType[] = [];
   periodTable: any;
   absenceName: any;
@@ -76,7 +76,7 @@ export class ClassSummaryComponent implements OnInit {
       tempPeriodTypeList.push(periodDetail.Type);
     });
     tempPeriodTypeList.unshift(this.selectedAll);
-    this.typeList = tempPeriodTypeList.filter( (el, i, arr) => arr.indexOf(el) === i);
+    this.typeList = tempPeriodTypeList.filter((el, i, arr) => arr.indexOf(el) === i);
     this.selectedType = this.typeList[0];
     await this.queryStudentAttendance();
   }
@@ -87,60 +87,87 @@ export class ClassSummaryComponent implements OnInit {
   async queryStudentAttendance() {
     const studentList: StudentListResponse = await this.attendanceService.getStudentAttendanceByClassID(this.selectedClass, this.selectedSemester);
     await this.calStudentAttendance(studentList);
+    // 取得非明細資了
+    const rsp = await this.attendanceService.getGetStudAttendanceNoDetailByClassID(this.selectedClass, this.selectedSemester)
+    const studentDetailList: IAbsenceWithNoDetil[] = [].concat(rsp.result || [])
+    await this.addStudentAddendanceWithNoDetail(studentDetailList);
   }
 
   /**
    * 統計學生各種缺曠的類型數目
-   * @param studentList
+   * @param studentList 學生缺礦資料
    */
   async calStudentAttendance(studentList: StudentListResponse) {
     // reset
     this.studentMappingTable.clear();
     this.aryStudents = [];
-    // foreach attendance record .......
-    const temp: StudentAttendanceInfo[] = [].concat(studentList.result || []);
+    // 取得資料學生缺礦資料
+    const studentAttendanceInfo: StudentAttendanceInfo[] = [].concat(studentList.result || []);
     // 勾選顯示全部學生
-    if (this.showAllStudents) {
-      const tempStudentList: classIdStudents[] = await this.attendanceService.getStudents(this.selectedClass.ClassID);
-      tempStudentList.forEach((student) => {
+    // if (this.showAllStudents) {
+    if (true) {
+      const allClassStudentList: classIdStudents[] = await this.attendanceService.getStudents(this.selectedClass.ClassID);
+      allClassStudentList.forEach((student) => {
         if (!this.studentMappingTable.has(student.seatNumber)) {
           const studentTempStatus = new StudentAttendanceStatistics(student.studentId, student.studentName, student.seatNumber);
           this.studentMappingTable.set(student.seatNumber, studentTempStatus);
           const studentInfo = {
             studentId: student.studentId,
             name: student.studentName,
-            seat_no: student.seatNumber
+            seat_no: student.seatNumber,
           }
           this.aryStudents.push(studentInfo);
         }
       });
     }
-    temp.forEach((eachStudentAttendanceInfo) => {
-      // 計算各學生缺曠的統計
+
+    // 計算各學生缺曠的統計
+    studentAttendanceInfo.forEach((eachStudentAttendanceInfo) => {
+
       if (!this.studentMappingTable.has(eachStudentAttendanceInfo.seat_no)) {
         this.studentMappingTable.set(
           eachStudentAttendanceInfo.seat_no,
-          new StudentAttendanceStatistics(eachStudentAttendanceInfo.seat_no,eachStudentAttendanceInfo.name,eachStudentAttendanceInfo.seat_no));
+          new StudentAttendanceStatistics(eachStudentAttendanceInfo.seat_no, eachStudentAttendanceInfo.name, eachStudentAttendanceInfo.seat_no));
         const studentInfo = {
           studentId: eachStudentAttendanceInfo.ref_student_id,
           name: eachStudentAttendanceInfo.name,
-          seat_no: eachStudentAttendanceInfo.seat_no
+          seat_no: eachStudentAttendanceInfo.seat_no,
+
         }
         this.aryStudents.push(studentInfo);
       }
       const studAttendStatistics = this.studentMappingTable.get(eachStudentAttendanceInfo.seat_no);
+
       studAttendStatistics.add(eachStudentAttendanceInfo, this.selectedType, this.selectedAll, this.periodTypeMap);
     });
+
+    console.log("studentMappingTable",this.studentMappingTable) ;
     this.aryStudents.length === 0 ? this.ifNoResult = true : this.ifNoResult = false;
-    this.aryStudents.sort((a, b) => parseInt(a.seat_no) > parseInt(b.seat_no) ? 1: -1);
+    this.aryStudents.sort((a, b) => parseInt(a.seat_no) > parseInt(b.seat_no) ? 1 : -1);
   }
 
-  // 供下一頁參考的資料
+
+
+  /** 取得非明細資料 */
+  async addStudentAddendanceWithNoDetail(studenNoDetail: IAbsenceWithNoDetil[]) {
+
+    if (studenNoDetail) {
+      studenNoDetail.forEach(attNodetail => {
+        debugger
+        const studAttendStatistics = this.studentMappingTable.get(attNodetail.seat_no);
+        if (studAttendStatistics) {
+          studAttendStatistics.addWithNodDetail(attNodetail, this.selectedType, this.selectedAll, this.periodTypeMap)
+        }
+      })
+    }
+  }
+
+  /** 供下一頁參考的資料*/
   nextPage(studentInfo: StudentAttendanceInfo) {
     this.attendanceService.fillInStudentInfo(studentInfo);
   }
 
-  // 匯出報表
+  /** 匯出報表*/
   exportFile(type): void {
 
     let element = this.table.nativeElement;
@@ -164,6 +191,12 @@ export class ClassSummaryComponent implements OnInit {
   getSemesterString(semester: SemesterInfo) {
     return `${semester?.school_year}學年第${semester?.semester}學期`;
   }
+
+getDevelopsection(obj: any )
+{
+return JSON.stringify(obj);
+}
+
 }
 
 
@@ -172,6 +205,7 @@ class StudentAttendanceStatistics {
   refStudentId: string;
   seatNumber: string;
   name: string;
+  has_data: boolean;
   attendanceMapping: Map<string, number> = new Map(); // <key>缺曠名稱 / <value>統計數目
   attendanceRecords: StudentAttendanceInfo[] = [];
 
@@ -179,16 +213,21 @@ class StudentAttendanceStatistics {
     this.refStudentId = studentId;
     this.name = studentName;
     this.seatNumber = seatNumber;
+
   }
 
 
   public add(attendRecord: StudentAttendanceInfo, attendanceType: string, selectAll: string, periodTypeMap: Map<string, string>) {
+    this.has_data = true;
     this.attendanceRecords.push(attendRecord);
     this.parseAttendance(attendRecord.detail, attendanceType, selectAll, periodTypeMap);
   }
 
   parseAttendance(xmlDetail: Object, attendanceType: string, selectAll: string, periodTypeMap: Map<string, string>) {
+
     const personalAttendance: studentObj = node2json.xml2obj(xmlDetail);
+    console.log("personalAttendance", personalAttendance)
+
     const temp: periodTypeDetail[] = [].concat(personalAttendance.Attendance.Period || []);
     temp.forEach((period) => {
       const absType = period.AbsenceType;
@@ -200,6 +239,24 @@ class StudentAttendanceStatistics {
       }
     });
   }
+
+
+  /** 增加非明細統計 Jean*/
+  addWithNodDetail(absenceWithNoDetil: IAbsenceWithNoDetil, selectAll: string, attendanceType: string, periodTypeMap: Map<string, string>) {
+    this.has_data = true;
+    if (!this.attendanceMapping.has(absenceWithNoDetil.name) && periodTypeMap.get(absenceWithNoDetil.name) || (attendanceType === selectAll)) {
+      this.attendanceMapping.set(absenceWithNoDetil.name, 0);
+    }
+    if ((attendanceType === selectAll) || (periodTypeMap.get(absenceWithNoDetil.name) === attendanceType)) {
+      let num: number = parseInt(absenceWithNoDetil.count, 10); // 取得非獎懲
+      console.log(absenceWithNoDetil)
+      console.log("+", num)
+      this.attendanceMapping.set(absenceWithNoDetil.name, this.attendanceMapping.get(absenceWithNoDetil.name) + num);
+    }
+  }
+
+
+
 
 }
 
@@ -226,4 +283,27 @@ interface leaveType {
       AbsenceType: string;
     }[];
   }[];
+}
+
+
+/** 非明細統計 [attendance.getAttendanceNoDetailByID]]*/
+export interface IAbsenceWithNoDetil {
+  school_year: string;
+  semester: string;
+  ref_student_id: string;
+  count: string;
+  name: string;
+  periodtype: string;
+  seat_no: string;
+}
+
+/**放缺曠資料的地方 */
+class AbsenceWithNoDetil implements IAbsenceWithNoDetil {
+  school_year: string = "";
+  semester: string = "";
+  ref_student_id: string = "";
+  count: string = "";
+  name: string = "";
+  periodtype: string = "";
+  seat_no: string = "";
 }

@@ -8,6 +8,8 @@
 </head>
 
 <body>
+
+
   <div class="container-fluid cbs d-flex justify-content-between flex-column">
     <div id="index" page>
       <nav aria-label="breadcrumb text-nowrap text-truncate">
@@ -23,7 +25,7 @@
                     (selectionChange)="querySemesters()">
             <mat-option id="" [value]="cls"
                         *ngFor="let cls of classList">
-              {{cls.ClassName}} </mat-option>
+              {{cls?.ClassName}} </mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -74,7 +76,7 @@
             </tr>
           </thead>
           <tbody *ngFor=" let studentInfo of aryStudents">
-            <tr class="collapsed" data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
+            <tr *ngIf="showAllStudents ||  studentMappingTable.get(studentInfo.seat_no).has_data" class="collapsed" data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
               <td data-th="座號" (click) ="nextPage(studentInfo)" routerLink="/student-summary">{{ studentInfo.seat_no}}</td>
               <td data-th="姓名" (click) ="nextPage(studentInfo)" routerLink="/student-summary" [innerHtml]="studentInfo.name"></td>
               <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center" (click) ="nextPage(studentInfo)" routerLink="/student-summary">
