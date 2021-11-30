@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AttendanceService } from 'src/app/dal/attendance.service';
 import FileSaver from 'file-saver';
+import { IAbsenceWithNoDetil } from '../class-summary/class-summary.component';
 
 @Component({
   selector: 'app-student-summary',
@@ -42,35 +43,41 @@ export class StudentSummaryComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    this.getStudentInfo();
+    await this.getStudentInfo();
+    // 取得學生缺礦資料 (不含非明細)
     const obj = await this.attendanceService.getStudentAttendance(this.attendanceService.selectedStudentID);
-    this.parseStudentAttendanceInfo(obj);
+    await this.parseStudentAttendanceInfo(obj);
+    // 取得非明細資訊
+    const rsp = await this.attendanceService.getGetStudAttendanceNoDetailByStuID(this.attendanceService.selectedStudentID)
+    const studentAttdudanceNoDetail = [].concat(rsp.result || []);
+    await this.addStudAttensInfoNoDetail(studentAttdudanceNoDetail);
     this.periodTable = await this.attendanceService.getPeriodMappingTable();
     this.sortMap();
+    console.log("semester ", this.sortedStudentList);
   }
 
   /**
    * 抓取本次查詢的學生明細
    */
-  getStudentInfo() {
+  async getStudentInfo() {
     this.selectedName = this.attendanceService.selectedName;
     this.selectedId = this.attendanceService.selectedStudentID;
   }
 
   /**
    * 透過學年度學期當作key，將缺曠明細當作value
-   * @param obj 學生缺曠明細
+   * @param studentAttendanceList 學生缺曠明細
    */
-  parseStudentAttendanceInfo(obj: StudentAttendanceList) {
-    const temp: StudentAttendanceRecord[] = [].concat(obj.Response.Attendance || []);
+  parseStudentAttendanceInfo(studentAttendanceList: StudentAttendanceList) {
+    const temp: StudentAttendanceRecord[] = [].concat(studentAttendanceList.Response.Attendance || []);
     // 對於每一筆學生缺曠紀錄
     temp.forEach((studentAttendanceList) => {
       // 使用學年度+學期作為key
-      const stdKey = studentAttendanceList.SchoolYear + '-' + studentAttendanceList.Semester;
+      const keyYearSemester = studentAttendanceList.SchoolYear + '-' + studentAttendanceList.Semester;
       // 判斷是否存在此學年度學期
-      if (!this.studentMappingStatics.has(stdKey)) {
+      if (!this.studentMappingStatics.has(keyYearSemester)) {
         const absenceMappingStatics = new Map();
-        this.studentMappingStatics.set(stdKey, absenceMappingStatics);
+        this.studentMappingStatics.set(keyYearSemester, absenceMappingStatics);
       }
       // 計算各類型缺曠的數目
       const stdDetailPeriod: AbsenceDetail[] = [].concat(studentAttendanceList.Detail.Period || []);
@@ -85,12 +92,12 @@ export class StudentSummaryComponent implements OnInit {
         }
 
         // 判斷是否有重複的缺曠類型
-        if (!this.studentMappingStatics.get(stdKey).has(eachAbsenceType.AbsenceType)) {
+        if (!this.studentMappingStatics.get(keyYearSemester).has(eachAbsenceType.AbsenceType)) {
           const tempAbsenceDetail = {
             count: 0,
             detail: new Map()
           };
-          this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType, tempAbsenceDetail);
+          this.studentMappingStatics.get(keyYearSemester).set(eachAbsenceType.AbsenceType, tempAbsenceDetail);
         }
 
         // 組合expand-panel的字串
@@ -102,14 +109,41 @@ export class StudentSummaryComponent implements OnInit {
         }
 
         let detailObj = {
-          count: this.studentMappingStatics.get(stdKey).get(eachAbsenceType.AbsenceType).count,
-          detail: this.studentMappingStatics.get(stdKey).get(eachAbsenceType.AbsenceType).detail.set(studentAttendanceList.OccurDate, periodString)
+          count: this.studentMappingStatics.get(keyYearSemester).get(eachAbsenceType.AbsenceType).count,
+          detail: this.studentMappingStatics.get(keyYearSemester).get(eachAbsenceType.AbsenceType).detail.set(studentAttendanceList.OccurDate, periodString)
         }
         detailObj.count++;
-        this.studentMappingStatics.get(stdKey).set(eachAbsenceType.AbsenceType, detailObj);
+        this.studentMappingStatics.get(keyYearSemester).set(eachAbsenceType.AbsenceType, detailObj);
       });
     });
   }
+
+  /** 非明細資料整理 */
+  addStudAttensInfoNoDetail(absenceWithNoDetil:IAbsenceWithNoDetil[]) {
+    absenceWithNoDetil.forEach(absenceNodata => {
+      const keyYearSemester = absenceNodata.school_year + '-' + absenceNodata.semester;
+      if (!this.studentMappingStatics.has(keyYearSemester)) {
+        const absenceMappingStatics = new Map();
+        this.studentMappingStatics.set(keyYearSemester, absenceMappingStatics);
+      }
+
+//
+      if (!this.studentMappingStatics.get(keyYearSemester).has(absenceNodata.name)) {
+        const tempAbsenceDetail = {
+          count: 0,
+          detail :new Map()
+        };
+        this.studentMappingStatics.get(keyYearSemester).set(absenceNodata.name, tempAbsenceDetail);
+      }
+
+      let  noDetailCount =  parseInt(absenceNodata.count,10)
+
+      let absence  =this.studentMappingStatics.get(keyYearSemester).get(absenceNodata.name);
+      absence.count+=noDetailCount;
+      absence.detail.set('轉入補登(非明細)',  parseInt(absenceNodata.count,10)+"節")
+    });
+  }
+
 
   sortMap() {
     // 重新排序Map中內容(根據學年度學期)
@@ -129,33 +163,46 @@ export class StudentSummaryComponent implements OnInit {
 
     // 重新排序Map
     this.semesterList.forEach((value) => {
+      debugger
       this.sortedMappingStatics.set(value, this.studentMappingStatics.get(value));
     });
 
     // 將Map轉換成陣列作為畫面顯示
     const temp = [];
-    this.sortedMappingStatics.forEach((absenceTypeStatics, semester) => {
-      const eachSemester = new studentAbsenceType();
-      eachSemester.semester = semester;
-      absenceTypeStatics.forEach((absenceDetail, absenceType) => {
-        const periodByDate = [];
-        absenceDetail.detail.forEach((period, date) => {
-          const tempData = {
-            date: date,
-            period: period
-          }
-          periodByDate.push(tempData);
-        });
-        const typeAndCount = {
-          absenceType: absenceType,
-          count: absenceDetail.count,
-          detail: periodByDate
-        };
-          eachSemester.statics.push(typeAndCount);
-        });
+    if(this.sortedMappingStatics)
+    {
+      this.sortedMappingStatics.forEach((absenceTypeStatics, semester) => {
+        const eachSemester = new studentAbsenceType();
+        eachSemester.semester = semester;
+        if(absenceTypeStatics)
+        {
+          absenceTypeStatics.forEach((absenceDetail, absenceType) => {
+            const periodByDate = [];
+            if(absenceDetail.detail)
+            {
+              absenceDetail.detail.forEach((period, date) => {
+                const tempData = {
+                  date: date,
+                  period: period
+                }
+                periodByDate.push(tempData);
+              });
+              const typeAndCount = {
+                absenceType: absenceType,
+                count: absenceDetail.count,
+                detail: periodByDate
+              };
+              eachSemester.statics.push(typeAndCount);
+            }
 
-      temp.push(eachSemester);
-    });
+          });
+
+        }
+
+        temp.push(eachSemester);
+      });
+    }
+
 
     this.sortedStudentList = temp;
 
@@ -164,6 +211,7 @@ export class StudentSummaryComponent implements OnInit {
       const temp = value.semester.split('-');
       value.semester = `${temp[0]}學年度第${temp[1]}學期`;
     });
+
   }
 
   /**
@@ -177,11 +225,11 @@ export class StudentSummaryComponent implements OnInit {
     //
     const studentInfoMap = new Map();
     result.forEach((detail) => {
-      const detailMap  = new Map();
+      const detailMap = new Map();
       this.periodTable.forEach(period => detailMap.set(period.Name, ''));
       const absenceType: AbsenceDetail[] = [].concat(detail.Detail.Period || []);
       absenceType.forEach((typeByPeriod) => {
-          detailMap.set(typeByPeriod['@text'], typeByPeriod.AbsenceType);
+        detailMap.set(typeByPeriod['@text'], typeByPeriod.AbsenceType);
       });
       const detailObj = {
         schoolYear: detail.SchoolYear,
@@ -210,7 +258,7 @@ export class StudentSummaryComponent implements OnInit {
 
     let body = '';
     studentInfoMap.forEach((absenceTypeByDate) => {
-      body +=`
+      body += `
               <tr>
                 <td>${absenceTypeByDate.schoolYear}學年第${absenceTypeByDate.semester}學期</td>
                 <td>${absenceTypeByDate.occurDate}</td>
