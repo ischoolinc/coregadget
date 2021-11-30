@@ -1,4 +1,4 @@
-<!-- 學生個人 - 綜合紀錄表 -->
+<!-- 學生個人 - 綜合紀錄表 (編輯畫面) -->
 <div *ngIf="!isLoading; else tmpLoading">
   <ng-container *ngFor="let subject of questionSubject">
     <div class="card mb-2">
@@ -16,7 +16,7 @@
           <ng-container *ngFor="let query of group.QuestionQuery">
             <tr>
               <td class="text-left  pr-1"
-                  style=" width:160px ; border-right: 1px dotted rgb(247, 245, 245);"
+                  style=" width:160px ; border-right: 1px dashed rgb(247, 245, 245);"
                   scope="col">
                 <div class="form-group mb-0">
                   <label class="custom-control-label mt-1 position-relative">
@@ -91,11 +91,11 @@
                         <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
                           <ng-container *ngIf="optionKey[optionPart];else normalPart">
                             <ng-container *ngIf="optionPart=='%TEXTAREA%';else textPart">
-                              <textarea class="sentence-input mx-0"
+                              <textarea   class="sentence-input mx-0"
                                         autosize="autosize"
                                         [ngStyle]="optionKey[optionPart].style"
                                         [(ngModel)]="option.AnswerMatrix[partIndex]"
-                                        (ngModelChange)="refreshMark()"></textarea>
+                                        (ngModelChange)="refreshMark()"></textarea> 
                             </ng-container>
                             <ng-template #textPart>
                               <input type="text"

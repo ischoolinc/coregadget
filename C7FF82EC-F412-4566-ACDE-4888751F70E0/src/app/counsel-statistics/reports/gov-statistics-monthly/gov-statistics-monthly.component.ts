@@ -3,7 +3,7 @@ import { DsaService } from "../../../dsa.service";
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import { AppComponent } from "../../../app.component";
-import { CaseMonthlyStatistics, CaseMonthlyStatistics2 } from '../gov-statistics-monthly/gov-statistics-vo';
+import { CaseMonthlyStatistics, CaseMonthlyStatistics2, TeacherCounselRole } from '../gov-statistics-monthly/gov-statistics-vo';
 import { MapOperator } from 'rxjs/internal/operators/map';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
@@ -24,11 +24,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   dsnsName: string = "";
   schoolType;
   schoolName ='';
+  TeacherCounselRole :TeacherCounselRole[]=[];
 
   constructor(@Optional()
   private appComponent: AppComponent, private dsaService: DsaService, private http: HttpClient) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // 取得教師編碼 
+    await this.getTeacherConNumbr() ;
     let scType: string;
     this.dsnsName = gadget.getApplication().accessPoint;
 
@@ -118,6 +121,35 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     }
   }
 // 
+ /** 取得 教師編碼 */ 
+ async getTeacherConNumbr(){
+   try {
+     let  rsp =  await this.dsaService.send("_.GetTeachersCounselRole",{})
+     this.TeacherCounselRole=[].concat(rsp.TeacherCounselRole||[]);
+     console.log("this.TeacherCounselRole",  this.TeacherCounselRole) ;
+   } catch(ex){
+       alert("取得教師編碼發生錯誤! \n"+ JSON.stringify(ex));    
+   }
+
+}
+
+/** 取得教師編碼 如果沒有設定一樣顯示 教師名稱 【Mapping 資料】*/
+getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
+
+  if(this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID)){
+    const teacherConNumber = this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
+    if( teacherConNumber)
+    {
+      // alert("有資料" +teacherIDSor.TeacherID+teacherIDSor.TeacherName +teacherConNumber)
+      return this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
+
+    }else{
+      return `${teacherIDSor.TeacherName} (未設教師編碼)`
+    }
+  } else {
+    return `${teacherIDSor.TeacherName} (已刪除)` ;
+  }
+}
 
 
   /**取得學校資訊 主要是取得學校名稱 */
@@ -171,6 +203,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.CaseMainCategory = rspRec.CaseMainCategory;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
+
+      
+      rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec),
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
@@ -205,7 +240,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     let map = new Map<string, CaseMonthlyStatistics2>();
 
 
-    // 相關服務
+    // 相關服務 【sheet2】
     [].concat(resp2.Statistics || []).forEach(rspRec => {
       // 輔導相關服務
       let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
@@ -214,6 +249,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
         rec.TeacherID = rspRec.TeacherID;
         rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
         rec.TeacherName = rspRec.TeacherName;
@@ -248,7 +284,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     });
 
 
-
+//sheet 1
     if (data.length > 0 || data2.length > 0) {
       let data1: any[] = [];
       let data2_d: any[] = [];
@@ -257,7 +293,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '教師編碼': tno,
+          '教師編碼': da.TeacherCounselNumber,
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別(主)' : da.MainCategoryValue.join(','),
@@ -268,16 +304,16 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         };
         data1.push(item);
       })
-
+// sheet2
       data2.forEach(da => {
         let tno = da.TeacherName;
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '教師編碼': tno,
+          '教師編碼': da.TeacherCounselNumber,
           '服務項目': da.ServiceItem,
           '對象': da.ContactItem,
-          '日期': da.OccurDate,
+          // '日期': da.OccurDate,
           '服務人次(男)': da.BoyCount,
           '服務人次(女)': da.GirlCount
         };
@@ -409,6 +445,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.Category = rspRec.Category;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
+      rec.TeacherCounselNumber =this.getTeacherConNumberByTeacherID(rspRec);
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
@@ -451,6 +488,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.TeacherNickName = rspRec.TeacherNickName;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.TeacherName = rspRec.TeacherName;        
         rec.ContactItem = rspRec.ContactItem;
         rec.ServiceItem = rspRec.ServiceItem;
@@ -491,7 +529,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         da.OtherCount = da.SumOtherDetailCount();
         let item = {
-          '教師編碼': tno,
+          '教師編碼': da.TeacherCounselNumber,
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
           '個案類別': da.CategoryValue.join(','),
@@ -516,7 +554,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '教師編碼': tno,
+          '教師編碼': da.TeacherCounselNumber,
           '服務項目': da.ServiceItem,
           '對象': da.ContactItem,
           '日期': da.OccurDate,
@@ -567,6 +605,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherID = rspRec.TeacherID;
       rec.TeacherNickName = rspRec.TeacherNickName;
+      rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
       rec.TeacherRole = rspRec.TeacherRole;
       rec.OccurDate = rspRec.OccurDate;
       rec.Category = rspRec.Category;
@@ -603,6 +642,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.TeacherRole = rspRec.TeacherRole;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.TeacherName = rspRec.TeacherName;
         rec.ContactItem = rspRec.ContactItem;
         rec.ServiceItem = rspRec.ServiceItem;
@@ -641,7 +681,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '職司編碼': tno,
+          '職司編碼': da.TeacherCounselNumber,
           '身份': da.TeacherRole,
           '學生年級':this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
@@ -656,7 +696,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
+            '職司編碼': da.TeacherCounselNumber, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);
@@ -703,6 +743,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherID = rspRec.TeacherID;
       rec.TeacherNickName = rspRec.TeacherNickName;
+      rec.TeacherCounselNumber =  this.getTeacherConNumberByTeacherID(rspRec);
       rec.TeacherRole = rspRec.TeacherRole;
       rec.OccurDate = rspRec.OccurDate;
       rec.Category = rspRec.Category;
@@ -736,6 +777,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
         rec.TeacherID = rspRec.TeacherID;
         rec.TeacherNickName = rspRec.TeacherNickName;
+        rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec);
         rec.TeacherRole = rspRec.TeacherRole;
         rec.OccurDate = rspRec.OccurDate;
         rec.StudentID = rspRec.StudentID;
@@ -777,7 +819,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '職司編碼': tno,
+          '職司編碼': da.TeacherCounselNumber,
           '身份': da.TeacherRole,
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
@@ -792,7 +834,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         let tno = da.TeacherName; if (da.TeacherNickName
           != '') tno = da.TeacherName + "(" + da.TeacherNickName + ")"; let item =
           {
-            '職司編碼': tno, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
+            '職司編碼': da.TeacherCounselNumber, '身份': da.TeacherRole, '服務項目': da.ServiceItem, '對象': da.ContactItem, '日期':
               da.OccurDate, '服務人次(男)': da.BoyCount, '服務人次(女)': da.GirlCount
           };
         data2_d.push(item);

@@ -11,7 +11,7 @@ import { CommunicationService } from "./referral/service/communication.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
-
+ 
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
   public comprehensiveStr: string = "綜合紀錄表"
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   public comprehensiveVisable: boolean = false;
   public psychologicalTestVisable: boolean = false;
   public adminVisable: boolean = false;
-
+  
   constructor(
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -126,7 +126,8 @@ export class AppComponent implements OnInit {
       this.globalService.MyCounselTeacherRole = TeacherRole.Role;
     });
 
-    if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師' && this.globalService.MyCounselTeacherRole != '校外心理師') {
+    // alert(""+this.globalService.MyCounselTeacherRole)
+    if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師' && this.globalService.MyCounselTeacherRole != '校外心理師'  ) {
       this.globalService.enableCase = true;
     } else
       this.globalService.enableCase = false;

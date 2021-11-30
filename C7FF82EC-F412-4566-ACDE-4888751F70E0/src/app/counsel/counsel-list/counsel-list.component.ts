@@ -1,9 +1,11 @@
-import { Component, OnInit, Optional } from "@angular/core";
+import { Component, HostListener, OnInit, Optional, ViewChild } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { CounselStudentService, CounselStudent, SemesterInfo } from "../../counsel-student.service";
 import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
 import { GlobalService } from "../../global.service";
+import { AddInterviewModalComponent } from "src/app/shared-counsel-detail/interview-detail/add-interview-modal/add-interview-modal.component";
+
 
 @Component({
   selector: "app-counsel-list",
@@ -25,6 +27,9 @@ export class CounselListComponent implements OnInit {
 
 
   _semesterInfo: SemesterInfo[] = [];
+
+  // 彈出新稱modal 視窗 
+  @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -51,6 +56,57 @@ export class CounselListComponent implements OnInit {
     console.log("mod",this.mod);
     console.log("target",this.target)
   }
+
+
+  /**新增一級輔導(連續) V*/
+addInterviews(event :any ,counsuleObj :CounselStudent){
+    event.stopPropagation();
+    this.addInterviewModal(counsuleObj);
+  }
+
+
+  /** 打開連續輸入 */
+  async addInterviewModal( studentInfo :CounselStudent  ) {
+    // 建立當前學生資料
+    let  currentCounselStudent :CounselStudent = new CounselStudent();
+    currentCounselStudent.init(studentInfo);
+    await  this._addInterview.loadSerialEnterDefaultData(true,this.targetList);
+
+    this._addInterview._editMode = "add";
+ debugger 
+   await this._addInterview.loadDefaultData( currentCounselStudent );
+   await this._addInterview._currentCounselInterview.useQuestionOptionTemplate();
+    this._addInterview._currentCounselInterview.selectCounselType = "請選擇方式";
+    this._addInterview._currentCounselInterview.selectContactName = "請選擇對象";
+    
+    // 其他清空
+    this._addInterview._currentCounselInterview.ContactNameOther = '';
+    this._addInterview._currentCounselInterview.CounselTypeOther = '';
+    
+    // 新增預設不公開
+    this._addInterview._currentCounselInterview.isPublic = false;
+    this._addInterview._currentCounselInterview.isSaveDisable = true;
+    $("#addInterview").modal("show");
+    
+    // 關閉畫面
+    $("#addInterview").on("hide.bs.modal", () => {
+      if (!this._addInterview.isCancel) {
+        // 重整資料
+        // this.onReferStateChange();
+        // this.counselStudentService.reload();
+        // this.loadCounselInterview(this._StudentID);
+      }
+      $("#addInterview").off("hide.bs.modal");
+      this.counselStudentService.reload();
+      this.getList();
+    });
+  }
+
+
+
+
+
+
 
   async getList() {
     if (!this.counselStudentService.isLoading) {

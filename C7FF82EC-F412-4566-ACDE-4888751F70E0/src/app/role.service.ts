@@ -69,7 +69,6 @@ export class RoleService {
     if (
       this._role.indexOf("輔導老師") >= 0 ||
       this._role.indexOf("認輔老師") >= 0 ||
-      this._role.indexOf("校外心理師") >= 0 ||
       this._role.indexOf("班導師") >= 0
     ) {
       this._enableCounsel = true;
@@ -94,8 +93,8 @@ export class RoleService {
     if (
       this._role.indexOf("管理者") >= 0 ||
       this._role.indexOf("輔導老師") >= 0 ||
-      this._role.indexOf("認輔老師") >= 0 ||
-      this._role.indexOf("校外心理師") >= 0 
+      this._role.indexOf("認輔老師") >= 0 
+      // this._role.indexOf("校外心理師") >= 0 
 
     ) {
       this._enableInterviewStatistics = true;

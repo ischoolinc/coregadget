@@ -202,6 +202,12 @@ export class CounselClass {
 }
 
 export class CounselStudent {
+
+  /**初始化 */
+  init(counselStudent : CounselStudent){
+      this.StudentID =counselStudent.StudentID ;
+      this.StudentName =counselStudent .StudentName;
+  }
   StudentID: string;
   SchoolYear: number;
   Semester: number;

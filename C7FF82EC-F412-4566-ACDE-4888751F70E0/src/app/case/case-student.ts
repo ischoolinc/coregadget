@@ -30,7 +30,7 @@ export class CaseStudent {
   EvaluationResult: string; // 評估結果
   IsClosed: string; // 是否結案
   CloseDate: string; // 結案日期
-  ClosedByTeacherID: string; // 結案人員教師編號
+  ClosedByTeacherID: string; // 結案人員教師編碼
   CloseDescription: string; // 結案說明
   StudentID: string; // 學生系統編號
   ClassID: string; // 班級編號

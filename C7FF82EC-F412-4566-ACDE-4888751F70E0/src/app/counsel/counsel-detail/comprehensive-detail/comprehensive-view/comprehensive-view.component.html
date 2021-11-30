@@ -1,4 +1,4 @@
-<!-- 學生個人 - 綜合紀錄表 -->
+<!-- 學生個人 - 綜合紀錄表  查看畫面-->
 <div *ngIf="!isLoading; else tmpLoading">
   <ng-container *ngFor="let subject of fillInData">
     <div class="card mb-2">
@@ -7,37 +7,32 @@
       <table class="table table-sm table-bordered">
         <ng-container *ngFor="let group of subject.QuestionGroup">
           <tr>
-            <th *ngIf="group.Group" colspan="2"
-                class=" text-left  ">
-                <div class ="com-view-second-title">
-                  {{group.Group}} 
-                </div>
-               </th>
+            <th *ngIf="group.Group" colspan="2" class=" text-left  ">
+              <div class="com-view-second-title">
+                {{group.Group}}
+              </div>
+            </th>
           </tr>
           <ng-container *ngFor="let query of group.QuestionQuery">
             <tr>
-              <td class="text-left pl-4"
-                  style="width: 180px"
-                  scope="col">
-                  <div class ="com-view-third-title">
-                    {{query.Query}}
-                  </div>
+              <td class="text-left pl-4" style="width: 180px" scope="col">
+                <div class="com-view-third-title">
+                  {{query.Query}}
+                </div>
               </td>
-              <td class="text-left"
-                  scope="col">
+              <td class="text-left" scope="col">
                 <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
                   <span [attr.questionCode]=questionText.QuestionCode>
-                    <span *ngIf="questionTextIndex > 0"
-                          class="ml-2 mr-3">;</span>
+                    <span *ngIf="questionTextIndex > 0" class="ml-2 mr-3">;</span>
                     <span *ngIf="questionText.Text">
                       <span class="com-view-third-title">{{questionText.Text}} </span>
                       <span class="ml-1 mr-2">:</span>
                     </span>
-                    <span *ngIf="!questionText.HasValue"
-                          class="text-muted">未填寫</span>
+                    <span *ngIf="!questionText.HasValue" class="text-muted">未填寫</span>
                     <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
                       <span *ngIf="optionIndex > 0">、</span>
-                      <span  style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}}</span>
+                      <span class="font-weight-900"
+                        style="word-break: break-all;white-space: pre-wrap;">{{option.AnswerValue}} </span>
                     </ng-container>
                   </span>
                   <!-- <pre>{{questionText | json}}</pre> -->
@@ -51,10 +46,8 @@
   </ng-container>
 </div>
 
-<ng-template #tmpLoading
-             class="container">
-  <div class="row justify-content-center"
-       style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>
@@ -62,33 +55,31 @@
 <ng-template #plugin>
   <ng-container *ngIf="!isLoading">
     <ng-container *ngIf="fillInSection.length == 1">
-      <button *ngIf="fillInSection[0].FillInSectionID"
-              class="btn btn-info ml-1 btn-edit"
-              [routerLink]="['../../../edit', fillInSection[0].FillInSectionID]">
-        <i class="material-icons" style="font-size: 16px;">edit</i>
-        <span>編輯</span>
-        <span>{{fillInSection[0].Name}}</span>
-      </button>
-      <button *ngIf="!fillInSection[0].FillInSectionID"
-              class="btn btn-info ml-1 disabled btn-edit">
-        <i class="material-icons"  style="font-size: 16px;">edit</i>
-        <span>編輯</span>
-      </button>
+      <div class="mb-2" >
+        <button *ngIf="fillInSection[0].FillInSectionID" class="btn btn-info ml-1 btn-edit"
+          [routerLink]="['../../../edit', fillInSection[0].FillInSectionID]">
+          <i class="material-icons" style="font-size: 16px;">edit</i>
+          <span>編輯 {{fillInSection[0].Name}}</span>
+        
+        </button>
+        <button *ngIf="!fillInSection[0].FillInSectionID" class="btn btn-info ml-1 disabled btn-edit">
+          <i class="material-icons" style="font-size: 16px;">edit</i>
+          <span>編輯</span>
+        </button>
+
+      </div>
+
     </ng-container>
     <ng-container *ngIf="fillInSection.length > 1">
-      <div class="dropdown ml-1 ">
-        <button class="btn btn-info dropdown-toggle btn-edit"
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
-          <i class="material-icons"  style="font-size: 16px;">edit</i>
+      <div class="dropdown ml-1 mb-2">
+        <button class="btn btn-info dropdown-toggle btn-edit " type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          <i class="material-icons" style="font-size: 16px;">edit</i>
           <span> 編輯</span>
         </button>
         <div class="dropdown-menu dropdown-menu-right">
-          <a *ngFor="let section of fillInSection"
-             [routerLink]="['../../../edit', section.FillInSectionID]"
-             class="dropdown-item">{{section.Name}}</a>
+          <a *ngFor="let section of fillInSection" [routerLink]="['../../../edit', section.FillInSectionID]"
+            class="dropdown-item">{{section.Name}}</a>
         </div>
       </div>
     </ng-container>

@@ -1,5 +1,25 @@
 <router-outlet name="simple-page"></router-outlet>
-<div id="appcomponent" class="container-fluid cbs d-flex justify-content-between flex-column" style="padding-top: 0px;">
+
+
+
+<div  id="appcomponent" class="container-fluid cbs d-flex justify-content-between flex-column" style="padding-top: 0px;">
+  <div hidden id="userInfo" 
+    style ="display: float ; 
+          z-index: 99;
+           width :300px; 
+           height: 320px ; 
+           background: rgb(219, 235, 230);
+           position: fixed;
+           border-radius: 0px 50px 50px 0px;
+ bottom:0px;
+ left:0px;
+">
+目前權限 :
+{{roleService.role}}
+
+    
+
+  </div>
   <div id="index" page>
     <nav aria-label="breadcrumb text-nowrap text-truncate">
       <!-- <ol class="breadcrumb">
@@ -8,6 +28,7 @@
       </ol> -->
     </nav>
     <!-- TAB NAV -->
+
 
     <ul class="nav nav-justified nav-tabs mb-3">
       <ng-container *ngIf="counselVisable === true">
@@ -46,9 +67,9 @@
 
 
             <!-- <b *ngIf="!refferalNotDealCount"> 轉介學生 </b> -->
-<ng-container  *ngIf="true">
+<ng-container >
               <div  class ="d-flex justify-content-center">
-                   <div class ="align-baseline"  style="position: relative;
+                   <div  *ngIf="refferalNotDealCount &&roleService.enableReferral " class ="align-baseline"  style="position: relative;
                                 top: -10px;
                                 left: 1px; 
                                 font-size :9px ;

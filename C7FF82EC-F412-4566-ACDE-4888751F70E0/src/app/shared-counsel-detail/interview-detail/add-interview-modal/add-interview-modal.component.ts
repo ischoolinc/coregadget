@@ -1,9 +1,10 @@
 import { Component, OnInit, Optional } from "@angular/core";
-import { CounselStudentService } from '../../../counsel-student.service';
+import { CounselStudent, CounselStudentService } from '../../../counsel-student.service';
 import { DsaService } from '../../../dsa.service';
 import { CounselInterview, QOption } from '../../counsel-vo';
 import { CounselDetailComponent } from "../../counsel-detail.component";
 import { SentenceService } from '../../../render/dissector.service';
+import { debounceTime } from "rxjs/operators";
 
 @Component({
   selector: "app-add-interview-modal",
@@ -19,42 +20,77 @@ export class AddInterviewModalComponent implements OnInit {
     private counselDetailComponent: CounselDetailComponent
   ) { }
 
+  /** 當前學生 */
+  currentStudentInfo: CounselStudent ;
+  /**當前學生 ID */
+  currentStudentID :string ;
+  /** 前一位學生 */
+  perviousStudent: CounselStudent ;
+  /** 下一位學生 */
+  nextStudent: CounselStudent ;
+  /** 目前學生 index  */
+  studentCurrentIndex :number ;
+  /**  */
+  targetClassStudent :CounselStudent[];
+  /** 是否連續輸入 */
+  
+  isAllowSerial =false ;
+  isSerialMode = false ;
   isCancel: boolean = false;
   _editMode: string = "add";
   editModeString: string = "新增";
   _studentName: string;
   public referralVisible: boolean = false;
-  // 輔導紀錄
-  _CounselInterview: CounselInterview;
+  
+  // 學生輔導紀錄
+  _currentCounselInterview: CounselInterview; 
 
-  ngOnInit() {
+  async ngOnInit() {
     this.referralVisible = false;
     if (gadget.params.system_counsel_position === 'referral') {
       this.referralVisible = true;
     }
-    this._CounselInterview = new CounselInterview();
-    this.loadDefaultData();
+    this._currentCounselInterview = new CounselInterview();
+ 
+    await this.loadDefaultData(    this.counselDetailComponent.currentStudent);
   }
 
-  /**載入預設資料*/
-  loadDefaultData() {
-    if (this.counselDetailComponent.currentStudent) {
-      if (this._editMode === "edit" && this._CounselInterview) {
+  /**設定isSerial */
+  setIsSerial(){
+
+  }
+
+  /** 處理 連續 要用的資料
+   * 整班的陣列
+   * 設定目前模式(連續輸入)
+  */
+  loadSerialEnterDefaultData(isAllowSerial :boolean,targetClassStudent :CounselStudent[]){
+    this.isAllowSerial = isAllowSerial;
+    this.targetClassStudent = targetClassStudent ;
+ }
+
+  /**載入預設資料 
+   * 此功能載入此畫面一些預設值設定
+  */
+  async loadDefaultData(currentStudent:CounselStudent) {
+    this.currentStudentInfo =currentStudent ;
+    if ( this.currentStudentInfo) {
+      if (this._editMode === "edit" && this._currentCounselInterview) {
         // 修改
         this.editModeString = "修改";
-        if (this._CounselInterview.isReferral === "t") {
-          this._CounselInterview.isReferralValue = true;
+        if (this._currentCounselInterview.isReferral === "t") {
+          this._currentCounselInterview.isReferralValue = true;
         }
       } else {
         // 新增
-        this._CounselInterview = new CounselInterview();
-        this._studentName = this.counselDetailComponent.currentStudent.StudentName;
-        this._CounselInterview.StudentID = this.counselDetailComponent.currentStudent.StudentID;
-        this._CounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear;
-        this._CounselInterview.Semester = this.counselStudentService.currentSemester;
+        this._currentCounselInterview = new CounselInterview();
+        this._studentName = this.currentStudentInfo.StudentName; // 學生姓名
+        this._currentCounselInterview.StudentID =  this.currentStudentInfo.StudentID; // 學生ID 
+        this._currentCounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear; // 學年度 
+        this._currentCounselInterview.Semester = this.counselStudentService.currentSemester; // 學期
         // 帶入日期與輸入者
         let dt = new Date();
-        this._CounselInterview.OccurDate = this._CounselInterview.parseDate(dt);
+        this._currentCounselInterview.OccurDate = this._currentCounselInterview.parseDate(dt);
         // // 班導師
         // if (
         //   this.counselDetailComponent.currentStudent.Role.indexOf("班導師") >=
@@ -65,13 +101,16 @@ export class AddInterviewModalComponent implements OnInit {
         //   this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
         // }
 
-        this._CounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
-        this._CounselInterview.useQuestionOptionTemplate();
+        this._currentCounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
+        this._currentCounselInterview.useQuestionOptionTemplate();
       }
       // console.log(this._CounselInterview);
       // 檢查是否有值
-      this._CounselInterview.checkValue();
+      this._currentCounselInterview.checkValue();
     }
+
+    this.currentStudentInfo = currentStudent ; // 設定當前學生
+    this.setPerviousAndNextStudent("firstLoad");
   }
 
   // click 取消
@@ -79,24 +118,108 @@ export class AddInterviewModalComponent implements OnInit {
     this.isCancel = true;
     $("#addInterview").modal("hide");
   }
-  // click 儲存
+  /** Click 後儲存 */
   async save() {
     try {
       this.isCancel = false;
-      this._CounselInterview.isSaveDisable = true;
-      if (this._CounselInterview.isReferralValue)
-        this._CounselInterview.isReferral = "t";
-      else this._CounselInterview.isReferral = "f";
-      this._CounselInterview.Category = JSON.stringify(this._CounselInterview._category);
+      this._currentCounselInterview.isSaveDisable = true;
+      if (this._currentCounselInterview.isReferralValue)
+      this._currentCounselInterview.isReferral = "t";
+      else this._currentCounselInterview.isReferral = "f";
+      this._currentCounselInterview.Category = JSON.stringify(this._currentCounselInterview._category);
 
-      await this.SetCounselInterview(this._CounselInterview);
-      $("#addInterview").modal("hide");
-      this._CounselInterview.isSaveDisable = false;
+      await this.SetCounselInterview(this._currentCounselInterview);
+      if(!this.isSerialMode){ //
+        $("#addInterview").modal("hide");
+      }
+      this._currentCounselInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
-      this._CounselInterview.isSaveDisable = false;
+      this._currentCounselInterview.isSaveDisable = false;
     }
 
+  }
+
+  /** 載入新學生 */
+  loadNowStudentInfo(currentStudent:CounselStudent){
+    this._currentCounselInterview = new CounselInterview();
+    this._studentName = currentStudent.StudentName; // 學生姓名
+    this._currentCounselInterview.StudentID = currentStudent.StudentID; // 學生ID 
+    this._currentCounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear; // 學年度 
+    this._currentCounselInterview.Semester = this.counselStudentService.currentSemester; // 學期
+    // 帶入日期與輸入者
+    let dt = new Date();
+    this._currentCounselInterview.OccurDate = this._currentCounselInterview.parseDate(dt);
+    this._currentCounselInterview.AuthorName = this.counselStudentService.teacherInfo.Name;
+    this._currentCounselInterview.useQuestionOptionTemplate();
+  }
+
+
+
+  /** 下一筆學生*/
+  next(){
+    this._currentCounselInterview.checkValue()
+    if(this._currentCounselInterview.isSaveDisable)
+    {
+     alert("未填寫完整!") ;
+     return ;
+    }
+    try{
+      this.save();
+      this.setPerviousAndNextStudent("next");// 設定前後學生
+      this.loadNowStudentInfo(this.currentStudentInfo);
+    }catch(ex){
+     alert("發生錯誤!");
+    }finally{
+
+
+    }
+  }
+  /**前一個學生 */
+  pervious(){
+    this._currentCounselInterview.checkValue()
+    if(this._currentCounselInterview.isSaveDisable)
+    {
+     alert("未填寫完整!");
+     return ;
+    }
+    try{
+      this.save();
+      this.setPerviousAndNextStudent("pervious"); // 設定前後學生
+      this.loadNowStudentInfo(this.currentStudentInfo);
+    }catch(ex){
+     alert("發生錯誤!");
+    }finally{
+
+    }
+  }
+
+
+  /** 設定前後 */
+  setPerviousAndNextStudent(action :string){
+    this.studentCurrentIndex = this.targetClassStudent.findIndex(x=> x.StudentID ===  this.currentStudentInfo.StudentID);
+    if(action =="firstLoad"){
+      this.currentStudentInfo = this.targetClassStudent[ this.studentCurrentIndex]; //設定目前學生
+
+    }else if(action =="next"){
+      this.currentStudentInfo = this.targetClassStudent[ ++this.studentCurrentIndex]; //設定目前學生
+    }else if(action =="pervious"){
+      this.currentStudentInfo = this.targetClassStudent[ --this.studentCurrentIndex]; 
+    }
+    // 設定前一位學生
+    if(this.studentCurrentIndex >= 0){
+        const perviousIndex =this.studentCurrentIndex - 1 ;
+        this.perviousStudent = this.targetClassStudent[perviousIndex];
+      }else {
+        this.perviousStudent =null ;
+      }
+    //設定下一位學生
+    if(this.studentCurrentIndex < this.targetClassStudent.length ){
+        const nextInndex = this.studentCurrentIndex + 1 ;
+        this.nextStudent = this.targetClassStudent[nextInndex];
+    }else {
+        this.nextStudent = null ;
+    }
   }
 
   // 新增/更新輔導資料，Service 使用UID是否有值判斷新增或更新
@@ -142,7 +265,6 @@ export class AddInterviewModalComponent implements OnInit {
       ContactNameOther: data.ContactNameOther,
       Category: data.Category
     };
-    // console.log(req);
 
     try {
       let resp = await this.dsaService.send("SetCounselInterview", {
@@ -151,12 +273,9 @@ export class AddInterviewModalComponent implements OnInit {
     } catch (err) {
       alert('無法新增：' + err.dsaError.message);
     }
-    // console.log(resp);
   }
 
   checkChange(qq, item: CounselInterview) {
-    // console.log(qq);
-
     if (qq.value == "") {
       item.isCategoryHasValue = false;
     } else {

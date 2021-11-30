@@ -1,0 +1,3 @@
+ul.rwd-table ol:nth-child(even) {
+    background: #c1dad800 !important;
+}

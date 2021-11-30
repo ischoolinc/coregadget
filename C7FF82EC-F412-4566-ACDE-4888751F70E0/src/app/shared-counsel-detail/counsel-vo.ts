@@ -48,6 +48,7 @@ export class CounselInterview {
   ReferralForm?: ReferralForm; //轉介單資訊
 
   public loadCategoryTemplate() {
+    debugger 
     let num: number = 1;
     this._category = []; // 	個案類別
     let problem_categoryT = this.getCategory();

@@ -30,6 +30,7 @@ export class CaseInterviewReportComponent implements OnInit {
    /**塞選條件 性別*/
    isUseGenderFilter :boolean = false;
    isUseProblemCatagFilter :boolean = false;
+   selectNum =0;
   constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
@@ -41,14 +42,20 @@ export class CaseInterviewReportComponent implements OnInit {
     this.GetCounselClass();
   }
 
+  /**收合年級區塊 */
+  openGradeSection(gradeClassInfo:GradeClassInfo){
+    
+ 
+    gradeClassInfo.isOpen =! gradeClassInfo.isOpen ;
 
-
+  }
   SetSelectAllItem() {
-
+  this.selectNum = 0;
     this.isSelectAllItem = !this.isSelectAllItem;
     this.SelectGradeYearList.forEach(item => {
       item.Checked = this.isSelectAllItem;
       item.ClassItems.forEach(classItem => {
+        this.selectNum ++ ;
         classItem.Checked = this.isSelectAllItem;
       });
     });
@@ -302,6 +309,12 @@ export class CaseInterviewReportComponent implements OnInit {
 
       if (item.GradeYear === gradeYear) {
         item.Checked = !item.Checked;
+        if(  item.Checked )
+        {
+          this.selectNum++ ;
+        }else {
+          this.selectNum-- ;
+        }
         item.ClassItems.forEach(classItem => {
           classItem.Checked = item.Checked;
         });

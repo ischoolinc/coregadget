@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Optional } from "@angular/core";
 import { CounselStudentService, SemesterInfo } from "../../counsel-student.service";
 import { CounselInterview, QOption } from "../counsel-vo";
-import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-modal.component";
+// import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-modal.component";
 import { DsaService } from "../../dsa.service";
 import { ViewInterviewModalComponent } from "./view-interview-modal/view-interview-modal.component";
 import { CounselDetailComponent } from "../counsel-detail.component";
@@ -10,6 +10,8 @@ import { RoleService } from "../../role.service";
 import { GlobalService } from "../../global.service";
 import { AddReferralFormComponent } from "./add-referral-form/add-referral-form.component";
 import { CommunicationService } from "src/app/referral/service/communication.service";
+import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-modal.component";
+
 
 @Component({
   selector: "app-interview-detail",
@@ -131,21 +133,21 @@ export class InterviewDetailComponent implements OnInit {
     });
   }
 
-  // 新增
+  /** 批次輸入-班導師晤談紀錄 */
   addInterviewModal() {
     this._addInterview._editMode = "add";
-    this._addInterview.loadDefaultData();
-    this._addInterview._CounselInterview.useQuestionOptionTemplate();
-    this._addInterview._CounselInterview.selectCounselType = "請選擇方式";
-    this._addInterview._CounselInterview.selectContactName = "請選擇對象";
+    this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
+    this._addInterview._currentCounselInterview.useQuestionOptionTemplate();
+    this._addInterview._currentCounselInterview.selectCounselType = "請選擇方式";
+    this._addInterview._currentCounselInterview.selectContactName = "請選擇對象";
 
     // 其他清空
-    this._addInterview._CounselInterview.ContactNameOther = '';
-    this._addInterview._CounselInterview.CounselTypeOther = '';
+    this._addInterview._currentCounselInterview.ContactNameOther = '';
+    this._addInterview._currentCounselInterview.CounselTypeOther = '';
 
     // 新增預設不公開
-    this._addInterview._CounselInterview.isPublic = false;
-    this._addInterview._CounselInterview.isSaveDisable = true;
+    this._addInterview._currentCounselInterview.isPublic = false;
+    this._addInterview._currentCounselInterview.isSaveDisable = true;
     $("#addInterview").modal("show");
 
     // 關閉畫面
@@ -164,12 +166,12 @@ export class InterviewDetailComponent implements OnInit {
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
     let obj = Object.assign({}, counselView);
-    this._addInterview._CounselInterview = counselView;
-    this._addInterview._CounselInterview.selectCounselType =
+    this._addInterview._currentCounselInterview = counselView;
+    this._addInterview._currentCounselInterview.selectCounselType =
       counselView.CounselType;
-    this._addInterview._CounselInterview.selectContactName = counselView.ContactName;
-    this._addInterview.loadDefaultData();
-    this._addInterview._CounselInterview.isSaveDisable = true;
+    this._addInterview._currentCounselInterview.selectContactName = counselView.ContactName;
+    this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
+    this._addInterview._currentCounselInterview.isSaveDisable = true;
     $("#addInterview").modal("show");
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
@@ -179,7 +181,7 @@ export class InterviewDetailComponent implements OnInit {
         this.counselStudentService.reload();
         this.loadCounselInterview(this._StudentID);
       } else {
-        Object.assign(this._addInterview._CounselInterview, obj)
+        Object.assign(this._addInterview._currentCounselInterview, obj)
         //this._addInterview._CounselInterview = obj;
       }
 

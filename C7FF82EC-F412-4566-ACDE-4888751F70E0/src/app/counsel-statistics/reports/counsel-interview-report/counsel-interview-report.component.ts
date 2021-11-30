@@ -32,7 +32,13 @@ export class CounselInterviewReportComponent implements OnInit {
     this.GetCounselClass();
   }
 
+  /**收合年級區塊 */
+  openGradeSection(gradeClassInfo:GradeClassInfo){
+    
+ 
+    gradeClassInfo.isOpen =! gradeClassInfo.isOpen ;
 
+  }
 
   SetSelectAllItem() {
 
