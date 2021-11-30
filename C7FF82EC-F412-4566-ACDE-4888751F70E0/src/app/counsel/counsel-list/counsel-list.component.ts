@@ -5,6 +5,7 @@ import { CounselComponent } from "../counsel.component";
 import { AppComponent } from "../../app.component";
 import { GlobalService } from "../../global.service";
 import { AddInterviewModalComponent } from "src/app/shared-counsel-detail/interview-detail/add-interview-modal/add-interview-modal.component";
+import { MatSnackBar } from "@angular/material";
 
 
 @Component({
@@ -32,6 +33,7 @@ export class CounselListComponent implements OnInit {
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
 
   constructor(
+    private _snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
     public counselStudentService: CounselStudentService,
     private globalService: GlobalService,
@@ -73,7 +75,7 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
     await  this._addInterview.loadSerialEnterDefaultData(true,this.targetList);
 
     this._addInterview._editMode = "add";
- debugger 
+
    await this._addInterview.loadDefaultData( currentCounselStudent );
    await this._addInterview._currentCounselInterview.useQuestionOptionTemplate();
     this._addInterview._currentCounselInterview.selectCounselType = "請選擇方式";
@@ -102,6 +104,9 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
     });
   }
 
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
+  }
 
 
 
