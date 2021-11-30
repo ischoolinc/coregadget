@@ -12,12 +12,12 @@ export class DisciplineService {
   selectedStudentID: string;
   selectedSeatNum: string;
   selectedName: string;
-  schoolType:string ;
+  schoolType: string;
 
 
-   constructor(
-      private contractService: ContractService
-      ,private http:HttpClient){
+  constructor(
+    private contractService: ContractService
+    , private http: HttpClient) {
     //取得學制
     // this.loadSchoolType();
   }
@@ -69,7 +69,7 @@ export class DisciplineService {
       }
     }
     );
-    let temp = [].concat(result?.result||[]);
+    let temp = [].concat(result?.result || []);
 
     return temp as SemesterInfo[];
   }
@@ -180,29 +180,29 @@ export class StudentDisciplineStatistics {
 
 /**  取得非明細(註1) :*/
 export class DisciplineWithOutDetail {
- /* <rsp>
-	<id>47857</id>
-	<school_year>103</school_year>
-	<semester>1</semester>
-	<ref_student_id>54266</ref_student_id>
-	<merit_a>4</merit_a>
-	<merit_b>1</merit_b>
-	<merit_c>1</merit_c>
-	<demerit_a>2</demerit_a>
-	<demerit_b>1</demerit_b>
-	<demerit_c>1</demerit_c>
-  </rsp> */
-    id :string ;
-    school_year :string  ;
-    semester :string ;
-    ref_student_id :string ;
-    /** */
-    merit_a :string ;
-    merit_b :string ;
-    merit_c :string ;
-    demerit_a :string ;
-    demerit_b :string ;
-    demerit_c :string ;
+  /* <rsp>
+   <id>47857</id>
+   <school_year>103</school_year>
+   <semester>1</semester>
+   <ref_student_id>54266</ref_student_id>
+   <merit_a>4</merit_a>
+   <merit_b>1</merit_b>
+   <merit_c>1</merit_c>
+   <demerit_a>2</demerit_a>
+   <demerit_b>1</demerit_b>
+   <demerit_c>1</demerit_c>
+   </rsp> */
+  id: string;
+  school_year: string;
+  semester: string;
+  ref_student_id: string;
+  /** */
+  merit_a: string;
+  merit_b: string;
+  merit_c: string;
+  demerit_a: string;
+  demerit_b: string;
+  demerit_c: string;
 }
 
 
@@ -226,7 +226,7 @@ export class classIdStudents {
 
   constructor(studentId: string, studentName: string, seatNumber: string) {
     this.studentId = studentId;
-    this.studentName= studentName;
+    this.studentName = studentName;
     this.seatNumber = seatNumber;
   }
 
@@ -240,7 +240,7 @@ export interface parseXmlDiscipline {
       'B': string,
       'C': string
     },
-    '@text':[],
+    '@text': [],
     'Demerit': {
       '@': [],
       'A': string,
@@ -267,7 +267,16 @@ export class studentInfoDetail {
   delNegligenceDate: string;
   delNegligenceReason: string;
   detention: string;
-  remark :string ;
+  remark: string;
+  hasValueSoShow: boolean = true;
+
+  /** 檢查 */
+  checkIsShow() {
+    if (!this.majorMerit && !this.minorMerit && !this.commendation && !this.majorDemerit && !this.minorDemerit && !this.admonition && !this.detention) {
+      this.hasValueSoShow = false
+    }
+  }
+
 
   constructor(detail: parseXmlDisciplineDetail, seatNumber: string, name: string) {
     // alert("detail"+ detail)
@@ -277,7 +286,7 @@ export class studentInfoDetail {
     this.name = name;
     this.majorMerit = Number(detail.major_merit) > 0 ? detail.major_merit : '';
     this.minorMerit = Number(detail.minor_merit) > 0 ? detail.minor_merit : '';
-    this.commendation = Number(detail.commendation) > 0 ? detail.commendation: '';
+    this.commendation = Number(detail.commendation) > 0 ? detail.commendation : '';
     this.majorDemerit = Number(detail.major_demerit) > 0 ? detail.major_demerit : '';
     this.minorDemerit = Number(detail.minor_demerit) > 0 ? detail.minor_demerit : '';
     this.admonition = Number(detail.admonition) > 0 ? detail.admonition : '';
@@ -285,8 +294,10 @@ export class studentInfoDetail {
     this.hasDelNegligence = detail.has_del_negligence;
     this.delNegligenceDate = detail.del_negligence_date;
     this.delNegligenceReason = detail.del_negligence_reason;
-    this.detention = detail.detention == '否' ? '': detail.detention;
+    this.detention = detail.detention == '否' ? '' : detail.detention;
     this.remark = detail.remark;
+
+    this.checkIsShow()
   }
 
 }
@@ -307,6 +318,6 @@ export interface parseXmlDisciplineDetail {
   has_del_negligence: string,
   del_negligence_date: string,
   del_negligence_reason: string,
-  detention: string ,
-  remark :string
+  detention: string,
+  remark: string
 }
