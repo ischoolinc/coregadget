@@ -88,7 +88,7 @@ import { ConditionModalComponent } from './counsel-statistics/reports/case-inter
 // import { AddReferralFormComponent } from './shared-counsel-detail/interview-detail/add-referral-form/add-referral-form.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { AddInterviewModalComponent, SharedCounselDetailModule } from './shared-counsel-detail';
-
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
   declarations: [
     AppComponent,
@@ -138,6 +138,10 @@ import { AddInterviewModalComponent, SharedCounselDetailModule } from './shared-
     WorkServiceComponent,
     NewWorkModalComponent,
     ConditionModalComponent,
+    // MatSnackBarModule
+    
+    
+
 
     // AddReferralFormComponent
   ],
@@ -170,6 +174,7 @@ import { AddInterviewModalComponent, SharedCounselDetailModule } from './shared-
     CaseModule,
     MatBadgeModule,
     SharedCounselDetailModule,
+    MatSnackBarModule
     //  AddInterviewModalComponent
     
   ],

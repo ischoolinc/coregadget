@@ -69,10 +69,11 @@ export class StudentDetailComponent implements OnInit {
     });
   }
   /**
-   * convert studentInfoTable Map into array
+   * 取得學生資訊 Aarray
    */
-  getArray() {
-    return Array.from(this.studentInfoTable);
+  getStudentInfoArray(source :any) {
+    // return Array.from(this.studentInfoTable);
+    return Array.from(source);
   }
   /**
    *
@@ -120,7 +121,7 @@ export class StudentDetailComponent implements OnInit {
         <tbody>`;
     let body = '';
     let end = '';
-    this.getArray().forEach((eachStudent) => {
+    this.getStudentInfoArray(this.studentInfoTable).forEach((eachStudent) => {
       eachStudent[1].forEach((detail) => {
         body += `
                 <tr>

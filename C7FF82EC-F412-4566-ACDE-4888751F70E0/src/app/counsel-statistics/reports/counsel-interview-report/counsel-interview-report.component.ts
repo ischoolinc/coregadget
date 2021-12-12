@@ -3,6 +3,7 @@ import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
 import { DsaService } from "../../../dsa.service";
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-counsel-interview-report',
@@ -21,10 +22,15 @@ export class CounselInterviewReportComponent implements OnInit {
   endDate: string = "";
   
 
-  constructor(private dsaService: DsaService) { }
+  constructor(private dsaService: DsaService
+    ,  private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.loadData();
+  }
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
   }
 
   loadData() {

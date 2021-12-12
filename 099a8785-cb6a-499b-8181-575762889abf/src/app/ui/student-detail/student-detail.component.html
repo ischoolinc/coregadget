@@ -20,7 +20,7 @@
     </div>
 
 
-      <div class="table-responsive" #table *ngFor="let eachStudent of this.getArray();">
+      <div class="table-responsive" #table *ngFor="let eachStudent of this.getStudentInfoArray(studentInfoTable);">
         <div class="mid-title "> {{this.getSemester(eachStudent[0])}}</div>
         <table class="table-rwd table table-bordered" >
             <thead>
@@ -40,12 +40,15 @@
                 </tr>
             </thead>
             <tbody>
+               <ng-container        *ngFor=" let detail of eachStudent[1]">
+
                 <tr class="collapsed"
                     data-toggle="collapse"
                     data-target="#rA"
                     aria-expanded="false"
                     aria-controls="rA"
-                    *ngFor=" let detail of eachStudent[1]"
+                 *ngIf="detail.hasValueSoShow"
+
                     >
 
                     <td data-th="日期" >{{detail.date||'- -'}}</td>
@@ -61,6 +64,8 @@
                     <td data-th="銷過原因" >{{detail.delNegligenceReason}}</td>
                     <td data-th="備註">{{detail.remark}}</td>
                 </tr>
+               </ng-container>
+
             </tbody>
         </table>
     </div>

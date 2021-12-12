@@ -105,6 +105,7 @@ export class AttendanceService {
     return temp as SemesterInfo[];
   }
 
+  /**取得全班缺曠 */
   async getStudentAttendanceByClassID(cls, semester: SemesterInfo) {
     if(!semester){
        return [];
@@ -119,6 +120,40 @@ export class AttendanceService {
     });
     return result;
   }
+
+  /** 取得全班非明細資料 */
+  async getGetStudAttendanceNoDetailByClassID(cls, semester: SemesterInfo){
+    if(!semester){
+      return [];
+   }
+    const contract = await this.contract.getDefaultContract();
+    const result = await contract.send('attendance.getAttendanceNoDetailByID', {
+      Request: {
+        ClassID: cls.ClassID,
+        SchoolYear: semester.school_year,
+        Semester: semester.semester
+      }
+    });
+    // alert("取得非明細資料!") ;
+
+    return result;
+}
+
+
+  /** 取得個別學生非明細資料 */
+  async getGetStudAttendanceNoDetailByStuID(stuID){
+
+    const contract = await this.contract.getDefaultContract();
+    const result = await contract.send('attendance.getAttendanceNoDetailByStuID', {
+      Request: {
+     StudentID :stuID
+      }
+    });
+    // alert("取得非明細資料!") ;
+
+    return result;
+}
+
 
   // 取得學生缺曠資料
   async getStudentAttendance(studentID) {
@@ -150,6 +185,7 @@ export class AttendanceService {
     result.forEach((student) => {
       studentList.push(new classIdStudents(student.ID, student.Name, student.SeatNo));
     });
+    // alert("s"+JSON.stringify(studentList))
     return studentList;
 
   }
@@ -214,11 +250,13 @@ export class classIdStudents {
   studentId: string;
   studentName: string;
   seatNumber: string;
+  hasData :boolean ;
 
   constructor(studentId: string, studentName: string, seatNumber: string) {
     this.studentId = studentId;
     this.studentName= studentName;
     this.seatNumber = seatNumber;
+    this.hasData = false  ;
   }
 }
 
