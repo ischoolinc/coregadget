@@ -83,8 +83,8 @@
                 <label class="col-form-label">
                     請輸入德行加減分
                 </label>
-                <input class="form-control" rows="1" placeholder="請輸入德行加減分" [(ngModel)]="curStudent.SbDiff"
-                    (keyup)="validateMs()" [ngClass]="{'error': !curStudent.validate_ms}">
+                <input #teacher_input class="form-control " rows="1" placeholder="請輸入德行加減分" [(ngModel)]="curStudent.SbDiff"
+                   [ngClass]="{'error': !curStudent.validate_ms}">
             </div>
         </div>
         <div class="modal-footer">
