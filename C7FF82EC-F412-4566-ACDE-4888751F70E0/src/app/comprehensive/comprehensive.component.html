@@ -178,7 +178,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="newCaseLabel">
-        <b>{{comprehensiveStr}}</b>
+        <b>{{comprehensiveStr}}</b> 
         </h5>
         <button *ngIf="!generater.isSaving" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -189,8 +189,10 @@
           資料讀取中...
         </ng-container>
 
-        <ng-container *ngIf="!generater.isLoading">
-          <p>產生{{generater.schoolYear}}學年度 第{{generater.semester}}學期 在校學生的{{comprehensiveStr1}}，將花費較多時間，請耐心等候。</p>
+        <ng-container *ngIf=" generater.isBringPrevious" >
+          <div class ="mt-2">
+            <p>產生{{generater.schoolYear}}學年度 第{{generater.semester}}學期 在校學生的{{comprehensiveStr1}}，將花費較多時間，請耐心等候。</p>
+          </div>
         </ng-container>
         <ng-container *ngIf="generater.isSaving || generater.isBringPrevious">
           <div class="progress">
@@ -204,9 +206,13 @@
   
    <div  *ngIf="!generater.isSaving &&!generater.isBringPrevious && ShowBringPreviousSection">
       <div class="my-3">
-      <div class="form-check ">
+        <div style=" font-size :18px ;font-weight :700">
+
+         產生 {{generater.schoolYear}} 學年度 第{{generater.semester}}學期 綜合紀錄表
+        </div>
+      <div class="form-check  mt-3 " style="cursor:pointer">
         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" [(ngModel)]="generater.isBringPreviousAnsCheck" (change)="generater.clearSemester($event)" >
-        <label class="form-check-label" for="inlineCheckbox1">帶入填寫內容</label>
+        <label class="form-check-label" for="inlineCheckbox1">帶入之前學年度學期填寫內容</label>
       </div>
     </div>
   <div class="input-group mb-3">
@@ -228,7 +234,7 @@
   </div>
 
   <div>
-    <span  class ="mt-2" style="color:#ff3333 "> 產生綜合紀錄表實勾選「帶入填寫內容」，在產生本學期綜合紀錄表時會將「填寫(預設帶入舊值)」題型之填寫紀錄<b class="emphiz">完全覆蓋</b>。</span>
+    <span  class ="mt-2" style="color:#c24a4a "> 產生綜合紀錄表實勾選「帶入填寫內容」，在產生本學期綜合紀錄表時會將「填寫(預設帶入舊值)」題型之填寫紀錄<b class="emphiz">完全覆蓋</b>。</span>
   </div>
 </div>
 
