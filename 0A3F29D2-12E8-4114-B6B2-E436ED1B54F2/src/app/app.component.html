@@ -5,7 +5,7 @@
 
 
 
-<div class="container-fluid" style="width:80%; margin :auto;margin-top: 50px;">
+<div class="container-fluid" style="width:90%; margin :auto;margin-top: 15px;">
 
 
 
@@ -91,7 +91,7 @@
 
   <!-- web 畫面 -->
 <div *ngIf="!isSmallScreen">
-  <table>
+  <table class ="mt-1">
     <thead>
       <tr  class = "tr-section" style="font-size: 17px;">
         <th style ="text-align:center;" >
@@ -151,32 +151,35 @@
 
     <!-- App 畫面  -->
 <div *ngIf="isSmallScreen">
-  <table>
+  <table  class ="mt-2">
     <thead>
       <tr  class = "tr-section" style="font-size: 17px;">
-        <th style ="text-align:center;" >
+        <th style ="text-align:center; min-width: 20px; width: 23%" >
           科目
         </th>
-        <th  class="d-flex justify-content-between jumbotron vertical-center" style =" text-align:center;">
-          <div class="container d-flex align-items-center">
-          <div class="row w-100 ">
-          <div class=" col-2"
-            >
-               <i   (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex-1)" [hidden]="!examSelectedHelper.previousExam" class="material-icons" style ="color:#6b809e">navigate_before</i>
-            </div>
-            <div class ="col-8 align-middle" style="text-align:center ">
+
+        <th  style=" text-align:center ; width: 10%">
+
+          <i   (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex-1)" [hidden]="!examSelectedHelper.previousExam" class="material-icons" style ="color:#6b809e">navigate_before</i>
+
+        </th>
+
+        <th  class=" justify-content-between jumbotron vertical-center" style =" text-align:center; width: 57%">
+          <div class="container  align-items-center ">
+          <!-- <div class="row w-100  h-100 align-middle " style ="background-color: plum;"> -->
+
+            <div class ="align-middle   " style="text-align:center ">
                 {{examSelectedHelper.currentExam?.examName}}
             </div>
-            <div
-              class="material-icons col-2"
-             >
-              <i   (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex + 1)" class="material-icons" [hidden] ="!examSelectedHelper.nextExam" style ="color:#6b809e">
-                navigate_next
-              </i>
 
-            </div>
-          </div>
+          <!-- </div> -->
         </div>
+        </th>
+        <th  style=" text-align:center ; width: 10%">
+          <i   (click)="examSelectedHelper.indexChange(examSelectedHelper.currentIndex + 1)" class="material-icons" [hidden] ="!examSelectedHelper.nextExam" style ="color:#6b809e">
+            navigate_next
+          </i>
+
         </th>
       </tr>
 
@@ -186,25 +189,32 @@
         <td style ="text-align:center; ">
            <b style ="color: rgb(59, 72, 75)!important"> {{subj.subjectName}}</b>
         </td>
+<td>
+
+</td>
+
          <td  style ="text-align:center;" >
          <ng-container *ngIf="getRankBySubjectAndType(subj.subjectName ,examSelectedHelper.currentExam?.examID)" >
            {{getRankBySubjectAndType(subj.subjectName ,examSelectedHelper.currentExam?.examID)?.rank}}   /   {{getRankBySubjectAndType(subj.subjectName ,examSelectedHelper.currentExam?.examID)?.matrix_count}}
          </ng-container>
          </td>
+         <td></td>
       </tr>
       <tr class="total"  >
        <td  style = "  text-align:center; font-size:17px ; color :rgb(138, 167, 199) !important ">
-         <div>
+         <div class =" text-nowrap">
           <b>加權總分</b>
 
          </div>
 
        </td>
+       <td></td>
        <td  style ="text-align:center;  " >
         <ng-container *ngIf="getRankBySubjectAndType('加權總分',examSelectedHelper.currentExam?.examID)" >
         {{getRankBySubjectAndType('加權總分',examSelectedHelper.currentExam?.examID)?.rank}} /   {{getRankBySubjectAndType('加權總分',examSelectedHelper.currentExam?.examID)?.matrix_count}}
       </ng-container>
       </td>
+      <td></td>
       </tr>
     </tbody>
   </table>
