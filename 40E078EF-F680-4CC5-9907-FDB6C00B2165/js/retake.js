@@ -1,6 +1,9 @@
 ﻿var _gg = _gg || {};
 _gg.connection = gadget.getContract("shschool.retake.teacher");
 _gg.col_courses = {};
+//課程資訊的陣列，用於匯出的檔名
+_gg.CourseList = [];
+_gg.currentCourse = {};
 
 jQuery(function () {
     // 載入資料
@@ -11,10 +14,10 @@ jQuery(function () {
         debug: true,
         errorElement: "span",
         errorClass: "help-inline",
-        highlight: function(element) {
+        highlight: function (element) {
             $(element).parentsUntil('.control-group').parent().addClass("error");
         },
-        unhighlight: function(element) {
+        unhighlight: function (element) {
             $(element).parentsUntil('.control-group').parent().removeClass("error");
         },
         errorPlacement: function (error, element) {
@@ -45,12 +48,15 @@ jQuery(function () {
     });
 
     // 切換課程
-    $('#changeCourse').bind('change', function(event) {
+    $('#changeCourse').bind('change', function (event) {
+        //_gg.currentCourse=
         _gg.GetScore(this.value);
+        _gg.currentCourse = _gg.CourseList.find(x => x.CourseID == this.value);
+        //console.log("change.currentCourse",_gg.currentCourse.CourseName);
     });
 
     // 輸入成績
-    $('#score_list').on('click', 'a', function(e) {
+    $('#score_list').on('click', 'a', function (e) {
         var scoreType, courseID;
         scoreType = $(this).attr("edit-target");
         courseID = $('#changeCourse').val();
@@ -60,15 +66,15 @@ jQuery(function () {
             switch (scoreType) {
                 case 'SubScore1':
                     opening = _gg.opening.ss1Status;
-                    edit_title = '期中考成績比例(' + (_gg.weight.SS1Weight || '')  + '%)';
+                    edit_title = '期中考成績比例(' + (_gg.weight.SS1Weight || '') + '%)';
                     break;
                 case 'SubScore2':
                     opening = _gg.opening.ss2Status;
-                    edit_title = '期末考成績比例(' +  (_gg.weight.SS2Weight || '')  + '%)';
+                    edit_title = '期末考成績比例(' + (_gg.weight.SS2Weight || '') + '%)';
                     break;
                 case 'SubScore3':
                     opening = _gg.opening.ss3Status;
-                    edit_title = '平時成績比例(' + (_gg.weight.SS3Weight || '')  + '%)';
+                    edit_title = '平時成績比例(' + (_gg.weight.SS3Weight || '') + '%)';
                     break;
                 case 'Score':
                     opening = _gg.opening.ss2Status; //學期成績的輸入期間與期末考成績輸入期間相同
@@ -80,7 +86,7 @@ jQuery(function () {
                 var students = _gg.col_courses[courseID].Students;
                 if (students) {
                     var ret = [];
-                    $(students).each(function(key, value) {
+                    $(students).each(function (key, value) {
                         ret.push(
                             '<div class="control-group">' +
                             '    <label class="control-label">' + (value.SCSelectSeatNo || '') + ' ' + (value.StudentName || '') + '</label>' +
@@ -145,7 +151,7 @@ jQuery(function () {
     });
 
     // 登錄資料上下鍵、Enter鍵切換輸入框
-    $('#editModal').on('keyup', 'input:text', function(e) {
+    $('#editModal').on('keyup', 'input:text', function (e) {
         if (e.which === 38) {
             $(this).parent().parent().prevAll().find('input:text').first().focus();
         }
@@ -163,7 +169,7 @@ jQuery(function () {
 });
 
 // 錯誤訊息
-_gg.set_error_message = function(select_str, serviceName, error) {
+_gg.set_error_message = function (select_str, serviceName, error) {
     var tmp_msg = '';
     if (error !== null) {
         if (error.dsaError) {
@@ -225,21 +231,21 @@ _gg.loadData = function () {
                     $(response.Response.Weight).each(function (index, item) {
                         _gg.weight = item;
                     });
-                    $('a[edit-target=SubScore1]').append( '(' + (_gg.weight.SS1Weight || '')  + '%)' );
-                    $('a[edit-target=SubScore2]').append( '(' + (_gg.weight.SS2Weight || '')  + '%)' );
-                    $('a[edit-target=SubScore3]').append( '(' + (_gg.weight.SS3Weight || '')  + '%)' );
+                    $('a[edit-target=SubScore1]').append('(' + (_gg.weight.SS1Weight || '') + '%)');
+                    $('a[edit-target=SubScore2]').append('(' + (_gg.weight.SS2Weight || '') + '%)');
+                    $('a[edit-target=SubScore3]').append('(' + (_gg.weight.SS3Weight || '') + '%)');
                 }
             }
         }
     });
 
     // 判斷是否為開放期間
-    var check_opening = function(data) {
+    var check_opening = function (data) {
         var ret = {};
         if (data.StartDate && data.EndDate) {
-            var tmp_Date  = new Date();
+            var tmp_Date = new Date();
             var Startdate = $.parseDate(data.StartDate);
-            var Enddate   = $.parseDate(data.EndDate);
+            var Enddate = $.parseDate(data.EndDate);
 
             ret.DateRange = $.formatDate(Startdate, "yyyyMMdd") + " " + $.formatDate(Startdate, "HHmm") + " ~ " + $.formatDate(Enddate, "yyyyMMdd") + " " + $.formatDate(Enddate, "HHmm")
 
@@ -318,11 +324,21 @@ _gg.loadData = function () {
                 var _ref;
                 if (((_ref = response.Response) != null ? _ref.Course : void 0) != null) {
                     var items = [], tmp_courseID = 0;
-                    $(response.Response.Course).each(function(index, item) {
+                    $(response.Response.Course).each(function (index, item) {
                         if (index === 0) {
                             tmp_courseID = item.CourseID;
                         }
                         items.push('<option value="' + item.CourseID + '">' + (item.CourseName || '') + '</option>');
+                        _gg.CourseList.push({
+                            CourseID: item.CourseID,
+                            CourseName: item.CourseName
+                        });
+                        _gg.currentCourse = _gg.CourseList.find(x => x.CourseID == tmp_courseID);
+                        // console.log("items",items);
+                        // console.log("tmp_courseID",tmp_courseID);
+                        // console.log("item.CourseName",item.CourseName);
+                        // console.log("_gg.CourseList",_gg.CourseList);
+                        // console.log("_gg.currentCourse",_gg.currentCourse);
                     });
                     $('#changeCourse').html(items.join(''));
                     _gg.GetScore(tmp_courseID);
@@ -360,8 +376,8 @@ _gg.GetScore = function (courseID) {
                                 var courseid = item.CourseID;
                                 if (!tmp_col_courses[courseid]) {
                                     var tmp_course = {
-                                        CourseID   : item.CourseID,
-                                        Students : []
+                                        CourseID: item.CourseID,
+                                        Students: []
                                     };
                                     tmp_col_courses[courseid] = tmp_course;
                                 }
@@ -386,18 +402,18 @@ _gg.SetScore = function (courseID) {
     if (courseID) {
         var students = _gg.col_courses[courseID].Students;
         var items = [];
-        $(students).each(function(key, value) {
+        $(students).each(function (key, value) {
             var notexam_css = '', notexam_tooltip = '';
             if (value.NotExam === 't') {
                 notexam_css = 'my-noexam';
                 notexam_tooltip = ' rel="tooltip" title="扣考"';
             }
 
-            items.push('<tr class="' + notexam_css + '" ' + notexam_tooltip + '>' +
+            items.push('<tr id="originalHearder" class="' + notexam_css + '" ' + notexam_tooltip + '>' +
                 '  <td>' + (value.SCSelectSeatNo || '') + '</td>' +
                 '  <td>' + (value.StudentNumber || '') + '</td>' +
                 '  <td>' + (value.ClassName || '') + '</td>' +
-                '  <td>' + (value.SeatNo || '')   + '</td>' +
+                '  <td>' + (value.SeatNo || '') + '</td>' +
                 '  <td>' + (value.StudentName || '') + '</td>' +
                 '  <td>' + (value.SubScore1 || '') + '</td>' +
                 '  <td>' + (value.SubScore2 || '') + '</td>' +
@@ -484,10 +500,10 @@ _gg.SaveSorce = function () {
             var students = _gg.col_courses[courseid].Students;
             if (students) {
                 var arys = [];
-                $(students).each(function(key, value) {
+                $(students).each(function (key, value) {
                     if (!(value.NotExam === 't')) {
-                        arys.push('<Students><Condition><UID>' + (value.SCSelectID || '0')  + '</UID></Condition>');
-                        var tmp_score = $('#'+(value.SCSelectID)).val();
+                        arys.push('<Students><Condition><UID>' + (value.SCSelectID || '0') + '</UID></Condition>');
+                        var tmp_score = $('#' + (value.SCSelectID)).val();
                         if (tmp_score !== '') {
                             tmp_score = parseInt(tmp_score, 10) + '';
                             tmp_score = isNaN(tmp_score) ? '' : tmp_score;
@@ -514,9 +530,9 @@ _gg.SaveSorce = function () {
                         if (error !== null) {
                             _gg.set_error_message('#errorMessage', serviceName, error);
                         } else {
-                            $(students).each(function(key, value) {
+                            $(students).each(function (key, value) {
                                 if (!(value.NotExam === 't')) {
-                                    var tmp_score = $('#'+(value.SCSelectID)).val();
+                                    var tmp_score = $('#' + (value.SCSelectID)).val();
                                     if (tmp_score !== '') {
                                         tmp_score = parseInt(tmp_score, 10) + '';
                                         tmp_score = isNaN(tmp_score) ? '' : tmp_score;
@@ -538,3 +554,52 @@ _gg.SaveSorce = function () {
         }
     }
 };
+
+
+function exportExcel() {
+    //var courseid = $('#changeCourse').val();  
+    // 梯次名稱
+    var sessionName = $('#opening h3').html();
+
+    var htmldom = document.getElementById('score_list');
+    //console.log("htmldom",htmldom);
+    //console.log("htmldom.getElementsByTagName('a')",(htmldom.getElementsByTagName('a').length));
+    //console.log("document",document.get);
+    var originaldom = document.getElementById('originalHearder');
+  
+
+    // var header = '  <th><b><h3 style: background: yellow>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</h3></b></th>';
+    var header = '  <b><h3 style: background: yellow>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</h3></b>';
+
+    var hearderDom=document.createElement('th');
+    hearderDom.innerHTML =header;
+    originaldom.insertBefore(hearderDom ,originaldom);
+    //originaldom.innerHTML=header+  originaldom.innerHTML;
+
+    //移除超連結
+    for (var i = 0; i < htmldom.getElementsByTagName('a').length; i++) {
+        htmldom.getElementsByTagName('a')[i].removeAttribute("href");
+    }
+
+    var html = '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8" /><title>Excel</title>';
+
+    html += '';
+    //html += document.getElementById('score_list').innerHTML + '';
+    html += htmldom.innerHTML + '';
+
+    //window.open('data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse}</style>' +html));
+
+    const url = 'data:application/html,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse} a{text-decoration: none; color:black} th{height:30px !important; background:green !important}  </style>' + html)
+    const link = document.createElement('a')
+
+    link.style.display = 'none'
+    link.href = url
+    link.setAttribute(
+        //檔案名稱 梯次+課程
+        'download', sessionName + " " + _gg.currentCourse.CourseName
+    )
+    document.body.appendChild(link)
+
+    console.log("link", link);
+    link.click()
+}
