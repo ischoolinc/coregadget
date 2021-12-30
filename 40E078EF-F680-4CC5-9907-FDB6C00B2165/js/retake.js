@@ -409,7 +409,7 @@ _gg.SetScore = function (courseID) {
                 notexam_tooltip = ' rel="tooltip" title="扣考"';
             }
 
-            items.push('<tr id="originalHearder" class="' + notexam_css + '" ' + notexam_tooltip + '>' +
+            items.push('<tr  class="' + notexam_css + '" ' + notexam_tooltip + '>' +
                 '  <td>' + (value.SCSelectSeatNo || '') + '</td>' +
                 '  <td>' + (value.StudentNumber || '') + '</td>' +
                 '  <td>' + (value.ClassName || '') + '</td>' +
@@ -565,15 +565,16 @@ function exportExcel() {
     //console.log("htmldom",htmldom);
     //console.log("htmldom.getElementsByTagName('a')",(htmldom.getElementsByTagName('a').length));
     //console.log("document",document.get);
-    var originaldom = document.getElementById('originalHearder');
+    var originaldom = document.getElementById('originalHearder'); //取得原始 DOM
   
+    var header = '<th colspan="10" ; display="none" ;><b>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</b></th>';
+    
+    var hearderDom=document.createElement('tr');
+    hearderDom.setAttribute("style","background: yellow");
+    hearderDom.setAttribute("display","none !important");
+    hearderDom.innerHTML = header;
 
-    // var header = '  <th><b><h3 style: background: yellow>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</h3></b></th>';
-    var header = '  <b><h3 style: background: yellow>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</h3></b>';
-
-    var hearderDom=document.createElement('th');
-    hearderDom.innerHTML =header;
-    originaldom.insertBefore(hearderDom ,originaldom);
+    originaldom.insertBefore(hearderDom,originaldom.firstChild);
     //originaldom.innerHTML=header+  originaldom.innerHTML;
 
     //移除超連結
@@ -589,10 +590,10 @@ function exportExcel() {
 
     //window.open('data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse}</style>' +html));
 
-    const url = 'data:application/html,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse} a{text-decoration: none; color:black} th{height:30px !important; background:green !important}  </style>' + html)
+    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse} a{text-decoration: none; color:black} th{height:30px !important; background:green !important}  </style>' + html)
     const link = document.createElement('a')
 
-    link.style.display = 'none'
+    link.style.display = 'none !important'
     link.href = url
     link.setAttribute(
         //檔案名稱 梯次+課程
