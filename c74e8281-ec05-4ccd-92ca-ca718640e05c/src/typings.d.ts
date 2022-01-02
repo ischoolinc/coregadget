@@ -5,3 +5,6 @@ interface NodeModule {
 }
 
 declare const gadget: any;
+
+
+declare var navigator: Navigator;

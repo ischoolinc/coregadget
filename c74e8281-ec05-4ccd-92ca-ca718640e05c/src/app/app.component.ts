@@ -1,5 +1,5 @@
 import { GadgetService } from './gadget.service';
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 
@@ -9,7 +9,7 @@ import * as moment from 'moment';
   styles: []
 })
 export class AppComponent implements OnInit {
-
+  isEditMode :boolean = false ;
   startTime: string; //加減分填寫開始時間
   endTime: string; //加減分填寫結束時間
   curClass: ClassRec; //目前所選班級
@@ -19,7 +19,9 @@ export class AppComponent implements OnInit {
   currentSemester: string; //預設學期
   currSchoolYearName: string; //學年期名稱 
 
-  Range: Number
+  /** 加減分最大直 */
+  MaxRange: Number
+  /** 加減分最小值 */
   LowRange: Number
 
   isLoading: boolean; //載入中
@@ -50,6 +52,7 @@ export class AppComponent implements OnInit {
     try {
       this.contract = await this.gadget.getContract('ischool.moralconduct');
 
+
       await this.getDeadline();
       await this.getConfig();
       await this.getDefSchoolyear();
@@ -71,14 +74,20 @@ export class AppComponent implements OnInit {
     await this.getMoralScore();
 
   }
+  /** [View][click]*/
+  async changeToEditMode(){
+    this.isEditMode =  !this.isEditMode ;
+       
+  }
 
+  /** 取得加減分最大直及最小值 */
   async getConfig() {
     try {
       const rsp = await this.contract.send('GetConfig', {});
       Apprais: Node;
       const Apprais = rsp.Result.MoralConductScoreCalcRule.TeacherAppraise
 
-      this.Range = parseInt(Apprais["Range"]); //正值上限
+      this.MaxRange = parseInt(Apprais["Range"]); //正值上限
       this.LowRange = ~(parseInt(Apprais["Range"])) +1; //負數上限
 
     } catch (error) {
@@ -104,6 +113,45 @@ export class AppComponent implements OnInit {
       alert(`Service GetDeadline: ${error}`)
     }
   }
+
+/** 儲存所有 加減分*/
+async saveAll(){
+//1.整理加減分有值的部分
+let addScoresLlist :StudentRec[] = [] ;
+// 把有資料加減分資料的物件放入要送出request 的物件
+console.log("125",this.studentList)
+this.studentList.forEach(addedScoreInfo =>{
+
+  addedScoreInfo.SchoolYear =this.currentSchoolYear; // 設定request SchoolYear 
+  addedScoreInfo.Semester =this.currentSemester ; // 設定request Semester 
+  if(addedScoreInfo.SbDiff){ // 如果是有加減分
+    addScoresLlist.push(addedScoreInfo);
+    
+  }
+
+
+
+});
+    await this.setAddScoreInfo(addScoresLlist); // 儲存
+    await this.reload(); 
+
+} 
+/** Service Set  多筆 設定 */
+async setAddScoreInfo(addedScoreList :StudentRec[]){
+  try{
+    const rsp = await this.contract.send('SetMoralAddedScores', 
+    {
+      Request: {
+      MoralAddedScores:addedScoreList}}
+    );
+    alert("儲存完成!")
+ 
+  }catch(err){
+       alert("批次儲存發生錯誤【SetMoralAddedScores】 : \n "+JSON.stringify(err)) // 跳出錯誤訊息
+  }finally{
+    this.isEditMode = false;
+  }
+}
 
   async getDefSchoolyear() {
 
@@ -213,15 +261,14 @@ export class AppComponent implements OnInit {
 
   /**  驗證數字是否可通過   */
   validatePass(now_input: string): boolean {
-    //alert("驗證");
-    debugger;
+  
     this.curStudent.validate_ms = this.regExp.test('' + now_input);
 
     if (this.curStudent.validate_ms) {
 
       let input_number = parseInt(now_input);
 
-      if ((input_number <= this.Range) && (input_number >= this.LowRange)) {
+      if ((input_number <= this.MaxRange) && (input_number >= this.LowRange)) {
         //大於正數上限
         this.curStudent.validate_ms = true;
       } else {
@@ -234,11 +281,34 @@ export class AppComponent implements OnInit {
 
   }
 
+  /** */
+  validateInput(studentRec:StudentRec){
+
+    let input_number = parseInt(studentRec.SbDiff);
+
+   //  在正確範圍裡
+    if ((input_number <= this.MaxRange) && (input_number >= this.LowRange)) {
+    } else {
+      //輸入數字正常時,檢查是否符合規範
+      studentRec.SbDiff = null ; 
+      alert(`德行加減分範圍 ${ this.LowRange} 至 ${ this.MaxRange}，請輸入此範圍數字。`) ;
+    }
+  }
+
+/** 輸入直改變  */
+async onInputChange(stu:StudentRec){
+  // alert(!stu.SbDiff)
+  if(stu.SbDiff){ //有值
+    // alert(!stu.SbDiff)
+    this.validateInput(stu)
+  }
+}
+
   async save() {
 
     if(!this.validatePass(this.curStudent.SbDiff))
     {
-      alert(`輸入加減分不可大於${this.Range}/小於${this.LowRange}`);
+      alert(`輸入加減分不可大於${this.MaxRange}/小於${this.LowRange}`);
       return;
     }
 
@@ -266,6 +336,13 @@ export class AppComponent implements OnInit {
       return;
     }
   }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event) {
+     confirm("確定離開!?")
+  }
+
+
 
   exportData(selector) {
     var downloadLink;
@@ -342,6 +419,8 @@ interface StudentRec {
   TextScore: string;
   InitialSummary: string;
   Summary: string;
+  SchoolYear :string ;
+  Semester :string ;
 
   // 資料驗證
   validate_ps: boolean;

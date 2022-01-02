@@ -13,3 +13,102 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 {
     background: #007bff !important;
 }
+
+
+
+#header{
+    margin-top: 20px !important;
+    background: #ffffff !important; 
+    font-weight: 900 !important;
+    font-size: 28px !important;
+    /* color :#793535 !important ; */
+    color :#4F4F4F !important ;
+    margin-bottom: 20px !important;
+}
+
+.adjust-th{
+padding: 5px !important;
+
+}
+
+
+.adjust-input{
+    height: 100% !important;
+    margin: 0px !important;
+    border: 1px solid #80808045;
+    border-radius: 3px;
+    width: 30%;
+
+} 
+button{
+    background: #ffffff !important; 
+    border: 1.5px solid  #E0E0E0 !important;
+    border-radius: 50px !important;
+    color: #4F4F4F !important ;
+    box-shadow: none!important;
+
+  }
+
+  /* table 的 header */
+  .stiky-col-top {  position: sticky ;
+   left: 0px ;
+   z-index:99 ;
+   font-size: 30px !important ;
+   background: #A0CECB !important ;
+   letter-spacing: 0.2em !important ;
+   font-weight: 900 ; 
+}
+
+.table th {
+    font-weight: 900 !important ; 
+    font-size: 20px !important;
+    color: #394867;
+    max-height: 9px !important;
+    height :15px !important
+}
+.table tr {
+    height :15px !important ;
+    max-height :15px !important
+}
+
+
+.icon{
+cursor: pointer !important;
+
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+ .table td, .table th , .table tr {
+border: none;
+}
+.table {
+
+  border-radius: 5px ;
+
+}
+
+
+
+.table thead td, .table thead th {
+    font-size: 0.75rem;
+    font-weight: 500;
+    height: 3.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.col_name{
+ font-size: 16px !important;
+ font-weight: 900 !important;
+}
