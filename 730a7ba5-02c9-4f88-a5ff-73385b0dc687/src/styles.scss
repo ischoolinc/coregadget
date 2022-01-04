@@ -1615,7 +1615,7 @@ caption {
   line-height: 1.5;
   caption-side: bottom;
   color: rgba(0, 0, 0, 0.38);
-  min-height: 3.5rem;
+  // min-height: 3.5rem;
   padding: 1.214285rem 1.5rem;
 }
 
@@ -15827,3 +15827,110 @@ table.rwd-table tr:nth-child(even) {
 		padding-right: 1rem;
 	}
 }
+
+
+
+
+// 以下是增加的
+
+table.table-rwd thead th {
+  // background: #86a7d93d;
+  background: #A0CECB !important ;
+  color: #2e3f57;
+  font-weight: 900;
+  border: none;
+  font-size: 17px;
+}
+
+
+.table-header{
+  // background: #86a7d93d;
+  background: #A0CECB !important ;
+  color: #2e3f57;
+  font-weight: 900;
+  border: none;
+  font-size: 17px;
+}
+
+
+/* 縮小時*/
+@media screen and (max-width: 576px){
+
+  table.table-rwd tbody tr td:first-child {
+    background: #A0CECB ;
+    color: #2e3f57;
+  }
+
+}
+
+.mid-title{
+  margin-left:  5px;
+  margin-bottom: 5px;
+  font-size: 18px !important;
+
+}
+.student-section{
+  margin-left:  5px;
+  color: #7e7e7e;
+  font-weight: 700;
+  border-radius: 5px;
+   border: 1.5px solid  #d9dfe0; ;
+  font-size: 18px;
+  padding: 7px;
+  letter-spacing: 0.1em !important;
+  text-align: center;
+
+}
+
+// .header{
+
+//   background: #86a7d97d !important;
+//   color: #2e3f57!important;
+//   font-weight: 900!important;
+//   border: none!important;
+//   font-size: 17px!important;
+// }
+
+
+/* 校務系統主色 */
+.main-color{
+  background : #A0CECB  !important;
+
+}
+#header{
+
+  background: #ffffff !important;
+  font-weight: 900 !important;
+  font-size: 26px !important;
+  color :#4F4F4F !important ;
+  margin-bottom: 16px;
+}
+
+/* 大小-18 */
+.font-size-18{
+ font-size: 18px !important;
+ font-weight: 900;
+ color: rgb(102, 102, 102);
+}
+
+/*下拉式選單選像*/
+button{
+  background: #ffffff !important;
+  border: 1.5px solid  #E0E0E0 !important;
+  border-radius: 50px !important;
+  color: #4F4F4F !important ;
+  box-shadow: none !important;
+}
+
+/*分頁header */
+.second_header
+{
+  background: none !important;
+  font-weight: 900 !important;
+  font-size: 20px !important;
+  color :#4F4F4F !important ;
+  margin-bottom: 16px;
+  // border-bottom:  1.5px solid #d9dfe0 ;
+
+}
+
