@@ -561,17 +561,16 @@ function exportExcel() {
     // 梯次名稱
     var sessionName = $('#opening h3').html();
 
-    var htmldom = document.getElementById('score_list');
-    //console.log("htmldom",htmldom);
-    //console.log("htmldom.getElementsByTagName('a')",(htmldom.getElementsByTagName('a').length));
-    //console.log("document",document.get);
-    var originaldom = document.getElementById('originalHearder'); //取得原始 DOM
+    //var htmldom = document.getElementById('score_list');
+    var htmldom = document.getElementById('score_list').cloneNode(true);
+    var originaldom = htmldom.querySelector ('#originalHearder'); //取得原始 DOM
+    //var originaldom = document.getElementById('originalHearder'); //取得原始 DOM
   
-    var header = '<th colspan="10" ; display="none" ;><b>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</b></th>';
+    var header = '<th colspan="10" ; display="none" ;><h4><b>' + (sessionName + " " + _gg.currentCourse.CourseName) + '</b></h4></th>';
     
     var hearderDom=document.createElement('tr');
-    hearderDom.setAttribute("style","background: yellow");
-    hearderDom.setAttribute("display","none !important");
+    //hearderDom.setAttribute("style","background: yellow");
+    hearderDom.setAttribute("hidden","true");
     hearderDom.innerHTML = header;
 
     originaldom.insertBefore(hearderDom,originaldom.firstChild);
@@ -590,7 +589,7 @@ function exportExcel() {
 
     //window.open('data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse}</style>' +html));
 
-    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse} a{text-decoration: none; color:black} th{height:30px !important; background:green !important}  </style>' + html)
+    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse} a{text-decoration: none; color:black}  </style>' + html)
     const link = document.createElement('a')
 
     link.style.display = 'none !important'
