@@ -8,6 +8,7 @@ import { RoleService } from "../role.service";
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { GenerateKeyAndSetTimeComponent } from './generate-key-and-set-time/generate-key-and-set-time.component';
 import { SemesterInfo } from './../counsel-student.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-comprehensive',
@@ -31,6 +32,10 @@ export class ComprehensiveComponent implements OnInit {
   generater: any = {};
   SchoolYearSemesterList: SemesterInfo[];
   GradeYearWrongsList: any[];
+  schoolTye :'高中'|'國中'|'國小'  ;
+  dsnsName = "" ;
+
+
 
   IsBringbring: Boolean = false;
   IsBringChecked: Boolean = false;
@@ -47,7 +52,8 @@ export class ComprehensiveComponent implements OnInit {
     public roleService: RoleService,
     public changeDetectorRef: ChangeDetectorRef,
     @Optional()
-    private appComponent: AppComponent
+    private appComponent: AppComponent,
+    private http: HttpClient
   ) {
 
   }
@@ -69,8 +75,30 @@ export class ComprehensiveComponent implements OnInit {
       this.comprehensiveStr = "產生填報資料";
       this.comprehensiveStr1 = "填報資料";
     }
+    this.getSchoolType ();
     this.loadData();
   }
+
+
+ /** 取得學制 ['國中','國小','高中']*/
+  getSchoolType (){
+    this.dsnsName = gadget.getApplication().accessPoint;
+         // 取得學制v_2
+         let url = `https://dsns.ischool.com.tw/campusman.ischool.com.tw/config.public/GetSchoolList?body=%3CCondition%3E%3CDsns%3E${this.dsnsName}%3C/Dsns%3E%3C/Condition%3E&rsptype=json`;
+         try {
+           this.http.get<any>(url, { responseType: 'json' }).subscribe(response => {
+             this.schoolTye = response.Response.School.Type;
+          
+           });
+      
+         console.log();
+         } catch (err) {
+           console.log(err);
+         }
+ 
+
+}
+
 
   async loadData() {
     try {
@@ -140,7 +168,9 @@ export class ComprehensiveComponent implements OnInit {
       isLoading: false,
       isSaving: false,
       isBringPrevious: false,
+      schoolSystem : this.schoolTye,
       dsaService: this.dsaService,
+       http :this.http ,
       progress: 0,
       currentClass: "",
       /**
@@ -157,44 +187,42 @@ export class ComprehensiveComponent implements OnInit {
         // 檢查 學校年級 是否正確在(1-6範圍內)
         let isNeedAdjustGrade = false ;
         let adjusctGradeSapn ;
-        let schoolSystem = "";
         let extensionGrade:string[]=[];
-        // 取得學制 
-        try{
-         let rsp = await this.dsaService.send("GetSchoolCoreInfo");
-         schoolSystem = rsp.SchoolCoreInfo.學制 ;
-        }catch(ex){
-         console.log('取得學制發生錯誤!',ex);
-         alert('取得學制發生錯誤!');
-        } 
-       // 取得年級
+    
+         // 取得年級
         try{
              let  showText ='校務系統年級非1-6年級 \n本作業會自動對應，對應如下: \n';
-             showText+=`學制:${schoolSystem}\n`;
+             showText+=`學制:${this.schoolSystem}\n`;
              let rsp =   await this.dsaService.send("GetAllGradeYearAdjustInfo", {
           });
               let showTextlist= [].concat(rsp.Result||[]);
-              if(showTextlist.length>0) //如果有需要調整的年級
+             
+              if(this.schoolSystem == '國小')
               {
-                isNeedAdjustGrade =true ;
-                showTextlist.forEach(item =>{
-                  if(schoolSystem=="國中" && item.AdjustSpan =='6')
-                  {
-                    adjusctGradeSapn =item.AdjustSpan ;
-                    showText += `${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
-                    extensionGrade.push(item.OrgGradeYear) ;
-                  }else if(schoolSystem=="高中" &&item.AdjustSpan =='9'){
-                    adjusctGradeSapn =item.AdjustSpan ;
-                    showText += `${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
-                    extensionGrade.push(item.OrgGradeYear) ;
-                  }else{
-                    showText += `${item.OrgGradeYear}年級之班級，不會展開 (年級與學制不符)。\n`
-                  }
-               });
-               if(!confirm(showText+'如對應有誤請點選"取消"， \n如正確請點選"確定"繼續執行!'))
-               {
-                return
-               }
+                isNeedAdjustGrade =false ;
+              }else
+              {        if(showTextlist.length > 0) //如果有需要調整的年級
+                {
+                  isNeedAdjustGrade =true ;
+                  showTextlist.forEach(item =>{
+                    if(this.schoolSystem =="國中" && item.AdjustSpan =='6')
+                    {
+                      adjusctGradeSapn =item.AdjustSpan ;
+                      showText += `${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
+                      extensionGrade.push(item.OrgGradeYear) ;
+                    }else if(this.schoolSystem=="高中" &&item.AdjustSpan =='9'){
+                      adjusctGradeSapn =item.AdjustSpan ;
+                      showText += `${item.OrgGradeYear}年級 對應至 ${item.AdjustGrade}年級\n`
+                      extensionGrade.push(item.OrgGradeYear) ;
+                    }else{
+                      showText += `${item.OrgGradeYear}年級之班級，不會展開 (年級與學制不符)。\n`
+                    }
+                 });
+                 if(!confirm(showText+'如對應有誤請點選"取消"， \n如正確請點選"確定"繼續執行!'))
+                 {
+                  return
+                 }
+                }
               }
         }catch(err){
           alert('資料庫查詢學制或年級有誤!');
@@ -208,7 +236,7 @@ export class ComprehensiveComponent implements OnInit {
         let classList = await this.dsaService.send("GetClass", {});
         classList = [].concat(classList.Class || []);
         let index = 0;
-        console.log("999",classList);
+ 
         debugger 
         
         for (const classRec of classList) {

@@ -23,7 +23,7 @@ export class ClassSummaryComponent implements OnInit {
   periodTypeMap = new Map();
   studentMappingTable: Map<string, StudentAttendanceStatistics> = new Map();
   aryStudents = [];  // 所有學生清單, 以一個 StudentAttendanceInfo 物件來代表一位學生
-  showAllStudents = false;
+  showAllStudents = true;
   ready = false;
   ifNoResult = false;
   @ViewChild('table') table: ElementRef<HTMLDivElement>;
@@ -47,6 +47,19 @@ export class ClassSummaryComponent implements OnInit {
     // 4. get student attendance by class
     await this.queryStudentAttendance();
   }
+
+  /**[View] 切換班級*/
+  changeClass(cls:any){
+    this.selectedClass =cls ;
+    this.querySemesters();
+  }
+  /**[View]  切換假別*/
+  changeType(type){
+    this.selectedType =type ;
+    this.queryStudentAttendance()
+  }
+
+
 
   /**
    * 查詢班級列表
@@ -153,7 +166,7 @@ export class ClassSummaryComponent implements OnInit {
 
     if (studenNoDetail) {
       studenNoDetail.forEach(attNodetail => {
-        debugger
+
         const studAttendStatistics = this.studentMappingTable.get(attNodetail.seat_no);
         if (studAttendStatistics) {
           studAttendStatistics.addWithNodDetail(attNodetail, this.selectedType, this.selectedAll, this.periodTypeMap)

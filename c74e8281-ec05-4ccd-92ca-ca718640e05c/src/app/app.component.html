@@ -1,10 +1,10 @@
-<div class="container-fluid cbs d-flex justify-content-between flex-column" style ="padding-top :0px ;">
+<div class="container-fluid cbs d-flex justify-content-between flex-column" style ="width: 90%; padding-top :0px ;">
     <div id="index" class="h-100" page>
-        <nav aria-label="breadcrumb text-nowrap text-truncate">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page"> {{currSchoolYearName}}</li>
-            </ol>
-        </nav>
+        <div id ="header" aria-label="breadcrumb text-nowrap text-truncate">
+        
+                <div class="" aria-current="page"> {{currSchoolYearName}}</div>
+         
+        </div>
         <ng-container *ngIf="!isLoading; else tplLoading">
             <ng-container *ngIf="classList.length > 0; else tplNoData">
                 <div class="d-flex flex-row">
@@ -21,7 +21,7 @@
                         </div>
                     </div>
 <div>
-    <button type="button" class="btn   btn-primary  ml-3  " aria-haspopup="true" aria-expanded="false"
+    <button type="button" class="btn  ml-3  " aria-haspopup="true" aria-expanded="false"
     (click)="exportData('#ClassSemesterScoreTable')">
     匯出
 </button>
@@ -31,30 +31,68 @@
                     </div>
 
                 </div>
+                <div class="scrollable mb-3">
                 <table  id ="ClassSemesterScoreTable"class="table table-bordered table-striped table-hover">
                     <thead>
-                        <tr>
-                            <th>學號</th>
-                            <th>座號</th>
-                            <th>學生</th>
-                            <th>德行加減分</th>
+                        <tr >
+                            <th class="stiky-col-top " >學號</th>
+                            <th class="stiky-col-top " >座號</th>
+                            <th class="stiky-col-top " >學生</th>
+                            <th class="stiky-col-top " >德行加減分
+                                <!-- <span (click)="saveAll()"> 儲存</span> -->
+                                <span *ngIf="isEditMode" class="material-icons-outlined icon " style ="cursor: pointer;" (click)="saveAll()">
+                                    save
+                                    </span>
+                                    
+                                <!-- icon -->
+                              <span  *ngIf="!isEditMode" class="material-icons-outlined icon"   style ="cursor: pointer;" (click)="changeToEditMode()">
+                                    mode_edit 
+                               </span>
+                                    
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="point">
                         <ng-container *ngIf="studentList.length > 0; else tplNostudent">
-                            <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)">
+                            <!-- <tr *ngFor="let stu of studentList" (click)="openEditForm(stu)"> -->
+                                <tr *ngFor="let stu of studentList" >
                                 <td>{{stu.StudentNumber}}</td>
                                 <td>{{stu.SeatNo}}</td>
-                                <td>{{stu.StudentName}}</td>
-                                <td>{{stu.SbDiff}}</td>
+                                <td class="col_name" >{{stu.StudentName}}</td>
+                                <!-- isEditMode 判斷  -->
+                                <ng-container *ngIf="!isEditMode " >
+                                    <td>{{stu.SbDiff}}</td>
+                                </ng-container>
+                                <ng-container  *ngIf="isEditMode ">
+                                    <td class ="adjust-th">
+                                        <input  [attr.max]="MaxRange" 
+                                                [attr.min]="LowRange" 
+                                                class="adjust-input" 
+                                                [(ngModel)]="stu.SbDiff" 
+                                                type="number" 
+                                                id="adjustScore" 
+                                                name="adjustScore"
+                                                (change)="onInputChange(stu)"> 
+                                
+                                    </td>
+                                </ng-container>
+                                <!--end isEditMode 判斷  -->
+                                
                             </tr>
                         </ng-container>
                     </tbody>
                 </table>
+                </div>
             </ng-container>
         </ng-container>
     </div>
 </div>
+
+
+
+
+
+
 
 <ng-template #tplLoading>
     <h4>資料載入中...</h4>
@@ -83,8 +121,8 @@
                 <label class="col-form-label">
                     請輸入德行加減分
                 </label>
-                <input class="form-control" rows="1" placeholder="請輸入德行加減分" [(ngModel)]="curStudent.SbDiff"
-                    (keyup)="validateMs()" [ngClass]="{'error': !curStudent.validate_ms}">
+                <input #teacher_input class="form-control " rows="1" placeholder="請輸入德行加減分" [(ngModel)]="curStudent.SbDiff"
+                   [ngClass]="{'error': !curStudent.validate_ms}">
             </div>
         </div>
         <div class="modal-footer">

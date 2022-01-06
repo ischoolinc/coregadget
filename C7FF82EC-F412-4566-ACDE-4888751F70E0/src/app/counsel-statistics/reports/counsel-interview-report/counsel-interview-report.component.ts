@@ -23,15 +23,12 @@ export class CounselInterviewReportComponent implements OnInit {
   
 
   constructor(private dsaService: DsaService
-    ,  private _snackBar: MatSnackBar) { }
+    ) { }
 
   ngOnInit() {
     this.loadData();
   }
 
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action);
-  }
 
   loadData() {
     this.isSelectAllItem = false;
