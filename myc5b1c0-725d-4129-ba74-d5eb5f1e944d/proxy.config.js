@@ -1,7 +1,7 @@
 
 // 如果不指定請設定成 null。
 // cookie 內容請到相應的站台的 service  response 中取得。
-const cookie = '_ga=GA1.1.15310176.1641865796; _ga_0XS98J4028=GS1.1.1641867854.2.0.1641867854.0; @ecoboost-web3=9a730e5b-d979-4694-bd44-a67a5e56e4eb; @ecoboost-web3.sig=vbz8Ag68lcYqNKW9etGGod3aAxU; _ga_0W66BZCJ6C=GS1.1.1641957760.3.1.1641962250.0';
+const cookie = '_ga=GA1.1.1293087968.1641952280; _ga_0XS98J4028=GS1.1.1642053598.5.1.1642055429.0; @ecoboost-web3=940ec1a6-4ab2-4536-b2c3-95166bdc1d85; @ecoboost-web3.sig=0amxDhKKqwe3zxuwXfpI_5rJGd0; _ga_0W66BZCJ6C=GS1.1.1642351138.16.1.1642351362.0';
 
 const onProxyReq = function (proxyReq, req, res) {
   proxyReq.setHeader('SameSite', 'None; Secure');
