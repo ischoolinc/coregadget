@@ -14,12 +14,12 @@ export class SnackbarService {
   show(message: string, options: SnackbarOptions = {} as SnackbarOptions) {
     const type = options.type || 'error';
 
-    let bgStyle = 'bg-danger';
+    let bgStyle = 'bg-third-dark';
     switch (type) {
       case 'success': bgStyle = 'bg-success'; break;
-      case 'error': bgStyle = 'bg-danger'; break;
-      case 'info': bgStyle = 'bg-info'; break;
-      case 'warning': bgStyle = 'bg-warning'; break;
+      case 'error': bgStyle = 'bg-warning'; break;
+      case 'info': bgStyle = 'bg-primary'; break;
+      case 'warning': bgStyle = 'bg-third-dark'; break;
     }
 
     this.snackBar.openFromComponent(SnackbarComponent, {
