@@ -8,7 +8,8 @@
       <button class="w-full btn btn-primary mt-2 mb-10"
         [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
         [disabled]="!adminIsConnectedGoogle"
-        (click)="asyncGoogleClassroomCourse(data.target, 'create')">開始建立</button>
+        (click)="asyncGoogleClassroomCourse(data.target, 'create')">
+        {{ adminIsConnectedGoogle ? '開始建立' : '服務尚未啟用'}}</button>
     </div>
     <div class="mt-8 text-center">
       <p class="text-gray text-sm overflow-hidden">--- 或 ---</p>
@@ -23,7 +24,8 @@
       <button class="w-full btn btn-primary mt-6 mb-10"
         [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
         [disabled]="!adminIsConnectedGoogle"
-        (click)="asyncGoogleClassroomCourse(data.target, 'link')">開始連結</button>
+        (click)="asyncGoogleClassroomCourse(data.target, 'link')">
+        {{ adminIsConnectedGoogle ? '開始連結' : '服務尚未啟用'}}</button>
     </div>
   </div>
   <div *ngIf="processState === 102" class="mt-36 mb-52">
@@ -43,7 +45,11 @@
   <div *ngIf="processState === 2000" class="mt-20">
     <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
-    <div class="text-center mb-4">{{createStudentMsg}}</div>
+    <div class="text-center mb-4">
+      <a href="javascript:;"
+        class="text-secondary hover:text-secondary-light focus:outline-none"
+        (click)="viewReason()">查看詳細資訊</a>
+    </div>
     <div class="flex justify-around mb-20 text-sm text-gray-text3">
       <div></div>
       <div>
@@ -64,7 +70,7 @@
   <div *ngIf="processState === 2100" class="mt-20">
     <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
-    <div class="text-center mb-4">{{createStudentMsg}}</div>
+    <div class="text-center mb-4">{{linkGCSuccessMsg}}</div>
     <div class="text-right mb-2">
       <button mat-dialog-close
         class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"

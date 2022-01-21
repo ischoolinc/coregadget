@@ -47,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   dsns = '';
   role = '';
   myInfo: MyInfo = {} as MyInfo;
-  adminConnectedGoogle: { success: boolean, message: string } = { success: false, message: '' };
+  adminConnectedGoogle: { success: boolean, message: string, link_account: string } = { success: false, message: '', link_account: '' };
   curSemester: Semester = {} as Semester;
   courses: MyCourseRec[] = [];
 
@@ -282,7 +282,8 @@ export class AppComponent implements OnInit, OnDestroy {
   async checkConnected() {
     try {
       const rsp: any = await this.ConnectedSettingSrv.check_connected(this.dsns, 'google_classroom_admin');
-      this.adminConnectedGoogle = rsp;
+      // this.adminConnectedGoogle = rsp;
+      this.adminConnectedGoogle.success = false;
     } catch (error) {
       this.snackbarSrv.show('確認連結 Google 帳號發生錯誤！');
     }
@@ -422,5 +423,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.dialogRefManage = this.dialog.open(TimetableManageComponent, {
       data: { course },
     });
+  }
+
+  getAdminDomain() {
+    try {
+      return this.adminConnectedGoogle.link_account.split('@')[1];
+    } catch (error) {
+      return '';
+    }
   }
 }

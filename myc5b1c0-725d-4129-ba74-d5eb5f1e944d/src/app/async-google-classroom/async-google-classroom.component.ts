@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { MyCourseRec, MyCourseTeacherRec } from '../core/data/my-course';
-import { GoogleClassroomService } from '../core/google-classroom.service';
+import { CourseStudentRec } from '../core/data/course-student';
+import { MyCourseRec } from '../core/data/my-course';
+import { ErrorWithGC, GoogleClassroomService } from '../core/google-classroom.service';
 import { MyCourseService } from '../core/my-course.service';
+import { SnackbarService } from '../shared/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-async-google-classroom',
@@ -13,9 +15,10 @@ export class AsyncGoogleClassroomComponent implements OnInit {
   processState = 201;
   processErrorMsg = '';
   progressBar = { max: 0, current: 0 };
-  createStudentMsg = '';
+  studentMap: Map<number, { info: string, message: string, student: CourseStudentRec }> = new Map();
 
   @Input() adminIsConnectedGoogle = false;
+  @Input() adminDomain = '';
   @Input() dsns = '';
   @Input() data: { target: MyCourseRec } = { target: {} as MyCourseRec };
 
@@ -23,6 +26,7 @@ export class AsyncGoogleClassroomComponent implements OnInit {
     private myCourseSrv: MyCourseService,
     private changeDetector: ChangeDetectorRef,
     private gClassroomSrv: GoogleClassroomService,
+    private snackbarSrv: SnackbarService,
   ) { }
 
   ngOnInit(): void {
@@ -32,10 +36,9 @@ export class AsyncGoogleClassroomComponent implements OnInit {
     if (!this.adminIsConnectedGoogle) { return; }
     if ([202].indexOf(this.processState) !== -1) { return; }
 
-    // 1. 取得共同授課老教師清單、取得課程學生清單
-    // 2. 建立課程 + 將老師加入課程(協同教學)
-    // 3. 將學生加入課程
-    // 4. 將 Google Classroom 課程資訊補充到 course
+    // 1. 取得課程學生清單
+    // 2. 將學生加入課程
+    // 3. 將 Google Classroom 課程資訊補充到 course
 
     this.processErrorMsg = '';
     this.processState = 202;
@@ -44,53 +47,35 @@ export class AsyncGoogleClassroomComponent implements OnInit {
       max: 50 * 4, // 一個步驟 => 50
       current: 0,
     };
-    this.createStudentMsg = '';
 
-    let teachers: MyCourseTeacherRec[] = [];
-    let courseOwner: MyCourseTeacherRec = {} as MyCourseTeacherRec;
-    let students: any = [];
+    let students: CourseStudentRec[] = [];
 
-    try { // 從 DSA 取得老師、學生清單。
-      const promiseList = [
-        this.myCourseSrv.getCoursetTeachers(this.dsns, course.CourseId),
-        this.myCourseSrv.getCourseStudents(this.dsns, course.CourseId)
-      ];
-
-      teachers = await promiseList[0];
-      courseOwner = teachers.find(v => v.TeacherSequence === 1) || {} as MyCourseTeacherRec;
-
-      students = await promiseList[1];
+    try { // 從 DSA 取得學生清單。
+      students = await this.myCourseSrv.getCourseStudents(this.dsns, course.CourseId);
       this.progressBar.max += students.length;
     } catch (error) {
       this.processState = 9999;
-      this.processErrorMsg = '哎呀！取得班級資料時出了一點問題！';
+      this.processErrorMsg = '哎呀！取得學生資料時出了一點問題！';
     }
 
     // 開始同步
     try {
       this.reportProgress(50); // 取得資料完成
 
-      try { // 同步學生清單到 Google Classroom.
-        await this.addStudentToGoogleClassroomCourse(students, course.Alias || '');
+      // 同步學生清單到 Google Classroom.
+      await this.addStudentToGoogleClassroomCourse(students, course.Alias || '');
 
-        this.progressBar.current = this.progressBar.max;
-        this.changeDetector.detectChanges();
+      this.progressBar.current = this.progressBar.max;
+      this.changeDetector.detectChanges();
 
-        setTimeout(() => {
-          this.processState = 2000;
-        }, 100);
-      } catch (error) {
-        this.processState = 9999;
-        this.processErrorMsg = '哎呀！班級加入學生時出了一點問題！';
-      }
+      setTimeout(() => {
+        this.processState = 2000;
+      }, 100);
+
     } catch (error) {
+      console.log(error);
       this.processState = 9999;
-
-      if (error && error.error && error.error.status) {
-        if (error.error.status === 'PERMISSION_DENIED') {
-          this.processErrorMsg = `教師帳號必須是有效的 Google 教育帳號！${courseOwner.LinkAccount}`;
-        }
-      }
+      this.processErrorMsg = '哎呀！班級加入學生時出了一點問題！';
     }
   }
 
@@ -99,43 +84,98 @@ export class AsyncGoogleClassroomComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  async addStudentToGoogleClassroomCourse(students: any[], alias: string) {
-    const promiseList: { p: Promise<any>, student: any }[] = students.map(student => {
+  async addStudentToGoogleClassroomCourse(students: CourseStudentRec[], alias: string) {
+    this.studentMap.clear();
+
+    const awaiter = students.map(student => {
       if (student.LinkAccount) {
-        return {
-          p: this.gClassroomSrv.createStudent(this.dsns, 'google_classroom_admin', alias, student.LinkAccount),
-          student,
-        };
+        return this.gClassroomSrv.createStudent(this.dsns, 'google_classroom_admin', alias, student.LinkAccount)
+          .then(() =>{
+            this.studentMap.set(student.StudentId, { info: 'success', message: '', student });
+          })
+          .catch((reason: ErrorWithGC) => {
+            if (reason.error.status === 'ALREADY_EXISTS') {
+              this.studentMap.set(student.StudentId, { info: 'success', message: reason.error.message, student });
+            } else {
+              this.studentMap.set(student.StudentId, { info: 'error', message: reason.error.message, student });
+              this.snackbarSrv.show(`建立學生${student.StudentName}時發生問題！`);
+            }
+          })
+          .finally(() => {
+            this.reportProgress(50 / students.length);
+          });
       } else {
-        return { p: new Promise((r, j) => j('skip')), student };
+        this.studentMap.set(student.StudentId, { info: 'error', message: 'NO_ACCOUNT', student });
+        this.snackbarSrv.show(`建立學生${student.StudentName}時發生問題！`);
+        this.reportProgress(50 / students.length);
+        return Promise.resolve();
       }
     });
 
-    let createStudentSuccesCount = 0;
-    const createStudentErrors = [];
+    await Promise.all(awaiter);
 
-    for (const item of promiseList) {
-      try {
-        await item.p;
-        createStudentSuccesCount += 1;
-        this.reportProgress(50 / promiseList.length);
-      } catch (error) {
-        if (error && error.error && error.error.status) {
-          if (error.error.status !== 'ALREADY_EXISTS') {
-            createStudentErrors.push(`${item.student.StudentName} (${item.student.LinkAccount}) => ALREADY_EXISTS`);
-          }
-        } else {
-          createStudentErrors.push(`${item.student.StudentName} (${item.student.LinkAccount}) => ${ item.student.LinkAccount ? 'ERROR' : 'NO_ACCOUNT'}`);
-        }
-      } finally {
-        this.createStudentMsg = `成功建立學生成員數：${createStudentSuccesCount}`;
-      }
-    }
-    console.log('失敗成員數', createStudentErrors);
-    if (promiseList.length === 0) { this.reportProgress(50); }
+    if (students.length === 0) { this.reportProgress(50); }
   }
 
   googleSigninChooserUrl(url: string = '') {
     return this.gClassroomSrv.getGoogleSigninChooserUrl(url);
   }
+
+  viewReason() {
+    const newWin = window.open('', 'gc_reason');
+    if (newWin) {
+      const resultS: any[] = [];
+      this.studentMap.forEach(v => {
+        resultS.push(`
+          <td>
+            ${[
+              '學生',
+              v.student.StudentId,
+              v.student.StudentName,
+              v.student.LinkAccount,
+              v.info === 'success' ? '成功' : '失敗',
+              v.info === 'success' ? '' : v.message
+            ].join('</td><td>')}
+          </td>`);
+      });
+
+      newWin.document.body.innerHTML = `
+        <html>
+          <head>
+            <title>Result</title>
+            <style type="text/css">
+              table {
+                border-collapse: collapse;
+                border-spacing: 0px;
+                margin: 30px 0 0 30px;
+              }
+              table, th, td {
+                padding: 5px;
+                border: 1px solid black;
+              }
+            </style>
+          </head>
+          <body>
+            <p>Domain: ${this.adminDomain}</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>身分</th>
+                  <th>系統編號</th>
+                  <th>姓名</th>
+                  <th>登入帳號</th>
+                  <th>結果</th>
+                  <th>備註</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${ resultS ? `<tr>${resultS.join('</tr><tr>')}</tr>` : '' }
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `;
+    }
+  }
+
 }
