@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="我的課程 2.0" description="我的課程 2.0">
+    <Title lang="zh-TW">我的課程 2.0</Title>
+    <Icon>icon.png</Icon>
+    <Title lang="zh-CN">
+    </Title>
+    <Title lang="en-US">
+    </Title>
+  </ModulePrefs>
+</Module>
