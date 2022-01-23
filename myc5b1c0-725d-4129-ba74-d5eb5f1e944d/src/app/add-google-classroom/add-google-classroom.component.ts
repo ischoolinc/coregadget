@@ -138,7 +138,7 @@ export class AddGoogleClassroomComponent implements OnInit {
     try {
       const courses = await this.gClassroomSrv.getCourses(dsns, 'google_classroom_admin', account);
       this.reportProgress(50);
-      console.log(courses);
+      // console.log(courses);
 
       let found: GoogleClassroomCourse | null = null;
       for(const course of courses) {

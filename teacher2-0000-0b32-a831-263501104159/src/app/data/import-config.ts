@@ -8,4 +8,4 @@ export interface ImportFieldRec {
   hidden: boolean;
 }
 
-export type FieldName = 'TeacherId' | 'TeacherName' | 'Nickname' | 'Gender' | 'LinkAccount' | 'TeacherName^Nickname' | 'TeacherCode';
+export type FieldName = 'TeacherId' | 'TeacherName' | 'Nickname' | 'Gender' | 'LinkAccount' | 'TeacherName^Nickname' | 'TeacherCode' | 'TeacherNumber';

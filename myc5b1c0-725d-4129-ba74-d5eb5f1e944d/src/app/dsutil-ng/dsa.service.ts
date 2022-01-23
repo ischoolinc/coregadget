@@ -30,7 +30,7 @@ export class DSAService {
         const d = djs(conn.createAt);
         const diff = now.diff(d, 'minute');
         if(diff > (60 * 8)) { // 如果建立大於 8 小時就重建 connection。
-          console.log(`Connection Delete：${key}`);
+          // console.log(`Connection Delete：${key}`);
           this.#connCache.delete(key);
         }
       }
@@ -54,9 +54,17 @@ export class DSAService {
     const token = new PassportAccessToken({AccessToken: atoken});
     const ap = await AccessPoint.resolve(dsns, contract);
     const conn  = new Connection(ap, token);
-    await conn.connect();
-    this.#connCache.set(cacheKey, conn);
-    return conn;
+
+    // 暫時做法，解決 DSA 無法處理短時間同 AccessToken Connect 問題。
+    // 正確解法是修掉 DSA 問題，目前已確認問題。
+    return new Promise<Connection>((r, j) => {
+      setTimeout(async () => {
+        await conn.connect();
+        this.#connCache.set(cacheKey, conn);   
+        r(conn);
+      }, Math.random() * 300);
+    })
+    
   }
 
   private genKey(dsns: string, contract: string) {

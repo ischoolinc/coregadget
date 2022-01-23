@@ -27,8 +27,8 @@ import dayjs from 'dayjs';
 import { GadgetParams, ServerService } from './core/server.service';
 import { Params } from './core/states/params.actions';
 import { ParamsState } from './core/states/params.state';
-
-const PG_FORMAT = 'YYYY/MM/DD hh:mm:ss';
+import { TimetableService } from './core/timetable.service';
+import { ParamsService } from './params.service';
 
 @Component({
   selector: 'app-root',
@@ -68,6 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ];
   curTab = { value: 0, tabId: 'tab1', tabTitle: '所有時段', checked: true };
   curCourseList: MyCourseRec[] = [];
+  scheduleSource: 'standard' | 'personal' = 'personal';
 
   manageProcessState = 301;
   manageProcessErrorMsg = '';
@@ -85,23 +86,19 @@ export class AppComponent implements OnInit, OnDestroy {
     private ConnectedSettingSrv: ConnectedSettingService,
     private crSrv: ClassroomService,
     private store: Store,
-    private server: ServerService
+    private params: ParamsService
   ) {}
 
   async ngOnInit() {
     const { store } = this;
 
-    const weekStart = dayjs().day(0);
-    const weekEnd = dayjs().day(6);
-    console.log(`${weekStart.format(PG_FORMAT)} ~ ${weekEnd.format(PG_FORMAT)}`);
-
     // 將相關資料放進 Store 裡面。
-    await store.dispatch(new Context.FetchAll()).pipe(
-      concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll(), new Params.FetchAll]))
+    await store.dispatch([new Context.FetchAll(), new Params.FetchAll]).pipe(
+      concatMap(() => store.dispatch([new Timetable.FetchAll(), new Conf.FetchAll()]))
     ).toPromise();
 
-    const p = this.store.selectSnapshot<GadgetParams>(ParamsState)
-    console.log(`Schedule Source：${p.schedule_source}`);
+    // 課表來源(校務行政 or 教師自行輸入)。
+    this.scheduleSource = this.params.scheduleSource;
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)
     // 確認管理者是否已設定連結 Google 帳號
