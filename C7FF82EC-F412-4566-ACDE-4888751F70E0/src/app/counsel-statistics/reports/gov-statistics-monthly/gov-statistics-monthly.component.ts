@@ -15,7 +15,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 })
 export class GovStatisticsMonthlyComponent implements OnInit {
 
-  reportNameList: string[];
+  reportNameList: {reportName,description,isShowDescrip?}[];
   selectYear: number;
   selectMonth: number;
   selectReportType: string = '輔導工作月統計';
@@ -25,6 +25,16 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   schoolType;
   schoolName ='';
   TeacherCounselRole :TeacherCounselRole[]=[];
+  /** 範圍 */
+  privateRangeList :{
+    /**選單顯示用詞*/ 
+    name ,
+    /**資料庫條件*/ 
+    dbIsPrivate}[] = 
+        [{name:"全部", dbIsPrivate:"true,false"},
+        {name:"公開", dbIsPrivate:"false"},
+        {name:"不公開", dbIsPrivate:"true"}]
+  currentRange = this.privateRangeList[0]; // 預設為全部
 
   constructor(@Optional()
   private appComponent: AppComponent, private dsaService: DsaService, private http: HttpClient) { }
@@ -45,12 +55,11 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         this.selectMonth = new Date().getMonth() + 1;
         this.buttonDisable = false;
         this.reportNameList = [
-          "輔導工作月統計報表-教育部版",
-          "輔導工作月統計報表-新北市版",
-          "輔導工作月統計報表-新竹國中版",
-          "輔導工作月統計報表-新竹國小版"
+          {reportName :"輔導工作月統計報表-教育部版" ,description:"版本更新月份:2022-01" ,isShowDescrip :false},
+          {reportName : "輔導工作月統計報表-新北市版" ,description:""},
+          {reportName : "輔導工作月統計報表-新竹國中版" ,description:""},
+          {reportName : "輔導工作月統計報表-新竹國小版" ,description:""}
         ];
-
       });
     } catch (err) {
       console.log(err);
@@ -58,6 +67,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   }
 
   async exportRepot(item) {
+    debugger
    //取得學校資訊 (學校名稱)
    await this.getSchoolInfo();
     // 檢查年,月
@@ -93,7 +103,11 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     }
   }
 
-  // 年級轉換
+  /**切換公開不公開範圍 */
+  setCurRange(item :any){
+    this.currentRange =item ;
+  }
+  /**年級轉換*/
   parseGradeYear(value: string) {
     if (this.schoolType) {
       if (this.schoolType === '高中') {
@@ -120,13 +134,12 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       return value;
     }
   }
-// 
+
  /** 取得 教師編碼 */ 
  async getTeacherConNumbr(){
    try {
      let  rsp =  await this.dsaService.send("_.GetTeachersCounselRole",{})
      this.TeacherCounselRole=[].concat(rsp.TeacherCounselRole||[]);
-     console.log("this.TeacherCounselRole",  this.TeacherCounselRole) ;
    } catch(ex){
        alert("取得教師編碼發生錯誤! \n"+ JSON.stringify(ex));    
    }
@@ -181,14 +194,16 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
     let resp = await this.dsaService.send("GetCaseMonthlyStatistics1_1", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,
+        IsPrivate: this.currentRange.dbIsPrivate
       }
     });
 
     let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics1_2", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,
+        IsPrivate: this.currentRange.dbIsPrivate
       }
     });
 
@@ -425,14 +440,16 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
     let resp = await this.dsaService.send("GetCaseMonthlyStatistics2_1", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,  
+        IsPrivate: this.currentRange.dbIsPrivate
       }
     });
 
     let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics2_2", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,
+        IsPrivate: this.currentRange.dbIsPrivate
       }
     });
 
@@ -589,14 +606,17 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
     let resp = await this.dsaService.send("GetCaseMonthlyStatistics3_1", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,
+        IsPrivate: this.currentRange.dbIsPrivate
+
       }
     });
 
     let resp2 = await this.dsaService.send("GetCaseMonthlyStatistics3_2", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,  
+        IsPrivate: this.currentRange.dbIsPrivate
       }
     });
 
@@ -727,7 +747,8 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
     let resp = await this.dsaService.send("GetCaseMonthlyStatistics4_1", {
       Request: {
         Year: this.selectYear,
-        Month: this.selectMonth
+        Month: this.selectMonth,
+        IsPrivate: this.currentRange.dbIsPrivate
       }
     });
 

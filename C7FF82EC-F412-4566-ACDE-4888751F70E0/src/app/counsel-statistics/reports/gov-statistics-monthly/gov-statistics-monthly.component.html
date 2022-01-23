@@ -1,44 +1,99 @@
 <div style="height: 20px"></div>
 
-<div class="tab-content"
-     *ngIf="selectReportType ==='輔導工作月統計'">
+<div class="tab-content" *ngIf="selectReportType ==='輔導工作月統計'">
+   
+
+  <div class ="row">
   <!-- TAB 2 輔導統計 -->
-  <div>
-    <label class="col-form-label"
-           style="width:40px">西元</label>
-    <input type="number"
-           min="2000"
-           max="3000"
-           [(ngModel)]="selectYear">
-    <label class="col-form-label"
-           style="width:30px">年</label>
-    <input type="number"
-           min="1"
-           max="12"
-           [(ngModel)]="selectMonth">
-    <label class="col-form-label"
-           style="width:30px">月</label>
+  <div class="ml-2">
+    <label class="col-form-label" style="width:40px">西元</label>
+    <input class ="input-light" type="number" min="2000" max="3000" [(ngModel)]="selectYear">
+    <label class="col-form-label" style="width:30px">年</label>
+    <input class ="input-light" type="number" min="1" max="12" [(ngModel)]="selectMonth">
+    <label class="col-form-label" style="width:30px">月</label>
   </div>
+
+<!-- 公開不公開 -->
+<div class="dropdown " >
+  <button class="btn btn-light-2 dropdown-toggle brad-5"             
+     style="border-radius: 5px  !important;"
+      type="button"
+      id="dropdownMenuButton"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false">
+         {{currentRange.name }}
+        </button>
+        <div class="dropdown-menu brad-5 "style="  "
+             aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item cuser" 
+          (click) = "setCurRange(range)"
+             *ngFor="let range of privateRangeList">{{ range.name }}</a>
+        </div>
+
+        <span class="ml-2" style="color: rgb(228, 70, 70);">*統計公開與未公開的晤談紀錄</span>  
+      </div>
+
+  </div>
+
 
   <ul class="rwd-table">
     <li class="thead">
       <ol class="tr">
         <li>統計報表名稱</li>
+        <li > 說明</li>
         <li></li>
       </ol>
     </li>
     <li class="tbody">
-      <ol class="tr"
-          *ngFor="let item of reportNameList">
-        <li data-title="報表名稱">{{ item }}</li>
-        <li data-title="">
-          <button class="btn btn-light"
-                  (click)="exportRepot(item)" [disabled]="buttonDisable">
-            產生報表
-          </button>
-        </li>
-      </ol>
+      <ng-container *ngFor="let item of reportNameList">
+        <ol class="tr">
+          <li data-title="報表名稱">{{ item.reportName }}</li>
+    
+          <li >
+  
+            <div  
+            *ngIf="!item.isShowDescrip"
+              class="p-2"  
+              style=" white-space: nowrap; 
+                     width :350px  ; 
+                     overflow: hidden; 
+                     text-overflow: ellipsis" 
+               (click)="item.isShowDescrip =!item.isShowDescrip"
+               >
+              <ng-container  >
+                {{item.description}}
+              </ng-container>
+            </div>
+
+
+            <div  
+            *ngIf="item.isShowDescrip"
+            class="p-2"  
+            style="white-space: pre-wrap; 
+                    width :350px ; " 
+             (click)="item.isShowDescrip =!item.isShowDescrip">
+            <ng-container  >
+              {{item.description}}
+            </ng-container>
+       
+          </div>
+         
+
+
+          </li>
+          <li data-title="">
+            <span>
+              <button class="btn btn-light" (click)="exportRepot(item.reportName)" [disabled]="buttonDisable">
+                產生報表
+              </button>
+            </span>
+            <span>
+         
+            </span>
+          </li>
+        </ol>
+      </ng-container>
     </li>
   </ul>
-
 </div>

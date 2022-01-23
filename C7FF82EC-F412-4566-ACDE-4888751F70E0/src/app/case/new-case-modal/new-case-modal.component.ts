@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { CaseStudent, CaseTeacher, CounselTeacher, SelectCaseTeacher } from "../case-student";
 import { DsaService } from "../../dsa.service";
+// import { RoleService } from "../role.service";
 import { ReferralStudent } from "../../referral/referral-student";
 import { FormControl } from "@angular/forms";
 import {
@@ -12,6 +13,7 @@ import {
 import { QOption } from "../case-question-data-modal";
 import { asLiteral } from "@angular/compiler/src/render3/view/util";
 import { conforms } from "lodash";
+import { RoleService } from "src/app/role.service";
 
 @Component({
   selector: "app-new-case-modal",
@@ -21,13 +23,16 @@ import { conforms } from "lodash";
 export class NewCaseModalComponent implements OnInit {
   constructor(
     private dsaService: DsaService,
-    private counselStudentService: CounselStudentService
+    private counselStudentService: CounselStudentService,
+    private roleService: RoleService 
+    
   ) { }
 
   isCancel: boolean = true;
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
   editModeString: string = "新增";
+  /** 當前個案學生 */
   public caseStudent: CaseStudent;
 
   /**用詞修正對應 "舊的用詞˙":"'新的用詞'" */
@@ -170,19 +175,33 @@ export class NewCaseModalComponent implements OnInit {
     });
   }
 
-  // 設定是否結案
+  /** 設定是否結案 */ 
   setIsClose(value: string) {
     this.caseStudent.IsClosed = value;
 
     if (value === "t") {
       // 設定結案日期
       this.caseStudent.setCloseDateNow();
+      // 教師
+      this.caseStudent.ClosedByTeacherID = this.roleService.loginTeacher.ID ;
+      // 設定結案教師 
+      this.closedTeacherName = `${this.roleService.loginTeacher.Name} (${this.roleService.loginTeacher.NickName})`
+
     } else {
       // 清除結案日期
       this.caseStudent.CloseDate = "";
+      // 清除結案教師名稱
+      this.closedTeacherName ="" 
+      // 清除結案教師
+      this.caseStudent.ClosedByTeacherID ="" ;
     }
+
     this.caseStudent.checkValue();
   }
+
+
+
+
 
   // 來至轉介建立個案功能
   setCaseFromReferral(refData: ReferralStudent) {

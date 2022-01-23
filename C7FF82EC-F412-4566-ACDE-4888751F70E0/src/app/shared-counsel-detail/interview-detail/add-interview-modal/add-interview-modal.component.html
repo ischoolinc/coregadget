@@ -107,26 +107,12 @@
           </div>
         </div>
         <div class="form-row">
-          <!-- <div class="form-group col-md-6">
-            <label for="interviewee"
-                   class="col-form-label">
-              <span class="text-samll text-danger"
-                    *ngIf="!_CounselInterview.isContactNameHasValue">*</span>
-              對象
-            </label>
-            <input type="text"
-                   class="form-control"
-                   id="interviewee"
-                   placeholder="請輸入對象"
-                   [(ngModel)]="_CounselInterview.ContactName"
-                   (keyup)="_CounselInterview.checkValue()" />
-          </div> -->
           <div class="form-group ">
             <div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" id="isPublic"
                 (click)="_currentCounselInterview.checkValue()" (keyup)="_currentCounselInterview.checkValue()"
                 [(ngModel)]="_currentCounselInterview.isPublic" />
-              <label class="custom-control-label" for="isPublic">輔導資料公開給輔導室，以利銜接。</label>
+              <label class="custom-control-label" for="isPublic">輔導資料開放給下一任班導師，以利銜接。</label>
             </div>
           </div>
 
@@ -177,18 +163,6 @@
             <label class="custom-control-label" for="referral">轉介輔導室</label>
           </div>
 
-
-          <!-- 新增轉介輔導室 -->
-          <!-- 
-          <button type="button" class="btn btn-outline-primary">
-            <mat-icon 
-            class = " cuser"  
-            style ="font-size: 18px ;color :gray;"
-            aria-hidden="false" aria-label="Example home icon">
-            transfer_within_a_station
-           </mat-icon>
-           轉介輔導室
-           </button> -->
           <div>
 
           </div>
@@ -202,12 +176,7 @@
 
       </div>
       <div class="modal-footer">
-        <!-- <button type="button"
-                class="btn btn-dark"
-                data-dismiss="modal"
-                (click)="cancel()">
-          取消
-        </button> -->
+
 
         <div style="padding-bottom :5px;" *ngIf="isAllowSerial" class="custom-control custom-checkbox float-left">
           <input type="checkbox" class="custom-control-input" id="isSerials" (click)="setIsSerial()"
