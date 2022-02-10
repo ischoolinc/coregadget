@@ -313,6 +313,10 @@
                             Type: 'Number',
                             Permission: 'Editor',
                             Lock: template.Extension.Extension.UseScore !== '是' || template.Lock,
+                            Range: {
+                                Max: 100,
+                                Min: 0
+                            }
                         };
                         // 平時評量
                         var assignmentScore = {
@@ -322,6 +326,10 @@
                             Type: 'Number',
                             Permission: 'Editor', // 平時評量分數 可直接輸入或手動帶入小考結算成績
                             Lock: template.Extension.Extension.UseAssignmentScore !== '是' || template.Lock,
+                            Range: {
+                                Max: 100,
+                                Min: 0
+                            }
                         };
                         // 文字評量
                         var text = {
@@ -1280,21 +1288,36 @@
                         Name: '匯入_' + exam.Name,
                         Type: 'Function',
                         ScoreType: exam.Type,
+                        errMsg : [],
                         Fn: function () {
                             delete importExam.ParseString;
                             delete importExam.ParseValues;
                             $scope.importTarget = importExam;
+                            $('#importModal').modal({
+                                backdrop: 'static',
+                                keyboard: false
+                            });
+                     
                             $('#importModal').modal('show');
+
                         },
                         Parse: function () {
                             // 成績
                             if (exam.Type == 'Number') {
                                 importExam.ParseString = importExam.ParseString || '';
-                                importExam.ParseValues = importExam.ParseString.split("\n");
+                                if(importExam.ParseString.length>0){
+                                    importExam.ParseValues = importExam.ParseString.split("\n");
+                                }else{
+
+                                    importExam.ParseValues = [];
+                                }
+                               
+                                importExam.errMsg = [] ;
                                 importExam.HasError = false;
                                 for (var i = 0; i < importExam.ParseValues.length; i++) {
                                     var flag = false;
                                     var temp = Number(importExam.ParseValues[i]);
+                                    debugger
                                     if (!isNaN(temp)
                                         && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
                                         && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
@@ -1305,34 +1328,57 @@
                                         var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
                                         temp = Math.round(temp * round) / round;
                                     }
+                                    else{ 
+                                        importExam.ParseValues[i] = '錯誤';
+                                        importExam.errMsg[i] = '請輸入 0-100';
+                                    }
+
                                     // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值
                                     if (importExam.ParseValues[i] == '-') {
                                         flag = true;
                                         importExam.ParseValues[i] = '';
+                                        importExam.errMsg[i] = null ;
+                                  
                                     }
                                     // 缺
                                     if (importExam.ParseValues[i] == '缺') {
                                         flag = true;
                                         importExam.ParseValues[i] = '缺';
+                                        importExam.errMsg[i] = null ;
                                     }
+
+
+
                                     if (flag) {
                                         if (!isNaN(temp) && importExam.ParseValues[i] != '') {
                                             importExam.ParseValues[i] = temp;
+                                            importExam.errMsg[i] = null ;
                                         }
                                     }
                                     else {
-                                        importExam.ParseValues[i] = '錯誤';
+                                        if(importExam.ParseValues[i] == null )
+                                        {
+                                            importExam.ParseValues[i] = '錯誤';
+                                            importExam.errMsg[i] =  '空值請輸 -';
+                                        }
                                         importExam.HasError = true;
                                     }
                                 }
 
+
+                                // 處理最後空白沒有填東西
                                 $scope.studentList.forEach(function (stuRec, index) {
                                     if (index >= importExam.ParseValues.length) {
                                         importExam.ParseValues.push('錯誤');
+                                        importExam.errMsg.push('空值請輸 -')
                                         importExam.HasError = true;
                                     }
                                 });
+
+                                // 看一下裝了甚麼
+                                console.log("importExam",importExam);
                             }
+                            
                             // 文字評量
                             else if (exam.Type == 'Text') {
                                 importExam.ParseString = importExam.ParseString || '';
