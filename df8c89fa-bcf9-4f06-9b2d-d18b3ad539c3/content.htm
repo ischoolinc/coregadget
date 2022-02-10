@@ -210,9 +210,9 @@
                 </a>
             </div>
         </div>
-        <div style="clear: both;">
-            開放時間：
-            <span style="color: red" ng-show="current.template.InputStartTime && current.template.InputEndTime">
+        <div style="clear: both; margin-top: 7px;">
+            <b> 開放時間：</b>
+            <span style="color: rgb(29, 67, 138)" ng-show="current.template.InputStartTime && current.template.InputEndTime">
                 {{current.template.InputStartTime || '未指定'}} ~ {{current.template.InputEndTime || '未指定'}}
             </span>
             <span ng-show="!current.template.InputStartTime && !current.template.InputEndTime">未開放</span>
@@ -489,8 +489,8 @@
                     <thead>
                         <tr>
                             <th colspan="6"></th>
-                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}">{{current.template.Name}}
-                                <span class="text-red">({{current.template.Percentage}})</span>
+                            <th colspan="{{current.template.isSubScoreMode ? 6 : 4}}" style="text-align: center;">{{current.template.Name}}
+                                <span style="color:rgb(59, 59, 163)">({{current.template.Percentage}})</span>
                             </th>
                         </tr>
                         <tr>
@@ -503,8 +503,8 @@
                                 class="text-center" colspan="{{exam.Name === '文字評量' ? 2 : 1}}">
                                 <span ng-class="{'sub-item': exam.isSubItem}">
                                     {{exam.Name}} 
-                                    <span ng-if="exam.Name === '定期評量'" class="text-red">{{current.Course.courseScorePercentage}}%</span>
-                                    <span ng-if="exam.Name === '平時評量'" class="text-red">{{current.Course.courseAssignmentPercentage}}%</span>
+                                    <span ng-if="exam.Name === '定期評量'" style="color:rgb(59, 59, 163)">{{current.Course.courseScorePercentage}}%</span>
+                                    <span ng-if="exam.Name === '平時評量'" style="color:rgb(59, 59, 163)">{{current.Course.courseAssignmentPercentage}}%</span>
                                 </span>
                             </th>
                         </tr>
@@ -614,12 +614,12 @@
                             class="close"
                             data-dismiss="modal"
                             aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">{{importTarget.Name}}</h4>
+                    <h4 class="modal-title"><b>{{importTarget.Name}}</b></h4>
                 </div>
                 <div class="modal-body"
                      ng-if="!importTarget.ParseValues">
-                    <div style="margin:15px 0px;">
-                        <span>使用說明</span>
+                    <div style="margin:10px 0px;">
+                        <h5> <b>使用說明</b></h5>
                         <ol class="">
                             <li>
                                 <span>從excel中複製成績</span>
@@ -643,7 +643,8 @@
                     <div class="row"
                          style="margin:20px 0px;">
                         <textarea class="col-xs-12"
-                                  rows="5"
+                              
+                                  rows="10"
                                   ng-model="importTarget.ParseString"></textarea>
                     </div>
                 </div>
@@ -665,12 +666,18 @@
                                         </span>
                                         
                                         <span   >
-                                            <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
+                                            <!-- <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                             class="pull-right  label label-danger"
-                                            style="font-size:inherit;">錯誤</div>
+                                            style="font-size:inherit;">錯誤</div> -->
+
+                                            <div ng-if="importTarget.errMsg[$index]" 
+                                            class="pull-right  label label-danger"
+                                            style="font-size:inherit; font-size :10px">
+                                                    {{importTarget.errMsg[$index]}}
+                                            </div>
                                        <div ng-if="importTarget.ParseValues[$index]===''"
                                             class="pull-right text-danger">--</div>
-                                       <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
+                                       <div ng-if=" !importTarget.errMsg[$index] && importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
                                             class="pull-right"
                                         
                                             score-stress="{{importTarget.ParseValues[$index]}}" data-score-type="{{importTarget.ScoreType}}">{{importTarget.ParseValues[$index]}}</div>
@@ -689,11 +696,19 @@
                                         <span class="studentInfo">
                                             <span ng-if="stuRec.SeatNo"
                                                   style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                            <span>{{stuRec.StudentName}} SS</span>
+                                            <span>{{stuRec.StudentName}} </span>
                                         </span>
-                                        <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
+                                        <!-- <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
-                                             style="font-size:inherit;">錯誤</div>
+                                             style="font-size:inherit;">錯誤</div> -->
+                                             
+                                             <!-- 顯示錯誤訊息 -->
+                                             <div ng-if="importTarget.errMsg[$index]" 
+                                            class="pull-right  label label-danger"
+                                            style="font-size:inherit; font-size :10px">
+                                                    {{importTarget.errMsg[$index]}}
+                                            </div>
+
                                         <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
@@ -712,11 +727,18 @@
                                         <span class="studentInfo">
                                             <span ng-if="stuRec.SeatNo"
                                                   style="min-width:24px;display:inline-block;">{{stuRec.SeatNo}}.&nbsp;</span>
-                                            <span class ="ml-3">{{stuRec.StudentName}}DD</span>
+                                            <span class ="ml-3">{{stuRec.StudentName}}</span>
                                         </span>
-                                        <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
+                                        <!-- <div ng-if="importTarget.ParseValues[$index]=='錯誤'"
                                              class="pull-right label label-danger"
-                                             style="font-size:inherit;">錯誤</div>
+                                             style="font-size:inherit;">錯誤</div> -->
+
+                                             <!-- 錯誤訊息 -->
+                                             <div ng-if="importTarget.errMsg[$index]" 
+                                             class="pull-right  label label-danger"
+                                             style="font-size:inherit; font-size :10px">
+                                                     {{importTarget.errMsg[$index]}}
+                                             </div>
                                         <div ng-if="importTarget.ParseValues[$index]===''"
                                              class="pull-right text-danger">--</div>
                                         <div ng-if="importTarget.ParseValues[$index]!='錯誤' && importTarget.ParseValues[$index]!==''"
