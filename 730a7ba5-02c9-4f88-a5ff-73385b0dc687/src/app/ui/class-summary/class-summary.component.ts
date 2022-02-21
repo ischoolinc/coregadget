@@ -60,6 +60,13 @@ export class ClassSummaryComponent implements OnInit {
   }
 
 
+/**[View] 切換學年度學期*/
+ changeSemester(semester:SemesterInfo){
+  this.selectedSemester =semester ;
+  this.queryStudentAttendance()
+
+ }
+
 
   /**
    * 查詢班級列表

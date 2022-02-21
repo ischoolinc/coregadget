@@ -71,7 +71,7 @@
   <div class="dropdown-menu">
       <a class="dropdown-item" *ngFor="let semester of semesters"
 
-          (click)="setCurSemester(semester)">
+          (click)="changeSemester(semester)">
           {{getSemesterString(semester)}}
       </a>
   </div>
@@ -133,9 +133,9 @@
       </div>
 
       <!-- 缺曠 -->
-      <div class="table-responsive" #table>
+      <div class="table-responsive scrollable" #table >
         <table class="table-rwd table table-bordered table-hover kd-t">
-          <thead>
+          <thead class ="sticky">
             <tr>
               <th *ngIf="this.ready">座號</th>
               <th *ngIf="this.ready">姓名</th>
