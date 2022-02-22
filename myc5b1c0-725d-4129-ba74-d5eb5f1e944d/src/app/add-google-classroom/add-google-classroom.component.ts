@@ -75,7 +75,7 @@ export class AddGoogleClassroomComponent implements OnInit {
 
     try { // 從 DSA 取得老師、學生清單。
       const promiseList = [
-        this.myCourseSrv.getCoursetTeachers(this.dsns, course.CourseId),
+        this.myCourseSrv.getCourseTeachers(this.dsns, course.CourseId),
         this.myCourseSrv.getCourseStudents(this.dsns, course.CourseId)
       ];
 

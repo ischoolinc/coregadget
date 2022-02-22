@@ -101,7 +101,7 @@ export class MyCourseService {
   }
 
   /**課程教師清單 */
-  public async getCoursetTeachers(appName: string, courseId: number) {
+  public async getCourseTeachers(appName: string, courseId: number) {
     const accessToken = await this.login.getAccessToken().toPromise();
     const path = [
       `${this.config.DSNS_HOST}/${appName}/web3.v1.teacher/_.getCourseTeacher`,
