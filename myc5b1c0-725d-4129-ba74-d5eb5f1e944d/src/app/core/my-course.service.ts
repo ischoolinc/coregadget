@@ -16,18 +16,6 @@ export class MyCourseService {
   ) {
   }
 
-  /**目前學年期 */
-  public async getCurrentSemester(appName: string) {
-    const accessToken = await this.login.getAccessToken().toPromise();
-    const path = [
-      `${this.config.DSNS_HOST}/${appName}/web3.v1.public/_.getCurrentSemester`,
-      `?stt=PassportAccessToken`,
-      `&AccessToken=${accessToken}`,
-      `&rsptype=json`
-    ].join('');
-    return this.http.get<any>(path).toPromise();
-  }
-
   /**教師取得課程清單 */
   public async teacherGetCourses(appName: string, schoolYear?: number, semester?: number) {
     const accessToken = await this.login.getAccessToken().toPromise();

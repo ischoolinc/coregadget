@@ -23,11 +23,7 @@ import { ServiceConfState } from './core/states/conf.state';
 import { ServiceConf } from './core/data/service-conf';
 import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
 import { CourseTimetable } from './core/data/timetable';
-import dayjs from 'dayjs';
-import { GadgetParams, ServerService } from './core/server.service';
 import { Params } from './core/states/params.actions';
-import { ParamsState } from './core/states/params.state';
-import { TimetableService } from './core/timetable.service';
 import { ParamsService } from './params.service';
 
 @Component({
@@ -48,7 +44,6 @@ export class AppComponent implements OnInit, OnDestroy {
   role = '';
   myInfo: MyInfo = {} as MyInfo;
   adminConnectedGoogle: { success: boolean, message: string, link_account: string } = { success: false, message: '', link_account: '' };
-  curSemester: Semester = {} as Semester;
   courses: MyCourseRec[] = [];
 
   #updateTimestamp = dj();
@@ -247,17 +242,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.snackbarSrv.show('取得課程發生錯誤！');
         return [];
       }
-    }
-  }
-
-  // 取得校務當前的學年期
-  async getSemester() {
-    try {
-      const sems = await this.myCourseSrv.getCurrentSemester(this.dsns);
-      return { school_year: sems.SchoolYear, semester: sems.Semester } as Semester;
-    } catch (error) {
-      this.snackbarSrv.show('取得目前學年期發生錯誤！');
-      return {};
     }
   }
 
