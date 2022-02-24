@@ -139,7 +139,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private async displayCourses(sourceCourses: MyCourseRec[]) {
     sourceCourses.forEach(v => {
       v.GoogleIsReady = false;
-      v.Alias = this.formatCourseAlias(v);
+      v.Alias = this.myCourseSrv.formatCourseAlias(this.dsns, v);
       v.ServiceConfig = [];
       v.Timetable = new Map();
       v.TargetId = v.CourseId;
@@ -208,10 +208,6 @@ export class AppComponent implements OnInit, OnDestroy {
     return this.semesterRowSource[0] ?? {} as Semester;
   }
 
-  formatCourseAlias(course: MyCourseRec) {
-    return `d:${this.dsns}@course@${course.CourseId}`;
-  }
-
   async getCourses(schoolYear: number, semester: number) {
     if (this.role === 'teacher') {
       try {
@@ -225,7 +221,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const rsp = await this.myCourseSrv.studentGetCourses(this.dsns, schoolYear, semester);
         const courseMap: Map<string, MyCourseRec> = new Map();
         new Array().concat(rsp || []).forEach(v => {
-          const alias = this.formatCourseAlias(v);
+          const alias = this.myCourseSrv.formatCourseAlias(this.dsns, v);
           if (!courseMap.has(alias)) {
             courseMap.set(alias, { ...v, Teachers: [] });
           }

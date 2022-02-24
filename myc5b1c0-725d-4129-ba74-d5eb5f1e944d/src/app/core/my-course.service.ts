@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { LoginService } from './login.service';
 import { ConfigService } from './config.service';
 import { AttendSemesters, MyCourseRec, MyCourseTeacherRec } from './data/my-course';
+import { DSAService } from '../dsutil-ng/dsa.service';
 
+const TeacherContract = 'web3.v1.teacher';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +15,12 @@ export class MyCourseService {
     private http: HttpClient,
     private login: LoginService,
     private config: ConfigService,
+    private dsa: DSAService,
   ) {
+  }
+
+  public formatCourseAlias(dsns: string, course: { CourseId: number }) {
+    return `d:${dsns}@course@${course.CourseId}`;
   }
 
   /**教師取得課程清單 */
@@ -112,5 +119,19 @@ export class MyCourseService {
     ].join('');
     const rsp: any = await this.http.get(path).toPromise();
     return [].concat((rsp && rsp.Teacher) || []) as MyCourseTeacherRec[];
+  }
+
+  /**取得上學期與此課程「所屬班級」及「所屬科目 或 課程名稱」相同的課程 */
+  public async getEqualSubjectCourse(dsns: string, courseId: number) {
+    const contract = await this.dsa.getConnection(dsns, TeacherContract);
+
+    const rsp: any = await contract.send('mycourse.getEqualSubjectCourse', {
+      "Request": {
+        CourseId: courseId,
+      }
+    });
+
+    const list = rsp?.toCompactJson()?.Course ?? [];
+    return [].concat(list || []) as { CourseId: number, CourseName: string }[];
   }
 }

@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CourseStudentRec } from '../core/data/course-student';
 import { MyCourseRec, MyCourseTeacherRec } from '../core/data/my-course';
 import { ErrorWithGC, GoogleClassroomCourse, GoogleClassroomService } from '../core/google-classroom.service';
@@ -21,6 +22,9 @@ export class AddGoogleClassroomComponent implements OnInit {
   linkGCSuccessMsg = '';
   teacherMap: Map<number, { info: string, message: string, teacher: MyCourseTeacherRec }> = new Map();
   studentMap: Map<number, { info: string, message: string, student: CourseStudentRec }> = new Map();
+  dialogRefReuse?: MatDialogRef<any>;
+  choosedCourse: { CourseId: number, CourseName: string } = {} as any; // 選擇沿用的課程
+  isChecking = false;
 
   @Input() adminIsConnectedGoogle = false;
   @Input() adminDomain = '';
@@ -34,6 +38,7 @@ export class AddGoogleClassroomComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private gClassroomSrv: GoogleClassroomService,
     private snackbarSrv: SnackbarService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -342,6 +347,79 @@ export class AddGoogleClassroomComponent implements OnInit {
           </body>
         </html>
       `;
+    }
+  }
+
+  async getEqualSubjectCourse(course: MyCourseRec, template: TemplateRef<any>) {
+    // 1. 取得上學期與此課程「所屬班級」及「所屬科目 或 課程名稱」相同的課程
+    // 2. 取得上學期課程在 google classroom 的 link
+    if (this.isChecking) return;
+
+    try {
+      this.isChecking = true;
+
+      const rsp = await this.myCourseSrv.getEqualSubjectCourse(this.dsns, course.CourseId);
+
+      if (rsp.length === 0) {
+        this.dialogRefReuse = this.dialog.open(template, {
+          data: { status: 'NO_DATA' },
+        });
+      } else if (rsp.length === 1) {
+        try {
+          const gclass = await this.getGoogleClassroomCourse(rsp[0]);
+          this.googleClassroomLink.setValue(gclass.alternateLink);
+          this.dialogRefReuse = this.dialog.open(template, {
+            data: { status: 'USED', course: rsp[0] },
+          });
+        } catch (error) {
+          this.dialogRefReuse?.close();
+          this.dialog.open(template, {
+            data: { status: 'ERROR', course: rsp[0] },
+          });
+        }
+      } else {
+        this.choosedCourse = rsp[0];
+
+        this.dialogRefReuse = this.dialog.open(template, {
+          data: {
+            status: 'CHOOSER',
+            items: rsp,
+            chooseReuseCourse: async () => {
+              const item = this.choosedCourse;
+              if (!item.CourseId) return;
+
+              try {
+                const gclass = await this.getGoogleClassroomCourse(item);
+                this.googleClassroomLink.setValue(gclass.alternateLink);
+                this.dialogRefReuse?.close();
+                this.dialog.open(template, {
+                  data: { status: 'USED', course: item },
+                });
+              } catch (error) {
+                this.dialog.open(template, {
+                  data: { status: 'ERROR', course: item },
+                });
+              }
+            }
+          },
+        });
+      }
+    } catch (error) {
+      this.snackbarSrv.show('比對課程時發生錯誤！');
+    }
+
+    this.dialogRefReuse?.afterClosed().subscribe(v => {
+      this.isChecking = false;
+    });
+  }
+
+  async getGoogleClassroomCourse(course: { CourseId: number; CourseName: string; }) {
+    try {
+      const alias = this.myCourseSrv.formatCourseAlias(this.dsns, course) || '';
+      return this.gClassroomSrv.getCourse(this.dsns, 'google_classroom_admin', alias);
+    } catch (error) {
+      this.snackbarSrv.show('取得 Google Classroom Course 時發生錯誤！');
+      return {} as GoogleClassroomCourse;
     }
   }
 }
