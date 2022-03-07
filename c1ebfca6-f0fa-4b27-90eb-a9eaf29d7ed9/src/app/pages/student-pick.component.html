@@ -2,7 +2,7 @@
 <div id="attendence-page"
      page>
   <nav aria-label="breadcrumb text-nowrap text-truncate header-top">
-    <ol class="breadcrumb header-top">
+    <ol class="breadcrumb header-top second-page-header ">
       <li class="breadcrumb-item">
         <a class=""  href="#"
            [routerLink]="['/main']">課堂點名</a>
@@ -104,8 +104,8 @@
                class="point row pr-2">
             <div class="col-9 card-body p-2 text-truncate ">
               <div class="text-gray text-truncate d-flex">
-                <strong  *ngIf="!displayEnglishName"  class="mb-0 text-truncate">{{student.data?.Name}}</strong>
-                <strong  *ngIf="displayEnglishName"  class="mb-0 text-truncate">{{student.data?.EnglishName||student.data?.Name}}</strong>
+                <strong  *ngIf="!displayEnglishName"  class="mb-0 text-truncate card-stu-name "  [innerHTML] ="student.data?.Name"> </strong>
+                <strong  *ngIf="displayEnglishName"  class="mb-0 text-truncate card-stu-name ">{{student.data?.EnglishName||student.data?.Name}}</strong>
                 <div class="ml-auto"
                      *ngIf="student.data?.AbsenceRate"
                      [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
@@ -113,9 +113,10 @@
                   <span>%</span>
                 </div>
               </div>
-              <div class="text-gray text-truncate d-flex">
+              <div class="text-gray text-truncate d-flex ">
                 <span>{{student.data?.StudentNumber}}</span>
                 <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
+                <span> {{getCheckInTime(student.data.StudentID)}}</span>
               </div>
             </div>
             <div class="col-3 ad-status text-truncate py-2 my-auto border-r5"
@@ -131,9 +132,10 @@
 
     <!-- 學生資料 (with photo)-->
     <div class="st-list d-flex flex-wrap mt-3 mt-lg-1"
+    style =""
          *ngIf="showPhoto">
       <div class="card st-check"
-           style="height:320px"
+           style="height:320px ;min-width:152px ;max-width: 50%;"
            *ngFor="let student of studentChecks">
         <label (click)="changeAttendance(student)"
     
@@ -146,15 +148,15 @@
             <div [ngStyle]="getAttendanceStyle(student)"
             (mouseover)="showCurrentAbsType(student)"
             (mouseout)="hideCurrentAbsType(student)"   
-                 class="w-100 ad-status text-truncate border-r5">
+                 class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{showAbsText(student)}}</div>
-            <div class="card-body py-2 text-truncate w-100">
+            <div class="card-body py-2 text-truncate w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
               <div class="text-gray d-flex">
                 <!-- <strong class="mb-0 text-truncate" inhtml>{{student.data?.Name}}</strong> -->
-                <div  *ngIf="!displayEnglishName" class="">
+                <div  *ngIf="!displayEnglishName" class=" card-stu-name">
                 <strong class="mb-0 text-truncate" [innerHtml]="student.data?.Name"></strong>&nbsp;
                 </div>
-                <div *ngIf="displayEnglishName" class="text-truncate">
+                <div *ngIf="displayEnglishName" class="text-truncate card-stu-name">
                   <b class="mb-0 " [innerHtml]="student.data?.EnglishName ||student.data?.Name"></b>
 
                 </div>
@@ -164,10 +166,23 @@
                      [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
                   {{student.data?.AbsenceRate}} <span>%</span>
                 </div>
+              
+          
               </div>
-              <div class="text-gray text-truncate d-flex">
+      
+              <div class="text-gray text-truncate d-flex left-pad-3">
                 <span>{{student.data?.StudentNumber}}</span>
                 <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
+   
+              </div>
+              <div  class="text-gray text-truncate d-flex left-pad-3"> 
+
+                <span *ngIf="isShowCheckInTime" style="font-size: 13px; color: rgb(75, 83, 97);"><b>
+
+                  到校時間 : {{getCheckInTime(student.data.StudentID)?.checkin_only_time||'  --  '}}
+                </b> 
+                
+              </span>
               </div>
             </div>
           </div>

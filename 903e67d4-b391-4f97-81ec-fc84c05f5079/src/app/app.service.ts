@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Class, Student, Absence, Period, Leave, Config } from './help-class';
+import { Class, Student, Absence, Period, Leave, Config, ICheckInInfo } from './help-class';
 import * as Rx from "rxjs/Rx";
+import { ClassField } from '@angular/compiler';
 
 type SendOptions = { contact: string, service: string, body: any, map: (rsp) => any };
 
@@ -114,6 +115,38 @@ export class AppService {
       }
     }) as Rx.Observable<boolean>;
   }
+
+
+  /** 林口康橋客制 */
+  getCheckIntimeFromDB(selClass: Class , date : string) {
+
+  return this.send({
+    contact: "campus.rollcall.teacher", // 直接用 課堂點名的servie 
+    service: "_.GetCheckInTime",
+    body: {
+      ClassID: selClass.classId ,
+      Date :date,
+      Type :"Class"
+      
+    },
+    map: (rsp) => {
+      const listChechInInfos = new Array<ICheckInInfo>();
+      if (rsp.rs) {
+        const stus = [].concat(rsp.rs || []);
+        stus.forEach((item) => {
+
+          listChechInInfos.push(item);
+        });
+      }
+
+  
+      return listChechInInfos;
+    }
+  }) as Rx.Observable<ICheckInInfo[]>;
+  }
+
+
+
 
   /**取得班級學生及今天請假狀態 */
   getClassStudentsLeave(selClass: Class, occurDate: string, absences: Absence[]): Rx.Observable<Student[]> {

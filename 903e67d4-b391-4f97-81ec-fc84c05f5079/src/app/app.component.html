@@ -1,5 +1,5 @@
 <div>
-  <h1>導師-線上點名</h1>
+  <h1 class="title-item">導師-線上點名</h1>
   <div>
     <div *ngIf="canCrossDate"
          style="margin-top:15px;">
@@ -47,10 +47,10 @@
     </div>
     <div *ngIf="!canCrossDate"
          style="margin-top:15px;">
-      <span>日期：{{getDateString(todayDate)}}</span>
+      <span class="sub-item">日期：{{getDateString(todayDate)}}</span>
     </div>
     <div style="margin-top:15px;">
-      <span>請選擇班級：</span>
+      <span class="sub-item">請選擇班級：</span>
       <div class="btn-group"
            role="group"
            aria-label="假別">
@@ -64,7 +64,7 @@
   </div>
   <div *ngIf="selClass">
     <div style="margin-top:15px;">
-      <span>請選擇假別：</span>
+      <span class="sub-item">請選擇假別：</span>
       <div class="btn-group"
            role="group"
            aria-label="假別">
@@ -82,7 +82,7 @@
     <table class="table table-bordered table-hover table-striped"
            style="margin-top: 15px;">
       <thead>
-        <tr>
+        <tr class= "sticky">
           <th class="thBorder"
               style="min-width:110px;">
             <div *ngIf="getDateString(currentDate)==getDateString(todayDate)">
@@ -110,6 +110,7 @@
               </div>
             </div>
           </th>
+          <th *ngIf="isShowCheckInTime"   class=" text-center" > 入校時間 </th>
           <th *ngFor="let period of periods"
               (click)="setAllStudentsAbs(period)"
               class="setBtn thBorder text-center">
@@ -119,7 +120,7 @@
       </thead>
       <tbody>
         <ng-container *ngFor="let stu of students;let i = index">
-          <tr *ngIf="i > 0 && i % 5 ==0">
+          <!-- <tr *ngIf="i > 0 && i % 5 ==0">
             <th class="thBorder">
             </th>
             <th *ngFor="let period of periods"
@@ -127,13 +128,20 @@
                 class="setBtn thBorder text-center">
               {{period.name}}
             </th>
-          </tr>
+          </tr> -->
           <tr>
+      
             <td (click)="setStudentAllPeriodAbs(stu)"
                 class="setBtn">
-              {{stu.seatNo}}. {{stu.name}}
+               <span class="name-item">
+                 {{stu.seatNo}}. {{stu.name}}
+
+               </span> 
             </td>
-            <td *ngFor="let period of periods"
+            <td *ngIf="isShowCheckInTime"  class=" text-center"> 
+              {{getCheckInTime(stu.sid)?.checkin_only_time|| "--"}}
+            </td>
+            <td *ngFor="let period of periods"  class=" text-center"
                 (click)="setStudentPeroidAbs(stu, period)"
                 title="{{period.name}}"
                 [class.setBtn]="!(stu.leaveList.get(period.name)?.isLock)"

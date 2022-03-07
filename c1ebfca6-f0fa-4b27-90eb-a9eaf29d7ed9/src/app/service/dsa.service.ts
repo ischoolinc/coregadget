@@ -56,7 +56,9 @@ export class DSAService {
       Request: {
         Type: type,
         OccurDate: date,
-        Period: period
+        Period: period,
+        Platform : 'web'
+
       }
     }
 
@@ -64,7 +66,7 @@ export class DSAService {
     if (type === "Class") req.Request.ClassID = id;
 
     const rsp = await this.contract.send('GetStudent', req);
-
+    console.log("rsp321",rsp);
     return [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; });
   }
 
@@ -203,38 +205,56 @@ export class DSAService {
     return teacherSetting;
   }
 
-  // 依班級 ID get 出席率母數
-  public async getAbsenRateDenominator(courseID :string)  {
-    
-    // let result : RollCallRateDenominator  = new RollCallRateDenominator ();
-    let result :RollCallRateDenominator ;
-    try{
-      await this.ready;
-      const rsp = await this.contract.send('GetAbsenRateDenominatorbyCourseID',{CourseID:courseID});
-      result = rsp.RateSetting ;
-    //  result.IsUseWeeks=rsp.RateSetting.IsUseWeeks;
-  
-    }catch(ex)
-    {
-      alert("取得課程出席率母數發生錯誤: \n"+ex);
-      console.log(ex)
+  /** 林口康橋客制 */
+  public async getCheckIntime(classID :string ,date :string ,type:string  ) {
+    try {
+      let result = null
+      const rsp = await this.contract.send('_.GetCheckInTime',{
+       TargetID :classID ,
+       Date : "",
+       Type : type
+
+      });
+      result =[].concat(rsp.rs||[])
+      console.log("rsp",rsp )
+      return result;
+    } catch (ex) {
+      alert("取得讀哪資料發生錯誤!"+JSON.stringify(ex))
     }
-    return  result;
   }
 
 
-/**
- *
- * 取得出席率母數是依【實際點名次數】還是【上課週數*節數】
- * @memberof DSAService
- */
-async getAbsenRateDenominatorDepen() {
-  let  isUseWeekFromCourse :boolean ;
-  const rsp = await this.contract.send('GetAbsenRateDenominaton',{});
-  isUseWeekFromCourse = rsp.RateSetting.IsUseWeeks =='true';
-  // console.log(" rsp.RateSetting.IsUseWeeks =='true';"  ,rsp.RateSetting.IsUseWeeks)
-  return isUseWeekFromCourse
-}
+  // 依班級 ID get 出席率母數
+  public async getAbsenRateDenominator(courseID: string) {
+
+    // let result : RollCallRateDenominator  = new RollCallRateDenominator ();
+    let result: RollCallRateDenominator;
+    try {
+      await this.ready;
+      const rsp = await this.contract.send('GetAbsenRateDenominatorbyCourseID', { CourseID: courseID });
+      result = rsp.RateSetting;
+      //  result.IsUseWeeks=rsp.RateSetting.IsUseWeeks;
+
+    } catch (ex) {
+      alert("取得課程出席率母數發生錯誤: \n" + ex);
+      console.log(ex)
+    }
+    return result;
+  }
+
+
+  /**
+   *
+   * 取得出席率母數是依【實際點名次數】還是【上課週數*節數】
+   * @memberof DSAService
+   */
+  async getAbsenRateDenominatorDepen() {
+    let isUseWeekFromCourse: boolean;
+    const rsp = await this.contract.send('GetAbsenRateDenominaton', {});
+    isUseWeekFromCourse = rsp.RateSetting.IsUseWeeks == 'true';
+    // console.log(" rsp.RateSetting.IsUseWeeks =='true';"  ,rsp.RateSetting.IsUseWeeks)
+    return isUseWeekFromCourse
+  }
 
   //取得出席率
   public async getAbsenceRate(courseId: string) {
@@ -288,6 +308,7 @@ export interface Config {
 export interface Student {
   StudentID: string;
   Name: string;
+  Name2 :string;
   SeatNo: string;
   StudentNumber: string;
   ClassName: string;
@@ -296,7 +317,7 @@ export interface Student {
   AbsenceRate: number;  //Jean 20190522 增加 出席率
   Absence: Absence;
   PrevAbsence: PrevAbsence;
-  EnglishName :string  ;
+  EnglishName: string;
 }
 
 export interface Absence {
@@ -392,7 +413,7 @@ export interface CourseObj {
   Subject: string;
   TeacherID: string;
   TeacherName: string;
-  AllTeacherString :string ;
+  AllTeacherString: string;
 }
 
 export interface GradeClassRecords {
