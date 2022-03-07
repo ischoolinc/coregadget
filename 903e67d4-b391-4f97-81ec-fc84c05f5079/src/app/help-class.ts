@@ -17,6 +17,8 @@ export class Student {
     this.orileaveList = orileaveList || new Map<string, Leave>();
   }
 
+
+
   setAbsence(periodName: string, absName: string) {
     if (periodName) {
       if (this.leaveList.has(periodName)) {
@@ -31,6 +33,20 @@ export class Student {
     }
   }
 }
+
+/** 林口康橋 
+ *<ref_student_id>1043</ref_student_id>
+	<name>黃柏郡</name>
+	<checkin_time>2022-02-22 08:00:00</checkin_time>
+*/
+export interface ICheckInInfo{
+  ref_student_id :string ;
+  name : string ;
+  checkin_time : string ;
+  checkIn_only_time : string ;
+}
+
+
 
 /**假別及簡稱 */
 export class Absence {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Class, Student, Absence, Period, Leave } from "./help-class";
 import { AppService } from "./app.service";
 import * as rx from 'rxjs/Rx';
@@ -9,6 +9,10 @@ import * as rx from 'rxjs/Rx';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  mouseMoveTime ;
+  // 林口康橋 : 客制
+  listCheckInTimes: any[]=[];
+  isShowCheckInTime = false;
   selClass: Class;
   currAbs: Absence;
   classes: Class[] = new Array<Class>();
@@ -25,6 +29,7 @@ export class AppComponent implements OnInit {
   classSubject$: rx.Subject<Class> = new rx.Subject();
   /**今天該班點名狀態 */
   completed: boolean;
+
   /**允許跨日設定 */
   canCrossDate = false;
 
@@ -39,6 +44,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mouseMoveTime = Date.now();
+    this.isShowCheckInTime = gadget.params.isShowCheckInTime ;
+
     // 預設值
     this.currAbs = this.clearAbs;
     this.completed = false;
@@ -53,6 +61,7 @@ export class AppComponent implements OnInit {
 
     // 取得假別、節次、老師帶班
     rx.Observable.combineLatest(
+
       this.appService.getConfig(),
       this.appService.getAbsences(),
       this.appService.getPeriods(),
@@ -73,20 +82,18 @@ export class AppComponent implements OnInit {
         this.allAbsences = x;
         this.periods = y;
         y.forEach((p) => {
-          p.permission ="一般";
-          if (config.periodPermissionMap.size) {            
-            config.periodPermissionMap.forEach((item,key) => {
-              if(key === p.name)
-              {
-                p.permission =config.periodPermissionMap.get(key);
-              }              
+          p.permission = "一般";
+          if (config.periodPermissionMap.size) {
+            config.periodPermissionMap.forEach((item, key) => {
+              if (key === p.name) {
+                p.permission = config.periodPermissionMap.get(key);
+              }
             });
             this.periodMap.set(p.name, p);
           }
-          else
-          {
+          else {
             this.periodMap.set(p.name, p);
-          }          
+          }
         });
 
         this.periods = this.periods.filter(period => period.permission !== "隱藏");
@@ -100,21 +107,53 @@ export class AppComponent implements OnInit {
           this.selClass = this.classes[0];
           // 訂閱班級異動
           this.classSubject$.subscribe((c) => {
+            if (this.isShowCheckInTime) { // 林口康橋才有此設定
+              // alert("ss")
+            this.appService.getCheckIntimeFromDB(this.selClass,this.getDateStringForCheckIn(this.currentDate)).subscribe(
+              checkInInfo => {
+                this.listCheckInTimes = checkInInfo ;
+              }) ;}
             rx.Observable.combineLatest(
               this.appService.getClassStudentsLeave(c, this.getDateString(this.currentDate), this.absences), this.appService.getRollcallState(c), (studs, complete) => {
                 this.students = studs;
                 this.completed = complete;
               })
-              .subscribe();
+              .subscribe(() => {
+       
+              });
           });
           // 切換班級
           this.toggleClassDate();
         }
       });
   }
+
+
+  /** 時間超過要提醒 */
+  @HostListener('mousemove', ['$event'])
+  handleMousemove(event) {
+     if(Math.abs( this.mouseMoveTime - Date.now()) > 5000000)
+     {
+        alert("閒置過久，將重新載入....");
+      this.ngOnInit()
+     }
+     this.mouseMoveTime = Date.now();
+    //  console.log(`x: ${event.clientX}, y: ${event.clientY}`);
+  }
+  
   getDateString(dateTime: Date): string {
     return dateTime.getFullYear() + "/" + (dateTime.getMonth() + 1) + "/" + dateTime.getDate();
   }
+  /** 康橋 查詢 到校時間格式 */
+  getDateStringForCheckIn(dateTime: Date): string {
+    let month = dateTime.getMonth() + 1  ;
+   let  monthString ="" ;
+    if (month < 10) {
+      monthString = `0${month}`;
+    }
+    return dateTime.getFullYear() + "-" + monthString + "-" + dateTime.getDate();
+  }
+
 
   getDisplayDateString(dateTime: Date): string {
     return (
@@ -178,10 +217,9 @@ export class AppComponent implements OnInit {
   setAllStudentsAbs(period: Period) {
     if (period && this.currAbs) {
       this.students.forEach((stu) => {
-        if(period.permission ==="一般")
-        {
+        if (period.permission === "一般") {
           stu.setAbsence(period.name, this.currAbs.name);
-        }        
+        }
       });
     }
   }
@@ -190,10 +228,9 @@ export class AppComponent implements OnInit {
   setStudentAllPeriodAbs(stu) {
     if (stu && this.currAbs) {
       this.periods.forEach((period: Period) => {
-        if(period.permission ==="一般")
-        {
+        if (period.permission === "一般") {
           stu.setAbsence(period.name, this.currAbs.name);
-        }        
+        }
       });
     }
   }
@@ -204,25 +241,29 @@ export class AppComponent implements OnInit {
       if (stu.leaveList.has(period.name)) {
         // 與上次相同即清除
         if (stu.leaveList.get(period.name).absName == this.currAbs.name) {
-          if(period.permission ==="一般" ||period.permission ==="手動")
-          {
+          if (period.permission === "一般" || period.permission === "手動") {
             stu.setAbsence(period.name, this.clearAbs.name);
-          }          
+          }
         }
         else {
-          if(period.permission ==="一般" ||period.permission ==="手動")
-          {
+          if (period.permission === "一般" || period.permission === "手動") {
             stu.setAbsence(period.name, this.currAbs.name);
-          }          
+          }
         }
       } else {
-        if(period.permission ==="一般" ||period.permission ==="手動")
-        {
+        if (period.permission === "一般" || period.permission === "手動") {
           stu.setAbsence(period.name, this.currAbs.name);
-        }        
+        }
       }
     }
   }
+/** 取得到校時間 */
+getCheckInTime(studentID,date) :any{
+
+  let result  = this.listCheckInTimes.find(x=>x.ref_student_id == studentID);
+  return result ;
+}
+
 
   /**儲存點名結果 */
   saveData() {
