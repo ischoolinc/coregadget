@@ -14,7 +14,7 @@ export class ClassSummaryComponent implements OnInit {
   periodTable: any;
   absenceName: any;
   classList = [];
-  selectedClass: any = {};
+  selectedClass: any ;
   semesters: SemesterInfo[] = [];
   selectedSemester: SemesterInfo = {} as SemesterInfo;
   typeList = [];
@@ -73,14 +73,16 @@ export class ClassSummaryComponent implements OnInit {
    */
   async queryClasses() {
     this.classList = await this.attendanceService.getMyClasses();
-    this.selectedClass = this.classList[0];
+    if( this.classList.length > 0){
+      this.selectedClass = this.classList[0];
+    }
   }
 
   /**
    * 查詢學年度學期
    */
   async querySemesters() {
-    this.semesters = await this.attendanceService.getSemestersByClassID(this.selectedClass.ClassID);
+    this.semesters = await this.attendanceService.getSemestersByClassID(this.selectedClass?.ClassID);
     this.selectedSemester = this.semesters[0];
     await this.queryPeriodType();
   }
@@ -209,7 +211,15 @@ export class ClassSummaryComponent implements OnInit {
   }
 
   getSemesterString(semester: SemesterInfo) {
-    return `${semester?.school_year}學年第${semester?.semester}學期`;
+    if(semester.school_year && semester.semester )
+    {
+      return `${semester?.school_year}學年第${semester?.semester}學期`;
+
+    }else {
+      return '目前無資料'
+
+
+    }
   }
 
 getDevelopsection(obj: any )

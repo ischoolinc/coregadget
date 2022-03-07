@@ -89,7 +89,7 @@ export class AttendanceService {
       Request: {}
     }
     );
-    return [].concat(result.ClassList.Class);
+    return [].concat(result.ClassList.Class||[]);
   }
 
   // 取得班級學年度學期
