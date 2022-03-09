@@ -245,7 +245,7 @@ export class HomeComponent implements OnInit {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(content);
     XLSX.utils.book_append_sheet(wb, ws, 'course');
-    XLSX.writeFile(wb, 'course.xlsx');
+    XLSX.writeFile(wb, `${this.curSchoolYear}學年度${this.curSemester}學期 課程 course.xlsx`);
 
     try {
       await this.coreSrv.addLog('Export', '匯出課程名單', `已進行「匯出名單」操作。`);
