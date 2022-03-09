@@ -48,6 +48,8 @@ export class ImportCoursesComponent implements OnInit {
   imptItems: ImportFieldRec[] = [
     { name: '課程系統編號', value: 'CourseId', selected: false, disabled: false, hidden: true },
     { name: '課程名稱', value: 'CourseName', selected: true, disabled: true, hidden: false },
+    // { name: '學年度', value: 'SchoolYear', selected: false, disabled: false, hidden: true },
+    // { name: '學期', value: 'Semester', selected: false, disabled: false, hidden: true },
     { name: '授課教師1', value: 'TeacherName1', selected: false, disabled: false, hidden: false },
     { name: '授課教師2', value: 'TeacherName2', selected: false, disabled: false, hidden: false },
     { name: '授課教師3', value: 'TeacherName3', selected: false, disabled: false, hidden: false },
@@ -114,6 +116,7 @@ export class ImportCoursesComponent implements OnInit {
   resetPreImportState() {
     const mode: ImportMode = this.getFormCtrl('mode').value;
     const ctrls = this.getFromAry('impts')['controls'];
+    debugger
     ctrls.forEach(ctrl => {
       const item = ctrl.value;
       if (mode === 'ADD') {
@@ -144,6 +147,7 @@ export class ImportCoursesComponent implements OnInit {
   }
 
   createImportFields(items: any[]) {
+    console.log("item..",items)
     const arr = items.map(v => {
       return new FormControl(v);
     });
@@ -220,7 +224,7 @@ export class ImportCoursesComponent implements OnInit {
     this.errorResult.clear();
     this.importSuccess = false;
     this.importMsg = '';
-
+debugger
     try {
       if (!this.source.length) {
         throw new Error('無可分析的資料');

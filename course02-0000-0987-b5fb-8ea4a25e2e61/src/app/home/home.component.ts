@@ -24,7 +24,7 @@ import { JoinClassStudentsComponent } from '../join-class-students/join-class-st
 export class HomeComponent implements OnInit {
 
   loading = true;
-  courseErrMsg = '';
+  courseErrMsg :any= '';
   delErrMsg = '';
   deling = false;
   keywordCtrl = new FormControl('');
@@ -50,8 +50,7 @@ export class HomeComponent implements OnInit {
       const promiseList = [
         this.getCourseAllSemester(),
         this.coreSrv.getCurrentSemester(),
-        this.coreSrv.init()
-      ];
+       ];
 
       const { SchoolYear, Semester } = await promiseList[1] as SemesterRec;
       this.curSchoolYear = this.coreSrv.curSchoolYear$.value || SchoolYear;
@@ -85,6 +84,7 @@ export class HomeComponent implements OnInit {
 
     const schoolYearList = [...new Set(allSemesterList.map(v => v.SchoolYear))];
     const semesterList = [...new Set(allSemesterList.map(v => v.Semester))];
+    debugger
     this.schoolYearList = (schoolYearList.length)
       ? [ (+schoolYearList[0] + 1).toString(), ...schoolYearList]
       : Array.from({length: 3}, (_, i) => ((new Date().getFullYear() - 1911 + 1) - i).toString());

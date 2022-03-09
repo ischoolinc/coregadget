@@ -16,7 +16,7 @@ export class EditCourseModalComponent implements OnInit {
 
   mode: 'add' | 'edit' = 'add';
   saving = false;
-  errMsg = '';
+  errMsg:any = '';
   cRec: CourseRec = {} as CourseRec;
   classList: ClassRec[] = [];
   teacherList: TeacherRec[] = [];
@@ -145,7 +145,7 @@ export class EditCourseModalComponent implements OnInit {
       } catch (error) { }
 
       this.dialogRef.close({ state: this.mode });
-    } catch (error) {
+    } catch (error:any) {
       // console.log(error);
       this.errMsg = (error.dsaError && error.dsaError.message) ? this.coreSrv.replaceMappingFieldName(error.dsaError.message) : '發生錯誤';
     } finally {

@@ -165,6 +165,7 @@ export class ImportStudentsComponent implements OnInit {
   }
 
   async onValidate() {
+    debugger
     if (this.currentState === 'validating') return;
 
     this.currentState = 'validating';
@@ -192,7 +193,7 @@ export class ImportStudentsComponent implements OnInit {
         const sourceCourseList = await this.getCourses();
         const sourceStudents = await this.getStudents();
         const rule = this.importStudentSrv.makeRules(mode, identifyField, importField, sourceCourseList, sourceStudents);
-        // console.log(rule);
+      
 
         const jsonRowSrc = new JsonRowSource(this.source);
 
