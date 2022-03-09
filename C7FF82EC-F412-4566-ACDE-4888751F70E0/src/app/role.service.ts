@@ -1,10 +1,14 @@
 import { Injectable } from "@angular/core";
+import { ITeacher } from "./case/vo";
 import { DsaService } from "./dsa.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class RoleService {
+
+  private _loginTeacher  :ITeacher 
+  private _loginTeacherName ="" ;
   private _role: string[];
 
   private _isLoading: boolean;
@@ -20,6 +24,19 @@ export class RoleService {
   public get isLoading() {
     return this._isLoading;
   }
+  /** 取得目前教師資料 */
+  public get loginTeacher(){
+    console.log("teacher.." , this._loginTeacher) 
+    return this._loginTeacher ;
+   }
+   
+  /** 取得目前登入教師之特 */
+  public get loginTeacherName()
+  {
+  return this._loginTeacherName;
+  }
+
+
   public get enableCounsel() {
     return this._enableCounsel;
   }
@@ -51,6 +68,7 @@ export class RoleService {
 
   constructor(private dsaService: DsaService) {
     this.reload();
+    this.loadLoginTeacherData();
   }
 
   async reload() {
@@ -124,5 +142,17 @@ export class RoleService {
     this._enableInterviewStatistics = false;
 
     this._isLoading = false;
+  }
+
+
+  /** 取得   */
+  async loadLoginTeacherData() {
+
+    // 取得登入教師名稱
+    let teacher = await this.dsaService.send("GetTeacher", {});
+    [].concat(teacher.Teacher || []).forEach(tea => {
+      this._loginTeacherName = tea.Name;
+      this._loginTeacher =tea ;
+    });
   }
 }

@@ -71,6 +71,7 @@ export class CoreService {
     txt = txt.replace(/Gender/gi, '性別');
     txt = txt.replace(/LinkAccount/gi, '登入帳號');
     txt = txt.replace(/TeacherCode/gi, '教師代碼');
+    txt = txt.replace(/TeacherNumber/gi, '教師編號');
     return txt;
   }
 
@@ -91,7 +92,7 @@ export class CoreService {
           ClientInfo: {
             ClientInfo: {}
           },
-          ActionBy: 'ischool web 全校教師管理',
+          ActionBy: 'ischool web 教師管理 2.0',
           Description: description,
         }
       }

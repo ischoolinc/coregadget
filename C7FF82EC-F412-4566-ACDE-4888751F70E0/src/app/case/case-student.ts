@@ -1,6 +1,7 @@
 import { QOption } from "./case-question-data-modal";
 import { CaseQuestionTemplate } from "./case-question-template";
 
+/** 個案學生 */
 export class CaseStudent {
   constructor() {
     this.CaseSource = "";
@@ -9,17 +10,29 @@ export class CaseStudent {
     this.selectCaseTeacers = [];
     this.isGuidanceTeacherHasValue = false;
   }
+
   UID: string;
-  ClassName: string; // 班級
-  SeatNo: string; // 座號
-  Name: string; // 姓名
-  Gender: string = ''; // 性別
-  TeacherName: string; // 班導師
-  OccurDate: string; // 建立個案日期
-  CaseNo: string; // 個案編號
+  /** 班級 */
+  ClassName: string;
+  /** 座號 */ 
+  SeatNo: string; 
+  /** 姓名 */ 
+  Name: string;
+  /** 性別 */ 
+  Gender: string = ''; //  
+  /** 班導師 */
+  TeacherName: string;
+  /** 建立個案日期  */
+  OccurDate: string; 
+  /** 個案編號 */
+  CaseNo: string; 
+  /** 學生身分 */
   StudentIdentity: string; // 學生身份
-  PossibleSpecialCategory: string; // 疑似特殊生類別
+  /**  疑似特殊生類別 */
+  PossibleSpecialCategory: string; 
+  /** 特殊生等級 */
   SpecialLevel: string; // 特殊生等級
+   
   SpecialCategory: string; // 特殊生類別
   HasDisabledBook: string; // 是否領有身心障礙手冊
   DeviantBehavior: string; // 偏差行為
@@ -39,6 +52,8 @@ export class CaseStudent {
   PhotoUrl: string;
   CaseTeachers: CaseTeacher[];
   CaseTeacherString : string ;
+  /** 結案教師 */
+  CaseCloseTeacher : any ;
 
   // 個案輔導等級相關
   isCaseLevel1Checked: boolean = false;

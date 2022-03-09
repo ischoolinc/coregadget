@@ -64,6 +64,7 @@ export class BatchAddService {
       'Gender': [],
       'LinkAccount': [],
       'TeacherCode': [],
+      'TeacherNumber': [],
     };
     const rowRules: RowValidator[] = [];
 
@@ -91,6 +92,12 @@ export class BatchAddService {
           rowRules.push(new NotMatchTo({ fieldNames: ['TeacherCode'], data: teachers, message: '資料庫有重複內容' }));
         }
 
+        if (importField.includes('TeacherNumber')) {
+          fieldRules['TeacherNumber'].push(new MaxLength(150));
+          rowRules.push(new Unique({ fieldNames: ['TeacherNumber'], skipEmpty: true }));
+          rowRules.push(new NotMatchTo({ fieldNames: ['TeacherNumber'], data: teachers, message: '資料庫有重複內容' }));
+        }
+
         break;
       case 'EDIT':
         fieldRules['TeacherName'].push(new NotEmpty());
@@ -115,6 +122,12 @@ export class BatchAddService {
           rowRules.push(new NotMatchTo({ fieldNames: ['TeacherCode'], data: teachers, identifyField, message: '資料庫有重複內容' }));
         }
 
+        if (importField.includes('TeacherNumber')) {
+          fieldRules['TeacherNumber'].push(new MaxLength(150));
+          rowRules.push(new Unique({ fieldNames: ['TeacherNumber'] }));
+          rowRules.push(new NotMatchTo({ fieldNames: ['TeacherNumber'], data: teachers, identifyField, message: '資料庫有重複內容' }));
+        }
+
         if (identifyField.includes('TeacherId')) {
           fieldRules['TeacherId'].push(new NotEmpty());
           rowRules.push(new Unique({ fieldNames: ['TeacherId'] }));
@@ -128,6 +141,11 @@ export class BatchAddService {
         if (identifyField.includes('LinkAccount')) {
           fieldRules['LinkAccount'].push(new NotEmpty());
           rowRules.push(new MatchTo({ fieldNames: ['LinkAccount'], data: teachers, skipEmpty: false, message: '資料庫無符合內容' }));
+        }
+
+        if (identifyField.includes('TeacherNumber')) {
+          fieldRules['TeacherNumber'].push(new NotEmpty());
+          rowRules.push(new MatchTo({ fieldNames: ['TeacherNumber'], data: teachers, skipEmpty: false, message: '資料庫無符合內容' }));
         }
 
         break;

@@ -158,12 +158,34 @@ ul.rwd-table .thead li, ul.rwd-table .tr li{
 }
 .btn-light {
 
-    border: 1.7px solid #5db39f52 !important;
+    border: 0.7px solid  #e0e0e0 !important;
     box-shadow: none !important;
     border-radius: 50px !important;
     color: #3e495f !important;
     font-size: 16px !important;
     background: white  !important;
+    height: 37px;
+}
+.input-light{
+    border: 0.7px solid  #e0e0e0 !important;
+    box-shadow: none !important;
+    border-radius: 5px !important;
+    color: #3e495f !important;
+    font-size: 16px !important;
+    background: white  !important;
+    height: 34px;
+
+}
+
+.btn-light-2 {
+
+    border: 0.7px solid  #e0e0e0 !important;
+    box-shadow: none !important;
+    border-radius: 50px !important;
+    color: #3e495f !important;
+    font-size: 16px !important;
+    background: white  !important;
+    height: 34px;
 }
 
 .btn-deep{

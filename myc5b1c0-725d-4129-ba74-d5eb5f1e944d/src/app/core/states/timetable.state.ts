@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import { from } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
+import { ParamsService } from 'src/app/params.service';
 import { CourseTimetable } from '../data/timetable';
 import { TimetableService } from '../timetable.service';
 import { ContextState, ContextStateModel } from './context.state';
@@ -24,7 +25,8 @@ export class TimetableState {
 
   constructor(
     private store: Store,
-    private timetable: TimetableService
+    private timetable: TimetableService,
+    private params: ParamsService
   ) {
     store.select<ContextStateModel>(ContextState).subscribe(v => {
       this.#dsns = v?.context?.dsns;
@@ -35,8 +37,15 @@ export class TimetableState {
   /** 從 Server 讀取全部資料。 */
   @Action(Timetable.FetchAll)
   async fetchAll({ setState }: StateContext<TimetableStateModel>) {
-    const { timetable } = this;
-    const tt = await timetable.getTimetable(this.#dsns, this.#role);
+    const { timetable, params } = this;
+    const { scheduleSource } = params;
+    
+    let tt = [];
+    if(scheduleSource === 'standard') {
+      tt = await timetable.getReschedule(this.#dsns, this.#role);     
+    } else { // 預設
+      tt = await timetable.getTimetable(this.#dsns, this.#role);
+    }
     setState(tt);
   }
 

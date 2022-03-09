@@ -25,7 +25,7 @@ export class ServiceConfState {
     private conf: ConfService
   ) {
     store.select<ContextStateModel>(ContextState).subscribe(v => {
-      console.log(v);
+      // console.log(v);
       this.#dsns = v?.context?.dsns;
       this.#role = v?.context?.role;
     });
