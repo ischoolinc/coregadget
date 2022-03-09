@@ -1,10 +1,40 @@
-<div class="gadget_bigtitle pt-10">課程管理</div>
+<div class="gadget_bigtitle pt-10 mb-2">課程管理</div>
 
 <div *ngIf="loading" class="text-center">資料載入中...</div>
 <div *ngIf="courseErrMsg" class="text-center text-warning">資料載入發生錯誤！</div>
 
 <ng-container *ngIf="!loading && !courseErrMsg">
   <!-- 按鈕列 -->
+  <div class="flex flex-row">
+    <div>
+      學年度
+      <span class="ml-4">
+        <span class="dropdown_box">
+          <mat-select [(value)]="curSchoolYear" (selectionChange)="changeSemester()">
+            <mat-option *ngFor="let item of schoolYearList" [value]="item">
+              第 {{item}} 學年度
+            </mat-option>
+          </mat-select>
+        </span>
+      </span>
+    </div>
+    <div class="ml-6">
+      <div>學期
+        <span class="ml-4">
+          <span class="dropdown_box">
+            <mat-select [(value)]="curSemester" (selectionChange)="changeSemester()">
+              <mat-option *ngFor="let item of semesterList" [value]="item">
+                第 {{item}} 學期
+              </mat-option>
+            </mat-select>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <app-search-bar #keyword placeHolder="輸入課程名稱" [formControl]="keywordCtrl" (onClear)="keywordCtrl.setValue('')"
+      class="ml-auto"></app-search-bar>
+  </div>
   <div class="tool-row mt-6">
     <button class="btn btn-primary btn-icon" (click)="addCourse()">
       <span class="pr-1">新增課程</span>
@@ -16,7 +46,7 @@
     </button>
     <button class="btn btn-primary btn-icon" (click)="exportCourse()">
       <span class="pr-1">匯出課程</span>
-      <span class="iconify text-2xl" data-icon="uil:export" data-inline="false"></span>  </button>
+      <span class="iconify text-2xl" data-icon="uil:export" data-inline="false"></span> </button>
     <div class="btw-divider"></div>
     <button class="btn btn-primary btn-icon" (click)="importCourseStudent()">
       <span class="pr-1">匯入修課學生</span>
@@ -24,21 +54,20 @@
     </button>
     <button class="btn btn-primary btn-icon" (click)="exportCourseStudent()">
       <span class="pr-1 -rotate-180">匯出修課學生</span>
-      <span class="iconify text-2xl" data-icon="uil:export" data-inline="false"></span>  </button>
+      <span class="iconify text-2xl" data-icon="uil:export" data-inline="false"></span> </button>
   </div>
   <div>
     <div class="tool-row">
       <!-- 批次刪除 -->
-      <div class="flex items-center ml-4 mr-8">
-        <div>
-          <mat-checkbox
-            [checked]="allCheck"
-            [indeterminate]="someCheck()"
-            (change)="setAll($event.checked)">
+      <div class="flex  items-center ml-4 mr-8 w-3/5">
+        <div class="">
+          <mat-checkbox [checked]="allCheck" [indeterminate]="someCheck()" (change)="setAll($event.checked)">
             全選
           </mat-checkbox>
-          <span class="ml-4">
+          <!-- 執行動作 -->
+          <!-- <span class="ml-4">
             <button type="button" class="dropdown_box" [matMenuTriggerFor]="actionMenu">
+              
               執行動作
               <svg class="dropdown_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                 aria-hidden="true">
@@ -51,50 +80,52 @@
               <a href="javascript:;" mat-menu-item (click)="delCheckedCourse()">批次刪除</a>
               <a href="javascript:;" mat-menu-item (click)="addCheckedCourseStudent()">批次加入學生修課</a>
             </mat-menu>
-          </span>
+          </span> -->
+          <!-- 執行動作 end -->
+
         </div>
-      </div>
-      <div class="btw-divider mr-8"></div>
-      <!-- 篩選 -->
-      <div class="flex flex-row">
+        <div class="ml-3 ">
+          <span>( 已選: {{getCheckAmount()}} )</span>
+        </div>
         <div>
-          學年度
-          <span class="ml-4">
-            <span class="dropdown_box">
-              <mat-select [(value)]="curSchoolYear" (selectionChange)="changeSemester()">
-                <mat-option *ngFor="let item of schoolYearList" [value]="item">
-                  第 {{item}} 學年度
-                </mat-option>
-              </mat-select>
-            </span>
-          </span>
-        </div>
-        <div class="ml-6">
-          <div>學期
-            <span class="ml-4">
-              <span class="dropdown_box">
-                <mat-select [(value)]="curSemester" (selectionChange)="changeSemester()">
-                  <mat-option *ngFor="let item of semesterList" [value]="item">
-                    第 {{item}} 學期
-                  </mat-option>
-                </mat-select>
-              </span>
-            </span>
+          <div [style.visibility]="!getCheckAmount()? 'hidden': 'visible'" class="">
+            <button class="has-tooltip t-icon ml-4" (click)="delCheckedCourse()">
+              <span class="iconify text-2xl text-gray-text2" data-icon="fluent:delete-24-regular"
+                data-inline="false"></span>
+              <span class="tooltip tooltip1">批次刪除</span>
+            </button>
+            <button class="has-tooltip t-icon ml-4" (click)="addCheckedCourseStudent()">
+              <span class="iconify text-2xl text-gray-text2 " data-icon="mdi:account-multiple-plus"
+                data-inline="false"></span>
+              <span class="tooltip tooltip1">批次加入學生修課</span>
+            </button>
           </div>
         </div>
+    
       </div>
-      <app-search-bar
-        #keyword
-        placeHolder="輸入課程名稱"
-        [formControl]="keywordCtrl"
-        (onClear)="keywordCtrl.setValue('')"
-        class="ml-auto"
-      ></app-search-bar>
-    </div>
+      <div class="float-right w-2/5">
 
-    <div class="flex flex-col mt-6">
+        <div class="float-right mr-2">
+          <!-- 共 {{filteredCourses.length}} 門課 -->
+  
+          <!-- 分頁 -->
+          <mat-paginator
+          class="text-sm"
+            style=" font-size: 14px;"
+              [length]="filteredCourses.length"
+               [pageSize]="30"
+               [pageSizeOptions]="pageSizeOptions"
+               (page)="OnPageChenge($event)"
+               aria-label="Select page">
+          </mat-paginator>
+
+        </div>
+      </div>
+ 
+    </div>
+    <div class="flex flex-col mt-1">
       <div class="-my-2 overflow-x-auto">
-        <div class="pt-2 pb-8 align-middle inline-block min-w-full">
+        <div class=" pb-8 align-middle inline-block min-w-full p-0">
           <div class="shadow-lg overflow-hidden border-b border-gray-light sm:rounded-lg">
             <table class="min-w-full">
               <thead class="bg-primary-light">
@@ -102,12 +133,13 @@
                   <th scope="col" class="relative px-6 py-3">
                     <span class="sr-only">全選</span>
                   </th>
-                  <th scope="col" class="relative px-6 py-3">
-                    <span class="sr-only">流水編號</span>
-                  </th>
+             
                   <th scope="col" class="t-title hidden">
                     課程系統編號
                   </th>
+                  <!-- <th scope="col" class="t-title ">
+                   序號
+                  </th> -->
                   <th scope="col" class="t-title">
                     課程名稱
                   </th>
@@ -117,64 +149,75 @@
                   <th scope="col" class="t-title">
                     所屬班級
                   </th>
-                  <th scope="col" class="t-title">
+                  <th scope="col" class="t-title" >
                     學生人數
                   </th>
-                  <th scope="col" class="t-title pl-6 pr-10">
-                    操作
+                  <th scope="col" class="t-title pl-6 pr-10" style ="color :#2f3f57" >
+                    <!-- 操作SS -->
                   </th>
                 </tr>
               </thead>
               <tbody class="bg-white">
-                <tr class="h-18" *ngFor="let item of filteredCourses;let idx = index; let oddRecord = odd;" [ngClass]="{'bg-primary-lightest': oddRecord}">
-                  <td class="t-content">
-                    <mat-checkbox
-                      [(ngModel)]="item.Checked"
-                      (ngModelChange)="updateAllCheck()">
-                    </mat-checkbox>
-                  </td>
-                  <td class="t-content">
-                    <div class="t-word">{{idx + 1}}.</div>
-                  </td>
-                  <td class="t-content hidden">
-                    <div class="sr-only">{{item.CourseId}}</div>
-                  </td>
-                  <td class="t-content">
-                    <div class="t-word">{{item.CourseName}}</div>
-                  </td>
-                  <td class="t-content">
-                    <div class="t-word teachers">
-                      <div *ngFor="let teacher of item.Teachers">
-                        {{teacher.TeacherNickname ? teacher.TeacherName + '(' + teacher.TeacherNickname + ')' : teacher.TeacherName}}
-                        <span class="co-teacher">({{teacher.TeacherSequence}})</span>
-                      </div>
+                <!-- <tr class="h-18" *ngFor="let item of filterCoursesSlice;let idx = index; let oddRecord = odd;" -->
+               
+               <ng-container  *ngFor="let item of filteredCourses;let idx = index; let oddRecord = odd;">
+         
+                <tr class="h-18" *ngIf="item.IsShowOnCurrentPage"
+                [ngClass]="{'bg-primary-lightest': oddRecord}">
+               
+                <td class="t-content">
+                  <mat-checkbox [(ngModel)]="item.Checked" (ngModelChange)="updateAllCheck()">
+                  </mat-checkbox>
+                </td>
+                <!-- <td class="t-content">
+                  <div class="t-word">{{  idx + 1}}. {{item.IsShowOnCurrentPage}}</div>
+                </td> -->
+                <td class="t-content hidden">
+                  <div class="sr-only">{{item.CourseId}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word"><b>{{item.CourseName}}</b> </div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word teachers">
+                    <div *ngFor="let teacher of item.Teachers">
+                      {{teacher.TeacherNickname ? teacher.TeacherName + '(' + teacher.TeacherNickname + ')' :
+                      teacher.TeacherName}}
+                      <span class="co-teacher">({{teacher.TeacherSequence}})</span>
                     </div>
-                  </td>
-                  <td class="t-content">
-                    <div class="t-word">{{item.ClassName}}</div>
-                  </td>
-                  <td class="t-content">
-                    <div class="t-word">{{item.CourseStudentCount || 0}}人</div>
-                  </td>
-                  <td class="t-icon-row">
-                    <button class="has-tooltip t-icon" (click)="modifyCourse(item)">
-                      <span class="iconify text-2xl text-secondary" data-icon="akar-icons:edit" data-inline="false"></span>
-                      <span class="tooltip tooltip1">編輯課程</span>
-                    </button>
-                    <button class="has-tooltip t-icon" (click)="delCurCourse(item)">
-                      <span class="iconify text-2xl text-secondary" data-icon="fluent:delete-20-filled" data-inline="false"></span>
-                      <span class="tooltip tooltip1">刪除課程</span>
-                    </button>
-                    <button class="has-tooltip t-icon" (click)="detailCourse(item)">
-                      <span class="iconify text-2xl text-secondary" data-icon="akar-icons:more-horizontal"
-                        data-inline="false"></span>
-                      <span class="tooltip tooltip1">課程詳細</span>
-                    </button>
-                  </td>
-                </tr>
+                  </div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.ClassName}}</div>
+                </td>
+                <td class="t-content">
+                  <div class="t-word">{{item.CourseStudentCount || 0}}人</div>
+                </td>
+                <td class="t-icon-row">
+                  <button class="has-tooltip t-icon" (click)="modifyCourse(item)">
+                    <span class="iconify text-2xl text-secondary" data-icon="akar-icons:edit"
+                      data-inline="false"></span>
+                    <span class="tooltip tooltip1">編輯課程</span>
+                  </button>
+                  <button class="has-tooltip t-icon" (click)="delCurCourse(item)">
+                    <span class="iconify text-2xl text-secondary" data-icon="fluent:delete-20-filled"
+                      data-inline="false"></span>
+                    <span class="tooltip tooltip1">刪除課程</span>
+                  </button>
+                  <button class="has-tooltip t-icon" (click)="detailCourse(item)">
+                    <span class="iconify text-2xl text-secondary" data-icon="akar-icons:more-horizontal"
+                      data-inline="false"></span>
+                    <span class="tooltip tooltip1">課程詳細</span>
+                  </button>
+                </td>
+              </tr>
+               </ng-container>
+      
               </tbody>
             </table>
           </div>
+
+
         </div>
         <p class="text-center" *ngIf="!filteredCourses.length">目前無資料</p>
       </div>

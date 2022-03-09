@@ -10,9 +10,7 @@ import { GadgetService } from './gadget.service';
 })
 export class CoreService {
 
-  /** staff_connection */
   private _cnStaff: any;
-  /** public connection */
   private _cnPublic: any;
 
   public classList: ClassRec[] = [];
@@ -25,12 +23,9 @@ export class CoreService {
 
   constructor(private gadget: GadgetService) { }
 
-  /**取得連線 (員工/行政人員) */
   async getCNStaff() {
     if (!this._cnStaff) this._cnStaff = await this.gadget.getContract('cloud.staff');
   }
-
-  /**取得連現 (公開) */ 
   async getCNPublic() {
     if (!this._cnPublic) this._cnPublic = await this.gadget.getContract('cloud.public');
   }
@@ -125,7 +120,7 @@ export class CoreService {
     return [].concat(rsp.Student || []);
   }
 
-  /**新增課程及老師*/
+  // 新增課程及老師
   async addCourseAndTeacher(data: {
     CourseName: string,
     SchoolYear: string,
@@ -226,7 +221,7 @@ export class CoreService {
     return txt;
   }
 
-  /** 整理教師至同課程 */ 
+  // 整理教師至同課程
   colCourseMap(sourceCourses: SourceCourse[]) {
     const sourceCourseMap: Map<string, CourseRec> = new Map();
     sourceCourses.forEach(v => {
@@ -252,8 +247,8 @@ export class CoreService {
       });
     });
     return sourceCourseMap;
-
   }
+
   // 新增 Log
   async addLog(actionType = '', action = '', description = '', targetId = '') {
     await this.getCNStaff();

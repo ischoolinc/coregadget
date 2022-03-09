@@ -11,7 +11,7 @@
     <a class="discription text-sm text-secondary text-rightunderline underline" download href="assets/doc/import_course_student_sample.xlsx">下載匯入修課學生範本檔</a>
   </p>
   <div class="dialog-content mt-2 h-104">
-    <div class="overflow-scroll">
+    <div class="">
       <form [formGroup]="myForm">
         <div>
           <p class="text-warning" *ngIf="!loadSuccess">檔案讀取失敗！</p>
@@ -61,13 +61,14 @@
           {{ importSuccess ? '匯入成功！' : '匯入失敗！' + importMsg }}
         </p>
       </div>
-      <div class="flex flex-row items-end justify-end mt-6 mb-8">
+      <div class="flex flex-row items-end justify-end mt-6 mb-2">
         <button class="btn btn-second" (click)="closeDialog()">關閉</button>
         <button class="btn btn-primary mr-0"
           [ngClass]="{'disabled': errorResult.size > 0}"
           [disabled]="!validSuccess || source.length === 0"
           (click)="importData()">匯入</button>
       </div>
+      <div style=" height: 15px;" ></div>
     </div>
   </div>
 

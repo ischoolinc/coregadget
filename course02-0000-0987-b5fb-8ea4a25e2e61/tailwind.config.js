@@ -23,6 +23,8 @@ module.exports = {
           light: '#88A4CB',
           DEFAULT: '#547CB4',
           dark: '#3C4F81',
+          darkbule :'#3e495f'
+       
         },
         third: {
           DEFAULT: '#ecc743',
@@ -71,6 +73,7 @@ module.exports = {
       },
 
       spacing: {
+        '21': '3.3rem',
         '55': '13.3rem',
         '104': '418px',
         '106': '424px',

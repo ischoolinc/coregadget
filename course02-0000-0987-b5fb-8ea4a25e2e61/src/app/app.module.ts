@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-
+import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GadgetService } from './gadget.service';
@@ -32,6 +32,7 @@ import { ImportCoursesComponent } from './import-courses/import-courses.componen
 import { ImportStudentsComponent } from './import-students/import-students.component';
 import { AddCourseStudentsComponent } from './add-course-students/add-course-students.component';
 import { JoinClassStudentsComponent } from './join-class-students/join-class-students.component';
+import { CustomPaginator } from './shared/pagination/CustomPaginatorConfiguration';
 
 
 
@@ -70,8 +71,11 @@ import { JoinClassStudentsComponent } from './join-class-students/join-class-stu
     MatFormFieldModule,
     NgxMatSelectSearchModule,
     MatMenuModule,
+    MatPaginatorModule
   ],
-  providers: [GadgetService],
+  providers: [GadgetService,
+    { provide: MatPaginatorIntl, useValue: CustomPaginator() }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

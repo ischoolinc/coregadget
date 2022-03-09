@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -15,6 +15,8 @@ import { EditCourseModalComponent } from '../edit-course-modal/edit-course-modal
 import { ConfirmDialogService } from './../shared/dialog/confirm-dialog.service';
 import { ModalSize } from './../shared/dialog/confirm-dialog/confirm-dialog';
 import { JoinClassStudentsComponent } from '../join-class-students/join-class-students.component';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+// import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-home',
@@ -22,9 +24,12 @@ import { JoinClassStudentsComponent } from '../join-class-students/join-class-st
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
+  /**分頁用 */
+  // @ViewChild(MatPaginator) paginator: MatPaginator|any;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
+  filterCoursesSlice: CourseRec[] = [];
   loading = true;
-  courseErrMsg :any= '';
+  courseErrMsg: any = '';
   delErrMsg = '';
   deling = false;
   keywordCtrl = new FormControl('');
@@ -35,59 +40,69 @@ export class HomeComponent implements OnInit {
   courseMap: Map<string, CourseRec> = new Map();
   filteredCourses: CourseRec[] = [];
   allCheck: boolean = false;
-
+  pageEvent: PageEvent | undefined;
+  @ViewChild('paginator', {static : true}) paginator: MatPaginator | undefined;
+  
   constructor(
     private coreSrv: CoreService,
     public dialog: MatDialog,
     public confirmSrv: ConfirmDialogService,
     private router: Router,
-  ) { }
-
-  async ngOnInit() {
+    ) { }
+    
+    async ngOnInit() {
     try {
       this.courseErrMsg = '';
-
+      
       const promiseList = [
         this.getCourseAllSemester(),
         this.coreSrv.getCurrentSemester(),
-       ];
-
+        this.coreSrv.init()
+      ];
+      
       const { SchoolYear, Semester } = await promiseList[1] as SemesterRec;
       this.curSchoolYear = this.coreSrv.curSchoolYear$.value || SchoolYear;
       this.curSemester = this.coreSrv.curSemester$.value || Semester;
       this.coreSrv.curSchoolYear$.next(this.curSchoolYear);
       this.coreSrv.curSemester$.next(this.curSemester);
-
+      
       await this.getCourses(this.curSchoolYear, this.curSemester);
       this.filterCourse('');
+      this.filterCoursesSlice = this.filteredCourses.slice(0, 30)
     } catch (error) {
       this.courseErrMsg = error;
     } finally {
       this.loading = false;
     }
-
+    
     const nullValue = null;
     this.keywordCtrl.valueChanges
-      .pipe(
-        startWith(nullValue),
-        debounceTime(500),
-        distinctUntilChanged(),
-        // tap(console.log),
+    .pipe(
+      startWith(nullValue),
+      debounceTime(500),
+      distinctUntilChanged(),
+      // 分頁
+      
+      // tap(console.log),
       ).subscribe(term => this.filterCourse(term));
-  }
+      
 
-  async getCourseAllSemester() {
-    this.schoolYearList = [];
-    this.semesterList = [];
-
+     
+      
+    }
+   
+    
+    async getCourseAllSemester() {
+      this.schoolYearList = [];
+      this.semesterList = [];
+      
     const allSemesterList = await this.coreSrv.getCourseAllSemester();
 
     const schoolYearList = [...new Set(allSemesterList.map(v => v.SchoolYear))];
     const semesterList = [...new Set(allSemesterList.map(v => v.Semester))];
-    debugger
     this.schoolYearList = (schoolYearList.length)
-      ? [ (+schoolYearList[0] + 1).toString(), ...schoolYearList]
-      : Array.from({length: 3}, (_, i) => ((new Date().getFullYear() - 1911 + 1) - i).toString());
+      ? [(+schoolYearList[0] + 1).toString(), ...schoolYearList]
+      : Array.from({ length: 3 }, (_, i) => ((new Date().getFullYear() - 1911 + 1) - i).toString());
     this.semesterList = (semesterList.length) ? semesterList : ['1', '2', '3', '4'];
   }
 
@@ -101,17 +116,48 @@ export class HomeComponent implements OnInit {
     this.courseMap = this.coreSrv.colCourseMap(rsp);
   }
 
+  OnPageChenge(event?: PageEvent) {
+    let startIndex = 0 ;
+    /** 本頁最結束的數 */
+    let endIndex = 30 ;
+    if(event){
+      startIndex = event.pageIndex * event.pageSize
+       endIndex = startIndex + event.pageSize;
+    }
+    if (endIndex > this.filteredCourses.length) {
+        endIndex = this.filteredCourses.length
+     
+   
+      // this.filterCoursesSlice = this.filteredCourses.slice(startIndex, endIndex)
+    }else{ // 如果 不是大於
+
+
+    }
+
+    this.filteredCourses.forEach((course, index) => {
+      if (index >= startIndex && index < endIndex) {
+        course.IsShowOnCurrentPage = true
+      }
+      else { course.IsShowOnCurrentPage = false }
+    })
+  }
+
+
   filterCourse(keyword: string) {
+
+  
     if (keyword) {
       this.filteredCourses = [...this.courseMap.values()].filter(v => v.CourseName.indexOf(keyword) > -1);
     } else {
       this.filteredCourses = [...this.courseMap.values()];
     }
+
+    this.OnPageChenge()
   }
 
   modifyCourse(course: CourseRec) {
     if (course && course.CourseId) {
-      this.openModifyCourseDialog({ ... course });
+      this.openModifyCourseDialog({ ...course });
     }
   }
 
@@ -122,6 +168,10 @@ export class HomeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async result => {
+      console.log("ss",result)
+      if(result?.isShowExportDia){
+        this.importCourse();
+      }
       if (result && result.state) {
         try {
           this.loading = true;
@@ -132,6 +182,8 @@ export class HomeComponent implements OnInit {
             this.getCourses(this.curSchoolYear, this.curSemester)
           ]);
           this.filterCourse(this.keywordCtrl.value);
+         
+       
         } catch (error) {
           this.courseErrMsg = error;
         } finally {
@@ -238,6 +290,15 @@ export class HomeComponent implements OnInit {
     this.filteredCourses.forEach(t => t.Checked = checked);
   }
 
+  /** 在校成績 */
+  getCheckAmount(): number {
+    let result = 0;
+    this.filteredCourses.forEach(t => {
+      if (t.Checked) result++;
+    });
+    return result;
+  }
+
   delCurCourse(course: CourseRec) {
     const dialogRef = this.dialog.open(DeleteCourseComponent, {
       data: {
@@ -245,7 +306,7 @@ export class HomeComponent implements OnInit {
         mode: 'SINGLE',
       },
       maxWidth: ModalSize.MD,
-      panelClass: ['my-dialog-border'] ,
+      panelClass: ['my-dialog-border'],
     });
 
     dialogRef.afterClosed().subscribe(async result => {
@@ -277,7 +338,7 @@ export class HomeComponent implements OnInit {
           mode: 'BATCH',
         },
         maxWidth: ModalSize.MD,
-        panelClass: ['my-dialog-border'] ,
+        panelClass: ['my-dialog-border'],
       });
 
       dialogRef.afterClosed().subscribe(async result => {
@@ -365,7 +426,7 @@ export class HomeComponent implements OnInit {
           mode: 'BATCH',
         },
         maxWidth: ModalSize.MD,
-        panelClass: ['my-dialog-border-primary'] ,
+        panelClass: ['my-dialog-border-primary'],
       });
 
       dialogRef.afterClosed().subscribe(async result => {

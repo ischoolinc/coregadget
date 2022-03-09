@@ -48,8 +48,6 @@ export class ImportCoursesComponent implements OnInit {
   imptItems: ImportFieldRec[] = [
     { name: '課程系統編號', value: 'CourseId', selected: false, disabled: false, hidden: true },
     { name: '課程名稱', value: 'CourseName', selected: true, disabled: true, hidden: false },
-    // { name: '學年度', value: 'SchoolYear', selected: false, disabled: false, hidden: true },
-    // { name: '學期', value: 'Semester', selected: false, disabled: false, hidden: true },
     { name: '授課教師1', value: 'TeacherName1', selected: false, disabled: false, hidden: false },
     { name: '授課教師2', value: 'TeacherName2', selected: false, disabled: false, hidden: false },
     { name: '授課教師3', value: 'TeacherName3', selected: false, disabled: false, hidden: false },
@@ -87,7 +85,7 @@ export class ImportCoursesComponent implements OnInit {
 
   async getSourceCourseList(): Promise<SourceCourse[]> {
     try {
-      return await this.coreSrv.getCourses({ SchoolYear: this.curSchoolYear, Semester: this.curSemester });
+      return await this.coreSrv.getCourses({ SchoolYear: this.coreSrv.curSchoolYear$.value, Semester: this.coreSrv.curSemester$.value });
     } catch (error) {
       throw new Error('取得比對清單發生錯誤！');
     }
@@ -116,7 +114,6 @@ export class ImportCoursesComponent implements OnInit {
   resetPreImportState() {
     const mode: ImportMode = this.getFormCtrl('mode').value;
     const ctrls = this.getFromAry('impts')['controls'];
-    debugger
     ctrls.forEach(ctrl => {
       const item = ctrl.value;
       if (mode === 'ADD') {
@@ -146,8 +143,8 @@ export class ImportCoursesComponent implements OnInit {
     });
   }
 
+  /** 建立 formContrl */
   createImportFields(items: any[]) {
-    console.log("item..",items)
     const arr = items.map(v => {
       return new FormControl(v);
     });
@@ -224,7 +221,7 @@ export class ImportCoursesComponent implements OnInit {
     this.errorResult.clear();
     this.importSuccess = false;
     this.importMsg = '';
-debugger
+
     try {
       if (!this.source.length) {
         throw new Error('無可分析的資料');
@@ -251,7 +248,7 @@ debugger
         // console.log(this.errorResult);
         // console.log(jsonRowSrc);
       }
-    } catch (error) {
+    } catch (error:any ) {
       // console.log(error);
       this.validationMsg = error?.message || '分析發生錯誤！';
     } finally {
@@ -347,11 +344,11 @@ debugger
         } else {
           await this.coreSrv.addLog('Import', '批次新增課程', `已進行「匯入新增課程」操作。\n詳細資料：${JSON.stringify({identifyField, finalData})}`);
         }
-      } catch (error) { }
+      } catch (error:any) { }
 
       this.importSuccess = true;
       this.needRefresh = true;
-    } catch (error) {
+    } catch (error:any) {
       // console.log(error);
       this.importMsg = (error.dsaError && error.dsaError.message) ? this.coreSrv.replaceMappingFieldName(error.dsaError.message) : '發生錯誤';
       this.importSuccess = false;
