@@ -32,7 +32,6 @@
 <script src="js/gadget.js"></script>
 <script>
 	init({
-		// application: "demo.h.vicky.chang",
 		paramValues: {
 		},
 		oAuth: {
@@ -59,7 +58,7 @@
 			<div class="row">
 				<div class="col-sm-6" ng-repeat="student in data[activeClass].students">
 					<div class="media my-media">
-						<div class=" pull-left" ng-click="openPhoto(student.Photo,student.Gender)">
+						<div class=" pull-left" ng-click="openPhoto(student.Photo,student.Gender)" style="cursor: pointer;">
 							<img ng-if="student.Photo != ''" class="media-object" style="width:107px;height:137px"
 								ng-src="data:image/png;base64,{{student.Photo}}">
 							<img ng-if="student.Photo == '' && student.Gender == '女'" class="media-object"
@@ -67,10 +66,11 @@
 							<img ng-if="student.Photo == '' && student.Gender != '女'" class="media-object"
 								src="img/photo_male.png">
 						</div>
-						<div class="media-body">
-							<div ng-click="studentClick(student)">
+						<div class="media-body" style="cursor: pointer;">
+							<div class="stdetail" title="詳細資料" ng-click="studentClick(student)">
 								<h4 class="media-heading"> {{student.Name}}
 									<span class="label label-default pull-right">{{student.SeatNo}}</span>
+									<i class="fa fa-info-circle pull-right" aria-hidden="true" style="color: #999; margin: 2px 12px;"></i>
 								</h4>
 								<p><i class="fa fa-barcode"></i> {{student.StudentNubmer}}</p>
 								<p style="height: auto;"><i class="fa fa-gift"></i> {{student.Birthdate}}</p>
@@ -80,6 +80,7 @@
 								<a href="https://www.google.com.tw/maps/place/{{getAddress(student.MailingAddress.AddressList.Address)}}"
 									target="_blank" style="z-index:1;">{{getAddress(student.MailingAddress.AddressList.Address)}}</a>
 							</p>
+							<p style="height: auto;"><i class="fa fa-envelope"></i> <a href="mailto:{{student.Email}}">{{student.Email}}</a></p>
 						</div>
 					</div>
 				</div>
@@ -129,16 +130,16 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 					  <!-- Default panel contents -->
-					  <div class="panel-heading">電話、Email</div>
+					  <div class="panel-heading">電話、電子郵件</div>
 					  <!-- List group -->
 					  <ul class="list-group my-em">
-						<li class="list-group-item"><em>戶籍電話</em>{{activeStudent.PermanentPhone}}</li>
-						<li class="list-group-item"><em>聯絡電話</em>{{activeStudent.ContactPhone}}</li>
-						<li class="list-group-item"><em>行動電話</em>{{activeStudent.SmsPhone}}</li>
+						<li class="list-group-item"><em>&ensp;戶籍電話</em>{{activeStudent.PermanentPhone}}</li>
+						<li class="list-group-item"><em>&ensp;聯絡電話</em>{{activeStudent.ContactPhone}}</li>
+						<li class="list-group-item"><em>&ensp;行動電話</em>{{activeStudent.SmsPhone}}</li>
 						<li class="list-group-item"><em>其他電話1</em>{{activeStudent.OtherPhones.PhoneList.PhoneNumber[0]}}</li>
 						<li class="list-group-item"><em>其他電話2</em>{{activeStudent.OtherPhones.PhoneList.PhoneNumber[1]}}</li>
 						<!-- <li class="list-group-item"><em>其他電話3</em>{{activeStudent.OtherPhones.PhoneList.PhoneNumber[2]}}</li> -->
-						<li class="list-group-item"><em>Email</em><a
+						<li class="list-group-item"><em>&ensp;電子郵件</em><a
 							href="mailto:{{activeStudent.Email}}">{{activeStudent.Email}}</a></li>
 					  </ul>
 					</div>
@@ -157,10 +158,10 @@
 							<li class="list-group-item li1"><em>監護人 - 電話</em>{{activeStudent.CustodianName}}<span
 									ng-if="activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone != null"> -
 								</span>{{activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone}}</li>
-							<li class="list-group-item"><em>父親 - 電話</em>{{activeStudent.FatherName}}<span
+							<li class="list-group-item"><em>&emsp;父親 - 電話</em>{{activeStudent.FatherName}}<span
 									ng-if="activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone != null"> -
 								</span>{{activeStudent.FatherOtherInfo.FatherOtherInfo.Phone}}</li>
-							<li class="list-group-item"><em>母親 - 電話</em>{{activeStudent.MotherName}}<span
+							<li class="list-group-item"><em>&emsp;母親 - 電話</em>{{activeStudent.MotherName}}<span
 									ng-if="activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone != null"> -
 								</span>{{activeStudent.MotherOtherInfo.MotherOtherInfo.Phone}}</li>
 						</ul>
