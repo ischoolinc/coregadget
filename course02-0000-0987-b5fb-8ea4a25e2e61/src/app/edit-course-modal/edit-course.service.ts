@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { CoreService } from '../core.service';
 import { SourceCourse } from '../data/course';
 import { CourseFieldName, ImportMode } from '../data/import-config';
@@ -9,7 +9,8 @@ import { UniqueTeacher } from '../shared/validators/row-validator/uniqueTeacher'
   providedIn: 'root'
 })
 export class EditCourseService {
-
+  // 呼叫父親用
+  // @Output() openEventEmiter = new EventEmitter<string>();
   // 欄位名稱對照，一律轉為英文欄位名
   mappingKeys = [
     { name: 'CourseId', mapping: ['course_id', '課程系統編號'] },
@@ -27,6 +28,10 @@ export class EditCourseService {
     private coreSrv: CoreService,
   ) { }
 
+  // /** 開啟匯入視窗 */
+  // openImportCourse(){
+  //   this.openEventEmiter.emit()
+  // }
   // 將 JSON 內容轉換為對照的英文欄位名
   public convertObject(source: any[]): { mappingTable: any, newSource: any[] } {
     let fMappingTable: any[] = [];

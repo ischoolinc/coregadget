@@ -454,11 +454,11 @@
               <div *ngTemplateOutlet="icon"></div>
               <b> 結案日期：</b>
             </label>
-            <input type="text"
+            <input type="date"
                    class="form-control"
                    id="semester"
                    placeholder=""
-                   [readOnly]="true"
+                   [readOnly]="caseStudent.isCloseNo"
                    [(ngModel)]="caseStudent.CloseDate"
                    (keyup)="caseStudent.checkValue()" />
           </div>

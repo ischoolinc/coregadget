@@ -1,17 +1,35 @@
-<div class="text-gray-text1 mx-4 w-160">
+<div class="text-gray-text1 mx-4 w-160 ">
   <span class="cursor-pointer" (click)="dialogRef.close()">
     <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
   </span>
   <div>
     <p class="gadget_bigtitle">匯入課程</p>
-    <p class="discription mt-4">學年度：<span class="text-primary mr-2">{{curSchoolYear}}</span>學期：<span class="text-primary">{{curSemester}}</span></p>
+ 
+    <form action="">
+    <p class="discription mt-4">學年度：<span class="text-primary mr-2">
+       <input type="number" required name="edit-school-year" placeholder="學年度..."
+      [(ngModel)]="curSchoolYear" autocomplete="off"
+      class="input-outline-sm mt-1" style="height: 2.2rem;">
+    </span>學期：<span class="text-primary">
+        <input type="number" required name="edit-semester" placeholder="學期..."
+        [(ngModel)]="curSemester" autocomplete="off"
+        min="1" max="2"
+        onkeydown="return false"
+     
+        class="input-outline-sm mt-1" style="height: 2.2rem;">
+
+      </span>
+    </p>
+  </form>
     <p class="discription">匯入格式限定 .xls, .xlsx 檔案，內容輸入請參考範例下載連結</p>
   </div>
+
   <p class="text-right">
     <a class="discription text-sm text-secondary text-rightunderline underline" download href="assets/doc/import_course_sample.xlsx">下載匯入課程範本檔</a>
   </p>
-  <div class="dialog-content mt-2 h-104">
-    <div class="overflow-scroll">
+  <div class="dialog-content mt-2 h-104  mb-4 ">
+    <!-- <div class="overflow-scroll"> -->
+      <div class="">
       <form [formGroup]="myForm">
         <div>
           <p class="text-warning" *ngIf="!loadSuccess">檔案讀取失敗！</p>
@@ -77,13 +95,14 @@
           {{ importSuccess ? '匯入成功！' : '匯入失敗！' + importMsg }}
         </p>
       </div>
-      <div class="flex flex-row items-end justify-end mt-6 mb-8">
+      <div class="flex flex-row items-end justify-end mt-6 mb-2">
         <button class="btn btn-second" (click)="closeDialog()">關閉</button>
         <button class="btn btn-primary mr-0"
           [ngClass]="{'disabled': errorResult.size > 0}"
           [disabled]="!validSuccess || source.length === 0"
           (click)="importData()">匯入</button>
       </div>
+      <br>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClassRec, CoreService } from '../core.service';
 import { CourseFieldName, ImportMode } from '../data/import-config';
@@ -13,10 +13,10 @@ import { EditCourseService } from './edit-course.service';
   styleUrls: ['./edit-course-modal.component.scss']
 })
 export class EditCourseModalComponent implements OnInit {
-
+  @Output() openEventEmiter = new EventEmitter<string>();
   mode: 'add' | 'edit' = 'add';
   saving = false;
-  errMsg = '';
+  errMsg :any= '';
   cRec: CourseRec = {} as CourseRec;
   classList: ClassRec[] = [];
   teacherList: TeacherRec[] = [];
@@ -26,6 +26,7 @@ export class EditCourseModalComponent implements OnInit {
   showTeacher3 = false;
   joinClassStudent = false;
   courseName = '';
+  isShowExport =false ;
 
   constructor(
     public dialogRef: MatDialogRef<EditCourseModalComponent>,
@@ -46,7 +47,12 @@ export class EditCourseModalComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  /** 開啟課程 */
+  openImportCourse(){
+    this.isShowExport = true ;
+    this.dialogRef.close({ state: this.mode ,isShowExportDia:true });
+    // this.openEventEmiter.emit()
+  }
   async getSourceCourseList(opt: {
     CourseId?: string,
     SchoolYear?: string,
@@ -144,8 +150,8 @@ export class EditCourseModalComponent implements OnInit {
         }
       } catch (error) { }
 
-      this.dialogRef.close({ state: this.mode });
-    } catch (error) {
+      this.dialogRef.close({ state: this.mode ,isShowExportDia:false });
+    } catch (error:any) {
       // console.log(error);
       this.errMsg = (error.dsaError && error.dsaError.message) ? this.coreSrv.replaceMappingFieldName(error.dsaError.message) : '發生錯誤';
     } finally {

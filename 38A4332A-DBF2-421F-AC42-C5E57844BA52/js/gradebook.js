@@ -2,7 +2,7 @@
 
     .controller('MainCtrl', ['$scope', '$timeout',
         function ($scope, $timeout) {
-
+            $scope.yourVariable =false ;
             $scope.params = gadget.params;
             $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
 
@@ -87,13 +87,17 @@
             }
 
             $scope.enterGrade = function (event) {
+            
                 if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
                 var flag = false;
                 var temp = Number($scope.current.Value);
                 if (!isNaN(temp)) {
+                    console.log('temp',temp)
                     flag = true;
-                    var round = Math.pow(10, $scope.current.Student.subjScorePoint||0);
+                    var round = $scope.current.Student.subjScorePoint &&   $scope.current.Student.subjScorePoint !=='undefined'? Math.pow(10, $scope.current.Student.subjScorePoint ) :Math.pow(10, 0 );
+                    console.log(round)
                     temp = (Math.round(temp * round) / round).toFixed( $scope.current.Student.subjScorePoint);
+                    console.log("kk",temp)
                 }
                 if ($scope.current.Value == "缺")
                     flag = true;
@@ -104,6 +108,10 @@
                 if (flag) {
                     $scope.submitGrade();
                 }
+
+                // 增加判斷如果有變動才跳出儲存按鈕
+                $scope.yourVariable = !$scope.checkAllTable();
+      
              }
 
             gadget.onLeave(function () {
@@ -151,17 +159,21 @@
             }
 
             $scope.saveAll = function () {
+                
+                var isChange =false  ;
                 var body = {
                     Content: {
                         MakeUpScores: []
                     }
                 };
-               
+                debugger
 
                 [].concat($scope.studentList || []).forEach(function (studentRec, index) {
 
                     // 分數有更動 才做儲存
+                    debugger
                     if (studentRec["MakeUpScore"] !== studentRec["MakeUpScoreOrigin"]) {
+                        isChange =true ;
                         var MakeUpScore = {
                             '@MakeUpScoreID': studentRec.MakeUpDataID
                             , '@MakeUpScore': studentRec["MakeUpScore"]
@@ -190,29 +202,35 @@
                     }
                 });
 
-                $scope.connection.send({
-                    service: "SetMakeUpStudentReocrd",
-                    autoRetry: true,
-                    body: body,
-                    result: function (response, error, http) {
-                        if (error) {
-                            alert("儲存失敗：SetMakeUpStudentReocrd Error");
-                        } else {
-
-                            [].concat($scope.studentList || []).forEach(function (studentRec, index) {
-
-                                studentRec["MakeUpScoreOrigin"] = studentRec["MakeUpScore"];
-                            });
-
-                            //$scope.checkAllTable();
-
-                            // 目前 Group 重 Load 一次
-                            $scope.setCurrentGroup($scope.current.Group);
-
-                            alert("儲存完成。");
+                 if(isChange)
+                 {
+                    $scope.connection.send({
+                        service: "SetMakeUpStudentReocrd",
+                        autoRetry: true,
+                        body: body,
+                        result: function (response, error, http) {
+                            if (error) {
+                                alert("儲存失敗：SetMakeUpStudentReocrd Error");
+                            } else {
+    
+                                [].concat($scope.studentList || []).forEach(function (studentRec, index) {
+    
+                                    studentRec["MakeUpScoreOrigin"] = studentRec["MakeUpScore"];
+                                });
+    
+                                //$scope.checkAllTable();
+    
+                                // 目前 Group 重 Load 一次
+                                $scope.setCurrentGroup($scope.current.Group);
+    
+                                alert("儲存完成。");
+                            }
                         }
-                    }
-                });
+                    });
+
+                 }else{
+                      alert("沒有修改不需儲存。")
+                 }
             } 
 
             $scope.isMobile = navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/gi) ? true : false;

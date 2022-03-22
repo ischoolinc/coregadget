@@ -1,8 +1,8 @@
 <div id="attendence-page"
      page>
 
-  <nav aria-label="breadcrumb text-nowrap text-truncate">
-    <ol class="breadcrumb">
+  <nav aria-label="breadcrumb text-nowrap text-truncate ">
+    <ol class="breadcrumb  second-page-header">
       <li class="breadcrumb-item header-top">
         <a [routerLink]="['/main']">課堂點名</a>
       </li>
@@ -43,7 +43,7 @@
             class="point row pr-2">
             <div class="col-9 card-body p-2 text-truncate ">
               <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate">{{student.Name}}</strong>
+                <strong class="mb-0 text-truncate" [innerHTML] ="student.Name"> </strong>
               </div>
               <div class="text-gray text-truncate d-flex">
                 <span>{{student.StudentNumber}}</span>
@@ -76,9 +76,9 @@
             <div [ngStyle]="getTeacherHelperStyle(student)"
                  class="w-100 ad-status text-truncate">
               {{getTeacherHelperText(student)}}</div>
-            <div class="card-body py-2 text-truncate w-100">
+            <div class="card-body py-2 text-truncate w-100 ">
               <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate">{{student.Name}}</strong>
+                <strong class="mb-0 text-truncate " [innerHtml]="student.Name"></strong>
 
               </div>
               <div class="text-gray text-truncate d-flex">

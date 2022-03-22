@@ -27,7 +27,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import {MatRadioModule} from '@angular/material/radio';
 import { ClassSubstituteComponent } from './pages/class-substitute.component';
-
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +54,8 @@ import { ClassSubstituteComponent } from './pages/class-substitute.component';
     MatIconModule,
     MatCheckboxModule,
     FormsModule,
-    MatRadioModule
+    MatRadioModule,
+    HttpClientModule
   ],
   providers: [GadgetService, DSAService, ConfigService, AlertService],
   bootstrap: [AppComponent],

@@ -8,6 +8,7 @@ import { GlobalService } from "../global.service";
 import { DelCaseModalComponent } from "./del-case-modal/del-case-modal.component"
 import { asLiteral } from "@angular/compiler/src/render3/view/util";
 
+
 @Component({
   selector: "app-case",
   templateUrl: "./case.component.html",

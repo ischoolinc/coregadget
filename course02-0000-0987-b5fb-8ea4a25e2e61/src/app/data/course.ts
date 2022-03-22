@@ -25,6 +25,7 @@ export interface CourseRec {
   Checked?: boolean;
   CourseStudentCount?: string;
   SCETakeCount?: string;
+  IsShowOnCurrentPage? :boolean;
 }
 
 export interface CourseTeacherRec {
