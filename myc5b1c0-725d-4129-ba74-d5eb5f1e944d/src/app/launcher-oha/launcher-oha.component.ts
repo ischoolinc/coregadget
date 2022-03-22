@@ -12,6 +12,8 @@ export class LauncherOhaComponent implements OnInit {
   @Input() dsns = '';
   @Input() roleName = '';
   @Input() course: MyCourseRec = {} as MyCourseRec;
+
+  // 改成「https://us-central1-classroom-1campus.cloudfunctions.net/ohaSSOUri」試試...
   #classroom_url = 'https://oha.1campus.net';
 
   constructor(
