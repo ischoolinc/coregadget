@@ -1,0 +1,54 @@
+{
+  "name": "fd7d15c6-5014-49c7-bc8a-f15b3e386018",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fengpu-ischool/ischool-gadges.icon.bulb": "^0.0.1",
+    "@fengpu-ischool/ischool-gadges.icon.soccer": "^0.0.1",
+    "@fengpu-ischool/ischool-gadges.icon.study": "^0.0.1",
+    "@fengpu-ischool/ischool-gadges.icon.wrench": "^0.0.2",
+    "@fengpu-ischool/ischool-gadges.ui.credit_card": "^0.0.7",
+    "@fengpu-ischool/ischool-gadges.ui.dropdown": "^0.0.4",
+    "@fengpu-ischool/ischool-gadges.ui.number-grid": "^0.0.1",
+    "@fengpu-ischool/ischool-gadges.ui.round-selector": "^0.0.4",
+    "@fengpu-ischool/ischool-gadges.ui.semester_credit_card": "^0.0.3",
+    "@fengpu-ischool/ischool-gadges.ui.sub-category-card": "^0.0.14",
+    "@fengpu-ischool/ischool-gadges.ui.tab": "^0.0.2",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "luxon": "^2.3.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
+    "react-modal": "^3.14.4",
+    "react-scripts": "5.0.0",
+    "react-switch": "^6.0.0",
+    "react-table": "^7.7.0",
+    "web-vitals": "^2.1.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
