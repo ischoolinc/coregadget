@@ -618,7 +618,7 @@ const SeniorScoreScreen = (props) => {
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
                 {
-                    Header: '成績',
+                    Header: '擇優成績',
                     accessor: 'score',
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
@@ -664,7 +664,7 @@ const SeniorScoreScreen = (props) => {
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
                 {
-                    Header: '成績',
+                    Header: '擇優成績',
                     accessor: 'score',
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
@@ -706,7 +706,7 @@ const SeniorScoreScreen = (props) => {
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
                 {
-                    Header: '成績',
+                    Header: '擇優成績',
                     accessor: 'score',
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
@@ -741,7 +741,7 @@ const SeniorScoreScreen = (props) => {
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
                 {
-                    Header: '成績',
+                    Header: '擇優成績',
                     accessor: 'score',
                     Cell: (props) => ((props.value.active) ? <div>{props.value.value}</div> : <div style={{ color: '#aaaaaa' }}>{props.value.value}</div>)
                 },
@@ -921,7 +921,7 @@ const SeniorScoreScreen = (props) => {
         credit: '學分',
         source: '校訂/部定',
         required: '必修/選修',
-        score: '成績',
+        score: '擇優成績',
         rawscore: '原始成績',
         truecredit: '取得學分'
     }
