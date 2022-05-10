@@ -149,7 +149,7 @@ export class Classroom {
     if (this.status === 'open') {
       return (this.getLiveTime('hour') <= 2) ? 'Live' : 'Enabled';
     } else {
-      return (this.status) ? 'Enabled' : 'Disabled';
+      return (this.status === 'close') ? 'Enabled' : 'Disabled';
     }
   }
 

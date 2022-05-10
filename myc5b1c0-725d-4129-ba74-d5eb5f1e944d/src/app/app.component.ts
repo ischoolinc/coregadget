@@ -285,9 +285,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /**
    * 教師彩色無 Live；學生以下方邏輯運行：
-   * a. 灰色：教師完全沒有啟用教室。不能點擊。
-   * b. 彩色無 Live：教師有啟用教室，但不在教室中。可以點擊。
-   * c. 彩色有 Live：教師在教室中。可以點擊。
+   * a. 灰色：教師完全沒有啟用教室。不能點擊。(Disabled)
+   * b. 彩色無 Live：教師有啟用教室，但不在教室中。可以點擊。(Enabled)
+   * c. 彩色有 Live：教師在教室中。可以點擊。(Live)
    */
   async mappingClassroomLive(force: boolean = false) {
 
@@ -301,12 +301,13 @@ export class AppComponent implements OnInit, OnDestroy {
         courses
       }, force);
 
-      this.courses.forEach(v => v.Live = 'Enabled');
       this.courses.forEach(v => {
+        if (this.role === 'teacher') v.Live = 'Enabled';
+        if (this.role === 'student') v.Live = 'Disabled';
+
         for (const cr of crlist) {
-          if (v.CourseId === cr.target.uid) {
-            if (this.role === 'teacher') v.Live = 'Enabled';
-            if (this.role === 'student') v.Live = cr.guessOpen();
+          if (v.CourseId === cr.target.uid && this.role === 'student') {
+            v.Live = cr.guessOpen();
           }
         }
       });
