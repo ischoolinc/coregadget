@@ -194,7 +194,8 @@ export class AppComponent implements OnInit, OnDestroy {
     return [
       { uid: '', course_id: courseId, service_id: '1campus_oha', conf: null, link: '', enabled: true, order: 1 },
       { uid: '', course_id: courseId, service_id: 'google_classroom', conf: null, link: '', enabled: true, order: 2 },
-      { uid: '', course_id: courseId, service_id: 'customize', conf: {}, link: '', enabled: true, order: 3 },
+      { uid: '', course_id: courseId, service_id: 'google_meet', conf: null, link: '', enabled: true, order: 3 },
+      { uid: '', course_id: courseId, service_id: 'customize', conf: {}, link: '', enabled: true, order: 4 },
     ];
   }
 
