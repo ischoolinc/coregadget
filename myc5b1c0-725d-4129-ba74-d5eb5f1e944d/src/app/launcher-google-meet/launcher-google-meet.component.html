@@ -1,0 +1,12 @@
+<div class="has-tooltip lg:mr-4" *ngIf="meetLink">
+  <span *ngIf="roleName === 'teacher' && meetLink" class="tooltip -ml-10">Google Meet</span>
+  <span *ngIf="roleName === 'teacher' && !(meetLink)" class="tooltip -ml-10">Google Meet<br>尚未設定，請至雲端<br>服務管理設定 Meet 連結。</span>
+  <span *ngIf="roleName === 'student'" class="tooltip -ml-10">Google Meet</span>
+
+  <ng-container>
+    <a [href]="getMeetLink()"
+      target="_blank" rel="noreferrer noopener">
+      <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/google_meet.svg" alt="Google Meet">
+    </a>
+  </ng-container>
+</div>

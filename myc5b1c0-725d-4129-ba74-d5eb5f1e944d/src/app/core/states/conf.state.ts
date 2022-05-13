@@ -103,7 +103,7 @@ export class ServiceConfState {
 
   @Selector()
   static getServiceConf(state: ServiceConfStateModel) {
-    return (courseId: string | number, serviceId: 'google_classroom' | '1campus_oha' | 'customize') => {
+    return (courseId: string | number, serviceId: 'google_classroom' | '1campus_oha' | 'customize' | 'google_meet') => {
       return state.find(v => {
         if (v.course_id == courseId && v.service_id == serviceId) {
           return true;

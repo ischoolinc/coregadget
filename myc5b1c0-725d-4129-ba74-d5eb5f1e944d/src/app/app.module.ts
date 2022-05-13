@@ -29,6 +29,8 @@ import { LauncherCustomizeComponent } from './launcher-customize/launcher-custom
 import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
 import { BadgePeriodComponent } from './badge-period/badge-period.component';
 import { PipesModule } from './shared/pipe/pipes.module';
+import { LauncherGoogleMeetComponent } from './launcher-google-meet/launcher-google-meet.component';
+import { EditGoogleMeetComponent } from './edit-google-meet/edit-google-meet.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { PipesModule } from './shared/pipe/pipes.module';
     LauncherCustomizeComponent,
     TimetableManageComponent,
     BadgePeriodComponent,
+    LauncherGoogleMeetComponent,
+    EditGoogleMeetComponent,
   ],
   imports: [
     BrowserModule,

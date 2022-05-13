@@ -1,0 +1,17 @@
+<div class="mx-2">
+  <p class="text-2xl font-semibold text-gray-text1 mt-4">Google Meet 連結</p>
+
+  <div class="content">
+    <!-- 新增連結 -->
+    <div class="mt-6">
+      <span>
+        <input
+          class="w-full mt-1 text-gray-text1 border border-gray-light rounded h-10 focus:border-primary overflow-ellipsis no-ring"
+          type="text" placeholder="請輸入合法 Google Meet 連結" [(ngModel)]="meetLink">
+      </span>
+    </div>
+    <div class="text-right mt-4 mb-6">
+      <button class="inline-block btn btn-primary px-4" (click)="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
