@@ -315,7 +315,7 @@
                 <mat-slide-toggle color="primary" [checked]="item.enabled" [disabled]="saving"
                   (change)="toggleEnabledService($event, data.target, item)"></mat-slide-toggle>
               </div>
-              <a href="javascript:;" *ngIf="!this.adminConnectedGoogle.success" class="ml-4" (click)="manageProcessState = 307">
+              <a href="javascript:;" class="ml-4" (click)="manageProcessState = 307">
                 <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
                   data-inline="false"></span>
               </a>

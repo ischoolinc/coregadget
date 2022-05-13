@@ -263,8 +263,7 @@ export class AppComponent implements OnInit, OnDestroy {
   async checkConnected() {
     try {
       const rsp: any = await this.ConnectedSettingSrv.check_connected(this.dsns, 'google_classroom_admin');
-      // this.adminConnectedGoogle = rsp;
-      this.adminConnectedGoogle.success = false;
+      this.adminConnectedGoogle = rsp;
     } catch (error) {
       this.snackbarSrv.show('確認連結 Google 帳號發生錯誤！');
     }
