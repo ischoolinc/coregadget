@@ -1669,6 +1669,7 @@
          * 儲存
          */
         $scope.save = function () {
+         
             $scope.isSaving = true ;
   
             if ($scope.current.mode == $scope.modeList[0]) {
@@ -2157,6 +2158,7 @@
                 , Mode: 'Editor'
                 , JSONCode: ''
                 , DeleteItem: function (item) {
+                    alert("刪除評量項目,成績會一併刪除")
                     var index = $scope.gradeItemConfig.Item.indexOf(item);
                     if (index > -1) {
                         $scope.gradeItemConfig.Item.splice(index, 1);
@@ -2422,10 +2424,17 @@
         }
 
 
+
+        /** 儲存後一併儲存成績 */
+        $scope.saveGradeItemConfigAndScoreData = function (){
+            $scope.saveGradeItemConfig(x=>{$scope.save()});
+        }
+
+
         /**
          * 儲存評分項目
          */
-        $scope.saveGradeItemConfig = function () {
+        $scope.saveGradeItemConfig = function (callback ) {
             var body = {
                 Content: {
                     CourseExtension: {
@@ -2512,7 +2521,7 @@
                                             $scope.calcQuizResult(stuRec);
                                         });
                                     });
-                                }).then(x=>{ $scope.setupOrigin();});
+                                }).then(x=>{ $scope.setupOrigin();}).then(x=>{callback();});
 
                                 // 檢查小考項目是否有變動
                                 $scope.checkItemChange = !$scope.gradeItemConfig.CheckConfig();
@@ -2600,7 +2609,9 @@
                         }
                     }
                 });
-
+              setTimeout(() => {
+           
+              }, 200);  
             }
             else {
                 var errMsg = '';
@@ -2615,6 +2626,7 @@
                 }
                 alert(errMsg);
             }
+        
         }
 
         /**
