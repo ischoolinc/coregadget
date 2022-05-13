@@ -1,11 +1,20 @@
 <div class="has-tooltip lg:mr-4">
-  <span *ngIf="roleName === 'teacher'" class="tooltip -ml-5">OHA雲端教室</span>
-  <span *ngIf="roleName === 'student'" class="tooltip -ml-5">進入OHA雲端教室</span>
-  <img *ngIf="course.Live === 'Disabled'" class="h-10 w-10 mb-2 mx-1" src="assets/img/oha_off.svg" alt="OHA雲端教室">
-  <a [href]="classroomUrl(course)"
-    *ngIf="course.Live === 'Enabled' || course.Live === 'Live'"
-    target="_blank" rel="noreferrer noopener" class="classroom_online">
-    <img *ngIf="course.Live === 'Enabled'" class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/oha.svg" alt="OHA雲端教室">
-    <img *ngIf="course.Live === 'Live'" class="h-10 w-10 mb-2 mx-1" src="assets/img/oha_live.svg" alt="OHA雲端教室">
-  </a>
+  <ng-container *ngIf="roleName === 'student'; else tplTeacher">
+    <span class="tooltip -ml-5">進入OHA雲端教室</span>
+    <img *ngIf="course.Live !== 'Enabled' && course.Live !== 'Live'" class="h-10 w-10 mb-2 mx-1" src="assets/img/oha_off.svg" alt="OHA雲端教室">
+    <a [href]="classroomUrl(course)"
+      *ngIf="course.Live === 'Enabled' || course.Live === 'Live'"
+      target="_blank" rel="noreferrer noopener" class="classroom_online">
+      <img *ngIf="course.Live === 'Enabled'" class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/oha.svg" alt="OHA雲端教室">
+      <img *ngIf="course.Live === 'Live'" class="h-10 w-10 mb-2 mx-1" src="assets/img/oha_live.svg" alt="OHA雲端教室">
+    </a>
+  </ng-container>
 </div>
+
+<ng-template #tplTeacher>
+  <span class="tooltip -ml-5">OHA雲端教室</span>
+  <a [href]="classroomUrl(course)"
+    target="_blank" rel="noreferrer noopener" class="classroom_online">
+    <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/oha.svg" alt="OHA雲端教室">
+  </a>
+</ng-template>

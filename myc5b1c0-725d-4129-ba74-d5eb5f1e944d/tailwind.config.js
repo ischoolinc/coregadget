@@ -22,7 +22,7 @@ module.exports = {
         secondary: {
           lighter: '#CCD8E9',
           light: '#88A4CB',
-          DEFAULT: '#547CB4',
+          DEFAULT: '#2a74dd',
           dark: '#3C4F81',
         },
         third: {

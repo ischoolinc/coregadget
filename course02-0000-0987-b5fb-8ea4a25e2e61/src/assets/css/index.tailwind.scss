@@ -31,7 +31,7 @@
   }
 
   .tool-row {
-    @apply flex flex-row items-center mt-4;
+    @apply flex flex-row items-center mt-2;
   }
 
   .btn {
@@ -87,7 +87,8 @@
   }
 
   .t-title {
-    @apply px-6 py-4 text-center text-sm font-semibold text-white tracking-wider;
+    // @apply px-6 py-4 text-center text-sm font-semibold text-white tracking-wider;
+    @apply px-6 py-4 text-center text-base font-semibold text-secondary-darkbule tracking-wider;
   }
 
   .t-content {
@@ -162,6 +163,9 @@
     @apply w-full h-10 border-gray-300 rounded focus:ring-offset-transparent focus:ring-transparent focus:border-primary hover:bg-gray-50;
   }
 
+  .input-outline-sm {
+    @apply w-32 h-21 border-gray-300 rounded focus:ring-offset-transparent focus:ring-transparent focus:border-primary hover:bg-gray-50;
+  }
   .my-dialog-border .mat-dialog-container {
     @apply border-t-8 border-warning rounded-lg;
   }

@@ -1,0 +1,66 @@
+
+<div class="container">
+  <div >
+    <div  class ="d-flex mt-2 "  style ="width: 95%;   margin: auto; ">
+      <div  class ="d-flex justify-content-between w-100"  id="header">
+
+        <div class ="d-flex">
+          <span >今日缺礦</span>
+        <div class="input-group-prepend ml-3">
+          <button class="btn btn-light dropdown-toggle" style="height:40.49px !important" type="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              {{currClass?.class_name}}
+          </button>
+          <div class="dropdown-menu">
+              <a class="dropdown-item" *ngFor="let classInfo of MyClassList"
+
+                  (click)="setCurrentClass(classInfo)">
+                  {{classInfo?.class_name}}
+              </a>
+          </div>
+        </div>
+      </div>
+
+        <div class="ml-3">
+         <button class="btn btn-light " style="height:40.49px !important" (click)="exportData('#targetTable')">
+           匯出
+         </button>
+        </div>
+      </div>
+
+     </div>
+     <div>
+    <table id ="targetTable" class="rwd-table mt-2">
+      <tbody>
+        <tr class ="">
+          <th>座號</th>
+          <th>姓名</th>
+          <th *ngFor="let period of PeriodList"  style ="text-align: center;">  {{period.Name}}</th>
+
+        </tr>
+        <ng-container  *ngFor="let student  of StudentList" >
+          <tr>
+            <td data-th="座號">
+           {{student.seat_no}}
+            </td>
+            <td data-th="姓名">
+              {{student.student_name }}
+            </td>
+
+            <td  [attr.data-th] ="period.Name" *ngFor="let period of PeriodList"  (click)="toogleShowdetail()">
+              <div class="w-100" style="text-align: center ;">
+
+                {{getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type||'--'}}
+                <br>
+              <span  style ="font-size:10px ;text-align: center; color :rgb(114, 114, 124)" >{{getAbsenceType(student.student_id ,period.Name)?.course_name ||'  '}}</span>
+
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  </div>
+  </div>
+<router-outlet></router-outlet>

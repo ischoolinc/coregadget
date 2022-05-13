@@ -59,34 +59,73 @@ app.controller('MenuCtrl', function($scope, $timeout) {
 
         $timeout(function() {
 
-            var file = ["姓名,座號,學號,性別,生日,身分證號,戶籍電話,聯絡電話,行動電話,其他電話1,其他電話2,其他電話3,監護人姓名,監護人電話,父親姓名,父親電話,母親姓名,母親電話,戶籍地址,通訊地址,其他地址"];
+        //     var file = ["姓名,座號,學號,性別,生日,身分證號,戶籍電話,聯絡電話,行動電話,其他電話1,其他電話2,其他電話3,監護人姓名,監護人電話,父親姓名,父親電話,母親姓名,母親電話,戶籍地址,通訊地址,其他地址"];
 
-            angular.forEach($scope.data[$scope.activeClass].students, function(item) {
+        //     angular.forEach($scope.data[$scope.activeClass].students, function(item) {
 
-                file.push("\r\n");
+        //         file.push("\r\n");
 
-                var OtherPhones1 = (item.OtherPhones.PhoneList) ? item.OtherPhones.PhoneList.PhoneNumber[0] : "";
-                var OtherPhones2 = (item.OtherPhones.PhoneList) ? item.OtherPhones.PhoneList.PhoneNumber[1] : "";
-                var OtherPhones3 = (item.OtherPhones.PhoneList) ? item.OtherPhones.PhoneList.PhoneNumber[2] : "";
-                var CustodianPhone = (item.CustdoianOtherInfo.CustodianOtherInfo) ? item.CustdoianOtherInfo.CustodianOtherInfo.Phone || "" : "";
-                var FatherPhone = (item.FatherOtherInfo.FatherOtherInfo) ? item.FatherOtherInfo.FatherOtherInfo.Phone || "" : "";
-                var MotherPhone = (item.MotherOtherInfo.MotherOtherInfo) ? item.MotherOtherInfo.MotherOtherInfo.Phone || "" : "";
-                var Address1 = (item.PermanentAddress.AddressList) ? $scope.getAddress(item.PermanentAddress.AddressList.Address) : "";
-                var Address2 = (item.MailingAddress.AddressList) ? $scope.getAddress(item.MailingAddress.AddressList.Address) : "";
-                var Address3 = (item.OtherAddresses.AddressList) ? $scope.getAddress(item.OtherAddresses.AddressList.Address) : "";
+        //         var OtherPhones1 = (item.OtherPhones.PhoneList) ? item.OtherPhones.PhoneList.PhoneNumber[0] : "";
+        //         var OtherPhones2 = (item.OtherPhones.PhoneList) ? item.OtherPhones.PhoneList.PhoneNumber[1] : "";
+        //         var OtherPhones3 = (item.OtherPhones.PhoneList) ? item.OtherPhones.PhoneList.PhoneNumber[2] : "";
+        //         var CustodianPhone = (item.CustdoianOtherInfo.CustodianOtherInfo) ? item.CustdoianOtherInfo.CustodianOtherInfo.Phone || "" : "";
+        //         var FatherPhone = (item.FatherOtherInfo.FatherOtherInfo) ? item.FatherOtherInfo.FatherOtherInfo.Phone || "" : "";
+        //         var MotherPhone = (item.MotherOtherInfo.MotherOtherInfo) ? item.MotherOtherInfo.MotherOtherInfo.Phone || "" : "";
+        //         var Address1 = (item.PermanentAddress.AddressList) ? $scope.getAddress(item.PermanentAddress.AddressList.Address) : "";
+        //         var Address2 = (item.MailingAddress.AddressList) ? $scope.getAddress(item.MailingAddress.AddressList.Address) : "";
+        //         var Address3 = (item.OtherAddresses.AddressList) ? $scope.getAddress(item.OtherAddresses.AddressList.Address) : "";
 
-                file.push(item.Name + "," + item.SeatNo + "," + item.StudentNubmer + "," + item.Gender + "," + item.Birthdate + "," + item.IdNumber + "," + item.PermanentPhone + "," + item.ContactPhone + "," + item.SmsPhone + "," + OtherPhones1 + "," + OtherPhones2 + "," + OtherPhones3 + "," + item.CustodianName + "," + CustodianPhone + "," + item.FatherName + "," + FatherPhone + "," + item.MotherName + "," + MotherPhone + "," + Address1 + "," + Address2 + "," + Address3);
-            });
+        //         file.push(item.Name + "," + item.SeatNo + "," + item.StudentNubmer + "," + item.Gender + "," + item.Birthdate + "," + item.IdNumber + "," + item.PermanentPhone + "," + item.ContactPhone + "," + item.SmsPhone + "," + OtherPhones1 + "," + OtherPhones2 + "," + OtherPhones3 + "," + item.CustodianName + "," + CustodianPhone + "," + item.FatherName + "," + FatherPhone + "," + item.MotherName + "," + MotherPhone + "," + Address1 + "," + Address2 + "," + Address3);
+        //     });
 
-            var blob = new Blob(file);
-            fileURL = window.URL.createObjectURL(blob);;
-            fileName = $scope.activeClass + ".txt";
+        //     var blob = new Blob(file);
+        //     fileURL = window.URL.createObjectURL(blob);;
+        //     fileName = $scope.activeClass + ".txt";
 
-            var btnDownload = document.getElementById("download");
-            btnDownload.href = fileURL;
-            btnDownload.download = fileName;
+        //     var btnDownload = document.getElementById("download");
+        //     btnDownload.href = fileURL;
+        //     btnDownload.download = fileName;
 
-        }, 100);
+        // }, 100);
+
+        var file = ["<html><head><meta charset='utf-8' /></head><body><table><tr><td>姓名</td><td>座號</td><td>學號</td><td>性別</td><td>生日</td><td>身分證號</td><td>戶籍電話</td><td>聯絡電話</td><td>行動電話</td><td>其他電話1</td><td>其他電話2</td><td>其他電話3</td><td>Email</td><td>監護人電話</td><td>父親電話</td><td>母親電話</td><td>戶籍地址</td><td>通訊地址</td><td>其他地址</td></tr>"];
+      angular.forEach($scope.data[$scope.activeClass].students, function (item) {
+
+        // file.push("\r\n");
+        file.push(
+          "<tr><td>" + item.Name + "</td>"
+          + "<td>" + item.SeatNo + "</td>"
+          + "<td>" + item.StudentNubmer + "</td>"
+          + "<td>" + item.Gender + "</td>"
+          + "<td>" + item.Birthdate + "</td>"
+          + "<td>" + item.IdNumber + "</td>"
+          + "<td>" + item.PermanentPhone + "</td>"
+          + "<td>" + item.ContactPhone + "</td>"
+          + "<td>" + item.SmsPhone + "</td>"
+          + "<td>" + ((item.OtherPhones && item.OtherPhones.PhoneList && item.OtherPhones.PhoneList.PhoneNumber[0]) ? item.OtherPhones.PhoneList.PhoneNumber[0] : '') + "</td>"
+          + "<td>" + ((item.OtherPhones && item.OtherPhones.PhoneList && item.OtherPhones.PhoneList.PhoneNumber[1]) ? item.OtherPhones.PhoneList.PhoneNumber[1] : '') + "</td>"
+          + "<td>" + ((item.OtherPhones && item.OtherPhones.PhoneList && item.OtherPhones.PhoneList.PhoneNumber[2]) ? item.OtherPhones.PhoneList.PhoneNumber[2] : '') + "</td>"
+          + "<td>" + item.Email + "</td>"
+          + "<td>" + ((item.CustdoianOtherInfo && item.CustdoianOtherInfo.CustodianOtherInfo.Phone) ? item.CustdoianOtherInfo.CustodianOtherInfo.Phone : '') + "</td>"
+          + "<td>" + ((item.FatherOtherInfo && item.FatherOtherInfo.FatherOtherInfo.Phone) ? item.FatherOtherInfo.FatherOtherInfo.Phone : '') + "</td>"
+          + "<td>" + ((item.MotherOtherInfo && item.MotherOtherInfo.MotherOtherInfo.Phone) ? item.MotherOtherInfo.MotherOtherInfo.Phone : '') + "</td>"
+          + "<td>" + ((item.PermanentAddress && item.PermanentAddress.AddressList.Address) ? $scope.getAddress(item.PermanentAddress.AddressList.Address) : '') + "</td>"
+          + "<td>" + ((item.MailingAddress && item.MailingAddress.AddressList.Address) ? $scope.getAddress(item.MailingAddress.AddressList.Address) : '') + "</td>"
+          + "<td>" + ((item.OtherAddresses && item.OtherAddresses.AddressList.Address[0]) ? $scope.getAddress(item.OtherAddresses.AddressList.Address[0]) : '') + "</td></tr>"
+        );
+      });
+
+      file.push("</table></body></html>");
+
+      var blob = new Blob(file);
+      // var blob = new Blob([file], {type: "application/vnd.ms-excel"});
+      fileURL = URL.createObjectURL(blob);;
+      fileName = $scope.activeClass + ".xls";
+
+      var btnDownload = document.getElementById("download");
+      btnDownload.href = fileURL;
+      btnDownload.download = fileName;
+    }, 100);
 
     };
 
@@ -152,6 +191,21 @@ app.controller('MenuCtrl', function($scope, $timeout) {
         } else {
             return false;
         }
+    };
+
+    $scope.openPhoto = function (photo, gender) {
+      var modal = document.getElementById('myModal');
+      var modalImg = document.getElementById("img01");
+      modal.style.display = "block";
+      photo ? modalImg.src = "data:image/png;base64," + photo : (gender == '女') ? modalImg.src = "img/photo_female.png" : modalImg.src = "img/photo_male.png";
+  
+      modal.onclick = function () {
+        img01.className += " out";
+        setTimeout(function () {
+          modal.style.display = "none";
+          img01.className = "modal-content";
+        }, 400);
+      }
     };
 
 });

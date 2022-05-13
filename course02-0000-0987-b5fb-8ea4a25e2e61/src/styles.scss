@@ -17,9 +17,9 @@ $candy-theme: mat-light-theme($candy-primary, $candy-accent, $candy-warn);
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", "PingFangSC-Regular", "Microsoft JhengHei",sans-serif; }
 
-.mat-form-field-wrapper {
-  padding-bottom: 0!important;
-}
+// .mat-form-field-wrapper {
+//   padding-bottom: 0!important;
+// }
 
 .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-start,
 .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-end,
@@ -31,3 +31,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", "PingFangSC-Regular", "
 .mat-form-field-appearance-outline .mat-form-field-wrapper:hover {
   background-color: #f9fafb!important;
 }
+
+
+// .mat-paginator-page-size-select {
+//   /* margin: 6px 4px 0 4px; */
+//   width: 56px !important;
+// }
+// .mat-form-field {
+//   font-size: inherit;
+//   font-weight: 400;
+//   line-height: 3.13 !important;
+//   font-family: Roboto, "Helvetica Neue", sans-serif;
+//   letter-spacing: normal;
+// }
+
+
+// .mat-form-field-infix {
+//   padding: 0.5em 0;
+//    border-top: 0em solid transparent !important ;
+//   }
+   
+   

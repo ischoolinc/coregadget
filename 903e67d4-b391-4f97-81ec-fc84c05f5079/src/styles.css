@@ -32,3 +32,53 @@ body {
   border-bottom: 1px solid whiteSmoke;
   padding: 10px 0 10px 20px;
 }
+
+
+.scrollable {
+  max-height: 800px !important;
+  max-width: 100%;
+  overflow: auto;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+
+
+}
+.sticky {
+  position: sticky;
+  top: 0;
+  background: #cce0df; 
+  z-index: 66;
+
+  box-shadow: 0px 1.2px 1.2px rgba(177, 172, 172, 0.25);
+  /* background: #e4f0f1;  */
+}
+
+th{
+
+  background: #cce0df !important; 
+  border: none  !important;
+}
+
+.title-item {
+  font-weight:  900 ;
+  font-size: 22px !important;
+  color: rgb(85, 85, 85);
+
+
+}
+.sub-item {
+font-weight:  900 ;
+font-size: 16px;
+color: rgb(85, 85, 85);
+}
+
+.name-item{
+
+  font-weight:  900 ;
+  font-size: 14px;
+  color: rgb(85, 85, 85);
+
+}
+.table > thead > tr > th {
+  vertical-align:middle;
+}

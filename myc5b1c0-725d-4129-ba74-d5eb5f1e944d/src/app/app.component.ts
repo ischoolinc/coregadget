@@ -23,11 +23,7 @@ import { ServiceConfState } from './core/states/conf.state';
 import { ServiceConf } from './core/data/service-conf';
 import { TimetableManageComponent } from './timetable-manage/timetable-manage.component';
 import { CourseTimetable } from './core/data/timetable';
-import dayjs from 'dayjs';
-import { GadgetParams, ServerService } from './core/server.service';
 import { Params } from './core/states/params.actions';
-import { ParamsState } from './core/states/params.state';
-import { TimetableService } from './core/timetable.service';
 import { ParamsService } from './params.service';
 
 @Component({
@@ -47,8 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
   dsns = '';
   role = '';
   myInfo: MyInfo = {} as MyInfo;
-  adminConnectedGoogle: { success: boolean, message: string } = { success: false, message: '' };
-  curSemester: Semester = {} as Semester;
+  adminConnectedGoogle: { success: boolean, message: string, link_account: string } = { success: false, message: '', link_account: '' };
   courses: MyCourseRec[] = [];
 
   #updateTimestamp = dj();
@@ -144,7 +139,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private async displayCourses(sourceCourses: MyCourseRec[]) {
     sourceCourses.forEach(v => {
       v.GoogleIsReady = false;
-      v.Alias = this.formatCourseAlias(v);
+      v.Alias = this.myCourseSrv.formatCourseAlias(this.dsns, v);
       v.ServiceConfig = [];
       v.Timetable = new Map();
       v.TargetId = v.CourseId;
@@ -199,7 +194,8 @@ export class AppComponent implements OnInit, OnDestroy {
     return [
       { uid: '', course_id: courseId, service_id: '1campus_oha', conf: null, link: '', enabled: true, order: 1 },
       { uid: '', course_id: courseId, service_id: 'google_classroom', conf: null, link: '', enabled: true, order: 2 },
-      { uid: '', course_id: courseId, service_id: 'customize', conf: {}, link: '', enabled: true, order: 3 },
+      { uid: '', course_id: courseId, service_id: 'google_meet', conf: null, link: '', enabled: true, order: 3 },
+      { uid: '', course_id: courseId, service_id: 'customize', conf: {}, link: '', enabled: true, order: 4 },
     ];
   }
 
@@ -211,10 +207,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   getHeadSemester() {
     return this.semesterRowSource[0] ?? {} as Semester;
-  }
-
-  formatCourseAlias(course: MyCourseRec) {
-    return `d:${this.dsns}@course@${course.CourseId}`;
   }
 
   async getCourses(schoolYear: number, semester: number) {
@@ -230,7 +222,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const rsp = await this.myCourseSrv.studentGetCourses(this.dsns, schoolYear, semester);
         const courseMap: Map<string, MyCourseRec> = new Map();
         new Array().concat(rsp || []).forEach(v => {
-          const alias = this.formatCourseAlias(v);
+          const alias = this.myCourseSrv.formatCourseAlias(this.dsns, v);
           if (!courseMap.has(alias)) {
             courseMap.set(alias, { ...v, Teachers: [] });
           }
@@ -247,17 +239,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.snackbarSrv.show('取得課程發生錯誤！');
         return [];
       }
-    }
-  }
-
-  // 取得校務當前的學年期
-  async getSemester() {
-    try {
-      const sems = await this.myCourseSrv.getCurrentSemester(this.dsns);
-      return { school_year: sems.SchoolYear, semester: sems.Semester } as Semester;
-    } catch (error) {
-      this.snackbarSrv.show('取得目前學年期發生錯誤！');
-      return {};
     }
   }
 
@@ -304,9 +285,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /**
    * 教師彩色無 Live；學生以下方邏輯運行：
-   * a. 灰色：教師完全沒有啟用教室。不能點擊。
-   * b. 彩色無 Live：教師有啟用教室，但不在教室中。可以點擊。
-   * c. 彩色有 Live：教師在教室中。可以點擊。
+   * a. 灰色：教師完全沒有啟用教室。不能點擊。(Disabled)
+   * b. 彩色無 Live：教師有啟用教室，但不在教室中。可以點擊。(Enabled)
+   * c. 彩色有 Live：教師在教室中。可以點擊。(Live)
    */
   async mappingClassroomLive(force: boolean = false) {
 
@@ -320,12 +301,13 @@ export class AppComponent implements OnInit, OnDestroy {
         courses
       }, force);
 
-      this.courses.forEach(v => v.Live = 'Enabled');
       this.courses.forEach(v => {
+        if (this.role === 'teacher') v.Live = 'Enabled';
+        if (this.role === 'student') v.Live = 'Disabled';
+
         for (const cr of crlist) {
-          if (v.CourseId === cr.target.uid) {
-            if (this.role === 'teacher') v.Live = 'Enabled';
-            if (this.role === 'student') v.Live = cr.guessOpen();
+          if (v.CourseId === cr.target.uid && this.role === 'student') {
+            v.Live = cr.guessOpen();
           }
         }
       });
@@ -422,5 +404,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.dialogRefManage = this.dialog.open(TimetableManageComponent, {
       data: { course },
     });
+  }
+
+  getAdminDomain() {
+    try {
+      return this.adminConnectedGoogle.link_account.split('@')[1];
+    } catch (error) {
+      return '';
+    }
   }
 }

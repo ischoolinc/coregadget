@@ -1,8 +1,8 @@
 <div>
   <nav aria-label="breadcrumb text-nowrap text-truncate">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item header-top">
-        <a [routerLink]="['/main']">課堂點名</a>
+    <ol class="breadcrumb  no-background ">
+      <li class="breadcrumb-item" >
+        <a [routerLink]="['/main']"><b>課堂點名</b></a>
       </li>
       <ng-container *ngIf="loading; else titleText">
         <li class="breadcrumb-item active"
@@ -20,7 +20,7 @@
     <ul class="list-group mb-3"
         *ngIf="!loading;else Loading">
       <li *ngIf="true"
-          class="list-group-item active d-flex align-items-center py-2 ">
+          class="list-group-item active d-flex align-items-center py-2 main-bg-color">
         <div><b>點名設定</b></div>
         <button (click)="saveSetting()"
                 type="button"
@@ -91,7 +91,7 @@
         </div>
       </li>
       <!-- 點名小幫手 -->
-      <li class="list-group-item active d-flex align-items-center py-2 ">
+      <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
         <div><b>點名小幫手</b></div>
       </li>
       <li class="list-group-item point"
@@ -122,7 +122,7 @@
             <span *ngIf="true"
                   class="mr-1"
                   style="float:right">
-                  小幫手：&emsp;{{course.StudentName}}({{course.StudentNumber}})
+                 <b>小幫手：</b> {{course.StudentName}}{{course.StudentNumber||'--'}}
               </span>
           </div>
         </div>

@@ -11,7 +11,7 @@
 
 
   <div class="container-fluid cbs d-flex justify-content-between flex-column" style="width:93% ">
-    <div id="index" page>
+    <div id="index" page >
       <!-- <nav aria-label="breadcrumb text-nowrap text-truncate">
         <ol class="breadcrumb">
           <li class="breadcrumb-item active" aria-current="page">缺曠紀錄</li>
@@ -22,7 +22,7 @@
         <span>缺曠紀錄</span>
 
      </div>
-      <div class="d-flex flex-column flex-sm-row mb-3">
+      <div class="d-flex flex-column flex-sm-row mb-3" *ngIf="classList.length > 0 ;else noClass">
         <!-- 舊的舊會換掉 -->
 
 
@@ -71,7 +71,7 @@
   <div class="dropdown-menu">
       <a class="dropdown-item" *ngFor="let semester of semesters"
 
-          (click)="setCurSemester(semester)">
+          (click)="changeSemester(semester)">
           {{getSemesterString(semester)}}
       </a>
   </div>
@@ -133,9 +133,9 @@
       </div>
 
       <!-- 缺曠 -->
-      <div class="table-responsive" #table>
+      <div class="table-responsive scrollable" #table >
         <table class="table-rwd table table-bordered table-hover kd-t">
-          <thead>
+          <thead class ="sticky">
             <tr>
               <th *ngIf="this.ready">座號</th>
               <th *ngIf="this.ready">姓名</th>
@@ -155,7 +155,17 @@
       </div>
       <div *ngIf="ifNoResult">該學期無缺曠紀錄</div>
     </div>
+<ng-template #noClass>
 
+  <div class="d-flex justify-content-center " style ="margin-top: 20%;">
+   <span style = "font-size:  20px ; font-weight :900 ;color :rgb(95, 95, 95)">
+     目前沒有班級
+   </span>
+  </div>
+
+
+
+</ng-template>
 
 
     <footer class="text-center p-2 mt-auto">

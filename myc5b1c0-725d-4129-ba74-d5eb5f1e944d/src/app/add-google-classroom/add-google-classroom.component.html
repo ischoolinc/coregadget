@@ -8,14 +8,25 @@
       <button class="w-full btn btn-primary mt-2 mb-10"
         [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
         [disabled]="!adminIsConnectedGoogle"
-        (click)="asyncGoogleClassroomCourse(data.target, 'create')">開始建立</button>
+        (click)="asyncGoogleClassroomCourse(data.target, 'create')">
+        {{ adminIsConnectedGoogle ? '開始建立' : '服務尚未啟用'}}</button>
     </div>
     <div class="mt-8 text-center">
       <p class="text-gray text-sm overflow-hidden">--- 或 ---</p>
     </div>
     <div>
       <p class="text-base font-semibold text-gray-text1 px-2 mt-10 border-l-4 border-primary">連結現有教室
-      <p class="text-sm ml-2 mt-2 mb-4 text-gray-text3 px-1">更改「教室連結」即可更換不同雲端教室</p>
+      <p class="text-sm ml-2 mt-2 text-gray-text3 px-1">更改「教室連結」即可更換不同雲端教室</p>
+      <button
+        *ngIf="data.target.Semester === 2 && adminIsConnectedGoogle"
+        class="ml-2 mt-2 mb-4 py-1 px-3 flex flex-row flex-wrap items-center text-secondary border-dashed border border-secondary-lighter rounded-full hover:bg-secondary-lighter focus:bg-secondary-lighter focus:outline-none"
+        (click)="getEqualSubjectCourse(data.target, tplReuse)"
+        [ngClass]="{'btn-disable cursor-not-allowed': isChecking}"
+        [disabled]="isChecking">
+        <span class="iconify text-xl mr-1" data-icon="fluent:arrow-hook-down-right-16-filled"
+          data-inline="false"></span>
+        <p class="text-sm">沿用上學期課程教室</p>
+      </button>
       <input type="text" #inputLink
         [formControl]="googleClassroomLink"
         class="w-full text-gray-text1 border border-gray-light rounded h-10 focus:border-primary no-ring"
@@ -23,7 +34,8 @@
       <button class="w-full btn btn-primary mt-6 mb-10"
         [ngClass]="{'btn-disable cursor-not-allowed': !adminIsConnectedGoogle}"
         [disabled]="!adminIsConnectedGoogle"
-        (click)="asyncGoogleClassroomCourse(data.target, 'link')">開始連結</button>
+        (click)="asyncGoogleClassroomCourse(data.target, 'link')">
+        {{ adminIsConnectedGoogle ? '開始連結' : '服務尚未啟用'}}</button>
     </div>
   </div>
   <div *ngIf="processState === 102" class="mt-36 mb-52">
@@ -41,9 +53,13 @@
     </p>
   </div>
   <div *ngIf="processState === 2000" class="mt-20">
-    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="success">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
-    <div class="text-center mb-4">{{createStudentMsg}}</div>
+    <div class="text-center mb-4">
+      <a href="javascript:;"
+        class="text-secondary hover:text-secondary-light focus:outline-none"
+        (click)="viewReason()">查看詳細資訊</a>
+    </div>
     <div class="flex justify-around mb-20 text-sm text-gray-text3">
       <div></div>
       <div>
@@ -62,9 +78,9 @@
     </div>
   </div>
   <div *ngIf="processState === 2100" class="mt-20">
-    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/success.svg" alt="success">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
-    <div class="text-center mb-4">{{createStudentMsg}}</div>
+    <div class="text-center mb-4">{{linkGCSuccessMsg}}</div>
     <div class="text-right mb-2">
       <button mat-dialog-close
         class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"
@@ -74,7 +90,7 @@
     </div>
   </div>
   <div *ngIf="processState === 9999" class="mt-36">
-    <img class="mx-auto mb-4" src="assets/img/error.svg" alt="loading">
+    <img class="mx-auto mb-4" src="assets/img/error.svg" alt="error">
     <p class="text-xl font-semibold text-center text-warning mb-48">
       <span *ngIf="!processErrorMsg">哎呀！出了一點問題<br>請稍後再嘗試一次</span>
       <span *ngIf="processErrorMsg">{{processErrorMsg}}</span>
@@ -85,3 +101,52 @@
     </div>
   </div>
 </div>
+
+
+<ng-template #tplReuse let-reuse>
+  <div class="rounded-2xl">
+    <div class="text-right">
+      <button mat-dialog-close><span class="iconify text-2xl text-gray-text1" data-icon="eva:close-fill" data-inline="false"></span></button>
+    </div>
+    <div mat-dialog-content>
+      <div *ngIf="reuse.status === 'USED'">
+        <img class="mx-auto mb-4" src="assets/img/success.svg" alt="success">
+        <p class="text-xl font-semibold text-center text-success mb-4">成功</p>
+        <div class="text-center text-gray-text3 mb-4">
+          上學期課程：{{reuse.course.CourseName}}<br>
+          教室連結取得成功
+        </div>
+      </div>
+      <div *ngIf="reuse.status === 'NO_DATA'">
+        <img class="mx-auto mb-4" src="assets/img/error.svg" alt="error">
+        <p class="text-xl font-semibold text-center text-warning mb-4">失敗</p>
+        <div class="text-center text-gray-text3 mb-4">
+          上學期無相符的課程教室可以沿用！
+        </div>
+      </div>
+      <div *ngIf="reuse.status === 'ERROR'">
+        <img class="mx-auto mb-4" src="assets/img/error.svg" alt="error">
+        <p class="text-xl font-semibold text-center text-warning mb-4">失敗</p>
+        <div class="text-center text-gray-text3 mb-4">
+          上學期課程：{{reuse.course.CourseName}}<br>
+          教室連結取得失敗
+        </div>
+      </div>
+      <div *ngIf="reuse.status === 'CHOOSER'">
+        <p class="text-base font-semibold text-gray-text1 px-2 mt-4 mb-2">選擇沿用的課程教室：</p>
+        <div *ngFor="let item of reuse.items"
+          class="flex flex-row flex-wrap items-center mt-2">
+          <input type="radio"
+            class="cursor-pointer mr-2"
+            [id]="'Item_' + item.CourseId"
+            name="CourseItem"
+            [checked]="choosedCourse === item"
+            (click)="choosedCourse = item">
+          <label [for]="'Item_' + item.CourseId" class="cursor-pointer">{{item.CourseName}}</label>
+        </div>
+        <button class="w-full btn btn-primary mt-6 mb-10"
+          (click)="reuse.chooseReuseCourse()">取得教室連結</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

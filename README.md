@@ -1,5 +1,5 @@
 ﻿線上測試
-http://ischool-tw.github.com/coregadget/
+https://ischoolinc.github.io/coregadget/
 
 Core Gadget
 ===========

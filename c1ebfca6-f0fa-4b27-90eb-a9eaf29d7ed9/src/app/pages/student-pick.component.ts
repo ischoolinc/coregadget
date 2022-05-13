@@ -9,6 +9,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { GadgetService } from '../service/gadget.service';
 import { RollCallRateDenominator } from './vo';
 import { Console } from '@angular/core/src/console';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'gd-student-pick',
@@ -16,7 +17,7 @@ import { Console } from '@angular/core/src/console';
   styleUrls: ['../common.css']
 })
 export class StudentPickComponent implements OnInit {
- 
+  isShowCheckInTime  ="" ;
   /** 是否顯示英文名字 預設為否 */
   displayEnglishName :boolean = false ;
   
@@ -45,7 +46,12 @@ export class StudentPickComponent implements OnInit {
   objectKeys = Object.keys;
   showPhoto: boolean;
   explainMessage: string = "";
-
+  dsnsName :string ="" ;
+  
+  /** 林口客製 */
+  listCheckInTimes :any[] =[]
+  /**學制 */ 
+  schoolTye ="";
   constructor(
     private dsa: DSAService,
     private route: ActivatedRoute,
@@ -53,12 +59,21 @@ export class StudentPickComponent implements OnInit {
     private config: ConfigService,
     private change: ChangeDetectorRef,
     private router: Router,
-    private gadget: GadgetService
+    private gadget: GadgetService,
+    private http: HttpClient
   ) {
   }
 
   async ngOnInit() {
+
+    this.isShowCheckInTime = gadget.params.isShowCheckInTime;
+   // 取得學制
+
+   this.getSchoolType();
+
     this.today = await this.dsa.getToday();
+
+
 
     //setting 
     this.teacherSetting = await this.dsa.getTeacherSetting();
@@ -71,19 +86,33 @@ export class StudentPickComponent implements OnInit {
 
     this.route.paramMap.subscribe(async pm => {
       this.groupInfo.type = pm.get('type') as GroupType; // course or class
+      console.log(this.groupInfo.type);
       this.groupInfo.id = pm.get('id'); // course id
       this.period = pm.get('period'); // period name
       this.groupInfo.name = pm.get('name');
 
       // console.log(pm.get('name'));
-
+  
       //載入出席率
       if(this.groupInfo.type == 'Course'){
         await this.loadAbsencreRate();
       }
+
+    // 林口康橋 (客製)
+    if(this.isShowCheckInTime){
+   
+      this.listCheckInTimes = await this.dsa.getCheckIntime( this.groupInfo.id ,'',  this.groupInfo.type)
+      }
       // 可點節次。
       this.periodConf = this.config.getPeriod(this.period);
-      this.periodConf.Absence = [].concat(this.periodConf.Absence || []);
+      
+      if(this.periodConf)
+      {
+        this.periodConf.Absence = [].concat(this.periodConf.Absence || []);
+
+      }else{ // 沒有設定節次 
+        alert("未設定可點名假別! 請聯絡行政人員!");
+      }
 
       try {
         // 學生清單（含點名資料）。 
@@ -99,6 +128,41 @@ export class StudentPickComponent implements OnInit {
       }
     });
   }
+
+
+
+
+ /** 取得學制 ['國中','國小','高中']*/
+ getSchoolType (){
+  this.dsnsName = gadget.getApplication().accessPoint;
+       // 取得學制v_2
+       let url = `https://dsns.ischool.com.tw/campusman.ischool.com.tw/config.public/GetSchoolList?body=%3CCondition%3E%3CDsns%3E${this.dsnsName}%3C/Dsns%3E%3C/Condition%3E&rsptype=json`;
+       try {
+         this.http.get<any>(url, { responseType: 'json' }).subscribe(response => {
+           this.schoolTye = response.Response.School.Type;
+    
+         });
+    
+     
+       } catch (err) {
+      
+       }
+
+
+}
+
+
+/** 取得到校時間 */
+getCheckInTime(studentID,date) :any{
+
+  let result  = this.listCheckInTimes.find(x=>x.ref_student_id == studentID);
+  return result ;
+}
+
+
+
+
+
 
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {

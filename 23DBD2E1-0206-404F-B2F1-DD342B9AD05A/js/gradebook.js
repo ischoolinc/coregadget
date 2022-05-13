@@ -896,8 +896,7 @@
                 } else {
                     var schoolYear = response.Current.SchoolYear;
                     var semester = response.Current.Semester;
-
-                    $scope.connection.send({
+		           $scope.connection.send({
                         service: "TeacherAccess.GetMyCourses",
                         body: {
                             Content: {
@@ -1058,7 +1057,6 @@
                             }
                         });
 
-
                         $scope.connection.send({
                             service: "TeacherAccess.GetCourseStudents",
                             body: {
@@ -1083,6 +1081,7 @@
                                             $scope.examList.forEach(function (examRec) {
                                                 studentRec["Exam" + examRec.ExamID] = '';
                                             });
+
                                             $scope.studentList.push(studentRec);
                                             studentMapping[studentRec.StudentID] = studentRec;
                                         });
