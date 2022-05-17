@@ -1020,12 +1020,18 @@ const SeniorScoreScreen = (props) => {
 
             <div style={{ width: '100%', height: props.windowHeight, backgroundColor: 'white' }}>
 
-                <div style={{ display: 'flex', flexDirection: 'row', width: '100%', borderColor: '#C4C4C4', borderStyle: 'solid', borderWidth: 0, borderBottomWidth: 1, marginBottom: 30 }}>
-                    <div onClick={() => { alert('TODO: 問耀明 back to app 的 url'); /*  TODO: 問耀明 back to app 的 url*/ }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 50, height: 50, backgroundColor: 'white' }}><FaAngleLeft style={{ fontSize: 30, color: '#A3A3A3', fontWeight: '100' }} /></div>
+                {/* {!(window.ReactNativeWebView) ? <div style={{ display: 'flex', flexDirection: 'row', width: '100%', borderColor: '#C4C4C4', borderStyle: 'solid', borderWidth: 0, borderBottomWidth: 1, marginBottom: 30 }}>
+                    <div onClick={() => { 
+                        if(currentSemester!=0){
+                            setCurrentSemesterIndex(0); //如果不是總覽 返回鍵的功能是 返回到總覽
+                        }else{
+                            window.history.back(); //  如果是, 耀明表示 web 是 上一頁 
+                        }
+                         }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 50, height: 50, backgroundColor: 'white' }}><FaAngleLeft style={{ fontSize: 30, color: '#A3A3A3', fontWeight: '100' }} /></div>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: props.windowWidth - 50, backgroundColor: 'white', height: '100%' }}>
                         <div style={{ fontSize: 23, fontWeight: '500', letterSpacing: 1.5, marginLeft: -50 }}>{'高中評量成績'}</div>
                     </div>
-                </div>
+                </div> : null} */}
 
                 <div style={{ display: 'flex', backgroundColor: 'white', flexDirection: 'row', justifyContent: 'space-between' }}>
 
@@ -1050,15 +1056,15 @@ const SeniorScoreScreen = (props) => {
 
     const NameBadge = (props) => {
         return (<div
-            style={{ 
+            style={{
                 display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: -24, marginLeft: 20,
                 height: 48, width: props.width, backgroundColor: '#F0F5F4', borderRadius: 8, borderWidth: 1, borderStyle: 'solid', borderColor: '#A0CECB'
             }}>
-            <div style={{marginRight: 10, width: 30, height: 30, borderRadius: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#A0CECB' }}>
+            <div style={{ marginRight: 10, width: 30, height: 30, borderRadius: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#A0CECB' }}>
                 {<FaUserAlt />}
-                
+
             </div>
-            <div style={{fontSize: 20, fontWeight: '500'}}>{props.subject}</div>
+            <div style={{ fontSize: 20, fontWeight: '500' }}>{props.subject}</div>
 
         </div>);
     }

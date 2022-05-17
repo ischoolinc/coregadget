@@ -102,6 +102,7 @@ function App() {
 
   const [dateRangeType, setDateRangeType] = useState('selday');
   const [dateValue, setDateValue] = useState([new Date(), new Date()]);
+  const [schoolYears, setSchoolYears] = useState([]);
   const [showSemester, setShowSemester] = useState(false);
   const [yearSemester, setYearSemester] = useState('107,1');
 
@@ -159,6 +160,7 @@ function App() {
             // this.yearSemesters = response.SchoolYear.map((ys) => {
             //   let yyss = ys.school_year;
               console.log('GetSchoolYear', response);
+              setSchoolYears(response.SchoolYear);
               // return this.yearSemesters;
             // }
             // );
@@ -253,9 +255,12 @@ function App() {
 
           {(showSemester) && <div className="col-12 col-md-6 col-lg-5 mb-4 ps-3 pe-0">
             <select className="form-select max-width-300">
-              <option value="110,1">110學年度第1學期</option>
+              {/* <option value="110,1">110學年度第1學期</option>
               <option value="109,2">109學年度第2學期</option>
-              <option value="109,1">109學年度第1學期</option>
+              <option value="109,1">109學年度第1學期</option> */}
+              {schoolYears.map((schoolYear)=>{
+                return  <option key={`${schoolYear.school_year},${schoolYear.semester}`} value={`${schoolYear.school_year},${schoolYear.semester}`}>{`${schoolYear.school_year}學年度第${schoolYear.semester}學期`}</option> 
+              })}
             </select>
           </div>}
 
