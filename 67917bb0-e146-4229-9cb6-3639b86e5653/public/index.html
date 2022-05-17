@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <title>全校缺曠獎懲查詢</title>
+
+  <!-- <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" /> -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+    rel="stylesheet">
+
+  <!-- <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" /> -->
+  <!-- Nucleo Icons -->
+  <link href="/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="/assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <!-- CSS Files -->
+  <link id="pagestyle" href="assets/css/bootstrap.css" rel="stylesheet" />
+  <link id="pagestyle" href="assets/css/argon-dashboard.css" rel="stylesheet" />
+  <link id="pagestyle" href="assets/css/default.css" rel="stylesheet" />
+  <link id="pagestyle" href="assets/css/gadget.css" rel="stylesheet" />
+
+  <script src="assets/js/gadget.js"></script>
+
+  <script>
+    init({
+      application: "dev.sh_d",
+      guid: "",
+      paramValues: {
+        "DefaultRound": "2", //預設小數點位數
+        "system_type": "hc",
+        "system_exam_must_enddate": "true",
+        "system_fix_must_enddate": "true",
+        "system_show_model": "subject",
+        "system_position": "student"
+      },
+      oAuth: {
+        clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+        clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+        account: 'josh.chiang@ischool.com.tw',
+        password: 'josh999999'
+      }
+    });
+  </script>
+
+
+</head>
+
+<body>
+  <!-- <noscript>You need to enable JavaScript to run this app.</noscript> -->
+  <div id="root"></div>
+
+  <!-- Core -->
+  <script src="./assets/js/core/jquery-3.6.0.min.js"></script>
+  <script src="./assets/js/core/popper.min.js"></script>
+  <script src="./assets/js/core/bootstrap.min.js"></script>
+
+  <!-- Plugin -->
+  <!-- <script src="./assets/js/plugins/choices.min.js"></script>
+    <script src="./assets/js/plugins/chartjs.min.js"></script> -->
+
+  <!-- Theme JS -->
+  <script src="./assets/js/argon-dashboard.min.js"></script>
+
+  <!-- <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script> -->
+  <!-- <script type="text/javascript">
+    $(function () {
+      var date2 = new Date();
+      date2.setDate(date2.getDate());
+      $('input[name="daterange"]').daterangepicker(
+        {
+          locale: {
+            format: 'YYYY/MM/DD',
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            applyLabel: '確定',
+            cancelLabel: '取消'
+          }
+        },
+        {
+          maxDate: date2
+        }
+      );
+    });
+  </script> -->
+
+
+
+</body>
+
+</html>
