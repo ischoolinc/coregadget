@@ -152,16 +152,25 @@ function App() {
 
             setAttSum(response.Discipline);
 
-            const merg =[...absenceLists, ...attSum];
-            setMerged(merg);
-
-            console.log('GetAttendanceSummary', attSum, yearSemester, dateRange, merged,absenceLists);
-
           }
         }
       }
     });
   }
+
+  useEffect(() => {
+    // const merg =[...absenceLists, ...([].concat(response.Discipline || []))];
+    // const merg =[...absenceLists, ...([].concat(attSum || []))];
+    const source = {};
+    absenceLists.forEach(v => source[v.name] = v.count);
+    ([].concat(attSum || [])).forEach(v => source[v.name] = v.count);
+    const merg = Object.getOwnPropertyNames(source).map(v => ({name: v, count: source[v].count || 0}))
+    
+    console.log(merg, absenceLists, attSum);
+            setMerged(merg);
+
+            console.log('GetAttendanceSummary', attSum, yearSemester, dateRange, merged,absenceLists);
+  }, [attSum]);
 
   // 取得學期
   async function GetSchoolYear() {
