@@ -109,8 +109,6 @@ function App() {
   const [attSum, setAttSum] = useState([]); // 
   const [merged, setMerged] = useState([]); // 
 
-
-
   useEffect(() => {
     GetSchoolYear();
     GetAbsenceList();
@@ -149,9 +147,7 @@ function App() {
           return 'err';
         } else {
           if (response) {
-
             setAttSum(response.Discipline);
-
           }
         }
       }
@@ -159,17 +155,11 @@ function App() {
   }
 
   useEffect(() => {
-    // const merg =[...absenceLists, ...([].concat(response.Discipline || []))];
-    // const merg =[...absenceLists, ...([].concat(attSum || []))];
     const source = {};
     absenceLists.forEach(v => source[v.name] = v.count);
     ([].concat(attSum || [])).forEach(v => source[v.name] = v.count);
-    const merg = Object.getOwnPropertyNames(source).map(v => ({name: v, count: source[v].count || 0}))
-    
-    console.log(merg, absenceLists, attSum);
-            setMerged(merg);
-
-            console.log('GetAttendanceSummary', attSum, yearSemester, dateRange, merged,absenceLists);
+    const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
+    setMerged(merge);
   }, [attSum]);
 
   // 取得學期
@@ -338,11 +328,11 @@ function App() {
                 <div className="row text-center">
                   <div className="col-12 col-lg-6">
                     <div className="row">
-                      {merged.map((AbsenceList) => {
+                      {merged.map((absence) => {
                         return <div className="col-6 col-sm-4 col-md-3 col-lg-4">
                           <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                            <span className="badge rounded-pill bg-light text-dark fs-16 ">{AbsenceList.name}</span>
-                            <h4 className="font-weight-bolder mt-2">{AbsenceList.count}<span className="fs-14 ms-2">人</span></h4>
+                            <span className="badge rounded-pill bg-light text-dark fs-16 ">{absence.name}</span>
+                            <h4 className="font-weight-bolder mt-2">{absence.count}<span className="fs-14 ms-2">人</span></h4>
                           </div>
                         </div>
                       })}
