@@ -14,52 +14,52 @@ function App() {
   // const instance = <DateRangePicker />;
   // ReactDOM.render(instance);
 
-  const chartAttData = [
-    {
-      name: "曠課",
-      count: 80,
-    },
-    {
-      name: "事假",
-      count: 20,
-    },
-    {
-      name: "病假",
-      count: 1,
-    },
-    {
-      name: "喪假",
-      count: 0,
-    },
-    {
-      name: "公假",
-      count: 18,
-    },
-    {
-      name: "婚假",
-      count: 2,
-    },
-    {
-      name: "產假",
-      count: 5,
-    },
-    {
-      name: "暑曠",
-      count: 9,
-    },
-    {
-      name: "防疫假",
-      count: 12,
-    },
-    {
-      name: "缺課",
-      count: 89,
-    },
-    {
-      name: "遲到",
-      count: 120,
-    }
-  ];
+  // const chartAttData = [
+  //   {
+  //     name: "曠課",
+  //     count: 80,
+  //   },
+  //   {
+  //     name: "事假",
+  //     count: 20,
+  //   },
+  //   {
+  //     name: "病假",
+  //     count: 1,
+  //   },
+  //   {
+  //     name: "喪假",
+  //     count: 0,
+  //   },
+  //   {
+  //     name: "公假",
+  //     count: 18,
+  //   },
+  //   {
+  //     name: "婚假",
+  //     count: 2,
+  //   },
+  //   {
+  //     name: "產假",
+  //     count: 5,
+  //   },
+  //   {
+  //     name: "暑曠",
+  //     count: 9,
+  //   },
+  //   {
+  //     name: "防疫假",
+  //     count: 12,
+  //   },
+  //   {
+  //     name: "缺課",
+  //     count: 89,
+  //   },
+  //   {
+  //     name: "遲到",
+  //     count: 50,
+  //   }
+  // ];
 
   const chartDisData = [
     {
@@ -101,43 +101,61 @@ function App() {
   // };
 
   const [dateRangeType, setDateRangeType] = useState('selday');
-  const [dateValue, setDateValue] = useState([new Date(), new Date()]);
+  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [schoolYears, setSchoolYears] = useState([]);
   const [showSemester, setShowSemester] = useState(false);
-  const [yearSemester, setYearSemester] = useState('107,1');
+  const [yearSemester, setYearSemester] = useState(''); //'107,2'
+  const [absenceLists, setAbsenceLists] = useState([]); // 假別
+  const [attSum, setAttSum] = useState([]); // 
+  const [merged, setMerged] = useState([]); // 
+
+
 
   useEffect(() => {
-    //call service -> setState
+    GetSchoolYear();
+    GetAbsenceList();
+    GetAttendanceSummary();
+  }, []);
 
-  }, [dateRangeType]);
+  useEffect(() => {
+    // bodyReturn();
+    GetAttendanceSummary();    
+  }, [dateRange, yearSemester, showSemester]);
+
 
   const bodyReturn = () => {
     if (showSemester) {
       return `<Request><YearSemester>${yearSemester}</YearSemester></Request>`
     } else {
-      console.log(showSemester);
-      return `<Request><BeginDate>${moment(dateValue[0]).format('YYYY-MM-DD')}</BeginDate><EndDate>${moment(dateValue[1]).format('YYYY-MM-DD')}</EndDate></Request>`;
+      console.log(yearSemester, dateRange);
+      return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate><EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate></Request>`;
     }
   }
 
-  console.log(bodyReturn());
+  // console.log(bodyReturn());
 
   // 呼叫 Service
   var _connection = window.gadget.getContract("1campus.affairs.teacher");
 
   // 取得缺曠統計數據
   async function GetAttendanceSummary() {
+    console.log(bodyReturn());
     await _connection.send({
       service: "_.GetAttendanceSummary",
       body: `${bodyReturn()}`,
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetAttendanceSummary', error);
+          console.log('GetAttendanceSummaryErr', yearSemester);
           return 'err';
         } else {
           if (response) {
 
-            console.log('GetAttendanceSummary', response);
+            setAttSum(response.Discipline);
+
+            const merg =[...absenceLists, ...attSum];
+            setMerged(merg);
+
+            console.log('GetAttendanceSummary', attSum, yearSemester, dateRange, merged,absenceLists);
 
           }
         }
@@ -145,47 +163,57 @@ function App() {
     });
   }
 
-
+  // 取得學期
   async function GetSchoolYear() {
     await _connection.send({
       service: "_.GetSchoolYear",
       body: {},
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetSchoolYear', error);
+          console.log('GetSchoolYearErr', error);
           return 'err';
         } else {
           if (response) {
 
-            // this.yearSemesters = response.SchoolYear.map((ys) => {
-            //   let yyss = ys.school_year;
-              console.log('GetSchoolYear', response);
-              setSchoolYears(response.SchoolYear);
-              // return this.yearSemesters;
-            // }
-            // );
-            
+            // console.log('GetSchoolYear', response);
+            setSchoolYears(response.SchoolYear);
+            console.log(yearSemester);
+          }
+        }
+      }
+    });
+  }
+
+  // 取得學期
+  async function GetAbsenceList() {
+    await _connection.send({
+      service: "_.GetAbsenceList",
+      body: {},
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetAbsenceList', error);
+          return 'err';
+        } else {
+          if (response) {
+            setAbsenceLists(response.AbsenceList);
+            console.log(absenceLists);
+
           }
         }
       }
     });
   }
   
-  GetSchoolYear();
-  // console.log('GetSchoolYear', this.yearSemesters);
-
-
-
   const perDate = () => {
 
     if (dateRangeType === 'selday') {
-      setDateValue([new Date(moment(dateValue[0]).add(-1, 'd')), new Date(moment(dateValue[0]).add(-1, 'd'))]);
+      setDateRange([new Date(moment(dateRange[0]).add(-1, 'd')), new Date(moment(dateRange[0]).add(-1, 'd'))]);
     }
     if (dateRangeType === 'selweek') {
-      setDateValue([new Date(moment(dateValue[0]).add(-1, 'w').startOf('week')), new Date(moment(dateValue[0]).add(-1, 'w').endOf('week'))]);
+      setDateRange([new Date(moment(dateRange[0]).add(-1, 'w').startOf('week')), new Date(moment(dateRange[0]).add(-1, 'w').endOf('week'))]);
     }
     if (dateRangeType === 'selmonth') {
-      setDateValue([new Date(moment(dateValue[0]).add(-1, 'M').startOf('month')), new Date(moment(dateValue[0]).add(-1, 'M').endOf('month'))]);
+      setDateRange([new Date(moment(dateRange[0]).add(-1, 'M').startOf('month')), new Date(moment(dateRange[0]).add(-1, 'M').endOf('month'))]);
     }
 
   };
@@ -193,18 +221,20 @@ function App() {
   const nextDate = () => {
 
     if (dateRangeType === 'selday') {
-      setDateValue([new Date(moment(dateValue[1]).add(1, 'd')), new Date(moment(dateValue[1]).add(1, 'd'))]);
+      setDateRange([new Date(moment(dateRange[1]).add(1, 'd')), new Date(moment(dateRange[1]).add(1, 'd'))]);
     }
     if (dateRangeType === 'selweek') {
-      setDateValue([new Date(moment(dateValue[1]).add(1, 'w').startOf('week')), new Date(moment(dateValue[1]).add(1, 'w').endOf('week'))]);
+      setDateRange([new Date(moment(dateRange[1]).add(1, 'w').startOf('week')), new Date(moment(dateRange[1]).add(1, 'w').endOf('week'))]);
     }
     if (dateRangeType === 'selmonth') {
-      setDateValue([new Date(moment(dateValue[1]).add(1, 'M').startOf('month')), new Date(moment(dateValue[1]).add(1, 'M').endOf('month'))]);
+      setDateRange([new Date(moment(dateRange[1]).add(1, 'M').startOf('month')), new Date(moment(dateRange[1]).add(1, 'M').endOf('month'))]);
     }
 
   };
 
-
+  const handleChange = (e) => {
+    setYearSemester(e.target.value)
+  }
 
 
   return (
@@ -214,27 +244,34 @@ function App() {
           <div className="col-12 col-md-6 col-lg-4 mb-4 text-nowrap pe-3 ps-3 me-0 me-lg-3">
             <input type="radio" name="score" value="selday" id="score0" checked={dateRangeType === "selday"}
               onChange={() => {
-                setDateRangeType('selday'); setShowSemester(false);
-                setDateValue([new Date(), new Date()]);
+                setDateRangeType('selday');
+                setShowSemester(false);
+                setDateRange([new Date(), new Date()]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab1" htmlFor="score0">日</label>
 
             <input type="radio" name="score" value="selweek" id="score1" checked={dateRangeType === "selweek"}
               onChange={() => {
-                setDateRangeType('selweek'); setShowSemester(false);
-                setDateValue([new Date(moment().startOf('week')), new Date(moment().endOf('week'))]);
+                setDateRangeType('selweek');
+                setShowSemester(false);
+                setDateRange([new Date(moment().startOf('week')), new Date(moment().endOf('week'))]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab2" htmlFor="score1">周</label>
 
             <input type="radio" name="score" value="selmonth" id="score2" checked={dateRangeType === "selmonth"}
               onChange={() => {
-                setDateRangeType('selmonth'); setShowSemester(false);
-                setDateValue([new Date(moment().startOf('month')), new Date(moment().endOf('month'))]);
+                setDateRangeType('selmonth');
+                setShowSemester(false);
+                setDateRange([new Date(moment().startOf('month')), new Date(moment().endOf('month'))]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab2" htmlFor="score2">月</label>
 
             <input type="radio" name="score" value="selyear" id="score3" checked={dateRangeType === "selyear"}
-              onChange={() => { setDateRangeType('selyear'); setShowSemester(true) }} />
+              onChange={() => {
+                setDateRangeType('selyear');
+                setShowSemester(true);
+                setYearSemester(`${schoolYears[0].school_year},${schoolYears[0].semester}`);
+              }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab3" htmlFor="score3">學期</label>
           </div>
 
@@ -244,22 +281,24 @@ function App() {
                 onClick={() => { perDate(); }}>arrow_back_ios</span>
               {/* <input type="text" name="daterange" className="daterange mx-2" /> */}
               <CustomProvider locale={zhTW}>
-                <DateRangePicker format="yyyy-MM-dd" value={dateValue} locale={zhTW}
+                <DateRangePicker format="yyyy-MM-dd" value={dateRange} locale={zhTW}
                   cleanable={false}
                   className="mx-2 height-40"
-                  onChange={setDateValue} />
+                  onChange={setDateRange} />
               </CustomProvider>
               <span className="material-icons-outlined color-1 cursor-pointer" onClick={() => { nextDate(); }}>arrow_forward_ios</span>
             </div>
           </div>}
 
           {(showSemester) && <div className="col-12 col-md-6 col-lg-5 mb-4 ps-3 pe-0">
-            <select className="form-select max-width-300">
+            <select id='yearseme' className="form-select max-width-300" onChange={(e) => handleChange(e)}>
+
               {/* <option value="110,1">110學年度第1學期</option>
               <option value="109,2">109學年度第2學期</option>
               <option value="109,1">109學年度第1學期</option> */}
-              {schoolYears.map((schoolYear)=>{
-                return  <option key={`${schoolYear.school_year},${schoolYear.semester}`} value={`${schoolYear.school_year},${schoolYear.semester}`}>{`${schoolYear.school_year}學年度第${schoolYear.semester}學期`}</option> 
+              {schoolYears.map((schoolYear) => {
+                return <option key={`${schoolYear.school_year},${schoolYear.semester}`} value={`${schoolYear.school_year},${schoolYear.semester}`}>
+                  {`${schoolYear.school_year}學年度第${schoolYear.semester}學期`}</option>
               })}
             </select>
           </div>}
@@ -290,72 +329,15 @@ function App() {
                 <div className="row text-center">
                   <div className="col-12 col-lg-6">
                     <div className="row">
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">曠課</span>
-                          <h4 className="font-weight-bolder mt-2">0<span className="fs-14 ms-2">人</span></h4>
+                      {merged.map((AbsenceList) => {
+                        return <div className="col-6 col-sm-4 col-md-3 col-lg-4">
+                          <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
+                            <span className="badge rounded-pill bg-light text-dark fs-16 ">{AbsenceList.name}</span>
+                            <h4 className="font-weight-bolder mt-2">{AbsenceList.count}<span className="fs-14 ms-2">人</span></h4>
+                          </div>
                         </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">事假</span>
-                          <h4 className="font-weight-bolder mt-2">0<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">病假</span>
-                          <h4 className="font-weight-bolder mt-2">1<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">喪假</span>
-                          <h4 className="font-weight-bolder mt-2">0<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">公假</span>
-                          <h4 className="font-weight-bolder mt-2">0<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">婚假</span>
-                          <h4 className="font-weight-bolder mt-2">2<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">產假</span>
-                          <h4 className="font-weight-bolder mt-2">5<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">暑曠</span>
-                          <h4 className="font-weight-bolder mt-2">9<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">防疫假</span>
-                          <h4 className="font-weight-bolder mt-2">12<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">缺課</span>
-                          <h4 className="font-weight-bolder mt-2">5<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
-                      <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                        <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                          <span className="badge rounded-pill bg-light text-dark fs-16 ">遲到</span>
-                          <h4 className="font-weight-bolder mt-2">5<span className="fs-14 ms-2">人</span></h4>
-                        </div>
-                      </div>
+                      })}
+
                     </div>
                   </div>
                   <div className="col-12 col-lg-6 attend-chart">
@@ -364,7 +346,7 @@ function App() {
                       <Bar dataKey="count" fill="#8884d8" />
                     </BarChart>*/}
                     <ResponsiveContainer>
-                      <BarChart width={400} height={280} data={chartAttData} layout="vertical" margin={{ top: 30, right: 30, left: 0, bottom: 0 }}>
+                      <BarChart width={400} height={280} data={merged} layout="vertical" margin={{ top: 30, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                           <linearGradient id="splitColor" x1="1" x2="0" y1="0" y2="0">
                             <stop offset="0%" stopColor="#00ddee" />
