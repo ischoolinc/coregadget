@@ -181,7 +181,7 @@ const JuniorScoreScreen = (props) => {
     console.log('semensterScores response props.scores', props.scores);
 
     let header = props.scores[props.scores.length - 1 - semesterIndex] ? dataTransform(props.scores[props.scores.length - 1 - semesterIndex]?.Course).headers : [];
-    let td = props.scores[props.scores.length - 1 - semesterIndex] ? dataTransform(props.scores[props.scores.length - 1 - semesterIndex]?.Course).transformedData.map(dd=>dd.subject):[];
+    let td = props.scores[props.scores.length - 1 - semesterIndex] ? dataTransform(props.scores[props.scores.length - 1 - semesterIndex]?.Course).transformedData.map(dd => dd.subject) : [];
     setCurrentValidSubjects(td);
     setHeaders(props.scores[props.scores.length - 1 - semesterIndex] ? dataTransform(props.scores[props.scores.length - 1 - semesterIndex]?.Course).headers : [])
     if (props.windowWidth > 1300) {
@@ -1159,12 +1159,13 @@ const JuniorScoreScreen = (props) => {
 
     <div style={{ width: '100%', height: props.windowHeight, backgroundColor: 'white' }}>
 
-      <div style={{ display: 'flex', flexDirection: 'row', width: '100%', borderColor: '#C4C4C4', borderStyle: 'solid', borderWidth: 0, borderBottomWidth: 1, marginBottom: 30 }}>
-        <div onClick={() => { alert('TODO: 問耀明 back to app 的 url'); /*  TODO: 問耀明 back to app 的 url*/ }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 50, height: 50, backgroundColor: 'white' }}><FaAngleLeft style={{ fontSize: 30, color: '#A3A3A3', fontWeight: '100' }} /></div>
+      {/* {!(window.ReactNativeWebView) ? <div style={{ display: 'flex', flexDirection: 'row', width: '100%', borderColor: '#C4C4C4', borderStyle: 'solid', borderWidth: 0, borderBottomWidth: 1, marginBottom: 30 }}>
+        <div onClick={() => { window.history.back(); // 問耀明 返回上一頁即可
+      }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 50, height: 50, backgroundColor: 'white' }}><FaAngleLeft style={{ fontSize: 30, color: '#A3A3A3', fontWeight: '100' }} /></div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: props.windowWidth - 50, backgroundColor: 'white', height: '100%' }}>
           <div style={{ fontSize: 23, fontWeight: '500', letterSpacing: 1.5, marginLeft: -50 }}>{'國中評量成績'}</div>
         </div>
-      </div>
+      </div> : null} */}
 
 
 

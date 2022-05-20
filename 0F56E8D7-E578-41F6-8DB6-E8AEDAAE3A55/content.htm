@@ -184,7 +184,7 @@
                    ng-class="{'btn-danger':!IsNoChange()}"
                    ng-disabled ="isSaving">
                     <i class="fa fa-floppy-o"></i>
-                    儲存
+                    儲存 
                 </a>
             </div>
             <!--平時評量: 編輯評分項目-->
@@ -914,6 +914,9 @@
                     <span style ="color: #af3939 ;">如欲刪除評分項目,請先匯出成績做備份。
 
                     </span>
+                    <span style ="color: #af3939 ;">評量項目新增後,名稱將無法修改。
+
+                    </span>
                 </div>
                 
              
@@ -933,12 +936,18 @@
                        ng-disabled="current.gradeItemList.length < 2">
                         複製評量至其他課程
                     </a>
-                    <a ng-click="saveGradeItemConfig()"
+                    <!-- <a ng-click="saveGradeItemConfig()"
                        class="btn btn-default ng-scope"
                        ng-class="{'btn-danger': !gradeItemConfig.CheckConfig()}">
                         <i class="fa fa-floppy-o"></i>
-                        儲存
-                    </a>
+                        儲存 
+                    </a> -->
+                    <a ng-click="saveGradeItemConfigAndScoreData()"
+                    class="btn btn-default ng-scope"
+                    ng-class="{'btn-danger': !gradeItemConfig.CheckConfig()}">
+                     <i class="fa fa-floppy-o"></i>
+                     儲存 
+                 </a>
                 </div>
             </div>
         </div>

@@ -255,7 +255,9 @@ const SeniorScoreScreen = (props) => {
                     { 'title': '部定必修', 'number': props.credit.S_Required_By_Edu },
                     { 'title': '校訂必修', 'number': props.credit.S_Required_By_School },
                     { 'title': '校訂選修', 'number': props.credit.S_Choose_By_School },
-                    { 'title': '實習', 'number': props.credit.S_Internships }]}></NumberGrid>
+                    { 'title': '實習', 'number': props.credit.S_Internships },
+                    { 'title': '專業', 'number': props.studyCredits }]}>    
+                    </NumberGrid>
                 <CommonVerticalMargin />
 
                 <div>
@@ -276,7 +278,7 @@ const SeniorScoreScreen = (props) => {
                 let data = scoreData.ScoreInfo.SemesterSubjectScoreInfo.Subject;
 
 
-                let studyData = data.filter(d => (d.開課分項類別 == '學業') && (d.是否取得學分 == '是'));
+                let studyData = data.filter(d => (d.開課分項類別 == '專業科目') && (d.是否取得學分 == '是'));
                 let studyDataCredits = studyData.map(d => Number(d.開課學分數));
 
                 const initialValue = 0;
@@ -320,12 +322,20 @@ const SeniorScoreScreen = (props) => {
 
         }
 
+        const [ischoolGadgetWiredwidth, setIschoolGadgetWiredwidth] = useState(null);
+        const gadgetBlock = useCallback(node => {
+            if (node !== null) {
+                //setHeight(node.getBoundingClientRect().height);
+                setIschoolGadgetWiredwidth(node.getBoundingClientRect().width);
+            }
+        }, []);
+
         if (props.device == 'web') {
 
             console.log('props.mySemsSubjScore', props.mySemsSubjScore);
 
             return (
-                <div style={{ borderWidth: 1, borderColor: '#F0F5F4', borderRadius: bigRadius, borderStyle: 'solid' }}>
+                <div ref={gadgetBlock}  style={{ borderWidth: 1, borderColor: '#F0F5F4', borderRadius: bigRadius, borderStyle: 'solid' }}>
                     {<ScoreBoard device={'web'} studyCredits={studyCredits} credit={props.credits.reduce(reduceFunction, initialValue)}
                         title={'所有已修得學分'} />}
 
@@ -350,7 +360,7 @@ const SeniorScoreScreen = (props) => {
 
         } else {
 
-            return (<>
+            return (<div ref={gadgetBlock} >
                 <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#f0f5f4', borderRadius: 8, paddingLeft: 16, paddingRight: 16 }}>
 
                     <CommonVerticalMargin />
@@ -368,17 +378,17 @@ const SeniorScoreScreen = (props) => {
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                     {props.credits.map((value, index) => {
 
-                        return (<div key={`credit_${index}`} style={{ margin: 10 }} onClick={() => {
+                        return (<div key={`credit_${index}`} style={{ margin: 20 }} onClick={() => {
                             setCurrentSemesterIndex(index + 1);
                         }}>
-                            <SemesterCreditCard index={`SemesterCreditCard${index.toString()}`} width={(props.windowWidth - 80) / 2} title={`${value.SchoolYear}學年度第${value.Semester}學期`} get={value.S_True_Credit} total={value.S_Total_Credit}></SemesterCreditCard>
+                            <SemesterCreditCard index={`SemesterCreditCard${index.toString()}`} width={(ischoolGadgetWiredwidth - 80) / 2} title={`${value.SchoolYear}學年度第${value.Semester}學期`} get={value.S_True_Credit} total={value.S_Total_Credit}></SemesterCreditCard>
                         </div>)
                     })}
                 </div>
 
                 <CommonVerticalMargin />
                 <CommonVerticalMargin />
-            </>);
+            </div>);
 
 
         }
@@ -558,7 +568,7 @@ const SeniorScoreScreen = (props) => {
                 setDataInstallDetail(orderByAPI(transformedData));
                 setSubCategoryDataAppDetail([]);
 
-                let studyData = data.filter(d => (d.開課分項類別 == '學業') && (d.是否取得學分 == '是'));
+                let studyData = data.filter(d => (d.開課分項類別 == '專業科目') && (d.是否取得學分 == '是'));
                 let studyDataCredits = studyData.map(d => Number(d.開課學分數));
 
                 const initialValue = 0;
@@ -1020,12 +1030,18 @@ const SeniorScoreScreen = (props) => {
 
             <div style={{ width: '100%', height: props.windowHeight, backgroundColor: 'white' }}>
 
-                <div style={{ display: 'flex', flexDirection: 'row', width: '100%', borderColor: '#C4C4C4', borderStyle: 'solid', borderWidth: 0, borderBottomWidth: 1, marginBottom: 30 }}>
-                    <div onClick={() => { alert('TODO: 問耀明 back to app 的 url'); /*  TODO: 問耀明 back to app 的 url*/ }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 50, height: 50, backgroundColor: 'white' }}><FaAngleLeft style={{ fontSize: 30, color: '#A3A3A3', fontWeight: '100' }} /></div>
+                {/* {!(window.ReactNativeWebView) ? <div style={{ display: 'flex', flexDirection: 'row', width: '100%', borderColor: '#C4C4C4', borderStyle: 'solid', borderWidth: 0, borderBottomWidth: 1, marginBottom: 30 }}>
+                    <div onClick={() => { 
+                        if(currentSemester!=0){
+                            setCurrentSemesterIndex(0); //如果不是總覽 返回鍵的功能是 返回到總覽
+                        }else{
+                            window.history.back(); //  如果是, 耀明表示 web 是 上一頁 
+                        }
+                         }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 50, height: 50, backgroundColor: 'white' }}><FaAngleLeft style={{ fontSize: 30, color: '#A3A3A3', fontWeight: '100' }} /></div>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: props.windowWidth - 50, backgroundColor: 'white', height: '100%' }}>
                         <div style={{ fontSize: 23, fontWeight: '500', letterSpacing: 1.5, marginLeft: -50 }}>{'高中評量成績'}</div>
                     </div>
-                </div>
+                </div> : null} */}
 
                 <div style={{ display: 'flex', backgroundColor: 'white', flexDirection: 'row', justifyContent: 'space-between' }}>
 
@@ -1050,15 +1066,15 @@ const SeniorScoreScreen = (props) => {
 
     const NameBadge = (props) => {
         return (<div
-            style={{ 
+            style={{
                 display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: -24, marginLeft: 20,
                 height: 48, width: props.width, backgroundColor: '#F0F5F4', borderRadius: 8, borderWidth: 1, borderStyle: 'solid', borderColor: '#A0CECB'
             }}>
-            <div style={{marginRight: 10, width: 30, height: 30, borderRadius: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#A0CECB' }}>
+            <div style={{ marginRight: 10, width: 30, height: 30, borderRadius: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#A0CECB' }}>
                 {<FaUserAlt />}
-                
+
             </div>
-            <div style={{fontSize: 20, fontWeight: '500'}}>{props.subject}</div>
+            <div style={{ fontSize: 20, fontWeight: '500' }}>{props.subject}</div>
 
         </div>);
     }
