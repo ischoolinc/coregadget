@@ -585,7 +585,7 @@ function exportExcel() {
 
     html += '';
     //html += document.getElementById('score_list').innerHTML + '';
-    html += htmldom.innerHTML + '';
+    html += htmldom.innerHTML + '<br/>教師簽名：';
 
     //window.open('data:application/vnd.ms-excel,' + encodeURIComponent('<style> table, td {border:1px solid #dee2e6; text-align :center} table {border-collapse:collapse}</style>' +html));
 
