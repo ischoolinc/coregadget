@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
@@ -102,23 +101,83 @@ function App() {
 
   const [dateRangeType, setDateRangeType] = useState('selday');
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [schoolYears, setSchoolYears] = useState([]);
+  const [AttschoolYears, setAttSchoolYears] = useState([]); // 學年度
   const [showSemester, setShowSemester] = useState(false);
   const [yearSemester, setYearSemester] = useState(''); //'107,2'
-  const [absenceLists, setAbsenceLists] = useState([]); // 假別
-  const [attSum, setAttSum] = useState([]); // 
+  const [absenceLists, setAbsenceLists] = useState([]); // 假別清單
+  const [attSum, setAttSum] = useState([]); // 假別：總計人數
   const [merged, setMerged] = useState([]); // 
+  const [chartMax, setChartMax] = useState(0); // 取圖表最大值
 
+  const [attclassNames, setAttClassNames] = useState([]); // 班級名稱
+  const [attCount, setAttCount] = useState(['假別', 0]); //假別,人數
+
+  const [attLists, setAttLists] = useState([]); // 缺曠名單
+
+  const tmp = {};
   useEffect(() => {
-    GetSchoolYear();
+    GetAttSchoolYear();
     GetAbsenceList();
-    GetAttendanceSummary();
+    GetAbsenceClassName();
+
+    // GetAttendanceSummary();
+
   }, []);
+
 
   useEffect(() => {
     // bodyReturn();
-    GetAttendanceSummary();    
+    GetAttendanceSummary();
   }, [dateRange, yearSemester, showSemester]);
+
+  useEffect(() => {
+    GetAttendanceList();
+    // console.log(attLists);
+  }, [attCount]);
+
+
+  if (Object.keys(attLists).length) {
+    for (let item of ([].concat(attLists || []))) {
+      if (!tmp[item.name]) {
+        tmp[item.name] = [item];
+      } else {
+        tmp[item.name].push(item);
+      }
+    }
+    console.log(tmp)
+  }
+
+
+
+  // if (Object.keys(attLists).length) {
+  //   var helper = {};
+  //   var result = attLists.reduce(function (r, o) {
+  //     var key = o.class_name + '-' + o.name;
+
+  //     if (!helper[key]) {
+  //       helper[key] = Object.assign({}, o);
+  //       r.push(helper[key]);
+  //     } else {
+  //       helper[key].counts += o.counts;
+  //     }
+
+  //     return r;
+  //   }, []);
+
+  //   console.log(result);
+  // }
+
+
+
+
+  useEffect(() => {
+    const source = {};
+    absenceLists.forEach(v => source[v.name] = v.count);
+    ([].concat(attSum || [])).forEach(v => source[v.name] = v.count);
+    const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
+    setMerged(merge);
+    setChartMax(Math.max(...merge.map(c => c.count)));
+  }, [attSum]);
 
 
   const bodyReturn = () => {
@@ -130,14 +189,13 @@ function App() {
     }
   }
 
-  // console.log(bodyReturn());
 
   // 呼叫 Service
   var _connection = window.gadget.getContract("1campus.affairs.teacher");
 
   // 取得缺曠統計數據
   async function GetAttendanceSummary() {
-    console.log(bodyReturn());
+    // console.log(bodyReturn());
     await _connection.send({
       service: "_.GetAttendanceSummary",
       body: `${bodyReturn()}`,
@@ -147,43 +205,69 @@ function App() {
           return 'err';
         } else {
           if (response) {
-            setAttSum(response.Discipline);
+            setAttSum(response.AttendanceSum);
           }
         }
       }
     });
   }
 
-  useEffect(() => {
-    const source = {};
-    absenceLists.forEach(v => source[v.name] = v.count);
-    ([].concat(attSum || [])).forEach(v => source[v.name] = v.count);
-    const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
-    setMerged(merge);
-  }, [attSum]);
 
-  // 取得學期
-  async function GetSchoolYear() {
+  const bodyListReturn = () => {
+    if (showSemester) {
+      return `<Request><YearSemester>${yearSemester}</YearSemester><DisType>${attCount[0]}</DisType></Request>`
+    } else {
+      // console.log(yearSemester, dateRange);
+      return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate><EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate><DisType>${attCount[0]}</DisType></Request>`;
+    }
+  }
+
+
+  // 取得缺曠名單
+  async function GetAttendanceList() {
+    // console.log(bodyReturn());
     await _connection.send({
-      service: "_.GetSchoolYear",
+      service: "_.GetAttendanceList",
+      body: `${bodyListReturn()}`,
+      result: function (response, error, http) {
+        // console.log(bodyListReturn());
+        if (error !== null) {
+          console.log('GetAttendanceListErr', yearSemester);
+          return 'err';
+        } else {
+          if (response.AttendanceList) {
+
+            setAttLists(response.AttendanceList);
+
+          } else { setAttLists([]); }
+          // console.log(response.AttendanceList);
+        }
+      }
+    });
+  }
+
+
+  // 取得缺曠學期
+  async function GetAttSchoolYear() {
+    await _connection.send({
+      service: "_.GetAttSchoolYear",
       body: {},
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetSchoolYearErr', error);
+          console.log('GetAttSchoolYearErr', error);
           return 'err';
         } else {
           if (response) {
 
-            // console.log('GetSchoolYear', response);
-            setSchoolYears(response.SchoolYear);
-            console.log(yearSemester);
+            // console.log('GetAttSchoolYear', response);
+            setAttSchoolYears(response.SchoolYear);
           }
         }
       }
     });
   }
 
-  // 取得學期
+  // 取得假別
   async function GetAbsenceList() {
     await _connection.send({
       service: "_.GetAbsenceList",
@@ -195,15 +279,38 @@ function App() {
         } else {
           if (response) {
             setAbsenceLists(response.AbsenceList);
-            console.log(absenceLists);
+            // console.log(absenceLists);
 
           }
         }
       }
     });
   }
-  
+
+
+
+  // 取得班級
+  async function GetAbsenceClassName() {
+    await _connection.send({
+      service: "_.GetAbsenceClassName",
+      body: {},
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetAbsenceClassNameErr', error);
+          return 'err';
+        } else {
+          if (response) {
+            setAttClassNames(response.ClassName);
+
+          }
+        }
+      }
+    });
+  }
+
+
   const perDate = () => {
+    setAttCount(['假別', 0]);
 
     if (dateRangeType === 'selday') {
       setDateRange([new Date(moment(dateRange[0]).add(-1, 'd')), new Date(moment(dateRange[0]).add(-1, 'd'))]);
@@ -218,6 +325,7 @@ function App() {
   };
 
   const nextDate = () => {
+    setAttCount(['假別', 0]);
 
     if (dateRangeType === 'selday') {
       setDateRange([new Date(moment(dateRange[1]).add(1, 'd')), new Date(moment(dateRange[1]).add(1, 'd'))]);
@@ -232,8 +340,10 @@ function App() {
   };
 
   const handleChange = (e) => {
-    setYearSemester(e.target.value)
+    setYearSemester(e.target.value);
+    setAttCount(['假別', 0]);
   }
+
 
 
   return (
@@ -246,6 +356,7 @@ function App() {
                 setDateRangeType('selday');
                 setShowSemester(false);
                 setDateRange([new Date(), new Date()]);
+                setAttCount(['假別', 0]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab1" htmlFor="score0">日</label>
 
@@ -254,6 +365,7 @@ function App() {
                 setDateRangeType('selweek');
                 setShowSemester(false);
                 setDateRange([new Date(moment().startOf('week')), new Date(moment().endOf('week'))]);
+                setAttCount(['假別', 0]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab2" htmlFor="score1">周</label>
 
@@ -262,6 +374,7 @@ function App() {
                 setDateRangeType('selmonth');
                 setShowSemester(false);
                 setDateRange([new Date(moment().startOf('month')), new Date(moment().endOf('month'))]);
+                setAttCount(['假別', 0]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab2" htmlFor="score2">月</label>
 
@@ -269,7 +382,8 @@ function App() {
               onChange={() => {
                 setDateRangeType('selyear');
                 setShowSemester(true);
-                setYearSemester(`${schoolYears[0].school_year},${schoolYears[0].semester}`);
+                setYearSemester(`${AttschoolYears[0].school_year},${AttschoolYears[0].semester}`);
+                setAttCount(['假別', 0]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab3" htmlFor="score3">學期</label>
           </div>
@@ -295,9 +409,9 @@ function App() {
               {/* <option value="110,1">110學年度第1學期</option>
               <option value="109,2">109學年度第2學期</option>
               <option value="109,1">109學年度第1學期</option> */}
-              {schoolYears.map((schoolYear) => {
-                return <option key={`${schoolYear.school_year},${schoolYear.semester}`} value={`${schoolYear.school_year},${schoolYear.semester}`}>
-                  {`${schoolYear.school_year}學年度第${schoolYear.semester}學期`}</option>
+              {AttschoolYears.map((AttschoolYear) => {
+                return <option key={`${AttschoolYear.school_year},${AttschoolYear.semester}`} value={`${AttschoolYear.school_year},${AttschoolYear.semester}`}>
+                  {`${AttschoolYear.school_year}學年度第${AttschoolYear.semester}學期`}</option>
               })}
             </select>
           </div>}
@@ -320,77 +434,169 @@ function App() {
         </ul>
         <div className="tab-content" id="pills-tabContent">
           <div className="tab-pane fade show active content-col" id="attend" role="tabpanel" aria-labelledby="attend-tab">
-            <h2 className="d-flex align-items-center">
-              缺曠
-            </h2>
-            <div className="card mt-4">
-              <div className="card-body p-3">
-                <div className="row text-center">
-                  <div className="col-12 col-lg-6">
-                    <div className="row">
-                      {merged.map((absence) => {
-                        return <div className="col-6 col-sm-4 col-md-3 col-lg-4">
-                          <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
-                            <span className="badge rounded-pill bg-light text-dark fs-16 ">{absence.name}</span>
-                            <h4 className="font-weight-bolder mt-2">{absence.count}<span className="fs-14 ms-2">人</span></h4>
+
+
+            <div className="accordion accordion-flush" id="chart">
+              <div className="accordion-item">
+                <div className="accordion-header">
+                  <div className="accordion-button align-items-baseline p-0 mt-5" role="button" data-bs-toggle="collapse"
+                    data-bs-target="#attChart" aria-expanded="true" aria-controls="attChart">
+                    <div className='fs-24 fw-600 color-32 me-3'>缺曠統計</div>
+                    <i className="collapse-close fa fa-chevron-down fs-20 pt-1 me-3 color-1"
+                      aria-hidden="true"></i>
+                    <i className="collapse-open fa fa-chevron-up fs-20 pt-1 me-3 color-1"
+                      aria-hidden="true"></i>
+                  </div>
+                </div>
+
+                <div id="attChart" className="accordion-collapse collapse show" data-bs-parent="#chart">
+                  <div className="card mt-4">
+                    <div className="card-body p-3">
+                      <div className="row">
+                        <div className="col-12 col-lg-6">
+                          <div className="row text-center">
+                            {merged.map((absence) => {
+                              // return <a className="col-6 col-sm-4 col-md-3 col-lg-4" href={`${(absence.count > 0) ? '#attChartName' : 'javascript:;'}`}>
+                              return <a className="col-6 col-sm-4 col-md-3 col-lg-4" href={'#attChartName'} onClick={() => {
+                                setAttCount([absence.name, absence.count]);
+                              }}>
+                                <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
+                                  <span className="badge rounded-pill bg-light text-dark fs-16 ">{absence.name}</span>
+                                  <h4 className="font-weight-bolder mt-2"><span style={{ color: (absence.count > 0) ? '#5ec1c7' : '#a3a3a3' }}>{absence.count}</span><span className="fs-14 ms-2">人</span></h4>
+                                </div>
+                              </a>
+                            })}
+
                           </div>
                         </div>
-                      })}
-
-                    </div>
-                  </div>
-                  <div className="col-12 col-lg-6 attend-chart">
-                    {/* <img src="./assets/img/chat.png" alt="" className="mt-3 mt-lg-0 w-100" /> 
+                        <div className="col-12 col-lg-6 attend-chart">
+                          {/* <img src="./assets/img/chat.png" alt="" className="mt-3 mt-lg-0 w-100" /> 
                     <BarChart width={150} height={40} data={data}>
                       <Bar dataKey="count" fill="#8884d8" />
                     </BarChart>*/}
-                    <ResponsiveContainer>
-                      <BarChart width={400} height={280} data={merged} layout="vertical" margin={{ top: 30, right: 30, left: 0, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="splitColor" x1="1" x2="0" y1="0" y2="0">
-                            <stop offset="0%" stopColor="#00ddee" />
-                            <stop offset="100%" stopColor="#2196f3" />
-                          </linearGradient>
-                        </defs>
-                        {/* <XAxis
+                          <ResponsiveContainer>
+                            <BarChart width={400} height={280} data={merged} layout="vertical" margin={{ top: 30, right: 30, left: 0, bottom: 0 }}>
+                              <defs>
+                                <linearGradient id="splitColor" x1="1" x2="0" y1="0" y2="0">
+                                  <stop offset="0%" stopColor="#00ddee" />
+                                  <stop offset="100%" stopColor="#2196f3" />
+                                </linearGradient>
+                              </defs>
+                              {/* <XAxis
                           dataKey="name" tickLine={false}
                           axisLine={{ stroke: "#2196f3" }}
                           tick={{ fill: "#999" }}
                         />
                         <YAxis/> */}
-                        <XAxis type="number" />
-                        <YAxis dataKey="name" type="category" axisLine={{ stroke: "#2196f3" }} />
+                              <XAxis dateKey="count" type="number" domain={[0, () => (chartMax <= 4) ? 4 : chartMax]} />
+                              <YAxis dataKey="name" type="category" axisLine={{ stroke: "#2196f3" }} />
 
-                        {/*<Bar dataKey="count" barSize={20} label={{ position: 'right', fill: '#2196f3' }}> */}
-                        <Bar dataKey="count" fill="url(#splitColor)" barSize={20} label={{ position: 'right', fill: '#2196f3' }} fillOpacity={0.8} >
-                          {/* 自訂色 
+                              {/*<Bar dataKey="count" barSize={20} label={{ position: 'right', fill: '#2196f3' }}> */}
+                              <Bar dataKey="count" fill="url(#splitColor)" barSize={20} label={{ position: 'right', fill: '#2196f3' }} fillOpacity={0.8} >
+                                {/* 自訂色 
                           {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))} */}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <div id='attChartName' className='fs-20 mt-4'>缺曠名單<span className='fs-16 color-8 ms-3'>({attCount[0]}：{attCount[1]}人)</span></div>
+                        {(attCount[1] === 0 || attCount[1] === '0') && <h5 className='ps-4 py-2'>無資料，請點選假別</h5>}
+
+
+
+                        <div className="accordion accordion-flush" id="att">
+                          <div className="accordion-item">
+
+
+                            {Object.getOwnPropertyNames(tmp).map((v, index) => {
+                              const g = tmp[v];
+
+                              return (
+                                <div>
+                                  {/* <div>{v}</div> */}
+                                  {/* {g.map((i) => {
+                                  return <div>{i.occur}</div>;
+                                })} */}
+
+                                  <h5 className="accordion-header">
+                                    <div className="accordion-button px-0 px-md-3 py-2" role="button" data-bs-toggle="collapse"
+                                      data-bs-target={'#studAtt' + index} aria-expanded="false" aria-controls={'studAtt' + index}>
+                                      <span className="pe-3"></span>
+                                      <span>{v}</span>
+                                      <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
+                                        aria-hidden="true"></i>
+                                      <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
+                                        aria-hidden="true"></i>
+                                    </div>
+                                  </h5>
+
+
+                                  <div id={'studAtt' + index} className="accordion-collapse collapse" data-bs-parent="#att">
+                                    <div className="accordion-body pt-0 px-0 px-md-5">
+                                      {g.map((i) => {
+                                        return <>
+                                        <div className="font-weight-bolder mt-3 bg-f3">{i.school_year}學年度第{i.semester}學期</div>
+                                        <div className="d-flex flex-wrap pt-2">
+                                        <div className="me-3">{i.occur}</div>
+                                        <div className="me-3">{i.absence_type}</div>
+                                        <div className="me-3">{i.counts}節</div>
+                                        <div className="color-8">({i.periods})</div>
+                                          {/* <div className="font-weight-bolder mt-3 bg-f3">109學年度第2學期</div><div className="d-flex flex-wrap pt-2">
+                                    <div className="me-3">2021/01/18</div>
+                                    <div className="me-3">公假</div>
+                                    <div className="me-3">8節</div>
+                                    <div className="color-8">(一，二，三，四，五，六，七，八)</div> */}
+                                          {/* </div> */}
+                                        </div></>;
+                                      })}
+                                    </div>
+                                  </div>
+
+                                </div>
+                              );
+                            })}
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
                   </div>
+
                 </div>
               </div>
             </div>
 
-            <div className="row mt-5">
+
+            <h2 className="d-flex align-items-center">
+              缺曠查詢
+            </h2>
+            <div className="row mt-3">
               <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <select className="form-select">
-                  <option value="Choice 1" selected="">全部年級</option>
-                  <option value="Choice 2">一年級</option>
+                <select className="form-select" onChange={""}>
+                  <option value="allg">全部年級</option>
+                  {/* <option value="Choice 2">一年級</option>
                   <option value="Choice 3">二年級</option>
-                  <option value="Choice 3">三年級</option>
+                  <option value="Choice 3">三年級</option> */}
+                  {attclassNames.map((gyear) => {
+                    return <option key={gyear.grade_year} value={gyear.grade_year}>
+                      {`${(gyear.grade_year) ? gyear.grade_year : "未分"}年級`}</option>
+                  })}
                 </select>
               </div>
               <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <select className="form-select">
-                  <option value="Choice 1" selected="">全部班級</option>
-                  <option value="Choice 2">資101</option>
+                <select className="form-select" onChange={""}>
+                  <option value="allc">全部班級</option>
+                  {/* <option value="Choice 2">資101</option>
                   <option value="Choice 3">資102</option>
                   <option value="Choice 3">普201</option>
-                  <option value="Choice 3">普202</option>
+                  <option value="Choice 3">普202</option> */}
+                  {attclassNames.map((cname) => {
+                    return <option key={cname.class_name} value={cname.class_name}>
+                      {`${cname.class_name}`}</option>
+                  })}
                 </select>
               </div>
               <div className="col-12 col-md-6 col-lg-3 mb-3">
@@ -411,9 +617,9 @@ function App() {
                         data-bs-target="#studAtt1" aria-expanded="false" aria-controls="studAtt1">
                         <span className="pe-3">普202</span>
                         <span>劉珮如</span>
-                        <i className="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3"
+                        <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
                           aria-hidden="true"></i>
-                        <i className="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3"
+                        <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
                           aria-hidden="true"></i>
                       </div>
                     </h5>
@@ -449,9 +655,9 @@ function App() {
                         data-bs-target="#studAtt2" aria-expanded="false" aria-controls="studAtt2">
                         <span className="pe-3">普202</span>
                         <span>徐志明</span>
-                        <i className="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3"
+                        <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
                           aria-hidden="true"></i>
-                        <i className="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3"
+                        <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
                           aria-hidden="true"></i>
                       </div>
                     </h5>
@@ -646,7 +852,7 @@ function App() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

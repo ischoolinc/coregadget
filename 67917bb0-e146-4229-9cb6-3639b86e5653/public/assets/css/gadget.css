@@ -6,9 +6,9 @@ body {
 }
 
 a,
-a:hover {
-  color: #555;
-  text-decoration: none;
+a:active, a:focus, a:hover {
+  color: #555 !important;
+  text-decoration: none !important;
 }
 
 button:focus,
@@ -74,6 +74,10 @@ a:hover,
 
 .color-3 {
   color: #394867;
+}
+
+.color-32 {
+  color: #32325d;
 }
 
 .color-4 {

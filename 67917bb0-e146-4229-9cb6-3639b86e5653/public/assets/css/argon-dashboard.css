@@ -26373,19 +26373,19 @@ pre[class*="language-"] {
   font-size: inherit !important;
 }
 
-.accordion div button[aria-expanded='true'] .collapse-close {
+.accordion div[aria-expanded='true'] .collapse-close {
   display: none;
 }
 
-.accordion div button[aria-expanded='true'] .collapse-open {
+.accordion div[aria-expanded='true'] .collapse-open {
   display: block;
 }
 
-.accordion div button[aria-expanded='false'] .collapse-open {
+.accordion div[aria-expanded='false'] .collapse-open {
   display: none;
 }
 
-.accordion div button[aria-expanded='false'] .collapse-close {
+.accordion div[aria-expanded='false'] .collapse-close {
   display: block;
 }
 
