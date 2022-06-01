@@ -7,5 +7,5 @@ export interface CourseTimetable {
 
 export interface Period {
   weekday: string | number;
-  period:  string | number;
+  period:  string;
 }

@@ -172,7 +172,7 @@ export class AppComponent implements OnInit, OnDestroy {
               if (!colTimetable.has(intWeekday)) {
                 colTimetable.set(intWeekday, { Weekday: intWeekday, Periods: []});
               }
-              colTimetable.get(intWeekday)!.Periods.push(+obj.period);
+              colTimetable.get(intWeekday)!.Periods.push('' + obj.period);
             }
           });
         });
@@ -371,8 +371,8 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
       this.curCourseList = tmp.sort((a, b) => {
-        const x = a.Timetable.get(this.curTab.value)?.Periods;
-        const y = b.Timetable.get(this.curTab.value)?.Periods;
+        const x: any = a.Timetable.get(this.curTab.value)?.Periods;
+        const y: any = b.Timetable.get(this.curTab.value)?.Periods;
         return (x ? x[0] : 0) - (y ? y[0] : 0);
       });
     }

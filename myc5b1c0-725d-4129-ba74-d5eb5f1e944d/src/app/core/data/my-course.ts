@@ -51,5 +51,5 @@ export class MyCourseRec extends MyTargetBaseRec {
 
 export interface PeriodRec {
   Weekday: number;
-  Periods: number[];
+  Periods: string[];
 }

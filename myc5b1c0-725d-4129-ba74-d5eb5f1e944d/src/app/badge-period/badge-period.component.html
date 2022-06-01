@@ -3,5 +3,5 @@
   <p class="mr-2" *ngIf="showWeekday">{{(data?.Weekday) | weekdayFormat}}</p>
   <p *ngFor="let item of data?.Periods; last as isLast"
     class="h-5 w-5 text-sm text-center bg-secondary-lighter rounded-full my-auto"
-    [ngClass]="{'mr-1': !isLast}">{{item}}</p>
+    [ngClass]="{'mr-1': !isLast}">{{item.slice(0, 1)}}</p>
 </div>
