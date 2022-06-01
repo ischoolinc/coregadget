@@ -17,7 +17,7 @@
         [selected]="curTab"
         [rowSource]="tabs"
         [displayWith]="displayWeekdayTab"
-        (change)="weekdayTabChange($event)"
+        (change)="weekdayTabChange($event, false)"
       ></app-select>
     </div>
 
@@ -50,7 +50,7 @@
           [id]="tab.tabId"
           [value]="tab"
           [(ngModel)]="curTab"
-          (change)="toggleTab()"
+          (change)="toggleTab(false)"
         >
 
         <div class="tab-group mx-3 xs:ml-0">

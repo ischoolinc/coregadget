@@ -115,7 +115,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       let dayOfWeek = dj().day(); // 0 ~ 6，0 是星期日
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
-      this.weekdayTabChange(this.tabs[dayOfWeek]);
+      this.weekdayTabChange(this.tabs[dayOfWeek], true);
 
       await this.checkConnected();
     } catch (error) {
@@ -186,7 +186,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.courses = sourceCourses;
     await this.mappingClassroomLive();
     await this.mappingGoogleClassroom();
-    this.toggleTab();
+    this.toggleTab(false);
   }
 
   // 設定雲端服務初始值，如果沒設定過，資料庫不會有資料
@@ -352,13 +352,13 @@ export class AppComponent implements OnInit, OnDestroy {
     return tab?.tabTitle || '所有時段';
   }
 
-  weekdayTabChange(tab: { value: number, tabId: string, tabTitle: string, checked: boolean }) {
+  weekdayTabChange(tab: { value: number, tabId: string, tabTitle: string, checked: boolean }, isInit: boolean) {
     this.tabs.forEach(v => v.checked = (v.tabId === tab.tabId));
     this.curTab = tab;
-    this.toggleTab();
+    this.toggleTab(isInit);
   }
 
-  toggleTab() {
+  toggleTab(isInit: boolean) {
     if (this.curTab.value === 0) { // 所有時段
       this.curCourseList = this.courses;
     } else {
@@ -370,11 +370,15 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.curCourseList = tmp.sort((a, b) => {
-        const x: any = a.Timetable.get(this.curTab.value)?.Periods;
-        const y: any = b.Timetable.get(this.curTab.value)?.Periods;
-        return (x ? x[0] : 0) - (y ? y[0] : 0);
-      });
+      if (isInit && !tmp.length) {
+        this.weekdayTabChange(this.tabs[0], false);
+      } else {
+        this.curCourseList = tmp.sort((a, b) => {
+          const x: any = a.Timetable.get(this.curTab.value)?.Periods;
+          const y: any = b.Timetable.get(this.curTab.value)?.Periods;
+          return (x ? x[0] : 0) - (y ? y[0] : 0);
+        });
+      }
     }
   }
 
