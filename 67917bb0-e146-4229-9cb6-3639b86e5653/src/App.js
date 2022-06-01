@@ -136,36 +136,48 @@ function App() {
   }, [attCount]);
 
 
+  const colAttLists = {};
+
   if (Object.keys(attLists).length) {
-    for (let item of ([].concat(attLists || []))) {
-      if (!tmp[item.name]) {
-        tmp[item.name] = [item];
-      } else {
-        tmp[item.name].push(item);
+    for (let item of [].concat(attLists || [])) {
+      //   if (!tmp[item.name]) {
+      //     tmp[item.name] = [item];
+      //   } else {
+      //     tmp[item.name].push(item);
+      //   }
+      // }
+      // console.log(tmp)
+      const studentKey = `stu_${item.grade_year}_${item.class_name}_${item.student_id}`;
+      if (!colAttLists[studentKey]) {
+        colAttLists[studentKey] = {
+          name: item.name,
+          class_name: item.class_name,
+          grade_year: item.grade_year,
+          student_id: item.student_id,
+          student_number: item.student_number,
+          seat_no: item.seat_no,
+          seme: {},
+        };
       }
+
+      const semeKey = `seme_${item.school_year}_${item.semester}`;
+      if (!colAttLists[studentKey].seme[semeKey]) {
+        colAttLists[studentKey].seme[semeKey] = {
+          school_year: item.school_year,
+          semester: item.semester,
+          absence_list: [],
+        };
+      }
+
+      colAttLists[studentKey].seme[semeKey].absence_list.push({
+        absence_type: item.absence_type,
+        counts: item.counts,
+        occur: item.occur,
+        periods: item.periods,
+      });
     }
-    console.log(tmp)
+    console.log(colAttLists);
   }
-
-
-
-  // if (Object.keys(attLists).length) {
-  //   var helper = {};
-  //   var result = attLists.reduce(function (r, o) {
-  //     var key = o.class_name + '-' + o.name;
-
-  //     if (!helper[key]) {
-  //       helper[key] = Object.assign({}, o);
-  //       r.push(helper[key]);
-  //     } else {
-  //       helper[key].counts += o.counts;
-  //     }
-
-  //     return r;
-  //   }, []);
-
-  //   console.log(result);
-  // }
 
 
 
@@ -510,52 +522,50 @@ function App() {
                           <div className="accordion-item">
 
 
-                            {Object.getOwnPropertyNames(tmp).map((v, index) => {
-                              const g = tmp[v];
+                            {/* {Object.getOwnPropertyNames(tmp).map((v, index) => {
+                              const g = tmp[v]; */}
+                            {Object.getOwnPropertyNames(colAttLists).map((stuKey, index) => {
+                              const stuAtt = colAttLists[stuKey];
 
-                              return (
-                                <div>
-                                  {/* <div>{v}</div> */}
-                                  {/* {g.map((i) => {
+                              return <>
+                                {/* <div>{v}</div> */}
+                                {/* {g.map((i) => {
                                   return <div>{i.occur}</div>;
                                 })} */}
 
-                                  <h5 className="accordion-header">
-                                    <div className="accordion-button px-0 px-md-3 py-2" role="button" data-bs-toggle="collapse"
-                                      data-bs-target={'#studAtt' + index} aria-expanded="false" aria-controls={'studAtt' + index}>
-                                      <span className="pe-3"></span>
-                                      <span>{v}</span>
-                                      <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
-                                        aria-hidden="true"></i>
-                                      <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
-                                        aria-hidden="true"></i>
-                                    </div>
-                                  </h5>
-
-
-                                  <div id={'studAtt' + index} className="accordion-collapse collapse" data-bs-parent="#att">
-                                    <div className="accordion-body pt-0 px-0 px-md-5">
-                                      {g.map((i) => {
-                                        return <>
-                                        <div className="font-weight-bolder mt-3 bg-f3">{i.school_year}學年度第{i.semester}學期</div>
-                                        <div className="d-flex flex-wrap pt-2">
-                                        <div className="me-3">{i.occur}</div>
-                                        <div className="me-3">{i.absence_type}</div>
-                                        <div className="me-3">{i.counts}節</div>
-                                        <div className="color-8">({i.periods})</div>
-                                          {/* <div className="font-weight-bolder mt-3 bg-f3">109學年度第2學期</div><div className="d-flex flex-wrap pt-2">
-                                    <div className="me-3">2021/01/18</div>
-                                    <div className="me-3">公假</div>
-                                    <div className="me-3">8節</div>
-                                    <div className="color-8">(一，二，三，四，五，六，七，八)</div> */}
-                                          {/* </div> */}
-                                        </div></>;
-                                      })}
-                                    </div>
+                                <h5 className="accordion-header">
+                                  <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
+                                    data-bs-target={'#studAtt' + index} aria-expanded="false" aria-controls={'studAtt' + index}>
+                                    <span style={{ width: '140px' }}>{stuAtt.class_name}</span>
+                                    <span>{stuAtt.name}</span>
+                                    <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
+                                      aria-hidden="true"></i>
+                                    <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
+                                      aria-hidden="true"></i>
                                   </div>
+                                </h5>
 
+                                <div id={'studAtt' + index} className="accordion-collapse collapse" data-bs-parent="#att">
+                                  <div className="accordion-body pt-0 px-0 px-md-5">
+                                    {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
+                                      const semeList = stuAtt.seme[semeKey];
+                                      return <>
+                                        <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
+                                        {semeList.absence_list.map((v) => {
+                                          return (
+                                            <div className="d-flex flex-wrap pt-2">
+                                              <div className="me-3">{v.occur}</div>
+                                              <div className="me-3">{v.absence_type}</div>
+                                              <div className="me-3">{v.counts}節</div>
+                                              <div className="color-8">({v.periods})</div>
+                                            </div>
+                                          );
+                                        })}
+                                      </>
+                                    })}
+                                  </div>
                                 </div>
-                              );
+                              </>
                             })}
 
                           </div>
