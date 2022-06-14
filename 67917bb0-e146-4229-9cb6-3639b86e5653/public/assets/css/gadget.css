@@ -3,6 +3,7 @@ body {
   font-family: 'Noto Sans TC';
   height: auto;
   color: #4f4f4f;
+  font-size: 16px !important;
 }
 
 a,
@@ -568,7 +569,7 @@ tfoot tr {
 
 .daterange {
   display: block;
-  width: 100%;
+  /* width: 100%; */
   padding: 0.5rem 1rem 0.5rem 0.75rem;
   -moz-padding-start: calc(0.75rem - 3px);
   color: #495057;
@@ -652,14 +653,13 @@ tfoot tr {
   display: none;
 }
 
-.rs-calendar-table-cell-selected .rs-calendar-table-cell-content,.rs-btn-primary {
+.rs-calendar-table-cell-selected .rs-calendar-table-cell-content, .rs-btn-primary {
   background-color: #5ec1c7 !important;
 }
 
 .rs-calendar-table-cell-content:hover,
 .rs-picker-has-value .rs-btn .rs-picker-toggle-value,
-.rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value
- {
+.rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value {
   color: #000 !important;
 }
 
@@ -685,14 +685,16 @@ tfoot tr {
   .rs-picker-menu {
     width: content;
   }
+
   .rs-picker-daterange-calendar-group {
     height: 274px !important;
     min-width: 492px !important;
   }
+
   .rs-picker-daterange-menu .rs-calendar:first-child {
     border-bottom: none;
     border-right: 1px solid var(--rs-border-primary) !important;
-  }  
+  }
 }
 
 .yAxis,
@@ -705,5 +707,61 @@ tfoot tr {
 }
 
 .form-select {
-background-image: url(../img/downarrow.svg);
+  background-image: url(../img/downarrow.svg);
+}
+
+.claname {
+  width: 116px;
+}
+
+.studname {
+  width: 86px;
+}
+
+@media (min-width: 991px) {
+  .claname {
+    width: 160px;
+  }
+}
+
+@media (min-width: 450px) {
+  .claname {
+    width: 140px;
+  }
+
+  .studname {
+    width: 120px;
+  }
+}
+
+.search {
+  position: relative;
+  /* box-shadow: 0 0 40px rgba(51, 51, 51, .1); */
+}
+
+.inputname {
+ 
+  text-indent: 16px;
+  /* border: 2px solid #d6d4d4; */
+}
+
+.search input:focus {
+  box-shadow: none;
+}
+
+.search .fa-search {
+  position: absolute;
+  top: 12px;
+  left: 8px;
+}
+
+.search input[type="button"] {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border-radius: 0 0.5rem 0.5rem 0;
+  /* height: 37px; */
+  /* width: 110px;
+   background: blue; */
+
 }

@@ -101,27 +101,42 @@ function App() {
 
   const [dateRangeType, setDateRangeType] = useState('selday');
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [AttschoolYears, setAttSchoolYears] = useState([]); // 學年度
+  const [attschoolYears, setAttSchoolYears] = useState([]); // 學年度
   const [showSemester, setShowSemester] = useState(false);
   const [yearSemester, setYearSemester] = useState(''); //'107,2'
   const [absenceLists, setAbsenceLists] = useState([]); // 假別清單
   const [attSum, setAttSum] = useState([]); // 假別：總計人數
+
   const [merged, setMerged] = useState([]); // 
+  const [setStudMerged, setSetStudMerged] = useState([]); // 
+
   const [chartMax, setChartMax] = useState(0); // 取圖表最大值
 
-  const [attclassNames, setAttClassNames] = useState([]); // 班級名稱
+  const [attClassNames, setAttClassNames] = useState([]); // 班級清單
   const [attCount, setAttCount] = useState(['假別', 0]); //假別,人數
 
   const [attLists, setAttLists] = useState([]); // 缺曠名單
+  const [attSearchLists, setAttSearchLists] = useState([]); // 缺曠查詢名單
+  const [selAttClassName, setSelAttClassName] = useState([]); // 班級的下拉式選單
 
-  const tmp = {};
+  const [studLists, setStudLists] = useState([]); // 班級學生清單
+  const [selClass, setSelClass] = useState(""); // 選取的班級
+  const [selGyear, setSelGyear] = useState("Y"); // 選取的年級
+
+  const [searchName, setSearchName] = useState(""); // 搜尋值
+  const [searchNameSend, setSearchNameSend] = useState(""); // 搜尋值send
+
+
+
+
+
+  // const tmp = {};
+
+
   useEffect(() => {
     GetAttSchoolYear();
     GetAbsenceList();
-    GetAbsenceClassName();
-
-    // GetAttendanceSummary();
-
+    GetClassName();
   }, []);
 
 
@@ -134,6 +149,18 @@ function App() {
     GetAttendanceList();
     // console.log(attLists);
   }, [attCount]);
+
+  useEffect(() => {
+    GetClassStudent();
+    GetAttendanceListSearch();
+  }, [selClass, dateRange, yearSemester, showSemester, searchNameSend]);
+
+  useEffect(() => {
+    setSelClass("");
+    if (selGyear === "Y") {
+      setSelAttClassName([]);
+    }
+  }, [selGyear]);
 
 
   const colAttLists = {};
@@ -176,10 +203,54 @@ function App() {
         periods: item.periods,
       });
     }
-    console.log(colAttLists);
+    // console.log(colAttLists);
   }
 
 
+  const colSearchAttLists = {};
+
+  if (Object.keys(attSearchLists).length) {
+    for (let item of [].concat(attSearchLists || [])) {
+      const studentKey = `stu_${item.grade_year}_${item.class_name}_${item.student_id}`;
+      if (!colSearchAttLists[studentKey]) {
+        colSearchAttLists[studentKey] = {
+          name: item.name,
+          class_name: item.class_name,
+          grade_year: item.grade_year,
+          student_id: item.student_id,
+          student_number: item.student_number,
+          seat_no: item.seat_no,
+          seme: {},
+        };
+      }
+
+      const semeKey = `seme_${item.school_year}_${item.semester}`;
+      if (!colSearchAttLists[studentKey].seme[semeKey]) {
+        colSearchAttLists[studentKey].seme[semeKey] = {
+          school_year: item.school_year,
+          semester: item.semester,
+          absence_list: [],
+        };
+      }
+
+      colSearchAttLists[studentKey].seme[semeKey].absence_list.push({
+        absence_type: item.absence_type,
+        counts: item.counts,
+        occur: item.occur,
+        periods: item.periods,
+      });
+    }
+    // console.log(colSearchAttLists);
+  }
+
+  // useEffect(() => {
+  if (studLists) {
+    ([].concat(studLists || [])).forEach((item) => {
+      const studentKey = `stu_${item.grade_year}_${item.class_name}_${item.student_id}`;
+      item.seme = colSearchAttLists[studentKey]?.seme || {};
+    });
+  };
+  // }, [selClass]);
 
 
   useEffect(() => {
@@ -196,7 +267,7 @@ function App() {
     if (showSemester) {
       return `<Request><YearSemester>${yearSemester}</YearSemester></Request>`
     } else {
-      console.log(yearSemester, dateRange);
+      // console.log(yearSemester, dateRange);
       return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate><EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate></Request>`;
     }
   }
@@ -235,7 +306,7 @@ function App() {
   }
 
 
-  // 取得缺曠名單
+  // 取得缺曠名單(假別用)
   async function GetAttendanceList() {
     // console.log(bodyReturn());
     await _connection.send({
@@ -252,7 +323,6 @@ function App() {
             setAttLists(response.AttendanceList);
 
           } else { setAttLists([]); }
-          // console.log(response.AttendanceList);
         }
       }
     });
@@ -299,21 +369,79 @@ function App() {
     });
   }
 
+  // 取得班級學生清單
+  async function GetClassStudent() {
+    await _connection.send({
+      service: "_.GetClassStudent",
+      body: `<Request><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`,
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetClassStudentErr', error);
+          return 'err';
+        } else {
+          if (response) {
+            setStudLists(response.ClassStudent || []);
+          }
+        }
+      }
+    });
+  }
+
+
+  const bodyListReturnSearch = () => {
+    if (showSemester) {
+      return `<Request><YearSemester>${yearSemester}</YearSemester><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`
+    } else {
+      // console.log(yearSemester, dateRange);
+      return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate><EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`;
+    }
+  }
+
+
+  // 取得缺曠名單(查詢依班級或姓名)
+  async function GetAttendanceListSearch() {
+    // console.log(bodyReturn());
+    await _connection.send({
+      service: "_.GetAttendanceList",
+      body: `${bodyListReturnSearch()}`,
+      result: function (response, error, http) {
+        // console.log(bodyListReturn());
+        if (error !== null) {
+          console.log('GetAttendanceListSearchErr', yearSemester);
+          return 'err';
+        } else {
+          if (response.AttendanceList) {
+            setAttSearchLists(response.AttendanceList);
+          } else { setAttSearchLists([]); }
+        }
+      }
+    });
+  }
+
+  // useEffect(() => {
+  //   const source = {};
+  //   studLists.forEach(v => source[v.name] = '');
+  //   ([].concat(attSearchLists || [])).forEach(v => source[v.name] = v);
+  //   console.log(source);
+  // const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, student_number: source[v] }));
+  // setStudMerged(merge);
+
+  // }, [selClass]);
+
 
 
   // 取得班級
-  async function GetAbsenceClassName() {
+  async function GetClassName() {
     await _connection.send({
-      service: "_.GetAbsenceClassName",
+      service: "_.GetClassName",
       body: {},
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetAbsenceClassNameErr', error);
+          console.log('GetClassNameErr', error);
           return 'err';
         } else {
           if (response) {
             setAttClassNames(response.ClassName);
-
           }
         }
       }
@@ -351,9 +479,40 @@ function App() {
 
   };
 
-  const handleChange = (e) => {
+  const handleChangeSeme = (e) => {
     setYearSemester(e.target.value);
     setAttCount(['假別', 0]);
+  }
+
+  const handleChangeGrade = (e) => {
+    if (e.target.value !== "Y") {
+      setSelAttClassName(attClassNames[e.target.value].class_name.split(','));
+    } else {
+      setSelAttClassName([]);
+    }
+    setSearchName("");
+    setSearchNameSend("");
+    setSelGyear(e.target.value);
+    setSelClass("");
+  }
+
+  const handleChangeClass = (e) => {
+    setSelClass(e.target.value);
+  }
+
+  const handleInputChange = (e) => {
+    setSearchName(e.target.value);
+    setSelGyear("Y");
+  }
+
+  const handleButton = () => {
+    if (searchName.length > 1) {
+      setSearchNameSend(searchName);
+    } else {
+      alert("長度不夠")
+    }
+    // setSearchName(e.target.value);
+    // setSelGyear("Y");
   }
 
 
@@ -394,7 +553,7 @@ function App() {
               onChange={() => {
                 setDateRangeType('selyear');
                 setShowSemester(true);
-                setYearSemester(`${AttschoolYears[0].school_year},${AttschoolYears[0].semester}`);
+                setYearSemester(`${attschoolYears[0].school_year},${attschoolYears[0].semester}`);
                 setAttCount(['假別', 0]);
               }} />
             <label className="btn p-0 m-0 fs-14 color-8 btn-g-custom lab3" htmlFor="score3">學期</label>
@@ -416,12 +575,12 @@ function App() {
           </div>}
 
           {(showSemester) && <div className="col-12 col-md-6 col-lg-5 mb-4 ps-3 pe-0">
-            <select id='yearseme' className="form-select max-width-300" onChange={(e) => handleChange(e)}>
+            <select id='yearseme' className="form-select max-width-300" defaultValue={attschoolYears} onChange={(e) => handleChangeSeme(e)}>
 
               {/* <option value="110,1">110學年度第1學期</option>
               <option value="109,2">109學年度第2學期</option>
               <option value="109,1">109學年度第1學期</option> */}
-              {AttschoolYears.map((AttschoolYear) => {
+              {attschoolYears.map((AttschoolYear) => {
                 return <option key={`${AttschoolYear.school_year},${AttschoolYear.semester}`} value={`${AttschoolYear.school_year},${AttschoolYear.semester}`}>
                   {`${AttschoolYear.school_year}學年度第${AttschoolYear.semester}學期`}</option>
               })}
@@ -516,12 +675,8 @@ function App() {
                         <div id='attChartName' className='fs-20 mt-4'>缺曠名單<span className='fs-16 color-8 ms-3'>({attCount[0]}：{attCount[1]}人)</span></div>
                         {(attCount[1] === 0 || attCount[1] === '0') && <h5 className='ps-4 py-2'>無資料，請點選假別</h5>}
 
-
-
                         <div className="accordion accordion-flush" id="att">
                           <div className="accordion-item">
-
-
                             {/* {Object.getOwnPropertyNames(tmp).map((v, index) => {
                               const g = tmp[v]; */}
                             {Object.getOwnPropertyNames(colAttLists).map((stuKey, index) => {
@@ -585,126 +740,95 @@ function App() {
             </h2>
             <div className="row mt-3">
               <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <select className="form-select" onChange={""}>
-                  <option value="allg">全部年級</option>
-                  {/* <option value="Choice 2">一年級</option>
-                  <option value="Choice 3">二年級</option>
-                  <option value="Choice 3">三年級</option> */}
-                  {attclassNames.map((gyear) => {
-                    return <option key={gyear.grade_year} value={gyear.grade_year}>
+                <select className="form-select" value={selGyear} onChange={(e) => handleChangeGrade(e)}>
+                  <option value="Y" selected>(選擇年級)</option>
+                  {attClassNames.map((gyear, index) => {
+                    return <option key={index} value={index}>
                       {`${(gyear.grade_year) ? gyear.grade_year : "未分"}年級`}</option>
                   })}
                 </select>
+
               </div>
               <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <select className="form-select" onChange={""}>
-                  <option value="allc">全部班級</option>
-                  {/* <option value="Choice 2">資101</option>
-                  <option value="Choice 3">資102</option>
-                  <option value="Choice 3">普201</option>
-                  <option value="Choice 3">普202</option> */}
-                  {attclassNames.map((cname) => {
-                    return <option key={cname.class_name} value={cname.class_name}>
-                      {`${cname.class_name}`}</option>
+                <select className="form-select" value={selClass} onChange={(e) => handleChangeClass(e)}>
+                  <option value="" disabled selected>{selAttClassName.length ? "(選擇班級)" : "班級(請先選擇年級)"}</option>
+                  {selAttClassName.map((cname, index) => {
+                    return <option key={index} value={cname}>{cname}</option>
                   })}
                 </select>
               </div>
-              <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <input type="text" className="daterange" placeholder="依學生姓名或學號查詢" />
-              </div>
-
-            </div>
-
-
-            <div className="card">
-              <div className="card-body p-3">
-
-                <div className="accordion accordion-flush" id="att">
-
-                  <div className="accordion-item">
-                    <h5 className="accordion-header">
-                      <div className="accordion-button px-0 px-md-3 py-2" role="button" data-bs-toggle="collapse"
-                        data-bs-target="#studAtt1" aria-expanded="false" aria-controls="studAtt1">
-                        <span className="pe-3">普202</span>
-                        <span>劉珮如</span>
-                        <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
-                          aria-hidden="true"></i>
-                        <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
-                          aria-hidden="true"></i>
-                      </div>
-                    </h5>
-                    <div id="studAtt1" className="accordion-collapse collapse" data-bs-parent="#att">
-                      <div className="accordion-body pt-0 px-0 px-md-5">
-                        <div className="font-weight-bolder mt-3 bg-f3">110學年度第1學期</div>
-                        <div className="d-flex flex-wrap pt-2">
-                          <div className="me-3">2021/07/18</div>
-                          <div className="me-3">公假</div>
-                          <div className="me-3">4節</div>
-                          <div className="color-8">(二，三，四)</div>
-                        </div>
-                        <div className="font-weight-bolder mt-3 bg-f3">109學年度第2學期</div>
-                        <div className="d-flex flex-wrap pt-2">
-                          <div className="me-3">2021/01/18</div>
-                          <div className="me-3">公假</div>
-                          <div className="me-3">8節</div>
-                          <div className="color-8">(一，二，三，四，五，六，七，八)</div>
-                        </div>
-                        <div className="d-flex flex-wrap pt-2">
-                          <div className="me-3">2021/01/18</div>
-                          <div className="me-3">防疫假</div>
-                          <div className="me-3">6節</div>
-                          <div className="color-8">(一，二，三，四，五，六)</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="accordion-item">
-                    <h5 className="accordion-header">
-                      <div className="accordion-button px-0 px-md-3 py-2" role="button" data-bs-toggle="collapse"
-                        data-bs-target="#studAtt2" aria-expanded="false" aria-controls="studAtt2">
-                        <span className="pe-3">普202</span>
-                        <span>徐志明</span>
-                        <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-3 color-1"
-                          aria-hidden="true"></i>
-                        <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-3 color-1"
-                          aria-hidden="true"></i>
-                      </div>
-                    </h5>
-                    <div id="studAtt2" className="accordion-collapse collapse" data-bs-parent="#att">
-                      <div className="accordion-body pt-0 px-0 px-md-5">
-                        <div className="font-weight-bolder mt-3 bg-f3">110學年度第1學期</div>
-                        <div className="d-flex flex-wrap pt-2">
-                          <div className="me-3">2021/07/18</div>
-                          <div className="me-3">公假</div>
-                          <div>4節</div>
-                          <div className="color-8">(二，三，四)</div>
-                        </div>
-                        <div className="font-weight-bolder mt-3 bg-f3">109學年度第2學期</div>
-                        <div className="d-flex flex-wrap pt-2">
-                          <div className="me-3">2021/01/18</div>
-                          <div className="me-3">公假</div>
-                          <div>8節</div>
-                          <div className="color-8">(一，二，三，四，五，六，七，八)</div>
-                        </div>
-                        <div className="d-flex flex-wrap pt-2">
-                          <div className="me-3">2021/01/18</div>
-                          <div className="me-3">防疫假</div>
-                          <div>6節</div>
-                          <div className="color-8">(一，二，三，四，五，六)</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <div className='col-12 col-md-6 col-lg-4 ms-auto mb-3'>
+                <div className='search'>
+                  <i className='fa fa-search color-1'></i>
+                  <input type="text" value={searchName} onChange={handleInputChange} autoComplete="off" className="form-control inputname" placeholder="依學生姓名或學號查詢" />
+                  <input type="button" value='查詢' onClick={handleButton} className='btn btn-custom fw-600 shadow-none' />
                 </div>
               </div>
             </div>
 
+            <div className="card">
+              <div className="card-body p-3">
 
+                {/* <div className="accordion accordion-flush">
+                  {[].concat(studLists || []).map((list, index) => {
+                    return <div>{list.class_name}{list.name}</div>
+                  })}
+                </div> */}
+
+                <div className="accordion accordion-flush" id="attSearch">
+                  <div className="accordion-item">
+
+                    {(selClass === '' && searchNameSend === '') && <h5 className='ps-3 py-2'>無資料，請選取班級或輸入查詢</h5>}
+                    {(Object.keys(studLists).length === 0 && (selClass !== '' || searchNameSend !== '')) && <h5 className='ps-3 py-2'>{selClass}{searchNameSend}  無資料</h5>}
+
+                    {(studLists) && ([].concat(studLists || [])).map((stuAtt, index) => {
+
+                      return <>
+                        <h5 className="accordion-header">
+                          <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
+                            data-bs-target={'#studSearchAtt' + index} aria-expanded="false" aria-controls={'studSearchAtt' + index}
+                            style={{ color: Object.getOwnPropertyNames(stuAtt.seme).length ? '#1db7bd' : '#a3a3a3' }}>
+                            <span className='claname'>{stuAtt.class_name}</span>
+                            <span className='studname'>{stuAtt.name}</span>
+                            <span>{stuAtt.student_number}</span>
+                            <i className="collapse-close fa fa-chevron-down fs-16 pt-1 position-absolute end-0 me-0 me-md-3"
+                              aria-hidden="true" style={{ color: Object.getOwnPropertyNames(stuAtt.seme).length ? '#1db7bd' : '#a3a3a3' }}></i>
+                            <i className="collapse-open fa fa-chevron-up fs-16 pt-1 position-absolute end-0 me-0 me-md-3"
+                              aria-hidden="true" style={{ color: Object.getOwnPropertyNames(stuAtt.seme).length ? '#1db7bd' : '#a3a3a3' }}></i>
+                          </div>
+                        </h5>
+
+                        <div id={'studSearchAtt' + index} className="accordion-collapse collapse" data-bs-parent="#attSearch">
+                          <div className="accordion-body pt-0 px-0 px-md-5">
+                            {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
+                              const semeList = stuAtt.seme[semeKey];
+                              return <>
+                                {(!semeList) && <div className='ps-3 py-2'>無資料缺曠資料</div>}
+                                <div className="font-weight-bolder mt-3 bg-f3">{`${semeList.school_year}學年度第${semeList.semester}學期`}</div>
+                                {semeList.absence_list.map((v) => {
+                                  return (
+                                    <div className="d-flex flex-wrap pt-2">
+                                      <div className="me-3">{v.occur}</div>
+                                      <div className="me-3">{v.absence_type}</div>
+                                      <div className="me-3">{v.counts}節</div>
+                                      <div className="color-8">({v.periods})</div>
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    })}
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
 
           </div>
-
-
 
           <div className="tab-pane fade content-col" id="award" role="tabpanel" aria-labelledby="award-tab">
             <h2>獎懲</h2>
@@ -785,16 +909,16 @@ function App() {
             </div>
             <div className="row mt-5">
               <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <select className="form-select">
-                  <option value="Choice 1" selected="">全部年級</option>
+                <select className="form-select" defaultValue={""}>
+                  <option value="Choice 1" selected>全部年級</option>
                   <option value="Choice 2">一年級</option>
                   <option value="Choice 3">二年級</option>
                   <option value="Choice 3">三年級</option>
                 </select>
               </div>
               <div className="col-12 col-md-6 col-lg-3 mb-3">
-                <select className="form-select">
-                  <option value="Choice 1" selected="">全部班級</option>
+                <select className="form-select" defaultValue={""}>
+                  <option value="Choice 1" selected>全部班級</option>
                   <option value="Choice 2">資101</option>
                   <option value="Choice 3">資102</option>
                   <option value="Choice 3">普201</option>
