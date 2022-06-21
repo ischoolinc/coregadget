@@ -614,13 +614,13 @@ tfoot tr {
   color: #5ec1c7;
 }
 
-.attend-chart {
-  height: 400px !important;
+/* .attend-chart {
+  height: 450px !important;
 }
 
 .award-chart {
   height: 300px;
-}
+} */
 
 .rs-picker-toggle-wrapper {
   width: 250px;
@@ -629,12 +629,6 @@ tfoot tr {
 .rs-picker-daterange-menu .rs-calendar:first-child {
   border-bottom: 1px solid var(--rs-border-primary);
   border-right: none !important;
-}
-
-@media (min-width: 992px) {
-  .attend-chart {
-    height: 500px !important;
-  }
 }
 
 .rs-picker-menu {
@@ -763,5 +757,9 @@ tfoot tr {
   /* height: 37px; */
   /* width: 110px;
    background: blue; */
-
 }
+
+/* .recharts-wrapper, .recharts-surface, .recharts-responsive-container {
+  width: 100%!important;
+  height: 100%!important;
+} */
