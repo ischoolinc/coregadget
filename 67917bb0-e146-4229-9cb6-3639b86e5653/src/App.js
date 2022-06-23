@@ -745,9 +745,9 @@ function App() {
                       <div className="row">
                         <div className="col-12 col-lg-6">
                           <div className="row text-center">
-                            {merged.map((absence) => {
+                            {merged.map((absence, index) => {
                               // return <a className="col-6 col-sm-4 col-md-3 col-lg-4" href={`${(absence.count > 0) ? '#attChartName' : 'javascript:;'}`}>
-                              return <a className="col-6 col-sm-4 col-md-3 col-lg-4" href={'#attChartName'} onClick={() => {
+                              return <a key={index} className="col-6 col-sm-4 col-md-3 col-lg-4" href="#attChartName" onClick={() => {
                                 setAttCount([absence.name, absence.count]);
                               }}>
                                 <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
@@ -796,17 +796,9 @@ function App() {
 
                         <div className="accordion accordion-flush" id="att">
                           <div className="accordion-item">
-                            {/* {Object.getOwnPropertyNames(tmp).map((v, index) => {
-                              const g = tmp[v]; */}
                             {Object.getOwnPropertyNames(colAttLists).map((stuKey, index) => {
                               const stuAtt = colAttLists[stuKey];
-
-                              return <>
-                                {/* <div>{v}</div> */}
-                                {/* {g.map((i) => {
-                                  return <div>{i.occur}</div>;
-                                })} */}
-
+                              return <div>
                                 <h5 className="accordion-header">
                                   <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
                                     data-bs-target={'#studAtt' + index} aria-expanded="false" aria-controls={'studAtt' + index}>
@@ -823,7 +815,7 @@ function App() {
                                   <div className="accordion-body pt-0 px-0 px-md-5">
                                     {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
                                       const semeList = stuAtt.seme[semeKey];
-                                      return <>
+                                      return <div>
                                         <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
                                         {semeList.list.map((v) => {
                                           return (
@@ -835,11 +827,11 @@ function App() {
                                             </div>
                                           );
                                         })}
-                                      </>
+                                      </div>
                                     })}
                                   </div>
                                 </div>
-                              </>
+                              </div>
                             })}
 
                           </div>
@@ -883,8 +875,8 @@ function App() {
                       <div className="row">
                         <div className="col-12 col-md-6">
                           <div className="row text-center">
-                            {chartDisData.map((disc) => {
-                              return <a className="col-6 col-sm-4 col-md-6 col-lg-4" href={'#disChartName'} onClick={() => {
+                            {chartDisData.map((disc, index) => {
+                              return <a key={index} className="col-6 col-sm-4 col-md-6 col-lg-4" href='#disChartName' onClick={() => {
                                 setDisCount([disc.name, disc.count]);
                               }}>
                                 <div className="bg-gray-100 border-radius-md p-3 my-2 btn-total cursor-pointer">
@@ -925,7 +917,7 @@ function App() {
                             {Object.getOwnPropertyNames(colDisLists).map((stuKey, index) => {
                               const stuDis = colDisLists[stuKey];
 
-                              return <>
+                              return <div>
 
                                 <h5 className="accordion-header">
                                   <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
@@ -943,7 +935,7 @@ function App() {
                                   <div className="accordion-body pt-0 px-0 px-md-5">
                                     {Object.getOwnPropertyNames(stuDis.seme).map((semeKey, idx) => {
                                       const semeList = stuDis.seme[semeKey];
-                                      return <>
+                                      return <div>
                                         <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
                                         {semeList.discipline_list.map((v) => {
                                           return (
@@ -959,11 +951,11 @@ function App() {
                                             </div>
                                           );
                                         })}
-                                      </>
+                                      </div>
                                     })}
                                   </div>
                                 </div>
-                              </>
+                              </div>
                             })}
 
                           </div>
@@ -1030,7 +1022,7 @@ function App() {
 
                 {(studLists) && ([].concat(studLists || [])).map((stuAtt, index) => {
 
-                  return <>
+                  return <div>
                     <h5 className="accordion-header">
                       <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
                         data-bs-target={'#studSearchAtt' + index} aria-expanded="false" aria-controls={'studSearchAtt' + index}
@@ -1049,7 +1041,7 @@ function App() {
                       <div className="accordion-body pt-0 px-0 px-md-5">
                         {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
                           const semeList = stuAtt.seme[semeKey];
-                          return <>
+                          return <div>
                             {(!semeList) && <div className='ps-3 py-2'>無獎懲資料</div>}
                             <div className="font-weight-bolder mt-3 bg-f3">{`${semeList.school_year}學年度第${semeList.semester}學期`}</div>
                             {semeList.list.map((v) => {
@@ -1069,11 +1061,11 @@ function App() {
                                 </div>
                               );
                             })}
-                          </>
+                          </div>
                         })}
                       </div>
                     </div>
-                  </>
+                  </div>
                 })}
 
               </div>
