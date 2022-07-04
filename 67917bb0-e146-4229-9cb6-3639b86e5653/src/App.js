@@ -11,7 +11,7 @@ function App() {
 
   const [dateRangeType, setDateRangeType] = useState('selday');
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [attschoolYears, setAttSchoolYears] = useState([]); // 學年度
+  const [attschoolYears, setAttSchoolYears] = useState([110,2]); // 學年度
   const [showSemester, setShowSemester] = useState(false);
   const [yearSemester, setYearSemester] = useState(''); //'107,2'
   const [absenceLists, setAbsenceLists] = useState([{ name: "曠課", count: 0 }, { name: "事假", count: 0 },
@@ -58,6 +58,7 @@ function App() {
     GetAbsenceList();
     // console.log(absenceLists)
     GetClassName();
+    // itemTypefun();
     // mergefun();
   }, []);
 
@@ -798,7 +799,7 @@ function App() {
                           <div className="accordion-item">
                             {Object.getOwnPropertyNames(colAttLists).map((stuKey, index) => {
                               const stuAtt = colAttLists[stuKey];
-                              return <div>
+                              return <div key={'name'+index}>
                                 <h5 className="accordion-header">
                                   <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
                                     data-bs-target={'#studAtt' + index} aria-expanded="false" aria-controls={'studAtt' + index}>
@@ -815,11 +816,11 @@ function App() {
                                   <div className="accordion-body pt-0 px-0 px-md-5">
                                     {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
                                       const semeList = stuAtt.seme[semeKey];
-                                      return <div>
+                                      return <div key={'seme_'+index+'_'+idx}>
                                         <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
-                                        {semeList.list.map((v) => {
+                                        {semeList.list.map((v, indx) => {
                                           return (
-                                            <div className="d-flex flex-wrap pt-2">
+                                            <div key={'period'+index+'_'+idx+'_'+indx} className="d-flex flex-wrap pt-2">
                                               <div className="me-3">{v.occur}</div>
                                               <div className="me-3">{v.absence_type}</div>
                                               <div className="me-3">{v.counts}節</div>
@@ -917,7 +918,7 @@ function App() {
                             {Object.getOwnPropertyNames(colDisLists).map((stuKey, index) => {
                               const stuDis = colDisLists[stuKey];
 
-                              return <div>
+                              return <div key={'dis'+index}>
 
                                 <h5 className="accordion-header">
                                   <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
@@ -935,11 +936,11 @@ function App() {
                                   <div className="accordion-body pt-0 px-0 px-md-5">
                                     {Object.getOwnPropertyNames(stuDis.seme).map((semeKey, idx) => {
                                       const semeList = stuDis.seme[semeKey];
-                                      return <div>
+                                      return <div key={'dis'+index+'_'+idx}>
                                         <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
-                                        {semeList.discipline_list.map((v) => {
+                                        {semeList.discipline_list.map((v,indx) => {
                                           return (
-                                            <div className="d-flex flex-wrap pt-2">
+                                            <div key={'dis'+index+'_'+idx+'_'+indx} className="d-flex flex-wrap pt-2">
                                               <div className="me-3 fw-600">{v.occur}</div>
                                               {v.ma && <div className="me-3 fw-600">{v.ma}支</div>}
                                               {v.mb && <div className="me-3 fw-600">{v.mb}支</div>}
@@ -1022,7 +1023,7 @@ function App() {
 
                 {(studLists) && ([].concat(studLists || [])).map((stuAtt, index) => {
 
-                  return <div>
+                  return <div key={'search'+index}>
                     <h5 className="accordion-header">
                       <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
                         data-bs-target={'#studSearchAtt' + index} aria-expanded="false" aria-controls={'studSearchAtt' + index}
@@ -1041,12 +1042,12 @@ function App() {
                       <div className="accordion-body pt-0 px-0 px-md-5">
                         {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
                           const semeList = stuAtt.seme[semeKey];
-                          return <div>
+                          return <div key={'search'+index+'_'+idx}>
                             {(!semeList) && <div className='ps-3 py-2'>無獎懲資料</div>}
                             <div className="font-weight-bolder mt-3 bg-f3">{`${semeList.school_year}學年度第${semeList.semester}學期`}</div>
-                            {semeList.list.map((v) => {
+                            {semeList.list.map((v,indx) => {
                               return (
-                                <div className="d-flex flex-wrap pt-2">
+                                <div key={'search'+index+'_'+idx+'_'+indx} className="d-flex flex-wrap pt-2">
                                   <div className="me-3">{v.occur}</div>
                                   {v.absence_type && <div className="me-3">{v.absence_type}</div>}
                                   {v.counts && <div className="me-3">{v.counts}節</div>}
