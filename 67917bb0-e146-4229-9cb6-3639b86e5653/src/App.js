@@ -11,12 +11,10 @@ function App() {
 
   const [dateRangeType, setDateRangeType] = useState('selday');
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [attschoolYears, setAttSchoolYears] = useState([110,2]); // 學年度
+  const [attschoolYears, setAttSchoolYears] = useState([110, 2]); // 學年度
   const [showSemester, setShowSemester] = useState(false);
   const [yearSemester, setYearSemester] = useState(''); //'107,2'
-  const [absenceLists, setAbsenceLists] = useState([{ name: "曠課", count: 0 }, { name: "事假", count: 0 },
-  { name: "病假", count: 0 }, { name: "喪假", count: 0 }, { name: "公假", count: 0 },
-  { name: "遲到", count: 0 }, { name: "生理假", count: 0 }]); // 假別清單
+  const [absenceLists, setAbsenceLists] = useState([{ name: "曠課", count: 0 }, { name: "事假", count: 0 }, { name: "病假", count: 0 }, { name: "喪假", count: 0 }, { name: "公假", count: 0 }, { name: "遲到", count: 0 }, { name: "生理假", count: 0 }]); // 假別清單
   const [attSum, setAttSum] = useState([]); // 假別：總計人數
   const [discSum, setDiscSum] = useState({}); // 獎懲總計人數
   const [chartDisData, setChartDisData] = useState([]); // 獎懲總計人數
@@ -53,13 +51,8 @@ function App() {
 
 
   useEffect(() => {
-    // GetAttSchoolYear();
-    // GetSchoolYear();
     GetAbsenceList();
-    // console.log(absenceLists)
     GetClassName();
-    // itemTypefun();
-    // mergefun();
   }, []);
 
   useEffect(() => {
@@ -80,18 +73,15 @@ function App() {
 
   useEffect(() => {
     GetAttendanceList();
-    // console.log(attLists);
   }, [attCount]);
 
   useEffect(() => {
     GetDisciplineList();
-    // console.log(attLists);
   }, [disCount]);
 
   useEffect(() => {
     GetClassStudent();
     GetListSearch();
-    // GetDisendanceListSearch();
   }, [itemType, selClass, dateRange, yearSemester, showSemester, searchNameSend]);
 
   useEffect(() => {
@@ -135,7 +125,6 @@ function App() {
         periods: item.periods,
       });
     }
-    // console.log(colAttLists);
   }
 
 
@@ -173,12 +162,10 @@ function App() {
         da: (item.da > 0) ? `大過  ${item.da}` : '',
         db: (item.db > 0) ? `小過  ${item.db}` : '',
         dc: (item.dc > 0) ? `警告  ${item.dc}` : '',
-        // counts: item.counts,
         occur: item.occur,
         reason: item.reason,
       });
     }
-    // console.log(colDisLists);
   }
 
 
@@ -247,7 +234,6 @@ function App() {
 
   function mergefun() {
     const source = {};
-    // console.log(absenceLists);
     absenceLists.forEach(v => source[v.name] = v.count);
     ([].concat(attSum || [])).forEach(v => source[v.name] = v.count);
     const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
@@ -322,21 +308,10 @@ function App() {
     }
   }
 
-
-  // const bodyDiscReturn = () => {
-  //   if (showSemester) {
-  //     return `<Request><YearSemester>${yearSemester}</YearSemester></Request>`
-  //   } else {
-  //     return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate>
-  //       <EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate></Request>`;
-  //   }
-  // }
-
   const bodyReturn = () => {
     if (showSemester) {
       return `<Request><YearSemester>${yearSemester}</YearSemester></Request>`
     } else {
-      // console.log(yearSemester, dateRange);
       return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate>
       <EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate></Request>`;
     }
@@ -344,7 +319,6 @@ function App() {
 
   // 取得獎懲統計數據
   async function GetDisciplineSummary() {
-    // console.log(bodyDiscReturn());
     await _connection.send({
       service: "_.GetDisciplineSummary",
       body: `${bodyReturn()}`,
@@ -355,7 +329,6 @@ function App() {
         } else {
           if (response) {
             setDiscSum(response.DisciplineSum);
-            // console.log(response.DisciplineSum);
           }
         }
       }
@@ -364,7 +337,6 @@ function App() {
 
   // 取得缺曠統計數據
   async function GetAttendanceSummary() {
-    // console.log(bodyReturn());
     await _connection.send({
       service: "_.GetAttendanceSummary",
       body: `${bodyReturn()}`,
@@ -375,7 +347,6 @@ function App() {
         } else {
           if (response) {
             setAttSum(response.AttendanceSum);
-            // console.log(attSum, response);
           }
         }
       }
@@ -387,28 +358,23 @@ function App() {
     if (showSemester) {
       return `<Request><YearSemester>${yearSemester}</YearSemester><DisType>${disCount[0]}</DisType></Request>`
     } else {
-      // console.log(yearSemester, dateRange);
       return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate>
       <EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate><DisType>${disCount[0]}</DisType></Request>`;
     }
   }
 
   async function GetDisciplineList() {
-    // console.log(bodyReturn());
     await _connection.send({
       service: "_.GetDisciplineList",
       body: `${bodyDisListReturn()}`,
       result: function (response, error, http) {
-        // console.log(bodyListReturn());
         if (error !== null) {
           setDisLists([]);
-          // console.log('GetDisciplineListErr', disCount[0]);
           return 'err';
         } else {
           if (response.GetList) {
 
             setDisLists(response.GetList);
-            // console.log(response.Discipline);
 
           } else { setDisLists([]); }
         }
@@ -422,19 +388,16 @@ function App() {
     if (showSemester) {
       return `<Request><YearSemester>${yearSemester}</YearSemester><DisType>${attCount[0]}</DisType></Request>`
     } else {
-      // console.log(yearSemester, dateRange);
       return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate>
       <EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate><DisType>${attCount[0]}</DisType></Request>`;
     }
   }
 
   async function GetAttendanceList() {
-    // console.log(bodyReturn());
     await _connection.send({
       service: "_.GetAttendanceList",
       body: `${bodyListReturn()}`,
       result: function (response, error, http) {
-        // console.log(bodyListReturn());
         if (error !== null) {
           console.log('GetAttendanceListErr', yearSemester);
           return 'err';
@@ -462,7 +425,6 @@ function App() {
         } else {
           if (response) {
             setAbsenceLists(response.AbsenceList);
-            // console.log(response.AbsenceList);
           }
         }
       }
@@ -493,52 +455,26 @@ function App() {
     if (showSemester) {
       return `<Request><YearSemester>${yearSemester}</YearSemester><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`
     } else {
-      // console.log(yearSemester, dateRange);
       return `<Request><BeginDate>${moment(dateRange[0]).format('YYYY-MM-DD')}</BeginDate><EndDate>${moment(dateRange[1]).format('YYYY-MM-DD')}</EndDate><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`;
     }
   }
   // 取得缺曠名單(查詢依班級或姓名)
   async function GetListSearch() {
-    // console.log(bodyReturn());
     await _connection.send({
 
       service: `_.${searchService}`,
       body: bodyListReturnSearch(),
       result: function (response, error, http) {
-        // console.log(bodyListReturn());
         if (error !== null) {
-          // console.log('GetListSearchErr', yearSemester);
           return 'err';
         } else {
           if (response.GetList) {
-            // setAttSearchLists(response.GetAttendanceList);
             setSearchLists(response.GetList);
-            // console.log(response.GetList);
           } else { setSearchLists([]); }
         }
       }
     });
   }
-
-  // 取得獎懲名單(查詢依班級或姓名)
-  // async function GetDisendanceListSearch() {
-  //   await _connection.send({
-  //     service: `_.${searchService}`,
-  //     body: bodyListReturnSearch(),
-  //     result: function (response, error, http) {
-  //       if (error !== null) {
-  //         console.log('GetDisendanceListSearchErr', yearSemester);
-  //         return 'err';
-  //       } else {
-  //         if (response.GetList) {
-  //           setSearchLists(response.GetList);
-  //           console.log(response.GetList);
-  //         }
-  //         else { setSearchLists([]); }
-  //       }
-  //     }
-  //   });
-  // }
 
 
   // 取得班級
@@ -623,10 +559,8 @@ function App() {
     if (searchName.length > 1) {
       setSearchNameSend(searchName);
     } else {
-      alert("長度不夠")
+      alert("請輸入2字以上，再進行查詢")
     }
-    // setSearchName(e.target.value);
-    // setSelGyear("Y");
   }
 
 
@@ -681,7 +615,6 @@ function App() {
             <div className="d-flex align-items-center">
               <span className="material-icons-outlined color-1 cursor-pointer"
                 onClick={() => { perDate(); }}>arrow_back_ios</span>
-              {/* <input type="text" name="daterange" className="daterange mx-2" /> */}
               <CustomProvider locale={zhTW}>
                 <DateRangePicker format="yyyy-MM-dd" value={dateRange} locale={zhTW}
                   cleanable={false}
@@ -695,9 +628,6 @@ function App() {
           {(showSemester) && <div className="col-12 col-md-6 col-lg-5 mb-4 ps-3 pe-0">
             <select className="form-select max-width-300" value={yearSemester} onChange={(e) => handleChangeSeme(e)}>
 
-              {/* <option value="110,1">110學年度第1學期</option>
-              <option value="109,2">109學年度第2學期</option>
-              <option value="109,1">109學年度第1學期</option> */}
               {attschoolYears.map((AttschoolYear) => {
                 return <option key={`${AttschoolYear.school_year},${AttschoolYear.semester}`} value={`${AttschoolYear.school_year},${AttschoolYear.semester}`}>
                   {`${AttschoolYear.school_year}學年度第${AttschoolYear.semester}學期`}</option>
@@ -705,7 +635,6 @@ function App() {
             </select>
           </div>}
 
-          {/* <div className='d-none d-md-block col'></div> */}
 
         </div>
 
@@ -761,10 +690,6 @@ function App() {
                           </div>
                         </div>
                         <div className="col-12 col-lg-6 attend-chart">
-                          {/* <img src="./assets/img/chat.png" alt="" className="mt-3 mt-lg-0 w-100" /> 
-                    <BarChart width={150} height={40} data={data}>
-                      <Bar dataKey="count" fill="#8884d8" />
-                    </BarChart>*/}
                           <ResponsiveContainer height={450}>
                             <BarChart data={merged} layout="vertical" margin={{ top: 30, right: 30, left: 0, bottom: 0 }}>
                               <defs>
@@ -773,21 +698,10 @@ function App() {
                                   <stop offset="100%" stopColor="#2196f3" />
                                 </linearGradient>
                               </defs>
-                              {/* <XAxis
-                          dataKey="name" tickLine={false}
-                          axisLine={{ stroke: "#2196f3" }}
-                          tick={{ fill: "#999" }}
-                        />
-                        <YAxis/> */}
                               <XAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
                               <YAxis dataKey="name" type="category" axisLine={{ stroke: "#2196f3" }} />
 
-                              {/*<Bar dataKey="count" barSize={20} label={{ position: 'right', fill: '#2196f3' }}> */}
                               <Bar dataKey="count" fill="url(#splitColor)" barSize={20} label={{ position: 'right', fill: '#2196f3' }} fillOpacity={0.8} >
-                                {/* 自訂色 
-                          {data.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))} */}
                               </Bar>
                             </BarChart>
                           </ResponsiveContainer>
@@ -799,7 +713,7 @@ function App() {
                           <div className="accordion-item">
                             {Object.getOwnPropertyNames(colAttLists).map((stuKey, index) => {
                               const stuAtt = colAttLists[stuKey];
-                              return <div key={'name'+index}>
+                              return <div key={'name' + index}>
                                 <h5 className="accordion-header">
                                   <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
                                     data-bs-target={'#studAtt' + index} aria-expanded="false" aria-controls={'studAtt' + index}>
@@ -816,11 +730,11 @@ function App() {
                                   <div className="accordion-body pt-0 px-0 px-md-5">
                                     {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
                                       const semeList = stuAtt.seme[semeKey];
-                                      return <div key={'seme_'+index+'_'+idx}>
+                                      return <div key={'seme_' + index + '_' + idx}>
                                         <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
                                         {semeList.list.map((v, indx) => {
                                           return (
-                                            <div key={'period'+index+'_'+idx+'_'+indx} className="d-flex flex-wrap pt-2">
+                                            <div key={'period' + index + '_' + idx + '_' + indx} className="d-flex flex-wrap pt-2">
                                               <div className="me-3">{v.occur}</div>
                                               <div className="me-3">{v.absence_type}</div>
                                               <div className="me-3">{v.counts}節</div>
@@ -918,7 +832,7 @@ function App() {
                             {Object.getOwnPropertyNames(colDisLists).map((stuKey, index) => {
                               const stuDis = colDisLists[stuKey];
 
-                              return <div key={'dis'+index}>
+                              return <div key={'dis' + index}>
 
                                 <h5 className="accordion-header">
                                   <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
@@ -936,11 +850,11 @@ function App() {
                                   <div className="accordion-body pt-0 px-0 px-md-5">
                                     {Object.getOwnPropertyNames(stuDis.seme).map((semeKey, idx) => {
                                       const semeList = stuDis.seme[semeKey];
-                                      return <div key={'dis'+index+'_'+idx}>
+                                      return <div key={'dis' + index + '_' + idx}>
                                         <div className="font-weight-bolder mt-3 bg-f3">{semeList.school_year}學年度第{semeList.semester}學期</div>
-                                        {semeList.discipline_list.map((v,indx) => {
+                                        {semeList.discipline_list.map((v, indx) => {
                                           return (
-                                            <div key={'dis'+index+'_'+idx+'_'+indx} className="d-flex flex-wrap pt-2">
+                                            <div key={'dis' + index + '_' + idx + '_' + indx} className="d-flex flex-wrap pt-2">
                                               <div className="me-3 fw-600">{v.occur}</div>
                                               {v.ma && <div className="me-3 fw-600">{v.ma}支</div>}
                                               {v.mb && <div className="me-3 fw-600">{v.mb}支</div>}
@@ -1009,12 +923,6 @@ function App() {
         <div className="card">
           <div className="card-body p-3">
 
-            {/* <div className="accordion accordion-flush">
-                  {[].concat(studLists || []).map((list, index) => {
-                    return <div>{list.class_name}{list.name}</div>
-                  })}
-                </div> */}
-
             <div className="accordion accordion-flush" id="attSearch">
               <div className="accordion-item">
 
@@ -1023,7 +931,7 @@ function App() {
 
                 {(studLists) && ([].concat(studLists || [])).map((stuAtt, index) => {
 
-                  return <div key={'search'+index}>
+                  return <div key={'search' + index}>
                     <h5 className="accordion-header">
                       <div className="accordion-button px-0 px-md-3 pt-2 pb-0" role="button" data-bs-toggle="collapse"
                         data-bs-target={'#studSearchAtt' + index} aria-expanded="false" aria-controls={'studSearchAtt' + index}
@@ -1042,12 +950,12 @@ function App() {
                       <div className="accordion-body pt-0 px-0 px-md-5">
                         {Object.getOwnPropertyNames(stuAtt.seme).map((semeKey, idx) => {
                           const semeList = stuAtt.seme[semeKey];
-                          return <div key={'search'+index+'_'+idx}>
+                          return <div key={'search' + index + '_' + idx}>
                             {(!semeList) && <div className='ps-3 py-2'>無獎懲資料</div>}
                             <div className="font-weight-bolder mt-3 bg-f3">{`${semeList.school_year}學年度第${semeList.semester}學期`}</div>
-                            {semeList.list.map((v,indx) => {
+                            {semeList.list.map((v, indx) => {
                               return (
-                                <div key={'search'+index+'_'+idx+'_'+indx} className="d-flex flex-wrap pt-2">
+                                <div key={'search' + index + '_' + idx + '_' + indx} className="d-flex flex-wrap pt-2">
                                   <div className="me-3">{v.occur}</div>
                                   {v.absence_type && <div className="me-3">{v.absence_type}</div>}
                                   {v.counts && <div className="me-3">{v.counts}節</div>}
