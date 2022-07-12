@@ -410,11 +410,14 @@
                     } else {
                       avg_score = parseFloat(ext_score, 10);
                       //td_score = ext_score ?  Number(avg_score).toFixed(_places) : "";
-                      td_score = ext_score ? FloatMath(Number(avg_score), _math_type, _places) : "";
+                      // td_score = ext_score ? FloatMath(Number(avg_score), _math_type, _places) : "";
+                      // 20220712 上一行為原本邏輯 有吃成績計算規則
+      
+                      td_score = ext_score ? Number(avg_score) : "";
                     }
-                    if (avg_score && avg_score < 60) {
+                    if (avg_score && avg_score < 60) { //及格
                       tbody1.push("<td class=\"my-fail\" my-data=\"" + exam.ExamID + "\">" + td_score + "</td>");
-                    } else {
+                    } else { // 不及格
                       tbody1.push("<td my-data=\"" + exam.ExamID + "\">" + td_score + "</td>");
                     }
                     if (course.Subject === "體育" || pre_score === -999) {
