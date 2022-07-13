@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
     let dsns = gadget.getApplication().accessPoint;
 
     if (dsns && KeyID) {
-      let url = `https://web2.ischool.com.tw/deployment/C7FF82EC-F412-4566-ACDE-4888751F70E0/content.htm#/(simple-page:simple-page/${dsns}/comprehensive_fill/${KeyID})`;
+      let url = `https://legacy-web2.ischool.com.tw/deployment/C7FF82EC-F412-4566-ACDE-4888751F70E0/content.htm#/(simple-page:simple-page/${dsns}/comprehensive_fill/${KeyID})`;
       window.open(url, '_balnk');
     } else {
       alert("開啟失敗，無法解析代碼。");
