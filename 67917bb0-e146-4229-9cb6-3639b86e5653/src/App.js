@@ -528,6 +528,10 @@ function App() {
 
   };
 
+  const onFocus = event => {
+    event.target.setAttribute('type', 'tel');
+  }
+
   const handleChangeSeme = (e) => {
     setYearSemester(e.target.value);
     setAttCount(['假別', 0]);
@@ -619,6 +623,7 @@ function App() {
                 <DateRangePicker format="yyyy-MM-dd" value={dateRange} locale={zhTW}
                   cleanable={false}
                   className="mx-2 height-40"
+                  onFocus={onFocus}
                   onChange={setDateRange} />
               </CustomProvider>
               <span className="material-icons-outlined color-1 cursor-pointer" onClick={() => { nextDate(); }}>arrow_forward_ios</span>
