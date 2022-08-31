@@ -51,7 +51,7 @@ export class ImportCoursesComponent implements OnInit {
     { name: '授課教師1', value: 'TeacherName1', selected: false, disabled: false, hidden: false },
     { name: '授課教師2', value: 'TeacherName2', selected: false, disabled: false, hidden: false },
     { name: '授課教師3', value: 'TeacherName3', selected: false, disabled: false, hidden: false },
-    { name: '修課班級', value: 'ClassName', selected: false, disabled: false, hidden: false }
+    { name: '所屬班級', value: 'ClassName', selected: false, disabled: false, hidden: false }
   ];
 
   @ViewChild('fileInput') fileInput!: ElementRef;

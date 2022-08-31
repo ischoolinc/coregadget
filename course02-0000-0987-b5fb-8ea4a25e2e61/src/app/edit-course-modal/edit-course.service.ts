@@ -17,7 +17,7 @@ export class EditCourseService {
     { name: 'CourseName', mapping: ['course_name', '課程名稱'] },
     { name: 'SchoolYear', mapping: ['school_year', '學年度'] },
     { name: 'Semester', mapping: ['semester', '學期'] },
-    { name: 'ClassName', mapping: ['class_name', '修課班級'] },
+    { name: 'ClassName', mapping: ['class_name', '所屬班級'] },
     { name: 'RefClassId', mapping: ['class_id', '班級系統編號'] },
     { name: 'TeacherId1', mapping: ['teacher_id1', '授課教師1'] },
     { name: 'TeacherId2', mapping: ['teacher_id2', '授課教師2'] },

@@ -206,8 +206,8 @@ export class CoreService {
     txt = txt.replace(/CourseName/gi, '課程名稱');
     txt = txt.replace(/SchoolYear/gi, '學年度');
     txt = txt.replace(/Semester/gi, '學期');
-    txt = txt.replace(/ClassName/gi, '修課班級');
-    txt = txt.replace(/RefClassId/gi, '修課班級');
+    txt = txt.replace(/ClassName/gi, '所屬班級');
+    txt = txt.replace(/RefClassId/gi, '所屬班級');
     txt = txt.replace(/TeacherId1/gi, '授課教師1');
     txt = txt.replace(/TeacherId2/gi, '授課教師2');
     txt = txt.replace(/TeacherId3/gi, '授課教師3');

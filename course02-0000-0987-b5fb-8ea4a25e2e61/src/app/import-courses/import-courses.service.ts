@@ -17,7 +17,7 @@ export class ImportCoursesService {
     { name: 'CourseName', mapping: ['course_name', '課程名稱'] },
     { name: 'SchoolYear', mapping: ['school_year', '學年度'] },
     { name: 'Semester', mapping: ['semester', '學期'] },
-    { name: 'ClassName', mapping: ['class_name', '修課班級'] },
+    { name: 'ClassName', mapping: ['class_name', '所屬班級'] },
     { name: 'RefClassId', mapping: ['class_id', 'RefClassId'] },
     { name: 'TeacherId1', mapping: ['teacher_id1', 'TeacherId1'] },
     { name: 'TeacherId2', mapping: ['teacher_id2', 'TeacherId2'] },

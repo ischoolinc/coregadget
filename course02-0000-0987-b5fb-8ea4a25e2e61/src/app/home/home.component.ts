@@ -231,12 +231,14 @@ export class HomeComponent implements OnInit {
     const content: any[] = [];
     this.courseMap.forEach(v => {
       const courseTeachers: string[] = [];
-      v.Teachers?.forEach(t => t.TeacherName ? courseTeachers.push(`${t.TeacherName}(${t.TeacherSequence})`) : null);
-
+    // v.Teachers?.forEach(t => t.TeacherName ? courseTeachers.push(`${t.TeacherName}(${t.TeacherSequence})`) : null);
+      v.Teachers?.forEach(t => t.TeacherName ? courseTeachers.push(`${t.TeacherName}${t.TeacherNickname ? '('+t.TeacherNickname+')' : ''}`) : null);
       content.push({
         '課程系統編號': v.CourseId,
         '課程名稱': v.CourseName,
-        '授課教師': courseTeachers.join('、'),
+        '授課教師1': courseTeachers[0],
+        '授課教師2': courseTeachers[1],
+        '授課教師3': courseTeachers[2],
         '所屬班級': v.ClassName,
         '學生人數': v.CourseStudentCount || '0',
       });
