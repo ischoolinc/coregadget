@@ -64,7 +64,7 @@
               "outputHashing": "all",
               "index": {
                 "input": "src/index.prod.html",
-                "output": "index.html"
+                "output": "content.htm"
               }
             },
             "development": {

@@ -17,7 +17,7 @@
         [selected]="curTab"
         [rowSource]="tabs"
         [displayWith]="displayWeekdayTab"
-        (change)="weekdayTabChange($event)"
+        (change)="weekdayTabChange($event, false)"
       ></app-select>
     </div>
 
@@ -41,9 +41,8 @@
   </div>
 
   <div *ngIf="!loading">
-    <div *ngIf="errorMsg" class="text-danger">{{errorMsg}}</div>
+    <div *ngIf="errorMsg" class="text-warning">{{errorMsg}}</div>
     <div *ngIf="!errorMsg" class="flex flex-col mt-6">
-      <div *ngIf="!this.adminConnectedGoogle.success" class="text-danger">系統管理者尚未啟用 Google Classroom 雲端服務</div>
       <!-- 星期tab -->
       <div class="panel-group">
         <input *ngFor="let tab of tabs"
@@ -51,7 +50,7 @@
           [id]="tab.tabId"
           [value]="tab"
           [(ngModel)]="curTab"
-          (change)="toggleTab()"
+          (change)="toggleTab(false)"
         >
 
         <div class="tab-group mx-3 xs:ml-0">
@@ -125,6 +124,11 @@
                                   [course]="course">
                                 </app-launcher-google-classroom>
 
+                                <app-launcher-google-meet
+                                  *ngIf="item.service_id === 'google_meet' && item.enabled"
+                                  [course]="course"
+                                  [roleName]="role">
+                                </app-launcher-google-meet>
                                 <!-- <div class="has-tooltip lg:mr-4">
                                   <span class="tooltip -ml-2">1Know</span>
                                   <img class="h-10 w-10 mb-2 mx-1 cursor-pointer" src="assets/img/1know_logo.svg"
@@ -271,8 +275,10 @@
             <div *ngIf="item.service_id === 'google_classroom'"
               class="flex flex-row items-center mb-6">
               <div class="flex-grow flex flex-row items-center w-full">
-                <span class="text-gray-text1 text-base flex flex-row items-center"><img class="pr-2 w-12 h-12"
-                  src="assets/img/google_classroom_logo.svg" alt="Google Classroom"><span class="hidden xs:inline">Google Classroom</span></span>
+                <span class="text-gray-text1 text-base flex flex-row items-center">
+                  <img class="pr-2 w-12 h-12" src="assets/img/google_classroom_logo.svg" alt="Google Classroom">
+                  <span class="hidden xs:inline">Google Classroom</span>
+                </span>
                 <span *ngIf="data.target.GoogleExt?.id">
                   (<a href="javascript:;" (click)="manageProcessState = 304"
                     class="text-secondary hover:text-secondary-light focus:outline-none">同步</a>)
@@ -286,7 +292,30 @@
                   (change)="toggleEnabledService($event, data.target, item)"
                 ></mat-slide-toggle>
               </div>
-              <a href="javascript:;" class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
+              <a href="javascript:;" *ngIf="!this.adminConnectedGoogle.success"
+                class="ml-4" (click)="manageProcessState = 306">
+                <span class="iconify text-2xl text-warning hover:text-warning-dark" data-icon="uil:info-circle"
+                  data-inline="false"></span>
+              </a>
+              <a href="javascript:;" *ngIf="this.adminConnectedGoogle.success"
+                class="ml-4" (click)="manageProcessState = (data.target.GoogleExt?.id ? 303 : 302)">
+                <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
+                  data-inline="false"></span>
+              </a>
+            </div>
+
+            <div *ngIf="item.service_id === 'google_meet'" class="flex flex-row items-center mb-6">
+              <div class="flex-grow flex flex-row items-center w-full">
+                <span class="text-gray-text1 text-base flex flex-row items-center">
+                  <img class="pr-2 w-12 h-12" src="assets/img/google_meet.svg" alt="Google Meet">
+                  <span class="hidden xs:inline">Google Meet</span>
+                </span>
+              </div>
+              <div>
+                <mat-slide-toggle color="primary" [checked]="item.enabled" [disabled]="saving"
+                  (change)="toggleEnabledService($event, data.target, item)"></mat-slide-toggle>
+              </div>
+              <a href="javascript:;" class="ml-4" (click)="manageProcessState = 307">
                 <span class="iconify text-2xl text-gray-text3 hover:text-primary" data-icon="uil:setting"
                   data-inline="false"></span>
               </a>
@@ -326,6 +355,7 @@
         <app-add-google-classroom
           [dsns]="dsns"
           [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+          [adminDomain]="getAdminDomain()"
           [account]="myInfo?.account || ''"
           [data]="data">
         </app-add-google-classroom>
@@ -343,6 +373,7 @@
         <app-async-google-classroom
           [dsns]="dsns"
           [adminIsConnectedGoogle]="adminConnectedGoogle.success"
+          [adminDomain]="getAdminDomain()"
           [data]="data">
         </app-async-google-classroom>
       </ng-container>
@@ -353,6 +384,20 @@
         >
         </app-customize-service-manage>
       </ng-container>
+      <!-- 管理者尚未設定 Google Classroom -->
+      <ng-container *ngIf="manageProcessState === 306">
+        <div class="text-warning">
+          <span class="iconify text-4xl mr-2 inline" data-icon="uil:info-circle" data-inline="false"></span>
+          系統管理者尚未啟用 Google Classroom 雲端服務
+        </div>
+      </ng-container>
+      <!-- 管理者尚未設定 Google Meet -->
+      <ng-container *ngIf="manageProcessState === 307">
+        <app-edit-google-meet
+          [data]="data"
+        >
+        </app-edit-google-meet>
+      </ng-container>
     </div>
   </div>
 </ng-template>
@@ -360,7 +405,7 @@
 <ng-template #tplNoClass>
   <p *ngIf="curTab.value === 0" class="mt-4 text-center">無課程</p>
   <ng-container *ngIf="curTab.value !== 0">
-    <img *ngIf="role === 'teacher'" class="mx-auto" src="assets/img/t_no_class.svg" alt="此時段沒有任何課程">
-    <img *ngIf="role === 'student'" class="mx-auto" src="assets/img/s_no_class.svg" alt="此時段沒有任何課程">
+    <img *ngIf="role === 'teacher'" class="mx-auto" src="assets/img/t_no_class.png" alt="此時段沒有任何課程">
+    <img *ngIf="role === 'student'" class="mx-auto" src="assets/img/s_no_class.png" alt="此時段沒有任何課程">
   </ng-container>
 </ng-template>

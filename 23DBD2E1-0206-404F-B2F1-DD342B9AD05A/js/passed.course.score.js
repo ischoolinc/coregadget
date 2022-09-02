@@ -192,9 +192,8 @@
                                                 $scope.$apply(function () {
                                                     [].concat(response.Scores.Item || []).forEach(function (examScoreRec, index) {
                                                         if (examScoreRec.Extension && examScoreRec.Extension.Extension) {
-
                                                             //2017/12/15 穎驊因應高雄小組項目 [09-02][02] 課程歷年成績查詢 調整，新增四捨五入至小數第二位邏輯
-                                                            studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID + "///^///" + "分數評量"] = Math.round(examScoreRec.Extension.Extension.Score * 100) / 100 ;
+                                                            studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID + "///^///" + "分數評量"] =""+(isNaN(examScoreRec.Extension.Extension.Score) ?undefined: Math.round(examScoreRec.Extension.Extension.Score * 100) / 100) ;
 
                                                             studentMapping[examScoreRec.StudentID]["Exam" + examScoreRec.ExamID + "///^///" + "努力程度"] = examScoreRec.Extension.Extension.Effort;
 

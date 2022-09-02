@@ -67,8 +67,13 @@ export class SchoolService {
       , iconUrl: ''
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
-    ['h.nehs.tc.edu.tw', { //中科實中高中部 h.nehs.tc.edu.tw 名稱：IBSC High  
+    ['h.nehs.tc.edu.tw', { //中科實中高中部 h.nehs.tc.edu.tw 名稱：IBSC High
       title: 'IBSC High'
+      , iconUrl: ''
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['p.nehs.tc.edu.tw', { //中科實中國小部 p.nehs.tc.edu.tw 名稱：IBSC High
+      title: 'IBSC Elementary'
       , iconUrl: ''
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],

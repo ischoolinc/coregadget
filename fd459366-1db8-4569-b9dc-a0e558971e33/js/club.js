@@ -248,8 +248,8 @@ var _gg = function () {
                                                                 }
                                                             });
                                                             resetClubList();
-                                                            SetClubRecord();
                                                         }
+                                                        SetClubRecord();
                                                     }
                                                 }
                                             });

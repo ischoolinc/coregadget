@@ -12,7 +12,7 @@
         <span class="dropdown_box">
           <mat-select [(value)]="curSchoolYear" (selectionChange)="changeSemester()">
             <mat-option *ngFor="let item of schoolYearList" [value]="item">
-              第 {{item}} 學年度
+               {{item}} 學年度
             </mat-option>
           </mat-select>
         </span>

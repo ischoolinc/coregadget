@@ -123,7 +123,7 @@ export class GoogleClassroomService {
 
   public getGoogleSigninChooserUrl(url: string = '') {
     const finalUrl = `https://accounts.google.com/ServiceLogin/signinchooser?service=accountsettings&continue=${url}`;
-    console.log(finalUrl);
+    // console.log(finalUrl);
     return finalUrl;
   }
 }
@@ -160,4 +160,16 @@ export interface GoogleClassroomInvitation {
   userId: string;
   courseId: string;
   role: GoogleCourseRole;
+}
+
+export type ErrorWithGC = {
+  error: {
+    message: string;
+    errors: {
+      message: string;
+      domain: string;
+      reason: string;
+    }[];
+    status: string;
+  }
 }

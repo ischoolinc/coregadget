@@ -61,7 +61,7 @@
 				</h1>
 				<div class="row">
 					<div class="col-sm-6" ng-repeat="student in data[activeClass].students">
-						<div class="media my-media" style="width: 100%;">
+						<div class="media my-media" style="width: 100%;height: 230px;">
 							<div class=" pull-left" ng-click="openPhoto(student.Photo,student.Gender)" style="cursor: pointer;">
 								<img ng-if="student.Photo != ''" class="media-object" style="width:107px;height:137px"
 									ng-src="data:image/png;base64,{{student.Photo}}">
@@ -84,7 +84,7 @@
 									<a href="https://www.google.com.tw/maps/place/{{getAddress(student.MailingAddress.AddressList.Address)}}"
 										target="_blank" style="z-index:1;">{{getAddress(student.MailingAddress.AddressList.Address)}}</a>
 								</p>
-								<p style="height: auto;"><i class="fa fa-envelope"></i> <a
+								<p style="height: auto; word-break: break-all;"><i class="fa fa-envelope"></i> <a
 										href="mailto:{{student.Email}}">{{student.Email}}</a></p>
 							</div>
 						</div>

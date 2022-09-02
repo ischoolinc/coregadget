@@ -4,7 +4,7 @@ _gg.Students = [];
 _gg.Student = '';
 _gg.schoolYear = '';
 _gg.semester = '';
-
+_gg.domainOrderList =['語文','國語文','英語','數學','社會','自然科學','綜合活動']
 
 $(document).ready(function () {
     // TODO: 切換學年度學期
@@ -74,24 +74,85 @@ _gg.SetScoreData = function () {
 
     // TODO: 本學期科目成績
     $.each(SemsSubjScore, function (index, item) {
+
         // TODO: 目前要顯示的學年度學期
         if (_gg.schoolYear === item.SchoolYear && _gg.semester === item.Semester) {
 
             var col_score = {};
+           if(   item.ScoreInfo.Domains.Domain)
+           {
+            item.ScoreInfo.Domains.Domain.sort(function(a,b){
+                if (  _gg.domainOrderList.indexOf(a.領域) != (-1)&&   _gg.domainOrderList.indexOf(b.領域) != (-1) )
+                {
+                    return  _gg.domainOrderList.indexOf(a.領域) - _gg.domainOrderList.indexOf(b.領域) ;
+                }else if( _gg.domainOrderList.indexOf(a.領域) != (-1) && _gg.domainOrderList.indexOf(b.領域) == (-1)){
+                   return -1
+                }else {
+
+
+                    return 0
+                }
+              
+            })
+         console.log("item.ScoreInfo.Domains.Domain"+item.ScoreInfo.Domains.Domain) ;
+           }
+          
             $(item.ScoreInfo.Domains.Domain).each(function(domainIndex, domainItem) {
                 if (!col_score[domainItem.領域]) {
                     domainItem.subject = [];
                     col_score[domainItem.領域] = domainItem;
                 }
             });
+            // 排序 
+            console.log("   item.ScoreInfo.SemesterSubjectScoreInfo.Subject."  , item.ScoreInfo.SemesterSubjectScoreInfo.Subject)
+             debugger 
+            item.ScoreInfo.SemesterSubjectScoreInfo.Subject.sort(function(a,b){
+        
+                if (  _gg.domainOrderList.indexOf(a.領域) != (-1)&&   _gg.domainOrderList.indexOf(b.領域) != (-1) )
+                {
+                    console.log("doman領域"+a.領域);
+                    return  _gg.domainOrderList.indexOf(a.領域) - _gg.domainOrderList.indexOf(b.領域) ;
+                }else if( _gg.domainOrderList.indexOf(a.領域) != (-1) && _gg.domainOrderList.indexOf(b.領域) == (-1)){
+                //    alert ("b.領域"+b.領域 )
+                   console.log("domanNOOOOOOOOOOOO領域"+a.領域);
+                   return 1
+                }else {
+                    return 0
+                }
+            })
+              // 看看現在甚麼狀態 
+              console.log("col_score",col_score);
+              console.log("這裡到底裝了啥......" ,item.ScoreInfo.SemesterSubjectScoreInfo.Subject);
+            //   $(item.ScoreInfo.SemesterSubjectScoreInfo.Subject).each(function(subjectIndex, subjectItem) {
+            //     var  domainName = subjectItem.領域;
+            //     if (!domainName) {
+            //         domainName = '無領域';
+            //     }
+            //     console.log("domainName" ,domainName) ;
+            //     if (!col_score[domainName]) {
+            //         // col_score.domainList.push(domainName) ,
+            //         col_score[domainName] = {
+            //             '領域'    :domainName,
+            //             // subject : []
+            //         }
+            //         col_score[domainName].subject = [];
+            //     }
+
+            //     col_score[domainName].subject.push(subjectItem);
+            // });
+
+
+            //  排序
+   
 
             $(item.ScoreInfo.SemesterSubjectScoreInfo.Subject).each(function(subjectIndex, subjectItem) {
                 var  domainName = subjectItem.領域;
                 if (!domainName) {
                     domainName = '無領域';
                 }
-
+             
                 if (!col_score[domainName]) {
+                    // col_score.domainList.push(domainName) ,
                     col_score[domainName] = {
                         '領域'    :domainName,
                         subject : []
@@ -102,8 +163,17 @@ _gg.SetScoreData = function () {
                 col_score[domainName].subject.push(subjectItem);
             });
 
+            console.log("col_score.domainList",col_score.domainList)
+            // 排序 
+        
+            // alert("xxx")
+            // console.log("陣列轉...." , [...col_score]);
+            // col_score.domainList = {...col_score.domainList} ;
+            // console.log("domainItem",   {...col_score.domainList});
+            // console.log("what is inside ",col_score)
             // TODO: 領域成績
             $.each(col_score, function (domainIndex, domainItem) {
+             
                 var intDomainScore = parseInt((domainItem.成績 || '0'), 10);
 
                 var domainClassification = '';
@@ -223,7 +293,7 @@ _gg.SetScoreData = function () {
                 '<table class="my-table my-table-bordered my-well-table-striped">' +
                 '  <tbody>' +
                 '    <tr>' +
-                '      <th class="my-scorename">學期領域成績(七大學習領域)</th>' +
+                '      <th class="my-scorename">學期領域成績(八大學習領域)</th>' +
                 '      <td class="my-totalscore' + css1 + '">' + (LearnDomainScore || '') + '</td>' +
                 '    </tr>' +
                 '  </tbody>' +

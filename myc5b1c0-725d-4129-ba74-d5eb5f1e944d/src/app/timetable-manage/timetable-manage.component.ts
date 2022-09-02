@@ -25,8 +25,8 @@ export class TimetableManageComponent implements OnInit, OnDestroy {
     { value: 6, name: '星期六' },
     { value: 7, name: '星期日' },
   ];
-  periods = Array.from({ length: 12 }, (_, i) => i + 1 );
-  timetableMap: Map<string, { dayOfweek: number, period: number, isChecked: boolean }> = new Map();
+  periods: string[] = ['早自習'].concat(Array.from({ length: 12 }, (_, i) => (i + 1).toString() ));
+  timetableMap: Map<string, { dayOfweek: number, period: string, isChecked: boolean }> = new Map();
   course: MyCourseRec = {} as MyCourseRec;
   unSubscribe$ = new Subject();
 
@@ -47,7 +47,7 @@ export class TimetableManageComponent implements OnInit, OnDestroy {
         const key = this.getKey(v.weekday, v.period);
         this.timetableMap.set(key, {
           dayOfweek: +v.weekday,
-          period: +v.period,
+          period: '' + v.period,
           isChecked: true,
         })
       });
@@ -58,11 +58,11 @@ export class TimetableManageComponent implements OnInit, OnDestroy {
     this.unSubscribe$.next();
   }
 
-  getKey(dayOfweek: string | number, period: string | number) {
+  getKey(dayOfweek: string | number, period: string) {
     return `${dayOfweek}_${period}`;
   }
 
-  getIsChecked(dayOfweek: number, period: number) {
+  getIsChecked(dayOfweek: number, period: string) {
     const key = this.getKey(dayOfweek, period);
     if (this.timetableMap.has(key)) {
       return this.timetableMap.get(key)!.isChecked;
@@ -71,7 +71,7 @@ export class TimetableManageComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleTimetableChecked(dayOfweek: number, period: number) {
+  toggleTimetableChecked(dayOfweek: number, period: string) {
     const key = this.getKey(dayOfweek, period);
     if (!this.timetableMap.has(key)) {
       this.timetableMap.set(key, {
@@ -87,7 +87,7 @@ export class TimetableManageComponent implements OnInit, OnDestroy {
     if (this.saving) { return; }
     this.saving = true;
 
-    const newData: { weekday: number, period: number }[] = [];
+    const newData: { weekday: number, period: string }[] = [];
     this.timetableMap.forEach(v => {
       if (v.isChecked) {
         newData.push({ weekday: v.dayOfweek, period: v.period });
