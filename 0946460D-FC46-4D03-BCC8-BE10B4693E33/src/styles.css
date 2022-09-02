@@ -8,7 +8,7 @@
   background: #ffffff !important;
   font-weight: 900 !important;
   font-size: 26px !important;
-  color :#4F4F4F !important ;
+  color :#8a8a8a !important ;
 
 }
 
@@ -45,7 +45,7 @@
   font-weight: 900 ;
   color : rgb(80, 80, 80) ;
   display: block;
-  width: 60px;
+  /* width: 60px; */
 }
 
 .rwd-table td:first-child {
@@ -181,4 +181,24 @@ h3:after {
   position: fixed;
   top: 0px; display:none;
   background-color:white;
+}
+
+
+/* 顯示 打勾*/
+.check_icon {
+  font-size: 15px;
+  color :rgb(145, 145, 145)
+}
+
+.main_color {
+color :#2f7560 ;
+font-weight: 900;
+
+
+}
+
+
+/* 藍色的字 */
+.blue-font{
+ color :rgb(156, 71, 71) ;
 }

@@ -45,3 +45,29 @@ export interface Student{
  /** 座號 */
  seat_no : string ;
 }
+
+
+/** 點名紀錄
+ *　DB entity
+ */
+export interface  RollCallLog{
+/** UID */
+uid :string  ;
+/** 日期 */
+date : string ;
+/** 節次 */
+period :string ;
+/** 是否刪除 */
+is_delete :string ;
+/** 課程 ID  */
+ref_course_id :string ;
+/** 教師 ID  */
+ref_teacher_id :string ;
+/** 班級 ID*/
+ref_class_id :string ;
+/**  學生ID  */
+ref_student_id :string ;
+/**   */
+course_name :string ;
+
+}

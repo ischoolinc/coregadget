@@ -1,7 +1,7 @@
 import { ThisReceiver } from '@angular/compiler';
-import { Component } from '@angular/core';
+import { Component, DebugEventListener } from '@angular/core';
 import { GadgetService } from './gadget.service';
-import { Student, StudentAttendance } from './vo';
+import { RollCallLog, Student, StudentAttendance } from './vo';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,9 @@ export class AppComponent {
   PeriodList : any[] = [] ;
   isShowDetail :boolean = false ;
   /** 導師所帶班級 */
-  MyClassList :any[] =[] ;
+  MyClassList :any[] = [] ;
+  /** 該班級學生點名紀錄 */
+  RollCallLogList : RollCallLog [] = [];
   currClass :any ;
 
   constructor(
@@ -27,7 +29,8 @@ export class AppComponent {
   schoolInfo: any | any
   loading: boolean | any
   error: any;
-  currClassID :number  |any  = 8;
+  currClassID :number  |any  ;
+
   async ngOnInit() {
     await this.getPeriod();
     await this.getMyClass(); // 1. 取得我的班級
@@ -38,11 +41,9 @@ export class AppComponent {
 
   /** 取得學生及缺礦資料 */
   async loadData(){
-    await this.getStudentList () ; // 2. 取得學生資料
+    await this.getStudentList() ; // 2. 取得學生資料
     await this.getStudentAttendInfos() ; // 3. 取得學生缺礦資料
-
-
-
+    await this.getRollCallLog() ;
   }
 
   /** 取得班導師 帶班班級  */
@@ -124,10 +125,32 @@ async getPeriod(){
 
 }
 
+/** 取得教師點名紀錄 */
+async getRollCallLog (){
+
+  try {
+    this.loading = true;
+    const contract = await this.gadget.getContract('campus.rollcall.teacher');
+    let rsp = await contract.send("GetRollCallLog",{ Request : {ClassID  :this.currClass.id }});
+    this.RollCallLogList = [].concat(rsp.rs) ;
+    console.log("this.RollCallLogList",this.RollCallLogList) ;
+  } catch (ex) {
+    alert("取得班級發生錯誤!" + JSON.stringify(ex))
+  } finally {
+    this.loading = false;
+  }
+}
+
 /** 取得缺礦類別 */
 getAbsenceType( studentID :string  ,period :string ){
-  return    this.StudentAttendanceList.find(x=> x.id == studentID && x.now_attendance_period == period  )
+  return  this.StudentAttendanceList.find(x=> x.id == studentID && x.now_attendance_period == period  )
+}
 
+/** 取得是否點名 */
+getRollCallLogItem(studentID :string  ,period :string ) :RollCallLog[] {
+   let result =[];
+    result =  this.RollCallLogList.filter(x=> x?.ref_student_id  == studentID && x.period == period  )
+   return result  ;
 }
 
 /**  點選顯示 明細*/
@@ -178,6 +201,16 @@ exportData(selector :any) {
   /** */
 devUse(obj: any) {
     return JSON.stringify(obj)
+
+}
+
+/**  */
+getDateNow(){
+  let  m = new Date();
+  let  date = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate()
+
+  return  date ;
+
 
 }
 }
