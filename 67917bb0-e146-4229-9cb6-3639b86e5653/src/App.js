@@ -476,6 +476,14 @@ function App() {
     });
   }
 
+  //將回傳的Object轉成Array
+  function convertToArray(obj) {
+    if (obj instanceof Array) {
+        return obj;
+    } else {
+        return [obj];
+    }
+}
 
   // 取得班級
   async function GetClassName() {
@@ -488,7 +496,9 @@ function App() {
           return 'err';
         } else {
           if (response) {
-            setAttClassNames(response.ClassName);
+            //setAttClassNames(response.ClassName);
+            var classNameArray= convertToArray(response.ClassName)
+            setAttClassNames(classNameArray);
           }
         }
       }
