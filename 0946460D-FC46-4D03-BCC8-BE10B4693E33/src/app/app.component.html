@@ -44,7 +44,7 @@
           </td>
           <td [attr.data-th]="period.Name" *ngFor="let period of PeriodList" (click)="toogleShowdetail()">
             <ng-container *ngIf="getAbsenceType(student.student_id ,period.Name)">
-              <span *ngIf="getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type">
+              <span *ngIf="getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type" style="color: rgb(202, 79, 79);">
                 {{ getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type}}
               </span>
               <span class="blue-font"
