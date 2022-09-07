@@ -121,10 +121,11 @@ Add_v2(){
   }
 
   loadData() {
+
     this.isLoading = true;
     // 載入輔導身分
     this.GetTeachersCounselRole();
-
+    this.isLoading = false;
   }
 
 
@@ -205,28 +206,31 @@ Add_v2(){
       let resp = await this.dsaService.send("GetTeachersCounselRole", {
         Request: {}
       });
+      if(resp){
+        [].concat(resp.TeacherCounselRole || []).forEach(CounselRole => {
+          let tea: TeacherCounselRole = new TeacherCounselRole();
+          tea.TeacherID = CounselRole.TeacherID;
+          tea.TeacherName = CounselRole.TeacherName;
+          tea.TeacherCounselNumber =CounselRole.TeacherCounselNumber
+          tea.Role = CounselRole.Role;
+          tea.parseOrder();
+          if (tea.Role && tea.Role !== '') {
+            this.teachersCounselRoles.push(tea);
+          } else {
+            this.notTeachersCounselRole.push(tea);
+          }
+        });
+  debugger
+        this.teachersCounselRoles.sort(function (a, b) {
+          return a.Order - b.Order;
 
-      [].concat(resp.TeacherCounselRole || []).forEach(CounselRole => {
-        let tea: TeacherCounselRole = new TeacherCounselRole();
-        tea.TeacherID = CounselRole.TeacherID;
-        tea.TeacherName = CounselRole.TeacherName;
-        tea.TeacherCounselNumber =CounselRole.TeacherCounselNumber
-        tea.Role = CounselRole.Role;
-        tea.parseOrder();
-        if (tea.Role && tea.Role !== '') {
-          this.teachersCounselRoles.push(tea);
-        } else {
-          this.notTeachersCounselRole.push(tea);
-        }
-      });
-
-      this.teachersCounselRoles.sort(function (a, b) {
-        return a.Order - b.Order;
-      });
+          
+        });
+      }
     } catch (err) {
       alert('無法取得輔導教師身分：' + err.dsaError.message);
     }
-
+    debugger
     this.isLoading = false;
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from '@angular/core';
+import { Component, ElementRef, OnInit, Optional, ViewChild } from '@angular/core';
 import { DsaService } from "../../../dsa.service";
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
@@ -14,7 +14,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./gov-statistics-monthly.component.css']
 })
 export class GovStatisticsMonthlyComponent implements OnInit {
-
+  @ViewChild('sheet1') sheet1: ElementRef;
+  @ViewChild('sheet2') sheet2: ElementRef;
   reportNameList: {reportName,description,isShowDescrip?}[];
   selectYear: number;
   selectMonth: number;
@@ -24,6 +25,10 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   dsnsName: string = "";
   schoolType;
   schoolName ='';
+  /**sheet 1 資料 */
+  data = [] ;
+  /**sheet 2 資料 */
+  data2 =[] ;
   TeacherCounselRole :TeacherCounselRole[]=[];
   /** 範圍 */
   privateRangeList :{
@@ -38,6 +43,12 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
   constructor(@Optional()
   private appComponent: AppComponent, private dsaService: DsaService, private http: HttpClient) { }
+
+
+  /** */
+  getJSON (obj:any){
+   return JSON.stringify(obj)
+  }
 
   async ngOnInit() {
     // 取得教師編碼 
@@ -55,7 +66,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         this.selectMonth = new Date().getMonth() + 1;
         this.buttonDisable = false;
         this.reportNameList = [
-          {reportName :"輔導工作月統計報表-教育部版" ,description:"版本更新月份:2022-01" ,isShowDescrip :false},
+          {reportName :"輔導工作月統計報表-教育部版" ,description:"版本更新月份:2022-09" ,isShowDescrip :false},
           {reportName : "輔導工作月統計報表-新北市版" ,description:""},
           {reportName : "輔導工作月統計報表-新竹國中版" ,description:""},
           {reportName : "輔導工作月統計報表-新竹國小版" ,description:""}
@@ -188,9 +199,10 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
     // 2. 該月結案:是否結案=t and 結案日期 = 畫面上所選年月
     let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-教育部版";
     let fileName: string = wsName + ".xlsx";
-    let data: CaseMonthlyStatistics[] = [];
-    let data2: CaseMonthlyStatistics2[] = [];
-
+    // let data: CaseMonthlyStatistics[] = [];
+    // let data2: CaseMonthlyStatistics2[] = [];
+    this.data = [] ;
+    this.data2 = [] ;
     let resp = await this.dsaService.send("GetCaseMonthlyStatistics1_1", {
       Request: {
         Year: this.selectYear,
@@ -218,8 +230,8 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
       rec.CaseMainCategory = rspRec.CaseMainCategory;
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
-
       
+      rec.CaseNo =rspRec.CaseNo ; // 20220907 需求增加
       rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec),
       rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
@@ -247,8 +259,8 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
      }
    });
       }
-
-      data.push(rec);
+      console.log("obj",rec)
+      this.data.push(rec);
     });
 
 
@@ -295,32 +307,58 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
     });
 
     map.forEach((values, keys) => {
-      data2.push(values);
+      this.data2.push(values);
     });
 
 
 //sheet 1
-    if (data.length > 0 || data2.length > 0) {
+    if (this.data.length > 0 || this.data2.length > 0) {
       let data1: any[] = [];
       let data2_d: any[] = [];
-      data.forEach(da => {
+      this.data.forEach(da => {
         let tno = da.TeacherName;
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
+
+
+          // 教師編碼 
+          // 身分
+          // 學生代號 
+          // 學生年級 
+          // 學生性別 
+          // 學生身分
+          // 個案來源 
+          // 輔導概況 
+          // 轉介概況 
+          // 個案類別(主) 
+          // 個案類別(主) 其他說明 
+          // 個案類別(副) 
+          // 個案類別(副) 
+          // 其他說明當月晤談累積次數 （人次)
+          
         let item = {
           '教師編碼': da.TeacherCounselNumber,
+          
+          '身分' :'' , // 新欄位 
+          '學生代號' :da.CaseNo , // 新欄位 
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
+          '學生身分' :'' , // 新欄位 
+          '個案來源' : '' , // 新欄位 
+          '輔導概況' : '' , // 新欄位 
+          '轉介概況 ' :'' , // 新欄位 
           '個案類別(主)' : da.MainCategoryValue.join(','),
+          '個案類別(主) 其他說明' :'',
           '個案類別(副)': da.CategoryValue.join(','),
-          '新案舊案': da.Status,
+          '個案類別(副) 其他說明' :'',
+          // '新案舊案': da.Status, // 新規格暫時住借
           '晤談次數': da.Count
           // '其他服務次數': 0
         };
         data1.push(item);
       })
 // sheet2
-      data2.forEach(da => {
+    this.data2.forEach(da => {
         let tno = da.TeacherName;
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
@@ -334,6 +372,7 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
         };
         data2_d.push(item);
       })
+      // XLSX.writeFile
       const wb = XLSX.utils.book_new();
       var ws = XLSX.utils.json_to_sheet([
         { A: `[${(this.selectYear-1911)}-${this.selectMonth}] ${this.schoolName} 輔導教師工作成果(當月個案填報)` }
@@ -346,11 +385,28 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
        ]; // 設定第一版 
     
       ws['!rows'] = wscols;
-      XLSX.utils.sheet_add_json (ws,data1,  { skipHeader: false,origin: {r:1,c:0}});// 寫入資料 從第二列開始
-      const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
+      // XLSX.utils.sheet_add_json (ws,data1,  { skipHeader: false,origin: {r:1,c:0}});// 寫入資料 從第二列開始
+      // const ws2 = XLSX.utils.json_to_sheet(data2_d, { header: [], cellDates: true, dateNF: 'yyyy-mm-dd hh:mm:ss', });
     
-      XLSX.utils.book_append_sheet(wb, ws, "1.當月個案");
-      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
+     // sheet 1
+  
+     const ws1 = XLSX.utils.table_to_sheet(this.sheet1.nativeElement);
+     // 增加資料 
+     XLSX.utils.sheet_add_json (ws1,data1,  { skipHeader: true,origin: {r:5,c:0}});// 寫入資料 從第二列開始
+     console.log("ws1",this.sheet1.nativeElement);
+     // sheet 2 
+
+     const ws2 = XLSX.utils.table_to_sheet(this.sheet2.nativeElement);
+
+
+     // sheet 3
+     const table = document.getElementById("sheet3");
+  
+     const ws3 = XLSX.utils.table_to_sheet(table);
+
+      XLSX.utils.book_append_sheet(wb, ws1, "表A-1-輔導教師-1_當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "表A-2-輔導教師-2_相關服務");
+      XLSX.utils.book_append_sheet(wb, ws3, "填報說明-A-輔導教師");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
     } else {
@@ -359,6 +415,13 @@ getTeacherConNumberByTeacherID(teacherIDSor :CaseMonthlyStatistics){
 
     this.buttonDisable = false;
   }
+
+ //測試產出
+ export2 (){
+alert("ssss")
+
+ }
+
 
   // 名稱與代碼轉換(教育部)
   parseCategoryNoT1(item: string) {

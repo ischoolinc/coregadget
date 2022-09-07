@@ -5,7 +5,7 @@ import { CounselDetailComponent } from "../counsel-detail.component";
 import { GlobalService } from "../../global.service";
 import { RoleService } from "../../role.service";
 import { CounselStudentService, CounselClass, CounselStudent } from "../../counsel-student.service";
-import { CaseInterview, SemesterInfo } from "./case-interview-vo";
+import { CaseInterview, DBOption, SemesterInfo } from "./case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
 import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
 import { ViewCaseInterviewModalComponent } from "./view-case-interview-modal/view-case-interview-modal.component";
@@ -24,6 +24,7 @@ export class CounselItemDetailComponent implements OnInit {
   
   // 個案資料
   caseList: CaseStudent[];
+  transferStatus :DBOption[];
   isDeleteButtonDisable: boolean = true;
 
   @ViewChild("addCaseInterview") _addInterview: AddCaseInterviewModalComponent;
@@ -59,11 +60,13 @@ export class CounselItemDetailComponent implements OnInit {
 
   async loadData() {
     await this.GetStudentCase();
+    await this.getTransferStateOptionsList();
     await this.GetCaseInterviewByStudentID(this._StudentID);
   }
 
   // 新增
   addInterviewModal(item: CaseStudent) {
+    
     this._addInterview._editMode = "add";
     this._addInterview.editModeString = "新增";
 
@@ -90,7 +93,7 @@ export class CounselItemDetailComponent implements OnInit {
     // 帶入日期與輸入者
     let dt = new Date();
     this._addInterview._CaseInterview.OccurDate = this.parseDate(dt);
-    this._addInterview._CaseInterview.useQuestionOptionTemplate();
+    this._addInterview._CaseInterview.useQuestionOptionTemplate(this.transferStatus);
     this._addInterview.loadDefaultData();
     this._addInterview._CaseInterview.checkValue();
 
@@ -204,6 +207,26 @@ export class CounselItemDetailComponent implements OnInit {
 
 
    }
+   /**  取得轉介向 */
+   async getTransferStateOptionsList(){
+
+    this.isLoading = true;
+    let transferList :DBOption [] 
+    let resp = await this.dsaService.send('GetFormOptionsByTitle', {
+      Request: {
+        title : '轉介概況'
+      }
+    });
+
+  
+    this.transferStatus  = [].concat(resp.rsp||[]) 
+
+    console.log(transferList);
+    this.isLoading = false;
+
+   }
+
+
 
   // 取得學生個案
   async GetStudentCase() {
