@@ -872,7 +872,7 @@ $(document).ready(function () {
                                   '<h1 style="padding-bottom:15px;border-bottom:1px solid #ccc">雲端學院 邀請函</h1>' +
                                   '<h3>您好：</h3>' +
                                   '<p>誠擎的邀請您加入雲端學院的「' + currGroup.GroupName + '」群組。</p>' +
-                                  '<p>請您登入 <a href="https://web2.ischool.com.tw/?school=classroom" target="_blank">雲端學院</a> ，點選「學生」身份的「群組」小工具，輸入群組編號「' + currGroup.GroupCode + '」立即加入我們吧！</p>' +
+                                  '<p>請您登入 <a href="https://legacy-web2.ischool.com.tw/?school=classroom" target="_blank">雲端學院</a> ，點選「學生」身份的「群組」小工具，輸入群組編號「' + currGroup.GroupCode + '」立即加入我們吧！</p>' +
                                   '<br /><p>如果您尚未註冊，請先註冊並「成為學生」。</p>' +
                                   '<p style="text-align:right">' + teacherName + ' 敬啟</p>' +
                                   '<p style="font-size:12px;text-align:center;padding-top:15px;border-top:1px solid #ccc"><a href="http://www.ischool.com.tw" target="_blank">www.ischool.com.tw</a>　服務信箱：<a href="mailto:support@ischool.com.tw" target="_blank">support@ischool.com.tw</a></p>' +

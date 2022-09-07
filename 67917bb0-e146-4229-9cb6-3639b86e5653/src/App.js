@@ -48,7 +48,7 @@ function App() {
   const [searchNameSend, setSearchNameSend] = useState(""); // 搜尋值send
 
   const [itemType, setItemType] = useState("attItem"); // 缺曠 獎懲標籤
-
+  const position = window.gadget.params.system_position;
 
   useEffect(() => {
     GetAbsenceList();
@@ -319,7 +319,24 @@ function App() {
 
   // 取得獎懲統計數據
   async function GetDisciplineSummary() {
-    await _connection.send({
+    await _connection;
+    if(position==='teacher')
+    _connection.send({
+      service: "_.GetDisciplineSummaryByTeacher",
+      body: `${bodyReturn()}`,
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetDisciplineSummaryErr', dateRange);
+          return 'err';
+        } else {
+          if (response) {
+            setDiscSum(response.DisciplineSum);
+          }
+        }
+      }
+    });
+    else
+     _connection.send({
       service: "_.GetDisciplineSummary",
       body: `${bodyReturn()}`,
       result: function (response, error, http) {
@@ -337,7 +354,24 @@ function App() {
 
   // 取得缺曠統計數據
   async function GetAttendanceSummary() {
-    await _connection.send({
+    await _connection;
+    if(position==='teacher')
+    _connection.send({
+      service: "_.GetAttendanceSummaryByTeacher",
+      body: `${bodyReturn()}`,
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetAttendanceSummaryErr', yearSemester);
+          return 'err';
+        } else {
+          if (response) {
+            setAttSum(response.AttendanceSum);
+          }
+        }
+      }
+    });
+else
+     _connection.send({
       service: "_.GetAttendanceSummary",
       body: `${bodyReturn()}`,
       result: function (response, error, http) {
@@ -364,7 +398,26 @@ function App() {
   }
 
   async function GetDisciplineList() {
-    await _connection.send({
+    await _connection;
+    if(position==='teacher')
+    _connection.send({
+      service: "_.GetDisciplineListByTeacher",
+      body: `${bodyDisListReturn()}`,
+      result: function (response, error, http) {
+        if (error !== null) {
+          setDisLists([]);
+          return 'err';
+        } else {
+          if (response.GetList) {
+
+            setDisLists(response.GetList);
+
+          } else { setDisLists([]); }
+        }
+      }
+    });
+    else
+     _connection.send({
       service: "_.GetDisciplineList",
       body: `${bodyDisListReturn()}`,
       result: function (response, error, http) {
@@ -394,7 +447,26 @@ function App() {
   }
 
   async function GetAttendanceList() {
-    await _connection.send({
+    await _connection;
+    if(position==='teacher')
+    _connection.send({
+      service: "_.GetAttendanceListByTeacher",
+      body: `${bodyListReturn()}`,
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetAttendanceListErr', yearSemester);
+          return 'err';
+        } else {
+          if (response.GetList) {
+
+            setAttLists(response.GetList);
+
+          } else { setAttLists([]); }
+        }
+      }
+    });
+else
+     _connection.send({
       service: "_.GetAttendanceList",
       body: `${bodyListReturn()}`,
       result: function (response, error, http) {
@@ -433,7 +505,24 @@ function App() {
 
   // 取得班級學生清單
   async function GetClassStudent() {
-    await _connection.send({
+    await _connection;
+    if(position==='teacher')
+    _connection.send({
+      service: "_.GetClassStudentByTeacher",
+      body: `<Request><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`,
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetClassStudentErr', error);
+          return 'err';
+        } else {
+          if (response) {
+            setStudLists(response.ClassStudent || []);
+          }
+        }
+      }
+    });
+else
+    _connection.send({
       service: "_.GetClassStudent",
       body: `<Request><ClassName>${selClass}</ClassName><SearchKey>${searchNameSend}</SearchKey></Request>`,
       result: function (response, error, http) {
@@ -476,25 +565,72 @@ function App() {
     });
   }
 
-
-  // 取得班級
-  async function GetClassName() {
-    await _connection.send({
-      service: "_.GetClassName",
-      body: {},
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetClassNameErr', error);
-          return 'err';
-        } else {
-          if (response) {
-            setAttClassNames(response.ClassName);
-          }
-        }
-      }
-    });
+  //將回傳的Object轉成Array
+  function convertToArray(obj) {
+    if (obj instanceof Array) {
+      return obj;
+    } else {
+      return [obj];
+    }
   }
 
+  // // 取得班級
+  // async function GetClassName() {
+  //   await _connection.send({
+  //     service: "_.GetClassName",
+  //     body: {},
+  //     result: function (response, error, http) {
+  //       if (error !== null) {
+  //         console.log('GetClassNameErr', error);
+  //         return 'err';
+  //       } else {
+  //         if (response) {
+  //           //setAttClassNames(response.ClassName);
+  //           var classNameArray = convertToArray(response.ClassName)
+  //           setAttClassNames(classNameArray);
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
+  // 取得班級 (根據身分參數判斷讀取)
+  async function GetClassName() {
+    await _connection;
+    if (position === 'teacher')
+      _connection.send({
+        service: "_.GetClassNameByTeacher",
+        body: {},
+        result: function (response, error, http) {
+          if (error !== null) {
+            console.log('GetClassNameErr', error);
+            return 'err';
+          } else {
+            if (response) {
+              //setAttClassNames(response.ClassName);
+              var classNameArray = convertToArray(response.ClassName)
+              setAttClassNames(classNameArray);
+            }
+          }
+        }
+      });
+    else
+      _connection.send({
+        service: "_.GetClassName",
+        body: {},
+        result: function (response, error, http) {
+          if (error !== null) {
+            console.log('GetClassNameErr', error);
+            return 'err';
+          } else {
+            if (response) {
+              //setAttClassNames(response.ClassName);
+              var classNameArray = convertToArray(response.ClassName)
+              setAttClassNames(classNameArray);
+            }
+          }
+        }
+      });
+  }
 
   const perDate = () => {
     setAttCount(['假別', 0]);
@@ -932,7 +1068,8 @@ function App() {
               <div className="accordion-item">
 
                 {(selClass === '' && searchNameSend === '') && <h5 className='ps-3 py-2'>無資料，請選取班級或輸入查詢</h5>}
-                {(Object.keys(studLists).length === 0 && (selClass !== '' || searchNameSend !== '')) && <h5 className='ps-3 py-2'>{selClass}{searchNameSend}  無資料</h5>}
+                {(Object.keys(studLists).length === 0 && (selClass !== '' || searchNameSend !== '')) &&(position==='teacher') && <h5 className='ps-3 py-2'>{selClass}{searchNameSend}  非班級學生，或查無資料。</h5>}
+                {(Object.keys(studLists).length === 0 && (selClass !== '' || searchNameSend !== '')) &&(position!='teacher') && <h5 className='ps-3 py-2'>{selClass}{searchNameSend}  無資料</h5>}
 
                 {(studLists) && ([].concat(studLists || [])).map((stuAtt, index) => {
 
