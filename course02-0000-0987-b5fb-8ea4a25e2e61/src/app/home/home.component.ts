@@ -147,7 +147,7 @@ export class HomeComponent implements OnInit {
 
   
     if (keyword) {
-      this.filteredCourses = [...this.courseMap.values()].filter(v => v.CourseName.indexOf(keyword) > -1);
+      this.filteredCourses = [...this.courseMap.values()].filter(v => v.CourseName.indexOf(keyword) > -1 || (v.ClassName ? v.ClassName : '').indexOf(keyword) > -1 || v.Teachers?.map(t => t.TeacherName).toString().indexOf(keyword) != -1 );
     } else {
       this.filteredCourses = [...this.courseMap.values()];
     }
