@@ -60,7 +60,7 @@ export class CounselItemDetailComponent implements OnInit {
 
   async loadData() {
     await this.GetStudentCase();
-    await this.getTransferStateOptionsList();
+    // await this.getTransferStateOptionsList();
     await this.GetCaseInterviewByStudentID(this._StudentID);
   }
 
