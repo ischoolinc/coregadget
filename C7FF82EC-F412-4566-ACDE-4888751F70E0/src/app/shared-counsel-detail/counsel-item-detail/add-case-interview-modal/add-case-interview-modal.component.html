@@ -123,7 +123,7 @@
             [(ngModel)]="_CaseInterview.Content" (keyup)="_CaseInterview.checkValue()"></textarea>
         </div>
       </div>
-
+<!-- //   個案類別  -->
       <div class ="form-row">
         <div class="form-group col-md-12">
           <label for="semester" class="col-form-label">
@@ -141,12 +141,36 @@
             </div>
 
 
+            <!-- <p class="mt-3" style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報表內，工作月統計報表之統計為個案上之個案類別。</p> -->
+
+          </div>
+        </div>
+        </div>
+
+        <!-- //   轉借狀況 -->
+      <!-- <div class ="form-row">
+        <div class="form-group col-md-12">
+          <label for="semester" class="col-form-label">
+            <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCategoryHasValue">*</span>
+            <b> 轉介概況</b>
+          </label>
+          <div class="d-flex flex-wrap">
+            <div class="custom-control custom-checkbox " *ngFor="let item of _CaseInterview._transferStatus">
+              <input type="checkbox" class="custom-control-input" [id]="item.answer_code"
+                [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
+                (change)="checkChange(item,_CaseInterview)" />
+              <label class="custom-control-label" [for]="item.answer_code">
+                <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
+              </label>
+            </div>
+
+
             <p class="mt-3" style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報表內，工作月統計報表之統計為個案上之個案類別。</p>
 
           </div>
         </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" data-dismiss="modal">

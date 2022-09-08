@@ -123,6 +123,17 @@
             <b> 心理測驗</b></a>
         </li>
       </ng-container>
+
+            <!-- todo -->
+            <!-- <ng-container *ngIf="adminVisable === true">
+              <li class="nav-item">
+                <a class="nav-link"
+                   [attr.data-toggle]="roleService.enableAdmin?'tab':null"
+                   (click)="!roleService.enableAdmin || routeTo('/admin')"
+                   [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
+                  <b> 服務項目登錄</b></a>
+              </li>
+            </ng-container> -->
       <ng-container *ngIf="adminVisable === true">
         <li class="nav-item">
           <a class="nav-link" [attr.data-toggle]="roleService.enableAdmin?'tab':null"
@@ -134,16 +145,7 @@
 
 
 
-      <!-- todo -->
-      <!-- <ng-container *ngIf="adminVisable === true">
-        <li class="nav-item">
-          <a class="nav-link"
-             [attr.data-toggle]="roleService.enableAdmin?'tab':null"
-             (click)="!roleService.enableAdmin || routeTo('/admin')"
-             [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
-            <b> 工作管理</b></a>
-        </li>
-      </ng-container> -->
+
     </ul>
     <router-outlet></router-outlet>
   </div>

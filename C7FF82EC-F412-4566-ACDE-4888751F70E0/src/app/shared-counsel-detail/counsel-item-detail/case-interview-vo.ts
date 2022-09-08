@@ -1,3 +1,4 @@
+
 // 認輔資料
 export class CaseInterview {
   constructor() { }
@@ -19,9 +20,16 @@ export class CaseInterview {
   ClassID: string; // 班級 ID
   AuthorRole: string; // 個案老師角色
   ContactNameOther: string = ""; // 其他訪談對象
+  /** 晤談紀錄下個案類別 */
   Category: string = ""; // 類別
+  /** 轉介狀態 */
+  TransferStatus = ""
   isCategoryHasValue: boolean = false;
-  _category: QOption[]; // 	類別
+  /** 晤談紀錄下個案類別 */
+  _category: QOption[]; // 	晤談紀錄下類別
+  /** 轉介狀態 */
+  _transferStatus: QOption[];
+
 
   isSaveDisable: boolean = true;
   isEditDisable: boolean = true;
@@ -55,12 +63,15 @@ export class CaseInterview {
     return `${y}-${mStr}-${dStr}`;
     //return `${y}/${mStr}/${dStr}`;
   }
-
-  public loadCategoryTemplate() {
+  /** 載入樣板 */
+  public loadCategoryTemplate(transferStateOption: DBOption[] = null) {
     let num: number = 1;
-    this._category = []; // 	個案類別
-    let problem_categoryT = this.getCategory();
+    this._category = []; // 個案類別
+    this._transferStatus = [] // 轉介概況
+    let problem_categoryT = this.getCategory(); // 下方取得個案類別
 
+
+    /** 個案類別 */
     for (let item of problem_categoryT) {
       let qo: QOption = new QOption();
       qo.answer_code = `Category${num}`;
@@ -72,6 +83,20 @@ export class CaseInterview {
 
       num += 1;
       this._category.push(qo);
+    }
+    /** 轉借狀況第一次產出 20220905*/
+    if (transferStateOption) {
+      for (let option of transferStateOption) {
+        let qo: QOption = new QOption();
+        qo.answer_code = `TransferState_${num}`;
+        qo.answer_martix = [];
+        qo.answer_text = option.option_name;
+        qo.answer_checked = false;
+        qo.answer_complete = false;
+        qo.answer_value = "";
+        num += 1;
+        this._transferStatus.push(qo);
+      }
     }
   }
 
@@ -346,9 +371,10 @@ export class CaseInterview {
     this.checkValue();
   }
 
-  // 使用預設題目項目樣版
-  public useQuestionOptionTemplate() {
-    this.loadCategoryTemplate();
+  /**使用預設題目項目樣版**/
+  public useQuestionOptionTemplate(DBOptions : DBOption[]) {
+    console.log("useQuestionOptionTemplate",DBOptions)
+    this.loadCategoryTemplate(DBOptions);
   }
 
 
@@ -372,4 +398,23 @@ export class QOption {
   public setAnswerCheck() {
     this.answer_checked = !this.answer_checked;
   }
+}
+
+
+/** */
+export interface DBOption{
+  // <uid>4643644</uid>
+	// <last_update>2022-09-05 16:19:18.401068</last_update>
+	// <guid/>
+	// <title>轉介概況</title>
+	// <option_name>本月轉介輔諮中心</option_name>
+	// <display_order>1</display_order>
+
+  uid :string ; 
+  guid :string ;
+  title :string ;
+  option_name :string ;
+  display_order :string ;
+  
+
 }

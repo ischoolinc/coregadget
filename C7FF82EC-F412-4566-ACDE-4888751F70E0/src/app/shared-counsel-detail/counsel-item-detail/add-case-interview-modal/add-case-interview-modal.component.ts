@@ -107,6 +107,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       CaseID: data.CaseID,
       AuthorRole: data.AuthorRole,
       Category: data.Category,
+      ReferralStatus :data.TransferStatus,
       ContactNameOther: data.ContactNameOther
     };
     // console.log(req);
