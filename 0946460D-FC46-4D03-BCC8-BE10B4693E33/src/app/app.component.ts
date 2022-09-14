@@ -20,6 +20,7 @@ export class AppComponent {
   /** 該班級學生點名紀錄 */
   RollCallLogList : RollCallLog [] = [];
   currClass :any ;
+  absType : any;
 
   constructor(
     private gadget: GadgetService) {
@@ -54,7 +55,7 @@ export class AppComponent {
       let rsp = await contract.send("GetMyClasses");
       this.MyClassList =[].concat(rsp.rs);
       this.currClass =this.MyClassList[0] ;
-      console.log("my",this.MyClassList);
+      // console.log("my",this.MyClassList);
       // alert(this.devUse(rsp));
     } catch (ex) {
       alert("取得班級發生錯誤!" + JSON.stringify(ex))
@@ -81,7 +82,7 @@ export class AppComponent {
       this.StudentAttendanceList = [].concat(rsp.rs || []) ;
       // alert(this.StudentAttendanceList);
 
-      console.log("this.StudentAttendanceList",this.StudentAttendanceList) ;
+      // console.log("this.StudentAttendanceList",this.StudentAttendanceList) ;
     } catch (ex) {
       alert("取得班級發生錯誤!" + JSON.stringify(ex))
     } finally {
@@ -99,7 +100,7 @@ async getStudentList(){
     const contract = await this.gadget.getContract('campus.rollcall.teacher');
     let rsp = await contract.send("GetStudentByClassID",{ Request : {ClassID  :this.currClass.id }});
     this.StudentList = [].concat(rsp.rs || []) ;
-    console.log("this.StudentList",this.StudentList) ;
+    // console.log("this.StudentList",this.StudentList) ;
   } catch (ex) {
     alert("取得班級發生錯誤!" + JSON.stringify(ex))
   } finally {
@@ -115,7 +116,7 @@ async getPeriod(){
     const contract = await this.gadget.getContract('campus.rollcall.teacher');
     let rsp = await contract.send("GetConfig");
     this.PeriodList = [].concat(rsp.Config.Periods.Period|| []) ;
-    console.log("this.rsp",this.PeriodList) ;
+    // console.log("this.rsp",this.PeriodList) ;
   } catch (ex) {
     alert("取得班級發生錯誤!" + JSON.stringify(ex))
   } finally {
@@ -133,7 +134,7 @@ async getRollCallLog (){
     const contract = await this.gadget.getContract('campus.rollcall.teacher');
     let rsp = await contract.send("GetRollCallLog",{ Request : {ClassID  :this.currClass.id }});
     this.RollCallLogList = [].concat(rsp.rs) ;
-    console.log("this.RollCallLogList",this.RollCallLogList) ;
+    // console.log("this.RollCallLogList",this.RollCallLogList) ;
   } catch (ex) {
     alert("取得班級發生錯誤!" + JSON.stringify(ex))
   } finally {
@@ -142,8 +143,13 @@ async getRollCallLog (){
 }
 
 /** 取得缺礦類別 */
+getAbsenceTypeForStu( studentID :string ){
+  return this.StudentAttendanceList.find( x=> x.id == studentID && x.now_attendance_absence_type != '')?.now_attendance_absence_type.substring(0,1)
+}
+
+/** 取得缺礦類別 */
 getAbsenceType( studentID :string  ,period :string ){
-  return  this.StudentAttendanceList.find(x=> x.id == studentID && x.now_attendance_period == period  )
+  return  this.StudentAttendanceList.find( x=> x.id == studentID && x.now_attendance_period == period )
 }
 
 /** 取得是否點名 */
