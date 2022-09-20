@@ -81,6 +81,11 @@ export class SchoolService {
       title: 'Foresight International Education Center'
       , iconUrl: ''
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['p.viethoa.edu.vn', { // 越華國際學校 小學部
+      title: 'Viet Hoa International School'
+      , iconUrl: 'assets/img/viethoa_logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }]
   ]);
 

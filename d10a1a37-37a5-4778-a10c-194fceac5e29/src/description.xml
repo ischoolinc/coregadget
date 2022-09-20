@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="Behavior 課堂" description="Behavior 課堂行為表現" preload="true">
+    <Icon>icon.png</Icon>
+    <Title lang="zh-TW">Behavior 課堂行為表現</Title>
+  </ModulePrefs>
+</Module>
