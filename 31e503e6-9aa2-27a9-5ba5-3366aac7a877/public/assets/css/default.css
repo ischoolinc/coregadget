@@ -1,0 +1,17 @@
+body {
+    background-color: var(--bs-body-bg);
+}
+
+.btn-outline-green {
+    color: #040404;
+    border-color: #859B6D;
+    background-color: #E6EED9
+}
+
+.btn-outline-green:hover, .btn-outline-green.active {
+    background-color: #A5CC93
+}
+
+.btn:focus {
+    box-shadow: none;
+}
