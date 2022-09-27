@@ -34,7 +34,7 @@ function App() {
           return 'err';
         } else {
           if (response) {
-            setChildList(response.Student);
+            setChildList(convertToArray(response.Student));
             console.log('childDateRange', childDateRange);
             //debugger;
             console.log('response.Student', response.Student);
@@ -94,10 +94,13 @@ function App() {
           <div style={{ width: '5px', height: '32px', background: '#74A94F' }}></div>
           <div className='ms-2 me-4'>心理測驗</div>
           {childDateRange.map((child) => {
-            return <button type="button" className="btn btn-outline-green me-2" key={child.id} value={child.id} onClick={(e) => { handleChangeChild(e); }}>{child.name}</button>
+            if (child.id === studentID)
+              return <button type="button" className="btn btn-outline-green active me-2" key={child.id} value={child.id} onClick={(e) => { handleChangeChild(e); }}>{child.name}</button>
+            else
+              return <button type="button" className="btn btn-outline-green me-2" key={child.id} value={child.id} onClick={(e) => { handleChangeChild(e); }}>{child.name}</button>
           })}
-          <button type="button" className="btn btn-outline-green active me-2">作用中</button>
-          <button type="button" className="btn btn-outline-green">吳二寶</button>
+          {/* <button type="button" className="btn btn-outline-green active me-2">作用中</button>
+          <button type="button" className="btn btn-outline-green">吳二寶</button> */}
         </div>
 
 
