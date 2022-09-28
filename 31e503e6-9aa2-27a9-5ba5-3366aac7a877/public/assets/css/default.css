@@ -15,3 +15,29 @@ body {
 .btn:focus {
     box-shadow: none;
 }
+
+.accordion-button:focus {
+    border-color: #859B6D;
+    box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+    color: #000;
+    background-color: #fff;
+    box-shadow: none;
+    /* border: 1px solid #859B6D; */
+}
+.accordion-item {
+    color: #000;
+    background-color: #fff;
+    box-shadow: none;
+    border: 1px solid #859B6D;
+}
+
+.accordion-item:not(:first-of-type) {
+    border-top: 1px solid #859B6D;
+}
+
+.accordion-item:first-of-type .accordion-button {
+    border-radius:10px; 
+}

@@ -13,11 +13,13 @@ function App() {
   // 心理測驗內容
   const [psychologicalTestData, setPsychologicalTestData] = useState([]);
 
+  //尚無資料 提示字
+  const [informationText, setText] = useState("");
+
   useEffect(() => {
     GetChildList();
-    console.log('1.5.studentID', studentID);
+    console.log('1.5studentID', studentID);
     GetPsychologicalTestData();
-    console.log('2.5.studentID', studentID);
   }, [studentID]);
 
 
@@ -34,13 +36,15 @@ function App() {
           return 'err';
         } else {
           if (response) {
-            setChildList(convertToArray(response.Student));
-            console.log('childDateRange', childDateRange);
             //debugger;
-            console.log('response.Student', response.Student);
+            setChildList(convertToArray(response.Student));
+            // console.log('response.Student[0].id', convertToArray(response.Student)[0].id);
+            // console.log('1studentID', studentID);
+
             if (studentID === "") {
-              setStudent(response.Student[0].id);
-              console.log('1.studentID', studentID);
+              //debugger;
+              setStudent(convertToArray(response.Student)[0].id);
+              // console.log('2studentID', studentID);
             }
 
           }
@@ -57,14 +61,18 @@ function App() {
       result: function (response, error, http) {
         if (error !== null) {
           console.log('GetPsychologicalTestDataErr', error);
-          console.log('studentIDErr', studentID);
+          setText("請選擇學生。");
           return 'err';
         } else {
           if (response) {
-            console.log('2.studentID', studentID);
-            setPsychologicalTestData(response);
-            console.log('PsychologicalResponse', response);
-
+            if (isEmpty(response)) {
+              setPsychologicalTestData([])
+              setText("尚無資料。");
+            }
+            else {
+              setText("");
+              setPsychologicalTestData(convertToArray(response.Quiz));
+            }
           }
         }
       }
@@ -74,8 +82,6 @@ function App() {
 
   const handleChangeChild = (e) => {
     setStudent(e.target.value);
-    console.log('e.target.value', e.target.value);
-    console.log('e.studentID', studentID);
   }
 
   //將回傳的Object轉成Array
@@ -86,6 +92,32 @@ function App() {
       return [obj];
     }
   }
+
+  function isEmpty(obj) {
+
+    // null and undefined are "empty"
+    if (obj == null) return true;
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0) return false;
+    if (obj.length === 0) return true;
+
+    // If it isn't an object at this point
+    // it is empty, but it can't be anything *but* empty
+    // Is it empty?  Depends on your application.
+    if (typeof obj !== "object") return true;
+
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+      if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+  }
+
 
   return (
     <div className="App">
@@ -99,53 +131,316 @@ function App() {
             else
               return <button type="button" className="btn btn-outline-green me-2" key={child.id} value={child.id} onClick={(e) => { handleChangeChild(e); }}>{child.name}</button>
           })}
-          {/* <button type="button" className="btn btn-outline-green active me-2">作用中</button>
-          <button type="button" className="btn btn-outline-green">吳二寶</button> */}
         </div>
 
+        {/* 兩欄的排版 */}
+        {/* <div class="accordion row align-items-start mt-1" id="accordionPanel">
+          <div className='col-12 col-lg-6 px-0 mt-3'>
+            <div class="accordion-item mx-2" style={{ borderRadius: '0px' }}>
+              <h2 class="accordion-header" id="item1">
+                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel1" aria-expanded="false" aria-controls="panel1">
+                  <div>
+                    <div>測驗名稱：<span>基本人格量表</span></div>
+                    <div className='my-2'>實施日期：</div>
+                    <div>解析日期：</div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panel1" class="accordion-collapse collapse" aria-labelledby="item1">
+                <div class="accordion-body py-0">
+                  <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-        {/* <div className='fs-24 fw-600 color-32 me-3'>缺曠統計</div>
-        <i className="collapse-close fa fa-chevron-down fs-20 me-3 color-1"
-          aria-hidden="true"></i> a123123
-        <i className="collapse-open fa fa-chevron-up fs-20 me-3 color-1"
-          aria-hidden="true"></i> b123123
+                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                    <thead>
+                      <tr style={{ background: '#A8D18D' }}>
+                        <th className='w-50'>First</th>
+                        <th className='w-50'>Last</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ borderTop: '4px solid #fff' }}>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>機械推理百分等級</td>
+                        <td>20</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-
-
-        <div class="accordion" id="accordionPanelsStayOpenExample">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                測驗名稱<br />
-                實施日期<br />
-                解析日期
-              </button>
-            </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-              <div class="accordion-body">
-                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
               </div>
             </div>
           </div>
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                Accordion Item #2
-              </button>
-            </h2>
-            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-              <div class="accordion-body">
-                <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+          <div className='col-12 col-lg-6 px-0 mt-3'>
+            <div class="accordion-item mx-2" style={{ borderRadius: '0px' }}>
+              <h2 class="accordion-header" id="item2">
+                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel2" aria-expanded="false" aria-controls="panel2">
+                  <div>
+                    <div>測驗名稱：<span>基本人格量表</span></div>
+                    <div className='my-2'>實施日期：</div>
+                    <div>解析日期：</div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panel2" class="accordion-collapse collapse" aria-labelledby="item2">
+                <div class="accordion-body py-0">
+                  <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
+
+                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                    <thead>
+                      <tr style={{ background: '#A8D18D' }}>
+                        <th className='w-50'>First</th>
+                        <th className='w-50'>Last</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ borderTop: '4px solid #fff' }}>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Mark</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
               </div>
             </div>
           </div>
+          <div className='col-12 col-lg-6 px-0 mt-3'>
+            <div class="accordion-item mx-2" style={{ borderRadius: '0px' }}>
+              <h2 class="accordion-header" id="item3">
+                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel3" aria-expanded="false" aria-controls="panel3">
+                  <div>
+                    <div>測驗名稱：<span>基本人格量表</span></div>
+                    <div className='my-2'>實施日期：</div>
+                    <div>解析日期：</div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panel3" class="accordion-collapse collapse" aria-labelledby="item3">
+                <div class="accordion-body py-0">
+                  <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
+                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                    <thead>
+                      <tr style={{ background: '#A8D18D' }}>
+                        <th className='w-50'>First</th>
+                        <th className='w-50'>Last</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ borderTop: '4px solid #fff' }}>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Mark</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-
+                </div>
+              </div>
+            </div>
+          </div>
         </div> */}
 
 
+        <div className="accordion align-items-start mt-1" id="accordionPanel">
+          {/* 尚無資料 提示字。 */}
+          <div className="mt-4">
+            {informationText}
+          </div>
 
+          {psychologicalTestData.map((pst) => {
+            return <div className='mt-3'>
+              <div className="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+                <h2 className="accordion-header" id={'item' + pst.Uid}>
+                  <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target={'#panel' + pst.Uid} aria-expanded="false" aria-controls={'panel' + pst.Uid}>
+                    <div>
+                      <div>測驗名稱：<span>{pst.QuizName}</span></div>
+                      <div className='my-2'>實施日期：<span>{pst.ImplementationDate}</span></div>
+                      <div>解析日期：<span>{pst.AnalysisDate}</span></div>
+                    </div>
+                  </button>
+                </h2>
+                <div id={'panel' + pst.Uid} class="accordion-collapse collapse" aria-labelledby={'item' + pst.Uid}>
+                  <div className="accordion-body py-0">
+                    <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
+
+                    <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                      <thead>
+                        <tr style={{ background: '#A8D18D' }}>
+                          <th className='w-50'>項目名稱</th>
+                          <th className='w-50'>施測結果</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{ borderTop: '4px solid #fff' }}>
+                        {pst.Field.map((quiz) => {
+                          return <tr style={{ background: '#E2F0D9' }}>
+                            <td>{quiz.Name}</td>
+                            <td>{quiz.Value}</td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          })}
+
+
+          {/* 一欄往下長的版面 */}
+          {/* <div className='mt-3'>
+            <div class="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+              <h2 class="accordion-header" id="item1">
+                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel1" aria-expanded="false" aria-controls="panel1">
+                  <div>
+                    <div>測驗名稱：<span>基本人格量表</span></div>
+                    <div className='my-2'>實施日期：</div>
+                    <div>解析日期：</div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panel1" class="accordion-collapse collapse" aria-labelledby="item1">
+                <div class="accordion-body py-0">
+                  <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
+
+                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                    <thead>
+                      <tr style={{ background: '#A8D18D' }}>
+                        <th className='w-50'>項目名稱</th>
+                        <th className='w-50'>施測結果</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ borderTop: '4px solid #fff' }}>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>機械推理百分等級</td>
+                        <td>20</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </div> 
+           <div className='mt-3'>
+            <div class="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+              <h2 class="accordion-header" id="item2">
+                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel2" aria-expanded="false" aria-controls="panel2">
+                  <div>
+                    <div>測驗名稱：<span>基本人格量表</span></div>
+                    <div className='my-2'>實施日期：</div>
+                    <div>解析日期：</div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panel2" class="accordion-collapse collapse" aria-labelledby="item2">
+                <div class="accordion-body py-0">
+                  <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
+
+                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                    <thead>
+                      <tr style={{ background: '#A8D18D' }}>
+                        <th className='w-50'>First</th>
+                        <th className='w-50'>Last</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ borderTop: '4px solid #fff' }}>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Mark</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='mt-3'>
+            <div class="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+              <h2 class="accordion-header" id="item3">
+                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel3" aria-expanded="false" aria-controls="panel3">
+                  <div>
+                    <div>測驗名稱：<span>基本人格量表</span></div>
+                    <div className='my-2'>實施日期：</div>
+                    <div>解析日期：</div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panel3" class="accordion-collapse collapse" aria-labelledby="item3">
+                <div class="accordion-body py-0">
+                  <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
+
+                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                    <thead>
+                      <tr style={{ background: '#A8D18D' }}>
+                        <th className='w-50'>First</th>
+                        <th className='w-50'>Last</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ borderTop: '4px solid #fff' }}>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Mark</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                      </tr>
+                      <tr style={{ background: '#E2F0D9' }}>
+                        <td>Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+
+        </div>
 
 
 
