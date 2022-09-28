@@ -134,11 +134,11 @@ function App() {
         </div>
 
         {/* 兩欄的排版 */}
-        {/* <div class="accordion row align-items-start mt-1" id="accordionPanel">
+        {/* <div className="accordion row align-items-start mt-1" id="accordionPanel">
           <div className='col-12 col-lg-6 px-0 mt-3'>
-            <div class="accordion-item mx-2" style={{ borderRadius: '0px' }}>
-              <h2 class="accordion-header" id="item1">
-                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel1" aria-expanded="false" aria-controls="panel1">
+            <div className="accordion-item mx-2" style={{ borderRadius: '0px' }}>
+              <h2 className="accordion-header" id="item1">
+                <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel1" aria-expanded="false" aria-controls="panel1">
                   <div>
                     <div>測驗名稱：<span>基本人格量表</span></div>
                     <div className='my-2'>實施日期：</div>
@@ -146,11 +146,11 @@ function App() {
                   </div>
                 </button>
               </h2>
-              <div id="panel1" class="accordion-collapse collapse" aria-labelledby="item1">
-                <div class="accordion-body py-0">
+              <div id="panel1" className="accordion-collapse collapse" aria-labelledby="item1">
+                <div className="accordion-body py-0">
                   <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                  <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                     <thead>
                       <tr style={{ background: '#A8D18D' }}>
                         <th className='w-50'>First</th>
@@ -178,9 +178,9 @@ function App() {
             </div>
           </div>
           <div className='col-12 col-lg-6 px-0 mt-3'>
-            <div class="accordion-item mx-2" style={{ borderRadius: '0px' }}>
-              <h2 class="accordion-header" id="item2">
-                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel2" aria-expanded="false" aria-controls="panel2">
+            <div className="accordion-item mx-2" style={{ borderRadius: '0px' }}>
+              <h2 className="accordion-header" id="item2">
+                <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel2" aria-expanded="false" aria-controls="panel2">
                   <div>
                     <div>測驗名稱：<span>基本人格量表</span></div>
                     <div className='my-2'>實施日期：</div>
@@ -188,11 +188,11 @@ function App() {
                   </div>
                 </button>
               </h2>
-              <div id="panel2" class="accordion-collapse collapse" aria-labelledby="item2">
-                <div class="accordion-body py-0">
+              <div id="panel2" className="accordion-collapse collapse" aria-labelledby="item2">
+                <div className="accordion-body py-0">
                   <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                  <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                     <thead>
                       <tr style={{ background: '#A8D18D' }}>
                         <th className='w-50'>First</th>
@@ -220,9 +220,9 @@ function App() {
             </div>
           </div>
           <div className='col-12 col-lg-6 px-0 mt-3'>
-            <div class="accordion-item mx-2" style={{ borderRadius: '0px' }}>
-              <h2 class="accordion-header" id="item3">
-                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel3" aria-expanded="false" aria-controls="panel3">
+            <div className="accordion-item mx-2" style={{ borderRadius: '0px' }}>
+              <h2 className="accordion-header" id="item3">
+                <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel3" aria-expanded="false" aria-controls="panel3">
                   <div>
                     <div>測驗名稱：<span>基本人格量表</span></div>
                     <div className='my-2'>實施日期：</div>
@@ -230,11 +230,11 @@ function App() {
                   </div>
                 </button>
               </h2>
-              <div id="panel3" class="accordion-collapse collapse" aria-labelledby="item3">
-                <div class="accordion-body py-0">
+              <div id="panel3" className="accordion-collapse collapse" aria-labelledby="item3">
+                <div className="accordion-body py-0">
                   <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                  <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                     <thead>
                       <tr style={{ background: '#A8D18D' }}>
                         <th className='w-50'>First</th>
@@ -282,7 +282,7 @@ function App() {
                     </div>
                   </button>
                 </h2>
-                <div id={'panel' + pst.Uid} class="accordion-collapse collapse" aria-labelledby={'item' + pst.Uid}>
+                <div id={'panel' + pst.Uid} className="accordion-collapse collapse" aria-labelledby={'item' + pst.Uid}>
                   <div className="accordion-body py-0">
                     <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
@@ -313,9 +313,9 @@ function App() {
 
           {/* 一欄往下長的版面 */}
           {/* <div className='mt-3'>
-            <div class="accordion-item mx-2" style={{ borderRadius: '5px' }}>
-              <h2 class="accordion-header" id="item1">
-                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel1" aria-expanded="false" aria-controls="panel1">
+            <div className="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+              <h2 className="accordion-header" id="item1">
+                <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel1" aria-expanded="false" aria-controls="panel1">
                   <div>
                     <div>測驗名稱：<span>基本人格量表</span></div>
                     <div className='my-2'>實施日期：</div>
@@ -323,11 +323,11 @@ function App() {
                   </div>
                 </button>
               </h2>
-              <div id="panel1" class="accordion-collapse collapse" aria-labelledby="item1">
-                <div class="accordion-body py-0">
+              <div id="panel1" className="accordion-collapse collapse" aria-labelledby="item1">
+                <div className="accordion-body py-0">
                   <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                  <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                     <thead>
                       <tr style={{ background: '#A8D18D' }}>
                         <th className='w-50'>項目名稱</th>
@@ -355,9 +355,9 @@ function App() {
             </div>
           </div> 
            <div className='mt-3'>
-            <div class="accordion-item mx-2" style={{ borderRadius: '5px' }}>
-              <h2 class="accordion-header" id="item2">
-                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel2" aria-expanded="false" aria-controls="panel2">
+            <div className="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+              <h2 className="accordion-header" id="item2">
+                <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel2" aria-expanded="false" aria-controls="panel2">
                   <div>
                     <div>測驗名稱：<span>基本人格量表</span></div>
                     <div className='my-2'>實施日期：</div>
@@ -365,11 +365,11 @@ function App() {
                   </div>
                 </button>
               </h2>
-              <div id="panel2" class="accordion-collapse collapse" aria-labelledby="item2">
-                <div class="accordion-body py-0">
+              <div id="panel2" className="accordion-collapse collapse" aria-labelledby="item2">
+                <div className="accordion-body py-0">
                   <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                  <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                     <thead>
                       <tr style={{ background: '#A8D18D' }}>
                         <th className='w-50'>First</th>
@@ -397,9 +397,9 @@ function App() {
             </div>
           </div>
           <div className='mt-3'>
-            <div class="accordion-item mx-2" style={{ borderRadius: '5px' }}>
-              <h2 class="accordion-header" id="item3">
-                <button class="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel3" aria-expanded="false" aria-controls="panel3">
+            <div className="accordion-item mx-2" style={{ borderRadius: '5px' }}>
+              <h2 className="accordion-header" id="item3">
+                <button className="accordion-button align-items-end" type="button" data-bs-toggle="collapse" data-bs-target="#panel3" aria-expanded="false" aria-controls="panel3">
                   <div>
                     <div>測驗名稱：<span>基本人格量表</span></div>
                     <div className='my-2'>實施日期：</div>
@@ -407,11 +407,11 @@ function App() {
                   </div>
                 </button>
               </h2>
-              <div id="panel3" class="accordion-collapse collapse" aria-labelledby="item3">
-                <div class="accordion-body py-0">
+              <div id="panel3" className="accordion-collapse collapse" aria-labelledby="item3">
+                <div className="accordion-body py-0">
                   <hr className='my-0' style={{ height: '5px', color: '#a5cc93' }}></hr>
 
-                  <table class="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
+                  <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                     <thead>
                       <tr style={{ background: '#A8D18D' }}>
                         <th className='w-50'>First</th>
