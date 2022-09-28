@@ -289,8 +289,8 @@ function App() {
                     <table className="table table-bordered mt-3" style={{ border: '1px solid #fff' }}>
                       <thead>
                         <tr style={{ background: '#A8D18D' }}>
-                          <th className='w-50'>項目名稱</th>
-                          <th className='w-50'>施測結果</th>
+                          <th className='w-50' style={{ height: '5px', color: '#fff' }}>項目名稱</th>
+                          <th className='w-50' style={{ height: '5px', color: '#fff' }}>施測結果</th>
                         </tr>
                       </thead>
                       <tbody style={{ borderTop: '4px solid #fff' }}>
