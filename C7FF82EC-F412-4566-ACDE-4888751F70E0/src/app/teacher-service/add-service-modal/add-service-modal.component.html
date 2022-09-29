@@ -1,0 +1,204 @@
+<div   class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
+  aria-hidden="true">
+  <div class="modal-dialog  modal-lg" role="document" style ="min-height: 1300px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addInterviewLabel">
+          新增服務項目 
+        </h5>
+      </div>
+
+      <div class="modal-body">
+        <!-- 日期 -->
+        <div class="form-group col-md-4　d-flex">
+          <label for="OccurDate" class="col-form-label">
+            <span class="text-samll text-danger">*</span>
+            <div *ngTemplateOutlet="icon"></div>
+            <b class="question_title question-title-size"> 服務日期 :</b>
+          </label>
+          <input type="date" class="form-control" id="OccurDate" name="OccurDate" placeholder="請輸入服務日期"
+            [(ngModel)]="currentServiceItem.ServiceDate" (keyup)="caseStudent.checkValue()" />
+        </div>
+        <!-- 服務項目 -->
+        <div class="form-group d-flex">
+          <label for="interviewDate" class="col-form-label">
+            <span class="text-samll text-danger star-place">
+              <ng-container>*</ng-container>
+            </span>
+            <div *ngTemplateOutlet="icon"></div>
+            <b class="question_title mr-2 question-title-size"> 服務項目 :</b>
+
+          </label>
+          <div class="dropdown  mr-2 ">
+            <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;" type="button"
+              id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ currentServiceItem?.ServiceItem || '請選擇'}}
+            </button>
+            <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item cuser" (click)="setCurrentService(item)" *ngFor="let item of ServiceOptionList">{{
+                item }}</a>
+            </div>
+            <div>
+
+            </div>
+
+          </div>
+          <div class="mr-2">
+            <input type="text" *ngIf="currentServiceItem?.ServiceItem == '其他' " class="form-control"
+              placeholder="其他服務項目內容" [(ngModel)]="currentServiceItem.OtherServiceDetail"
+              (keyup)="caseStudent.checkValue()" />
+          </div>
+
+        </div>
+
+        <!-- 服務項目 內容 -->
+        <div class="form-group">
+          <label for="contactMatter" class="col-form-label">
+            <span class="text-samll text-danger star-place">
+              <ng-container>*</ng-container>
+            </span>
+            <div *ngTemplateOutlet="icon"></div>
+            <b class="question_title mr-2 question-title-size"> 內容描述 :</b>
+          </label>
+          <textarea class="form-control" id="contactMatter" rows="3" placeholder="請輸入 400 字以內結案說明"
+            [(ngModel)]="currentServiceItem.ServiceDescription"></textarea>
+        </div>
+
+        <!-- 服務對象及人次 -->
+        <span class="question-title-size"><b>服務對象及人次</b> </span>
+        <div style=" border : 1px solid gray ;padding :10px ; border-radius:20px ;margin-top:12px">
+       
+        <div class="form-group d-flex">
+          <label for="interviewDate" class="col-form-label">
+            <span class="text-samll text-danger star-place">
+              <ng-container>*</ng-container>
+            </span>
+            <div *ngTemplateOutlet="icon"></div>
+            <b class="question_title mr-2 question-title-size"> 服務對象 :</b>
+
+          </label>
+          <div class="dropdown  mr-2 ">
+            <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;" type="button"
+              id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ currentServiceDetail?.ServiceTarget || '請選擇'}}
+            </button>
+            <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item cuser" (click)="setCurrentServiceTarget(item)" *ngFor="let item of ServiceTargetList">{{
+                item }}</a>
+            </div>
+            <div>
+
+            </div>
+
+          </div>
+         <!-- 男生女生 -->
+          <div class="form-group d-flex">
+
+            <label for="interviewDate" class="col-form-label">
+              <span class="text-samll text-danger star-place">
+                <ng-container>*</ng-container>
+              </span>
+              <div *ngTemplateOutlet="icon"></div>
+              <b class="question_title mr-2 question-title-size"> 性別</b>
+  
+            </label>
+            <div class="dropdown  mr-2 ">
+              <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;" type="button"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ currentServiceDetail?.gender || '請選擇'}}
+              </button>
+              <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item cuser" (click)="setCurrentGender(item)" *ngFor="let item of GenderList">{{
+                  item }}</a>
+              </div>
+              <div>
+  
+              </div>
+  
+            </div>
+          </div>
+          <!-- 人次 -->
+          <div class="form-group d-flex">
+        
+            <label for="" class="col-form-label">  
+              <span class="text-samll text-danger star-place">
+                <ng-container>*</ng-container>
+              </span>
+              <div *ngTemplateOutlet="icon"></div>
+              <b class="question_title mr-2 question-title-size"> 人數</b>
+            </label>
+            <input type="number"  class="form-control" style ="width :50px" min="1" max="300"
+              placeholder="人次" [(ngModel)]="currentServiceDetail.peopleCount"  (input)="countChange(event)"/>
+   
+          </div>
+          <div >
+            <button type="button" class="btn "  (click)="addServiceDetail()">
+              增加服務對象
+             </button>
+          </div>
+     
+        </div>
+  
+        <div> 
+          
+          <div>
+            <div class="container text-center">
+              <div *ngIf=" currentServiceItem.targetDetailList.length" class="row" 
+              style ="background:#e0e0e0 ; font-size: 16px ; border :2px solid #e0e0e0  ; padding :12px 2px ;font-weight: 900;">
+              
+              <div class="col">
+            對象
+              </div>
+              <div class="col">
+             性別 
+              </div>
+              <div class="col">
+             人數
+              </div>
+              <div class="col">
+           
+              </div>
+              </div>
+              <div class="row"  *ngFor="let item of currentServiceItem.targetDetailList ;let i = index"
+                    style ="font-size: 16px ; border :2px solid #e0e0e0 ;padding :8px 2px ;">
+                <div class="col">
+                  {{  item.ServiceTarget  }}
+                </div>
+                <div class="col">
+                  {{item.gender}}
+                </div>
+                <div class="col">
+                  {{item.peopleCount}}
+                </div>
+                <div class="col">
+                     
+     <span>
+      <mat-icon style=" color:  #544f4f !important; font-size: 17px;" class="" aria-hidden="false" aria-label="Example home icon"
+      (click)="removeItem(i)">
+      highlight_off
+    </mat-icon>
+    </span>  
+                </div>
+              </div>
+            </div>
+        
+
+          </div>
+
+        </div>
+      </div>
+        <!-- {{getJSON(currentServiceItem)}} -->
+        <hr>    
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-dismiss="modal" (click)="cancel()">
+            取消
+          </button>
+          <button type="button" class="btn btn-info" (click)="save()" [disabled]="isSaveButtonDisable">
+            儲存
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,182 @@
+import { ServiceItemDetail, ServiceItemInfo } from './../vo';
+import { Component, OnInit } from '@angular/core';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { DsaService } from 'src/app/dsa.service';
+
+@Component({
+  selector: 'app-add-service-modal',
+  templateUrl: './add-service-modal.component.html',
+  styleUrls: ['./add-service-modal.component.css']
+})
+export class AddServiceModalComponent implements OnInit {
+  currentServiceItem: ServiceItemInfo
+  mode: 'add' | 'edit'
+
+ isClose :boolean =false ;
+  /** title  顯示  */
+  actionString :string =""
+  ServiceOptionList: any  // 下拉選單用 
+  ServiceTargetList: any  // 服務對象 下拉選單用
+  GenderList: any
+  currentServiceDetail: ServiceItemDetail ;
+  constructor(private dsaService: DsaService) {
+
+  }
+
+  async ngOnInit() {
+    this.ServiceOptionList = [
+      '團體輔導',
+      '入班輔導',
+      '家長諮詢',
+      '教師諮詢',
+      '個案會議',
+      '心理測驗',
+      '安心服務',
+      '家庭處遇',
+      '資源連結',
+      '系統會談',
+      '學生諮詢',
+      '臨案協處',
+      '方案計畫',
+      '各項宣講',
+      '危機處理',
+      '轉銜輔導',
+      '其他'
+    ];
+    this.ServiceTargetList = [
+      '一年級',
+      '二年級',
+      '三年級',
+      '四年級',
+      '五年級',
+      '六年級',
+      '七年級',
+      '八年級',
+      '九年級',
+      '高一',
+      '高二',
+      '高三',
+      '教職員',
+      '家長',
+      '專業人員'
+    ];
+    this.GenderList = ['男', '女']
+    this.currentServiceDetail = new ServiceItemDetail();
+    if(this.mode == 'add'){
+ 
+      this.currentServiceItem = new ServiceItemInfo();
+   
+      //
+      this.currentServiceItem.ServiceItem = '請選擇'
+      this.currentServiceDetail.ServiceTarget = '請選擇'
+      this.currentServiceItem.ServiceDate = '';
+      this.currentServiceItem.targetDetailList = [];
+  
+      console.log("sss", this.ServiceOptionList);
+    }else if(this.mode == 'edit'){
+    
+    
+
+    }
+ 
+
+
+  }
+
+  /** 取得 */
+  getJSON(item: any) {
+
+    return JSON.stringify(item);
+  }
+
+
+  /** 設定目前 */
+  setCurrentService(item: string) {
+    this.currentServiceItem.ServiceItem = item;
+  }
+  /** 儲存 */
+  async save() {
+     // 檢查欄位 
+     if(!this.currentServiceItem.ServiceDate){
+         alert("請選擇日期!")
+         return 
+     }
+     if(!this.currentServiceItem.ServiceItem){
+
+        alert("請選擇服務項目!")
+        return 
+     }
+     if(!this.currentServiceItem.targetDetailList.length){
+      alert("請選選擇服務對象及人次")
+      return 
+   }
+
+
+
+
+    try {
+      let resp = await this.dsaService.send("TeacherService.SetTeacherService", {
+        Request: {
+          ServiceItem: this.currentServiceItem
+        }
+      });
+
+  
+      alert("儲存成功!")
+      this.isClose =true ;
+      $("#addServiceModal").modal("hide");
+    } catch (ex) {
+      alert("TeacherService.SetTeacherService" + JSON.stringify(ex));
+    }
+  }
+
+  /** 設定目前對象 */
+  setCurrentServiceTarget(item: any) {
+    this.currentServiceDetail.ServiceTarget = item;
+  }
+
+  /** 設定目前性別 */
+  setCurrentGender(item: string) {
+    this.currentServiceDetail.gender = item
+
+
+  }
+
+  /** 設定數字 */
+  // setCurrentCount(item: number) {
+  //   this.currentServiceDetail.peopleCount = item;
+
+  // }
+
+
+  /** 增加detail */
+  addServiceDetail() {
+    //
+    if (!this.currentServiceDetail.ServiceTarget) { // 對象沒選
+      alert("對象未選!")
+      return
+    }
+    if (!this.currentServiceDetail.gender) {
+      alert("性別未選");
+      return
+    }
+    if (!this.currentServiceDetail.peopleCount) {
+      alert("請輸入人次")
+      return 
+   
+    }
+    this.currentServiceItem.targetDetailList.push(this.currentServiceDetail)
+    this.currentServiceDetail = new ServiceItemDetail();
+  }
+
+  /**去除資料 */
+  removeItem(index: number) {
+
+ 
+    this.currentServiceItem.targetDetailList.splice(index, 1)
+
+  }
+  countChange(event :any){
+    alert(event.target.value)
+  }
+}
