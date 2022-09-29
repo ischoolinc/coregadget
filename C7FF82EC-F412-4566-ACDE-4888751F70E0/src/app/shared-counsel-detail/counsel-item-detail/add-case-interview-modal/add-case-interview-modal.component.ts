@@ -12,17 +12,17 @@ export class AddCaseInterviewModalComponent implements OnInit {
     private dsaService: DsaService
   ) { }
   isCancel: boolean = true;
-
+  fileContent: any
   _editMode: string = "add";
   editModeString: string = "新增";
   // _studentName: string;
-
+  fileUpladed: { FileName, FileContent, TargetID };
   _CaseInterview: CaseInterview;
-
   ngOnInit() {
     this.isCancel = true;
     this._CaseInterview = new CaseInterview();
   }
+
 
   // 載入預設資料
   async loadDefaultData() {
@@ -34,7 +34,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
     });
     // 
-   // this._CaseInterview.checkValue();
+    // this._CaseInterview.checkValue();
 
   }
 
@@ -107,7 +107,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       CaseID: data.CaseID,
       AuthorRole: data.AuthorRole,
       Category: data.Category,
-      ReferralStatus :data.TransferStatus,
+      ReferralStatus: data.TransferStatus,
       ContactNameOther: data.ContactNameOther
     };
     // console.log(req);
@@ -115,6 +115,45 @@ export class AddCaseInterviewModalComponent implements OnInit {
     let resp = await this.dsaService.send("SetCaseInterview", {
       Request: req
     });
-    console.log(resp);
+
+    if (this.fileUpladed) {
+      console.log('respsss', resp.result);
+      this.fileUpladed.TargetID = resp.result.UID;
+      let respfile = await this.dsaService.send("SetCaseInterviewFile", {
+        Request: {
+          FileInfo: this.fileUpladed
+        }
+      });
+      console.log("檔案回來的值", respfile);
+    }
+  }
+
+  /** 上傳資料 */
+  async handleInputChange(event: any) {
+    const file = event.target.files[0];
+
+    this.readBase64(file)
+      .then((data) => {
+        this.fileContent = data;
+        const fileStrig = btoa(data);
+        console.log("fileBase64", fileStrig);
+        const aa = atob(fileStrig)
+        console.log("aa", aa)
+      });
+  }
+
+  private readBase64(file): Promise<any> {
+    const reader = new FileReader();
+    const future = new Promise((resolve, reject) => {
+      reader.addEventListener('load', function () {
+        resolve(reader.result);
+      }, false);
+      reader.addEventListener('error', function (event) {
+        reject(event);
+      }, false);
+
+      reader.readAsDataURL(file);
+    });
+    return future;
   }
 }

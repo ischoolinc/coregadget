@@ -23,10 +23,13 @@ export class CounselTeacherRoleComponent implements OnInit {
   teachersCounselRoles: TeacherCounselRole[] = [];
   notTeachersCounselRole: TeacherCounselRole[] = [];
   counselRole: string[] = [];
-  Mode = new mode() ;
+  Mode = new mode();
   filteredOptions: Observable<string[]>;
   options: string[] = []; //老師清單
-  selectTeacherName =""
+  selectTeacherName = ""
+  /** 輔導人力身分選項 */
+  reportRolesOptions = ['專任輔導教師', '兼任輔導教師', '合聘專任輔導教師-主聘學校', '合聘專任輔導教師-從聘學校']
+  selectReportRolesOptions = null;
   constructor(
     private activatedRoute: ActivatedRoute,
     private dsaService: DsaService,
@@ -49,12 +52,12 @@ export class CounselTeacherRoleComponent implements OnInit {
 
 
       this.filteredOptions = this.myControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      );
+        .pipe(
+          startWith(''),
+          map(value => this._filter(value))
+        );
     }
- 
+
 
     this.counselRole = [];
     // 目前輔導身分counselRole    
@@ -75,31 +78,36 @@ export class CounselTeacherRoleComponent implements OnInit {
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-    // 選擇老師
-    SetSelectTeacherName(item) {
-      this.selectTeacherName = item;
-      // this.chkSaveButton();
-    }
-    // chkSaveButton() {
-    //   if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師')
-    //     this.isSaveButtonDisable = true;
-    //   else
-    //     this.isSaveButtonDisable = false;
-    // }
-Add_v2(){
- this.Mode.mode ='add';
-  const teacherRoleInfo = new TeacherCounselRole(); 
-  teacherRoleInfo.setAddMode() ; //新增模式
- this.teachersCounselRoles.push(teacherRoleInfo) ;
+  // 選擇老師
+  SetSelectTeacherName(item) {
+    this.selectTeacherName = item;
+    // this.chkSaveButton();
+  }
+  // chkSaveButton() {
+  //   if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師')
+  //     this.isSaveButtonDisable = true;
+  //   else
+  //     this.isSaveButtonDisable = false;
+  // }
+  Add_v2() {
+    this.Mode.mode = 'add';
+    const teacherRoleInfo = new TeacherCounselRole();
+    teacherRoleInfo.setAddMode(); //新增模式
+    this.teachersCounselRoles.push(teacherRoleInfo);
 
 
-}
+  }
 
   Add() {
-    this._addCounselTeacherRole.counselRole = this.counselRole;
+    this._addCounselTeacherRole.counselRole = this.counselRole; // 增加角色
+    this._addCounselTeacherRole.counselReportRoles =this.reportRolesOptions ;
+    // 傳入現有教師資訊
+    this._addCounselTeacherRole.existTeacherConselRole =this.teachersCounselRoles ;
     // 填入老師姓名
     this._addCounselTeacherRole.options = [];
-    this._addCounselTeacherRole.selectTeacherID = "";
+    this._addCounselTeacherRole.TeacherCounselNumber ="" ;
+    this._addCounselTeacherRole.selectReportRole =""; // 打開視窗後初始化 
+    this._addCounselTeacherRole.selectTeacherID = ""; // 打勘使窗後出
     this._addCounselTeacherRole.myControl.setValue('');
     this.notTeachersCounselRole.forEach(item => {
       this._addCounselTeacherRole.options.push(item.TeacherName);
@@ -107,6 +115,7 @@ Add_v2(){
 
     this._addCounselTeacherRole.selectRole = "請選擇身分";
     this._addCounselTeacherRole.selectTeacherName = "請選擇教師";
+    this._addCounselTeacherRole.selectReportRole ='請選擇輔導人力身分' ; // 20220920 增加需求
     this._addCounselTeacherRole.notTeachersCounselRole = this.notTeachersCounselRole;
     this._addCounselTeacherRole.isSaveButtonDisable = true;
     $("#addCounselTeacherRole").modal("show");
@@ -132,14 +141,20 @@ Add_v2(){
   /** 點選編輯可輸入 輸入畫面 */
   enterTeacherCounselNumber() {
 
-    this.Mode.mode= 'edit';
+    this.Mode.mode = 'edit';
 
 
   }
 
+
+  /** 選擇角色 */
+  setSelectReportRoleOption(currentTeacher: any, roleOption: string) {
+    currentTeacher.TeacherReportRole = roleOption;
+  }
+
   saveAll() {
-    this.Mode.mode= 'view'; //切換回檢視模式
-     this.saveAllTeacher();
+    this.Mode.mode = 'view'; //切換回檢視模式
+    this.saveAllTeacher();
 
   }
   /**儲存教師角色資訊 */
@@ -206,12 +221,13 @@ Add_v2(){
       let resp = await this.dsaService.send("GetTeachersCounselRole", {
         Request: {}
       });
-      if(resp){
+      if (resp) {
         [].concat(resp.TeacherCounselRole || []).forEach(CounselRole => {
           let tea: TeacherCounselRole = new TeacherCounselRole();
           tea.TeacherID = CounselRole.TeacherID;
           tea.TeacherName = CounselRole.TeacherName;
-          tea.TeacherCounselNumber =CounselRole.TeacherCounselNumber
+          tea.TeacherCounselNumber = CounselRole.TeacherCounselNumber
+          tea.TeacherReportRole =CounselRole.TeacherReportRole
           tea.Role = CounselRole.Role;
           tea.parseOrder();
           if (tea.Role && tea.Role !== '') {
@@ -220,17 +236,17 @@ Add_v2(){
             this.notTeachersCounselRole.push(tea);
           }
         });
-  debugger
+    
         this.teachersCounselRoles.sort(function (a, b) {
           return a.Order - b.Order;
 
-          
+
         });
       }
     } catch (err) {
       alert('無法取得輔導教師身分：' + err.dsaError.message);
     }
-    debugger
+
     this.isLoading = false;
   }
 

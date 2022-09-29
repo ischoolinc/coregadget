@@ -89,6 +89,9 @@ import { ConditionModalComponent } from './counsel-statistics/reports/case-inter
 import {MatBadgeModule} from '@angular/material/badge';
 import { AddInterviewModalComponent, SharedCounselDetailModule } from './shared-counsel-detail';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
+import { AddServiceModalComponent } from './teacher-service/add-service-modal/add-service-modal.component';
+import { DelServiceModalComponent } from './teacher-service/del-service-modal/del-service-modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -138,6 +141,9 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     WorkServiceComponent,
     NewWorkModalComponent,
     ConditionModalComponent,
+    TeacherServiceComponent,
+    AddServiceModalComponent,
+    DelServiceModalComponent,
     // MatSnackBarModule
     
     

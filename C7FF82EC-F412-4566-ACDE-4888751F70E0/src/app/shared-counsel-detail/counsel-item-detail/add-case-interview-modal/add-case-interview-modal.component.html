@@ -113,6 +113,7 @@
         </div>
 
 <div class ="form-row">
+  <!-- 內容說明 -->
         <div class="form-group col-md-12  ">
           <label for="description" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_CaseInterview.isContentHasValue">*</span>
@@ -123,6 +124,11 @@
             [(ngModel)]="_CaseInterview.Content" (keyup)="_CaseInterview.checkValue()"></textarea>
         </div>
       </div>
+  <!-- 檔案上傳 -->
+  <!-- <div class="image-upload">
+ 
+    <input name="imageUrl" type="file" accept="image/*" (change)="handleInputChange($event)" />
+</div>  -->
 <!-- //   個案類別  -->
       <div class ="form-row">
         <div class="form-group col-md-12">

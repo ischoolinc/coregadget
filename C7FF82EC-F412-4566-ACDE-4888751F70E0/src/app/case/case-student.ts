@@ -26,29 +26,52 @@ export class CaseStudent {
   OccurDate: string; 
   /** 個案編號 */
   CaseNo: string; 
+  /** 轉借概況 */
+  ReportReferralStatus :string  ;
   /** 學生身分 */
   StudentIdentity: string; // 學生身份
   /**  疑似特殊生類別 */
   PossibleSpecialCategory: string; 
   /** 特殊生等級 */
   SpecialLevel: string; // 特殊生等級
-   
-  SpecialCategory: string; // 特殊生類別
-  HasDisabledBook: string; // 是否領有身心障礙手冊
-  DeviantBehavior: string; // 偏差行為
-  ProblemCategory: string; // 個案類別(副) 
-  ProblemMainCategory:string ; // 個案類別(主) 20210503 新增
-  ProbleDescription: string; // 問題描述
-  SpecialSituation: string; // 特殊狀況
-  EvaluationResult: string; // 評估結果
-  IsClosed: string; // 是否結案
-  CloseDate: string; // 結案日期
-  ClosedByTeacherID: string; // 結案人員教師編碼
-  CloseDescription: string; // 結案說明
-  StudentID: string; // 學生系統編號
-  ClassID: string; // 班級編號
-  CaseSource: string; // 個案來源
-  CaseCount: string; // 個案輔導次數
+  /** 特殊生類別  */
+  SpecialCategory: string; 
+  /** 是否領有身心障礙手冊*/
+  HasDisabledBook: string; 
+  /** 偏差行為 */
+  DeviantBehavior: string; 
+  /** 個案類別(副) */
+  ProblemCategory: string; 
+  /** 學生身分 */
+  StudentStatus : string  // 20220923 學生身分 新規格
+  /** */
+  ProblemMainCategory:string ;
+  /** 問題描述 */
+  ProbleDescription: string;
+  /** 特殊狀況 */
+  SpecialSituation: string;
+  /** 評估結果 */
+  EvaluationResult: string; 
+  /** 是否結案 */
+  IsClosed: string; 
+  /** 結案日期 */
+  CloseDate: string; 
+  /** 結案人員教師編碼  */
+  ClosedByTeacherID: string;
+  /** 結案說明 */
+  CloseDescription: string; 
+  /** 學生系統編號 */
+  StudentID: string; 
+  /** 班級編號 */
+  ClassID: string; 
+  /**個案來源改為多選 */
+  CaseSourceList :{name,checked}[] =[] ;
+  /**轉借資料多選 */
+  CaseReferalList :string[] =[] ;
+  /** 個案來源 */
+  CaseSource: string; 
+  /** 個案輔導次數 */
+  CaseCount: string; 
   PhotoUrl: string;
   CaseTeachers: CaseTeacher[];
   CaseTeacherString : string ;
@@ -67,10 +90,15 @@ export class CaseStudent {
 
   // 這個案選的個案老師
   selectCaseTeacers: SelectCaseTeacher[];
-
+  /** 學生身分 */
+  student_status : QOption[] ; 
+  /** 偏差行為 */
   deviant_behavior: QOption[]; // 偏差行為
+  /** 個案類別 */
   problem_category: QOption[]; // 	個案類別 (副)
-  problem_main_category:QOption[];  // 個案類別(主) 根據月報表規則修改 就資料指向下相容副類別
+  /** 個案類別(主) 根據月報表規則修改 就資料指向下相容副類別   */
+  problem_main_category:QOption[];  
+  /** */
   proble_description: QOption[]; //	問題描述
   special_situation: QOption[]; //	特殊狀況
   evaluation_result: QOption[]; //	評估結果
@@ -97,6 +125,13 @@ export class CaseStudent {
   isProbleDescriptionHasValue: boolean = false;
   isEvaluationResultHasValue: boolean = false;
 
+  /** 入DB使用 把 */
+  changeCaseSourceToString(){
+   let checkSocurcesList = this.CaseSourceList.filter(x=> x.checked )
+   checkSocurcesList = checkSocurcesList.map(x=>x.name) ;
+   this.CaseSource = checkSocurcesList.join("___") ;
+    return  this.CaseSource ;
+  }
   // 當透過轉介建立才會在值，儲存輔導紀錄 uid
   RefCounselInterviewID: string = "";
 
@@ -110,6 +145,8 @@ export class CaseStudent {
     this.loadProblemCategoryTemplate();   // 4. 取得 【個案類別(副)】
     this.loadProblemMainCategoryTemplate(); // 5 取得 【個案類別(主)】
     this.loadSpecialSituationTemplate();  // 6. 取得 【特殊狀況】
+    this.loadStudentStatusTemplate();
+    this.loadCaseSource();
   }
 
   /** 清空個案類別(主類別) T :點選個案類別(主)時 */
@@ -194,12 +231,11 @@ export class CaseStudent {
 /**取得個案類別 (主) */
 public loadProblemMainCategoryTemplate()
 {
-  console.log("個案類別(主) 載入.....");
+
   let num: number = 1;
   this.problem_main_category = []; // 	個案類別
   let problem_categoryT = this.caseQuestionTemplate.getProblemCategory();
-debugger 
-   console.log("個案類別...",problem_categoryT)
+
   for (let item of problem_categoryT) {
     let qo: QOption = new QOption();
     qo.answer_code = `problem_main_category${num}`;
@@ -256,6 +292,27 @@ debugger
       this.special_situation.push(qo);
     }
   }
+
+  /** 取得學生身分選項 */
+  public loadStudentStatusTemplate(){
+    this.student_status = [] ;
+    let student_statusT = this.caseQuestionTemplate.getStudentStatus();
+
+    let num = 1;
+    for (let item of student_statusT) {
+      let qo: QOption = new QOption();
+      qo.answer_code = `student_status${num}`;
+      qo.answer_martix = [];
+      qo.answer_text = item.answer_text;
+      qo.answer_checked = item.answer_checked;
+      qo.answer_complete = item.answer_complete;
+      qo.answer_value = item.answer_value;
+
+      num += 1;
+      this.student_status.push(qo);
+    }
+
+  }
   public loadEvaluationResultTemplate() {
     this.evaluation_result = []; //	評估結果
     let evaluation_resultT = this.caseQuestionTemplate.getEvaluationResult();
@@ -290,8 +347,46 @@ debugger
     return value;
   }
 
-  /** 將問答結果字串轉成 list*/
-  public LoadQuestionOptionStringToList() {
+  /**載入個案來源選項 */
+  loadCaseSource() {
+    const caseSource =["學生主動求助", "家長轉介", "教師轉介（含教職員工）", "同儕轉介", "輔導老師約談", "線上預約管道（僅限高中階段）","其他"]
+    this.CaseSourceList = [];
+    caseSource.forEach(sourceeName => {
+      this.CaseSourceList.push({ name: sourceeName, checked: false });
+    });
+
+  }
+
+  /** 載入轉借資料 */
+  loadReferalStatusList (){
+    this.CaseReferalList =[
+    '本月轉介輔諮中心' ,
+    '無轉介',
+    '已轉介輔諮中心且該中心持續服務中',
+    '已轉介輔諮中心，該中心服務至本月結案' 
+    ]
+
+  }
+  /** 處理個案來源選項*/
+  public LoadCaseSourceOptionStringToList(){
+    this.loadCaseSource();
+    this.loadReferalStatusList ();
+
+    let caseSourceCheckedList :string []= this.CaseSource.split('___') ;
+     if(this.CaseSource){
+      this.CaseSourceList.forEach(item =>{
+        if(caseSourceCheckedList.includes(item.name )){
+          item.checked = true ;
+        }
+
+   })}
+
+  }
+
+  /** 將問答結果字串轉成 list 依據有沒有資料判斷編輯*/
+  public LoadQuestionOptionStringToList() { 
+    // 個案來源
+    this.LoadCaseSourceOptionStringToList();
     if (this.DeviantBehavior) {
       this.deviant_behavior = this.parseQuestioOptionToArray(
         this.DeviantBehavior
@@ -309,9 +404,15 @@ debugger
       this.loadProblemCategoryTemplate();
     }
 
+    // 學生身分
+    if(this.StudentStatus){
+      this.student_status =this.parseQuestioOptionToArray(this.StudentStatus);
+
+    }else{
+         this.loadStudentStatusTemplate();
+    }
     //新增個案類別(主) 
-    console.log('this',this)
-    console.log('this,',this.ProblemMainCategory)
+
     if(this.ProblemMainCategory)
     {
    
@@ -387,10 +488,10 @@ debugger
     for (const item of this.problem_main_category) {
       // console.log('problem');
       // debugger
-      console.log('problem00',item.answer_text+item.answer_checked);
+ 
       if (item.answer_checked) {
-      console.log('problem00',item.answer_text+item.answer_checked);
-      console.log('problem00)value',item.answer_value+item.answer_checked);
+
+  
 
 
         value.push(item.answer_value);
@@ -473,8 +574,8 @@ debugger
     // } else {
     //   this.isCaseNoHasValue = false;
     // }
-
-    if (this.CaseSource) {
+    // 20220923 【個案來源】改成多選
+    if (this.CaseSourceList.length) {
       this.isCaseSourceHasValue = true;
     } else {
       this.isCaseSourceHasValue = false;

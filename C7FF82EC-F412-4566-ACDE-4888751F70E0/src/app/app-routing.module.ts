@@ -32,6 +32,7 @@ import { CounselDoc2BatComponent } from './counsel-statistics/reports/counsel-do
 import { CounselInterviewDocComponent } from './simple-page/print/counsel-interview-doc/counsel-interview-doc.component';
 import { MatIconModule } from '@angular/material/icon';
 import { WorkServiceComponent } from './work-service/work-service.component';
+import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -82,6 +83,9 @@ const routes: Routes = [
       { path: "counsel_class", component: CounselClassComponent },
       { path: "psychological_quiz_setup", component: PsychologicalQuizSetupComponent }
     ]
+  },{
+    path: "teacher-service",
+    component: TeacherServiceComponent
   }, {
     path: "comprehensive",
     component: ComprehensiveComponent,

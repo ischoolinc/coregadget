@@ -8,6 +8,8 @@ export class TeacherCounselRole {
     TeacherName: string;
     /** 教師編碼 (月報表使用) */
     TeacherCounselNumber:string ="";
+    /** 輔導人力身分 (月報表使用) */
+    TeacherReportRole :string = "" ;
     /** 編輯模式 */
     isAddMode :boolean  = false ;
     isChage: boolean = false;

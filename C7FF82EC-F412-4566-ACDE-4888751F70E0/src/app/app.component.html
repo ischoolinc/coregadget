@@ -125,15 +125,16 @@
       </ng-container>
 
             <!-- todo -->
-            <!-- <ng-container *ngIf="adminVisable === true">
+            <ng-container *ngIf="adminVisable === true">
               <li class="nav-item">
                 <a class="nav-link"
                    [attr.data-toggle]="roleService.enableAdmin?'tab':null"
-                   (click)="!roleService.enableAdmin || routeTo('/admin')"
-                   [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
-                  <b> 服務項目登錄</b></a>
+                   (click)="!roleService.enableAdmin || routeTo('/teacher-service')"
+                   [ngClass]="{'active': currentComponent == 'teacher-service', 'disabled': !roleService.enableAdmin}">
+                  <b> 相關服務</b>
+                </a>
               </li>
-            </ng-container> -->
+            </ng-container>
       <ng-container *ngIf="adminVisable === true">
         <li class="nav-item">
           <a class="nav-link" [attr.data-toggle]="roleService.enableAdmin?'tab':null"

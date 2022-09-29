@@ -53,11 +53,13 @@ export class CaseComponent implements OnInit {
   @ViewChild("del_case_modal") del_case_modal: DelCaseModalComponent;
   // 新增
   setNewCaseModal() {
+    // this.case_modal.loadCaseSource(); //載入個案來源
     this.case_modal.isAddMode = true;
     this.case_modal.editModeString = "新增";
     this.case_modal.caseStudent = new CaseStudent();
     // 放入預設選項
     this.case_modal.loadData();
+    this.case_modal.caseStudent.loadReferalStatusList()
     this.case_modal.caseStudent.useQuestionOptionTemplate();
     this.case_modal.selectClassNameValue = "請選擇班級";
     this.case_modal.selectSeatNoValue = "請選擇座號";
@@ -73,6 +75,7 @@ export class CaseComponent implements OnInit {
     this.case_modal.caseStudent.isCaseLevel1Checked = true;
     this.case_modal.caseStudent.CaseLevel = '初級';
 
+    $("#newCase").modal({backdrop:'static'});
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
@@ -142,14 +145,14 @@ export class CaseComponent implements OnInit {
     });
   }
 
-  // 編輯
+  /** 編輯 */
   setEditCaseModal(item: CaseStudent) {
     let obj = Object.assign({}, item);
     this.case_modal.isAddMode = false;
     this.case_modal.editModeString = "修改";
     this.case_modal.isCanSetClass = false;
     this.case_modal.caseStudent = item;
-
+    // this.case_modal.loadCaseSource(); //載入個案來源
     this.case_modal.loadData();
     this.case_modal.selectClassNameValue = item.ClassName;
     this.case_modal.selectSeatNoValue = item.SeatNo;
@@ -244,8 +247,6 @@ export class CaseComponent implements OnInit {
       let resp = await this.dsaService.send("GetCase", {
         Request: {}
       });
-
-      console.log("458.",resp.Case );
       [].concat(resp.Case || []).forEach(caseRec => {
         // 建立認輔資料
         let rec: CaseStudent = new CaseStudent();
@@ -262,6 +263,7 @@ export class CaseComponent implements OnInit {
         let dt = new Date(x);
         rec.OccurDate = rec.parseDate(dt, '-');
         rec.CaseNo = caseRec.CaseNo;
+        rec.ReportReferralStatus =caseRec.ReportReferralStatus;
         rec.StudentIdentity = caseRec.StudentIdentity;
         rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
         rec.SpecialLevel = caseRec.SpecialLevel;
@@ -269,9 +271,7 @@ export class CaseComponent implements OnInit {
         rec.HasDisabledBook = caseRec.HasDisabledBook;
         rec.DeviantBehavior = caseRec.DeviantBehavior;
         rec.ProblemCategory = caseRec.ProblemCategory;
-        console.log('11', caseRec.ProblemMainCategory)
         rec.ProblemMainCategory = caseRec.ProblemMainCategory ;
-        console.log('22',rec.ProblemMainCategory)
         rec.ProbleDescription = caseRec.ProbleDescription;
         rec.SpecialSituation = caseRec.SpecialSituation;
         rec.EvaluationResult = caseRec.EvaluationResult;
@@ -282,6 +282,7 @@ export class CaseComponent implements OnInit {
         rec.StudentID = caseRec.StudentID;
         rec.CaseSource = caseRec.CaseSource;
         rec.CaseCount = caseRec.CaseCount;
+        rec.StudentStatus =caseRec.StudentStatus ;
         rec.PhotoUrl = `${
           this.dsaService.AccessPoint
           }/GetStudentPhoto?stt=Session&sessionid=${

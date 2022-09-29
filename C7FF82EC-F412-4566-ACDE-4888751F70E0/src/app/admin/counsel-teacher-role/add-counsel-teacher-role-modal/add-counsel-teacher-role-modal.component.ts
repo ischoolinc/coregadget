@@ -19,12 +19,16 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   option: string;
   filteredOptions: Observable<string[]>;
   selectRole: string = "";
+  selectReportRole : string = "" ;
   selectTeacherName: string = "請選擇教師";
   selectTeacherID: string = "";
   selectTeahcer: TeacherCounselRole;
   TeacherCounselNumber :string;
+  /**原有的教師資料(確認教師編碼是否重複用) */
+  existTeacherConselRole :TeacherCounselRole [] =[] ;
   notTeachersCounselRole: TeacherCounselRole[] = [];
   counselRole: string[] = [];
+  counselReportRoles :string[] = [] ;
 
   constructor(private dsaService: DsaService) { }
 
@@ -48,11 +52,19 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
     $("#addCounselTeacherRole").modal("hide");
   }
 
-  // 選擇角色
+  /** 選擇角色 */
   SetSelectRole(item: string) {
     this.selectRole = item;
     this.chkSaveButton();
   }
+
+
+  /** 呈報輔導人力身分 */
+  SetSelectReportRole(item: string) {
+    this.selectReportRole = item;
+    this.chkSaveButton();
+  }
+
 
   // 選擇老師
   SetSelectTeacherName(item) {
@@ -61,11 +73,13 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   }
 
   chkSaveButton() {
-    if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師')
+    if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師' || this.selectReportRole === '請選擇輔導人力身分')
       this.isSaveButtonDisable = true;
     else
       this.isSaveButtonDisable = false;
   }
+
+
 
   save() {
     this.isCancel = false;
@@ -88,14 +102,28 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
     }
   }
 
-  // 批次設定教師角色
+
+
+  /**確認教師編碼是否重複 */
+  checkIsExist( ){
+     alert("ngModal:"+this.TeacherCounselNumber);
+     debugger
+    const teacherRole = this.existTeacherConselRole.find(x=> x.TeacherCounselNumber == this.TeacherCounselNumber )
+    if(teacherRole){
+        alert("教師編碼重複!");
+        this.TeacherCounselNumber = ""  
+    }
+
+  }
+  /**批次設定教師角色*/
   async SetTeachersCounselRole() {
     let reqTeacherCounselRole = [];
 
     let itItm = {
       TeacherID: this.selectTeacherID,
       Role: this.selectRole,
-      TeacherCounselNumber :this.TeacherCounselNumber 
+      TeacherCounselNumber :this.TeacherCounselNumber ,
+      TeacherReportRole :this.selectReportRole  
     }
     reqTeacherCounselRole.push(itItm);
     try {

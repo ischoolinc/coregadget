@@ -1,3 +1,4 @@
+/** 新增時得使用物件 */
 export class CaseQuestionTemplate {
   constructor() {}
 
@@ -296,7 +297,7 @@ export class CaseQuestionTemplate {
 
     return [].concat(data || []);
   }
-  // 特殊狀況
+  /**特殊狀況 */ 
   public getSpecialSituation() {
     let data = [
       {
@@ -429,6 +430,51 @@ export class CaseQuestionTemplate {
     ];
 
     return [].concat(data || []);
+  }
+
+
+  /** 取得學生身分 */
+  public getStudentStatus() {
+    let studentStatusStr :string [] =[
+      '以下皆非',
+      '智能障礙',
+      '視覺障礙',
+      '聽覺障礙',
+      '語言障礙',
+      '肢體障礙',
+      '腦性麻痺',
+      '身體病弱',
+      '情緒行為障礙',
+      '學習障礙',
+      '多重障礙',
+      '自閉症',
+      '發展遲緩',
+      '其他障礙',
+
+    ]
+  
+    let data :{}[]=[]
+    // 預設勾選已下皆非
+    studentStatusStr.forEach(item =>{
+     let defaultChecked = false;
+     if(item =='以下皆非'){
+      defaultChecked=true ;
+
+     }
+      data.push(
+        {
+          answer_text: item,
+          answer_value: "",
+          answer_martix: [],
+          answer_complete: false,
+          answer_checked: defaultChecked 
+        }
+
+      )
+    })
+
+    return [].concat(data || []);
+
   }
 }
 
