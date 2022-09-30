@@ -72,6 +72,7 @@ function App() {
             else {
               setText("");
               setPsychologicalTestData(convertToArray(response.Quiz));
+              //console.log('convertToArray(response.Quiz)', convertToArray(response.Quiz));
             }
           }
         }
@@ -294,7 +295,7 @@ function App() {
                         </tr>
                       </thead>
                       <tbody style={{ borderTop: '4px solid #fff' }}>
-                        {pst.Field.map((quiz) => {
+                        {convertToArray(pst.Field).map((quiz) => {
                           return <tr style={{ background: '#E2F0D9' }}>
                             <td>{quiz.Name}</td>
                             <td>{quiz.Value}</td>
