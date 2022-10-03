@@ -7,7 +7,7 @@ import { DsaService } from "./dsa.service";
 })
 export class RoleService {
 
-  private _loginTeacher  :ITeacher 
+  private _loginTeacher  :ITeacher
   private _loginTeacherName ="" ;
   private _role: string[];
 
@@ -19,6 +19,7 @@ export class RoleService {
   private _enableInterviewStatistics: boolean = false;
   private _enableAdmin: boolean = false;
   private _enableComprehensive: boolean = false;
+  private _enableTransferStudents: boolean = false;
   private _enablePsychologicalTest: boolean = false;
 
   public get isLoading() {
@@ -26,10 +27,10 @@ export class RoleService {
   }
   /** 取得目前教師資料 */
   public get loginTeacher(){
-    console.log("teacher.." , this._loginTeacher) 
+    console.log("teacher.." , this._loginTeacher)
     return this._loginTeacher ;
    }
-   
+
   /** 取得目前登入教師之特 */
   public get loginTeacherName()
   {
@@ -55,6 +56,9 @@ export class RoleService {
   }
   public get enableComprehensive() {
     return this._enableComprehensive;
+  }
+  public get enableTransferStudents() {
+    return this._enableTransferStudents;
   }
   public get enablePsychologicalTest() {
     return this._enablePsychologicalTest;
@@ -92,7 +96,7 @@ export class RoleService {
       this._enableCounsel = true;
     }
     if (
-      this._role.indexOf("管理者") >= 0 
+      this._role.indexOf("管理者") >= 0
     ) {
       this._enableCounselStatistics = true;
     }
@@ -111,8 +115,8 @@ export class RoleService {
     if (
       this._role.indexOf("管理者") >= 0 ||
       this._role.indexOf("輔導老師") >= 0 ||
-      this._role.indexOf("認輔老師") >= 0 
-      // this._role.indexOf("校外心理師") >= 0 
+      this._role.indexOf("認輔老師") >= 0
+      // this._role.indexOf("校外心理師") >= 0
 
     ) {
       this._enableInterviewStatistics = true;
@@ -123,6 +127,12 @@ export class RoleService {
       this._role.indexOf("輔導老師") >= 0
     ) {
       this._enableComprehensive = true;
+    }
+
+    if (
+      this._role.indexOf("管理者") >= 0
+    ) {
+      this._enableTransferStudents = true;
     }
 
     if (
