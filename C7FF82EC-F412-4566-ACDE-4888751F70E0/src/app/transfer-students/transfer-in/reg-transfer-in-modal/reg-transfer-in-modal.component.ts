@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { promise } from "protractor";
-import { DsaService } from "src/app/dsa.service";
+import { DsaTransferService } from "../../service/dsa-transfer.service";
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: "app-reg-transfer-in-modal",
@@ -10,6 +10,8 @@ import { DsaService } from "src/app/dsa.service";
 export class RegTransferInModalComponent implements OnInit {
 
   isLoading = true;
+  isReging = false;
+  regStatus: RegStatus = {} as RegStatus;
   gradeYears: string[] = [];
   classList: ClassRec[] = [];
   studentMap: Map<string, StudentRec[]> = new Map();
@@ -18,30 +20,24 @@ export class RegTransferInModalComponent implements OnInit {
   curClassList: ClassRec[] = [];
   selectedStudent: StudentRec = {} as StudentRec;
   curStudentList: StudentRec[] = [];
-  today = new Date();
-  myInfo: MyInfo = {} as MyInfo;
+  schoolList: SchoolRec[] = [];
+  selectedSchool: SchoolRec = {} as SchoolRec;
 
   constructor(
-    private dsaService: DsaService,
+    private dsaService: DsaTransferService,
   ) { }
 
   async ngOnInit() {
     try {
       await Promise.all([
-        this.getMyInfo(),
-        this.getClassList()
+        this.getClassList(),
+        this.getSchoolList(),
       ]);
     } catch (error) {
       console.log(error);
     } finally {
       this.isLoading = false;
     }
-  }
-
-  async getMyInfo() {
-    const resp = await this.dsaService.send('TransferStudent.GetMyInfo');
-    this.myInfo = resp.MyInfo || {};
-    console.log(this.myInfo)
   }
 
   async getClassList() {
@@ -61,6 +57,16 @@ export class RegTransferInModalComponent implements OnInit {
       return x.localeCompare(y);
     });
     this.classList = sortClassList;
+  }
+
+  async getSchoolList() {
+    // TODO: 去 1campusman，取得學校清單
+    // const resp = await this.dsaService.send('', { group: '' }, '');
+    // const schoolList = [].concat(resp.Schools || []);
+    this.schoolList = [
+      { school_name: '俊威測試高中', dsns: 'demo.h.kandy.huang' },
+      { school_name: '內部高中開發_日校', dsns: 'dev.sh_d' },
+    ];
   }
 
   selectGrade(gradeYear: string) {
@@ -85,8 +91,59 @@ export class RegTransferInModalComponent implements OnInit {
     this.selectedStudent = student;
   }
 
-  cancel() {
-    $("#newCase").modal("hide");
+  selectSchool(school: SchoolRec) {
+    this.selectedSchool = school;
+  }
+
+  async beginReg() {
+    if (!this.selectedStudent.StudentId) {
+      this.regStatus = { info: 'failed', msg: '請選擇學生' };
+      return;
+    }
+    if (!this.selectedSchool.dsns) {
+      this.regStatus = { info: 'failed', msg: '請選擇轉出校' };
+      return;
+    }
+    if (!(this.selectedStudent.IdNumber && this.selectedStudent.Birthdate && this.selectedStudent.Account)) {
+      this.regStatus = { info: 'failed', msg: '學生未設定「身分證號」及「生日」及「登入帳號」' };
+      return;
+    }
+
+    if (this.isReging) return;
+
+    try {
+      this.isReging = true;
+      this.regStatus = { info: '', msg: '' };
+      const resp = await Promise.all([
+        this.dsaService.send('TransferStudent.GetMyInfo'),
+      ]);
+
+      const myInfo: MyInfo = resp[0].MyInfo || {};
+      const myDSNS = gadget.getApplication().accessPoint;
+      const mySchoolName = this.schoolList.find(v => v.dsns === myDSNS);
+      // TODO:
+      // 1. 去它校申請轉入
+      // 2. 在本校新增申請記錄
+      // 3. 新增 log
+      const body = {
+        IdNumber: this.selectedStudent.IdNumber,
+        Birthday: this.selectedStudent.Birthdate,
+        DSNS: myDSNS,
+        SchoolName: mySchoolName,
+        ContractInfo: JSON.stringify(myInfo),
+        AcceptToken: `${uuidv4().substring(0, 7)}@${this.selectedStudent.Account}`,
+      };
+      console.log(body);
+      this.regStatus = { info: 'success', msg: '' };
+    } catch (error) {
+      console.log(error);
+      this.regStatus = {
+        info: 'failed',
+        msg: '過程中發生錯誤'
+      };
+    } finally {
+      this.isReging = false;
+    }
   }
 }
 
@@ -95,16 +152,24 @@ interface ClassRec {
   ClassID: string;
   ClassName: string;
 }
-
 interface StudentRec {
-  name: string;
-  seat_no: string;
-  student_id: string;
-  id_number: string;
-  birthday: string;
+  Name: string;
+  SeatNo: string;
+  StudentId: string;
+  Account: string;
+  IdNumber: string;
+  Birthdate: string;
 }
-
 interface MyInfo {
-  teacher_name: string;
-  account: string;
+  TeacherName: string;
+  Nickname: string;
+  Account: string;
+}
+interface RegStatus {
+  info: 'success' | 'failed' | '';
+  msg: string;
+}
+interface SchoolRec {
+  dsns: string;
+  school_name: string;
 }

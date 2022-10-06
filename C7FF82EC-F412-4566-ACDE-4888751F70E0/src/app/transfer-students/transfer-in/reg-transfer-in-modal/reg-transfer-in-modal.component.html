@@ -39,25 +39,41 @@
             <div class="dropdown">
               學生 <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px!important;"
                 type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{ selectedStudent.student_id ? (selectedStudent.seat_no + ' ' + selectedStudent.name) : '請選擇學生' }}
+                  {{ selectedStudent.StudentId ? (selectedStudent.SeatNo + ' ' + selectedStudent.Name) : '請選擇學生' }}
               </button>
               <div class="dropdown-menu scrollable-menu">
                 <a class="dropdown-item" *ngFor="let stu of curStudentList" (click)="selectStudent(stu)" >
-                  {{stu.seat_no}} {{stu.name}}
+                  {{stu.SeatNo}} {{stu.Name}}
                 </a>
               </div>
             </div>
         </div>
+        <div class="form-row mx-0 mt-3">
+          <div class="dropdown mr-2 mb-3">
+            轉出校名稱 <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px"
+              type="button"
+              data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              {{selectedSchool.school_name || '請選擇轉出校'}}
+            </button>
+            <div class="dropdown-menu scrollable-menu">
+              <a class="dropdown-item" *ngFor="let school of schoolList" (click)="selectSchool(school)">
+                {{school.school_name}}
+              </a>
+            </div>
+          </div>
+        </div>
         <div>
-          <span>申請者：{{myInfo.teacher_name}}</span>
-          <span class="float-right">申請日期：{{today | date: 'yyyy-MM-dd'}}</span>
+          <p class="text-center mt-3" *ngIf="isReging">處理中，請稍候</p>
+          <p class="text-center mt-3 text-success" *ngIf="regStatus.info === 'success'">申請成功！</p>
+          <p class="text-center mt-3 text-danger" *ngIf="regStatus.info === 'failed'">申請失敗！{{regStatus.msg}}</p>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" (click)="cancel()">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">
           取消
         </button>
-        <button type="button" class="btn btn-info">
+        <button type="button" class="btn btn-info" (click)="beginReg()">
           申請移轉
         </button>
       </div>

@@ -22,22 +22,22 @@
       </li>
       <li class="tbody">
         <ol class="tr" *ngFor="let item of transList">
-          <li data-title="班級" (click)="devSetApproved(item)">{{item.class_name}}</li>
-          <li data-title="座號">{{item.seat_no}}</li>
-          <li data-title="姓名">{{item.student_name}}</li>
-          <li data-title="轉出校">{{item.dsns}}</li>
-          <li data-title="申請/取消 日期">{{(item.create_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
-          <li data-title="申請者">{{item.creater}}</li>
-          <li data-title="移轉狀態">{{formatStatus(item.status)}}</li>
-          <li data-title="回覆日期">{{(item.approved_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="班級" (click)="devSetApproved(item)">{{item.ClassName}}</li>
+          <li data-title="座號">{{item.SeatNo}}</li>
+          <li data-title="姓名">{{item.StudentName}}</li>
+          <li data-title="轉出校">{{item.DSNS}}</li>
+          <li data-title="申請/取消 日期">{{((item.CancelTime || item.CreateTime) | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="申請者">{{item.TeacherName}} {{item.Nickname ? '(' + item.Nickname + ')' : ''}}</li>
+          <li data-title="移轉狀態">{{formatStatus(item.Status)}}</li>
+          <li data-title="回覆日期">{{(item.ApprovedTime | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
           <li data-title="功能">
-            <a class="text-info" *ngIf="item.status === '0'" (click)="toReg(item)">申請</a>
-            <a class="text-info" *ngIf="item.status === '1'" (click)="cancelReg(item)">取消</a>
-            <a class="text-info" *ngIf="item.status === '2'" (click)="confrimTransIn(item)">轉入</a>
+            <a class="text-info" *ngIf="item.Status === '1'" (click)="confirmCancelReg(item)">取消</a>
+            <a class="text-info" *ngIf="item.Status === '2'" (click)="confrimTransIn(item)">轉入</a>
           </li>
         </ol>
       </li>
     </ul>
+    <div *ngIf="transList.length === 0" class="text-center mt-3">無資料</div>
   </div>
 </div>
 
@@ -47,12 +47,35 @@
   </div>
 </ng-template>
 
-<div class="modal fade"  id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" role="dialog" aria-labelledby="confirmCancelModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          確定轉入 {{targetStudent.student_name}} 的資料嗎？
+          確定取消 {{targetStudent.StudentName}} 的轉入嗎？
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p class="text-center mt-3" *ngIf="isSaving">處理中，請稍候</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">
+          取消
+        </button>
+        <button type="button" class="btn btn-danger" (click)="beginCancelReg()">
+          確定
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          確定轉入 {{targetStudent.StudentName}} 的資料嗎？
         </h5>
       </div>
       <div class="modal-body">

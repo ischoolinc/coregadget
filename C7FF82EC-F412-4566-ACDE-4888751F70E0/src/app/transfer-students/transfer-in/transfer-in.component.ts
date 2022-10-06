@@ -32,26 +32,8 @@ export class TransferInComponent implements OnInit {
   }
 
   async getList() {
-    // let resp = await this.dsaService.send("TransferStudent.GetTransInStudents");
-    // this.transList = [].concat(resp.StudentList || []);
-    this.transList = [
-      {
-        student_id: '1',
-        student_name: '高思念',
-        seat_no: '1',
-        class_name: '209',
-        dsns: '新科國中',
-        transfer_token: '',
-        accept_token: '',
-        contract_info: '',
-        create_time: new Date('2022-09-19 10:45:00').toString(),
-        approved_time: '',
-        remark: '',
-        log: '',
-        status: '1',
-        creater: '李玉玲',
-      }
-    ];
+    let resp = await this.dsaService.send("TransferStudent.GetTransInStudents");
+    this.transList = [].concat(resp.StudentList || []);
   }
 
   formatStatus(status: string) {
@@ -66,16 +48,18 @@ export class TransferInComponent implements OnInit {
         return '已完成';
       case '-1':
         return '取消';
+      case '-2':
+        return '拒絕';
     }
   }
 
   async toReg(item: TransStudentRec) {
-    item.status = '1';
-    item.create_time = new Date().toString();
+    item.Status = '1';
+    item.CreateTime = new Date().toString();
   }
 
   async cancelReg(item: TransStudentRec) {
-    item.status = '-1';
+    item.Status = '-1';
   }
 
   async confrimTransIn(item: TransStudentRec) {
@@ -89,15 +73,15 @@ export class TransferInComponent implements OnInit {
     this.isSaving = true;
 
     setTimeout(() => {
-      this.targetStudent.status = '3';
+      this.targetStudent.Status = '3';
       this.isSaving = false;
       $('#confirmTransModal').modal('hide');
     }, 3000);
   }
 
   devSetApproved(item: TransStudentRec) {
-    item.status = '2';
-    item.approved_time = new Date().toString();
+    item.Status = '2';
+    item.ApprovedTime = new Date().toString();
   }
 
   openReg() {
@@ -111,21 +95,31 @@ export class TransferInComponent implements OnInit {
       $("#regTransStudentModal").off("hide.bs.modal");
     });
   }
+
+  confirmCancelReg() {
+    $('#confirmTransModal').modal('show');
+  }
+
+  beginCancelReg() {
+
+  }
 }
 
 interface TransStudentRec {
-  student_id: string;
-  student_name: string;
-  seat_no: string;
-  class_name: string;
-  dsns: string;
-  transfer_token: string;
-  accept_token: string;
-  contract_info: string;
-  create_time: string;
-  approved_time: string;
-  remark: string;
-  log: string;
-  status: string;
-  creater: string;
+  StudentId: string;
+  StudentName: string;
+  SeatNo: string;
+  ClassName: string;
+  Uid: string;
+  DSNS: string;
+  TransferToken: string;
+  AcceptToken: string;
+  ContractInfo: string;
+  CreateTime: string;
+  ApprovedTime: string;
+  Status: string;
+  Remark: string;
+  CancelTime: string;
+  TeacherName: string;
+  Nickname: string;
 }
