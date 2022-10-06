@@ -1,3 +1,47 @@
-<p>
-  transfer-out works!
-</p>
+<div *ngIf="!isLoading; else tplLoading">
+  <div class="tab-content p-0">
+    <ul class="rwd-table m-0">
+      <li class="thead">
+        <ol class="tr">
+          <li class="sticky-top">班級</li>
+          <li class="sticky-top">座號</li>
+          <li class="sticky-top">姓名</li>
+          <li class="sticky-top">身分證號</li>
+          <li class="sticky-top">學生狀態</li>
+          <li class="sticky-top">申請學校</li>
+          <li class="sticky-top">申請/取消 日期</li>
+          <li class="sticky-top">申請者</li>
+          <li class="sticky-top">移轉狀態</li>
+          <li class="sticky-top">回覆日期</li>
+          <li class="sticky-top">功能</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr" *ngFor="let item of transList">
+          <li data-title="班級" (click)="devSetApproved(item)">{{item.class_name}}</li>
+          <li data-title="座號">{{item.seat_no}}</li>
+          <li data-title="姓名">{{item.student_name}}</li>
+          <li data-title="姓名">{{item.id_number}}</li>
+          <li data-title="姓名">畢業或離校</li>
+          <li data-title="轉出校">{{item.dsns}}</li>
+          <li data-title="申請/取消 日期">{{(item.create_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="申請者">{{item.creater}}</li>
+          <li data-title="移轉狀態">{{formatStatus(item.status)}}</li>
+          <li data-title="回覆日期">{{(item.approved_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="功能">
+            <a class="text-info"  (click)="openReg()"
+            data-toggle="modal">核可</a>
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tplLoading>
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<app-check-transfer-out-modal #del_case_modal></app-check-transfer-out-modal>

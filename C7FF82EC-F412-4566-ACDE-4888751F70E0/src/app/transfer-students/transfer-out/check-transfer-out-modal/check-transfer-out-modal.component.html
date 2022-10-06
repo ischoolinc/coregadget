@@ -1,0 +1,42 @@
+<!-- 建立新個案 Modal -->
+<div class="modal fade" id="newCase" tabindex="-1" role="dialog" aria-labelledby="newCaseLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="width: 100% !important;">
+      <div class="modal-header modal-header" style="background-color: aquamarine;">
+        <h5 class="modal-title" id="newCaseLabel">
+          <b>核可移轉</b>
+        </h5>
+        <button type="button" class="close brad-5" style="border-radius: 5px  !important;" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body w-100" style="width: 100% !important; padding: 0px !important;">
+        <div style="margin: 0px  24px;" class="d-flex mt-3">
+          <div style="flex: 1">
+            <div class="mb-1">姓名：林木韻</div>
+            <div class="mb-1">班級：201</div>
+            <div class="mb-1">座號：6</div>
+            <div class="mb-1">學生狀態：畢業或離校</div>
+          </div>
+          <div style="flex: 1">
+              <div class="mb-1">申請學校：建華國中</div>
+              <div class="mb-1">申請者：李玉玲</div>
+              <div class="mb-1">申請日期：2022-09-30</div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" (click)="cancel()">
+          取消
+        </button>
+        <button type="button" class="btn btn-danger">
+          拒絕
+        </button>
+        <button type="button" class="btn btn-info">
+          核可
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

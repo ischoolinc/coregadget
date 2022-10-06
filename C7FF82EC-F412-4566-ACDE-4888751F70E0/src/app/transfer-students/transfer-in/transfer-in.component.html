@@ -1,4 +1,10 @@
 <div *ngIf="!isLoading; else tplLoading">
+  <div style="height: 50px;">
+    <button class="btn btn-info btn_bul_rad float-right" style="margin:5px;"
+      (click)="openReg()">
+      <b><i class="material-icons">add</i> 轉入申請</b></button>
+  </div>
+
   <div class="tab-content p-0">
     <ul class="rwd-table m-0">
       <li class="thead">
@@ -7,7 +13,8 @@
           <li class="sticky-top">座號</li>
           <li class="sticky-top">姓名</li>
           <li class="sticky-top">轉出校</li>
-          <li class="sticky-top">申請日期</li>
+          <li class="sticky-top">申請/取消 日期</li>
+          <li class="sticky-top">申請者</li>
           <li class="sticky-top">移轉狀態</li>
           <li class="sticky-top">回覆日期</li>
           <li class="sticky-top">功能</li>
@@ -19,7 +26,8 @@
           <li data-title="座號">{{item.seat_no}}</li>
           <li data-title="姓名">{{item.student_name}}</li>
           <li data-title="轉出校">{{item.dsns}}</li>
-          <li data-title="申請日期">{{(item.create_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="申請/取消 日期">{{(item.create_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="申請者">{{item.creater}}</li>
           <li data-title="移轉狀態">{{formatStatus(item.status)}}</li>
           <li data-title="回覆日期">{{(item.approved_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
           <li data-title="功能">
@@ -39,7 +47,7 @@
   </div>
 </ng-template>
 
-<div class="modal fade" id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
+<div class="modal fade"  id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -61,3 +69,5 @@
     </div>
   </div>
 </div>
+
+<app-reg-transfer-in-modal></app-reg-transfer-in-modal>

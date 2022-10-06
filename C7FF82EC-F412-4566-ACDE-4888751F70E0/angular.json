@@ -11,6 +11,12 @@
       "schematics": {
         "@schematics/angular:component": {
           "spec": false
+        },
+        "@schematics/angular:module": {
+          "spec": false
+        },
+        "@schematics/angular:service": {
+          "spec": false
         }
       },
       "architect": {

@@ -130,9 +130,9 @@ export class RoleService {
     }
 
     if (
-      this._role.indexOf("管理者") >= 0
+      this._role.indexOf("管理者") >= 0 || true
     ) {
-      this._enableTransferStudents = true;
+      this._enableTransferStudents = true; // TODO: 要改成正確的
     }
 
     if (

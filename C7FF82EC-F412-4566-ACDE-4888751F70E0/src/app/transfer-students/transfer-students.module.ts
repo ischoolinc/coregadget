@@ -5,12 +5,16 @@ import { TransferStudentsRoutingModule } from './transfer-students-routing.modul
 import { SharedModule } from '../shared/shared.module';
 import { TransferInComponent } from './transfer-in/transfer-in.component';
 import { TransferOutComponent } from './transfer-out/transfer-out.component';
+import { RegTransferInModalComponent } from './transfer-in/reg-transfer-in-modal/reg-transfer-in-modal.component';
+import { CheckTransferOutModalComponent } from './transfer-out/check-transfer-out-modal/check-transfer-out-modal.component';
 
 @NgModule({
   declarations: [
     TransferStudentsComponent,
     TransferInComponent,
-    TransferOutComponent
+    TransferOutComponent,
+    RegTransferInModalComponent,
+    CheckTransferOutModalComponent,
   ],
   imports: [
     CommonModule,

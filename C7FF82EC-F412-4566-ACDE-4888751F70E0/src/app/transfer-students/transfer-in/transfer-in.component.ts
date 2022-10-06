@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DsaService } from 'src/app/dsa.service';
+import { RegTransferInModalComponent } from './reg-transfer-in-modal/reg-transfer-in-modal.component';
 
 @Component({
   selector: 'app-transfer-in',
@@ -12,6 +13,9 @@ export class TransferInComponent implements OnInit {
   transList: TransStudentRec[] = [];
   targetStudent: TransStudentRec = {} as TransStudentRec;
   isSaving = false;
+
+  @ViewChild('abc') regTransferInModalComponent: RegTransferInModalComponent;
+
 
   constructor(
     private dsaService: DsaService,
@@ -28,8 +32,26 @@ export class TransferInComponent implements OnInit {
   }
 
   async getList() {
-    let resp = await this.dsaService.send("TransferStudent.GetTransInStudents");
-    this.transList = [].concat(resp.StudentList || []);
+    // let resp = await this.dsaService.send("TransferStudent.GetTransInStudents");
+    // this.transList = [].concat(resp.StudentList || []);
+    this.transList = [
+      {
+        student_id: '1',
+        student_name: '高思念',
+        seat_no: '1',
+        class_name: '209',
+        dsns: '新科國中',
+        transfer_token: '',
+        accept_token: '',
+        contract_info: '',
+        create_time: new Date('2022-09-19 10:45:00').toString(),
+        approved_time: '',
+        remark: '',
+        log: '',
+        status: '1',
+        creater: '李玉玲',
+      }
+    ];
   }
 
   formatStatus(status: string) {
@@ -77,6 +99,18 @@ export class TransferInComponent implements OnInit {
     item.status = '2';
     item.approved_time = new Date().toString();
   }
+
+  openReg() {
+    $('#regTransStudentModal').modal({ backdrop:'static' });
+    $('#regTransStudentModal').modal('show');
+    $("#regTransStudentModal").on("hide.bs.modal", () => {
+      // 重整資料
+      // if (!this.case_modal.isCancel){
+      //   // this.loadData();
+      // }
+      $("#regTransStudentModal").off("hide.bs.modal");
+    });
+  }
 }
 
 interface TransStudentRec {
@@ -93,4 +127,5 @@ interface TransStudentRec {
   remark: string;
   log: string;
   status: string;
+  creater: string;
 }
