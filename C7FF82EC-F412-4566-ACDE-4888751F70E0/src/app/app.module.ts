@@ -92,6 +92,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
 import { AddServiceModalComponent } from './teacher-service/add-service-modal/add-service-modal.component';
 import { DelServiceModalComponent } from './teacher-service/del-service-modal/del-service-modal.component';
+import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -180,12 +181,13 @@ import { DelServiceModalComponent } from './teacher-service/del-service-modal/de
     CaseModule,
     MatBadgeModule,
     SharedCounselDetailModule,
-    MatSnackBarModule
+    MatSnackBarModule,
     //  AddInterviewModalComponent
-    
+    DSUtilNgModule, // DSA 自定連線。
   ],
   providers: [ ],
   bootstrap: [AppComponent]
 
 })
-export class AppModule { }
+export class AppModule {
+}
