@@ -123,7 +123,7 @@ export interface TransStudentRec {
   SchoolTitle: string;
   TransferToken: string;
   AcceptToken: string;
-  ContractInfo: string;
+  ConnectionInfo: string;
   CreateTime: string;
   ApprovedTime: string;
   Status: string;

@@ -149,7 +149,7 @@ export class RegTransferInModalComponent implements OnInit {
           <Birthdate>${this.selectedStudent.Birthdate}</Birthdate>
           <DSNS>${myDSNS}</DSNS>
           <SchoolName>${mySchool.Title}</SchoolName>
-          <ContractInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ContractInfo>
+          <ConnectionInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ConnectionInfo>
           <TransferToken>${acceptToken}</TransferToken>
           <RadPointCode>轉出核可</RadPointCode>
         </Request>`,
