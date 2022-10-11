@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DsaService } from 'src/app/dsa.service';
+import { CancelTransferInModalComponent } from './cancel-transfer-in-modal/cancel-transfer-in-modal.component';
 import { RegTransferInModalComponent } from './reg-transfer-in-modal/reg-transfer-in-modal.component';
 
 @Component({
@@ -15,6 +16,7 @@ export class TransferInComponent implements OnInit {
   isSaving = false;
 
   @ViewChild('regTransInModal') regTransferInModalComponent: RegTransferInModalComponent;
+  @ViewChild('cancelTransInModal') cancelTransferInModalComponent: CancelTransferInModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -99,19 +101,27 @@ export class TransferInComponent implements OnInit {
     });
   }
 
-  confirmCancelReg() {
-    $('#confirmTransModal').modal('show');
-  }
-
-  beginCancelReg() {
-
+  confirmCancelReg(item: TransStudentRec) {
+    this.cancelTransferInModalComponent.loadDefault(item);
+    $('#cancelTransStudentModal').modal('show');
+    $("#cancelTransStudentModal").on("hide.bs.modal", async () => {
+      try {
+        await this.getList();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+      $("#cancelTransStudentModal").off("hide.bs.modal");
+    });
   }
 }
 
-interface TransStudentRec {
+export interface TransStudentRec {
   StudentId: string;
   StudentName: string;
   SeatNo: string;
+  GradeYear: string;
   ClassName: string;
   Uid: string;
   DSNS: string;

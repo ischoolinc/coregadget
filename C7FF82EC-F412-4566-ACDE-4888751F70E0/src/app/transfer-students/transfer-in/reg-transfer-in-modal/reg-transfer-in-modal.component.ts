@@ -151,6 +151,7 @@ export class RegTransferInModalComponent implements OnInit {
           <SchoolName>${mySchool.Title}</SchoolName>
           <ContractInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ContractInfo>
           <TransferToken>${acceptToken}</TransferToken>
+          <RadPointCode>轉出核可</RadPointCode>
         </Request>`,
         rootNote: 'Info'
       });

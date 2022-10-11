@@ -47,28 +47,6 @@
   </div>
 </ng-template>
 
-<div class="modal fade" id="confirmCancelModal" tabindex="-1" role="dialog" aria-labelledby="confirmCancelModal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          確定取消 {{targetStudent.StudentName}} 的轉入嗎？
-        </h5>
-      </div>
-      <div class="modal-body">
-        <p class="text-center mt-3" *ngIf="isSaving">處理中，請稍候</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">
-          取消
-        </button>
-        <button type="button" class="btn btn-danger" (click)="beginCancelReg()">
-          確定
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="modal fade" id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -94,3 +72,4 @@
 </div>
 
 <app-reg-transfer-in-modal #regTransInModal></app-reg-transfer-in-modal>
+<app-cancel-transfer-in-modal #cancelTransInModal></app-cancel-transfer-in-modal>

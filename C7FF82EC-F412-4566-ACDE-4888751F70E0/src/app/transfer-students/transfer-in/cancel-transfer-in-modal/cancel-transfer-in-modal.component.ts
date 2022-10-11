@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { DsaService } from "src/app/dsa.service";
+import { DsaTransferService } from "../../service/dsa-transfer.service";
+import { TransStudentRec } from "../transfer-in.component";
 
 @Component({
   selector: "app-cancel-transfer-in-modal",
@@ -8,44 +9,67 @@ import { DsaService } from "src/app/dsa.service";
 })
 export class CancelTransferInModalComponent implements OnInit {
 
-  isLoading = true;
-  isReging = false;
+  isSetting = false;
   cancelRegStatus: CancelRegStatus = {} as CancelRegStatus;
+  regData: TransStudentRec = {} as TransStudentRec;
 
   constructor(
-    private dsaService: DsaService,
+    private dsaService: DsaTransferService,
   ) { }
 
-  async ngOnInit() {
-    try {
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.isLoading = false;
-    }
+  ngOnInit() {
   }
 
-  cancel() {
-    $("#regTransStudentModal").modal("hide");
+  loadDefault(item: TransStudentRec) {
+    this.isSetting = false;
+    this.regData = item;
+    this.cancelRegStatus = {} as CancelRegStatus;
   }
 
-  async beginReg() {
-    if (this.isReging) return;
+  async beginCancel() {
+    if (this.isSetting) return;
 
     try {
-      this.isReging = true;
+      this.isSetting = true;
       this.cancelRegStatus = { info: '', msg: '' };
-      const resp = await this.dsaService.send('TransferStudent.GetMyInfo');
-      const myInfo = resp.MyInfo || {};
-      // TODO: 去它校申請轉入
-      this.cancelRegStatus = { info: 'success', msg: '' };
+      const outCancelResult = await this.dsaService.accessPointSend({
+        dsns: this.regData.DSNS,
+        contractName:  '1campus.counsel.transfer_out',
+        securityTokenType: 'Basic',
+        serviceName: 'CancelRegTransStudent',
+        BasicValue: { UserName: `${this.regData.TransferToken}-`, Password: '1234' },
+        body: `<Request>
+            <TransferToken>${this.regData.TransferToken}</TransferToken>
+            <RadPointCode>轉出核可</RadPointCode>
+          </Request>
+        `,
+        rootNote: 'Info'
+      });
+      if (outCancelResult === 'success') {
+        const cancelResult = await this.dsaService.send('TransferStudent.CancelTransInStudent', {
+          Uid: this.regData.Uid,
+        });
+        if (cancelResult.Info === 'success') {
+          $('#cancelTransStudentModal').modal('hide');
+        } else {
+          this.cancelRegStatus = {
+            info: 'failed',
+            msg: '取消失敗'
+          };
+        }
+      } else {
+        this.cancelRegStatus = {
+          info: 'failed',
+          msg: '取消申請失敗'
+        };
+      }
     } catch (error) {
       this.cancelRegStatus = {
         info: 'failed',
         msg: '過程中發生錯誤'
       };
     } finally {
-      this.isReging = false;
+      this.isSetting = false;
     }
   }
 }
