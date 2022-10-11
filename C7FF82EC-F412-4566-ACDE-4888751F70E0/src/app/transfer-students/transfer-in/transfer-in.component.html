@@ -25,7 +25,7 @@
           <li data-title="班級" (click)="devSetApproved(item)">{{item.ClassName}}</li>
           <li data-title="座號">{{item.SeatNo}}</li>
           <li data-title="姓名">{{item.StudentName}}</li>
-          <li data-title="轉出校">{{item.DSNS}}</li>
+          <li data-title="轉出校">{{item.SchoolTitle}}</li>
           <li data-title="申請/取消 日期">{{((item.CancelTime || item.CreateTime) | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
           <li data-title="申請者">{{item.TeacherName}} {{item.Nickname ? '(' + item.Nickname + ')' : ''}}</li>
           <li data-title="移轉狀態">{{formatStatus(item.Status)}}</li>
@@ -93,4 +93,4 @@
   </div>
 </div>
 
-<app-reg-transfer-in-modal></app-reg-transfer-in-modal>
+<app-reg-transfer-in-modal #regTransInModal></app-reg-transfer-in-modal>

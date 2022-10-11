@@ -11,7 +11,7 @@ export class RegTransferInModalComponent implements OnInit {
 
   isLoading = true;
   isReging = false;
-  regStatus: RegStatus = {} as RegStatus;
+  regResp: RegResponse = {} as RegResponse;
   gradeYears: string[] = [];
   classList: ClassRec[] = [];
   studentMap: Map<string, StudentRec[]> = new Map();
@@ -60,13 +60,27 @@ export class RegTransferInModalComponent implements OnInit {
   }
 
   async getSchoolList() {
-    // TODO: 去 1campusman，取得學校清單
-    // const resp = await this.dsaService.send('', { group: '' }, '');
-    // const schoolList = [].concat(resp.Schools || []);
-    this.schoolList = [
-      { school_name: '俊威測試高中', dsns: 'demo.h.kandy.huang' },
-      { school_name: '內部高中開發_日校', dsns: 'dev.sh_d' },
-    ];
+    // 去 1campusman，取得學校清單
+    const schools = await this.dsaService.accessPointSend({
+      dsns: 'campusman.ischool.com.tw',
+      contractName: 'counsel.public',
+      securityTokenType: 'Public',
+      serviceName: 'GetSchoolbyTag',
+      body: `<TagName>${gadget.params.trans_tag_name}</TagName>`,
+      rootNote: 'SchoolList'
+    });
+    this.schoolList = [].concat(schools || []);
+  }
+
+  loadDefault() {
+    this.isReging = false;
+    this.regResp = {} as RegResponse;
+    this.selectedGradeYear = '';
+    this.selectedClass = {} as ClassRec;
+    this.curClassList = [];
+    this.selectedStudent = {} as StudentRec;
+    this.curStudentList = [];
+    this.selectedSchool = {} as SchoolRec;
   }
 
   selectGrade(gradeYear: string) {
@@ -97,15 +111,15 @@ export class RegTransferInModalComponent implements OnInit {
 
   async beginReg() {
     if (!this.selectedStudent.StudentId) {
-      this.regStatus = { info: 'failed', msg: '請選擇學生' };
+      this.regResp = { info: 'failed', msg: '請選擇學生' };
       return;
     }
-    if (!this.selectedSchool.dsns) {
-      this.regStatus = { info: 'failed', msg: '請選擇轉出校' };
+    if (!this.selectedSchool.Dsns) {
+      this.regResp = { info: 'failed', msg: '請選擇轉出校' };
       return;
     }
-    if (!(this.selectedStudent.IdNumber && this.selectedStudent.Birthdate && this.selectedStudent.Account)) {
-      this.regStatus = { info: 'failed', msg: '學生未設定「身分證號」及「生日」及「登入帳號」' };
+    if (!(this.selectedStudent.IdNumber && this.selectedStudent.Birthdate)) {
+      this.regResp = { info: 'failed', msg: '學生未設定「身分證號」及「生日」' };
       return;
     }
 
@@ -113,31 +127,59 @@ export class RegTransferInModalComponent implements OnInit {
 
     try {
       this.isReging = true;
-      this.regStatus = { info: '', msg: '' };
+      this.regResp = { info: '', msg: '' };
       const resp = await Promise.all([
         this.dsaService.send('TransferStudent.GetMyInfo'),
       ]);
 
       const myInfo: MyInfo = resp[0].MyInfo || {};
       const myDSNS = gadget.getApplication().accessPoint;
-      const mySchoolName = this.schoolList.find(v => v.dsns === myDSNS);
-      // TODO:
+      const mySchool = this.schoolList.find(v => v.Dsns === myDSNS);
+      const acceptToken = `${uuidv4().substring(0, 7)}@${myDSNS}`;
       // 1. 去它校申請轉入
       // 2. 在本校新增申請記錄
-      // 3. 新增 log
-      const body = {
-        IdNumber: this.selectedStudent.IdNumber,
-        Birthday: this.selectedStudent.Birthdate,
-        DSNS: myDSNS,
-        SchoolName: mySchoolName,
-        ContractInfo: JSON.stringify(myInfo),
-        AcceptToken: `${uuidv4().substring(0, 7)}@${this.selectedStudent.Account}`,
-      };
-      console.log(body);
-      this.regStatus = { info: 'success', msg: '' };
+      // 3. 新增 log TODO:
+      const regResult = await this.dsaService.accessPointSend({
+        dsns: this.selectedSchool.Dsns,
+        contractName: '1campus.counsel.transfer_public',
+        securityTokenType: 'Public',
+        serviceName: 'AddTransOutStudent',
+        body: `<Request>
+          <IdNumber>${this.selectedStudent.IdNumber}</IdNumber>
+          <Birthdate>${this.selectedStudent.Birthdate}</Birthdate>
+          <DSNS>${myDSNS}</DSNS>
+          <SchoolName>${mySchool.Title}</SchoolName>
+          <ContractInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ContractInfo>
+          <TransferToken>${acceptToken}</TransferToken>
+        </Request>`,
+        rootNote: 'Info'
+      });
+
+      if (regResult === 'success') {
+        const addResult = await this.dsaService.send('TransferStudent.AddTransInStudent', {
+          StudentId: this.selectedStudent.StudentId,
+          StudentName: this.selectedStudent.Name,
+          DSNS: this.selectedSchool.Dsns,
+          SchoolName: this.selectedSchool.Title,
+          AcceptToken: acceptToken,
+        });
+        if (addResult.Info === 'success') {
+          $('#regTransStudentModal').modal('hide');
+        } else {
+          this.regResp = {
+            info: 'failed',
+            msg: '新增移轉資料失敗'
+          };
+        }
+      } else {
+        this.regResp = {
+          info: 'failed',
+          msg: '申請移轉失敗'
+        };
+      }
     } catch (error) {
       console.log(error);
-      this.regStatus = {
+      this.regResp = {
         info: 'failed',
         msg: '過程中發生錯誤'
       };
@@ -156,7 +198,6 @@ interface StudentRec {
   Name: string;
   SeatNo: string;
   StudentId: string;
-  Account: string;
   IdNumber: string;
   Birthdate: string;
 }
@@ -165,11 +206,11 @@ interface MyInfo {
   Nickname: string;
   Account: string;
 }
-interface RegStatus {
+interface RegResponse {
   info: 'success' | 'failed' | '';
   msg: string;
 }
 interface SchoolRec {
-  dsns: string;
-  school_name: string;
+  Dsns: string;
+  Title: string;
 }

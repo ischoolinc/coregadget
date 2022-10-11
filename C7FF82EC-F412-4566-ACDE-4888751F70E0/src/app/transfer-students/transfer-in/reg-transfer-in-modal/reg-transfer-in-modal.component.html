@@ -54,19 +54,19 @@
               type="button"
               data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
-              {{selectedSchool.school_name || '請選擇轉出校'}}
+              {{selectedSchool.Title || '請選擇轉出校'}}
             </button>
             <div class="dropdown-menu scrollable-menu">
               <a class="dropdown-item" *ngFor="let school of schoolList" (click)="selectSchool(school)">
-                {{school.school_name}}
+                {{school.Title}}
               </a>
             </div>
           </div>
         </div>
         <div>
           <p class="text-center mt-3" *ngIf="isReging">處理中，請稍候</p>
-          <p class="text-center mt-3 text-success" *ngIf="regStatus.info === 'success'">申請成功！</p>
-          <p class="text-center mt-3 text-danger" *ngIf="regStatus.info === 'failed'">申請失敗！{{regStatus.msg}}</p>
+          <p class="text-center mt-3 text-success" *ngIf="regResp.info === 'success'">申請成功！</p>
+          <p class="text-center mt-3 text-danger" *ngIf="regResp.info === 'failed'">申請失敗！{{regResp.msg}}</p>
         </div>
       </div>
       <div class="modal-footer">

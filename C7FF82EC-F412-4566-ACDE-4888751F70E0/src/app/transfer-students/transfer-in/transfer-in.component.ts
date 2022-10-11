@@ -14,8 +14,7 @@ export class TransferInComponent implements OnInit {
   targetStudent: TransStudentRec = {} as TransStudentRec;
   isSaving = false;
 
-  @ViewChild('abc') regTransferInModalComponent: RegTransferInModalComponent;
-
+  @ViewChild('regTransInModal') regTransferInModalComponent: RegTransferInModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -85,13 +84,17 @@ export class TransferInComponent implements OnInit {
   }
 
   openReg() {
+    this.regTransferInModalComponent.loadDefault();
     $('#regTransStudentModal').modal({ backdrop:'static' });
     $('#regTransStudentModal').modal('show');
-    $("#regTransStudentModal").on("hide.bs.modal", () => {
-      // 重整資料
-      // if (!this.case_modal.isCancel){
-      //   // this.loadData();
-      // }
+    $("#regTransStudentModal").on("hide.bs.modal", async () => {
+      try {
+        await this.getList();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
       $("#regTransStudentModal").off("hide.bs.modal");
     });
   }
@@ -112,6 +115,7 @@ interface TransStudentRec {
   ClassName: string;
   Uid: string;
   DSNS: string;
+  SchoolTitle: string;
   TransferToken: string;
   AcceptToken: string;
   ContractInfo: string;
