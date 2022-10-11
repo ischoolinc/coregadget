@@ -57,11 +57,11 @@ export class DsaTransferService {
 }
 
 export interface AccessPointSendOpt {
-  dsns: string,
-  contractName: string,
-  securityTokenType: 'Public' | 'Basic',
-  BasicValue?: { UserName: string, Password: string }
-  serviceName: string,
-  body: string,
-  rootNote: string,
+  dsns: string;
+  contractName: string;
+  securityTokenType: 'Public' | 'Basic';
+  BasicValue?: any;
+  serviceName: string;
+  body: string;
+  rootNote: string;
 }

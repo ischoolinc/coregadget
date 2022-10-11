@@ -1,9 +1,9 @@
-<!-- 建立新個案 Modal -->
-<div class="modal fade" id="newCase" tabindex="-1" role="dialog" aria-labelledby="newCaseLabel" aria-hidden="true">
+<!-- 回覆是否核可 Modal -->
+<div class="modal fade" id="checkTransferOutModal" tabindex="-1" role="dialog" aria-labelledby="checkTransferOutModal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content" style="width: 100% !important;">
       <div class="modal-header modal-header" style="background-color: aquamarine;">
-        <h5 class="modal-title" id="newCaseLabel">
+        <h5 class="modal-title">
           <b>核可移轉</b>
         </h5>
         <button type="button" class="close brad-5" style="border-radius: 5px  !important;" data-dismiss="modal" aria-label="Close">
@@ -14,26 +14,26 @@
       <div class="modal-body w-100" style="width: 100% !important; padding: 0px !important;">
         <div style="margin: 0px  24px;" class="d-flex mt-3">
           <div style="flex: 1">
-            <div class="mb-1">姓名：林木韻</div>
-            <div class="mb-1">班級：201</div>
-            <div class="mb-1">座號：6</div>
-            <div class="mb-1">學生狀態：畢業或離校</div>
+            <div class="mb-1">姓名：{{studentData.StudentName}}</div>
+            <div class="mb-1">班級：{{studentData.ClassName || '未分班'}}</div>
+            <div class="mb-1">座號：{{studentData.SeatNo}}</div>
+            <div class="mb-1">學生狀態：{{formatStudentStatus(studentData.StudentStatus)}}</div>
           </div>
           <div style="flex: 1">
-              <div class="mb-1">申請學校：建華國中</div>
-              <div class="mb-1">申請者：李玉玲</div>
-              <div class="mb-1">申請日期：2022-09-30</div>
+              <div class="mb-1">申請學校：{{studentData.SchoolTitle}}</div>
+              <div class="mb-1">申請者：{{studentData.ConnectionInfo}}</div>
+              <div class="mb-1">申請日期：{{(studentData.CreateTime | date:'yyyy-MM-dd HH:mm') || '無'}}</div>
             </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" (click)="cancel()">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">
           取消
         </button>
-        <button type="button" class="btn btn-danger">
+        <button type="button" class="btn btn-danger" (click)="beginReply(false)">
           拒絕
         </button>
-        <button type="button" class="btn btn-info">
+        <button type="button" class="btn btn-info" (click)="beginReply(true)">
           核可
         </button>
       </div>

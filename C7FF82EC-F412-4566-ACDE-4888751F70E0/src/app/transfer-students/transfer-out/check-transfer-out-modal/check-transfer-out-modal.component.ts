@@ -1,4 +1,8 @@
 import { Component, OnInit } from "@angular/core";
+import { DsaTransferService } from "../../service/dsa-transfer.service";
+import { TransferStudentsService } from "../../service/transfer-students.service";
+import { TransOutStudentRec } from "../transfer-out.component";
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: "app-check-transfer-out-modal",
@@ -6,87 +10,85 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./check-transfer-out-modal.component.css"]
 })
 export class CheckTransferOutModalComponent implements OnInit {
+
+  isSetting = false;
+  replyStatus: ReplyStatus = {} as ReplyStatus;
+  studentData: TransOutStudentRec = {} as TransOutStudentRec;
+
   constructor(
-    // private dsaService: DsaService,
-    // private counselStudentService: CounselStudentService,
-    // private roleService: RoleService
-
+    public dsaService: DsaTransferService,
+    public transferSrv: TransferStudentsService,
   ) { }
-
-  isCancel: boolean = true;
-  isAddMode: boolean = true;
-  isCanSetClass: boolean = false;
-  editModeString: string = "新增";
-
-  /**所選班級 */
-  selectClassNameValue: string;
-  /**所選座號 */
-  selectSeatNoValue: string;
-  /**所選學生姓名 */
-  selectStudentName: string;
 
   ngOnInit() {
   }
 
-  // async loadData() {
+  loadDefault(item: TransOutStudentRec) {
+    this.isSetting = false;
+    this.studentData = item;
+  }
 
-  //   this.CounselTeacherList = [];
-  //   this.selectClassNameValue = "請選擇班級";
-  //   this.selectSeatNoValue = "請選擇座號";
-  //   this.selectCaseTeachersValue = "請選擇認輔老師";
-  //   this.selectCaseSourceValue = "請選擇個案來源";
-  //   this.canSelectCaseSourceList = [];
+  formatStudentStatus(status: string) {
+    return this.transferSrv.formatStudentStatus(status);
+  }
 
-  //   if (!this.caseStudent) this.caseStudent = new CaseStudent();
+  async beginReply(pass: boolean) {
+    try {
+      this.isSetting = true;
+      this.replyStatus = { info: '', msg: '' };
 
-  //   // 檢查狀態
-  //   if (this.isAddMode) {
-  //     if (!this.caseStudent.RefCounselInterviewID) {
-  //       this.isCanSetClass = true;
-  //       // this.caseStudent.useQuestionOptionTemplate();
-  //     } else {
-  //       this.isCanSetClass = false;
-  //     }
-  //   } else {
-  //   }
-  // }
+      const myDSNS = gadget.getApplication().accessPoint;
+      const acceptToken = pass ? `${uuidv4().substring(0, 7)}@${myDSNS}` : null;
+      // 1. 去它校回覆結果
+      // 2. 在本校更新回覆記錄
+      // 3. 新增 log TODO:
+      const replyResult = await this.dsaService.accessPointSend({
+        dsns: this.studentData.DSNS,
+        contractName:  '1campus.counsel.transfer_in',
+        securityTokenType: 'Basic',
+        BasicValue: { UserName: this.studentData.TransferToken, Password: '1234' },
+        serviceName: 'SetApprovedStatusAndRedPoint',
+        body: `<Request>
+          <AcceptToken>${acceptToken}</AcceptToken>
+          <Pass>${pass}</Pass>
+          <RadPointCode>轉入申請</RadPointCode>
+        </Request>`,
+        rootNote: 'Info'
+      });
 
-
-  // /** 選擇年級 */
-  // selectGrade(grade: string) {
-  //   this.selectGradeValue = grade;
-  //   this.selectClassNameValue = "請選擇班級";
-  //   this.selectSeatNoValue = "請選擇座號";
-  //   this.canSelectClassList = this.canSelectClassByMap.get(grade);
-  // }
-
-  // /** 選擇班級名稱 */
-  // setClassName(item: CounselClass) {
-  //   $("#newCase").modal("handleUpdate");
-  //   this.selectClassNameValue = item.ClassName;
-  //   // 請除可選學生號碼
-  //   this.canSelectNoList = [];
-
-  //   this.selectSeatNoValue = "請選擇座號";
-
-  //   if (this.counselStudentService.classMap.has(item.ClassID)) {
-  //     this.canSelectNoList = this.counselStudentService.classMap.get(
-  //       item.ClassID
-  //     ).Student;
-  //   }
-  // }
-
-  // cancel() {
-  //   this.isCancel = true;
-  //   $("#newCase").modal("hide");
-  // }
-
-  selectGrade(a) {}
-  setClassName(a) {}
-  setSeatNo(a) {}
-
-  cancel() {
-    $("#newCase").modal("hide");
+      if (replyResult === 'success') {
+        const setResult = await this.dsaService.send('TransferStudent.SetApprovedStatus', {
+          Uid: this.studentData.Uid,
+          Pass: pass,
+          AcceptToken: acceptToken,
+        });
+        if (setResult.Info === 'success') {
+          $('#checkTransferOutModal').modal('hide');
+        } else {
+          this.replyStatus = {
+            info: 'failed',
+            msg: '回覆核可資料失敗'
+          };
+        }
+      } else {
+        this.replyStatus = {
+          info: 'failed',
+          msg: '寫入回覆失敗'
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      this.replyStatus = {
+        info: 'failed',
+        msg: '過程中發生錯誤'
+      };
+    } finally {
+      this.isSetting = false;
+    }
   }
 }
 
+interface ReplyStatus {
+  info: string;
+  msg: string;
+}
