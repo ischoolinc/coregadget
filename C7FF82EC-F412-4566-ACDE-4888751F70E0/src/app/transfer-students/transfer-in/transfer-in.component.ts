@@ -80,11 +80,6 @@ export class TransferInComponent implements OnInit {
     }, 3000);
   }
 
-  devSetApproved(item: TransStudentRec) {
-    item.Status = '2';
-    item.ApprovedTime = new Date().toString();
-  }
-
   openReg() {
     this.regTransferInModalComponent.loadDefault();
     $('#regTransStudentModal').modal({ backdrop:'static' });
