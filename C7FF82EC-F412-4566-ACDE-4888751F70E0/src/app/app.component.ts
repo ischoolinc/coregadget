@@ -14,7 +14,7 @@ import { PublicSecurityToken } from "./dsutil-ng/envelope";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
- 
+
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
   public comprehensiveStr: string = "綜合紀錄表"
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   public comprehensiveVisable: boolean = false;
   public psychologicalTestVisable: boolean = false;
   public adminVisable: boolean = false;
-  
+
   constructor(
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -43,15 +43,6 @@ export class AppComponent implements OnInit {
    }
 
   async ngOnInit() {
-    const app = await AccessPoint.resolve('campusman.ischool.com.tw', 'counsel.public');
-    const conn = new Connection(app, new PublicSecurityToken());
-    await conn.connect();
-    const rsp = await conn.send('GetSchoolbyTag', '<TagName>系統:新竹輔導</TagName>');
-    for(const school of rsp.child('SchoolList')) {
-      console.log(school.child('Title').text);
-      console.log(school.child('Dsns').text);
-    }
-
     // 預設功能畫面文字
     this.counselStudentStr = "輔導學生";
     this.comprehensiveStr = "綜合紀錄表";
@@ -122,7 +113,7 @@ export class AppComponent implements OnInit {
   }
 
 
-  
+
   async GetMyCounselTeacherRole() {
     this.globalService.MyCounselTeacherRole = '';
     //  this.globalService.enableCase = false;
@@ -160,7 +151,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  
+
 
 }
 
