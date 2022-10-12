@@ -76,7 +76,8 @@
              border :none;
              height:36px ;
              border-bottom: 1.7px  solid #c2cee5  ;
-             " type="text" [(ngModel)]="item.TeacherCounselNumber">
+             " type="text" [(ngModel)]="item.TeacherCounselNumber"
+              (focusout) = "checkTeacherNum(item)">
               </div>
             </li>
             <!--   -->

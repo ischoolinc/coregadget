@@ -33,6 +33,7 @@ import { CounselInterviewDocComponent } from './simple-page/print/counsel-interv
 import { MatIconModule } from '@angular/material/icon';
 import { WorkServiceComponent } from './work-service/work-service.component';
 import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
+import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -105,6 +106,7 @@ const routes: Routes = [
       { path: "editor/comprehensive_editor", component: ComprehensiveEditorComponent },
       { path: "print/counsel_doc/:studentID/:printDocumentID", component: CounselDocComponent },
       { path: "print/counsel_history/:studentID", component: CounselHistoryComponent },
+      { path: "print/counsel_history_psychologicaltest/:studentID", component: CounselHistoryPsychologicaltestComponent },
       { path: "print/counsel-interview-doc/:param", component: CounselInterviewDocComponent },
       { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
       { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }

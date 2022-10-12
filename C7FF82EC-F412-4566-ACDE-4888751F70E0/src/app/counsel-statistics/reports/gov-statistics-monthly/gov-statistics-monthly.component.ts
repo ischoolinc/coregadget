@@ -77,7 +77,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         this.selectMonth = new Date().getMonth() + 1;
         this.buttonDisable = false;
         this.reportNameList = [
-          { reportName: "輔導工作月統計報表-教育部版", description: "版本更新月份:2022-09", isShowDescrip: false },
+          { reportName: "輔導工作月統計報表-教育部版", description: "版本更新月份:2022-10", isShowDescrip: false },
           { reportName: "輔導工作月統計報表-新北市版", description: "" },
           { reportName: "輔導工作月統計報表-新竹國中版", description: "" },
           { reportName: "輔導工作月統計報表-新竹國小版", description: "" }
@@ -221,15 +221,10 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     });
 
 
-
-
-
-    console.log("處理..", [].concat(resp.Statistics || []));
-
     // sheet1
     [].concat(resp.Statistics || []).forEach(rspRec => {
 
-      console.log("看看有沒有抓到rspRec.CaseSource",rspRec);
+ 
       // 輔導當月個案
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherReportRole = rspRec.TeacherReportRole; // 教師身分
@@ -255,12 +250,17 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       if (rspRec.SecondCategory) {
         let Category = JSON.parse(rspRec.SecondCategory);
         Category.forEach(proRec => {
-          if(proRec.answer_text.includes('其他')){ // 如果有其他選項
-            rec.CategoryOther = proRec.answer_value
-          }
+
 
           if (proRec.answer_checked) {
-            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
+            rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text)||0);
+            if(proRec.answer_text.includes('其他')){ // 如果有其他選項
+              alert("副類別"+JSON.stringify(proRec))
+              rec.CategoryOther = proRec.answer_value
+            }else{
+
+              rec.CategoryOther = '0' ;
+            }
           }
         });
 
@@ -269,12 +269,20 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       // sheet1 處理主類別 以及其他項目
       if (rspRec.CaseMainCategory) {
         let CaseMainCatagory = JSON.parse(rspRec.CaseMainCategory);
+        // alert(JSON.stringify(CaseMainCatagory))
         CaseMainCatagory.forEach(proRec => {
-          if(proRec.answer_text.includes('其他')){ // 如果有其他選項
-            rec.CaseMainCategoryOther = proRec.answer_value
-          }
+     
+        
           if (proRec.answer_checked) {
             rec.MainCategoryValueList.push(this.parseCategoryNoT1(proRec.answer_text));
+            if(proRec.answer_text.includes('其他')){ // 如果有其他選項
+              alert("主類別"+JSON.stringify(proRec))
+              rec.CaseMainCategoryOther = proRec.answer_value
+            }else{
+              rec.CaseMainCategoryOther = '0'
+
+
+            }
           }
         });
 
@@ -292,22 +300,19 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           }
         })
       }
-      console.log("StudentStatusList") 
 
      // 處理個案來源
 
      if(rspRec.CaseSource){
       let CaseSource :string [] =  rspRec.CaseSource.split('___') ;
          CaseSource.forEach(item =>{
-         if( rspRec.CaseStatus=="新"){
-
-          console.log("mapping ",this.maping.CaseSourcesMapping)
+         if( rspRec.CaseStatus == "新"){
            let mapNum = this.maping.CaseSourcesMapping.has(item) ? this.maping.CaseSourcesMapping.get(item) :item ;
            rec.CaseSourceList.push(mapNum);
          }
 
       });
-      console.log("map List",   rec.CaseSourceList);
+     
 
      }
 
@@ -343,7 +348,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         rec.TeacherReportRole = rspRec.teacher_report_role; // 教師身分
         rec.TeacherName = rspRec.teacher_name;
         rec.ServiceTarget = rspRec.detail_service_target;
-        rec.ServiceItemOtherDetail = rspRec.service_item_other_detail // 其他選項
+        rec.ServiceItemOtherDetail = rspRec.service_item_other_detail || 0 // 其他選項
         rec.ServiceItem = rspRec.service_item;
         rec.ContactName = rspRec.detail_service_target;
         rec.BoyCount = rspRec.male || 0;
@@ -417,7 +422,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           '轉介概況 ': da.ReportReferal, // 新欄位 
           '個案類別(主)': da.MainCategoryValueList.length> 0? da.MainCategoryValueList.join(','):'',
           '個案類別(主) 其他說明':da.CaseMainCategoryOther ,
-          '個案類別(副)': da.CategoryValue.join(','),
+          '個案類別(副)': da.CategoryValue.join(',')||0,
           '個案類別(副) 其他說明':da.CategoryOther,
           // '新案舊案': da.Status, // 新規格暫時住借
           '晤談次數': da.Count
@@ -435,7 +440,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           '教師編碼': da.TeacherCounselNumber,
           '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole),
           '服務項目': this.maping.ServiceItemsMapping.get(da.ServiceItem),
-          '其他說明' :da.ServiceItemOtherDetail ||'',
+          '其他說明' :da.ServiceItemOtherDetail ||'0',
           '對象': this.maping.ServiceTargetMaps.get(da.ServiceTarget),
           // '日期': da.OccurDate,
           '服務人次(男)': da.BoyCount,

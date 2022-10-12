@@ -12,4 +12,10 @@ ID :string
 Name :string 
 /** 班級名稱 */ 
 NickName: string 
+/** 系統角色  */ 
+Role : string 
+
+/**  */
+interviewEnable? :boolean ;
+
 } 

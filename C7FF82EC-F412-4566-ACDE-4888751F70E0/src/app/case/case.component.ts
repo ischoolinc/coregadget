@@ -15,7 +15,7 @@ import { asLiteral } from "@angular/compiler/src/render3/view/util";
   styleUrls: ["./case.component.css"]
 })
 export class CaseComponent implements OnInit {
-  // 個案資料
+   /**個案資料**/
   caseList: CaseStudent[];
   // 是否結案
   itemClosedList: string[] = [];
@@ -61,6 +61,8 @@ export class CaseComponent implements OnInit {
     this.case_modal.loadData();
     this.case_modal.caseStudent.loadReferalStatusList()
     this.case_modal.caseStudent.useQuestionOptionTemplate();
+ 
+    this.case_modal.caseList = this.caseList; // 將外部caseList 傳入  
     this.case_modal.selectClassNameValue = "請選擇班級";
     this.case_modal.selectSeatNoValue = "請選擇座號";
     this.case_modal.selectCaseSourceValue = "請選擇個案來源";
@@ -202,6 +204,7 @@ export class CaseComponent implements OnInit {
 
     this.case_modal.caseStudent.checkValue();
     item.checkValue();
+    $("#newCase").modal({backdrop:'static'});
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
@@ -283,6 +286,7 @@ export class CaseComponent implements OnInit {
         rec.CaseSource = caseRec.CaseSource;
         rec.CaseCount = caseRec.CaseCount;
         rec.StudentStatus =caseRec.StudentStatus ;
+        rec.TeacherCounselLevels =caseRec.TeacherCounselLevels;
         rec.PhotoUrl = `${
           this.dsaService.AccessPoint
           }/GetStudentPhoto?stt=Session&sessionid=${

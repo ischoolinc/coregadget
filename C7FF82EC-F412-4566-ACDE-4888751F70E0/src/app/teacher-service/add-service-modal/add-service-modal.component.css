@@ -5,3 +5,20 @@
 
 
 }
+.dropdown-menu {
+    
+    max-height: 500px;
+    overflow-y: scroll;
+ }
+ .dropdown{
+    max-height: 500px;
+    /* overflow-y: scroll; */
+
+ }
+
+ .dropdown-item {
+   background :#ffffff
+ 
+    
+ }
+ .modal { overflow: auto !important; }

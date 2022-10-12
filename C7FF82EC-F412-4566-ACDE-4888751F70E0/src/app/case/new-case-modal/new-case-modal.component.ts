@@ -14,7 +14,8 @@ import { QOption } from "../case-question-data-modal";
 import { asLiteral } from "@angular/compiler/src/render3/view/util";
 import { conforms } from "lodash";
 import { RoleService } from "src/app/role.service";
-import { identifierModuleUrl } from "@angular/compiler";
+import { ConditionalExpr, identifierModuleUrl } from "@angular/compiler";
+import { THROW_IF_NOT_FOUND } from "@angular/core/src/di/injector";
 
 @Component({
   selector: "app-new-case-modal",
@@ -33,8 +34,10 @@ export class NewCaseModalComponent implements OnInit {
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
   editModeString: string = "新增";
+  /** 現有個案資料 */
+  caseList: CaseStudent[];
   /** 當前個案學生 */
-  public caseStudent: CaseStudent;
+  caseStudent: CaseStudent;
   /** 轉借狀態 */
   selectReferalStatus :string  = "";
   /** 用詞修正對應 "舊的用詞˙":"'新的用詞'" */
@@ -127,6 +130,15 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.checkValue();
   }
 
+  /** 確認CaseNum 是否重複  */
+  checkCaseNum(caseInfo :any ){ 
+    let target = this.caseList.find(x=>x.CaseNo ==caseInfo.CaseNo);
+    if(target){
+    alert('個案編號重複，請重新輸入')
+    caseInfo.CaseNo =""
+  }
+
+  }
   /** 選擇年級 */
   selectGrade(grade: string) {
     this.selectGradeValue = grade;
@@ -154,6 +166,13 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   cancel() {
+ alert("取消")
+ debugger 
+    if(this.caseStudent.proble_description[0].answer_martix[0]){ // 如果有填寫為儲存
+      if(!confirm("資料未儲存，確定取消?")){
+         return ;
+       }
+     }
     this.isCancel = true;
     $("#newCase").modal("hide");
   }
@@ -240,8 +259,6 @@ export class NewCaseModalComponent implements OnInit {
   /** 點選項目 */
   checkChange(qq: QOption, item: CaseStudent, title = null, target = null) {
 
-  
-
     if (title == "個案類別(副)") {
       if (this.updateCataTerms.has(qq.answer_text)) {
         // 處理替換
@@ -262,29 +279,19 @@ export class NewCaseModalComponent implements OnInit {
       }
     }
 
-    // 
+    // 處理學生身分選項
     if(title == "學生身分"){
-     alert("驗證學生身分"+JSON.stringify(qq))
-    
     if(qq.answer_checked ==true){
       if(qq.answer_text !=="以下皆非" ){
         const target = this.caseStudent.student_status.find(x=>x.answer_text =='以下皆非')
         target.answer_checked= false ;
        }else {
          const targetList = this.caseStudent.student_status.filter(x=>x.answer_text!=='以下皆非')
-         alert("以下皆非")
          targetList.forEach(x=>{
           x.answer_checked = false ;
-   
          })
-       
-   
-   
        }
-
     }
-
-
     }
     item.checkValue();
   }
@@ -549,7 +556,8 @@ export class NewCaseModalComponent implements OnInit {
     data.proble_description = this.parseCaseOptions(data.proble_description);
     data.special_situation = this.parseCaseOptions(data.special_situation);
     data.evaluation_result = this.parseCaseOptions(data.evaluation_result);
-    data.problem_main_category = this.parseCaseOptions(data.problem_main_category);
+    data.teacher_counsel_level = this.parseCaseOptions(data.teacher_counsel_level);
+    data.problem_main_category = this.parseCaseOptions(data.problem_main_category); // 20220930 教師參與
     data.DeviantBehavior = JSON.stringify(data.deviant_behavior);
     data.ProblemCategory = JSON.stringify(data.problem_category);
     data.ProbleDescription = JSON.stringify(data.proble_description);
@@ -557,6 +565,7 @@ export class NewCaseModalComponent implements OnInit {
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.ProblemMainCategory = JSON.stringify(data.problem_main_category);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
+    data.TeacherCounselLevels =JSON.stringify(data.teacher_counsel_level); 
     data.CloseDescription = "";
 
     // 當沒有輔導 uid 寫入 null
@@ -606,7 +615,8 @@ export class NewCaseModalComponent implements OnInit {
       CloseDate: data.CloseDate,
       CaseLevel: data.CaseLevel,
       CaseTeacher: reqCaseTeacher,
-      StudentStatus: data.StudentStatus
+      StudentStatus: data.StudentStatus,
+      TeacherCounselLevels :data.TeacherCounselLevels
     };
 
   debugger
@@ -635,6 +645,7 @@ export class NewCaseModalComponent implements OnInit {
     data.SpecialSituation = JSON.stringify(data.special_situation);
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
+   data.TeacherCounselLevels =JSON.stringify(data.teacher_counsel_level);
     data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
     
 
@@ -670,7 +681,8 @@ export class NewCaseModalComponent implements OnInit {
         EvaluationResult: data.EvaluationResult,
         CaseLevel: data.CaseLevel,
         CaseTeacher: reqCaseTeacher,
-        StudentStatus: data.StudentStatus
+        StudentStatus: data.StudentStatus,
+        TeacherCounselLevels :data.TeacherCounselLevels
       };
 
  

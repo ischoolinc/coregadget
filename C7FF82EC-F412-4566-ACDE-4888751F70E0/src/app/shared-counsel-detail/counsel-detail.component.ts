@@ -1,3 +1,4 @@
+import { RoleService } from './../role.service';
 import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { CounselStudentService, CounselStudent } from "../counsel-student.service";
@@ -5,6 +6,7 @@ import { CounselComponent } from '../counsel/counsel.component';
 import { DsaService } from '../dsa.service';
 import { SetCounselInterviewPrintItemComponent } from './set-counsel-interview-print-item/set-counsel-interview-print-item.component';
 import { GlobalService } from "../global.service";
+import { ignoreElements } from "rxjs/operators";
 
 @Component({
   selector: "app-counsel-detail",
@@ -29,6 +31,8 @@ export class CounselDetailComponent implements OnInit {
   _counselEnable: boolean = false;
   // 顯示心理測驗
   _psychological_testEnable: boolean = false;
+  /** 認輔老師 */
+  _caseInterviewTeacher :boolean = false   ;
 
   printDocument: any[];
 
@@ -37,6 +41,7 @@ export class CounselDetailComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private RoleService :RoleService,
     private router: Router,
     public counselStudentService: CounselStudentService,
     private dsaService: DsaService,
@@ -104,6 +109,8 @@ export class CounselDetailComponent implements OnInit {
 
     }else if (contentType =='B表'){
       window.open('content.htm#/(simple-page:simple-page/print/counsel_history/'+this.currentStudent.StudentID+')', '_blank');
+    }else if (contentType =='B表合併心理測驗'){
+      window.open('content.htm#/(simple-page:simple-page/print/counsel_history_psychologicaltest/'+this.currentStudent.StudentID+')', '_blank');
     }
   }
 
@@ -118,10 +125,22 @@ export class CounselDetailComponent implements OnInit {
         // this.counselStudentService.currentStudent = this.currentStudent;
 
         if (this.counselComponent != null) {
+
+          // 處理認輔老師 
+          if( // 新竹需求 增加認輔老師邏輯
+            this.currentStudent.Role.indexOf("認輔老師") >= 0  
+            && this.RoleService.loginTeacher.Role =='專任輔導'
+          ){
+             this._caseInterviewTeacher = true ;
+
+          } 
+
+
           if (
             this.currentStudent.Role.indexOf("班導師") >= 0 ||
             this.currentStudent.Role.indexOf("輔導老師") >= 0
           ) {
+           
             this.counselComponent.setSelectItem(this.currentStudent.ClassName);
           } else {
             this.counselComponent.setSelectItem("認輔學生");
@@ -133,6 +152,7 @@ export class CounselDetailComponent implements OnInit {
           this.currentStudent.Role.indexOf("輔導老師") >= 0
         ) {
           this._interviewEnable = true;
+          this.RoleService.loginTeacher.interviewEnable =true ;
         }
         if (
           this.currentStudent.Role.indexOf("認輔老師") >= 0 ||

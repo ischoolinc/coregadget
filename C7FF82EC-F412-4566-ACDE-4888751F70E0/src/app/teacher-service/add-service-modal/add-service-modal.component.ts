@@ -1,4 +1,4 @@
-import { ServiceItemDetail, ServiceItemInfo } from './../vo';
+import { ServiceDetailDB, ServiceItemDetail, ServiceItemInfo } from './../vo';
 import { Component, OnInit } from '@angular/core';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DsaService } from 'src/app/dsa.service';
@@ -9,10 +9,12 @@ import { DsaService } from 'src/app/dsa.service';
   styleUrls: ['./add-service-modal.component.css']
 })
 export class AddServiceModalComponent implements OnInit {
+  serviceDataDB : ServiceDetailDB[] = [] ;
+  serviceDataList :ServiceItemInfo[] = [];
   currentServiceItem: ServiceItemInfo
-  mode: 'add' | 'edit'
-
- isClose :boolean =false ;
+  mode: 'add' | 'edit' // 模式
+  CaseInterviewID :string=""
+  isClose :boolean =false ;
   /** title  顯示  */
   actionString :string =""
   ServiceOptionList: any  // 下拉選單用 
@@ -24,6 +26,44 @@ export class AddServiceModalComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.initModal();
+  }
+
+
+  /** 取得該筆service 資料
+   */
+ async GetServiceItemByUID(serviceID :string ){
+
+    let resp = await this.dsaService.send("TeacherService.GetServiceItemByUID", {
+      Request: {
+        ServiceUID : serviceID
+      }
+    });
+
+    this.serviceDataList =[] ;
+    this.serviceDataDB = [].concat(resp.rs||[])
+    // 整理資料
+    this.serviceDataDB.forEach(detail =>{
+      
+      let targetDetail = this.serviceDataList.find(x=>x.ServiceID == detail.service_id)
+    // 如果沒有 沒有 在加入
+      if(!targetDetail){
+         this.serviceDataList.push(new ServiceItemInfo(detail) )
+        }
+      let targetDetailhasVaule = this.serviceDataList.find(x=>x.ServiceID == detail.service_id)
+      targetDetailhasVaule.addTargetDetail(detail);      // 增加detail到裡面
+
+
+    })
+        this.currentServiceItem=this.serviceDataList[0];
+        console.log("rsp",this.serviceDataList[0]) ;
+
+  }
+
+
+  /** 初始化 */
+  initModal(){
+
     this.ServiceOptionList = [
       '團體輔導',
       '入班輔導',
@@ -70,16 +110,16 @@ export class AddServiceModalComponent implements OnInit {
       this.currentServiceItem.ServiceItem = '請選擇'
       this.currentServiceDetail.ServiceTarget = '請選擇'
       this.currentServiceItem.ServiceDate = '';
+      this.currentServiceItem.CaseInterviewID= '';
       this.currentServiceItem.targetDetailList = [];
   
-      console.log("sss", this.ServiceOptionList);
+     
     }else if(this.mode == 'edit'){
     
     
 
     }
  
-
 
   }
 
@@ -111,7 +151,7 @@ export class AddServiceModalComponent implements OnInit {
       return 
    }
 
-
+      this.currentServiceItem.CaseInterviewID = this.CaseInterviewID ;
 
 
     try {

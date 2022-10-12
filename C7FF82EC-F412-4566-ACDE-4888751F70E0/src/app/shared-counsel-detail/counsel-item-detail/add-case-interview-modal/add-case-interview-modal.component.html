@@ -2,7 +2,7 @@
 
 <div class="modal fade " id="addCaseInterview" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
   aria-hidden="true">
-  <div class="modal-dialog  " role="document">
+  <div class="modal-dialog 	modal-lg " role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addInterviewLabel">
@@ -13,11 +13,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-row">
+        <div class="form-row mt-2">
           <div class="form-group col-md-4">
             <label for="schoolYear" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isSchoolYearHasValue">*</span>
-              <b> 學年度</b>
+              <b class="modal-sub-title"> 學年度</b>
             </label>
             <input type="text" class="form-control" id="schoolYear" placeholder="請輸入學年度"
               [(ngModel)]="_CaseInterview.SchoolYear" (keyup)="_CaseInterview.checkValue()" />
@@ -25,7 +25,7 @@
           <div class="form-group col-md-4">
             <label for="semester" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isSemesterHasValue">*</span>
-              <b>學期</b>
+              <b class="modal-sub-title">學期</b>
             </label>
             <input type="text" class="form-control" id="semester" placeholder="請輸入學期"
               [(ngModel)]="_CaseInterview.Semester" (keyup)="_CaseInterview.checkValue()" />
@@ -33,7 +33,7 @@
           <div class="form-group col-md-4">
             <label for="interviewDate" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isOccurDateHasValue">*</span>
-              <b>晤談日期</b>
+              <b class="modal-sub-title" >晤談日期</b>
             </label>
             <input type="date" class="form-control" id="interviewDate" placeholder="請輸入晤談日期"
               [(ngModel)]="_CaseInterview.OccurDate" (keyup)="_CaseInterview.checkValue()"
@@ -44,7 +44,7 @@
           <div class="form-group col-md-4">
             <label class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCounselTypeHasValue">*</span>
-              <b>方式：</b>
+              <b class="modal-sub-title">方式：</b>
             </label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -72,7 +72,7 @@
           <div class="form-group col-md-4">
             <label class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isContactNameHasValue">*</span>
-              <b>對象：</b>
+              <b class="modal-sub-title">對象：</b>
             </label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -96,7 +96,8 @@
           </div>
           <div class="form-group col-md-4">
             <label class="col-form-label">
-              <span class="text-samll text-danger"></span><b>個案編號：</b>
+              <span class="text-samll text-danger"></span>
+              <b class="modal-sub-title">個案編號：</b>
               <div> {{ _CaseInterview.CaseNo }}</div>
               <!-- <span class="input-group mb-3"></span> -->
             </label>
@@ -117,26 +118,43 @@
         <div class="form-group col-md-12  ">
           <label for="description" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_CaseInterview.isContentHasValue">*</span>
-            <b> 內容說明</b>
-            <span class="text-muted"></span>
+            <b class="modal-sub-title"   > 內容說明</b>
+            <span class=" text-muted"></span>
           </label>
-          <textarea class="form-control" id="description" rows="3" placeholder="請輸入內容說明"
+          <textarea style="margin: 20px ;width: 92%;" class="form-control " id="description" rows="3" placeholder="請輸入內容說明"
             [(ngModel)]="_CaseInterview.Content" (keyup)="_CaseInterview.checkValue()"></textarea>
         </div>
       </div>
   <!-- 檔案上傳 -->
   <!-- <div class="image-upload">
  
-    <input name="imageUrl" type="file" accept="image/*" (change)="handleInputChange($event)" />
+    <input #fileInput  id ="fileInput" name="imageUrl"
+       type="file"  accept="application/pdf"
+      (change)="handleInputChange($event)" />
 </div>  -->
+
+ <div class="p-1 m-1" *ngIf=" this.fileUpladed?.FileName" style="border:1px soild gray ; height:15px; min-width:200px">
+    <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
+    {{ this.fileUpladed.FileName }}
+
+    </a>
+    <span (click)="deleteFile()"> 
+      <mat-icon  style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false" aria-label="Example home icon"
+      (click)="delete(item)">
+      highlight_off
+    </mat-icon>
+    </span>
+ </div>
+
+
 <!-- //   個案類別  -->
       <div class ="form-row">
         <div class="form-group col-md-12">
           <label for="semester" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCategoryHasValue">*</span>
-            <b> 類別</b>
+            <b  class="modal-sub-title"> 類別</b>
           </label>
-          <div class="d-flex flex-wrap">
+          <div class="d-flex flex-wrap " style ="">
             <div class="custom-control custom-checkbox w-25" *ngFor="let item of _CaseInterview._category">
               <input type="checkbox" class="custom-control-input" [id]="item.answer_code"
                 [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
@@ -153,33 +171,19 @@
         </div>
         </div>
 
-        <!-- //   轉借狀況 -->
-      <!-- <div class ="form-row">
-        <div class="form-group col-md-12">
-          <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCategoryHasValue">*</span>
-            <b> 轉介概況</b>
-          </label>
-          <div class="d-flex flex-wrap">
-            <div class="custom-control custom-checkbox " *ngFor="let item of _CaseInterview._transferStatus">
-              <input type="checkbox" class="custom-control-input" [id]="item.answer_code"
-                [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
-                (change)="checkChange(item,_CaseInterview)" />
-              <label class="custom-control-label" [for]="item.answer_code">
-                <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
-              </label>
-            </div>
 
+        <div class="form-row">
+          <div class="form-group col-md-12">
+             
 
-            <p class="mt-3" style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報表內，工作月統計報表之統計為個案上之個案類別。</p>
-
+         {{''}}            
           </div>
         </div>
-        </div>
-      </div> -->
+
+    
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">
+        <button type="button" class="btn btn-dark" data-dismiss="modal" (click)="cancel()">
           取消
         </button>
         <button type="button" class="btn btn-info" [disabled]="_CaseInterview.isSaveDisable" (click)="save()">

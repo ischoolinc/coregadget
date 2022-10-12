@@ -62,7 +62,7 @@
           <span>編輯 {{fillInSection[0].Name}}</span>
         
         </button>
-        <button *ngIf="!fillInSection[0].FillInSectionID" class="btn btn-info ml-1 disabled btn-edit">
+        <button *ngIf="!fillInSection[0].FillInSectionID " class="btn btn-info ml-1 disabled btn-edit">
           <i class="material-icons" style="font-size: 16px;">edit</i>
           <span>編輯</span>
         </button>
@@ -70,9 +70,9 @@
       </div>
 
     </ng-container>
-    <ng-container *ngIf="fillInSection.length > 1">
+    <ng-container *ngIf="fillInSection.length > 1 && roleService.loginTeacher?.interviewEnable">
       <div class="dropdown ml-1 mb-2">
-        <button class="btn btn-info dropdown-toggle btn-edit " type="button" data-toggle="dropdown" aria-haspopup="true"
+        <button   class="btn btn-info dropdown-toggle btn-edit " type="button" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
           <i class="material-icons" style="font-size: 16px;">edit</i>
           <span> 編輯</span>

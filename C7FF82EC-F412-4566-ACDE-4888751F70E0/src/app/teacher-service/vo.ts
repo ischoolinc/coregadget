@@ -1,3 +1,4 @@
+
  /** 服務項目 with detail */
 export  interface  ServiceDetailDB  {
 	// <service_id>5361474</service_id>
@@ -28,6 +29,8 @@ export  interface  ServiceDetailDB  {
     description
     /** 其他服務項目細節 */
     service_item_other_detail
+    /**個案晤談紀錄ID */  
+    case_interview_id
 }
 
 /** 服務項目 */
@@ -39,6 +42,7 @@ constructor(serviceDetailDB :ServiceDetailDB = null){
         this.ServiceDate = serviceDetailDB.service_date ;
         this.ServiceDescription = serviceDetailDB.description ;
         this.OtherServiceDetail =serviceDetailDB.service_item_other_detail
+        this.CaseInterviewID = serviceDetailDB.case_interview_id
         this.targetDetailList =[];
     }
 }
@@ -60,6 +64,8 @@ OtherServiceDetail =""
 /** */
 DetailDisplayString :string ="";
 
+/** 如果是從二級個案晤談紀錄來的資料*/
+CaseInterviewID  :string  = "" ;
 
 /** 加入  */
 addTargetDetail(detail:ServiceDetailDB){

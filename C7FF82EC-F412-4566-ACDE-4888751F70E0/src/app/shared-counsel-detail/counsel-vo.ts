@@ -552,7 +552,6 @@ export class QOption {
 
   public setAnswerCheck() {
     this.answer_checked = !this.answer_checked;
-    console.log('sss', this);
   }
 }
 

@@ -126,12 +126,15 @@ export class InterviewDetailComponent implements OnInit {
   // 檢視
   viewInterviewModal(counselView: CounselInterview) {
     this._viewInterview._CounselInterview = counselView;
+    this._viewInterview.getFile(counselView.UID)
     this._viewInterview._id = "viewInterview";
     $("#viewInterview").modal("show");
     $("#viewInterview").on("hide.bs.modal", function (e) {
       // do something...
     });
   }
+
+
 
   /** 批次輸入-班導師晤談紀錄 */
   addInterviewModal() {
@@ -161,17 +164,18 @@ export class InterviewDetailComponent implements OnInit {
       $("#addInterview").off("hide.bs.modal");
     });
   }
-
-  // 修改
+   /** 修改 */
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
     let obj = Object.assign({}, counselView);
     this._addInterview._currentCounselInterview = counselView;
-    this._addInterview._currentCounselInterview.selectCounselType =
-      counselView.CounselType;
+    this._addInterview._currentCounselInterview.selectCounselType =counselView.CounselType;
+   
     this._addInterview._currentCounselInterview.selectContactName = counselView.ContactName;
     this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
     this._addInterview._currentCounselInterview.isSaveDisable = true;
+    this._addInterview.getFile(counselView.UID);
+    $("#addInterview").modal({ backdrop: 'static' });
     $("#addInterview").modal("show");
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {

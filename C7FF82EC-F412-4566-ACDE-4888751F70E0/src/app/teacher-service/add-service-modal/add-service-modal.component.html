@@ -1,11 +1,20 @@
-<div   class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
+
+
+<div   
+  class="modal fade" 
+  id="addServiceModal"
+  tabindex="-1" 
+  role="dialog" 
+  aria-labelledby="addInterviewLabel"
   aria-hidden="true">
-  <div class="modal-dialog  modal-lg" role="document" style ="min-height: 1300px !important;">
+  <div class="modal-dialog  modal-lg modal-dialog-scrollable" role="document" >
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addInterviewLabel">
-          新增服務項目 
-        </h5>
+        <h3 class="modal-title" id="addInterviewLabel">
+        <b>
+          服務項目 
+        </b> 
+        </h3>
       </div>
 
       <div class="modal-body">
@@ -51,6 +60,9 @@
 
         </div>
 
+
+        <!--  -->
+ 
         <!-- 服務項目 內容 -->
         <div class="form-group">
           <label for="contactMatter" class="col-form-label">
@@ -92,7 +104,7 @@
 
           </div>
          <!-- 男生女生 -->
-          <div class="form-group d-flex">
+          <div class=" align-middle form-group d-flex">
 
             <label for="interviewDate" class="col-form-label">
               <span class="text-samll text-danger star-place">
@@ -131,8 +143,8 @@
               placeholder="人次" [(ngModel)]="currentServiceDetail.peopleCount"  (input)="countChange(event)"/>
    
           </div>
-          <div >
-            <button type="button" class="btn "  (click)="addServiceDetail()">
+          <div class ="ml-2" >
+            <button type="button" class="btn float-right "  (click)="addServiceDetail()">
               增加服務對象
              </button>
           </div>

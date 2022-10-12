@@ -82,6 +82,12 @@ export class TeacherServiceComponent implements OnInit {
     this._delServiceModal.currentServiceInfo=item ;
     $("#delServiceModal").modal({backdrop:'static'});
     $("#delServiceModal").modal("show");
+    $("#delServiceModal").on("hide.bs.modal", () => {
+      if (true) { // 如果關掉舊重新 load 資料
+        this.loadData();
+      }
+    
+    });
   }
 
   /** 編輯選項 */
@@ -90,6 +96,11 @@ export class TeacherServiceComponent implements OnInit {
     this._addServiceModal.currentServiceItem=item ;
     $("#addServiceModal").modal({backdrop:'static'});
     $("#addServiceModal").modal("show");
-
+    $("#addServiceModal").on("hide.bs.modal", () => {
+      if (true) { // 如果關掉舊重新 load 資料
+        this.loadData();
+      }
+    
+    });
   }
 }

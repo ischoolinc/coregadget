@@ -1,5 +1,6 @@
+import { DsaService } from './../../../dsa.service';
 import { Component, OnInit } from '@angular/core';
-
+import {DomSanitizer} from '@angular/platform-browser';
 @Component({
   selector: 'app-view-case-interview-modal',
   templateUrl: './view-case-interview-modal.component.html',
@@ -22,11 +23,43 @@ export class ViewCaseInterviewModalComponent implements OnInit {
   AuthorName: string = "";
   CaseID: string = "";
   AuthorRole: string = "";
+  fileInfo :{FileName:string ,FileContent ,href}|any ={}
 
   isCancel: boolean = true;
-  constructor() { }
+  constructor(
+    private DsaService: DsaService
+    ,private sanitizer:DomSanitizer) 
+    { 
+      
+    }
 
-  ngOnInit() { this.isCancel = true;
+  async ngOnInit() {
+
+
+    this.isCancel = true;
   }
 
+  /** 取得檔案 */
+  async getFile(targetID: string) {
+    this.fileInfo ={};
+
+    try {
+      let rsp = await this.DsaService.send('File.GetFileByTypeAndTargetID', {
+        Request: {
+          TargetID: targetID,
+          BelongTable: '二級輔導個案晤談'
+        }
+
+      });
+ debugger
+      if(rsp.rs){
+        this.fileInfo.FileName = rsp.rs.file_name;
+        let data  = atob( rsp.rs.content)
+       this.fileInfo.href =this.sanitizer.bypassSecurityTrustUrl( data) 
+      }
+    
+    } catch (ex) {
+      alert('取得檔案發生錯誤:' + JSON.stringify(ex))
+    }
+  }
 }

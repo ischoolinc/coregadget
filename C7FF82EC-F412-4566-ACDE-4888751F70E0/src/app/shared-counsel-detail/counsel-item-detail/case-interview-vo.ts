@@ -20,6 +20,10 @@ export class CaseInterview {
   ClassID: string; // 班級 ID
   AuthorRole: string; // 個案老師角色
   ContactNameOther: string = ""; // 其他訪談對象
+  /** 服務項目ID   */
+  ServiceUID :string 
+  /** 服務項目  */
+  ServiceItem : string 
   /** 晤談紀錄下個案類別 */
   Category: string = ""; // 類別
   /** 轉介狀態 */

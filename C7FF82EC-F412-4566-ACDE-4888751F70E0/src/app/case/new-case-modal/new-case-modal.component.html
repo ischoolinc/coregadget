@@ -112,8 +112,14 @@
                 <b class="question_title"> 個案編號</b>
 
               </label>
-              <input type="text" class="form-control" id="schoolYear" placeholder="請輸入個案編號"
-                [(ngModel)]="caseStudent.CaseNo" (keyup)="caseStudent.checkValue()" />
+              <input 
+                type="text" 
+                class="form-control"
+                id="schoolYear" 
+                placeholder="請輸入個案編號"
+                [(ngModel)]="caseStudent.CaseNo" 
+                (keyup)="caseStudent.checkValue()"
+                (focusout)="checkCaseNum(caseStudent)" />
             </div>
             <div class="form-group col-md-3">
               <label for="OccurDate" class="col-form-label">
@@ -165,7 +171,7 @@
           <div class="form-group">
             <label for="semester" class="col-form-label p-0">
               <span class="text-samll text-danger" style="width:10px; height: 10px; display: inline-block; ">
-                <ng-container *ngIf="!caseStudent.isProblemMainCategoryHasValue">*</ng-container>
+                <ng-container *ngIf="!caseStudent.isStudentStatusHasValue">*</ng-container>
               </span>
               <div *ngTemplateOutlet="icon"></div>
               <b class="question_title"> 學生身分： </b>
@@ -385,6 +391,26 @@
               </ng-container>
             </div>
           </div>
+         <!-- 參與輔導教師層級 -->
+         <div class="form-group">
+          <label for="semester" class="col-form-label p-0">
+            <span class="text-samll text-danger star_place">
+              <ng-container *ngIf="!caseStudent.isEvaluationResultHasValue">*</ng-container>
+            </span>
+            <div *ngTemplateOutlet="icon"></div>
+            <b class="question_title"> 輔導教師層級</b>
+          </label>
+          <div class="d-flex flex-wrap ml-3">
+            <div class="custom-control custom-checkbox w-25" *ngFor="let item of caseStudent.teacher_counsel_level">
+              <input type="checkbox" class="custom-control-input cuser" [id]="item.answer_code"
+                [checked]="item.answer_checked" (change)="checkChange(item,caseStudent)"
+                (click)="item.setAnswerCheck()" />
+              <label class="custom-control-label cuser" [for]="item.answer_code">
+                <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
+              </label>
+            </div>
+          </div>
+        </div> 
           <!-- <hr> -->
           <div class="form-row">
             <div class="form-group col-md-4">

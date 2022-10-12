@@ -143,7 +143,7 @@ export class CaseQuestionTemplate {
     return [].concat(data || []);
   }
 
-  // 個案類別
+  /**個案類別*/
   public getProblemCategory():IOptionInfo[] {
     let data = [
       {
@@ -283,7 +283,7 @@ export class CaseQuestionTemplate {
 
     return [].concat(data || []);
   }
-  // 問題描述
+  /** 問題描述 */
   public getProbleDescription() {
     let data = [
       {
@@ -375,7 +375,7 @@ export class CaseQuestionTemplate {
     return [].concat(data || []);
   }
 
-  // 評估結果
+  /** 評估結果 */
   public getEvaluationResult() {
     let data = [
       {
@@ -432,6 +432,32 @@ export class CaseQuestionTemplate {
     return [].concat(data || []);
   }
 
+    /** 取得學生身分 */
+    public getTeacherCounselLevel() {
+      let teacherCounselLevel :string [] =[
+        '初級',
+        '二級',   
+        '三級'
+      ]
+    
+      let data :{}[]=[]
+      // 預設勾選已下皆非
+      teacherCounselLevel.forEach(item =>{
+       let defaultChecked = false;
+   
+        data.push(
+          {
+            answer_text: item,
+            answer_value: "",
+            answer_martix: [],
+            answer_complete: false,
+            answer_checked: defaultChecked 
+          }
+  
+        )
+      })
+      return [].concat(data || []);
+    }
 
   /** 取得學生身分 */
   public getStudentStatus() {

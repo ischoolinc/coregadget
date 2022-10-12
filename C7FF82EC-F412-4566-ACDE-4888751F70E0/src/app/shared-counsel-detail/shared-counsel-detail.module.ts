@@ -4,6 +4,7 @@ import { CounselDetailComponent } from './counsel-detail.component';
 import { AbsentDetailComponent } from './absent-detail/absent-detail.component';
 import { BaseInfoDetailComponent } from './base-info-detail/base-info-detail.component';
 import { CounselItemDetailComponent } from './counsel-item-detail/counsel-item-detail.component';
+import {AddServiceModalComponent} from '../teacher-service/add-service-modal/add-service-modal.component'
 import { AddCaseInterviewModalComponent } from './counsel-item-detail/add-case-interview-modal/add-case-interview-modal.component';
 import { ViewCaseInterviewModalComponent } from './counsel-item-detail/view-case-interview-modal/view-case-interview-modal.component';
 import { DelCaseInterviewModalComponent } from './counsel-item-detail/del-case-interview-modal/del-case-interview-modal.component';
@@ -43,6 +44,7 @@ import { AddReferralFormComponent } from './interview-detail/add-referral-form/a
     SetCounselInterviewPrintItemComponent,
     // SharedCounselDetailComponent,
     AddReferralFormComponent,
+    AddServiceModalComponent,
   ],
   imports: [
     RouterModule,
@@ -67,7 +69,7 @@ import { AddReferralFormComponent } from './interview-detail/add-referral-form/a
     PsychologicalTestDetailComponent,
     SemesterScoreDetailComponent,
     AddReferralFormComponent,
-     
+    AddServiceModalComponent
 
   ]
 })

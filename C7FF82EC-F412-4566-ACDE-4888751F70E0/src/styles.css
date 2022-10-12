@@ -83,7 +83,7 @@ cursor: pointer;
     height: 10px  !important ;
  }
 .question_title {
-    font-size:  16px;
+    font-size:  1.1rem;
  }
  /* 顯示必填的星號 預留位置 讓畫面不會動來去*/
  .star_place {
@@ -94,8 +94,14 @@ cursor: pointer;
 .rad-5{
     border-radius  :5px;   
  }
-.fontsize-18{
+/* .fontsize-18{
     font-size: 18px;
+ } */
+
+ /*  小標 */
+ .ss-title{
+    font-size:1rem;
+    color : rgb(69, 69, 69)
  }
  /* 紅色的字 */
 .word_red{
@@ -279,9 +285,12 @@ ul.rwd-table .thead li {
 
 
 .sm-title {
-    padding: 10px;
-    font-size: 15.7px;
+    margin: 10px;
+    padding: 15px;
+    font-size: 1.2rem;
     margin-bottom: 6px;
+
+    color  : #313b52  ;
     background-color:#e1f2ef ;
     display: inline;
     width: auto;
@@ -628,6 +637,27 @@ div::-webkit-scrollbar{
 }
 
 
+
+/* 彈跳視窗支付標題  */
+.modal-sub-title {
+ font-size: 1.1rem !important;
+ color :rgb(91, 91, 91);
+}
+
+.sub-title {
+    font-size: 1.2rem !important;
+    font-weight: 900;
+    color :rgb(91, 91, 91);
+    margin-bottom: 10px;
+    
+}
+
+/* 下載檔案  */
+.download {
+    color : #42879f ;
+    font-size: 1rem;
+
+}
 
 
 

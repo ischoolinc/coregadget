@@ -39,19 +39,19 @@
         <div class="form-row">
           <div class="form-group col-md-4">
             <label class="col-form-label">
-              學年度
+           <b class ="modal-sub-title">學年度 </b>   
             </label>
             <label class="form-control">{{ _CounselInterview.SchoolYear }}</label>
           </div>
           <div class="form-group col-md-4">
             <label class="col-form-label">
-              學期
+             <b  class ="modal-sub-title" >學期 </b>  
             </label>
             <label class="form-control">{{ _CounselInterview.Semester }}</label>
           </div>
           <div class="form-group col-md-4">
             <label class="col-form-label">
-              日期
+             <b class ="modal-sub-title">日期 </b> 
             </label>
             <label class="form-control">{{ _CounselInterview.OccurDate }}</label>
           </div>
@@ -59,7 +59,9 @@
 
         <div class="form-group">
           <label class="col-form-label">
-            聯絡事項
+            <b class ="modal-sub-title">
+              聯絡事項
+            </b> 
           </label>
           <label class="form-control"
                  style="white-space: pre-wrap;word-break: break-all;">{{ _CounselInterview.ContactItem || ' ' }}</label>
@@ -67,7 +69,9 @@
 
         <div class="form-group">
           <label class="col-form-label">
+          <b class ="modal-sub-title">
             輔導內容
+          </b>
           </label>
           <label class="form-control"
                  style="white-space: pre-wrap;word-break: break-all;">{{ _CounselInterview.Content || ' ' }}</label>
@@ -76,13 +80,27 @@
         <ng-container *ngIf="referralVisible === true">
           <div *ngIf="_CounselInterview.getIsReferralString()"
                class="form-group">
-            <label class="col-form-label">轉介輔導室</label>
+            <label class="col-form-label">
+                轉介輔導室
+              </label>
             <label class="form-control">{{ _CounselInterview.getIsReferralString() }}</label>
           </div>
           <div *ngIf="_CounselInterview.getIsReferralString()"
                class="form-group">
             <label class="col-form-label">轉介說明</label>
             <label class="form-control">{{ _CounselInterview.ReferralDesc }}</label>
+          </div>
+          <div *ngIf="fileInfo.FileName ">
+            <!-- 檔案下載區塊-->
+            <a class="download"  [href]= "this.fileInfo.href" 
+            [download]="fileInfo.FileName">
+            <mat-icon  aria-hidden="false" aria-label="Example home icon">
+              file_download
+            </mat-icon>
+              <span class="ml-1">
+                  {{fileInfo.FileName }}
+              </span> 
+              </a>
           </div>
 
         </ng-container>

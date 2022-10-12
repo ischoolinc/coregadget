@@ -36,7 +36,7 @@ export class ComprehensiveComponent implements OnInit {
   dsnsName = "" ;
 
 
-
+  isEditable : boolean = false ;
   IsBringbring: Boolean = false;
   IsBringChecked: Boolean = false;
   ShowBringPreviousSection: Boolean = false; // 看看要不要顯示 轉入前學年度學期的資料
@@ -59,7 +59,12 @@ export class ComprehensiveComponent implements OnInit {
   }
 
   ngOnInit() {
+
+   
+    // 設定是否可編輯權限 
+    this.isEditable =false ;
     // 預設
+
     this.comprehensiveStr = "產生綜合紀錄表";
     this.comprehensiveStr1 = "綜合紀錄表資料";
     this.appComponent.currentComponent = "comprehensive";
@@ -90,8 +95,7 @@ export class ComprehensiveComponent implements OnInit {
              this.schoolTye = response.Response.School.Type;
           
            });
-      
-         console.log();
+    
          } catch (err) {
            console.log(err);
          }

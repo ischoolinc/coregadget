@@ -13,6 +13,7 @@ export class RoleService {
 
   private _isLoading: boolean;
   private _enableCounsel: boolean = false;
+  /** 統計資訊 誰可以看*/
   private _enableCounselStatistics: boolean = false;
   private _enableReferral: boolean = false;
   private _enableCase: boolean = false;
@@ -20,13 +21,15 @@ export class RoleService {
   private _enableAdmin: boolean = false;
   private _enableComprehensive: boolean = false;
   private _enablePsychologicalTest: boolean = false;
+  /** 相關服務可否使用 */
+  private _enableTeacherService: boolean = false;
 
   public get isLoading() {
     return this._isLoading;
   }
   /** 取得目前教師資料 */
   public get loginTeacher(){
-    console.log("teacher.." , this._loginTeacher) 
+    
     return this._loginTeacher ;
    }
    
@@ -59,6 +62,12 @@ export class RoleService {
   public get enablePsychologicalTest() {
     return this._enablePsychologicalTest;
   }
+
+  public get enableTeacherService(){
+
+    return  this._enableTeacherService
+  }
+
   public get enableAdmin() {
     return this._enableAdmin;
   }
@@ -137,6 +146,18 @@ export class RoleService {
     ) {
       this._enableAdmin = true;
     }
+
+//  alert(JSON.stringify(this._loginTeacher))
+    if( this._role.indexOf("管理者") >= 0 ||
+    this._role.indexOf("輔導老師") >= 0 ||
+    this._loginTeacher.Role =="校外心理師" ||
+    this._loginTeacher.Role =="兼任輔導" ||
+    this._loginTeacher.Role =="認輔老師" ||
+    this._role.indexOf("認輔老師") >= 0 ){
+      this._enableTeacherService =true ;
+    }
+
+
 
     // 未開發功能不能用
     this._enableInterviewStatistics = false;
