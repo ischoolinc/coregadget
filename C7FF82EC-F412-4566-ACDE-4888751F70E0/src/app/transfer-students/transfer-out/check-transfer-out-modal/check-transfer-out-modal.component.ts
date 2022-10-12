@@ -41,36 +41,65 @@ export class CheckTransferOutModalComponent implements OnInit {
       const acceptToken = pass ? `${uuidv4().substring(0, 7)}@${myDSNS}` : null;
       // 1. 去它校回覆結果
       // 2. 在本校更新回覆記錄
-      // 3. 新增 log TODO:
+      // 3. 新增 log
+
+      const replyBody = `<Request>
+        <AcceptToken>${acceptToken}</AcceptToken>
+        <Pass>${pass}</Pass>
+        <RedPointCode>轉入申請</RedPointCode>
+      </Request>`;
+
       const replyResult = await this.dsaService.accessPointSend({
         dsns: this.studentData.DSNS,
         contractName:  '1campus.counsel.transfer_in',
         securityTokenType: 'Basic',
         BasicValue: { UserName: this.studentData.TransferToken, Password: '1234' },
         serviceName: 'SetApprovedStatusAndRedPoint',
-        body: `<Request>
-          <AcceptToken>${acceptToken}</AcceptToken>
-          <Pass>${pass}</Pass>
-          <RadPointCode>轉入申請</RadPointCode>
-        </Request>`,
+        body: replyBody,
         rootNote: 'Info'
       });
 
       if (replyResult === 'success') {
-        const setResult = await this.dsaService.send('TransferStudent.SetApprovedStatus', {
+        try {
+          await this.transferSrv.addLog('回覆申請', '回覆轉入校', `回覆成功。${replyBody}`);
+        } catch (error) {
+          console.log(error);
+        }
+
+        const setBody = {
           Uid: this.studentData.Uid,
           Pass: pass,
           AcceptToken: acceptToken,
-        });
+        };
+
+        const setResult = await this.dsaService.send('TransferStudent.SetApprovedStatus', setBody);
         if (setResult.Info === 'success') {
+          try {
+            await this.transferSrv.addLog('回覆申請', '本校回覆', `回覆成功。${JSON.stringify(setBody)}`);
+          } catch (error) {
+            console.log(error);
+          }
+
           $('#checkTransferOutModal').modal('hide');
         } else {
+          try {
+            await this.transferSrv.addLog('回覆申請', '本校回覆', `回覆失敗。${JSON.stringify(setBody)}`);
+          } catch (error) {
+            console.log(error);
+          }
+
           this.replyStatus = {
             info: 'failed',
             msg: '回覆核可資料失敗'
           };
         }
       } else {
+        try {
+          await this.transferSrv.addLog('回覆申請', '回覆轉入校', `回覆失敗。${replyBody}`);
+        } catch (error) {
+          console.log(error);
+        }
+
         this.replyStatus = {
           info: 'failed',
           msg: '寫入回覆失敗'

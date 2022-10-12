@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
+import { DsaService } from 'src/app/dsa.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransferStudentsService {
-  constructor() { }
+  constructor(
+    private dsaSrv: DsaService
+  ) { }
 
   public formatStudentStatus(status: string) {
     switch (status) {
@@ -15,5 +18,15 @@ export class TransferStudentsService {
       case '16': return '畢業或離校';
       case '256': return '刪除';
     }
+  }
+
+  public async addLog(actionType = '', action = '', description = '') {
+    await this.dsaSrv.send('TransferStudent.AddLog', {
+      Request: {
+        ActionType: actionType,
+        Action: action,
+        Description: description,
+      }
+    });
   }
 }

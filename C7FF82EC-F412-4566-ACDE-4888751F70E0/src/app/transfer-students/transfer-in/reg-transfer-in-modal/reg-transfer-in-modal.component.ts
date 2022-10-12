@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { DsaTransferService } from "../../service/dsa-transfer.service";
 import { v4 as uuidv4 } from 'uuid';
+import { TransferStudentsService } from "../../service/transfer-students.service";
 
 @Component({
   selector: "app-reg-transfer-in-modal",
@@ -25,6 +26,7 @@ export class RegTransferInModalComponent implements OnInit {
 
   constructor(
     private dsaService: DsaTransferService,
+    private transferSrv: TransferStudentsService
   ) { }
 
   async ngOnInit() {
@@ -128,51 +130,74 @@ export class RegTransferInModalComponent implements OnInit {
     try {
       this.isReging = true;
       this.regResp = { info: '', msg: '' };
-      const resp = await Promise.all([
-        this.dsaService.send('TransferStudent.GetMyInfo'),
-      ]);
-
-      const myInfo: MyInfo = resp[0].MyInfo || {};
+      const resp = await this.dsaService.send('TransferStudent.GetMyInfo');
+      const myInfo: MyInfo = resp.MyInfo || {};
       const myDSNS = gadget.getApplication().accessPoint;
       const mySchool = this.schoolList.find(v => v.Dsns === myDSNS);
       const acceptToken = `${uuidv4().substring(0, 7)}@${myDSNS}`;
       // 1. 去它校申請轉入
       // 2. 在本校新增申請記錄
-      // 3. 新增 log TODO:
+      // 3. 新增 log
+      const regBody = `<Request>
+        <IdNumber>${this.selectedStudent.IdNumber}</IdNumber>
+        <Birthdate>${this.selectedStudent.Birthdate}</Birthdate>
+        <DSNS>${myDSNS}</DSNS>
+        <SchoolName>${mySchool.Title}</SchoolName>
+        <ConnectionInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ConnectionInfo>
+        <TransferToken>${acceptToken}</TransferToken>
+        <RedPointCode>轉出核可</RedPointCode>
+      </Request>`;
+
       const regResult = await this.dsaService.accessPointSend({
         dsns: this.selectedSchool.Dsns,
         contractName: '1campus.counsel.transfer_public',
         securityTokenType: 'Public',
         serviceName: 'AddTransOutStudent',
-        body: `<Request>
-          <IdNumber>${this.selectedStudent.IdNumber}</IdNumber>
-          <Birthdate>${this.selectedStudent.Birthdate}</Birthdate>
-          <DSNS>${myDSNS}</DSNS>
-          <SchoolName>${mySchool.Title}</SchoolName>
-          <ConnectionInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ConnectionInfo>
-          <TransferToken>${acceptToken}</TransferToken>
-          <RadPointCode>轉出核可</RadPointCode>
-        </Request>`,
+        body: regBody,
         rootNote: 'Info'
       });
 
       if (regResult === 'success') {
-        const addResult = await this.dsaService.send('TransferStudent.AddTransInStudent', {
+        try {
+          await this.transferSrv.addLog('轉入申請', '向轉出校申請', `申請成功。${regBody}`);
+        } catch (error) {
+          console.log(error);
+        }
+
+        const addBody = {
           StudentId: this.selectedStudent.StudentId,
           StudentName: this.selectedStudent.Name,
           DSNS: this.selectedSchool.Dsns,
           SchoolName: this.selectedSchool.Title,
           AcceptToken: acceptToken,
-        });
+        };
+
+        const addResult = await this.dsaService.send('TransferStudent.AddTransInStudent', addBody);
         if (addResult.Info === 'success') {
+          try {
+            await this.transferSrv.addLog('轉入申請', '本校新增', `新增申請成功。${JSON.stringify(addBody)}`);
+          } catch (error) {
+            console.log(error);
+          }
           $('#regTransStudentModal').modal('hide');
         } else {
+          try {
+            await this.transferSrv.addLog('轉入申請', '本校新增', `新增申請失敗。${JSON.stringify(addBody)}`);
+          } catch (error) {
+            console.log(error);
+          }
           this.regResp = {
             info: 'failed',
             msg: '新增移轉資料失敗'
           };
         }
       } else {
+        try {
+          await this.transferSrv.addLog('轉入申請', '向轉出校申請', `申請失敗。${regBody}`);
+        } catch (error) {
+          console.log(error);
+        }
+
         this.regResp = {
           info: 'failed',
           msg: '申請移轉失敗'
