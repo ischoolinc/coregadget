@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   public comprehensiveVisable: boolean = false;
   public psychologicalTestVisable: boolean = false;
   public adminVisable: boolean = false;
+  public hasNewTransfer = false;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -91,6 +92,8 @@ export class AppComponent implements OnInit {
 
     }
     //console.log(gadget.params.system_counsel_position);
+
+    this.checkHasNewTransfer();
   }
   /** 取得轉借學生 */
   async getRefList() {
@@ -152,6 +155,17 @@ export class AppComponent implements OnInit {
   }
 
 
+  async getRadPointState() {
+    const rsp = await this.dsaService.send('TransferStudent.GetRedPoint', {
+      Code: ['轉入申請', '轉出核可']
+    });
+    return [].concat(rsp.RedPoint || []);
+  }
+
+  async checkHasNewTransfer() {
+    const pointState = await this.getRadPointState();
+    this.hasNewTransfer = !!(pointState.find(v => v.Enabled === 't'));
+  }
 
 }
 

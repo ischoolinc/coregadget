@@ -116,11 +116,26 @@
       </ng-container>
 
       <ng-container>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="adminVisable === true">
           <a class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
             (click)="!roleService.enableTransferStudents || routeTo('/transfer_students')"
             [ngClass]="{'active': currentComponent == 'transfer-students', 'disabled': !roleService.enableTransferStudents}">
-            <b> 線上轉學</b></a>
+            <div class="position-relative">
+              <div *ngIf="hasNewTransfer"
+                class="align-baseline"
+                style="position: absolute;
+                  top: -10px;
+                  left: 1px;
+                  width: 8px;
+                  height: 8px;
+                  animation: mymove 1s;
+                  animation-iteration-count: 2;
+                  background: #FF5C58;
+                  border-radius: 50%;">
+              </div>
+              <b>線上轉學</b>
+            </div>
+          </a>
         </li>
       </ng-container>
 
