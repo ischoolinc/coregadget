@@ -92,10 +92,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
 // import { AddServiceModalComponent } from './teacher-service/add-service-modal/add-service-modal.component';
 import { DelServiceModalComponent } from './teacher-service/del-service-modal/del-service-modal.component';
-import { CounselInterviewListComponent } from './simple-page/print/counsel-interview-list/counsel-interview-list.component';
-import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';
-
-@NgModule({
+import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
+import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';@NgModule({
   declarations: [
     AppComponent,
     CounselStatisticsComponent,
@@ -185,12 +183,13 @@ import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/co
     CaseModule,
     MatBadgeModule,
     SharedCounselDetailModule,
-    MatSnackBarModule
+    MatSnackBarModule,
     //  AddInterviewModalComponent
-    
+    DSUtilNgModule, // DSA 自定連線。
   ],
   providers: [ ],
   bootstrap: [AppComponent]
 
 })
-export class AppModule { }
+export class AppModule {
+}

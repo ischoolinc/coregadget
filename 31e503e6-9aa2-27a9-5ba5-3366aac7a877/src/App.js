@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     GetChildList();
-    console.log('1.5studentID', studentID);
+    //console.log('1.5studentID', studentID);
     GetPsychologicalTestData();
   }, [studentID]);
 
@@ -37,16 +37,17 @@ function App() {
         } else {
           if (response) {
             //debugger;
-            setChildList(convertToArray(response.Student));
-            // console.log('response.Student[0].id', convertToArray(response.Student)[0].id);
+            //setChildList(convertToArray(response.Student)); 
+            setChildList([].concat(response.Student, []));
+             //console.log('[].concat(response.Student, [])', [].concat(response.Student, []));
             // console.log('1studentID', studentID);
 
             if (studentID === "") {
               //debugger;
-              setStudent(convertToArray(response.Student)[0].id);
-              // console.log('2studentID', studentID);
+              //setStudent(convertToArray(response.Student)[0].id);
+              setStudent([].concat(response.Student, [])[0].id);
+              //console.log('[].concat(response.Student, [])[0].id', [].concat(response.Student, [])[0].id);
             }
-
           }
         }
       }
@@ -71,7 +72,9 @@ function App() {
             }
             else {
               setText("");
-              setPsychologicalTestData(convertToArray(response.Quiz));
+              //setPsychologicalTestData(convertToArray(response.Quiz));
+              setPsychologicalTestData([].concat(response.Quiz, []));
+              //console.log('convertToArray(response.Quiz)', convertToArray(response.Quiz));
             }
           }
         }
@@ -79,18 +82,8 @@ function App() {
     });
   }
 
-
   const handleChangeChild = (e) => {
     setStudent(e.target.value);
-  }
-
-  //將回傳的Object轉成Array
-  function convertToArray(obj) {
-    if (obj instanceof Array) {
-      return obj;
-    } else {
-      return [obj];
-    }
   }
 
   function isEmpty(obj) {
@@ -293,8 +286,8 @@ function App() {
                           <th className='w-50' style={{ height: '5px', color: '#fff' }}>施測結果</th>
                         </tr>
                       </thead>
-                      <tbody style={{ borderTop: '4px solid #fff' }}>
-                        {pst.Field.map((quiz) => {
+                      <tbody style={{ borderTop: '4px solid #fff' }}>                   
+                        {[].concat(pst.Field, []).map((quiz) => {
                           return <tr style={{ background: '#E2F0D9' }}>
                             <td>{quiz.Name}</td>
                             <td>{quiz.Value}</td>

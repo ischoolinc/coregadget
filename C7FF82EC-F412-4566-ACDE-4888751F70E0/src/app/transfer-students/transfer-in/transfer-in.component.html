@@ -1,0 +1,63 @@
+<div *ngIf="!isLoading; else tplLoading">
+  <div class="tab-content p-0">
+    <ul class="rwd-table m-0">
+      <li class="thead">
+        <ol class="tr">
+          <li class="sticky-top">班級</li>
+          <li class="sticky-top">座號</li>
+          <li class="sticky-top">姓名</li>
+          <li class="sticky-top">轉出校</li>
+          <li class="sticky-top">申請日期</li>
+          <li class="sticky-top">移轉狀態</li>
+          <li class="sticky-top">回覆日期</li>
+          <li class="sticky-top">功能</li>
+        </ol>
+      </li>
+      <li class="tbody">
+        <ol class="tr" *ngFor="let item of transList">
+          <li data-title="班級" (click)="devSetApproved(item)">{{item.class_name}}</li>
+          <li data-title="座號">{{item.seat_no}}</li>
+          <li data-title="姓名">{{item.student_name}}</li>
+          <li data-title="轉出校">{{item.dsns}}</li>
+          <li data-title="申請日期">{{(item.create_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="移轉狀態">{{formatStatus(item.status)}}</li>
+          <li data-title="回覆日期">{{(item.approved_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="功能">
+            <a class="text-info" *ngIf="item.status === '0'" (click)="toReg(item)">申請</a>
+            <a class="text-info" *ngIf="item.status === '1'" (click)="cancelReg(item)">取消</a>
+            <a class="text-info" *ngIf="item.status === '2'" (click)="confrimTransIn(item)">轉入</a>
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tplLoading>
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<div class="modal fade" id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          確定轉入 {{targetStudent.student_name}} 的資料嗎？
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p class="text-center mt-3" *ngIf="isSaving">處理中，請稍候</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">
+          取消
+        </button>
+        <button type="button" class="btn btn-danger" (click)="beginTransIn()">
+          開始轉入
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

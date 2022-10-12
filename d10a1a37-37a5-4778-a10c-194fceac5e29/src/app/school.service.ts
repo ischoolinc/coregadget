@@ -86,6 +86,11 @@ export class SchoolService {
       title: 'Viet Hoa International School'
       , iconUrl: 'assets/img/viethoa_logo.png'
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['p.wagor.tc.edu.tw', { // 葳格國際學校 小學部
+      title: 'Wagor International School'
+      , iconUrl: 'assets/img/wagor_logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }]
   ]);
 

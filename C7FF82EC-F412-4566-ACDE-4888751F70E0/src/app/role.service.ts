@@ -13,7 +13,7 @@ export class RoleService {
 
   private _isLoading: boolean;
   private _enableCounsel: boolean = false;
-  /** çµ±è¨ˆè³‡è¨Š èª°å¯ä»¥çœ‹*/
+  /** ²Î­p¸ê°T ½Ö¥i¥H¬Ý*/
   private _enableCounselStatistics: boolean = false;
   private _enableReferral: boolean = false;
   private _enableCase: boolean = false;
@@ -21,19 +21,19 @@ export class RoleService {
   private _enableAdmin: boolean = false;
   private _enableComprehensive: boolean = false;
   private _enablePsychologicalTest: boolean = false;
-  /** ç›¸é—œæœå‹™å¯å¦ä½¿ç”¨ */
+  /** ¬ÛÃöªA°È¥i§_¨Ï¥Î */
   private _enableTeacherService: boolean = false;
 
   public get isLoading() {
     return this._isLoading;
   }
-  /** å–å¾—ç›®å‰æ•™å¸«è³‡æ–™ */
+  /** ¨ú±o¥Ø«e±Ð®v¸ê®Æ */
   public get loginTeacher(){
     
     return this._loginTeacher ;
    }
    
-  /** å–å¾—ç›®å‰ç™»å…¥æ•™å¸«ä¹‹ç‰¹ */
+  /** ¨ú±o¥Ø«eµn¤J±Ð®v¤§¯S */
   public get loginTeacherName()
   {
   return this._loginTeacherName;
@@ -94,82 +94,82 @@ export class RoleService {
     this._role = [].concat(resp.Role || []);
 
     if (
-      this._role.indexOf("è¼”å°Žè€å¸«") >= 0 ||
-      this._role.indexOf("èªè¼”è€å¸«") >= 0 ||
-      this._role.indexOf("ç­å°Žå¸«") >= 0
+      this._role.indexOf("»²¾É¦Ñ®v") >= 0 ||
+      this._role.indexOf("»{»²¦Ñ®v") >= 0 ||
+      this._role.indexOf("¯Z¾É®v") >= 0
     ) {
       this._enableCounsel = true;
     }
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0 
+      this._role.indexOf("ºÞ²zªÌ") >= 0 
     ) {
       this._enableCounselStatistics = true;
     }
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0 ||
-      this._role.indexOf("è¼”å°Žè€å¸«") >= 0
+      this._role.indexOf("ºÞ²zªÌ") >= 0 ||
+      this._role.indexOf("»²¾É¦Ñ®v") >= 0
     ) {
       this._enableReferral = true;
     }
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0 ||
-      this._role.indexOf("è¼”å°Žè€å¸«") >= 0
+      this._role.indexOf("ºÞ²zªÌ") >= 0 ||
+      this._role.indexOf("»²¾É¦Ñ®v") >= 0
     ) {
       this._enableCase = true;
     }
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0 ||
-      this._role.indexOf("è¼”å°Žè€å¸«") >= 0 ||
-      this._role.indexOf("èªè¼”è€å¸«") >= 0 
-      // this._role.indexOf("æ ¡å¤–å¿ƒç†å¸«") >= 0 
+      this._role.indexOf("ºÞ²zªÌ") >= 0 ||
+      this._role.indexOf("»²¾É¦Ñ®v") >= 0 ||
+      this._role.indexOf("»{»²¦Ñ®v") >= 0 
+      // this._role.indexOf("®Õ¥~¤ß²z®v") >= 0 
 
     ) {
       this._enableInterviewStatistics = true;
     }
 
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0 ||
-      this._role.indexOf("è¼”å°Žè€å¸«") >= 0
+      this._role.indexOf("ºÞ²zªÌ") >= 0 ||
+      this._role.indexOf("»²¾É¦Ñ®v") >= 0
     ) {
       this._enableComprehensive = true;
     }
 
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0 ||
-      this._role.indexOf("è¼”å°Žè€å¸«") >= 0
+      this._role.indexOf("ºÞ²zªÌ") >= 0 ||
+      this._role.indexOf("»²¾É¦Ñ®v") >= 0
     ) {
       this._enablePsychologicalTest = true;
     }
 
     if (
-      this._role.indexOf("ç®¡ç†è€…") >= 0
+      this._role.indexOf("ºÞ²zªÌ") >= 0
     ) {
       this._enableAdmin = true;
     }
 
 //  alert(JSON.stringify(this._loginTeacher))
-    if( this._role.indexOf("ç®¡ç†è€…") >= 0 ||
-    this._role.indexOf("è¼”å°Žè€å¸«") >= 0 ||
-    this._loginTeacher.Role =="æ ¡å¤–å¿ƒç†å¸«" ||
-    this._loginTeacher.Role =="å…¼ä»»è¼”å°Ž" ||
-    this._loginTeacher.Role =="èªè¼”è€å¸«" ||
-    this._role.indexOf("èªè¼”è€å¸«") >= 0 ){
+    if( this._role.indexOf("ºÞ²zªÌ") >= 0 ||
+    this._role.indexOf("»²¾É¦Ñ®v") >= 0 ||
+    this._loginTeacher.Role =="®Õ¥~¤ß²z®v" ||
+    this._loginTeacher.Role =="­Ý¥ô»²¾É" ||
+    this._loginTeacher.Role =="»{»²¦Ñ®v" ||
+    this._role.indexOf("»{»²¦Ñ®v") >= 0 ){
       this._enableTeacherService =true ;
     }
 
 
 
-    // æœªé–‹ç™¼åŠŸèƒ½ä¸èƒ½ç”¨
+    // ¥¼¶}µo¥\¯à¤£¯à¥Î
     this._enableInterviewStatistics = false;
 
     this._isLoading = false;
   }
 
 
-  /** å–å¾—   */
+  /** ¨ú±o   */
   async loadLoginTeacherData() {
 
-    // å–å¾—ç™»å…¥æ•™å¸«åç¨±
+    // ¨ú±oµn¤J±Ð®v¦WºÙ
     let teacher = await this.dsaService.send("GetTeacher", {});
     [].concat(teacher.Teacher || []).forEach(tea => {
       this._loginTeacherName = tea.Name;

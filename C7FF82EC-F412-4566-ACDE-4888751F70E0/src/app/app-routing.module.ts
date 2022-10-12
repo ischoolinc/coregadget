@@ -112,6 +112,9 @@ const routes: Routes = [
       { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
     ]
   },
+  {
+    path: "transfer_students", loadChildren: './transfer-students/transfer-students.module#TransferStudentsModule'
+  },
 ];
 
 @NgModule({

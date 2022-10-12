@@ -3,11 +3,11 @@
 
 
 <div  id="appcomponent" class="container-fluid cbs d-flex justify-content-between flex-column" style="padding-top: 0px;">
-  <div hidden id="userInfo" 
-    style ="display: float ; 
+  <div hidden id="userInfo"
+    style ="display: float ;
           z-index: 99;
-           width :300px; 
-           height: 320px ; 
+           width :300px;
+           height: 320px ;
            background: rgb(219, 235, 230);
            position: fixed;
            border-radius: 0px 50px 50px 0px;
@@ -17,7 +17,7 @@
 目前權限 :
 {{roleService.role}}
 
-    
+
 
   </div>
   <div id="index" page>
@@ -71,9 +71,9 @@
               <div  class ="d-flex justify-content-center">
                    <div  *ngIf="refferalNotDealCount &&roleService.enableReferral " class ="align-baseline"  style="position: relative;
                                 top: -10px;
-                                left: 1px; 
+                                left: 1px;
                                 font-size :9px ;
-                                padding:17 px; 
+                                padding:17 px;
                                 float:left;
                                 width: 17px;
                                 height: 17px;
@@ -84,7 +84,7 @@
               <b >轉介學生</b>
               </div>
             </ng-container>
-   
+
 
             <!-- <span class="d-none badge badge-pill badge-danger">1</span> -->
           </a>
@@ -112,6 +112,15 @@
             (click)="!roleService.enableComprehensive || routeTo('/comprehensive')"
             [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
             <b> {{comprehensiveStr}}</b></a>
+        </li>
+      </ng-container>
+
+      <ng-container>
+        <li class="nav-item">
+          <a class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
+            (click)="!roleService.enableTransferStudents || routeTo('/transfer_students')"
+            [ngClass]="{'active': currentComponent == 'transfer-students', 'disabled': !roleService.enableTransferStudents}">
+            <b> 線上轉學</b></a>
         </li>
       </ng-container>
 

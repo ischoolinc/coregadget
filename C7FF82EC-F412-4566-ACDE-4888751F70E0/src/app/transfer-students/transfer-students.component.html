@@ -1,0 +1,40 @@
+
+
+
+<div *ngIf="!isLoading; else tmpLoading" style ="margin-top: 0px !important;">
+  <app-permission-denied *ngIf="deny"></app-permission-denied>
+  <div *ngIf="!deny" >
+    <div class="row" style ="margin-top: 0px !important ;">
+      <div class="col-md-2">
+        <div class="sticky-top mb-3">
+          <div class="list-group nav-list"  >
+            <a class="list-group-item list-group-item-action d-flex"
+              data-toggle="list"
+              [ngClass]="{'active show': currentItem == 'TRANSFER_IN'}"
+              (click)="routeTo('transfer_in')">
+              轉入申請
+            </a>
+            <a class="list-group-item list-group-item-action d-flex"
+              data-toggle="list"
+              [ngClass]="{ 'active show': currentItem == 'TRANSFER_OUT' }"
+              (click)="routeTo('transfer_out')">
+              轉出核可
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div class="tab-content">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #tmpLoading>
+  <div
+    class="row justify-content-center"
+    style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

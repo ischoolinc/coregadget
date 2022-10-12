@@ -150,6 +150,9 @@ export class AppComponent implements OnInit {
    let  monthString ="" ;
     if (month < 10) {
       monthString = `0${month}`;
+    }else{
+
+      monthString =month+'';
     }
     return dateTime.getFullYear() + "-" + monthString + "-" + dateTime.getDate();
   }
