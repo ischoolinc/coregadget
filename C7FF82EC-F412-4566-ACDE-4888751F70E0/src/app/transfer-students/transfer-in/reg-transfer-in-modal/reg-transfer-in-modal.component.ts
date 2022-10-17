@@ -43,11 +43,12 @@ export class RegTransferInModalComponent implements OnInit {
   }
 
   async getClassList() {
-    const resp = await this.dsaService.send('GetClass');
+    const resp = await this.dsaService.send('TransferStudent.GetStudentClass');
     const sourceClass = [].concat(resp.Class || []);
 
     for (const item of sourceClass) {
       item.GradeYear = item.GradeYear || '未分年級';
+      item.ClassName = item.ClassName || '未分班級';
       if (this.gradeYears.indexOf(item.GradeYear) === -1) {
         this.gradeYears.push(item.GradeYear);
       }
