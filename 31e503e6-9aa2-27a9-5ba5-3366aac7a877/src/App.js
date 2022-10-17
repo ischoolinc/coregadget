@@ -37,16 +37,11 @@ function App() {
         } else {
           if (response) {
             //debugger;
-            //setChildList(convertToArray(response.Student)); 
-            setChildList([].concat(response.Student, []));
-             //console.log('[].concat(response.Student, [])', [].concat(response.Student, []));
-            // console.log('1studentID', studentID);
+            setChildList([].concat(response.Student || []));
 
             if (studentID === "") {
               //debugger;
-              //setStudent(convertToArray(response.Student)[0].id);
-              setStudent([].concat(response.Student, [])[0].id);
-              //console.log('[].concat(response.Student, [])[0].id', [].concat(response.Student, [])[0].id);
+              setStudent([].concat(response.Student || [])[0].id);
             }
           }
         }
@@ -72,9 +67,7 @@ function App() {
             }
             else {
               setText("");
-              //setPsychologicalTestData(convertToArray(response.Quiz));
-              setPsychologicalTestData([].concat(response.Quiz, []));
-              //console.log('convertToArray(response.Quiz)', convertToArray(response.Quiz));
+              setPsychologicalTestData([].concat(response.Quiz || []));
             }
           }
         }
@@ -286,8 +279,8 @@ function App() {
                           <th className='w-50' style={{ height: '5px', color: '#fff' }}>施測結果</th>
                         </tr>
                       </thead>
-                      <tbody style={{ borderTop: '4px solid #fff' }}>                   
-                        {[].concat(pst.Field, []).map((quiz) => {
+                      <tbody style={{ borderTop: '4px solid #fff' }}>
+                        {[].concat(pst.Field || []).map((quiz) => {
                           return <tr style={{ background: '#E2F0D9' }}>
                             <td>{quiz.Name}</td>
                             <td>{quiz.Value}</td>
