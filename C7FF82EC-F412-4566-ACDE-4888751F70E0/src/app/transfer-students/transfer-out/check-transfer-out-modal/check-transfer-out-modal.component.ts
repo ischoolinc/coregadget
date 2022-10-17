@@ -61,7 +61,8 @@ export class CheckTransferOutModalComponent implements OnInit {
 
       if (replyResult === 'success') {
         try {
-          await this.transferSrv.addLog('回覆申請', '回覆轉入校', `回覆成功。${replyBody}`);
+          await this.transferSrv.addLog('回覆申請', '回覆轉入校',
+            `回覆成功。\n轉出系統編號：${this.studentData.Uid}\nSource：${replyBody}`);
         } catch (error) {
           console.log(error);
         }
@@ -75,7 +76,8 @@ export class CheckTransferOutModalComponent implements OnInit {
         const setResult = await this.dsaService.send('TransferStudent.SetApprovedStatus', setBody);
         if (setResult.Info === 'success') {
           try {
-            await this.transferSrv.addLog('回覆申請', '本校回覆', `回覆成功。${JSON.stringify(setBody)}`);
+            await this.transferSrv.addLog('回覆申請', '本校回覆',
+              `回覆成功。\n轉出系統編號：${this.studentData.Uid}\nSource：${JSON.stringify(setBody)}`);
           } catch (error) {
             console.log(error);
           }
@@ -83,7 +85,8 @@ export class CheckTransferOutModalComponent implements OnInit {
           $('#checkTransferOutModal').modal('hide');
         } else {
           try {
-            await this.transferSrv.addLog('回覆申請', '本校回覆', `回覆失敗。${JSON.stringify(setBody)}`);
+            await this.transferSrv.addLog('回覆申請', '本校回覆',
+              `回覆失敗。\n轉出系統編號：${this.studentData.Uid}\nSource：${JSON.stringify(setBody)}`);
           } catch (error) {
             console.log(error);
           }
@@ -95,7 +98,8 @@ export class CheckTransferOutModalComponent implements OnInit {
         }
       } else {
         try {
-          await this.transferSrv.addLog('回覆申請', '回覆轉入校', `回覆失敗。${replyBody}`);
+          await this.transferSrv.addLog('回覆申請', '回覆轉入校',
+            `回覆失敗。\n轉出系統編號：${this.studentData.Uid}\nSource：${replyBody}`);
         } catch (error) {
           console.log(error);
         }

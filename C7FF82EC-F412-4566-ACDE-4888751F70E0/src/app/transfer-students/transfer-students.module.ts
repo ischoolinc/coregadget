@@ -8,6 +8,7 @@ import { TransferOutComponent } from './transfer-out/transfer-out.component';
 import { RegTransferInModalComponent } from './transfer-in/reg-transfer-in-modal/reg-transfer-in-modal.component';
 import { CheckTransferOutModalComponent } from './transfer-out/check-transfer-out-modal/check-transfer-out-modal.component';
 import { CancelTransferInModalComponent } from './transfer-in/cancel-transfer-in-modal/cancel-transfer-in-modal.component';
+import { TransferDataModalComponent } from './transfer-in/transfer-data-modal/transfer-data-modal.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { CancelTransferInModalComponent } from './transfer-in/cancel-transfer-in
     RegTransferInModalComponent,
     CheckTransferOutModalComponent,
     CancelTransferInModalComponent,
+    TransferDataModalComponent,
   ],
   imports: [
     CommonModule,

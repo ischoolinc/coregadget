@@ -63,7 +63,7 @@ export class RegTransferInModalComponent implements OnInit {
 
   async getSchoolList() {
     // 去 1campusman，取得學校清單
-    const schools = await this.dsaService.accessPointSend({
+    const rsp = await this.dsaService.accessPointSend({
       dsns: 'campusman.ischool.com.tw',
       contractName: 'counsel.public',
       securityTokenType: 'Public',
@@ -71,7 +71,8 @@ export class RegTransferInModalComponent implements OnInit {
       body: `<TagName>${gadget.params.trans_tag_name}</TagName>`,
       rootNote: 'SchoolList'
     });
-    this.schoolList = [].concat(schools || []);
+    const schools = [].concat(rsp || []);
+    this.schoolList = schools.filter((v: SchoolRec) => v.Dsns !== gadget.getApplication().accessPoint);
   }
 
   loadDefault() {

@@ -32,7 +32,7 @@
           <li data-title="回覆日期">{{(item.ApprovedTime | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
           <li data-title="功能">
             <a class="text-info" *ngIf="item.Status === '1'" (click)="confirmCancelReg(item)">取消</a>
-            <a class="text-info" *ngIf="item.Status === '2'" (click)="confrimTransIn(item)">轉入</a>
+            <a class="text-info" *ngIf="item.Status === '2'" (click)="confrimTransData(item)">轉入</a>
           </li>
         </ol>
       </li>
@@ -47,29 +47,6 @@
   </div>
 </ng-template>
 
-
-<div class="modal fade" id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          確定轉入 {{targetStudent.StudentName}} 的資料嗎？
-        </h5>
-      </div>
-      <div class="modal-body">
-        <p class="text-center mt-3" *ngIf="isSaving">處理中，請稍候</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">
-          取消
-        </button>
-        <button type="button" class="btn btn-danger" (click)="beginTransIn()">
-          開始轉入
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <app-reg-transfer-in-modal #regTransInModal></app-reg-transfer-in-modal>
 <app-cancel-transfer-in-modal #cancelTransInModal></app-cancel-transfer-in-modal>
+<app-transfer-data-modal #transferDataModal></app-transfer-data-modal>

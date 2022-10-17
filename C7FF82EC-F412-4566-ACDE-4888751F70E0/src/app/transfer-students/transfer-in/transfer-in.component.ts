@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DsaService } from 'src/app/dsa.service';
 import { CancelTransferInModalComponent } from './cancel-transfer-in-modal/cancel-transfer-in-modal.component';
 import { RegTransferInModalComponent } from './reg-transfer-in-modal/reg-transfer-in-modal.component';
+import { TransferDataModalComponent } from './transfer-data-modal/transfer-data-modal.component';
 
 @Component({
   selector: 'app-transfer-in',
@@ -12,11 +13,11 @@ export class TransferInComponent implements OnInit {
 
   isLoading = true;
   transList: TransStudentRec[] = [];
-  targetStudent: TransStudentRec = {} as TransStudentRec;
   isSaving = false;
 
   @ViewChild('regTransInModal') regTransferInModalComponent: RegTransferInModalComponent;
   @ViewChild('cancelTransInModal') cancelTransferInModalComponent: CancelTransferInModalComponent;
+  @ViewChild('transferDataModal') transferDataModalComponent: TransferDataModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -63,21 +64,20 @@ export class TransferInComponent implements OnInit {
     item.Status = '-1';
   }
 
-  async confrimTransIn(item: TransStudentRec) {
-    this.targetStudent = item;
-    $('#confirmTransModal').modal('show');
-  }
-
-  async beginTransIn() {
-    if (this.isSaving) return;
-
-    this.isSaving = true;
-
-    setTimeout(() => {
-      this.targetStudent.Status = '3';
-      this.isSaving = false;
-      $('#confirmTransModal').modal('hide');
-    }, 3000);
+  confrimTransData(item: TransStudentRec) {
+    this.transferDataModalComponent.loadDefault(item);
+    $('#transferDataModal').modal({ backdrop:'static' });
+    $('#transferDataModal').modal('show');
+    $("#transferDataModal").on("hide.bs.modal", async () => {
+      try {
+        await this.getList();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+      $("#transferDataModal").off("hide.bs.modal");
+    });
   }
 
   openReg() {
