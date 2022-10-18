@@ -23,6 +23,8 @@ export class RegTransferInModalComponent implements OnInit {
   curStudentList: StudentRec[] = [];
   schoolList: SchoolRec[] = [];
   selectedSchool: SchoolRec = {} as SchoolRec;
+  mySchool: SchoolRec = {} as SchoolRec;
+  myDSNS = '';
 
   constructor(
     private dsaService: DsaTransferService,
@@ -30,6 +32,8 @@ export class RegTransferInModalComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.myDSNS = gadget.getApplication().accessPoint;
+
     try {
       await Promise.all([
         this.getClassList(),
@@ -73,6 +77,7 @@ export class RegTransferInModalComponent implements OnInit {
       rootNote: 'SchoolList'
     });
     const schools = [].concat(rsp || []);
+    this.mySchool = schools.find(v => v.Dsns === this.myDSNS);
     this.schoolList = schools.filter((v: SchoolRec) => v.Dsns !== gadget.getApplication().accessPoint);
   }
 
@@ -134,17 +139,15 @@ export class RegTransferInModalComponent implements OnInit {
       this.regResp = { info: '', msg: '' };
       const resp = await this.dsaService.send('TransferStudent.GetMyInfo');
       const myInfo: MyInfo = resp.MyInfo || {};
-      const myDSNS = gadget.getApplication().accessPoint;
-      const mySchool = this.schoolList.find(v => v.Dsns === myDSNS);
-      const acceptToken = `${uuidv4().substring(0, 7)}@${myDSNS}`;
+      const acceptToken = `${uuidv4().substring(0, 7)}@${this.myDSNS}`;
       // 1. 去它校申請轉入
       // 2. 在本校新增申請記錄
       // 3. 新增 log
       const regBody = `<Request>
         <IdNumber>${this.selectedStudent.IdNumber}</IdNumber>
         <Birthdate>${this.selectedStudent.Birthdate}</Birthdate>
-        <DSNS>${myDSNS}</DSNS>
-        <SchoolName>${mySchool.Title}</SchoolName>
+        <DSNS>${this.myDSNS}</DSNS>
+        <SchoolName>${this.mySchool.Title}</SchoolName>
         <ConnectionInfo>${myInfo.TeacherName + (myInfo.Nickname ? '(' + myInfo.Nickname + ')' : '')}</ConnectionInfo>
         <TransferToken>${acceptToken}</TransferToken>
         <RedPointCode>轉出核可</RedPointCode>
@@ -159,7 +162,7 @@ export class RegTransferInModalComponent implements OnInit {
         rootNote: 'Info'
       });
 
-      if (regResult === 'success') {
+      if (regResult.TargetStudentCheck === 't' && regResult.TargetStatusCheck === 't') {
         try {
           await this.transferSrv.addLog('轉入申請', '向轉出校申請', `申請成功。${regBody}`);
         } catch (error) {
@@ -200,9 +203,17 @@ export class RegTransferInModalComponent implements OnInit {
           console.log(error);
         }
 
+        let errMsg = '';
+        if (regResult.TargetStudentCheck !== 't') {
+          errMsg = '學生資料不存在';
+        }
+        if (regResult.TargetStatusCheck !== 't') {
+          errMsg = '狀態不正確';
+        }
+
         this.regResp = {
           info: 'failed',
-          msg: '申請移轉失敗'
+          msg: errMsg || '未知的錯誤',
         };
       }
     } catch (error) {
