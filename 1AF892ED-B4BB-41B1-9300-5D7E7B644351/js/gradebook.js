@@ -198,9 +198,16 @@
                 $scope.studentList = null;
                 $scope.current.VisibleExam = [];
                 $scope.current.Course = course;
+
+
+                const timestampWrapper = (timestamp) => {
+                    return timestamp.replace(/ /g,"T")
+                }
+
+                console.log('1: ', course, `#${course.InputStartTime}#`, new Date(timestampWrapper(course.InputStartTime)), `#${rsp.Timestamp.Now}#`, new Date(timestampWrapper(rsp.Timestamp.Now)), `#${rsp.Timestamp.Now}#`, new Date(timestampWrapper(rsp.Timestamp.Now)), `#${course.InputEndTime}#`, new Date(timestampWrapper(course.InputEndTime)))
                 // 是否開放課程成績輸入
-                $scope.current.Course.Lock = !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date(rsp.Timestamp.Now)
-                    && new Date(rsp.Timestamp.Now) < new Date(course.InputEndTime));
+                $scope.current.Course.Lock = !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now))
+                    && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(course.InputEndTime));
                 // 課程評分樣板：定期評量清單
                 $scope.templateList = [];
                 $scope.examList = [];
@@ -274,12 +281,16 @@
                     //     return temp;
                     // });
 
+                    const timestampWrapper = (timestamp) => {
+                        return timestamp.replace(/ /g,"T")
+                    }
+
                     // 處理不需要評分不顯示
                     [].concat(course.Scores.Score || []).forEach(function (temp) {
                         if (temp.UseScore === "是") {
-
+                            console.log('2: ', new Date(temp.InputStartTime), new Date(timestampWrapper(rsp.Timestamp.Now)), new Date(timestampWrapper(rsp.Timestamp.Now)),  new Date(temp.InputEndTime))
                             temp.isSubScoreMode = false;
-                            temp.Lock = !(new Date(temp.InputStartTime) < new Date(rsp.Timestamp.Now) && new Date(rsp.Timestamp.Now) < new Date(temp.InputEndTime));
+                            temp.Lock = !(new Date(temp.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(temp.InputEndTime));
                             $scope.templateList.push(temp);
                         }
                     });
