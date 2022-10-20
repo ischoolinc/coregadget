@@ -53,7 +53,10 @@ function App() {
   async function GetPsychologicalTestData() {
     await _connection.send({
       service: "_.GetPsychologicalTestData",
-      body: `<Request><StudentID>${studentID}</StudentID></Request>`,
+      body: {
+        StudentID: studentID
+      },
+      // body: `<Request><StudentID>${studentID}</StudentID></Request>`,
       result: function (response, error, http) {
         if (error !== null) {
           console.log('GetPsychologicalTestDataErr', error);
