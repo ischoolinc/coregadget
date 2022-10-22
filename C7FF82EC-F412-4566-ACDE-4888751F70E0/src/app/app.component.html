@@ -115,7 +115,7 @@
         </li>
       </ng-container>
 
-      <ng-container>
+      <ng-container *ngIf="transferStudentVisable">
         <li class="nav-item" *ngIf="adminVisable === true">
           <a class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
             (click)="!roleService.enableTransferStudents || routeTo('/transfer_students')"

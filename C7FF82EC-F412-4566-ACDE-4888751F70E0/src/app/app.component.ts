@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   public comprehensiveVisable: boolean = false;
   public psychologicalTestVisable: boolean = false;
   public adminVisable: boolean = false;
+  public transferStudentVisable: boolean = false;
   public hasNewTransfer = false;
 
   constructor(
@@ -63,6 +64,8 @@ export class AppComponent implements OnInit {
     this.psychologicalTestVisable = false;
     // 系統管理(都可用)
     this.adminVisable = false;
+    // 線上轉學(只有線上轉學 可使用)
+    this.transferStudentVisable = false;
     await this.GetMyCounselTeacherRole();
 
     if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor' || gadget.params.system_counsel_position === 'freshman') {
@@ -93,7 +96,11 @@ export class AppComponent implements OnInit {
     }
     //console.log(gadget.params.system_counsel_position);
 
-    this.checkHasNewTransfer();
+    // 只有線上轉學
+    if (gadget.params.trans_tag_name) {
+      this.transferStudentVisable = true;
+      this.checkHasNewTransfer();
+    }
   }
   /** 取得轉借學生 */
   async getRefList() {
