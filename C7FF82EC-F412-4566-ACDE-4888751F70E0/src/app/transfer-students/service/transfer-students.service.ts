@@ -20,12 +20,13 @@ export class TransferStudentsService {
     }
   }
 
-  public async addLog(actionType = '', action = '', description = '') {
+  public async addLog(actionType = '', action = '', description = '', diag = '') {
     await this.dsaSrv.send('TransferStudent.AddLog', {
       Request: {
         ActionType: actionType,
         Action: action,
         Description: description,
+        Diag: diag,
       }
     });
   }
