@@ -61,8 +61,9 @@ export class CheckTransferOutModalComponent implements OnInit {
 
       if (replyResult === 'success') {
         try {
-          await this.transferSrv.addLog('回覆申請', '回覆轉入校',
-            `回覆成功。\n轉出系統編號：${this.studentData.Uid}\nSource：${replyBody}`);
+          await this.transferSrv.addLog('回覆申請', `回覆轉入校-${pass ? '核可' : '拒絕'}`,
+            `成功。StudentId：${this.studentData.StudentId}。TransInID：${this.studentData.Uid}`,
+            replyBody);
         } catch (error) {
           console.log(error);
         }
@@ -76,8 +77,9 @@ export class CheckTransferOutModalComponent implements OnInit {
         const setResult = await this.dsaService.send('TransferStudent.SetApprovedStatus', setBody);
         if (setResult.Info === 'success') {
           try {
-            await this.transferSrv.addLog('回覆申請', '本校回覆',
-              `回覆成功。\n轉出系統編號：${this.studentData.Uid}\nSource：${JSON.stringify(setBody)}`);
+            await this.transferSrv.addLog('回覆申請', `本校回覆-${pass ? '核可' : '拒絕'}`,
+              `成功。StudentId：${this.studentData.StudentId}。TransInID：${this.studentData.Uid}`,
+              JSON.stringify(setBody));
           } catch (error) {
             console.log(error);
           }
@@ -85,8 +87,9 @@ export class CheckTransferOutModalComponent implements OnInit {
           $('#checkTransferOutModal').modal('hide');
         } else {
           try {
-            await this.transferSrv.addLog('回覆申請', '本校回覆',
-              `回覆失敗。\n轉出系統編號：${this.studentData.Uid}\nSource：${JSON.stringify(setBody)}`);
+            await this.transferSrv.addLog('回覆申請', `本校回覆-${pass ? '核可' : '拒絕'}`,
+              `失敗。StudentId：${this.studentData.StudentId}。TransInID：${this.studentData.Uid}`,
+              JSON.stringify(setBody));
           } catch (error) {
             console.log(error);
           }
@@ -98,8 +101,9 @@ export class CheckTransferOutModalComponent implements OnInit {
         }
       } else {
         try {
-          await this.transferSrv.addLog('回覆申請', '回覆轉入校',
-            `回覆失敗。\n轉出系統編號：${this.studentData.Uid}\nSource：${replyBody}`);
+          await this.transferSrv.addLog('回覆申請', `回覆轉入校-${pass ? '核可' : '拒絕'}`,
+            `失敗。StudentId：${this.studentData.StudentId}。TransInID：${this.studentData.Uid}`,
+            replyBody);
         } catch (error) {
           console.log(error);
         }

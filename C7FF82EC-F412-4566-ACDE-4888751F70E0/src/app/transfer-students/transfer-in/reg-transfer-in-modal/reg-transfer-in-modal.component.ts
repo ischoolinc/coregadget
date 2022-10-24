@@ -164,7 +164,9 @@ export class RegTransferInModalComponent implements OnInit {
 
       if (regResult.TargetStudentCheck === 't' && regResult.TargetStatusCheck === 't') {
         try {
-          await this.transferSrv.addLog('轉入申請', '向轉出校申請', `申請成功。${regBody}`);
+          await this.transferSrv.addLog('轉入申請', '向轉出校申請',
+            `成功。StudentId：${this.selectedStudent.StudentId}`,
+            regBody);
         } catch (error) {
           console.log(error);
         }
@@ -180,14 +182,18 @@ export class RegTransferInModalComponent implements OnInit {
         const addResult = await this.dsaService.send('TransferStudent.AddTransInStudent', addBody);
         if (addResult.Info === 'success') {
           try {
-            await this.transferSrv.addLog('轉入申請', '本校新增', `新增申請成功。${JSON.stringify(addBody)}`);
+            await this.transferSrv.addLog('轉入申請', '本校新增',
+              `成功。StudentId：${this.selectedStudent.StudentId}`,
+              JSON.stringify(addBody));
           } catch (error) {
             console.log(error);
           }
           $('#regTransStudentModal').modal('hide');
         } else {
           try {
-            await this.transferSrv.addLog('轉入申請', '本校新增', `新增申請失敗。${JSON.stringify(addBody)}`);
+            await this.transferSrv.addLog('轉入申請', '本校新增',
+              `失敗。StudentId：${this.selectedStudent.StudentId}`,
+              JSON.stringify(addBody));
           } catch (error) {
             console.log(error);
           }
@@ -198,7 +204,9 @@ export class RegTransferInModalComponent implements OnInit {
         }
       } else {
         try {
-          await this.transferSrv.addLog('轉入申請', '向轉出校申請', `申請失敗。${regBody}`);
+          await this.transferSrv.addLog('轉入申請', '向轉出校申請',
+            `失敗。StudentId：${this.selectedStudent.StudentId}`,
+            regBody);
         } catch (error) {
           console.log(error);
         }

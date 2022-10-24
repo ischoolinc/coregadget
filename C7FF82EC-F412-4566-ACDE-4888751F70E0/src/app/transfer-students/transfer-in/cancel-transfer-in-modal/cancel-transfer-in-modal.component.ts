@@ -53,7 +53,8 @@ export class CancelTransferInModalComponent implements OnInit {
       if (outCancelResult === 'success') {
         try {
           await this.transferSrv.addLog('取消申請', '向轉出校取消',
-            `取消申請成功。\n轉入系統編號：${this.regData.Uid}\nSource：${outCancelBody}`);
+            `成功。StudentId：${this.regData.StudentId}。TransInID：${this.regData.Uid}`,
+            outCancelBody);
         } catch (error) {
           console.log(error);
         }
@@ -66,7 +67,8 @@ export class CancelTransferInModalComponent implements OnInit {
         if (cancelResult.Info === 'success') {
           try {
             await this.transferSrv.addLog('取消申請', '本校取消',
-              `取消申請成功。\n轉入系統編號：${this.regData.Uid}\nSource：${JSON.stringify(inCancelBody)}`);
+              `成功。StudentId：${this.regData.StudentId}。TransInID：${this.regData.Uid}`,
+              JSON.stringify(inCancelBody));
           } catch (error) {
             console.log(error);
           }
@@ -75,7 +77,8 @@ export class CancelTransferInModalComponent implements OnInit {
         } else {
           try {
             await this.transferSrv.addLog('取消申請', '本校取消',
-              `取消申請失敗。\n轉入系統編號：${this.regData.Uid}\nSource：${JSON.stringify(inCancelBody)}`);
+              `失敗。StudentId：${this.regData.StudentId}。TransInID：${this.regData.Uid}`,
+              JSON.stringify(inCancelBody));
           } catch (error) {
             console.log(error);
           }
@@ -88,7 +91,8 @@ export class CancelTransferInModalComponent implements OnInit {
       } else {
         try {
           await this.transferSrv.addLog('取消申請', '向轉出校取消',
-            `取消申請失敗。\n轉入系統編號：${this.regData.Uid}\nSource：${outCancelBody}`);
+            `失敗。StudentId：${this.regData.StudentId}。TransInID：${this.regData.Uid}`,
+            outCancelBody);
         } catch (error) {
           console.log(error);
         }
