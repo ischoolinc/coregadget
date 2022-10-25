@@ -81,34 +81,49 @@ export class TransferDataModalComponent implements OnInit {
           SourceData: sourceData,
         };
 
-        const transResult = await this.dsaService.send('TransferStudent.SetTransData', inTransBody);
-        console.log(transResult);
-        if (transResult.Info === 'success') {
-          try {
-            await this.transferSrv.addLog('轉入資料', '轉入本校',
-              `成功。StudentId：${this.targetStudent.StudentId}。TransInID：${this.targetStudent.Uid}`,
-              `轉入成功。\n
-              TransferToken：${this.targetStudent.TransferToken}\n
-              AcceptToken：${this.targetStudent.AcceptToken}`);
-          } catch (error) {
-            console.log(error);
-          }
+        try {
+          const transResult = await this.dsaService.send('TransferStudent.SetTransData', inTransBody);
+          console.log(transResult);
+          if (transResult.Info === 'success') {
+            try {
+              await this.transferSrv.addLog('轉入資料', '轉入本校',
+                `成功。StudentId：${this.targetStudent.StudentId}。TransInID：${this.targetStudent.Uid}`,
+                `轉入成功。\n
+                TransferToken：${this.targetStudent.TransferToken}\n
+                AcceptToken：${this.targetStudent.AcceptToken}`);
+            } catch (error) {
+              console.log(error);
+            }
 
-          $('#transferDataModal').modal('hide');
-        } else {
-          try {
-            await this.transferSrv.addLog('轉入資料', '轉入本校',
-              `失敗。StudentId：${this.targetStudent.StudentId}。TransInID：${this.targetStudent.Uid}`,
-              `轉入失敗。\n
-              TransferToken：${this.targetStudent.TransferToken}\n
-              AcceptToken：${this.targetStudent.AcceptToken}`);
-          } catch (error) {
-            console.log(error);
+            $('#transferDataModal').modal('hide');
+          } else {
+            try {
+              await this.transferSrv.addLog('轉入資料', '轉入本校',
+                `失敗。StudentId：${this.targetStudent.StudentId}。TransInID：${this.targetStudent.Uid}`,
+                `轉入失敗。\n
+                TransferToken：${this.targetStudent.TransferToken}\n
+                AcceptToken：${this.targetStudent.AcceptToken}`);
+            } catch (error) {
+              console.log(error);
+            }
+
+            this.transDataStatus = {
+              info: 'failed',
+              msg: '未知的錯誤',
+            };
           }
+        } catch (error) {
+          console.log(error);
+          await this.transferSrv.addLog('轉入資料', '轉入本校',
+            `失敗。StudentId：${this.targetStudent.StudentId}。TransInID：${this.targetStudent.Uid}`,
+            `轉入失敗。\n
+            ${error.dsaError && error.dsaError.message || '過程中發生錯誤'}\n
+            TransferToken：${this.targetStudent.TransferToken}\n
+            AcceptToken：${this.targetStudent.AcceptToken}`);
 
           this.transDataStatus = {
             info: 'failed',
-            msg: '未知的錯誤',
+            msg: error.dsaError && error.dsaError.message || '過程中發生錯誤'
           };
         }
       } else {
@@ -125,7 +140,7 @@ export class TransferDataModalComponent implements OnInit {
         };
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       this.transDataStatus = {
         info: 'failed',
         msg: error.dsaError && error.dsaError.message || '過程中發生錯誤'
