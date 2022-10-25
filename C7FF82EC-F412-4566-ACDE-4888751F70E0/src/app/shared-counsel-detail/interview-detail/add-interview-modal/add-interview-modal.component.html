@@ -10,7 +10,7 @@
           {{ editModeString }}輔導紀錄 - {{ _studentName }}
         </b>
         </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+        <button type="button" class="close"   (click)="cancel()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -141,25 +141,59 @@
             [(ngModel)]="_currentCounselInterview.Content" (keyup)="_currentCounselInterview.checkValue()"></textarea>
         </div>
 
-        <!-- 增加上傳檔案 -->
-        <!-- <div class="image-upload">
- 
-        <input name="imageUrl"
-             type="file"  accept="application/pdf"
+     
+      <!-- 上傳檔案 -->
+
+      <div class="d-flex">
+      
+        <div class="image-upload ml-3">
+       
+          <span  class="upload-file-btn">
+       <span class="text">
+
+
+        <label   for="fileInput">
+            選擇檔案 
+        </label>
+           
+       </span>
+       <span class="icon">
+        <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
+        style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align">
+          info
+      </mat-icon>
+      
+       </span>
+      </span>
+          <input style="display:none"  #fileInput id="fileInput" name="imageUrl" type="file" accept="application/pdf"
             (change)="handleInputChange($event)" />
-      </div> -->
-      <div class="p-1 m-1" *ngIf=" this.fileUpladed?.FileName" style="border:1px soild gray ; height:15px; min-width:200px">
-        <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
-        {{ this.fileUpladed.FileName }}
+
+            <div *ngIf="isShowInfo" class="info_section w-50">
+              僅能上傳 3MB 以下 PDF檔 
+            </div>
+        </div>
+
+
+
+        <div class="p-1 m-2" *ngIf=" this.fileUpladed?.FileName"
+          style="border:1px soild gray ; height:15px; min-width:200px">
+          <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
+            {{ this.fileUpladed.FileName }}
+
+          </a>
+          <span (click)="deleteFile()">
+            <mat-icon style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false"
+              aria-label="Example home icon" (click)="delete(item)">
+              highlight_off
+            </mat-icon>
+          </span>
+        </div>
+
     
-        </a>
-        <span (click)="deleteFile()"> 
-          <mat-icon  style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false" aria-label="Example home icon"
-          (click)="delete(item)">
-          highlight_off
-        </mat-icon>
-        </span>
-     </div>
+      </div>
+
+
+ 
 
         <div class="form-group">
           <label for="semester" class="col-form-label">

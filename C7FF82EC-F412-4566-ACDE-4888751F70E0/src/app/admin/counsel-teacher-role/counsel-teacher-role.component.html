@@ -42,14 +42,17 @@
           <li class="sticky-top">教師姓名 </li>
           <li class="sticky-top">{{teacherTypeStr}}</li>
           <li class="sticky-top">教師編碼
-            <!-- <i *ngIf="Mode.isViewMode()" (click)="enterTeacherCounselNumber()"
-              class="material-icons material-icons-outlined bigger-little" style="font-size: 15px;">mode_edit
-            </i> -->
+   
           </li>
-          <li class="sticky-top">輔導人力身分
-            <!-- <i *ngIf="Mode.isViewMode()" (click)="enterTeacherCounselNumber()"
-              class="material-icons material-icons-outlined bigger-little" style="font-size: 15px;">mode_edit
-            </i> -->
+          <li class="sticky-top table_header" style="position:relative">輔導人力身分
+       
+              <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
+              style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align" (click)="edit(item)">
+                info
+        </mat-icon>
+        <div *ngIf="isShowInfo"  class="info_section "  style="  position:absolute ;left :-1px  ;bottom :-50px ;z-index: 9999;">
+          教師編碼顯示於月統計報表中，非必填
+        </div>
           </li>
           <li class="sticky-top">
             <span>

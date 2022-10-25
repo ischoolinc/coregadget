@@ -16,8 +16,8 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
   StudentName: string;
   addBlank: number[] = [];
   reportData: any;
-  QuizData : {QuizUid}[];
-  QuizDataAnswer : {QuizUid,Field:any[],ImplementationDate}[];
+  QuizData: { QuizUid }[];
+  QuizDataAnswer: { QuizUid, Field: any[], ImplementationDate }[];
   CounselInterview: any[] = [];
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -34,13 +34,13 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
       }
     );
   }
-  
+
   /**  */
-  getStudentItemBy(resTestUID :string ){
-    if(this.QuizDataAnswer){
-      debugger
-    let rsp =  this.QuizDataAnswer.find(x =>x.QuizUid == resTestUID );
-    return rsp}
+  getStudentItemBy(resTestUID: string) {
+    if (this.QuizDataAnswer) {
+      let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
+      return rsp
+    }
   }
 
   /** 取得資料  */
@@ -95,17 +95,17 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
   /** 取得心理驗資訊 */
   async GetQuiz() {
     try {
-     let rspQuestion = await this.dsaService.send("GetQuizDataByStudentID", {
+      let rspQuestion = await this.dsaService.send("GetQuizDataByStudentID", {
         StudentID: this.studentID
         // _.GetQuizStudentDataByQuizID
       });
-      this.QuizData = [].concat(rspQuestion.Quiz||[]);
+      this.QuizData = [].concat(rspQuestion.Quiz || []);
 
       let rsp = await this.dsaService.send("_.GetStudentQuizDataByStudentID", {
-        StudentID: this.studentID  
-       });
+        StudentID: this.studentID
+      });
 
-       this.QuizDataAnswer = [].concat(rsp.Quiz||[])
+      this.QuizDataAnswer = [].concat(rsp.Quiz || [])
 
       console.log("this.QuizData", this.QuizData);
       console.log("answer", this.QuizDataAnswer)
@@ -113,58 +113,58 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
       alert("取得心理測驗資料發生錯誤")
     }
   }
-getJson(obj :any){
+  getJson(obj: any) {
 
- return JSON.stringify(obj); 
-}
-
-  /** 取得答案 */
-  getQuizAnswerData(quizUID :string ,field:string ){
-
-  if(this.QuizDataAnswer){
-
-    let rsp =  this.QuizDataAnswer.find(x =>x.QuizUid == quizUID );
-    return  rsp.Field.find(x=>x.Name ==field)
-  }else{
-
-   return null
-
+    return JSON.stringify(obj);
   }
 
+  /** 取得答案 */
+  getQuizAnswerData(quizUID: string, field: string) {
+
+    if (this.QuizDataAnswer) {
+
+      let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
+      return rsp.Field.find(x => x.Name == field)
+    } else {
+
+      return null
+
+    }
 
 
- 
-   
 
 
-   
+
+
+
+
 
 
   }
 
   /**取得答案 */
-  getQuizTime(quizUID :string ){
+  getQuizTime(quizUID: string) {
     debugger
-    let rsp =  this.QuizDataAnswer.find(x =>x.QuizUid == quizUID );
-    let dateString  = this.formatDate(rsp.ImplementationDate);
-  
-  return dateString
+    let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
+    let dateString = this.formatDate(rsp.ImplementationDate);
+
+    return dateString
   }
 
 
-   formatDate(date) {
-    let date_=  new Date(0)
-    date_.setUTCSeconds(parseInt(date,10));
-    var d =date_ ,
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+  formatDate(date) {
+    let date_ = new Date(0)
+    date_.setUTCSeconds(parseInt(date, 10));
+    var d = date_,
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
 
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
 
     return [year, month, day].join('-');
-}
+  }
 }

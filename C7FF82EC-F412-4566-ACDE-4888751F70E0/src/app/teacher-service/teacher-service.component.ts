@@ -10,20 +10,20 @@ import { DelServiceModalComponent } from './del-service-modal/del-service-modal.
   styleUrls: ['./teacher-service.component.css']
 })
 export class TeacherServiceComponent implements OnInit {
-  
+
   @ViewChild("addServiceModal") _addServiceModal: AddServiceModalComponent;
   @ViewChild("delServiceModal") _delServiceModal: DelServiceModalComponent;
 
 
-  serviceDataDB : ServiceDetailDB[] = [] ;
-  serviceDataList :ServiceItemInfo[] = [];
-  isLoading = false ;
+  serviceDataDB: ServiceDetailDB[] = [];
+  serviceDataList: ServiceItemInfo[] = [];
+  isLoading = false;
   Mode = new mode();
 
-  constructor( private dsaService: DsaService ) {}
+  constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
-    this.loadData() ;
+    this.loadData();
   }
   loadData() {
     this.isLoading = true;
@@ -33,37 +33,37 @@ export class TeacherServiceComponent implements OnInit {
 
 
   /** 取得服務項目 */
-  async getServiceItem (){
+  async getServiceItem() {
     try {
       let resp = await this.dsaService.send("TeacherService.GetTeacherServiceItemByTeacherID", {
         Request: {
         }
       });
-      this.serviceDataList =[] ;
-      this.serviceDataDB = [].concat(resp.rs||[])
+      this.serviceDataList = [];
+      this.serviceDataDB = [].concat(resp.rs || [])
       // 整理資料
-      this.serviceDataDB.forEach(detail =>{
-        
-        let targetDetail = this.serviceDataList.find(x=>x.ServiceID == detail.service_id)
-      // 如果沒有 沒有 在加入
-        if(!targetDetail){
-           this.serviceDataList.push(new ServiceItemInfo(detail) )
-          }
-        let targetDetailhasVaule = this.serviceDataList.find(x=>x.ServiceID == detail.service_id)
+      this.serviceDataDB.forEach(detail => {
+
+        let targetDetail = this.serviceDataList.find(x => x.ServiceID == detail.service_id)
+        // 如果沒有 沒有 在加入
+        if (!targetDetail) {
+          this.serviceDataList.push(new ServiceItemInfo(detail))
+        }
+        let targetDetailhasVaule = this.serviceDataList.find(x => x.ServiceID == detail.service_id)
         targetDetailhasVaule.addTargetDetail(detail);      // 增加detail到裡面
 
 
       })
-      
-    }catch(ex){
-     alert('取得服務資訊發生錯誤 :'+JSON.stringify(ex))
+
+    } catch (ex) {
+      alert('取得服務資訊發生錯誤 :' + JSON.stringify(ex))
     }
   }
   /** 開啟新增視窗 */
-  Add(){
-    this._addServiceModal.mode= 'add'
-    this._addServiceModal.currentServiceItem=new ServiceItemInfo() ;
-    $("#addServiceModal").modal({backdrop:'static'});
+  Add() {
+    this._addServiceModal.mode = 'add'
+    this._addServiceModal.currentServiceItem = new ServiceItemInfo();
+    $("#addServiceModal").modal({ backdrop: 'static' });
     $("#addServiceModal").modal("show");
 
 
@@ -73,34 +73,34 @@ export class TeacherServiceComponent implements OnInit {
       }
       $("#addCaseInterview").off("hide.bs.modal");
     });
-      	  
+
   }
 
   /** 點選刪除選項 */
-  delete(item :ServiceItemInfo){
-  
-    this._delServiceModal.currentServiceInfo=item ;
-    $("#delServiceModal").modal({backdrop:'static'});
+  delete(item: ServiceItemInfo) {
+
+    this._delServiceModal.currentServiceInfo = item;
+    $("#delServiceModal").modal({ backdrop: 'static' });
     $("#delServiceModal").modal("show");
     $("#delServiceModal").on("hide.bs.modal", () => {
       if (true) { // 如果關掉舊重新 load 資料
         this.loadData();
       }
-    
+
     });
   }
 
   /** 編輯選項 */
-  edit(item:ServiceItemInfo){
-    this._addServiceModal.mode= 'edit'
-    this._addServiceModal.currentServiceItem=item ;
-    $("#addServiceModal").modal({backdrop:'static'});
+  edit(item: ServiceItemInfo) {
+    this._addServiceModal.mode = 'edit'
+    this._addServiceModal.currentServiceItem = item;
+    $("#addServiceModal").modal({ backdrop: 'static' });
     $("#addServiceModal").modal("show");
     $("#addServiceModal").on("hide.bs.modal", () => {
-      if (true) { // 如果關掉舊重新 load 資料
+     // 如果關掉舊重新 load 資料
         this.loadData();
-      }
-    
+
+      $("#addServiceModal").off("hide.bs.modal");
     });
   }
 }

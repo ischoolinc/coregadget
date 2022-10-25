@@ -88,16 +88,19 @@ export class GrantModalComponent implements OnInit {
       this.isReferralReplyHasValue = false;
     }
 
-
+debugger
     if (this.referralStudent.ReferralReplyDate) {
       this.isReferralReplyDateHasValue = true;
       this.ReferralReplyDate = this.referralStudent.ReferralReplyDate;
+      let dt = new Date();
+      this.ReferralReplyDate = this.referralStudent.parseDate(dt);
     } else {
       let dt = new Date();
       this.ReferralReplyDate = this.referralStudent.parseDate(dt);
     }
 
     if (this.referralStudent.ReferralStatus && this.referralStudent.ReferralStatus.length > 0) {
+      this.ReferralStatus =this.referralStudent.ReferralStatus ;
       if (this.referralStudent.ReferralStatus === "未處理") {
         this.isUnPrecessed = true;
       }
@@ -132,6 +135,7 @@ export class GrantModalComponent implements OnInit {
   async save() {
     this.isCancel = false;
     // 儲存資料
+    debugger 
     try {
       this.referralStudent.ReferralReply = this.ReferralReply;
       this.referralStudent.ReferralReplyDate = this.ReferralReplyDate;
@@ -146,7 +150,7 @@ export class GrantModalComponent implements OnInit {
   }
 
   async SetReferralStudent(data: ReferralStudent) {
-
+debugger
     // 處理當設定狀態後同步到輔導學生主畫面
     this.counselStudentService.guidanceStudent.forEach(rstud => {
       if (rstud.StudentID === data.StudentID) {
@@ -162,6 +166,8 @@ export class GrantModalComponent implements OnInit {
       }
     );
 
+
+    debugger 
     let req = {
       UID: data.UID,
       ReferralReply: data.ReferralReply,

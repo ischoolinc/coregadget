@@ -17,6 +17,7 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./counsel-teacher-role.component.css']
 })
 export class CounselTeacherRoleComponent implements OnInit {
+  isShowInfo = false ;
   public teacherTypeStr: string = "教師輔導身分";
   isLoading = false;
   myControl = new FormControl();
@@ -83,12 +84,7 @@ export class CounselTeacherRoleComponent implements OnInit {
     this.selectTeacherName = item;
     // this.chkSaveButton();
   }
-  // chkSaveButton() {
-  //   if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師')
-  //     this.isSaveButtonDisable = true;
-  //   else
-  //     this.isSaveButtonDisable = false;
-  // }
+
   Add_v2() {
     this.Mode.mode = 'add';
     const teacherRoleInfo = new TeacherCounselRole();

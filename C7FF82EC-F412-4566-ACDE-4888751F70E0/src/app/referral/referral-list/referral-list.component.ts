@@ -132,6 +132,8 @@ export class ReferralListComponent implements OnInit {
   }
 
   setGrantModal(refStudent: ReferralStudent) {
+    // console.log("refStudent",refStudent);
+    // alert("sss")
     this.grant_modal.referralStudent = refStudent;
 
     this.grant_modal.loadDefault();

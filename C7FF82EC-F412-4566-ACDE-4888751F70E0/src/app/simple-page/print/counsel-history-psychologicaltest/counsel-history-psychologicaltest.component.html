@@ -7,8 +7,8 @@
       <span>&nbsp;</span>
       <span>姓名：</span><span>{{StudentName}}</span>
     </h5>
-<h3> 晤談記錄</h3>
-    <table >
+    <h3> 晤談記錄</h3>
+    <table>
       <tr>
         <td style="text-align: center; vertical-align: middle;width: 7%"><strong>學年度</strong></td>
         <td style="text-align: center; vertical-align: middle;width: 4%"><strong>學期</strong></td>
@@ -27,7 +27,7 @@
           <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
 
           <td *ngIf="item.Content" style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
-          
+
           <!-- <td >
             <p *ngIf="item.Content">
               <span style="text-align: center; vertical-align: middle;"> {{item.Content }}</span>
@@ -49,34 +49,32 @@
         </tr>
       </ng-container>
     </table>
-    <hr> 
-   <h3>心理測驗 </h3> 
-  <ng-container *ngFor="let item of QuizData">
-    <br>
- 測驗名稱 : {{item.QuizName}} 
- <!-- {{getQuizTime(item.uid)}} -->
- <!-- {{getJson(item)}}   -->
-   <table>
- <tr >  
-   <td>測驗項目</td>
-  <td>測驗結果</td>
+    <hr>
+    <h3>心理測驗 </h3>
+    <ng-container *ngFor="let item of QuizData">
+      <br>
+      測驗名稱 : {{item.QuizName}}
+      <!-- {{getQuizTime(item.uid)}} -->
+      <!-- {{getJson(item)}}   -->
+      <table>
+        <tr>
+          <td>測驗項目</td>
+          <td>測驗結果</td>
 
-</tr >
- <tr   *ngFor="let field of getStudentItemBy(item.uid)?.Field" >
-  <td>{{field.Name}}</td>
-  <td>{{getQuizAnswerData(item.uid ,field.Name)?.Value}}</td>
-</tr>
- <tr> </tr>
-   </table>
-  </ng-container>
+        </tr>
+        <tr *ngFor="let field of getStudentItemBy(item.uid)?.Field">
+          <td>{{field.Name}}</td>
+          <td>{{getQuizAnswerData(item.uid ,field.Name)?.Value}}</td>
+        </tr>
+        <tr> </tr>
+      </table>
+    </ng-container>
 
   </ng-container>
 </div>
 
-<ng-template #tmpLoading
-             class="container">
-  <div class="row justify-content-center"
-       style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>

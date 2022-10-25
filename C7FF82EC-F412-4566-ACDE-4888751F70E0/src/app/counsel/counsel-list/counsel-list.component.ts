@@ -54,13 +54,10 @@ export class CounselListComponent implements OnInit {
       }
     );
 
-
-    console.log("mod",this.mod);
-    console.log("target",this.target)
   }
 
 
-  /**新增一級輔導(連續) V*/
+/**新增一級輔導(連續) V*/
 addInterviews(event :any ,counsuleObj :CounselStudent){
     event.stopPropagation();
     this.addInterviewModal(counsuleObj);
@@ -166,8 +163,6 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
           }
         }
         let tmp = [];
-        // debugger 
-        // console.log(' this.counselStudentService.guidanceStudent', this.counselStudentService.guidanceStudent)
         this.counselStudentService.guidanceStudent.forEach(data => {
           let key = `${data.SchoolYearVG}_${data.SemesterVG}`;
           if (!tmp.includes(key)) {

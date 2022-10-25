@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
 export class ComprehensiveComponent implements OnInit {
 
   @ViewChild("GenerateKeyAndSetTime") GenerateKeyAndSetTime: GenerateKeyAndSetTimeComponent;
-
+  isShowInfo =false ;
   public counselVisible: Boolean = false;
   deny: Boolean = false;
   isLoading: Boolean = false;
@@ -240,22 +240,9 @@ export class ComprehensiveComponent implements OnInit {
         let classList = await this.dsaService.send("GetClass", {});
         classList = [].concat(classList.Class || []);
         let index = 0;
- 
-        debugger 
-        
+
         for (const classRec of classList) {
 
-          // if (!parseInt(classRec.GradeYear, 10) || parseInt(classRec.GradeYear, 10 ) > 6 ) { // 因為恩正設計 是 1-6年級 所以年級有誤時 會提醒使用者並不展開
-          //   alert(classRec.ClassName + " 年級有誤! 無法產生題目。");
-          //   continue;
-          // }
-         
-      
-          // console.log("GenerateFillInData" + JSON.stringify({
-          //   SchoolYear: this.schoolYear
-          //   , Semester: this.semester
-          //   , ClassID: classRec.ClassID
-          // }));
           if(!isNeedAdjustGrade) //如果不需要調整對應
           {
             try {
@@ -271,8 +258,6 @@ export class ComprehensiveComponent implements OnInit {
             }
           }else{ //如需調整年級
             try {
-              debugger 
-              console.log('array',extensionGrade);
               if(extensionGrade.includes(classRec.GradeYear)) //有允許展開的年級才會展開
               {   
                 await this.dsaService.send("GenerateFillInDataForSpecificGrade", {

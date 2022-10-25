@@ -88,12 +88,13 @@ import { ConditionModalComponent } from './counsel-statistics/reports/case-inter
 // import { AddReferralFormComponent } from './shared-counsel-detail/interview-detail/add-referral-form/add-referral-form.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { AddInterviewModalComponent, SharedCounselDetailModule } from './shared-counsel-detail';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
 // import { AddServiceModalComponent } from './teacher-service/add-service-modal/add-service-modal.component';
 import { DelServiceModalComponent } from './teacher-service/del-service-modal/del-service-modal.component';
 import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
-import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';@NgModule({
+import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';import { CounselInterviewListComponent } from './simple-page/print/counsel-interview-list/counsel-interview-list.component';
+@NgModule({
   declarations: [
     AppComponent,
     CounselStatisticsComponent,

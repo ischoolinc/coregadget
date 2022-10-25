@@ -51,7 +51,6 @@ export class ViewCaseInterviewModalComponent implements OnInit {
         }
 
       });
- debugger
       if(rsp.rs){
         this.fileInfo.FileName = rsp.rs.file_name;
         let data  = atob( rsp.rs.content)

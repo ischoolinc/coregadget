@@ -109,16 +109,11 @@
                     *ngIf="!caseStudent.isCaseNoHasValue">*</span> -->
 
                 <div *ngTemplateOutlet="icon"></div>
-                <b class="question_title"> 個案編號</b>
+                <b class="question_title"> 個案編號(學生代號)</b>
 
               </label>
-              <input 
-                type="text" 
-                class="form-control"
-                id="schoolYear" 
-                placeholder="請輸入個案編號"
-                [(ngModel)]="caseStudent.CaseNo" 
-                (keyup)="caseStudent.checkValue()"
+              <input type="text" class="form-control" id="schoolYear" placeholder="請輸入個案編號"
+                [(ngModel)]="caseStudent.CaseNo" (keyup)="caseStudent.checkValue()"
                 (focusout)="checkCaseNum(caseStudent)" />
             </div>
             <div class="form-group col-md-3">
@@ -127,44 +122,40 @@
                 <div *ngTemplateOutlet="icon"></div>
                 <b class="question_title"> 個案日期</b>
               </label>
-              <input type="date"
-                 class="form-control" 
-                 id="OccurDate" 
-                 name="OccurDate" 
-                 placeholder="請輸入個案日期"
-                 style ="max-width:150px "
-                [(ngModel)]="caseStudent.OccurDate" (keyup)="caseStudent.checkValue()" />
+              <input type="date" class="form-control" id="OccurDate" name="OccurDate" placeholder="請輸入個案日期"
+                style="max-width:150px " [(ngModel)]="caseStudent.OccurDate" (keyup)="caseStudent.checkValue()" />
             </div>
-          <!-- 個案來源 -->
-            <div class="form-group col-md-6">
-              <label for="interviewDate" class="col-form-label">
-                <span class="text-samll text-danger star-place">
-                  <ng-container *ngIf="!caseStudent.isCaseSourceHasValue">*</ng-container>
+            <!-- 個案來源 -->
+    
+
+            <!-- 個案來源 -->
+
+            <div class="form-group">
+              <label for="semester" class="col-form-label p-0">
+                <span class="text-samll text-danger" style="width:10px; height: 10px; display: inline-block; ">
+                  <ng-container *ngIf="!caseStudent.isStudentStatusHasValue">*</ng-container>
                 </span>
                 <div *ngTemplateOutlet="icon"></div>
-                <b class="question_title"> 個案來源</b>
+                <b class="question_title"> 個案來源： </b>
               </label>
-              <div class="dropdown ">
-                <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;"
-                  type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">
-                  {{ getSourceDisplayName() || '請選擇'}}
-                </button>
-                <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
-
-
-                  <a class="dropdown-item cuser" 
-                    *ngFor="let item of    caseStudent.CaseSourceList">
-                    <input type="checkbox"  
-                    [id]="item.name " [checked]="item.checked" [(ngModel)] ="item.checked" (change)="setCaseSource()"
-                    />
-                    <label class="custom-control-label cuser" [for]="item.name"> {{item.name}}</label>
-                  </a>
-
-
+  
+              <div class="d-flex flex-wrap ml-3">
+                <div class="custom-control  custom-checkbox    mr-3"  *ngFor="let item of  caseStudent.CaseSourceList ;let i = index">
+                  <input type="checkbox" class="custom-control-input cuser" [id]="'source'+i"
+                    [checked]="item.checked"  [(ngModel)]="item.checked"
+                    (change)="setCaseSource(item)" />
+                  <label class="custom-control-label cuser" [for]="'source'+i">
+                    <!-- {{item.answer_checked}} -->{{item.name}}
+                    <!-- <app-sentence [text]="item.name" [(ngModel)]="item.checked"></app-sentence> -->
+                  </label>
                 </div>
               </div>
             </div>
+  
+
+
+
+
           </div>
           <!--  新增 學生身分 -->
 
@@ -178,10 +169,9 @@
             </label>
 
             <div class="d-flex flex-wrap ml-3">
-              <div class="custom-control  custom-checkbox w-25 " *ngFor="let item of caseStudent.student_status">
+              <div class="custom-control  custom-checkbox w-25  " *ngFor="let item of caseStudent.student_status">
                 <input type="checkbox" class="custom-control-input cuser" [id]="item.answer_code +'main'"
-                  [checked]="item.answer_checked"
-                  (click)="item.setAnswerCheck()"
+                  [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
                   (change)="checkChange(item,caseStudent,'學生身分')" />
                 <label class="custom-control-label cuser" [for]="item.answer_code+'main'">
                   <!-- {{item.answer_checked}} -->
@@ -317,33 +307,32 @@
             </div>
           </div>
 
-<!-- 轉介  -->
-<div class="form-group ">
-  <label for="interviewDate" class="col-form-label">
-    <span class="text-samll text-danger star-place">
-      <ng-container *ngIf="true">*</ng-container>
-    </span>
-    <div *ngTemplateOutlet="icon"></div>
-    <b class="question_title"> 轉介概況 :</b>
-  </label>
-  <div class="dropdown ">
-    <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;"
-      type="button" style ="" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-      aria-expanded="false">
-      <!-- {{ selectReferalStatus|| '請選擇' }} -->
-      {{caseStudent.ReportReferralStatus ||'請選擇'}}
-    </button>
-    <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item cuser" 
-       (click)="caseStudent.ReportReferralStatus =item"
-        *ngFor="let item of   caseStudent.CaseReferalList">
-       {{item}}
-      </a>
+          <!-- 轉介  -->
+          <div class="form-group ">
+            <label for="interviewDate" class="col-form-label">
+              <span class="text-samll text-danger star-place">
+                <ng-container *ngIf="true">*</ng-container>
+              </span>
+              <div *ngTemplateOutlet="icon"></div>
+              <b class="question_title"> 轉介概況 :</b>
+            </label>
+            <div class="dropdown ml-3">
+              <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;" type="button"
+                style="" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <!-- {{ selectReferalStatus|| '請選擇' }} -->
+                {{caseStudent.ReportReferralStatus ||'請選擇'}}
+              </button>
+              <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item cuser" (click)="caseStudent.ReportReferralStatus =item"
+                  *ngFor="let item of   caseReferalList">
+                  {{item}}
+                </a>
+               
 
 
-    </div>
-  </div>
-</div>
+              </div>
+            </div>
+          </div>
 
           <!-- <hr style="width:98%;"> -->
           <div class="form-group">
@@ -354,7 +343,7 @@
               <div *ngTemplateOutlet="icon"></div>
               <b class="question_title"> 負責老師：</b>
             </label>
-            <div class="form-group d-flex flex-wrap">
+            <div class="form-group d-flex flex-wrap ml-3">
               <ng-container *ngFor="let itemTeacher of caseStudent.selectCaseTeacers;let i = index">
 
                 <div class="dropdown">
@@ -391,26 +380,26 @@
               </ng-container>
             </div>
           </div>
-         <!-- 參與輔導教師層級 -->
-         <div class="form-group">
-          <label for="semester" class="col-form-label p-0">
-            <span class="text-samll text-danger star_place">
-              <ng-container *ngIf="!caseStudent.isEvaluationResultHasValue">*</ng-container>
-            </span>
-            <div *ngTemplateOutlet="icon"></div>
-            <b class="question_title"> 輔導教師層級</b>
-          </label>
-          <div class="d-flex flex-wrap ml-3">
-            <div class="custom-control custom-checkbox w-25" *ngFor="let item of caseStudent.teacher_counsel_level">
-              <input type="checkbox" class="custom-control-input cuser" [id]="item.answer_code"
-                [checked]="item.answer_checked" (change)="checkChange(item,caseStudent)"
-                (click)="item.setAnswerCheck()" />
-              <label class="custom-control-label cuser" [for]="item.answer_code">
-                <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
-              </label>
+          <!-- 參與輔導教師層級 -->
+          <div class="form-group">
+            <label for="semester" class="col-form-label p-0">
+              <span class="text-samll text-danger star_place">
+                <ng-container *ngIf="!caseStudent.isEvaluationResultHasValue">*</ng-container>
+              </span>
+              <div *ngTemplateOutlet="icon"></div>
+              <b class="question_title"> 輔導教師層級</b>
+            </label>
+            <div class="d-flex flex-wrap ml-3">
+              <div class="custom-control custom-checkbox w-25" *ngFor="let item of caseStudent.teacher_counsel_level">
+                <input type="checkbox" class="custom-control-input cuser" [id]="item.answer_code"
+                  [checked]="item.answer_checked" (change)="checkChange(item,caseStudent)"
+                  (click)="item.setAnswerCheck()" />
+                <label class="custom-control-label cuser" [for]="item.answer_code">
+                  <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
+                </label>
+              </div>
             </div>
           </div>
-        </div> 
           <!-- <hr> -->
           <div class="form-row">
             <div class="form-group col-md-4">
@@ -420,7 +409,7 @@
                 <b> 是否結案：</b>
               </label>
               <div>
-                <div class="custom-control custom-radio custom-control-inline">
+                <div class="custom-control custom-radio custom-control-inline ml-3">
                   <input type="radio" id="closingCaseYes" name="closingCase" class="custom-control-input"
                     [checked]="caseStudent.isCloseYes" (click)="setIsClose('t')" />
                   <label class="custom-control-label" for="closingCaseYes">是</label>
@@ -467,19 +456,19 @@
             </label>
             <div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="r1" name="grantradio" class="custom-control-input"
+                <input type="radio" id="r_1" name="grantradio" class="custom-control-input"
                   (click)="caseStudent.SetCaseLevel('初級')" [checked]="caseStudent.isCaseLevel1Checked" />
-                <label class="custom-control-label" for="r1">初級</label>
+                <label class="custom-control-label" for="r_1">初級</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="r2" name="grantradio" class="custom-control-input"
-                  (click)="caseStudent.SetCaseLevel('二級')" [checked]="caseStudent.isCaseLevel2Checked" />
-                <label class="custom-control-label" for="r2">二級</label>
+                <input type="radio" id="r_2" name="grantradio" class="custom-control-input"
+                  (click)="caseStudent?.SetCaseLevel('二級')" [checked]="caseStudent.isCaseLevel2Checked" />
+                <label class="custom-control-label" for="r_2">二級</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="r3" name="grantradio" class="custom-control-input"
+                <input type="radio" id="r_3" name="grantradio" class="custom-control-input"
                   (click)="caseStudent.SetCaseLevel('三級')" [checked]="caseStudent.isCaseLevel3Checked" />
-                <label class="custom-control-label" for="r3">三級</label>
+                <label class="custom-control-label" for="r_3">三級</label>
               </div>
             </div>
           </div>

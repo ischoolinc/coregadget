@@ -11,8 +11,8 @@
            background: rgb(219, 235, 230);
            position: fixed;
            border-radius: 0px 50px 50px 0px;
- bottom:0px;
- left:0px;
+           bottom:0px;
+          left:0px;
 ">
 目前權限 :
 {{roleService.role}}
@@ -115,7 +115,7 @@
         </li>
       </ng-container>
 
-      <ng-container>
+      <ng-container *ngIf="false">
         <li class="nav-item">
           <a class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
             (click)="!roleService.enableTransferStudents || routeTo('/transfer_students')"

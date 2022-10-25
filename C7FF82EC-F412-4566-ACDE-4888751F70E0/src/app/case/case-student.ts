@@ -161,6 +161,7 @@ export class CaseStudent {
 
   /** 設定個案輔導層級 */ 
   SetCaseLevel(level: string) {
+
     this.isCaseLevel1Checked = false;
     this.isCaseLevel2Checked = false;
     this.isCaseLevel3Checked = false;
@@ -644,7 +645,6 @@ public loadProblemMainCategoryTemplate()
         this.isDeviantBehaviorHasValue = true;
       }
     }
-debugger
     // 學生身分 
     for (const cc of this.student_status){
       if (cc.answer_checked) {

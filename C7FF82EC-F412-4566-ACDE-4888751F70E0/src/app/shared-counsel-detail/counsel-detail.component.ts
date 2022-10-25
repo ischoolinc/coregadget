@@ -125,11 +125,12 @@ export class CounselDetailComponent implements OnInit {
         // this.counselStudentService.currentStudent = this.currentStudent;
 
         if (this.counselComponent != null) {
-
+         
           // 處理認輔老師 
           if( // 新竹需求 增加認輔老師邏輯
             this.currentStudent.Role.indexOf("認輔老師") >= 0  
             && this.RoleService.loginTeacher.Role =='專任輔導'
+          
           ){
              this._caseInterviewTeacher = true ;
 

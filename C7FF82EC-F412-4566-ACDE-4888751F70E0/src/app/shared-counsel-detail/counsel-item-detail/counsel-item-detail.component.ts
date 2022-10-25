@@ -21,12 +21,14 @@ export class CounselItemDetailComponent implements OnInit {
   caseViewInfoList: CaseViewInfo[] = [];
   _StudentID: string = "";
   isLoading = false;
+  hasGetDataAlready = false  ;
   currentStudent: CounselStudent;
   
   // 個案資料
   caseList: CaseStudent[];
   transferStatus :DBOption[];
   isDeleteButtonDisable: boolean = true;
+
 
   @ViewChild("addCaseInterview") _addInterview: AddCaseInterviewModalComponent;
   @ViewChild("delCaseInterview") _delCaseInterview: DelCaseInterviewModalComponent;
@@ -44,6 +46,7 @@ export class CounselItemDetailComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    
     this.counselDetailComponent.setCurrentItem('counsel');
     this.caseList = [];
     this._StudentID = "";
@@ -106,12 +109,7 @@ export class CounselItemDetailComponent implements OnInit {
     // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {
       
-      if (!this._addInterview.isCancel) {
-   
-        // 重整資料
-        // this.loadData();
-
-        
+      if (!this._addInterview.isCancel &&this._addInterview.isAddServiceWork) {
        // 新增之後跳出 新增服務項目 
        this._addServiceModal.mode ='add';
        this._addServiceModal.CaseInterviewID = this._addInterview.InsertCaseInterViewID ;
@@ -121,15 +119,17 @@ export class CounselItemDetailComponent implements OnInit {
        $("#addServiceModal").modal("show");
        $("#addServiceModal").on("hide.bs.modal", () => {
         if (true) { // 如果關掉舊重新 load 資料
+          //Jean 
+     
           this.loadData();
+          $("#addServiceModal").off("hide.bs.modal");
         }
       });
       }
+  // 如果關掉舊重新 load 資料
+        this.loadData();
 
-
-
-
-      $("#addCaseInterview").off("hide.bs.modal");
+       $("#addCaseInterview").off("hide.bs.modal");
     });
 
 
@@ -178,7 +178,7 @@ export class CounselItemDetailComponent implements OnInit {
 
   }
 
-  // 修改
+  /** 編輯 */
   editInterviewModal(caseInterview: CaseInterview) {
   if(caseInterview.isEditDisable) // 不能編編輯 
   {
@@ -201,13 +201,9 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addCaseInterview").modal("show");
      // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {
-  
-
-     // 打開服務項目
-      if (!this._addInterview.isCancel) {
      // 重整資料
       this.loadData();
-      }
+
       $("#addCaseInterview").off("hide.bs.modal");
     });
   }
@@ -232,10 +228,10 @@ export class CounselItemDetailComponent implements OnInit {
     $("#delCaseInterview").modal("show");
     // 關閉畫面
     $("#delCaseInterview").on("hide.bs.modal", () => {
-      if (!this._delCaseInterview.isCancel) {
+ 
         // 重整資料
         this.loadData();
-      }
+   
       $("#delCaseInterview").off("hide.bs.modal");
     });
   
@@ -343,15 +339,14 @@ export class CounselItemDetailComponent implements OnInit {
       this.caseViewInfoList.push(caseInfo);
 
       data.push(rec);
-    });
+    });debugger
     this.caseList = data;
   }
 
   /** 打開服務項目 */
-  OpenServiceModal(caseInterview: CaseInterview =null , mode :"add"|'edit' ="add"){
+  async OpenServiceModal(caseInterview: CaseInterview =null , mode :"add"|'edit' ="add"){
     this._addServiceModal.mode = mode;
-    if(caseInterview) 
-    {
+    if(caseInterview) {
       this._addServiceModal.CaseInterviewID = caseInterview.UID;
       this._addServiceModal.GetServiceItemByUID(caseInterview.ServiceUID)
     }
@@ -361,16 +356,17 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addServiceModal").modal({ backdrop: 'static' });
     $("#addServiceModal").modal("show");
 
-    $("#addServiceModal").on("hide.bs.modal", () => {
-      if (true) {
-        // 重整資料
-        this.loadData();
-      }})
+    $("#addServiceModal").on("hide.bs.modal",async () => {
+     
+        // 重整資料 
+     
+       await  this.loadData();
+       $("#addServiceModal").off("hide.bs.modal");  
+      })
   }
 
 
   async GetCaseInterviewByStudentID(StudentID: string) {
-
     let data: CaseInterview[] = [];
 
     let resp = await this.dsaService.send("GetStudentCaseInterview", {
@@ -465,6 +461,7 @@ export class CounselItemDetailComponent implements OnInit {
     });
     this._semesterInfo.forEach(sms => {
       this.caseViewInfoList.forEach(caseV => {
+      
         if (sms.CaseID === caseV.CaseID) {
           caseV.SemesterInfoList.push(sms);
         }

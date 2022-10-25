@@ -39,7 +39,7 @@ constructor(serviceDetailDB :ServiceDetailDB = null){
     if(serviceDetailDB){
         this.ServiceID = serviceDetailDB.service_id ;
         this.ServiceItem = serviceDetailDB.service_item;
-        this.ServiceDate = serviceDetailDB.service_date ;
+        this.ServiceDate = serviceDetailDB.service_date ||'' ;
         this.ServiceDescription = serviceDetailDB.description ;
         this.OtherServiceDetail =serviceDetailDB.service_item_other_detail
         this.CaseInterviewID = serviceDetailDB.case_interview_id
@@ -49,7 +49,7 @@ constructor(serviceDetailDB :ServiceDetailDB = null){
 /** 服務 ID */
 ServiceID :string ;
 /**  服務日期*/
-ServiceDate :string ;
+ServiceDate :string ="";
 /**  服務項目*/
 ServiceItem :string ;
 /** 服務項目對象 */

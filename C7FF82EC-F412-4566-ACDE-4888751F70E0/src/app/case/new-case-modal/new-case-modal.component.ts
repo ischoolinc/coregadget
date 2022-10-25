@@ -29,7 +29,12 @@ export class NewCaseModalComponent implements OnInit {
     private roleService: RoleService
 
   ) { }
-
+   caseReferalList =[
+    '本月轉介輔諮中心' ,
+    '無轉介',
+    '已轉介輔諮中心且該中心持續服務中',
+    '已轉介輔諮中心，該中心服務至本月結案' 
+    ]
   isCancel: boolean = true;
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
@@ -75,7 +80,11 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent = new CaseStudent();
     //  this.loadData();
   }
+  sayHi(){
 
+    alert("Hey sss") ;
+
+  }
   async loadData() {
 
     this.CounselTeacherList = [];
@@ -124,8 +133,7 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   setCaseSource(item: {name,checked}) {
-    // this.selectCaseSourceValue = item;
-    // this.caseStudent.CaseSource = item;
+   
     
     this.caseStudent.checkValue();
   }
@@ -166,8 +174,7 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   cancel() {
- alert("取消")
- debugger 
+
     if(this.caseStudent.proble_description[0].answer_martix[0]){ // 如果有填寫為儲存
       if(!confirm("資料未儲存，確定取消?")){
          return ;
@@ -179,7 +186,7 @@ export class NewCaseModalComponent implements OnInit {
 
   //設定座號
   setSeatNo(item: CounselStudent) {
-    console.log("ssssss", item)
+   
     this.selectSeatNoValue = item.SeatNo;
     this.selectStudentName = item.StudentName;
     // this.caseStudent = new CaseStudent();
@@ -618,10 +625,6 @@ export class NewCaseModalComponent implements OnInit {
       StudentStatus: data.StudentStatus,
       TeacherCounselLevels :data.TeacherCounselLevels
     };
-
-  debugger
-    //    console.log(req);
-
     try {
       let resp = await this.dsaService.send("AddCase", {
         Request: req
@@ -696,6 +699,11 @@ export class NewCaseModalComponent implements OnInit {
       }
     }
   }
+getJSON(item :any){
+return JSON.stringify(item) ;
+}
+  
+
 
   /** 取得個案來源字串 */
   getSourceDisplayName(): string {
@@ -718,6 +726,13 @@ export class NewCaseModalComponent implements OnInit {
 
 
     return result
+  }
+
+
+  /** 個案來源選項 */
+  getSelectScourceItem(){
+
+  return   this.caseStudent.CaseSourceList.filter(x=>x.checked)
   }
 }
 

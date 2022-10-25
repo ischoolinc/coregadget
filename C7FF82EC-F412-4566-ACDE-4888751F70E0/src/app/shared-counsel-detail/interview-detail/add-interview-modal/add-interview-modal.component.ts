@@ -57,8 +57,10 @@ export class AddInterviewModalComponent implements OnInit {
       this.referralVisible = true;
     }
     this._currentCounselInterview = new CounselInterview();
- 
-    await this.loadDefaultData(    this.counselDetailComponent.currentStudent);
+  
+    if( this.counselDetailComponent){
+      await this.loadDefaultData(    this.counselDetailComponent.currentStudent);
+    }
   }
 
   /**設定isSerial */
@@ -121,9 +123,14 @@ export class AddInterviewModalComponent implements OnInit {
 
   // click 取消
   cancel() {
-    if(confirm('尚未儲存，確定取消?')){
+   let result = confirm('尚未儲存，確定取消?') ;
+    if(!result){
     this.isCancel = true;
+    return
+  }else{
+    
     $("#addInterview").modal("hide");
+
     }
   }
   /** Click 後儲存 */
@@ -321,6 +328,12 @@ export class AddInterviewModalComponent implements OnInit {
   }
   async handleInputChange(event: any) {
     const file = event.target.files[0];
+    console.log('file',file);
+       // 確認檔案類型
+     if(file.type !=="application/pdf"){
+      alert("請上傳正確檔案類型!")
+       return 
+    }
        // 確認檔案大小
        if(file.size > this.fileSizeLimit ){
         alert("檔案過大，請重新選擇檔案!")
@@ -349,9 +362,8 @@ export class AddInterviewModalComponent implements OnInit {
 
 
        /** 取得檔案 */
-       async getFile(targetID: string) {
+  async getFile(targetID: string) {
         this.fileUpladed ={};
-    
         try {
           let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
             Request: {
@@ -360,8 +372,7 @@ export class AddInterviewModalComponent implements OnInit {
             }
     
           });
-         alert("取得檔案")
-         debugger
+  
           if(rsp.rs){
             this.fileUpladed.FileName = rsp.rs.file_name;
             let data  = atob( rsp.rs.content)

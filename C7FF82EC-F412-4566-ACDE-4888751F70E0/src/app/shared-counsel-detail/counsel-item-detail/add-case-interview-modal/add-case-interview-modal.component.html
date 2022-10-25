@@ -8,7 +8,7 @@
         <h5 class="modal-title" id="addInterviewLabel">
           <b>{{ editModeString }}晤談紀錄 - {{ _CaseInterview.StudentName }}</b>
         </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" (click)="cancel()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -33,7 +33,7 @@
           <div class="form-group col-md-4">
             <label for="interviewDate" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isOccurDateHasValue">*</span>
-              <b class="modal-sub-title" >晤談日期</b>
+              <b class="modal-sub-title">晤談日期</b>
             </label>
             <input type="date" class="form-control" id="interviewDate" placeholder="請輸入晤談日期"
               [(ngModel)]="_CaseInterview.OccurDate" (keyup)="_CaseInterview.checkValue()"
@@ -46,10 +46,10 @@
               <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCounselTypeHasValue">*</span>
               <b class="modal-sub-title">方式：</b>
             </label>
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 ml-3">
               <div class="input-group-prepend">
-                <button class="btn btn-light dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">
+                <button class="btn btn-light dropdown-toggle w-100" type="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
                   {{ _CaseInterview.selectCounselType }}
                 </button>
                 <div class="dropdown-menu">
@@ -75,9 +75,9 @@
               <b class="modal-sub-title">對象：</b>
             </label>
             <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <button class="btn btn-light dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">
+              <div class="input-group-prepend ml-3">
+                <button class="btn btn-light dropdown-toggle w-100" type="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
                   {{ _CaseInterview.selectContactName }}
                 </button>
                 <div class="dropdown-menu">
@@ -104,7 +104,7 @@
           </div>
         </div>
 
-    
+
         <div class="form-group col-md-12">
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" id="isPublic" (click)="_CaseInterview.checkValue()"
@@ -113,83 +113,114 @@
           </div>
         </div>
 
-<div class ="form-row">
-  <!-- 內容說明 -->
-        <div class="form-group col-md-12  ">
-          <label for="description" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!_CaseInterview.isContentHasValue">*</span>
-            <b class="modal-sub-title"   > 內容說明</b>
-            <span class=" text-muted"></span>
-          </label>
-          <textarea style="margin: 20px ;width: 92%;" class="form-control " id="description" rows="3" placeholder="請輸入內容說明"
-            [(ngModel)]="_CaseInterview.Content" (keyup)="_CaseInterview.checkValue()"></textarea>
-        </div>
-      </div>
-  <!-- 檔案上傳 -->
-  <!-- <div class="image-upload">
- 
-    <input #fileInput  id ="fileInput" name="imageUrl"
-       type="file"  accept="application/pdf"
-      (change)="handleInputChange($event)" />
-</div>  -->
-
- <div class="p-1 m-1" *ngIf=" this.fileUpladed?.FileName" style="border:1px soild gray ; height:15px; min-width:200px">
-    <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
-    {{ this.fileUpladed.FileName }}
-
-    </a>
-    <span (click)="deleteFile()"> 
-      <mat-icon  style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false" aria-label="Example home icon"
-      (click)="delete(item)">
-      highlight_off
-    </mat-icon>
-    </span>
- </div>
-
-
-<!-- //   個案類別  -->
-      <div class ="form-row">
-        <div class="form-group col-md-12">
-          <label for="semester" class="col-form-label">
-            <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCategoryHasValue">*</span>
-            <b  class="modal-sub-title"> 類別</b>
-          </label>
-          <div class="d-flex flex-wrap " style ="">
-            <div class="custom-control custom-checkbox w-25" *ngFor="let item of _CaseInterview._category">
-              <input type="checkbox" class="custom-control-input" [id]="item.answer_code"
-                [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
-                (change)="checkChange(item,_CaseInterview)" />
-              <label class="custom-control-label" [for]="item.answer_code">
-                <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
-              </label>
-            </div>
-
-
-            <!-- <p class="mt-3" style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報表內，工作月統計報表之統計為個案上之個案類別。</p> -->
-
+        <div class="form-row">
+          <!-- 內容說明 -->
+          <div class="form-group col-md-12  ">
+            <label for="description" class="col-form-label">
+              <span class="text-samll text-danger" *ngIf="!_CaseInterview.isContentHasValue">*</span>
+              <b class="modal-sub-title"> 內容說明</b>
+              <span class=" text-muted"></span>
+            </label>
+            <textarea style="margin: 20px ;width: 92%;" class="form-control " id="description" rows="5"
+              placeholder="請輸入內容說明" [(ngModel)]="_CaseInterview.Content"
+              (keyup)="_CaseInterview.checkValue()"></textarea>
           </div>
         </div>
+        <!-- 上傳檔案 -->
+
+        <div class="d-flex">
+      
+        <div class="image-upload ml-3">
+       
+          <span  class="upload-file-btn">
+       <span class="text">
+
+
+        <label   for="fileInput">
+            選擇檔案 
+        </label>
+           
+       </span>
+       <span class="icon">
+        <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
+        style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align">
+          info
+      </mat-icon>
+      
+       </span>
+      </span>
+          <input style="display:none"  #fileInput id="fileInput" name="imageUrl" type="file" accept="application/pdf"
+            (change)="handleInputChange($event)" />
+
+            <div *ngIf="isShowInfo" class="info_section ">
+              僅能上傳 3MB 以下 PDF檔 
+            </div>
+        </div>
+
+
+
+        <div class="p-1 m-2" *ngIf=" this.fileUpladed?.FileName"
+          style="border:1px soild gray ; height:15px; min-width:200px">
+          <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
+            {{ this.fileUpladed.FileName }}
+
+          </a>
+          <span (click)="deleteFile()">
+            <mat-icon style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false"
+              aria-label="Example home icon" (click)="delete(item)">
+              highlight_off
+            </mat-icon>
+          </span>
+        </div>
+
+    
+      </div>
+        <!-- //   個案類別  -->
+        <div class="form-row">
+          <div class="form-group col-md-12 ">
+            <label for="semester" class="col-form-label">
+              <span class="text-samll text-danger" *ngIf="!_CaseInterview.isCategoryHasValue">*</span>
+              <b class="modal-sub-title"> 類別</b>
+            </label>
+            <div class="d-flex flex-wrap ml-3" style="">
+              <div class="custom-control custom-checkbox w-25" *ngFor="let item of _CaseInterview._category">
+                <input type="checkbox" class="custom-control-input" [id]="item.answer_code"
+                  [checked]="item.answer_checked" (click)="item.setAnswerCheck()"
+                  (change)="checkChange(item,_CaseInterview)" />
+                <label class="custom-control-label" [for]="item.answer_code">
+                  <app-sentence [text]="item.answer_text" [(ngModel)]="item.answer_martix"></app-sentence>
+                </label>
+              </div>
+
+
+              <!-- <p class="mt-3" style="font-size: 10px; "> 註:此類別不會被統計至工作月統計報表內，工作月統計報表之統計為個案上之個案類別。</p> -->
+
+            </div>
+          </div>
         </div>
 
 
         <div class="form-row">
           <div class="form-group col-md-12">
-             
 
-         {{''}}            
+
+            {{''}}
           </div>
         </div>
 
-    
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal" (click)="cancel()">
-          取消
-        </button>
-        <button type="button" class="btn btn-info" [disabled]="_CaseInterview.isSaveDisable" (click)="save()">
-          儲存
-        </button>
+
+        <div class="modal-footer">
+          <button *ngIf="_editMode=='add'" type="button" class="btn btn-info" [disabled]="_CaseInterview.isSaveDisable" (click)="save(true)">
+           輸入服務項目
+          </button>
+          <button type="button" class="btn btn-dark" (click)="cancel()">
+            取消
+          </button>
+          <button type="button" class="btn btn-info" [disabled]="_CaseInterview.isSaveDisable" (click)="save()">
+            儲存
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>

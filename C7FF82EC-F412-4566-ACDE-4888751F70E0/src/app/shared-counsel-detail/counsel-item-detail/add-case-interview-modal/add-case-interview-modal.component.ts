@@ -18,6 +18,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
   InsertCaseInterViewID  =""
   fileSizeLimit : number = 3 * 1024 * 1024 
   isCancel: boolean = true;
+  isAddServiceWork =false ;
   _editMode: string = "add";
   editModeString: string = "新增";
   // _studentName: string;
@@ -72,16 +73,19 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   // click 取消
   cancel() {
-    
-    if(confirm("尚未儲存，確定離開?")){
-
+     let isLeave =  confirm("尚未儲存，確定離開?")
+     debugger
+     if(!isLeave){
       return
+    }else{ // 確定要離開
+      this.isCancel = true;
+      $("#addCaseInterview").modal("hide");
     }
-    this.isCancel = true;
-    $("#addCaseInterview").modal("hide");
   }
-  // click 儲存
-  async save() {
+
+  /** 儲存 參數使否繼續編輯服務項目*/
+  async save(isAddSerWork :boolean =false ) {
+    this.isAddServiceWork =isAddSerWork ;
     this.isCancel = false;
     try {
       this._CaseInterview.isSaveDisable = true;
@@ -169,6 +173,11 @@ export class AddCaseInterviewModalComponent implements OnInit {
   /** 上傳資料 */
   async handleInputChange(event: any) {
     const file = event.target.files[0];
+    console.log('file',file);
+    if(file.type !=="application/pdf"){
+      alert("請上傳正確檔案類型!")
+       return 
+    }
     // 確認檔案大小
      if(file.size > this.fileSizeLimit ){
        alert("檔案過大，請重新選擇檔案!")
