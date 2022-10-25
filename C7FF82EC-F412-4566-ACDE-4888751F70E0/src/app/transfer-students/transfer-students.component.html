@@ -12,13 +12,41 @@
               data-toggle="list"
               [ngClass]="{'active show': currentItem == 'TRANSFER_IN'}"
               (click)="routeTo('transfer_in')">
-              轉入申請
+              <div class="position-relative">
+                <div *ngIf="hasNewTransferIn"
+                  class="align-baseline"
+                  style="position: absolute;
+                    top: -10px;
+                    left: -10px;
+                    width: 8px;
+                    height: 8px;
+                    animation: mymove 1s;
+                    animation-iteration-count: 2;
+                    background: #FF5C58;
+                    border-radius: 50%;">
+                </div>
+                <span>轉入申請</span>
+              </div>
             </a>
             <a class="list-group-item list-group-item-action d-flex"
               data-toggle="list"
               [ngClass]="{ 'active show': currentItem == 'TRANSFER_OUT' }"
               (click)="routeTo('transfer_out')">
-              轉出核可
+              <div class="position-relative">
+                <div *ngIf="hasNewTransferOut"
+                  class="align-baseline"
+                  style="position: absolute;
+                    top: -10px;
+                    left: -10px;
+                    width: 8px;
+                    height: 8px;
+                    animation: mymove 1s;
+                    animation-iteration-count: 2;
+                    background: #FF5C58;
+                    border-radius: 50%;">
+                </div>
+                <span>轉出核可</span>
+              </div>
             </a>
           </div>
         </div>

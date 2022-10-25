@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DsaService } from 'src/app/dsa.service';
+import { CancelTransferInModalComponent } from './cancel-transfer-in-modal/cancel-transfer-in-modal.component';
+import { RegTransferInModalComponent } from './reg-transfer-in-modal/reg-transfer-in-modal.component';
+import { TransferDataModalComponent } from './transfer-data-modal/transfer-data-modal.component';
 
 @Component({
   selector: 'app-transfer-in',
@@ -10,8 +13,11 @@ export class TransferInComponent implements OnInit {
 
   isLoading = true;
   transList: TransStudentRec[] = [];
-  targetStudent: TransStudentRec = {} as TransStudentRec;
   isSaving = false;
+
+  @ViewChild('regTransInModal') regTransferInModalComponent: RegTransferInModalComponent;
+  @ViewChild('cancelTransInModal') cancelTransferInModalComponent: CancelTransferInModalComponent;
+  @ViewChild('transferDataModal') transferDataModalComponent: TransferDataModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -44,53 +50,85 @@ export class TransferInComponent implements OnInit {
         return '已完成';
       case '-1':
         return '取消';
+      case '-2':
+        return '拒絕';
     }
   }
 
   async toReg(item: TransStudentRec) {
-    item.status = '1';
-    item.create_time = new Date().toString();
+    item.Status = '1';
+    item.CreateTime = new Date().toString();
   }
 
   async cancelReg(item: TransStudentRec) {
-    item.status = '-1';
+    item.Status = '-1';
   }
 
-  async confrimTransIn(item: TransStudentRec) {
-    this.targetStudent = item;
-    $('#confirmTransModal').modal('show');
+  confrimTransData(item: TransStudentRec) {
+    this.transferDataModalComponent.loadDefault(item);
+    $('#transferDataModal').modal({ backdrop:'static' });
+    $('#transferDataModal').modal('show');
+    $("#transferDataModal").on("hide.bs.modal", async () => {
+      try {
+        await this.getList();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+      $("#transferDataModal").off("hide.bs.modal");
+    });
   }
 
-  async beginTransIn() {
-    if (this.isSaving) return;
-
-    this.isSaving = true;
-
-    setTimeout(() => {
-      this.targetStudent.status = '3';
-      this.isSaving = false;
-      $('#confirmTransModal').modal('hide');
-    }, 3000);
+  openReg() {
+    this.regTransferInModalComponent.loadDefault();
+    $('#regTransStudentModal').modal({ backdrop:'static' });
+    $('#regTransStudentModal').modal('show');
+    $("#regTransStudentModal").on("hide.bs.modal", async () => {
+      try {
+        await this.getList();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+      $("#regTransStudentModal").off("hide.bs.modal");
+    });
   }
 
-  devSetApproved(item: TransStudentRec) {
-    item.status = '2';
-    item.approved_time = new Date().toString();
+  confirmCancelReg(item: TransStudentRec) {
+    this.cancelTransferInModalComponent.loadDefault(item);
+    $('#cancelTransStudentModal').modal('show');
+    $("#cancelTransStudentModal").on("hide.bs.modal", async () => {
+      try {
+        await this.getList();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+      $("#cancelTransStudentModal").off("hide.bs.modal");
+    });
   }
 }
 
-interface TransStudentRec {
-  student_id: string;
-  student_name: string;
-  seat_no: string;
-  class_name: string;
-  dsns: string;
-  transfer_token: string;
-  accept_token: string;
-  contract_info: string;
-  create_time: string;
-  approved_time: string;
-  remark: string;
-  log: string;
-  status: string;
+export interface TransStudentRec {
+  StudentId: string;
+  StudentName: string;
+  SeatNo: string;
+  GradeYear: string;
+  ClassName: string;
+  Uid: string;
+  DSNS: string;
+  SchoolTitle: string;
+  TransferToken: string;
+  AcceptToken: string;
+  ConnectionInfo: string;
+  CreateTime: string;
+  ApprovedTime: string;
+  Status: string;
+  Remark: string;
+  CancelTime: string;
+  TeacherName: string;
+  Nickname: string;
 }

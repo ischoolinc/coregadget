@@ -34,7 +34,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 適用於老師身分，包含登入、登出及4個子服務，可成為特殊的登入網址，登入後只會看到最多4個服務，Gradebook、Behavior、Attendance、Weekly Report。亦可將其掛載成「Behavior 課堂行為表現」Gadget。
 
-目前已設定的學校：卡爾、康橋、中科實中、遠見、復興實中
+目前已設定的學校：卡爾、康橋、中科實中、遠見、復興實中、越華國際學校、葳格國際學校
 
 參考文件：[ESL 相關說明](https://docs.google.com/document/d/16h6qk_ARrFDTCYW2aX710DGqcpIDaaiypBSIrzu3_9M/edit#)
 

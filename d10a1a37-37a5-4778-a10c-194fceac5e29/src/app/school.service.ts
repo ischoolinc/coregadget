@@ -87,7 +87,17 @@ export class SchoolService {
       , iconUrl: 'assets/img/viethoa_logo.png'
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
     }],
-    ['p.wagor.tc.edu.tw', { // 葳格國際學校 小學部
+    ['p.wagor.tc.edu.tw', { // 葳格國際學校 小學部-西屯校區
+      title: 'Wagor International School'
+      , iconUrl: 'assets/img/wagor_logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['b.wagor.tc.edu.tw', { // 葳格國際學校 小學部-北屯校區
+      title: 'Wagor International School'
+      , iconUrl: 'assets/img/wagor_logo.png'
+      // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['j.wagor.tc.edu.tw', { // 臺中市私立葳格高級中學國中部
       title: 'Wagor International School'
       , iconUrl: 'assets/img/wagor_logo.png'
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。

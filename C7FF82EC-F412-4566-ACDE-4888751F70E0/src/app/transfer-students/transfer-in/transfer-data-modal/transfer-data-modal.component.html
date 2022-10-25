@@ -1,0 +1,24 @@
+<div class="modal fade" id="transferDataModal" tabindex="-1" role="dialog" aria-labelledby="transferDataModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          確定轉入 {{targetStudent.StudentName}} 的資料嗎？
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p class="text-center mt-3" *ngIf="isSaving">處理中，請稍候</p>
+        <p class="text-center mt-3 text-success" *ngIf="transDataStatus.info === 'success'">轉入成功！</p>
+          <p class="text-center mt-3 text-danger" *ngIf="transDataStatus.info === 'failed'">轉入失敗！{{transDataStatus.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">
+          取消
+        </button>
+        <button type="button" class="btn btn-danger" (click)="beginTransData()">
+          開始轉入
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

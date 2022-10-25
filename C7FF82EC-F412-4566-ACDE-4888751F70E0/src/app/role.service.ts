@@ -20,6 +20,7 @@ export class RoleService {
   private _enableInterviewStatistics: boolean = false;
   private _enableAdmin: boolean = false;
   private _enableComprehensive: boolean = false;
+  private _enableTransferStudents: boolean = false;
   private _enablePsychologicalTest: boolean = false;
   /** 相關服務可否使用 */
   private _enableTeacherService: boolean = false;
@@ -58,6 +59,10 @@ export class RoleService {
   }
   public get enableComprehensive() {
     return this._enableComprehensive;
+  }
+
+  public get enableTransferStudents() {
+    return this._enableTransferStudents;
   }
   public get enablePsychologicalTest() {
     return this._enablePsychologicalTest;
@@ -132,6 +137,12 @@ export class RoleService {
       this._role.indexOf("輔導老師") >= 0
     ) {
       this._enableComprehensive = true;
+    }
+
+    if (
+      this._role.indexOf("管理者") >= 0 || true
+    ) {
+      this._enableTransferStudents = true; // TODO: 要改成正確的
     }
 
     if (

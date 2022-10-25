@@ -1,4 +1,10 @@
 <div *ngIf="!isLoading; else tplLoading">
+  <div style="height: 50px;">
+    <button class="btn btn-info btn_bul_rad float-right" style="margin:5px;"
+      (click)="openReg()">
+      <b><i class="material-icons">add</i> 轉入申請</b></button>
+  </div>
+
   <div class="tab-content p-0">
     <ul class="rwd-table m-0">
       <li class="thead">
@@ -7,7 +13,8 @@
           <li class="sticky-top">座號</li>
           <li class="sticky-top">姓名</li>
           <li class="sticky-top">轉出校</li>
-          <li class="sticky-top">申請日期</li>
+          <li class="sticky-top">申請/取消 日期</li>
+          <li class="sticky-top">申請者</li>
           <li class="sticky-top">移轉狀態</li>
           <li class="sticky-top">回覆日期</li>
           <li class="sticky-top">功能</li>
@@ -15,21 +22,22 @@
       </li>
       <li class="tbody">
         <ol class="tr" *ngFor="let item of transList">
-          <li data-title="班級" (click)="devSetApproved(item)">{{item.class_name}}</li>
-          <li data-title="座號">{{item.seat_no}}</li>
-          <li data-title="姓名">{{item.student_name}}</li>
-          <li data-title="轉出校">{{item.dsns}}</li>
-          <li data-title="申請日期">{{(item.create_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
-          <li data-title="移轉狀態">{{formatStatus(item.status)}}</li>
-          <li data-title="回覆日期">{{(item.approved_time | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="班級">{{item.ClassName || '未分班級'}}</li>
+          <li data-title="座號">{{item.SeatNo}}</li>
+          <li data-title="姓名">{{item.StudentName}}</li>
+          <li data-title="轉出校">{{item.SchoolTitle}}</li>
+          <li data-title="申請/取消 日期">{{((item.CancelTime || item.CreateTime) | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
+          <li data-title="申請者">{{item.TeacherName}} {{item.Nickname ? '(' + item.Nickname + ')' : ''}}</li>
+          <li data-title="移轉狀態">{{formatStatus(item.Status)}}</li>
+          <li data-title="回覆日期">{{(item.ApprovedTime | date:'yyyy-MM-dd HH:mm') || '無'}}</li>
           <li data-title="功能">
-            <a class="text-info" *ngIf="item.status === '0'" (click)="toReg(item)">申請</a>
-            <a class="text-info" *ngIf="item.status === '1'" (click)="cancelReg(item)">取消</a>
-            <a class="text-info" *ngIf="item.status === '2'" (click)="confrimTransIn(item)">轉入</a>
+            <a class="text-info" *ngIf="item.Status === '1'" (click)="confirmCancelReg(item)">取消</a>
+            <a class="text-info" *ngIf="item.Status === '2'" (click)="confrimTransData(item)">轉入</a>
           </li>
         </ol>
       </li>
     </ul>
+    <div *ngIf="transList.length === 0" class="text-center mt-3">無資料</div>
   </div>
 </div>
 
@@ -39,25 +47,6 @@
   </div>
 </ng-template>
 
-<div class="modal fade" id="confirmTransModal" tabindex="-1" role="dialog" aria-labelledby="confirmTransModal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          確定轉入 {{targetStudent.student_name}} 的資料嗎？
-        </h5>
-      </div>
-      <div class="modal-body">
-        <p class="text-center mt-3" *ngIf="isSaving">處理中，請稍候</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">
-          取消
-        </button>
-        <button type="button" class="btn btn-danger" (click)="beginTransIn()">
-          開始轉入
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-reg-transfer-in-modal #regTransInModal></app-reg-transfer-in-modal>
+<app-cancel-transfer-in-modal #cancelTransInModal></app-cancel-transfer-in-modal>
+<app-transfer-data-modal #transferDataModal></app-transfer-data-modal>
