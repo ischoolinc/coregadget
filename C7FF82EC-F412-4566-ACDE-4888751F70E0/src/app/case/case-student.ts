@@ -255,7 +255,6 @@ public loadProblemMainCategoryTemplate()
   }
 
 
-  console.log("裝好了 ",  this.problem_main_category)
 
 }
 

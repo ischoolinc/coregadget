@@ -175,11 +175,11 @@ export class NewCaseModalComponent implements OnInit {
 
   cancel() {
 
-    if(this.caseStudent.proble_description[0].answer_martix[0]){ // 如果有填寫為儲存
+  
       if(!confirm("資料未儲存，確定取消?")){
          return ;
        }
-     }
+     
     this.isCancel = true;
     $("#newCase").modal("hide");
   }
@@ -261,12 +261,33 @@ export class NewCaseModalComponent implements OnInit {
   }
 
 
+    /**  */
+     chechedSelected(qq: QOption)
+     {
+      let num = 0
+      this.caseStudent.problem_category.forEach(x=>{
+        if(x.answer_checked){
+          num++ ;
+
+        }
+                  
+      })
+      if(num>2){
+          alert('個案類別(副) 最多選兩項');
+          qq.answer_checked =false ;
+        return ;
+      }
+     }
+
 
 
   /** 點選項目 */
   checkChange(qq: QOption, item: CaseStudent, title = null, target = null) {
 
     if (title == "個案類別(副)") {
+       // 只能選兩個
+      this. chechedSelected(qq);
+
       if (this.updateCataTerms.has(qq.answer_text)) {
         // 處理替換
         if (confirm("「" + qq.answer_text + "」 已更改為 「" + this.updateCataTerms.get(qq.answer_text) + "」， \n 是否變更用詞 ?")) {
