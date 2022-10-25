@@ -1,28 +1,61 @@
-import { Component, OnInit } from "@angular/core";
+import { ANALYZE_FOR_ENTRY_COMPONENTS, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { DsaService } from '../../../dsa.service';
 import { CaseInterview, QOption } from '../case-interview-vo';
-
+import {DomSanitizer} from '@angular/platform-browser';
+import { SelectorMatcher } from "@angular/compiler";
 @Component({
   selector: "app-add-case-interview-modal",
   templateUrl: "./add-case-interview-modal.component.html",
   styleUrls: ["./add-case-interview-modal.component.css"]
 })
 export class AddCaseInterviewModalComponent implements OnInit {
+  @ViewChild('fileInput') fileInput:ElementRef; 
   constructor(
     private dsaService: DsaService
+  ,private sanitizer:DomSanitizer
   ) { }
+  /** 當insert 成功後回傳的ID */
+  InsertCaseInterViewID  =""
+  fileSizeLimit : number = 3 * 1024 * 1024 
   isCancel: boolean = true;
-  fileContent: any
+  isAddServiceWork =false ;
   _editMode: string = "add";
   editModeString: string = "新增";
   // _studentName: string;
-  fileUpladed: { FileName, FileContent, TargetID };
+  // 上檔案相關變數  
+  fileContent: any
+  fileUpladed: { FileName, FileContent, TargetID,href } |any={};
   _CaseInterview: CaseInterview;
   ngOnInit() {
     this.isCancel = true;
     this._CaseInterview = new CaseInterview();
   }
 
+
+
+    /** 取得檔案 */
+    async getFile(targetID: string) {
+      this.fileUpladed ={};
+  
+      try {
+        let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
+          Request: {
+            TargetID: targetID,
+            BelongTable: '二級輔導個案晤談'
+          }
+  
+        });
+  
+        if(rsp.rs){
+          this.fileUpladed.FileName = rsp.rs.file_name;
+          let data  = atob( rsp.rs.content)
+         this.fileUpladed.href =this.sanitizer.bypassSecurityTrustUrl( data) 
+        }
+      
+      } catch (ex) {
+        alert('取得檔案發生錯誤:' + JSON.stringify(ex))
+      }
+    }
 
   // 載入預設資料
   async loadDefaultData() {
@@ -40,17 +73,26 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   // click 取消
   cancel() {
-    this.isCancel = true;
-    $("#addCaseInterview").modal("hide");
+     let isLeave =  confirm("尚未儲存，確定離開?")
+     debugger
+     if(!isLeave){
+      return
+    }else{ // 確定要離開
+      this.isCancel = true;
+      $("#addCaseInterview").modal("hide");
+    }
   }
-  // click 儲存
-  async save() {
+
+  /** 儲存 參數使否繼續編輯服務項目*/
+  async save(isAddSerWork :boolean =false ) {
+    this.isAddServiceWork =isAddSerWork ;
     this.isCancel = false;
     try {
       this._CaseInterview.isSaveDisable = true;
       this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
       await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
+
       this._CaseInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
@@ -115,11 +157,11 @@ export class AddCaseInterviewModalComponent implements OnInit {
     let resp = await this.dsaService.send("SetCaseInterview", {
       Request: req
     });
-
-    if (this.fileUpladed) {
-      console.log('respsss', resp.result);
-      this.fileUpladed.TargetID = resp.result.UID;
-      let respfile = await this.dsaService.send("SetCaseInterviewFile", {
+    this.InsertCaseInterViewID = resp.Result.uid ;
+     // 開始上傳附檔
+    if (this.fileUpladed&&resp.Result.uid) {
+      this.fileUpladed.TargetID = resp.Result.uid;
+      let respfile = await this.dsaService.send("SetFiles", {
         Request: {
           FileInfo: this.fileUpladed
         }
@@ -131,14 +173,22 @@ export class AddCaseInterviewModalComponent implements OnInit {
   /** 上傳資料 */
   async handleInputChange(event: any) {
     const file = event.target.files[0];
-
+    console.log('file',file);
+    if(file.type !=="application/pdf"){
+      alert("請上傳正確檔案類型!")
+       return 
+    }
+    // 確認檔案大小
+     if(file.size > this.fileSizeLimit ){
+       alert("檔案過大，請重新選擇檔案!")
+       event.target.files[0] =null ;
+     }
     this.readBase64(file)
       .then((data) => {
-        this.fileContent = data;
-        const fileStrig = btoa(data);
-        console.log("fileBase64", fileStrig);
-        const aa = atob(fileStrig)
-        console.log("aa", aa)
+        this.fileContent = data; 
+        this.fileUpladed.FileContent=btoa(data);
+        this.fileUpladed.FileName = file.name;
+        this.fileUpladed.BelongTable = "二級輔導個案晤談" ;
       });
   }
 
@@ -155,5 +205,12 @@ export class AddCaseInterviewModalComponent implements OnInit {
       reader.readAsDataURL(file);
     });
     return future;
+  }
+
+  /** 取消檔案 */
+  deleteFile(){
+    this.fileInput.nativeElement.value =null;
+
+   this.fileUpladed ={};
   }
 }

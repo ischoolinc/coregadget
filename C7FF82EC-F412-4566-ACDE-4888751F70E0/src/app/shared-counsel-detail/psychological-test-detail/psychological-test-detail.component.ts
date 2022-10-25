@@ -85,8 +85,6 @@ export class PsychologicalTestDetailComponent implements OnInit {
           StudentID: StudentID
         }
       });
-      //console.log(resp);
-
       [].concat(resp.Quiz || []).forEach(data => {
         let qd: QuizData = new QuizData();
         qd.QuizUid = data.QuizUid;

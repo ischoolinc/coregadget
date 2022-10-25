@@ -20,7 +20,6 @@ export class DelServiceModalComponent implements OnInit {
   async delService()
   { 
     try {
-      debugger
     let resp = await this.dsaService.send("TeacherService.DelTeacherService", {
       Request: {
         ServiceUID: this.currentServiceInfo.ServiceID

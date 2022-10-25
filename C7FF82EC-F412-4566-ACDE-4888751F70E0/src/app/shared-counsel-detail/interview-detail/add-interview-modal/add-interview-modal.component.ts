@@ -5,6 +5,7 @@ import { CounselInterview, QOption } from '../../counsel-vo';
 import { CounselDetailComponent } from "../../counsel-detail.component";
 import { SentenceService } from '../../../render/dissector.service';
 import { debounceTime } from "rxjs/operators";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-add-interview-modal",
@@ -16,10 +17,15 @@ export class AddInterviewModalComponent implements OnInit {
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     private dissector: SentenceService,
+    private sanitizer:DomSanitizer,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
   ) { }
-
+  fileSizeLimit : number = 3 * 1024 * 1024 
+   // 上傳檔案相關
+  fileContent: any 
+  /** insert檔案使用 */
+  fileUpladed: { FileName, FileContent, TargetID,href } |any={};
   /** 當前學生 */
   currentStudentInfo: CounselStudent ;
   /**當前學生 ID */
@@ -51,8 +57,10 @@ export class AddInterviewModalComponent implements OnInit {
       this.referralVisible = true;
     }
     this._currentCounselInterview = new CounselInterview();
- 
-    await this.loadDefaultData(    this.counselDetailComponent.currentStudent);
+  
+    if( this.counselDetailComponent){
+      await this.loadDefaultData(    this.counselDetailComponent.currentStudent);
+    }
   }
 
   /**設定isSerial */
@@ -115,11 +123,20 @@ export class AddInterviewModalComponent implements OnInit {
 
   // click 取消
   cancel() {
+   let result = confirm('尚未儲存，確定取消?') ;
+    if(!result){
     this.isCancel = true;
+    return
+  }else{
+    
     $("#addInterview").modal("hide");
+
+    }
   }
   /** Click 後儲存 */
   async save() {
+
+    // 檢查內容是否有填寫
     try {
       this.isCancel = false;
       this._currentCounselInterview.isSaveDisable = true;
@@ -265,16 +282,28 @@ export class AddInterviewModalComponent implements OnInit {
       ContactNameOther: data.ContactNameOther,
       Category: data.Category
     };
-
     try {
       let resp = await this.dsaService.send("SetCounselInterview", {
         Request: req
       });
+
+    // 開始上傳附檔
+    if (this.fileUpladed && resp.Result.uid) {
+      this.fileUpladed.TargetID = resp.Result.uid;
+      let respfile = await this.dsaService.send("SetFiles", {
+        Request: {
+          FileInfo: this.fileUpladed
+        }
+      });
+      
+      console.log("檔案回來的值", respfile);
+    }
     } catch (err) {
       alert('無法新增：' + err.dsaError.message);
     }
   }
 
+  /** 增加上傳資料邏輯 */
   checkChange(qq, item: CounselInterview) {
     if (qq.value == "") {
       item.isCategoryHasValue = false;
@@ -283,4 +312,76 @@ export class AddInterviewModalComponent implements OnInit {
     }
     item.checkValue();
   }
+  private readBase64(file): Promise<any> {
+    const reader = new FileReader();
+    const future = new Promise((resolve, reject) => {
+      reader.addEventListener('load', function () {
+        resolve(reader.result);
+      }, false);
+      reader.addEventListener('error', function (event) {
+        reject(event);
+      }, false);
+
+      reader.readAsDataURL(file);
+    });
+    return future;
+  }
+  async handleInputChange(event: any) {
+    const file = event.target.files[0];
+    console.log('file',file);
+       // 確認檔案類型
+     if(file.type !=="application/pdf"){
+      alert("請上傳正確檔案類型!")
+       return 
+    }
+       // 確認檔案大小
+       if(file.size > this.fileSizeLimit ){
+        alert("檔案過大，請重新選擇檔案!")
+        event.target.files[0] =null ;
+      }
+    this.readBase64(file)
+      .then((data) => {
+        this.fileContent = data; 
+        const dataArray :any[]  = data.split(',');
+        console.log("dataArray " ,dataArray[1]);
+        this.fileUpladed.FileContent = btoa(data);
+        this.fileUpladed.FileName = file.name;
+        this.fileUpladed.BelongTable = "一級輔導晤談" ;
+        // this.fileUpladed.href =this.sanitizer.bypassSecurityTrustUrl( data) ;
+        // this.fileUpladed.FileContent = data ;
+        // console.log("filesss",  data);
+        // const downObj = atob( this.fileUpladed.FileContent)
+        // console.log("downloadObj",downObj) ;
+      });
+  }
+
+  /** 取消檔案 */
+  deleteFile(){
+    this.fileUpladed ={};
+   }
+
+
+       /** 取得檔案 */
+  async getFile(targetID: string) {
+        this.fileUpladed ={};
+        try {
+          let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
+            Request: {
+              TargetID: targetID,
+              BelongTable: '一級輔導晤談'
+            }
+    
+          });
+  
+          if(rsp.rs){
+            this.fileUpladed.FileName = rsp.rs.file_name;
+            let data  = atob( rsp.rs.content)
+           this.fileUpladed.href =this.sanitizer.bypassSecurityTrustUrl( data) 
+          }
+        
+        } catch (ex) {
+          alert('取得檔案發生錯誤:' + JSON.stringify(ex))
+        }
+      }
+  
 }

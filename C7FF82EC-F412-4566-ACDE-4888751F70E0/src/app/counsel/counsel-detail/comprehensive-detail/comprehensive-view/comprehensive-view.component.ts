@@ -1,3 +1,4 @@
+import { RoleService } from 'src/app/role.service';
 import { Component, OnInit, Optional, TemplateRef, ViewChild } from "@angular/core";
 import {
   ActivatedRoute,
@@ -9,6 +10,8 @@ import { DsaService } from 'src/app/dsa.service';
 import { ComprehensiveDetailComponent } from '../comprehensive.component';
 
 
+// 教師綜合記錄表 
+
 
 @Component({
   selector: 'app-comprehensive-view',
@@ -16,7 +19,8 @@ import { ComprehensiveDetailComponent } from '../comprehensive.component';
   styleUrls: ['./comprehensive-view.component.css']
 })
 export class ComprehensiveViewComponent implements OnInit {
-
+ 
+  isEditable =false ;
   isLoading = true;
   isSaving = false;
   studentID: string;
@@ -35,11 +39,13 @@ export class ComprehensiveViewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dsaService: DsaService,
+    private roleService:RoleService,
     @Optional()
     private comprehensiveComponent: ComprehensiveDetailComponent
   ) { }
 
   ngOnInit() {
+   
     this.studentID = this.comprehensiveComponent.studentID;
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
@@ -52,6 +58,8 @@ export class ComprehensiveViewComponent implements OnInit {
       }
     );
   }
+
+
 
   async getFillInData() {
     this.isLoading = true;

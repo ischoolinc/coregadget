@@ -201,8 +201,6 @@ export class CaseInterviewReportComponent implements OnInit {
        
         });
 
-        debugger
-        console.log("hi~~")
         if(data1.length ==0){
           alert("沒有資料符和條件之資料!");
           return ;

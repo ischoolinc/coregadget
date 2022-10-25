@@ -11,8 +11,8 @@
            background: rgb(219, 235, 230);
            position: fixed;
            border-radius: 0px 50px 50px 0px;
- bottom:0px;
- left:0px;
+           bottom:0px;
+          left:0px;
 ">
 目前權限 :
 {{roleService.role}}
@@ -152,9 +152,9 @@
             <ng-container *ngIf="adminVisable === true">
               <li class="nav-item">
                 <a class="nav-link"
-                   [attr.data-toggle]="roleService.enableAdmin?'tab':null"
-                   (click)="!roleService.enableAdmin || routeTo('/teacher-service')"
-                   [ngClass]="{'active': currentComponent == 'teacher-service', 'disabled': !roleService.enableAdmin}">
+                   [attr.data-toggle]="roleService.enableTeacherService?'tab':null"
+                   (click)="!roleService.enableTeacherService|| routeTo('/teacher-service')"
+                   [ngClass]="{'active': currentComponent == 'teacher-service', 'disabled': !roleService.enableTeacherService}">
                   <b> 相關服務</b>
                 </a>
               </li>

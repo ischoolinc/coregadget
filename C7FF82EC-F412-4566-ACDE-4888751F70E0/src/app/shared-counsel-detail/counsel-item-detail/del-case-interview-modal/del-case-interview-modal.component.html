@@ -8,12 +8,14 @@
        role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"
+        <h3 class="modal-title"
             id="delCaseInterviewLabel">
-          確定刪除 ？
-        </h5>
+         <b>刪除</b> 
+        </h3>
       </div>
       <div class="modal-body">
+        <h4 class="mt-2" *ngIf="caseInterview.ServiceUID">服務項目將會一併刪除。 </h4>
+        <h4 class="mt-2"> 確定刪除? </h4>
         <div class="modal-footer">
           <button type="button"
                   class="btn btn-dark"

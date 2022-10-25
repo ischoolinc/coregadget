@@ -1,7 +1,38 @@
-
-
 .question-title-size {
-    font-size :20px ;
+  font-size: 20px;
 
 
+}
+
+.dropdown-menu {
+
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.dropdown {
+  max-height: 500px;
+  /* overflow-y: scroll; */
+
+}
+
+.dropdown-item {
+  background: #ffffff
+}
+
+.modal {
+  overflow: auto !important;
+}
+
+.btn-radious8 {
+  border-radius: 8px;
+
+
+}
+
+
+
+.btn {
+
+  box-shadow: none;
 }

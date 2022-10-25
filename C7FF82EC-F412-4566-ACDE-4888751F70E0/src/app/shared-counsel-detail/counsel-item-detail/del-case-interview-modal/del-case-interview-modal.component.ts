@@ -34,7 +34,17 @@ export class DelCaseInterviewModalComponent implements OnInit {
           UID: this.caseInterview.UID
         }
       });
-      $("#delCaseInterview").modal("hide");
+
+      // 刪除服務項目
+    // console.log("this.caseInterview.UID",this.caseInterview.ServiceUID) ;
+    if(this.caseInterview.ServiceUID){ // 如果有服務項目
+      await this.dsaService.send("TeacherService.DelTeacherService"
+      ,{ Request:{ServiceUID :this.caseInterview.ServiceUID}
+    }) 
+    }
+   
+    
+    $("#delCaseInterview").modal("hide");
     } catch (err) {
       alert(err);
     }

@@ -106,10 +106,8 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
 
   /**確認教師編碼是否重複 */
   checkIsExist( ){
-     alert("ngModal:"+this.TeacherCounselNumber);
-     debugger
     const teacherRole = this.existTeacherConselRole.find(x=> x.TeacherCounselNumber == this.TeacherCounselNumber )
-    if(teacherRole){
+    if(teacherRole && this.TeacherCounselNumber){
         alert("教師編碼重複!");
         this.TeacherCounselNumber = ""  
     }
@@ -118,7 +116,6 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   /**批次設定教師角色*/
   async SetTeachersCounselRole() {
     let reqTeacherCounselRole = [];
-
     let itItm = {
       TeacherID: this.selectTeacherID,
       Role: this.selectRole,

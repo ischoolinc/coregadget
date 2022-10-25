@@ -66,7 +66,7 @@ length
           <li class="sticky-top">服務項目</li>
           <li class="sticky-top">內容描述</li>
           <li class="sticky-top">對象(年級) </li>
-    
+          <li class="sticky-top">晤談紀錄編號 </li>
           <li class="sticky-top">
             <span>
               編輯
@@ -92,6 +92,10 @@ length
               </div>
     
               <div>{{ item.TeacherReportRole}}</div>
+            </li>
+
+            <li data-title="來自晤談紀錄" style="width: 25% !important;">
+                 {{item.CaseInterviewID}}
             </li>
             <li data-title="輔導人力身分" *ngIf="Mode.isEditMode()" style="width: 25% !important;">
               <div class="teacherNumber">

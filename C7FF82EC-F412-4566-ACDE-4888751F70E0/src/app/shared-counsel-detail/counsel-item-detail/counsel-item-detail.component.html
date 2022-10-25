@@ -1,5 +1,6 @@
 <div class= "ml-2">
 <div *ngIf="!isLoading; else tmpLoading">
+  <!-- Tab 晤談紀錄 -->
   <!-- 學生個人 - 輔導紀錄 -->
   <div class="tab-pane fade-in" id="listOne">
     <div class="d-md-flex align-items-center sub-title base-class-header ">
@@ -96,9 +97,9 @@
                   <div class="font-weight-bold mb-2 ml-1 ">
                     <div class="float-left mb-2">
                       <span class="align-middle"> 
-                        <h3 >
+                        <span class=" sub-title" >
                           {{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期
-                       </h3> 
+                       </span> 
                       </span>
                     </div>
                   </div>
@@ -107,11 +108,13 @@
                 <ul class="rwd-table">
                   <li class="thead">
                     <ol class="tr">
+                      <li style="width: 10%">晤談紀錄編號</li>
                       <li style="width: 10%">晤談日期</li>
                       <li style="width: 10%">晤談對象</li>
                       <li style="width: 10%">晤談方式</li>
                       <li style="width: 10%">記錄者</li>
-                      <li style="width: 40%">內容說明</li>
+                      <li style="width: 30%">內容說明</li>
+                      <li style="width: 10%">服務項目</li>
                       <li style="width: 20%"></li>
                     </ol>
                   </li>
@@ -120,6 +123,9 @@
                     <ng-container *ngIf="casseitem.SchoolYear === semInfo.SchoolYear &&
   semInfo.Semester === casseitem.Semester">
                       <ol class="tr" data-toggle="modal">
+                        <li data-title="編號" (click)="viewInterviewModal(casseitem)">
+                          {{ casseitem.UID }}
+                        </li>
                         <li data-title="日期" (click)="viewInterviewModal(casseitem)">{{ casseitem.OccurDate| date:
                           "yyyy/MM/dd" }}</li>
                         <li class="text-normal" data-title="對象" (click)="viewInterviewModal(casseitem)">
@@ -145,22 +151,20 @@
                             </div>
                           </div>
                         </li>
+                        <li data-title="" (click)="OpenServiceModal(casseitem)">
+                          <span *ngIf="casseitem.ServiceItem" >
+                            {{casseitem.ServiceItem}}</span>
+
+                            <span  *ngIf="!casseitem.ServiceItem">
+                              <mat-icon aria-hidden="false" aria-label="Example home icon"
+                              style="color:  #4d94ff; cursor:pointer ;font-size: 17px; ">
+                              add
+                            </mat-icon>
+                            </span>
+                          </li>
                         <li data-title="">
                           <ng-container *ngIf="casseitem.CaseIsClosed !== 't'">
-                            <!-- <button class="btn btn-sm  btn-light btn_white_rad"
-                        data-toggle="modal"
-                        (click)="editInterviewModal(casseitem)"
-                        [disabled]="casseitem.isEditDisable">
-                  修改
-                </button> -->
-                            <!-- <button class="btn btn-sm btn-danger btn_red_rad"
-                        data-toggle="modal"
-                        style="margin-left: 10px"
-                        (click)="deleteInterviewModal(casseitem)"
-                        [disabled]="isDeleteButtonDisable">
-                  刪除
-              
-                </button> -->
+          
 
                             <mat-icon aria-hidden="false" aria-label="Example home icon"
                             [ngClass] ="casseitem.isEditDisable ? 'word_gray':'word_blue'"
@@ -198,7 +202,7 @@
 <app-add-case-interview-modal #addCaseInterview></app-add-case-interview-modal>
 <app-view-case-interview-modal #viewCaseInterview></app-view-case-interview-modal>
 <app-del-case-interview-modal #delCaseInterview></app-del-case-interview-modal>
-
+<app-add-service-modal #addServiceModal></app-add-service-modal>
 <ng-template #tmpLoading class="container">
   <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...

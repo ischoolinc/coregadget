@@ -1,4 +1,4 @@
-import { ServiceItemDetail, ServiceItemInfo } from './../vo';
+import { ServiceDetailDB, ServiceItemDetail, ServiceItemInfo } from './../vo';
 import { Component, OnInit } from '@angular/core';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DsaService } from 'src/app/dsa.service';
@@ -9,21 +9,61 @@ import { DsaService } from 'src/app/dsa.service';
   styleUrls: ['./add-service-modal.component.css']
 })
 export class AddServiceModalComponent implements OnInit {
-  currentServiceItem: ServiceItemInfo
-  mode: 'add' | 'edit'
-
- isClose :boolean =false ;
+  isGetData = false;
+  serviceDataDB: ServiceDetailDB[] = [];
+  serviceDataList: ServiceItemInfo[] = [];
+  currentServiceItem: ServiceItemInfo =new ServiceItemInfo()
+  mode: 'add' | 'edit' // 模式
+  CaseInterviewID: string = ""
+  isClose: boolean = false;
   /** title  顯示  */
-  actionString :string =""
+  actionString: string = ""
   ServiceOptionList: any  // 下拉選單用 
   ServiceTargetList: any  // 服務對象 下拉選單用
   GenderList: any
-  currentServiceDetail: ServiceItemDetail ;
+  currentServiceDetail: ServiceItemDetail;
   constructor(private dsaService: DsaService) {
 
   }
 
   async ngOnInit() {
+    this.initModal();
+  }
+
+
+  /** 取得該筆service 資料*/
+  async GetServiceItemByUID(serviceID: string) {
+
+    let resp = await this.dsaService.send("TeacherService.GetServiceItemByUID", {
+      Request: {
+        ServiceUID: serviceID
+      }
+    });
+
+    this.serviceDataList = [];
+    this.serviceDataDB = [].concat(resp.rs || [])
+    // 整理資料
+    this.serviceDataDB.forEach(detail => {
+
+      let targetDetail = this.serviceDataList.find(x => x.ServiceID == detail.service_id)
+      // 如果沒有 沒有 在加入
+      if (!targetDetail) {
+        this.serviceDataList.push(new ServiceItemInfo(detail))
+      }
+      let targetDetailhasVaule = this.serviceDataList.find(x => x.ServiceID == detail.service_id)
+      targetDetailhasVaule.addTargetDetail(detail);      // 增加detail到裡面
+
+
+    })
+    this.currentServiceItem = this.serviceDataList[0];
+    console.log("rsp", this.serviceDataList[0]);
+
+  }
+
+
+  /** 初始化 */
+  initModal() {
+
     this.ServiceOptionList = [
       '團體輔導',
       '入班輔導',
@@ -62,23 +102,21 @@ export class AddServiceModalComponent implements OnInit {
     ];
     this.GenderList = ['男', '女']
     this.currentServiceDetail = new ServiceItemDetail();
-    if(this.mode == 'add'){
- 
+    if (this.mode == 'add') {
+
       this.currentServiceItem = new ServiceItemInfo();
-   
-      //
-      this.currentServiceItem.ServiceItem = '請選擇'
-      this.currentServiceDetail.ServiceTarget = '請選擇'
+      this.currentServiceItem.ServiceItem = ''
+      this.currentServiceDetail.ServiceTarget = ''
       this.currentServiceItem.ServiceDate = '';
+      this.currentServiceItem.CaseInterviewID = '';
       this.currentServiceItem.targetDetailList = [];
-  
-      console.log("sss", this.ServiceOptionList);
-    }else if(this.mode == 'edit'){
-    
-    
+
+
+    } else if (this.mode == 'edit') {
+
+
 
     }
- 
 
 
   }
@@ -96,22 +134,24 @@ export class AddServiceModalComponent implements OnInit {
   }
   /** 儲存 */
   async save() {
-     // 檢查欄位 
-     if(!this.currentServiceItem.ServiceDate){
-         alert("請選擇日期!")
-         return 
-     }
-     if(!this.currentServiceItem.ServiceItem){
+    // 檢查欄位 
+    if (!this.currentServiceItem.ServiceDate) {
+      alert("請選擇日期!")
+      return
+    }
+    if (!this.currentServiceItem.ServiceItem) {
 
-        alert("請選擇服務項目!")
-        return 
-     }
-     if(!this.currentServiceItem.targetDetailList.length){
+      alert("請選擇服務項目!")
+      return
+    }
+    if (!this.currentServiceItem.targetDetailList.length) {
       alert("請選選擇服務對象及人次")
-      return 
-   }
+      return
+    }
 
-
+    if (!this.currentServiceItem.CaseInterviewID) {
+      this.currentServiceItem.CaseInterviewID = this.CaseInterviewID;
+    }
 
 
     try {
@@ -121,9 +161,10 @@ export class AddServiceModalComponent implements OnInit {
         }
       });
 
-  
+
       alert("儲存成功!")
-      this.isClose =true ;
+      this.isGetData = true;
+      this.isClose = true;
       $("#addServiceModal").modal("hide");
     } catch (ex) {
       alert("TeacherService.SetTeacherService" + JSON.stringify(ex));
@@ -148,6 +189,12 @@ export class AddServiceModalComponent implements OnInit {
 
   // }
 
+  checkShowBtn() {
+    return this.currentServiceDetail.ServiceTarget && this.currentServiceDetail.gender && this.currentServiceDetail.peopleCount
+
+
+  }
+
 
   /** 增加detail */
   addServiceDetail() {
@@ -162,8 +209,8 @@ export class AddServiceModalComponent implements OnInit {
     }
     if (!this.currentServiceDetail.peopleCount) {
       alert("請輸入人次")
-      return 
-   
+      return
+
     }
     this.currentServiceItem.targetDetailList.push(this.currentServiceDetail)
     this.currentServiceDetail = new ServiceItemDetail();
@@ -172,11 +219,18 @@ export class AddServiceModalComponent implements OnInit {
   /**去除資料 */
   removeItem(index: number) {
 
- 
+
     this.currentServiceItem.targetDetailList.splice(index, 1)
 
   }
-  countChange(event :any){
+  countChange(event: any) {
     alert(event.target.value)
+  }
+
+  /**取消編輯 */
+  cancel() {
+    this.isGetData = true;
+    this.isClose = true;
+    $("#addServiceModal").modal("hide");
   }
 }

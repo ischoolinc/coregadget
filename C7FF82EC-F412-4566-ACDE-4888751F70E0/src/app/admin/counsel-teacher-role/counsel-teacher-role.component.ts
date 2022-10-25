@@ -17,6 +17,7 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./counsel-teacher-role.component.css']
 })
 export class CounselTeacherRoleComponent implements OnInit {
+  isShowInfo = false ;
   public teacherTypeStr: string = "教師輔導身分";
   isLoading = false;
   myControl = new FormControl();
@@ -83,12 +84,7 @@ export class CounselTeacherRoleComponent implements OnInit {
     this.selectTeacherName = item;
     // this.chkSaveButton();
   }
-  // chkSaveButton() {
-  //   if (this.selectRole === '請選擇身分' || this.selectTeacherName === '請選擇教師')
-  //     this.isSaveButtonDisable = true;
-  //   else
-  //     this.isSaveButtonDisable = false;
-  // }
+
   Add_v2() {
     this.Mode.mode = 'add';
     const teacherRoleInfo = new TeacherCounselRole();
@@ -100,13 +96,13 @@ export class CounselTeacherRoleComponent implements OnInit {
 
   Add() {
     this._addCounselTeacherRole.counselRole = this.counselRole; // 增加角色
-    this._addCounselTeacherRole.counselReportRoles =this.reportRolesOptions ;
+    this._addCounselTeacherRole.counselReportRoles = this.reportRolesOptions;
     // 傳入現有教師資訊
-    this._addCounselTeacherRole.existTeacherConselRole =this.teachersCounselRoles ;
+    this._addCounselTeacherRole.existTeacherConselRole = this.teachersCounselRoles;
     // 填入老師姓名
     this._addCounselTeacherRole.options = [];
-    this._addCounselTeacherRole.TeacherCounselNumber ="" ;
-    this._addCounselTeacherRole.selectReportRole =""; // 打開視窗後初始化 
+    this._addCounselTeacherRole.TeacherCounselNumber = "";
+    this._addCounselTeacherRole.selectReportRole = ""; // 打開視窗後初始化 
     this._addCounselTeacherRole.selectTeacherID = ""; // 打勘使窗後出
     this._addCounselTeacherRole.myControl.setValue('');
     this.notTeachersCounselRole.forEach(item => {
@@ -115,7 +111,7 @@ export class CounselTeacherRoleComponent implements OnInit {
 
     this._addCounselTeacherRole.selectRole = "請選擇身分";
     this._addCounselTeacherRole.selectTeacherName = "請選擇教師";
-    this._addCounselTeacherRole.selectReportRole ='請選擇輔導人力身分' ; // 20220920 增加需求
+    this._addCounselTeacherRole.selectReportRole = '請選擇輔導人力身分'; // 20220920 增加需求
     this._addCounselTeacherRole.notTeachersCounselRole = this.notTeachersCounselRole;
     this._addCounselTeacherRole.isSaveButtonDisable = true;
     $("#addCounselTeacherRole").modal("show");
@@ -155,8 +151,23 @@ export class CounselTeacherRoleComponent implements OnInit {
   saveAll() {
     this.Mode.mode = 'view'; //切換回檢視模式
     this.saveAllTeacher();
+  }
+
+  
+  /** 確認是否重複 */
+  checkTeacherNum(teacher: TeacherCounselRole) {
+  
+    if(teacher.TeacherCounselNumber){
+      const result :any[] = this.teachersCounselRoles.filter(x => x.TeacherCounselNumber ==teacher.TeacherCounselNumber)
+      if (result.length >1) {
+        alert("教師代碼重複!")
+        teacher.TeacherCounselNumber = ""
+        return
+      }
+    }
 
   }
+
   /**儲存教師角色資訊 */
   async saveAllTeacher() {
     //發送req
@@ -227,7 +238,7 @@ export class CounselTeacherRoleComponent implements OnInit {
           tea.TeacherID = CounselRole.TeacherID;
           tea.TeacherName = CounselRole.TeacherName;
           tea.TeacherCounselNumber = CounselRole.TeacherCounselNumber
-          tea.TeacherReportRole =CounselRole.TeacherReportRole
+          tea.TeacherReportRole = CounselRole.TeacherReportRole
           tea.Role = CounselRole.Role;
           tea.parseOrder();
           if (tea.Role && tea.Role !== '') {
@@ -236,7 +247,7 @@ export class CounselTeacherRoleComponent implements OnInit {
             this.notTeachersCounselRole.push(tea);
           }
         });
-    
+
         this.teachersCounselRoles.sort(function (a, b) {
           return a.Order - b.Order;
 

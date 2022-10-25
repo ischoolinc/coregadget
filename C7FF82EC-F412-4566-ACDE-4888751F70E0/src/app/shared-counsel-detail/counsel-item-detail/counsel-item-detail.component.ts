@@ -1,3 +1,4 @@
+import { AddServiceModalComponent } from './../../teacher-service/add-service-modal/add-service-modal.component';
 import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { CaseStudent } from "../../case/case-student";
 import { DsaService } from "../../dsa.service";
@@ -20,6 +21,7 @@ export class CounselItemDetailComponent implements OnInit {
   caseViewInfoList: CaseViewInfo[] = [];
   _StudentID: string = "";
   isLoading = false;
+  hasGetDataAlready = false  ;
   currentStudent: CounselStudent;
   
   // 個案資料
@@ -27,10 +29,12 @@ export class CounselItemDetailComponent implements OnInit {
   transferStatus :DBOption[];
   isDeleteButtonDisable: boolean = true;
 
+
   @ViewChild("addCaseInterview") _addInterview: AddCaseInterviewModalComponent;
   @ViewChild("delCaseInterview") _delCaseInterview: DelCaseInterviewModalComponent;
   @ViewChild("viewCaseInterview") _viewCaseInterview: ViewCaseInterviewModalComponent;
 
+  @ViewChild("addServiceModal") _addServiceModal: AddServiceModalComponent;
 
   constructor(
     private dsaService: DsaService,
@@ -42,6 +46,7 @@ export class CounselItemDetailComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    
     this.counselDetailComponent.setCurrentItem('counsel');
     this.caseList = [];
     this._StudentID = "";
@@ -64,12 +69,12 @@ export class CounselItemDetailComponent implements OnInit {
     await this.GetCaseInterviewByStudentID(this._StudentID);
   }
 
-  // 新增
+  /** 新增 */
   addInterviewModal(item: CaseStudent) {
     
     this._addInterview._editMode = "add";
     this._addInterview.editModeString = "新增";
-
+    this._addInterview.fileUpladed ={} ;
     this._addInterview._CaseInterview.CaseID = item.UID;
     this._addInterview._CaseInterview.CaseNo = item.CaseNo;
     this._addInterview._CaseInterview.StudentID = item.StudentID;
@@ -96,17 +101,39 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.useQuestionOptionTemplate(this.transferStatus);
     this._addInterview.loadDefaultData();
     this._addInterview._CaseInterview.checkValue();
+    this._addInterview.fileUpladed ={};
 
+    $("#addCaseInterview").modal({ backdrop: 'static' });
     $("#addCaseInterview").modal("show");
 
     // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {
-      if (!this._addInterview.isCancel) {
-        // 重整資料
-        this.loadData();
+      
+      if (!this._addInterview.isCancel &&this._addInterview.isAddServiceWork) {
+       // 新增之後跳出 新增服務項目 
+       this._addServiceModal.mode ='add';
+       this._addServiceModal.CaseInterviewID = this._addInterview.InsertCaseInterViewID ;
+       this._addServiceModal.initModal() ;
+      
+       $("#addServiceModal").modal({ backdrop: 'static' });
+       $("#addServiceModal").modal("show");
+       $("#addServiceModal").on("hide.bs.modal", () => {
+        if (true) { // 如果關掉舊重新 load 資料
+          //Jean 
+     
+          this.loadData();
+          $("#addServiceModal").off("hide.bs.modal");
+        }
+      });
       }
-      $("#addCaseInterview").off("hide.bs.modal");
+  // 如果關掉舊重新 load 資料
+        this.loadData();
+
+       $("#addCaseInterview").off("hide.bs.modal");
     });
+
+
+ 
   }
 
   public parseDate(dt: Date) {
@@ -137,7 +164,8 @@ export class CounselItemDetailComponent implements OnInit {
     this._viewCaseInterview.CounselTypeOther = caseInterview.CounselTypeOther;
     this._viewCaseInterview.ContactName = caseInterview.ContactName;
     this._viewCaseInterview.Content = caseInterview.Content;
-
+    this._viewCaseInterview.getFile(caseInterview.UID);
+    
     this._viewCaseInterview.AuthorName = caseInterview.AuthorName;
     this._viewCaseInterview.CaseID = caseInterview.CaseID;
 
@@ -150,7 +178,7 @@ export class CounselItemDetailComponent implements OnInit {
 
   }
 
-  // 修改
+  /** 編輯 */
   editInterviewModal(caseInterview: CaseInterview) {
   if(caseInterview.isEditDisable) // 不能編編輯 
   {
@@ -165,14 +193,17 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
     this._addInterview._CaseInterview.isSaveDisable = true;
     this._addInterview.loadDefaultData();
+    this._addInterview.getFile(caseInterview.UID); ;
     this._addInterview._CaseInterview.checkValue();
+    // 服務項目相關
+    this._addServiceModal.CaseInterviewID = caseInterview.UID ;
+    $("#addCaseInterview").modal({ backdrop: 'static' });
     $("#addCaseInterview").modal("show");
-    // 關閉畫面
+     // 關閉畫面
     $("#addCaseInterview").on("hide.bs.modal", () => {
-      if (!this._addInterview.isCancel) {
-        // 重整資料
-        this.loadData();
-      }
+     // 重整資料
+      this.loadData();
+
       $("#addCaseInterview").off("hide.bs.modal");
     });
   }
@@ -197,10 +228,10 @@ export class CounselItemDetailComponent implements OnInit {
     $("#delCaseInterview").modal("show");
     // 關閉畫面
     $("#delCaseInterview").on("hide.bs.modal", () => {
-      if (!this._delCaseInterview.isCancel) {
+ 
         // 重整資料
         this.loadData();
-      }
+   
       $("#delCaseInterview").off("hide.bs.modal");
     });
   
@@ -308,9 +339,32 @@ export class CounselItemDetailComponent implements OnInit {
       this.caseViewInfoList.push(caseInfo);
 
       data.push(rec);
-    });
+    });debugger
     this.caseList = data;
   }
+
+  /** 打開服務項目 */
+  async OpenServiceModal(caseInterview: CaseInterview =null , mode :"add"|'edit' ="add"){
+    this._addServiceModal.mode = mode;
+    if(caseInterview) {
+      this._addServiceModal.CaseInterviewID = caseInterview.UID;
+      this._addServiceModal.GetServiceItemByUID(caseInterview.ServiceUID)
+    }
+  
+    this._addServiceModal.initModal() ;
+    
+    $("#addServiceModal").modal({ backdrop: 'static' });
+    $("#addServiceModal").modal("show");
+
+    $("#addServiceModal").on("hide.bs.modal",async () => {
+     
+        // 重整資料 
+     
+       await  this.loadData();
+       $("#addServiceModal").off("hide.bs.modal");  
+      })
+  }
+
 
   async GetCaseInterviewByStudentID(StudentID: string) {
     let data: CaseInterview[] = [];
@@ -344,6 +398,8 @@ export class CounselItemDetailComponent implements OnInit {
       rec.CaseNo = counselRec.CaseNo;
       rec.ClassID = counselRec.ClassID;
       rec.CaseIsClosed = counselRec.CaseIsClosed;
+      rec.ServiceItem = counselRec.ServiceItem ;
+      rec.ServiceUID = counselRec.ServiceUID ;
 
       this.caseList.forEach(item => {
         if (item.UID === rec.CaseID) {
@@ -405,6 +461,7 @@ export class CounselItemDetailComponent implements OnInit {
     });
     this._semesterInfo.forEach(sms => {
       this.caseViewInfoList.forEach(caseV => {
+      
         if (sms.CaseID === caseV.CaseID) {
           caseV.SemesterInfoList.push(sms);
         }
