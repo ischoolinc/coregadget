@@ -199,15 +199,78 @@
                 $scope.current.VisibleExam = [];
                 $scope.current.Course = course;
 
+                /**
+                 * 
+                 * 是否為 Date 可 parse 的字串
+                 * 如無法為 Date parse, 則檢查是否是 SQL date format
+                 * 另外兼容 '' 空字串判定, 因成績範圍未輸入時會收到空字串
+                 * 空字串 Date 可解析, syntax 正確但是 semantic 錯誤
+                 * 會解析成 UNIX 時間的開始時間 UTC1970年1月1日0時0分0秒
+                 * 
+                 * @param {*} t 欲檢查的時間
+                 * @returns true: valid datetime string format
+                 */
+                const isValidSqlTimeOrDateTime = (t) => {
+                    if(t == '') return false; //input 有空字串
 
+                    let newDateTest = new Date(t);
+
+                    if(newDateTest == 'Invalid Date'){ //'Invalid Date' 為 js Date(Web API) parse 回傳的錯誤碼
+                        let transformTest = luxon.DateTime.fromSQL(t).toISO();
+                        if (transformTest == null) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    }
+
+                    return true;
+                    
+                }
+                /**
+                 * 
+                 * 此 gadget 範圍內已知時間格式轉換
+                 * 
+                 * 允許的 input 集合: 
+                    * YYYY-MM-DDTHH:mm:ss (ISO 8601)
+                    * YYYY-MM-DD HH:mm:ss server 回傳的 now (應是 select Now())
+                    * YYYY/MM/DD HH:mm:ss server 回傳的 inputStart /inputEnd
+                    * '' 空字串 (回傳的 inputStart /inputEnd, 未輸入時)
+                 * 
+                 * 
+                 * 
+                 * @param {*} timestamp : 時間字串
+                 * @returns Date 合法字串 (ISO 8601)
+                 */
                 const timestampWrapper = (timestamp) => {
-                    return timestamp.replace(/ /g,"T")
+
+                    let newDateTest = new Date(timestamp);
+                    if(newDateTest == 'Invalid Date'){//Date constructor 返回的錯誤碼
+                        console.log('timestamp iso: ', luxon.DateTime.fromSQL(timestamp).toISO())
+                        return luxon.DateTime.fromSQL(timestamp).toISO();
+                    }else{
+                        console.log('timestamp str: ', timestamp)
+                        return timestamp;
+                    }
+
                 }
 
-                console.log('1: ', course, `#${course.InputStartTime}#`, new Date(timestampWrapper(course.InputStartTime)), `#${rsp.Timestamp.Now}#`, new Date(timestampWrapper(rsp.Timestamp.Now)), `#${rsp.Timestamp.Now}#`, new Date(timestampWrapper(rsp.Timestamp.Now)), `#${course.InputEndTime}#`, new Date(timestampWrapper(course.InputEndTime)))
-                // 是否開放課程成績輸入
-                $scope.current.Course.Lock = !(course.AllowUpload == '是' && new Date(course.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now))
-                    && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(course.InputEndTime));
+                //規則: 與孟樺靜瑜確認, 除非 開始時間與結束時間 都有值才判斷, 否則皆為 lock
+                if (isValidSqlTimeOrDateTime(course.InputStartTime) && isValidSqlTimeOrDateTime(course.InputEndTime)) {
+
+                    // 是否開放課程成績輸入
+                    $scope.current.Course.Lock = !(course.AllowUpload == '是' && new Date(timestampWrapper(course.InputStartTime)) < new Date(timestampWrapper(rsp.Timestamp.Now))
+                        && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(timestampWrapper(course.InputEndTime)));
+
+
+                } else {
+
+                    $scope.current.Course.Lock = true;
+
+                }
+
+
                 // 課程評分樣板：定期評量清單
                 $scope.templateList = [];
                 $scope.examList = [];
@@ -267,7 +330,7 @@
                         }
                     };
 
-                    console.log(finalScorePreview);
+
                     $scope.examList.push(finalScore, finalScorePreview);
                     $scope.current.VisibleExam.push('學期成績', '學期成績_試算');
                 }
@@ -281,16 +344,24 @@
                     //     return temp;
                     // });
 
-                    const timestampWrapper = (timestamp) => {
-                        return timestamp.replace(/ /g,"T")
-                    }
 
                     // 處理不需要評分不顯示
                     [].concat(course.Scores.Score || []).forEach(function (temp) {
                         if (temp.UseScore === "是") {
-                            console.log('2: ', new Date(temp.InputStartTime), new Date(timestampWrapper(rsp.Timestamp.Now)), new Date(timestampWrapper(rsp.Timestamp.Now)),  new Date(temp.InputEndTime))
+                            console.log('2: ', new Date(temp.InputStartTime), new Date(timestampWrapper(rsp.Timestamp.Now)), new Date(timestampWrapper(rsp.Timestamp.Now)), new Date(temp.InputEndTime))
                             temp.isSubScoreMode = false;
-                            temp.Lock = !(new Date(temp.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(temp.InputEndTime));
+                            if (isValidSqlTimeOrDateTime(temp.InputStartTime) && isValidSqlTimeOrDateTime(temp.InputEndTime)) {
+
+                                // 是否開放課程成績輸入
+                                temp.Lock = !(new Date(timestampWrapper(temp.InputStartTime)) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(timestampWrapper(temp.InputEndTime)));
+            
+                            } else {
+            
+                                temp.Lock = true;
+            
+                            }
+                            //temp.Lock = !(new Date(temp.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(temp.InputEndTime));
+                            
                             $scope.templateList.push(temp);
                         }
                     });
@@ -538,9 +609,7 @@
                                 $scope.OrginStudentList.push(Object.assign({}, studentRec));
                                 studentMapping[studentRec.StudentID] = studentRec;
                             });
-                            console.log('1');
 
-                            console.log('$scope.OrginStudentList', $scope.OrginStudentList);
 
                             // 已透過 Service 處理，這段不需要
                             // // 學生排序
@@ -1068,8 +1137,8 @@
 
             // 儲存定期評量成績
             var SetCourseExamScoreWithExtension = function () {
-                let isChange =false
-                let logManangers =[];
+                let isChange = false
+                let logManangers = [];
                 let logDescription = `課程：${$scope.current.Course.CourseName}  【評量成績】　\n`;
                 return new Promise((r, j) => {
                     var body = {
@@ -1080,7 +1149,7 @@
                     };
                     $scope.templateList.forEach(function (examRec, index) {
 
-                    
+
                         if (!examRec.Lock) {
                             var eItem = {
                                 '@ExamID': examRec.ExamID,
@@ -1101,34 +1170,34 @@
                                 };
 
                                 if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
-                                    isChange=true ;
-                                    if (logManangers.length== 0 || !(logManangers.find(x=>{return x.key ==`Exam_${examRec.ExamID}` }))) { //第一次
+                                    isChange = true;
+                                    if (logManangers.length == 0 || !(logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` }))) { //第一次
 
-                                    var logBySubItem = {
-                                        key: `Exam_${examRec.ExamID}` ,
-                                        title : "",
-                                        descriptSection :[]
-                       
-                                   };
-                                   logBySubItem.title = `\n 輸入【${examRec.Name}】成績: \n`;
-                                   logBySubItem.descriptSection =[];
-                                   logManangers.push(logBySubItem);
+                                        var logBySubItem = {
+                                            key: `Exam_${examRec.ExamID}`,
+                                            title: "",
+                                            descriptSection: []
+
+                                        };
+                                        logBySubItem.title = `\n 輸入【${examRec.Name}】成績: \n`;
+                                        logBySubItem.descriptSection = [];
+                                        logManangers.push(logBySubItem);
+                                    }
+
+                                    var temp = logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` });
+                                    var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${studentRec['Exam' + examRec.ExamID + 'Origin'] || '  '} => ${studentRec['Exam' + examRec.ExamID]}  `;
+
+                                    temp.descriptSection.push(descriptByItem);
+
                                 }
-                               
-                                var temp =logManangers.find(x=>{return x.key ==`Exam_${examRec.ExamID}`});
-                                var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${studentRec['Exam' + examRec.ExamID + 'Origin'] || '  '} => ${studentRec['Exam' + examRec.ExamID]}  `;
-                                
-                                temp.descriptSection.push(descriptByItem);
-                                
-                            }
-                            
-                            
-                            // 是否為讀卡子成績項目
-                            if (examRec.isSubScoreMode) {
-                                data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
-                                data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
-                            
-                            }
+
+
+                                // 是否為讀卡子成績項目
+                                if (examRec.isSubScoreMode) {
+                                    data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
+                                    data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
+
+                                }
 
                                 eItem.Student.push(data);
                             });
@@ -1136,9 +1205,9 @@
                         }
                     });
 
-                    
-                    logManangers.forEach(x=>{
-                        logDescription += x.title ;
+
+                    logManangers.forEach(x => {
+                        logDescription += x.title;
                         logDescription += x.descriptSection.join('\n');
                     });
 
@@ -1159,7 +1228,7 @@
                     });
 
                     /**log */
-                    if(isChange){
+                    if (isChange) {
                         $scope.connection2.send({
                             service: "_.InsertLogFromWeb",
                             body: `<Request>
@@ -1178,16 +1247,16 @@
                             }
                         });
                     }
-                
+
                 });
             }
 
             // 儲存學期成績(課程成績)
             var SetCourseSemesterScore = function () {
-               
-                var isChange = false ;
-                var descriptString = `修改 ${$scope.current.Course.CourseName} 【學期成績】 \n` ;
-               
+
+                var isChange = false;
+                var descriptString = `修改 ${$scope.current.Course.CourseName} 【學期成績】 \n`;
+
                 return new Promise((r, j) => {
                     var body = {
                         Content: {
@@ -1199,9 +1268,9 @@
                     };
                     [].concat($scope.studentList || []).forEach(function (studentRec) {
                         // log用
-                        if(studentRec['Exam學期成績']!=studentRec['Exam學期成績Origin']){
-                         descriptString +=  `  ${studentRec.ClassName}班 ${studentRec.SeatNo}號  ${studentRec.StudentName}  ,${studentRec['Exam學期成績Origin']} => ${studentRec['Exam學期成績']} \n`
-                         isChange = true ;   
+                        if (studentRec['Exam學期成績'] != studentRec['Exam學期成績Origin']) {
+                            descriptString += `  ${studentRec.ClassName}班 ${studentRec.SeatNo}號  ${studentRec.StudentName}  ,${studentRec['Exam學期成績Origin']} => ${studentRec['Exam學期成績']} \n`
+                            isChange = true;
                         }
 
                         var obj = {
@@ -1225,7 +1294,7 @@
                         }
                     });
 
-                    if(isChange){
+                    if (isChange) {
                         $scope.connection2.send({
                             service: "_.InsertLogFromWeb",
                             body: `<Request>
@@ -1270,11 +1339,11 @@
             };
             // 資料整理
             // log 資料整理
-            logManangers =[];
+            logManangers = [];
             // 看使否有印過子項目(log用)
             [].concat($scope.studentList || []).forEach(function (stuRec, index) {
 
-              
+
                 // 學生
                 var student = {
                     '@CourseID': $scope.current.Course.CourseID,
@@ -1295,7 +1364,7 @@
 
                     // 小考成績
                     var targetItemList = $scope.gradeItemList.filter(item => item.Name !== '平時評量' && item.RefExamID == template.ExamID && item.Permission !== 'Program');
-                  
+
                     [].concat(targetItemList || []).forEach(item => {
                         var _item = {
                             '@SubExamID': item.SubExamID,
@@ -1303,22 +1372,22 @@
                         }
                         /**log [平時評量] */
                         if (stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`] != stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}Origin`]) {
-                           
-                            if (logManangers.length== 0 || !(logManangers.find(x=>{return x.key ==`Exam_${item.RefExamID}_Quiz_${item.SubExamID}` }))) { //第一次
+
+                            if (logManangers.length == 0 || !(logManangers.find(x => { return x.key == `Exam_${item.RefExamID}_Quiz_${item.SubExamID}` }))) { //第一次
 
                                 var logBySubItem = {
-                                    key: `Exam_${item.RefExamID}_Quiz_${item.SubExamID}` ,
-                                    title : "",
-                                    descriptSection :[]
-                   
-                               };
-                               logBySubItem.title = `\n 輸入【${template.Name}】【${item.Name}】成績: \n`;
-                               logBySubItem.descriptSection =[];
-                               logManangers.push(logBySubItem);
+                                    key: `Exam_${item.RefExamID}_Quiz_${item.SubExamID}`,
+                                    title: "",
+                                    descriptSection: []
+
+                                };
+                                logBySubItem.title = `\n 輸入【${template.Name}】【${item.Name}】成績: \n`;
+                                logBySubItem.descriptSection = [];
+                                logManangers.push(logBySubItem);
                             }
-                            
-                     
-                            var temp =logManangers.find(x=>{return x.key ==`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`});
+
+
+                            var temp = logManangers.find(x => { return x.key == `Exam_${item.RefExamID}_Quiz_${item.SubExamID}` });
                             var descriptByItem = `　${stuRec.ClassName}班  ${stuRec.SeatNo}號  ${stuRec.StudentName}  , ${stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}Origin`] || '  '} => ${stuRec[`Exam_${item.RefExamID}_Quiz_${item.SubExamID}`]} `;
                             temp.descriptSection.push(descriptByItem);
                         }
@@ -1334,12 +1403,12 @@
 
 
             //整理log 
-            logManangers.forEach(x=>{
-                logDescription += x.title ;
+            logManangers.forEach(x => {
+                logDescription += x.title;
                 logDescription += x.descriptSection.join('\n');
             });
-            
-   
+
+
 
             $scope.connection.send({
                 service: "TeacherAccess.SetSCAttendExtensions",
@@ -1501,7 +1570,7 @@
          * 儲存評分項目
          */
         $scope.saveGradeItemConfig = function () {
-          var   logDescription ="編輯後評分項目 : \n" ;
+            var logDescription = "編輯後評分項目 : \n";
             var body = {
                 Content: {
                     CourseExtension: {
@@ -1521,7 +1590,7 @@
             var examNameList = [];
             var dataRepeat = false;
             var repeatExamName = '';
-            console.log("gradeItemConfig.Item",$scope.gradeItemConfig.Item);
+            console.log("gradeItemConfig.Item", $scope.gradeItemConfig.Item);
             $scope.gradeItemConfig.Item.forEach(function (item) {
 
                 var pass = true;
@@ -1541,9 +1610,8 @@
                         dataRepeat = true;
                         repeatExamName = item.Name;
                     }
-                    if( $scope.current.template.ExamID == item.RefExamID)
-                    {
-                        logDescription += $scope.current.Course.CourseName +" : "+ $scope.current.template.Name+ ":" +item.Name + "\n";
+                    if ($scope.current.template.ExamID == item.RefExamID) {
+                        logDescription += $scope.current.Course.CourseName + " : " + $scope.current.template.Name + ":" + item.Name + "\n";
 
                     }
                     body.Content.CourseExtension.Extension.GradeItem.Item.push({
@@ -1572,7 +1640,7 @@
                                     $scope.gradeItemList.forEach(item => {
                                         if (item.RefExamID == $scope.current.template.ExamID) {
                                             $scope.current.gradeItemList.push(item);
-                                           
+
                                         }
                                     });
 
@@ -1952,7 +2020,7 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
-                         
+
                                 importProcess.ParseString = importProcess.ParseString || '';
                                 importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
@@ -2049,7 +2117,7 @@
                                 $('#importModal').modal('show');
                             },
                             Parse: function () {
-                           
+
                                 importProcess.ParseString = importProcess.ParseString || '';
                                 importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
