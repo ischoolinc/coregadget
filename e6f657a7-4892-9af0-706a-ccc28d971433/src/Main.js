@@ -45,12 +45,12 @@ function Main() {
   // 該校設定要顯示加權平均"分數"還是算術平均"分數"，或不顯示
   //(已告知佳樺，等回覆)>>>>需修改desktop設定
   const [avgSetting, setAvgSetting] = useState('加權平均');
+  
+  // 該校設定 顯示排名 or not
+  const [viewRankSetting, setViewRankSetting] = useState(false); 
 
   //取得 判斷加權平均、算術平均 的及格標準分數
   const [avgPassingStardard, setAvgPassingStardard] = useState(60);
-
-  // 該校設定要顯示加權平均"排名"還是算術平均"排名" >> 需改成 顯示排名 or not
-  const [viewRankSetting, setViewRankSetting] = useState(false); //weighted//arithmetic....
 
   // 該學生的指定學年期、每次評量 之加權平均&算術平均
   const [examAvgList, setExamAvgList] = useState([]);
@@ -60,7 +60,7 @@ function Main() {
   useEffect(() => {
     GetCurrentSemester();
     GetViewSetting();
-    console.log('currSemesterOnce', currSemester);
+    //console.log('viewRankSetting', viewRankSetting);
   }, []);
 
   useEffect(() => {
@@ -99,8 +99,11 @@ function Main() {
           return 'err';
         } else {
           if (response) {
-            setViewRankSetting(response.Setting.show);
-            console.log('GetViewSetting', response.Setting.show);
+            let isShowRank = (response.Setting.showrank.toLowerCase() === 'true') 
+            //debugger;
+            setViewRankSetting(isShowRank);
+            setAvgSetting(response.Setting.showscore);
+            console.log('GetViewSetting', response.Setting);
           }
         }
       }
@@ -369,7 +372,6 @@ function Main() {
   }
 
   const handleShowRankDetail = (e) => {
-    debugger;
     // 按下去的時候才存
     sessionStorage.setItem('StudentID', studentID);
     sessionStorage.setItem('ExamID', selectedExam);
@@ -649,9 +651,9 @@ function Main() {
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
             {studentDateRange.map((student) => {
               if (student.id === studentID)
-                return <button type="button" className="btn btn-outline-blue active me-1 ms-1 " key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+                return <button type="button" className="btn btn-outline-blue active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
               else
-                return <button type="button" className="btn btn-outline-blue me-1 ms-1 " key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+                return <button type="button" className="btn btn-outline-blue me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
             })}
           </div>
 
