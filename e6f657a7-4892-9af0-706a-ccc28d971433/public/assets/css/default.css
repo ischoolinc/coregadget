@@ -1,0 +1,74 @@
+body {
+    background-color: var(--bs-body-bg);
+}
+
+.btn-outline-blue {
+    color: #000;
+    border-color: #5B9BD5;
+    background-color: #fff
+}
+
+.btn-outline-blue:hover, .btn-outline-blue.active {
+    background-color: #DEEBF7
+}
+
+.btn:focus {
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    border-color: #5B9BD5;
+    box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+    color: #000;
+    background-color: #fff;
+    box-shadow: none;
+    /* border: 1px solid #859B6D; */
+}
+.accordion-item {
+    color: #000;
+    background-color: #fff;
+    box-shadow: none;
+    border: 1px solid #5B9BD5;
+}
+
+.accordion-item:not(:first-of-type) {
+    border-top: 1px solid #5B9BD5;
+}
+
+.accordion-item:first-of-type .accordion-button {
+    border-radius:10px; 
+}
+
+.card{
+    border-color: #BF9000;
+}
+.card-pass{
+    border-color: #9DC3E6;
+}
+
+.card-unpass{
+    border-color: #FF0000;
+}
+.form-select {
+    border: 1px solid #9DC3E6;
+    
+}
+.text-unview {
+    color: #F9C187;
+}
+.disabledCursor { 
+    cursor: default;
+  }
+
+  /* .innerText {
+    font-size: 5vw;
+  } 百分比、分數、名次*/
+  
+  @media (max-width: 480px) {
+    .innerText {
+        font-size: 3vw;
+      }
+  }
