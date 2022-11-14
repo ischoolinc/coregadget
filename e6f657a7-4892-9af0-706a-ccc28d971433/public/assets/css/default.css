@@ -36,6 +36,7 @@ body {
 }
 .text-unview {
     color: #F9C187;
+    font-size: 16px;
 }
 .disabledCursor { 
     cursor: default;
@@ -49,4 +50,12 @@ body {
     .innerText {
         font-size: 3vw;
       }
+      /* .text-unview
+      {
+        font-size: 3vw;
+      } */
+  }
+
+  @media (max-width: 480px) {
+
   }

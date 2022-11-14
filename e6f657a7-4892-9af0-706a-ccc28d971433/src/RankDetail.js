@@ -22,11 +22,17 @@ const RankDetail = () => {
 	//所有的排名類別清單
 	const [rankTypeList, setRankTypeList] = useState([]);
 
-
 	//長條圖
 	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
+
 	//取長條圖最大值
 	const [chartMax, setChartMax] = useState(0);
+
+	//取長條圖height
+	const [chartHeight, setChartHeight] = useState(450);
+
+	// 該校設定 不顯示排名(true:不顯示，false:顯示) (desktop設定需要同時更新才可生效)
+	const [showNoRankSetting, setShowNoRankSetting] = useState(true);
 
 
 	function ToBarChart() {
@@ -60,29 +66,25 @@ const RankDetail = () => {
 
 	}
 
-	//JS 四捨五入
-	// Math.round(18.62645 * 10) / 10     // 18.6
-	// Math.round(18.62645 * 100) / 100   // 18.63
-	// Math.round(18.62645 * 1000) / 1000 // 18.626
 
-	//table
-	//https://bootstrap5.hexschool.com/docs/5.0/content/tables/
 
-	//不要一直跑啊= =
 	useEffect(() => {
 		GetRankDetailPageInfo();
-		console.log('GetRankDetailPageInfo', '123');
+		GetViewSetting();
+		//GetChartHeight();
 	}, []);
 
 	useEffect(() => {
+		GetChartHeight();
+	}, [showNoRankSetting]);
+
+	useEffect(() => {
 		GetRankTypeList();
-		console.log('GetRankTypeList', '123');
 	}, [studentSubjectData]);
 
 
 	useEffect(() => {
 		ToBarChart();
-		//debugger;
 	}, [selectedRankType]);
 
 
@@ -95,14 +97,20 @@ const RankDetail = () => {
 					setViewRankType(defaultRankType);
 			});
 		setRankTypeList(typeList);
-		console.log(typeList);
 	}
 
+	function GetChartHeight() {
+		if (showNoRankSetting) //不顯示排名
+			setChartHeight(450);
+		else
+			setChartHeight(350);
+
+//debugger;
+	}
 
 	var _connection = window.gadget.getContract("1campus.exam.parent");
 
 	// 取得該課程之評量之排名
-
 	async function GetRankDetailPageInfo() {
 		await _connection.send({
 			service: "_.GetRankDetailPageInfo",
@@ -128,6 +136,26 @@ const RankDetail = () => {
 		});
 	}
 
+	// 取得顯示 或不顯示排名 
+	async function GetViewSetting() {
+		await _connection.send({
+			service: "_.GetViewSetting",
+			body: {},
+			result: function (response, error, http) {
+				if (error !== null) {
+					console.log('GetViewSetting', error);
+					return 'err';
+				} else {
+					if (response) {
+						let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
+						setShowNoRankSetting(isShowRank);
+					}
+				}
+			}
+		});
+	}
+
+
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
 	};
@@ -144,24 +172,34 @@ const RankDetail = () => {
 		console.log('The link was clicked.');
 	};
 
-	const handleMe = (e) => {
-		alert("Hello\nHow are you?");
+	const handleManual = (e) => {
+		alert("【五標】\n" +
+			"頂標：該項目前25%考生成績的平均分數\n" +
+			"高標：該項目前50%考生成績的平均分數\n" +
+			"均標：該項目全體考生成績的平均分數\n" +
+			"低標：該項目後50%考生成績的平均分數\n" +
+			"底標：該項目後25%考生成績的平均分數\n\n" +
+			"【新五標】\n" +
+			"新頂標：該項目成績位於第88百分位數之考生分數\n" +
+			"新前標：該項目成績位於第75百分位數之考生分數\n" +
+			"新均標：該項目成績位於第50百分位數之考生分數\n" +
+			"新後標：該項目成績位於第25百分位數之考生分數\n" +
+			"新底標：該項目成績位於第12百分位數之考生分數");
 	};
 
 	return (
 		<div className="App">
 			<div className="container px-3 px-sm-4 py-5 ">
 
-			<div class="d-flex justify-content-between">
+				<div class="d-flex justify-content-between">
 
-			<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
-			<button type="button" className="btn btn-back active d-flex justify-content-start me-2" onClick={handleMe}>五標說明</button>
-			</div>
-			<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div>
-				{/* <button onClick={handleBackToHomePage}>window.history.go(-1)</button>
-				<button onClick={handleHistoryBack}>window.history.back()</button> */}
+					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
+					<button type="button" className="btn btn-back active d-flex justify-content-start me-2" onClick={handleManual}>五標說明</button>
+				</div>
+				<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div>
+
 				{studentSubjectData.map((data) => {
-					if (data.rank_type === defaultRankType)
+					if (data.rank_type === selectedRankType)
 						return <div className='d-flex'>
 							<div className='d-flex me-auto p-2 align-items-center'>
 								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{studentSubjectData.score}50</div>
@@ -189,29 +227,42 @@ const RankDetail = () => {
 					<div className='col-12 col-md-6 col-lg-6'>
 
 						<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
+							{studentSubjectData.map((data) => {
+								if (data.rank_type === selectedRankType)
+									if (showNoRankSetting) //true: 不顯示 false:顯示
+										return <tbody style={{ borderTop: '4px solid #fff' }}>
+											<tr>
+												<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
+												<td style={{ background: '#DEEBF7' }}>{Math.round(data.std_dev_pop * 100) / 100}</td>
+											</tr>
+										</tbody>
+									else
 
-							<tbody style={{ borderTop: '4px solid #fff' }}>
-								<tr>
-									<td style={{ background: '#BDD7EE' }}>名次/母數</td>
-									<td style={{ background: '#DEEBF7' }}>20</td>
-								</tr>
-								<tr>
-									<td style={{ background: '#BDD7EE' }}>PR</td>
-									<td style={{ background: '#DEEBF7' }}>98</td>
-								</tr>
-								<tr>
-									<td style={{ background: '#BDD7EE' }}>百分比</td>
-									<td style={{ background: '#DEEBF7' }}>82</td>
-								</tr>
-								<tr>
-									<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
-									<td style={{ background: '#DEEBF7' }}>30.5</td>
-								</tr>
-							</tbody>
+										return <tbody style={{ borderTop: '4px solid #fff' }}>
+											<tr>
+												<td style={{ background: '#BDD7EE' }}>名次/母數</td>
+												<td style={{ background: '#DEEBF7' }}>{data.rank}/{data.matrix_count}</td>
+											</tr>
+											<tr>
+												<td style={{ background: '#BDD7EE' }}>PR</td>
+												<td style={{ background: '#DEEBF7' }}>{data.pr}</td>
+											</tr>
+											<tr>
+												<td style={{ background: '#BDD7EE' }}>百分比</td>
+												<td style={{ background: '#DEEBF7' }}>{data.percentile}</td>
+											</tr>
+
+											<tr>
+												<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
+												<td style={{ background: '#DEEBF7' }}>{Math.round(data.std_dev_pop * 100) / 100}</td>
+											</tr>
+										</tbody>
+
+							})}
 						</table>
 
 						<div className='d-flex justify-content-center align-items-center'><div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div><div>級距</div></div>
-						<ResponsiveContainer width="100%" height={350}>
+						<ResponsiveContainer width="100%" height={chartHeight}>
 
 							<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
 								<XAxis dataKey="name" />
@@ -222,68 +273,71 @@ const RankDetail = () => {
 
 					</div>
 
+					{studentSubjectData.map((data) => {
+						if (data.rank_type === selectedRankType)
+							return <div className='col-12 col-md-6 col-lg-6'>
+								<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>
+									<thead>
+										<tr style={{ background: '#5B9BD5' }}>
+											<th colspan="2">五標</th>
+										</tr>
+									</thead>
+									<tbody style={{ borderTop: '4px solid #fff' }}>
+										<tr style={{ background: '#D2DEEF' }}>
+											<td className='w-50'>頂標</td>
+											<td>{Math.round(data.avg_top_25 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#EAEFF7' }}>
+											<td>高標</td>
+											<td>{Math.round(data.avg_top_50 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#D2DEEF' }}>
+											<td>均標</td>
+											<td>{Math.round(data.avg * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#EAEFF7' }}>
+											<td>低標</td>
+											<td>{Math.round(data.avg_bottom_50 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#D2DEEF' }}>
+											<td>底標</td>
+											<td>{Math.round(data.avg_bottom_25 * 100) / 100}</td>
+										</tr>
+									</tbody>
+								</table>
 
-					<div className='col-12 col-md-6 col-lg-6'>
-						<table className="table table-bordered mt-2" style={{ border: '1px solid #fff' }}>
-							<thead>
-								<tr style={{ background: '#5B9BD5' }}>
-									<th colspan="2">五標</th>
-								</tr>
-							</thead>
-							<tbody style={{ borderTop: '4px solid #fff' }}>
-								<tr style={{ background: '#D2DEEF' }}>
-									<td className='w-50'>頂標</td>
-									<td>20</td>
-								</tr>
-								<tr style={{ background: '#EAEFF7' }}>
-									<td>高標</td>
-									<td>2</td>
-								</tr>
-								<tr style={{ background: '#D2DEEF' }}>
-									<td>均標</td>
-									<td>@3</td>
-								</tr>
-								<tr style={{ background: '#EAEFF7' }}>
-									<td>低標</td>
-									<td>@4</td>
-								</tr>
-								<tr style={{ background: '#D2DEEF' }}>
-									<td>底標</td>
-									<td>@5</td>
-								</tr>
-							</tbody>
-						</table>
+								<table className="table table-bordered mt-2" style={{ border: '1px solid #fff' }}>
+									<thead>
+										<tr style={{ background: '#5B9BD5' }}>
+											<th colspan="2">新五標</th>
+										</tr>
+									</thead>
+									<tbody style={{ borderTop: '4px solid #fff' }}>
+										<tr style={{ background: '#D2DEEF' }}>
+											<td className='w-50'>新頂標</td>
+											<td>{Math.round(data.pr_88 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#EAEFF7' }}>
+											<td>新前標</td>
+											<td>{Math.round(data.pr_75 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#D2DEEF' }}>
+											<td>新均標</td>
+											<td>{Math.round(data.pr_50 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#EAEFF7' }}>
+											<td>新後標</td>
+											<td>{Math.round(data.pr_25 * 100) / 100}</td>
+										</tr>
+										<tr style={{ background: '#D2DEEF' }}>
+											<td>新底標</td>
+											<td>{Math.round(data.pr_12 * 100) / 100}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+					})}
 
-						<table className="table table-bordered mt-2" style={{ border: '1px solid #fff' }}>
-							<thead>
-								<tr style={{ background: '#5B9BD5' }}>
-									<th colspan="2">新五標</th>
-								</tr>
-							</thead>
-							<tbody style={{ borderTop: '4px solid #fff' }}>
-								<tr style={{ background: '#D2DEEF' }}>
-									<td className='w-50'>新頂標</td>
-									<td>20</td>
-								</tr>
-								<tr style={{ background: '#EAEFF7' }}>
-									<td>新前標</td>
-									<td>2</td>
-								</tr>
-								<tr style={{ background: '#D2DEEF' }}>
-									<td>新均標</td>
-									<td>@3</td>
-								</tr>
-								<tr style={{ background: '#EAEFF7' }}>
-									<td>新後標</td>
-									<td>@4</td>
-								</tr>
-								<tr style={{ background: '#D2DEEF' }}>
-									<td>新底標</td>
-									<td>@5</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
 				</div>
 
 
