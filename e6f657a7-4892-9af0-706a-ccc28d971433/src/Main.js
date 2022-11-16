@@ -17,9 +17,6 @@ function Main() {
   // 該學生的指定學年期的評量清單
   const [courseExamList, setCourseExamList] = useState([]);
 
-  //尚無資料 提示字
-  const [informationText, setText] = useState("");
-
   //系統學年期 
   const [currSemester, setCurrSemester] = useState("");
 
@@ -31,12 +28,6 @@ function Main() {
 
   //當前顯示排名類別 //sessionStorage
   const [selectedRankType, setViewRankType] = useState(sessionStorage.getItem('RankType'));
-
-  // 該學生的指定學年期的課程成績
-  const [courseExamScore, setCourseExamScore] = useState([]);
-
-  // 該學生的指定學年期的定期評量固定排名資料
-  const [examRankMatrix, setRankMatrix] = useState([]);
 
   // 該學生的指定學年期、指定評量 之排名類別
   const [examRankType, setRankType] = useState([]);
@@ -53,16 +44,31 @@ function Main() {
   // 該學生的指定學年期、每次評量 之加權平均&算術平均
   const [examAvgList, setExamAvgList] = useState([]);
 
-  //const [newCourseExamScore,setNewCourseExamScore] =useState([]);
+
+  // 計算該次評量的不及格科目數
+  const [failedCount, setFailedCount] = useState(0);
+
+
+  //******************* */
+  // 該學生的指定學年期的課程成績
+  const [courseExamScore, setCourseExamScore] = useState([]);
+
+  // 該學生的指定學年期的課程成績 再加上 總計成績
+  const [courseExamScorePlusAvg, setCourseExamScorePlusAvg] = useState([]);
+
+  // 該學生的指定學年期的定期評量固定排名資料
+  const [examRankMatrix, setRankMatrix] = useState([]);
+
+  //******************* */
+
+  const position = window.gadget.params.system_position;
 
   useEffect(() => {
     GetCurrentSemester();
     GetViewSetting();
+    GetStudentList();
   }, []);
 
-  useEffect(() => {
-    GetStudentList();
-  }, [studentID]);
 
   useEffect(() => {
     GetCourseSemesterList();
@@ -72,7 +78,7 @@ function Main() {
   useEffect(() => {
     GetCourseExamList();
     GetAllExamScore();
-    GetRankInfo();
+    GetRankInfo()
     GetExamAvgScore();
     GetScoreCalcRulePassingStandard();
   }, [studentID, selectedSemester]);
@@ -82,7 +88,17 @@ function Main() {
   }, [selectedSemester, selectedExam]);
 
 
-  var _connection = window.gadget.getContract("1campus.exam.parent");
+  useEffect(() => {
+    OrganizeCourseExamScore();
+  }, [courseExamScore]);
+
+
+  useEffect(() => {
+    CountFailedExamSubject();
+  }, [selectedExam, selectedSemester, courseExamScore]);
+
+
+  var _connection = window.gadget.getContract("1campus.h.exam.parent");
 
   // 取得顯示 加權平均、算術平均 或不顯示排名 
   async function GetViewSetting() {
@@ -91,16 +107,16 @@ function Main() {
       body: {},
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetViewSetting', error);
+          console.log('GetViewSettingError', error);
           return 'err';
         } else {
           if (response) {
             let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
             setShowNoRankSetting(isShowRank);
             setAvgSetting(response.Setting.show_score);
-            console.log('GetViewSetting', response.Setting);
-            console.log('isShowRank', isShowRank);
-            console.log('response.Setting.show_score', response.Setting.show_score);
+            // console.log('GetViewSetting', response.Setting);
+            // console.log('isShowRank', isShowRank);
+            // console.log('response.Setting.show_score', response.Setting.show_score);
             //debugger;
           }
         }
@@ -118,12 +134,15 @@ function Main() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetScoreCalcRulePassingStandard', error);
+          console.log('GetScoreCalcRulePassingStandardError', error);
           return 'err';
         } else {
           if (response) {
-            setAvgPassingStardard(response.Rule.passing_standard);
-            console.log('GetScoreCalcRulePassingStandard', response.Rule.passing_standard);
+            if ([].concat(response.Rule || []).length) {
+              if (response.Rule.passing_standard !== '')
+                setAvgPassingStardard(response.Rule.passing_standard);
+              //console.log('GetScoreCalcRulePassingStandard', response.Rule.passing_standard);
+            }
           }
         }
       }
@@ -145,7 +164,7 @@ function Main() {
         } else {
           if (response) {
             setExamAvgList(response.ExamAvg);
-            console.log('response.ExamAvg', response.ExamAvg);
+            //console.log('response.ExamAvg', response.ExamAvg);
           }
         }
       }
@@ -159,16 +178,26 @@ function Main() {
       body: {},
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetStudentListErr', error);
+          console.log('GetStudentListError', error);
           return 'err';
         } else {
           if (response) {
-            //debugger;
             setStudentList([].concat(response.Student || []));
 
             if (studentID === '' || studentID === null) {
               setStudent([].concat(response.Student || [])[0].id);
-              //id=[].concat(response.Student || [])[0].id;
+            }
+            else {
+              var temp = false;
+              [].concat(response.Student || []).forEach(element => {
+                if (element.id === studentID) {
+                  setStudent(studentID);
+                  temp = true;
+                }
+              });
+              if (!temp) {
+                setStudent([].concat(response.Student || [])[0].id);
+              }
             }
           }
         }
@@ -185,20 +214,49 @@ function Main() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetAllCourseSemester', error);
+          console.log('GetAllCourseSemesterError', error);
           return 'err';
         } else {
           if (response) {
-            //debugger;
-            setCourseSemesterList([].concat(response.CourseSemester || []));
-            if (selectedSemester === '' || selectedSemester === null) {
-              setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
+            if ([].concat(response.CourseSemester || []).length) {
+              setCourseSemesterList([].concat(response.CourseSemester || []));
+              var tempSelectedSemester = selectedSemester;
+
+              //1. 返回，保持原來的學年期
+              //2. 從別的學生點過來，且課程中有一樣的學年期
+              //3. 從別的學生點過來，且課程中沒有一樣的學年期>>系統學年期
+              //4. 上述情況都不符合，填入最新的學年期
+              var sameInCourse = false; //課程中有一樣的學年期
+              var sameAsCurrency = false; //有一樣的系統學年期
+              //if (selectedSemester) {
               [].concat(response.CourseSemester || []).forEach(element => {
                 if (element.schoolyear + element.semester === currSemester) {
-                  setViewSemester(currSemester);
-                  console.log('SScurrSemester', currSemester);
+                  sameAsCurrency = true;
                 }
+                if (element.schoolyear + element.semester === selectedSemester) {
+                  sameInCourse = true;
+                }
+
               });
+
+              //* 先填入最新的學年期
+              setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
+
+              // 再根據檢查結果填入學年期
+              if (sessionStorage.getItem('IsBack')) {
+                setViewSemester(tempSelectedSemester);
+                //sessionStorage.removeItem('IsBack');
+                sessionStorage.clear();
+              }
+              else if (sameInCourse)
+                setViewSemester(tempSelectedSemester);
+              else if (sameAsCurrency)
+                setViewSemester(currSemester);
+
+            }
+            else {
+              setViewSemester('');
+              setCourseSemesterList([]);
             }
           }
         }
@@ -213,19 +271,16 @@ function Main() {
       body: {},
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetCurrentSemester', error);
+          console.log('GetCurrentSemesterError', error);
           return 'err';
         } else {
           if (response) {
-            //setCurrSemester([].concat(response.CurrentSemester || []));
             setCurrSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
-            // console.log('currSemester', currSemester);
-            if (!selectedSemester) {
-              //debugger;
-              setViewSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
-              // console.log('selectedSemester00', response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
-              // console.log('selectedSemester', selectedSemester);
-            }
+
+            // if (selectedSemester === '' || selectedSemester === null) {
+            //   setViewSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
+            // }
+
           }
         }
       }
@@ -242,83 +297,14 @@ function Main() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetCourseExamList', error);
-          if (studentID === '')
-            setText("請選擇學生。");
-          if (selectedSemester === '')
-            setText("請選擇學年度學期。");
+          setViewExam('0');
+          console.log('GetCourseExamListError', error);
           return 'err';
         } else {
           if (response) {
-            if (isEmpty(response)) {
-              setCourseExamList([]);
-              setText("尚無資料。");
-            }
-            else {
-              setText("");
-
-              setCourseExamList([].concat(response.ExamList || []));
-              if (selectedExam === '' || selectedExam === null)
-                setViewExam('0');
-              //setViewExam([].concat(response.ExamList || [])[0].exam_id);
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // 取得指定學年期的課程評量成績
-  async function GetAllExamScore() {
-    await _connection.send({
-      service: "_.GetAllExamScore",
-      body: {
-        StudentID: studentID,
-        ViewSemester: selectedSemester
-      },
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetAllExamScore', error);
-          if (!studentID)
-            setText("請選擇學生。");
-          if (!selectedSemester)
-            setText("請選擇學年度學期。");
-          return 'err';
-        } else {
-          if (response) {
-            if (isEmpty(response)) {
-              setCourseExamScore([]);
-              setText("尚無資料。");
-            }
-            else {
-              setText("");
-              setCourseExamScore([].concat(response.ExamScore || []));
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // 取得指定學年期的固定排名
-  async function GetRankInfo() {
-    await _connection.send({
-      service: "_.GetRankInfo",
-      body: {
-        StudentID: studentID,
-        ViewSemester: selectedSemester
-      },
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetRankInfo', error);
-          return 'err';
-        } else {
-          if (response) {
-            if (isEmpty(response)) {
-              setRankMatrix([]);
-            }
-            else {
-              setRankMatrix([].concat(response.RankMatrix || []));
+            setCourseExamList([].concat(response.ExamList || []));
+            if ([].concat(response.ExamList || []).length < 1||selectedExam === null) {
+              setViewExam('0');
             }
           }
         }
@@ -337,15 +323,14 @@ function Main() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetRankType', error);
+          console.log('GetRankTypeError', error);
+          setViewRankType('');
           return 'err';
         } else {
           if (response) {
-            if (isEmpty(response)) {
-              setRankType([]);
-            }
-            else {
-              setRankType([].concat(response.RankType || []));
+            debugger;
+            setRankType([].concat(response.RankType || []));
+            if ([].concat(response.RankType || []).length) {
               if (selectedRankType === '' || selectedRankType === null)
                 setViewRankType([].concat(response.RankType || [])[0].rank_type);
             }
@@ -355,6 +340,52 @@ function Main() {
     });
   }
 
+  //**************************** */
+
+  //取得指定學年期的固定排名
+  async function GetRankInfo() {
+    await _connection.send({
+      service: "_.GetRankInfo",
+      body: {
+        StudentID: studentID,
+        ViewSemester: selectedSemester
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetRankInfo', error);
+          return 'err';
+        } else {
+          if (response) {
+            setRankMatrix([].concat(response.RankMatrix || []));
+          }
+        }
+      }
+    });
+  }
+
+
+  // 取得指定學年期的課程評量成績
+  async function GetAllExamScore() {
+    await _connection.send({
+      service: "_.GetAllExamScore",
+      body: {
+        StudentID: studentID,
+        ViewSemester: selectedSemester
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetAllExamScore', error);
+          return 'err';
+        } else {
+          if (response) {
+            setCourseExamScore([].concat(response.ExamScore || []));
+          }
+        }
+      }
+    });
+  }
+
+  //**************************** */
 
   const handleChangeStudent = (e) => {
     setStudent(e.target.value);
@@ -369,14 +400,16 @@ function Main() {
   }
 
   const handleShowRankDetail = (e) => {
+    sessionStorage.clear();
     // 按下去的時候才存
     sessionStorage.setItem('StudentID', studentID);
     sessionStorage.setItem('ExamID', selectedExam);
     sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('CourseID', e.courseID);
+    sessionStorage.setItem('CourseID', e.CourseID);
     sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', e.subject);
-    sessionStorage.setItem('PassingStandard', e.passingStandard);
+    sessionStorage.setItem('Subject', e.Subject);
+    sessionStorage.setItem('PassingStandard', e.PassingStandard);
+
   };
 
 
@@ -386,226 +419,64 @@ function Main() {
 
 
 
-  let failCount = 0;
-
-
-  // 處理成績資料(for 總覽 & 進退步箭頭)
-  const newCourseExamScore = [];
-  let examScoreArray = [];
-
-  let key1domain = '';
-  let key1subject = '';
-  let key1credit = '';
-  let key1passingStandard = '';
-  let newkey1 = '';
-  let courseID = ''; //new key
-  let itemCount = 0;
-  if (Object.keys(courseExamScore).length) {
-    for (let item of [].concat(courseExamScore || [])) {
-      let newkey2 = item.course_id;
-      let examScoreObj = {
-        examID: item.exam_id,
-        examName: item.exam_name,
-        score: item.score,
-        isPass: item.ispass,
-        toView: item.toview,
-        toViewtime: item.toviewtime
-      }
-
-      if (newkey1 === '') {
-        examScoreArray.push(examScoreObj);
-        itemCount++;
-      }
-      else if (newkey1 === newkey2) {
-        itemCount++;
-        examScoreArray.push(examScoreObj);
-
-        //處理最後一個 
-        if (itemCount === [].concat(courseExamScore || []).length) {
-          let subjectObj = {
-            domain: key1domain,
-            subject: key1subject,
-            credit: key1credit,
-            passingStandard: key1passingStandard,
-            examScore: examScoreArray,
-            courseID: courseID
+  function OrganizeCourseExamScore() {
+    //寫入加權平均or算術平均
+    let courseExamScoreNewPlusSource = courseExamScore;
+    let avgScoreArray = [];
+    //debugger;
+    if ([].concat(courseExamScoreNewPlusSource || []).length)
+      if ([].concat(examAvgList || []).length) {
+        //let obj = [];
+        for (let avg of [].concat(examAvgList || [])) {
+          let avgScoreObj = {
+            'ExamID': avg.exam_id,
+            'ExamName': avg.exam_name,
+            'Score': (avgSetting === '加權平均' ? Math.round(avg.w_score * 100) / 100 : Math.round(avg.a_score * 100) / 100),
+            'IsPass': ((avgSetting === '加權平均' ? Math.round(avg.w_score * 100) / 100 : Math.round(avg.a_score * 100) / 100) >= avgPassingStardard ? 't' : 'f'),
+            'ToView': (avg.toview === 'f' ? avg.toview : 't'), // f 或 t
+            'ToViewTime': avg.toviewtime
           }
-          newCourseExamScore.push(subjectObj);
+          avgScoreArray.push(avgScoreObj);
+          //obj = {
+          var subject = (avgSetting === '加權平均' ? avgSetting : '算術平均');
+          //var field = avgScoreArray;
+          var domain = '';
+          var courseID = 0;
+          var passingStandard = avgPassingStardard;
+          //field= avgScoreArray
+          //}
         }
+        var dd1 = { CourseID: courseID, Domain: domain, Subject: subject, PassingStandard: passingStandard, Field: avgScoreArray };
+        courseExamScoreNewPlusSource.push(dd1);
       }
-      else {
-        itemCount++;
 
-        let subjectObj = {
-          domain: key1domain,
-          subject: key1subject,
-          credit: key1credit,
-          passingStandard: key1passingStandard,
-          examScore: examScoreArray,
-          courseID: courseID
-        }
-        newCourseExamScore.push(subjectObj);
-        examScoreArray = [];
-        examScoreArray.push(examScoreObj);
-      }
-      newkey1 = newkey2;
-      key1domain = item.domain;
-      key1subject = item.subject;
-      key1credit = item.credit;
-      key1passingStandard = item.passing_standard;
-      courseID = item.course_id;
-
-      if (selectedExam === item.exam_id) {
-        if (item.ispass === 'f') {//&& item.subject!==avgSetting
-          failCount++;
-        }
-
-      }
-    }
+    setCourseExamScorePlusAvg(courseExamScoreNewPlusSource);
+    console.log('courseExamScoreNewNew', courseExamScoreNewPlusSource);
 
   }
 
-  //avgSetting ='加權平均'
-  //viewRankSetting = false;
-
-  //寫入加權平均or算術平均
-
-  let avgScoreArray = [];
-  if (Object.keys(newCourseExamScore).length)
-    if (Object.keys(examAvgList).length) {
-      let obj = [];
-      for (let avg of [].concat(examAvgList || [])) {
-        //debugger;
-        let avgScoreObj = {
-          examID: avg.exam_id,
-          examName: avg.exam_name,
-          score: (avgSetting === '加權平均' ? Math.round(avg.w_score * 100) / 100 : Math.round(avg.a_score * 100) / 100),
-          isPass: ((avgSetting === '加權平均' ? Math.round(avg.w_score * 100) / 100 : Math.round(avg.a_score * 100) / 100) >= avgPassingStardard ? 't' : 'f'),
-          toView: (avg.toview === 'f' ? avg.toview : 't'), // f 或 t
-          toViewtime: avg.toviewtime
-          //passingStandard: avgPassingStardard
-        }
-
-        avgScoreArray.push(avgScoreObj);
-        obj = {
-          subject: (avgSetting === '加權平均' ? avgSetting : '算術平均'),
-          examScore: avgScoreArray,
-          domain: '',
-          courseID: 0,
-          passingStandard: avgPassingStardard
-        }
-      }
-      newCourseExamScore.push(obj);
-    }
-
-
-  console.log('newCourseExamScore', newCourseExamScore);
-
-
-  // 處理排名成績資料(for 進退步箭頭)
-  const newExamRankMatrix = [];
-  let rankMatrixArray = [];
-  //let keySubject = ''; //key
-  let previousSubject = '';
-  let matrixCount = 0;
-  if (Object.keys(examRankMatrix).length) {
-    for (let matrix of [].concat(examRankMatrix || [])) {
-      let examRankObj = {
-        examID: matrix.ref_exam_id,
-        examName: matrix.exam_name,
-        create_time: matrix.create_time,
-        item_type: matrix.item_type, //定期評量/科目成績
-        item_name: matrix.item_name, //公民與社會
-        rank_type: matrix.rank_type, //年排名
-        rank_name: matrix.rank_name, //2年級
-        score: matrix.score,
-        rank: matrix.rank,
-        PR: matrix.pr,
-        percentile: matrix.percentile,
-        matrix_count: matrix.matrix_count,
-        level_gte100: matrix.level_gte100,
-        level_90: matrix.level_90,
-        level_80: matrix.level_80,
-        level_70: matrix.level_70,
-        level_60: matrix.level_60,
-        level_50: matrix.level_50,
-        level_40: matrix.level_40,
-        level_30: matrix.level_30,
-        level_20: matrix.level_20,
-        level_10: matrix.level_10,
-        level_lt10: matrix.level_lt10,
-        under60: Number(matrix.level_50) + Number(matrix.level_40) + Number(matrix.level_30) + Number(matrix.level_20) + Number(matrix.level_10) + Number(matrix.level_lt10),
-        avg_top_25: matrix.avg_top_25,
-        avg_top_50: matrix.avg_top_50,
-        avg: matrix.avg,
-        avg_bottom_50: matrix.avg_bottom_50,
-        avg_bottom_25: matrix.avg_bottom_25,
-        std_dev_pop: matrix.std_dev_pop,
-        pr_88: matrix.pr_88,
-        pr_75: matrix.pr_75,
-        pr_50: matrix.pr_50,
-        pr_25: matrix.pr_25,
-        pr_12: matrix.pr_12
-      }
-
-      if (previousSubject === '') {
-        matrixCount++;
-        rankMatrixArray.push(examRankObj);
-      }
-      else if (previousSubject === matrix.item_name) {
-        matrixCount++;
-        rankMatrixArray.push(examRankObj);
-        //處理最後一個
-        if (matrixCount === [].concat(examRankMatrix || []).length) {
-          let subjectObj = {
-            subject: previousSubject,
-            rankMatrix: rankMatrixArray
+  // 處理 該評量 不及格科目數
+  function CountFailedExamSubject() {
+    let failCount = 0;
+    if (Object.keys(courseExamScore).length)
+      courseExamScore.forEach(ces => {
+        [].concat(ces.Field || []).forEach(e => {
+          if (selectedExam === e.ExamID) {
+            if (e.IsPass === 'f' && ces.Subject !== avgSetting && e.Score !== '') {
+              failCount++;
+            }
           }
-          newExamRankMatrix.push(subjectObj);
-        }
+        });
 
-      }
-      else {
-        matrixCount++;
-        let subjectObj = {
-          subject: previousSubject,
-          rankMatrix: rankMatrixArray
-        }
-        newExamRankMatrix.push(subjectObj);
-        rankMatrixArray = [];
-        rankMatrixArray.push(examRankObj);
-      }
-      previousSubject = matrix.item_name;
-
-    }
+      });
+    setFailedCount(failCount);
   }
-  console.log('newExamRankMatrix', newExamRankMatrix);
 
-
-  function isEmpty(obj) {
-
-    // null and undefined are "empty"
-    if (obj == null) return true;
-
-    // Assume if it has a length property with a non-zero value
-    // that that property is correct.
-    if (obj.length > 0) return false;
-    if (obj.length === 0) return true;
-
-    // If it isn't an object at this point
-    // it is empty, but it can't be anything *but* empty
-    // Is it empty?  Depends on your application.
-    if (typeof obj !== "object") return true;
-
-    // Otherwise, does it have any properties of its own?
-    // Note that this doesn't handle
-    // toString and valueOf enumeration bugs in IE < 9
-    for (var key in obj) {
-      if (hasOwnProperty.call(obj, key)) return false;
-    }
-
-    return true;
+  // 手動重新整理清除sessionStorage //須請俊威發布一版試試看會不會把sessionStorage帶到別的主機
+  window.onunload = function () {
+    sessionStorage.clear();
   }
+
 
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
   let isShowFailSubjectCount = true;
@@ -620,12 +491,14 @@ function Main() {
 
           <div>
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
-            {studentDateRange.map((student) => {
-              if (student.id === studentID)
-                return <button type="button" className="btn btn-outline-blue active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
-              else
-                return <button type="button" className="btn btn-outline-blue me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
-            })}
+            <div className='d-flex align-items-center'>
+              {studentDateRange.map((student) => {
+                if (student.id === studentID)
+                  return <button type="button" className="btn btn-outline-blue float-left active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+                else
+                  return <button type="button" className="btn btn-outline-blue float-left me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+              })}
+            </div>
           </div>
 
         </div>
@@ -650,11 +523,16 @@ function Main() {
 
 
         </div>
-        {selectedExam === '0' || showNoRankSetting ? '' : <div className='d-flex align-items-center mb-3'>
+
+        {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' : <div className='d-flex align-items-center mb-3'>
           <div className="col-2 col-md-2 col-lg-1">排名類別</div>
           <div className="col-10 col-md-4 col-lg-5 m-2">
             <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
-              <option value="Y" key="Y">(選擇排名類別)</option>
+
+              {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>}
+
+              {/* <option value="Y" key="Y">(選擇排名類別)</option> */}
+
               {examRankType.map((rankType, index) => {
                 return <option key={index} value={rankType.rank_type}>
                   {rankType.rank_type}</option>
@@ -664,70 +542,75 @@ function Main() {
         </div>}
 
 
-        <div>{informationText}</div>
-
+        {/* <div>{informationText}</div> */}
+        <div>{[].concat(courseExamScorePlusAvg || []).length < 1 ? '尚無資料。' : ''}</div>
 
         <div className="row row-cols-1 row-cols-md-2 g-4">
 
-          {newCourseExamScore.map((ces) => {
-            //debugger;
+          {courseExamScorePlusAvg.map((ces) => {
+            console.log('mapCourseExamScoreNewPlus', courseExamScorePlusAvg);
             return <>
-              {[].concat(ces.examScore || []).map((exam, index) => {
-                if (exam.examID === selectedExam) {
+              {[].concat(ces.Field || []).map((cField, index) => {
+                if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass';
+                  let passColor = 'card card-pass h-100';
                   let scoreColor = 'fs-4';
                   let show = '/RankDetail';
                   let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
-                  if (exam.isPass === 'f') {
+                  if (cField.IsPass === 'f') {
                     roundColor = '#FF0000';
-                    passColor = 'card card-unpass';
+                    passColor = 'card card-unpass h-100';
                     scoreColor = 'fs-4 text-danger';
                   }
-                  if (exam.toView === 'f' || ces.subject === avgSetting) {
+                  if (cField.ToView === 'f' || ces.Subject === avgSetting) {
                     roundColor = '#5B9BD5';
-                    passColor = 'card';
-                    if (exam.toView === 'f') {
+                    passColor = 'card h-100';
+                    if (cField.ToView === 'f') {
                       disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                       show = null;
                       isShowFailSubjectCount = false;
                     }
                   }
 
-                  if (exam.score === '') {
+                  if ([].concat(examRankType || []).length < 1) {
+                    show = null;
+                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                  }
+
+                  if (cField.Score === '') {
                     roundColor = '#5B9BD5';
                     scoreColor = 'fs-4';
                     passColor = 'card';
                   }
                   let im = 0;
-                  let previousEaxmID = selectedExam;
-                  if (index !== 0)
+                  let previousExamID = selectedExam;
+                  if (index !== 0) {
                     im = index - 1;
-                  previousEaxmID = ces.examScore[im].examID;
-
+                    previousExamID = ces.Field[im].ExamID;
+                  }
                   return <div className="col"><div className={passColor}>
                     <div className="card-body">
                       <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
                         <div className='d-flex'>
                           <div className='d-flex me-auto p-2 align-items-center'>
-                            {ces.subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
+                            {ces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
                             {/* <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div> */}
-                            <div className='fs-4 fw-bold'>{ces.domain === "" ? "" : ces.domain + "-"}{ces.subject}</div>
+                            <div className='fs-4 fw-bold'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
                           </div>
                           <div className='d-flex p-2' >
-                            <div>{ces.subject === avgSetting ? '' : '權數'}</div><div>{ces.credit}</div>
+                            <div>{ces.Subject === avgSetting ? '' : '權數'}</div><div>{ces.Credit}</div>
                           </div>
                         </div>
 
 
                         <div className='d-flex justify-content-center'>
-                          {exam.toView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{exam.toViewtime}</div></div> : <div className='row align-items-center'>
+                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> : <div className='row align-items-center'>
                             <div className='row align-items-center mx-1'>
 
                               <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{exam.score === '' ? '-' : exam.score}
+                                <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}
                                 </div>
-                                <div>{index === 0 || exam.toView === 'f' ? '' : ces.examScore[index].score > ces.examScore[im].score ? '↑' : ces.examScore[index].score === ces.examScore[im].score ? '' : '↓'}</div>
+                                <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' ||ces.Field[im].Score===''? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? '↑' : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? '↓' : ''}</div>
                               </div>
 
                               <div>分數</div>
@@ -736,37 +619,37 @@ function Main() {
 
                           }
 
-                          {newExamRankMatrix.map((rank, index) => {
-                            if (exam.toView === 't')
-                              if (rank.subject === ces.subject) {
-                                let previousEaxmRank = '0';
+                          {examRankMatrix.map((rank, index) => {
+                            if (cField.ToView === 't')
+                              if (rank.ItemName === ces.Subject) {
+                                let previousExamRank = '0';
                                 return <>
-                                  {[].concat(rank.rankMatrix || []).map((matrix, index) => {
+                                  {[].concat(rank.Field || []).map((rField, index) => {
 
-                                    if (matrix.rank_type === selectedRankType && matrix.examID === previousEaxmID)
-                                      previousEaxmRank = matrix.rank;
+                                    if (rField.RankType === selectedRankType && rField.ExamID === previousExamID)
+                                      previousExamRank = rField.Rank;
 
-                                    if (matrix.rank_type === selectedRankType && matrix.examID === selectedExam && !showNoRankSetting)
+                                    if (rField.RankType === selectedRankType && rField.ExamID === selectedExam && !showNoRankSetting)
 
                                       return <div className='d-flex justify-content-around'>
-                                        <div className='row align-items-center mx-1'>
+                                        <div className='row align-self-center mx-1'>
                                           <div className='d-flex justify-content-center'>
-                                            <div className='fs-4'>{matrix.rank}</div>
-                                            <div>{previousEaxmRank === '0' || previousEaxmID === '' ? '' : matrix.rank > previousEaxmRank ? '↓' : matrix.rank === previousEaxmRank ? '' : '↑'}</div>
+                                            <div className='fs-4'>{rField.Rank}</div>
+                                            <div>{previousExamRank === '0' || previousExamID === '' ? '' : rField.Rank > previousExamRank ? '↓' : rField.Rank === previousExamRank ? '' : '↑'}</div>
                                           </div>
                                           <div>名次</div>
                                         </div>
 
-                                        <div className='row align-items-center mx-1'>
+                                        <div className='row align-self-center mx-1'>
                                           <div className='d-flex justify-content-center'>
-                                            <div className='fs-4'>{matrix.PR}</div>
+                                            <div className='fs-4'>{rField.PR}</div>
                                           </div>
                                           <div>PR</div>
                                         </div>
 
-                                        <div className='row align-items-center mx-1'>
+                                        <div className='row align-self-center mx-1'>
                                           <div className='d-flex justify-content-center'>
-                                            <div className='fs-4'>{matrix.percentile}</div>
+                                            <div className='fs-4'>{rField.Percentile}</div>
                                           </div>
                                           <div>百分比</div>
                                         </div>
@@ -794,47 +677,47 @@ function Main() {
 
           {/* {總覽} */}
 
-          {newCourseExamScore.map((nces) => {
+          {courseExamScorePlusAvg.map((nces) => {
 
             if (selectedExam === '0') {
               return <div className="col">
-                <div className={nces.subject === avgSetting ? 'card' : 'card card-pass'}>
+                <div className={nces.Subject === avgSetting ? 'card h-100' : 'card card-pass h-100'}>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
                         <div className='d-flex me-auto p-2 align-items-center'>
-                          {nces.subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>}
+                          {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>}
 
-                          <div className='fs-4 fw-bold'>{nces.domain === "" ? "" : nces.domain + "-"}{nces.subject}</div>
+                          <div className='fs-4 fw-bold'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
                         </div>
                         <div className='d-flex p-2' >
-                          <div>{nces.subject === avgSetting ? '' : '權數'}</div><div>{nces.credit}</div>
+                          <div>{nces.Subject === avgSetting ? '' : '權數'}</div><div>{nces.Credit}</div>
                         </div>
                       </div>
 
                       {/* <div className='d-flex justify-content-around'> */}{/* 一排版面:取消註解 */}
                       <div className='row align-items-center'>{/* 一排版面:註解 */}
 
-                        {[].concat(nces.examScore || []).map((exam, index) => {
+                        {[].concat(nces.Field || []).map((nField, index) => {
                           let scoreColor = 'fs-4';
-                          if (exam.isPass === 'f') {
+                          if (nField.IsPass === 'f') {
                             scoreColor = 'fs-4 text-danger';
                           }
-                          if (exam.toView === 'f' || exam.score === '') {
+                          if (nField.ToView === 'f' || nField.Score === '') {
                             scoreColor = 'fs';
                           }
 
                           let im = 0;
                           if (index !== 0)
                             im = index - 1
-                          return <div className='col-12 col-md-6 col-lg-6'>{/* 一排版面:刪除 */}
+                          return <div className='col-6 col-md-6 col-lg-6'>{/* 一排版面:刪除 */}
                             <div className='row align-items-center m-2'>{/* 一排版面:m-2刪除 */}
                               <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{exam.toView === 't' ? exam.score === '' ? '-' : exam.score : <div className='text-unview'><div>開放查詢時間：</div><div>{exam.toViewtime}</div></div>}
+                                <div className={scoreColor}>{nField.ToView === 't' ? nField.Score === '' ? '-' : nField.Score : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
                                 </div>
-                                <div>{index === 0 || exam.toView === 'f' ? '' : nces.examScore[index].score > nces.examScore[im].score ? '↑' : nces.examScore[index].score === nces.examScore[im].score ? '' : '↓'}</div>
+                                <div>{index === 0 || nField.ToView === 'f' ||nField.Score === ''||nces.Field[im].Score===''? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? '↑' : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? '↓' : ''}</div>
                               </div>
-                              <div>{exam.examName}</div>
+                              <div>{nField.ExamName}</div>
                             </div>
                           </div>
                         })}
@@ -851,9 +734,9 @@ function Main() {
 
         </div>
 
-        {informationText || !isShowFailSubjectCount || selectedExam === '0' ? "" : <div>
+        {!isShowFailSubjectCount || selectedExam === '0' || selectedExam === null ? "" : <div>
           <div className='d-flex justify-content-left'>
-            <div>不及格科目數：</div><div>{failCount}</div>
+            <div>不及格科目數：</div><div>{failedCount}</div>
           </div>
           {/* 評分樣板不同，前次考試不一定來自同一個試別，先註解
           <div className='d-flex justify-content-left'>
