@@ -64,6 +64,11 @@ body {
   border-left: 7px solid #5b9bd5;
 }
 
+.popover {
+  max-width: 400px;
+}
+
+
 /* .innerText {
     font-size: 5vw;
   } 百分比、分數、名次*/
@@ -71,6 +76,10 @@ body {
 @media (max-width: 480px) {
   .innerText {
     font-size: 3vw;
+  }
+  .popover {
+    max-width: 220px;
+
   }
 
   /* .text-unview

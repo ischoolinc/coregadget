@@ -103,6 +103,9 @@ function Main() {
 
   var _connection = window.gadget.getContract("1campus.h.exam.parent");
 
+  if (position === 'student')
+    _connection = window.gadget.getContract("1campus.h.exam.student");
+
   // 取得顯示 加權平均、算術平均 或不顯示排名 
   async function GetViewSetting() {
     await _connection.send({
@@ -480,6 +483,7 @@ function Main() {
   }
 
 
+  
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
   let isShowFailSubjectCount = true;
 
@@ -493,14 +497,16 @@ function Main() {
 
           <div>
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
+            {position==='student'?'':
             <div className='putLeft'>
               {studentDateRange.map((student) => {
                 if (student.id === studentID)
-                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{student.name}</button>
                 else
                   return <button type="button" className="btn btn-outline-blue me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
               })}
             </div>
+            }
           </div>
 
         </div>
@@ -569,14 +575,11 @@ function Main() {
             </div>
           </div>}
 
-
-        {/* <div>{informationText}</div> */}
         <div>{[].concat(courseExamScorePlusAvg || []).length < 1 ? '尚無資料。' : ''}</div>
 
         <div className="row row-cols-1 row-cols-md-2 g-4 ">
 
           {courseExamScorePlusAvg.map((ces) => {
-            //console.log('mapCourseExamScoreNewPlus', courseExamScorePlusAvg);
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Popover from 'react-bootstrap/Popover';
 
 const RankDetail = () => {
 
@@ -35,33 +37,14 @@ const RankDetail = () => {
 	const [showNoRankSetting, setShowNoRankSetting] = useState(true);
 
 
-	function ToBarChart() {
-		const source = {};
+	const position = window.gadget.params.system_position;
 
-		levelList.forEach(v => source[v.name] = v.count);
+	var _connection = window.gadget.getContract("1campus.h.exam.parent");
 
-		if (studentSubjectData.length > 0) {
-			studentSubjectData.forEach(data => {
-				//rankTypeSource.push(matrix.rank_type);
-				console.log('studentSubjectData', studentSubjectData);
-				if (data.rank_type === selectedRankType) //所選的排名類別
-				{
-					console.log('data', data);
-					source["100"] = data.level_gte100;
-					source["90-99"] = data.level_90;
-					source["80-89"] = data.level_80;
-					source["70-79"] = data.level_70;
-					source["60-69"] = data.level_60;
-					source["<60"] = data.under60;
+	if (position === 'student')
+		_connection = window.gadget.getContract("1campus.h.exam.student");
 
-					const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
 
-					setLevelList(merge);
-					setChartMax(Math.ceil(Math.max(...merge.map(c => c.count)) / 4) * 4);
-				}
-			});
-		}
-	}
 
 
 
@@ -84,6 +67,33 @@ const RankDetail = () => {
 	}, [selectedRankType]);
 
 
+	function ToBarChart() {
+		const source = {};
+
+		levelList.forEach(v => source[v.name] = v.count);
+
+		if (studentSubjectData.length > 0) {
+			studentSubjectData.forEach(data => {
+				console.log('studentSubjectData', studentSubjectData);
+				if (data.rank_type === selectedRankType) //所選的排名類別
+				{
+					console.log('data', data);
+					source["100"] = data.level_gte100;
+					source["90-99"] = data.level_90;
+					source["80-89"] = data.level_80;
+					source["70-79"] = data.level_70;
+					source["60-69"] = data.level_60;
+					source["<60"] = data.under60;
+
+					const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
+
+					setLevelList(merge);
+					setChartMax(Math.ceil(Math.max(...merge.map(c => c.count)) / 4) * 4);
+				}
+			});
+		}
+	}
+
 	function GetRankTypeList() {
 		const typeList = [];
 		if (studentSubjectData.length > 0)
@@ -103,7 +113,7 @@ const RankDetail = () => {
 			setChartHeight(350);
 	}
 
-	var _connection = window.gadget.getContract("1campus.h.exam.parent");
+
 
 	// 取得該課程之評量之排名
 	async function GetRankDetailPageInfo() {
@@ -184,19 +194,21 @@ const RankDetail = () => {
 	};
 
 	const handleManual = (e) => {
-		alert("【五標】\n" +
-			"頂標：該項目前25%考生成績的平均分數\n" +
-			"高標：該項目前50%考生成績的平均分數\n" +
-			"均標：該項目全體考生成績的平均分數\n" +
-			"低標：該項目後50%考生成績的平均分數\n" +
-			"底標：該項目後25%考生成績的平均分數\n\n" +
-			"【新五標】\n" +
-			"新頂標：該項目成績位於第88百分位數之考生分數\n" +
-			"新前標：該項目成績位於第75百分位數之考生分數\n" +
-			"新均標：該項目成績位於第50百分位數之考生分數\n" +
-			"新後標：該項目成績位於第25百分位數之考生分數\n" +
-			"新底標：該項目成績位於第12百分位數之考生分數");
+		// alert(text);
 	};
+
+	const text = "【五標】\n" +
+		"頂標：該項目前25%考生成績的平均分數\n" +
+		"高標：該項目前50%考生成績的平均分數\n" +
+		"均標：該項目全體考生成績的平均分數\n" +
+		"低標：該項目後50%考生成績的平均分數\n" +
+		"底標：該項目後25%考生成績的平均分數\n\n" +
+		"【新五標】\n" +
+		"新頂標：該項目成績位於第88百分位數之考生分數\n" +
+		"新前標：該項目成績位於第75百分位數之考生分數\n" +
+		"新均標：該項目成績位於第50百分位數之考生分數\n" +
+		"新後標：該項目成績位於第25百分位數之考生分數\n" +
+		"新底標：該項目成績位於第12百分位數之考生分數"
 
 	return (
 		<div className="App">
@@ -204,8 +216,30 @@ const RankDetail = () => {
 
 				<div class="d-flex justify-content-between">
 					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
-					<button type="button" className="btn btn-back active d-flex justify-content-start me-2" onClick={handleManual}>五標說明</button>
+					{/* <OverlayTrigger key='' placement='left' containerPadding={100} overlay={<Tooltip id='0'>{text}</Tooltip>}> */}
+					<OverlayTrigger key='' placement='bottom' containerPadding={30} overlay={<Popover id='popover-contained'>
+						<Popover.Header as="h3">五標說明</Popover.Header>
+						<Popover.Body>
+							<strong>【五標】</strong> <br />
+							頂標：該項目前25%考生成績的平均分數<br />
+							高標：該項目前50%考生成績的平均分數<br />
+							均標：該項目全體考生成績的平均分數<br />
+							低標：該項目後50%考生成績的平均分數<br />
+							底標：該項目後25%考生成績的平均分數<br />
+							<strong>【新五標】</strong> <br />
+							新頂標：該項目成績位於第88百分位數之考生分數<br />
+							新前標：該項目成績位於第75百分位數之考生分數<br />
+							新均標：該項目成績位於第50百分位數之考生分數<br />
+							新後標：該項目成績位於第25百分位數之考生分數<br />
+							新底標：該項目成績位於第12百分位數之考生分數
+						</Popover.Body>
+					</Popover>}>
+						<button type="button" className="btn btn-back active d-flex justify-content-start me-2" onClick={handleManual}>五標說明</button>
+					</OverlayTrigger>
+
 				</div>
+
+
 				<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div>
 
 				{studentSubjectData.map((data) => {
