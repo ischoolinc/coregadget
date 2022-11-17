@@ -1,61 +1,80 @@
 body {
-    background-color: var(--bs-body-bg);
+  background-color: var(--bs-body-bg);
 }
 
 .btn-outline-blue {
-    color: #000;
-    border-color: #5B9BD5;
-    background-color: #fff
+  color: #000;
+  border-color: #5b9bd5;
+  background-color: #fff;
 }
 
-.btn-outline-blue:hover, .btn-outline-blue.active {
-    background-color: #DEEBF7
+.btn-outline-blue:hover,
+.btn-outline-blue.active {
+  background-color: #deebf7;
 }
 
 .btn:focus {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .btn-back {
-    color: #5B9BD5;
+  color: #5b9bd5;
 }
 
-.card{
-    border-color: #BF9000;
+.card {
+  border-color: #bf9000;
 }
-.card-pass{
-    border-color: #9DC3E6;
+.card-pass {
+  border-color: #9dc3e6;
 }
 
-.card-unpass{
-    border-color: #FF0000;
+.card-unpass {
+  border-color: #ff0000;
 }
+
 .form-select {
-    border: 1px solid #9DC3E6;
-    
+  border: 1px solid #9dc3e6;
 }
-.text-unview {
-    color: #F9C187;
-    font-size: 16px;
-}
-.disabledCursor { 
-    cursor: default;
-  }
 
-  /* .innerText {
+.text-unview {
+  color: #f9c187;
+  font-size: 16px;
+}
+
+.disabledCursor {
+  cursor: default;
+}
+
+.form-select:focus {
+  /* outline: none !important; */
+  box-shadow: none;
+}
+
+.arrow {
+  height: 17px;
+  width: 17px;
+  margin-top: 10px;
+}
+.putLeft {
+  text-align: left;
+}
+
+.titleBorder {
+  /* border-color: #5B9BD5 ; */
+  border-left: 7px solid #5b9bd5;
+}
+
+/* .innerText {
     font-size: 5vw;
   } 百分比、分數、名次*/
-  
-  @media (max-width: 480px) {
-    .innerText {
-        font-size: 3vw;
-      }
-      /* .text-unview
+
+@media (max-width: 480px) {
+  .innerText {
+    font-size: 3vw;
+  }
+
+  /* .text-unview
       {
         font-size: 3vw;
       } */
-  }
-
-  @media (max-width: 480px) {
-
-  }
+}

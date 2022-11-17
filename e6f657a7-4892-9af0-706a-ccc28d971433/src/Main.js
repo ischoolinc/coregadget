@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
-
+// import greenDown from './greenDown.png';
+// import redUp from './redUp.png';
+import greenDown from './down.png';
+import redUp from './up.png';
 
 function Main() {
 
@@ -303,7 +306,7 @@ function Main() {
         } else {
           if (response) {
             setCourseExamList([].concat(response.ExamList || []));
-            if ([].concat(response.ExamList || []).length < 1||selectedExam === null) {
+            if ([].concat(response.ExamList || []).length < 1 || selectedExam === null) {
               setViewExam('0');
             }
           }
@@ -328,7 +331,6 @@ function Main() {
           return 'err';
         } else {
           if (response) {
-            debugger;
             setRankType([].concat(response.RankType || []));
             if ([].concat(response.RankType || []).length) {
               if (selectedRankType === '' || selectedRankType === null)
@@ -485,25 +487,26 @@ function Main() {
     <div className="App">
       <div className="container px-3 px-sm-4 py-5 ">
 
-        <div className='d-flex align-items-center'>
+        <div className='titleBorder d-flex align-items-center'>
 
-          <div style={{ width: '5px', height: '72px', background: '#5B9BD5' }}></div>
+          {/* <div style={{ width: '5px', height: '72px', background: '#5B9BD5' }}></div> */}
 
           <div>
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
-            <div className='d-flex align-items-center'>
+            <div className='putLeft'>
               {studentDateRange.map((student) => {
                 if (student.id === studentID)
-                  return <button type="button" className="btn btn-outline-blue float-left active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
                 else
-                  return <button type="button" className="btn btn-outline-blue float-left me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
+                  return <button type="button" className="btn btn-outline-blue me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
               })}
             </div>
           </div>
 
         </div>
 
-        <div className="d-flex col-12 col-md-6 col-lg-6 m-2">
+
+        {/* <div className="d-flex col-12 col-md-6 col-lg-6 m-2">
           <select className="form-select me-3" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
             <option value="Y" key="Y">(選擇學年度學期)</option>
             {courseSemesterRange.map((courseSemester, index) => {
@@ -512,7 +515,6 @@ function Main() {
             })}
           </select>
 
-
           <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
             <option value="0" key="Y">總覽</option>
             {courseExamList.map((examList, index) => {
@@ -520,47 +522,73 @@ function Main() {
                 {examList.exam_name}</option>
             })}
           </select>
+        </div> */}
 
 
-        </div>
 
-        {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' : <div className='d-flex align-items-center mb-3'>
-          <div className="col-2 col-md-2 col-lg-1">排名類別</div>
-          <div className="col-10 col-md-4 col-lg-5 m-2">
-            <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
-              {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>}
-
-              {/* <option value="Y" key="Y">(選擇排名類別)</option> */}
-
-              {examRankType.map((rankType, index) => {
-                return <option key={index} value={rankType.rank_type}>
-                  {rankType.rank_type}</option>
+        <div className='row align-items-center my-1'>
+          <div className='col-12 col-md-3 col-lg-3 ms-2 p-2'>
+            <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
+              <option value="Y" key="Y">(選擇學年度學期)</option>
+              {courseSemesterRange.map((courseSemester, index) => {
+                return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
+                  {courseSemester.schoolyear}學年度第{courseSemester.semester}學期</option>
               })}
             </select>
           </div>
-        </div>}
+          <div className='col-12 col-md-3 col-lg-3 ms-2 p-2'>
+            <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
+              <option value="0" key="Y">總覽</option>
+              {courseExamList.map((examList, index) => {
+                return <option key={index} value={examList.exam_id}>
+                  {examList.exam_name}</option>
+              })}
+            </select>
+          </div>
+
+        </div>
+
+
+
+        {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
+          <div className='d-flex align-items-center mb-3 col-12 col-md-6 col-lg-6'>
+            <div className="col-2 col-md-4 col-lg-2">排名類別</div>
+            <div className="col-10 col-md-8 col-lg-10 mx-2">
+              <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
+
+                {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>}
+
+                {/* <option value="Y" key="Y">(選擇排名類別)</option> */}
+
+                {examRankType.map((rankType, index) => {
+                  return <option key={index} value={rankType.rank_type}>
+                    {rankType.rank_type}</option>
+                })}
+              </select>
+            </div>
+          </div>}
 
 
         {/* <div>{informationText}</div> */}
         <div>{[].concat(courseExamScorePlusAvg || []).length < 1 ? '尚無資料。' : ''}</div>
 
-        <div className="row row-cols-1 row-cols-md-2 g-4">
+        <div className="row row-cols-1 row-cols-md-2 g-4 ">
 
           {courseExamScorePlusAvg.map((ces) => {
-            console.log('mapCourseExamScoreNewPlus', courseExamScorePlusAvg);
+            //console.log('mapCourseExamScoreNewPlus', courseExamScorePlusAvg);
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
                   let passColor = 'card card-pass h-100';
-                  let scoreColor = 'fs-4';
+                  let scoreColor = 'fs-4 me-0 pe-0';
                   let show = '/RankDetail';
                   let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
                   if (cField.IsPass === 'f') {
                     roundColor = '#FF0000';
                     passColor = 'card card-unpass h-100';
-                    scoreColor = 'fs-4 text-danger';
+                    scoreColor = 'fs-4 text-danger me-0 pe-0';
                   }
                   if (cField.ToView === 'f' || ces.Subject === avgSetting) {
                     roundColor = '#5B9BD5';
@@ -579,8 +607,8 @@ function Main() {
 
                   if (cField.Score === '') {
                     roundColor = '#5B9BD5';
-                    scoreColor = 'fs-4';
-                    passColor = 'card';
+                    scoreColor = 'fs-4 me-0 pe-0';
+                    passColor = 'card h-100';
                   }
                   let im = 0;
                   let previousExamID = selectedExam;
@@ -602,21 +630,22 @@ function Main() {
                           </div>
                         </div>
 
+                        <div className='row align-items-center'>
 
-                        <div className='d-flex justify-content-center'>
-                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> : <div className='row align-items-center'>
-                            <div className='row align-items-center mx-1'>
+                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> :
+                            <div className='col-6 col-md-6 col-lg-6 my-2'>
+                              <div className='row align-items-center'>
+                                <div className='d-flex justify-content-center'>
+                                  <div className='row align-items-center'>
+                                    <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}</div>
+                                    <div className='me-0 pe-0'>分數</div>
+                                  </div>
 
-                              <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}
+                                  <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+
                                 </div>
-                                <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' ||ces.Field[im].Score===''? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? '↑' : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? '↓' : ''}</div>
                               </div>
-
-                              <div>分數</div>
                             </div>
-                          </div>
-
                           }
 
                           {examRankMatrix.map((rank, index) => {
@@ -630,37 +659,45 @@ function Main() {
                                       previousExamRank = rField.Rank;
 
                                     if (rField.RankType === selectedRankType && rField.ExamID === selectedExam && !showNoRankSetting)
-
-                                      return <div className='d-flex justify-content-around'>
-                                        <div className='row align-self-center mx-1'>
+                                      return <>
+                                        <div className='col-6 col-md-6 col-lg-6 my-2'>
                                           <div className='d-flex justify-content-center'>
-                                            <div className='fs-4'>{rField.Rank}</div>
-                                            <div>{previousExamRank === '0' || previousExamID === '' ? '' : rField.Rank > previousExamRank ? '↓' : rField.Rank === previousExamRank ? '' : '↑'}</div>
+                                            <div className='row align-self-center'>
+                                              <div className='fs-4 pe-0 me-0'>{rField.Rank}</div>
+                                              <div className='pe-0 me-0'>名次</div>
+                                            </div>
+
+                                            <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ? '' : Number(rField.Rank) > Number(previousExamRank) ? <img className='arrow' src={greenDown} alt='↓' /> : Number(rField.Rank) === Number(previousExamRank) ? '' : <img className='arrow' src={redUp} alt='↑' />}</div>
                                           </div>
-                                          <div>名次</div>
+                                        </div>
+                                        <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                          <div className='row align-self-center'>
+                                            <div className='d-flex justify-content-center'>
+                                              <div className='fs-4'>{rField.PR}</div>
+                                            </div>
+                                            <div>PR</div>
+                                          </div>
                                         </div>
 
-                                        <div className='row align-self-center mx-1'>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='fs-4'>{rField.PR}</div>
+                                        <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                          <div className='row align-self-center'>
+                                            <div className='d-flex justify-content-center'>
+                                              <div className='fs-4'>{rField.Percentile}</div>
+                                            </div>
+                                            <div>百分比</div>
                                           </div>
-                                          <div>PR</div>
                                         </div>
-
-                                        <div className='row align-self-center mx-1'>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='fs-4'>{rField.Percentile}</div>
-                                          </div>
-                                          <div>百分比</div>
-                                        </div>
-                                      </div>
+                                      </>
                                   })}
 
                                 </>
                               }
                           })}
 
+
                         </div>
+
+
                       </Link>
                     </div>
                   </div>
@@ -715,7 +752,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className={scoreColor}>{nField.ToView === 't' ? nField.Score === '' ? '-' : nField.Score : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
                                 </div>
-                                <div>{index === 0 || nField.ToView === 'f' ||nField.Score === ''||nces.Field[im].Score===''? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? '↑' : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? '↓' : ''}</div>
+                                <div>{index === 0 || nField.ToView === 'f' || nField.Score === '' || nces.Field[im].Score === '' ? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
                               </div>
                               <div>{nField.ExamName}</div>
                             </div>

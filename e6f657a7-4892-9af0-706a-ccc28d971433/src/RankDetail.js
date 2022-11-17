@@ -5,7 +5,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 const RankDetail = () => {
 
-
 	const studentID = sessionStorage.getItem('StudentID');
 	const examID = sessionStorage.getItem('ExamID');
 	const semester = sessionStorage.getItem('Semester');
@@ -16,6 +15,7 @@ const RankDetail = () => {
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
+
 	//所選的排名類別
 	const [selectedRankType, setViewRankType] = useState("");
 
@@ -60,10 +60,7 @@ const RankDetail = () => {
 					setChartMax(Math.ceil(Math.max(...merge.map(c => c.count)) / 4) * 4);
 				}
 			});
-
 		}
-
-
 	}
 
 
@@ -71,7 +68,6 @@ const RankDetail = () => {
 	useEffect(() => {
 		GetRankDetailPageInfo();
 		GetViewSetting();
-		//GetChartHeight();
 	}, []);
 
 	useEffect(() => {
@@ -105,11 +101,9 @@ const RankDetail = () => {
 			setChartHeight(450);
 		else
 			setChartHeight(350);
-
-		//debugger;
 	}
 
-	var _connection = window.gadget.getContract("1campus.exam.parent");
+	var _connection = window.gadget.getContract("1campus.h.exam.parent");
 
 	// 取得該課程之評量之排名
 	async function GetRankDetailPageInfo() {
@@ -130,7 +124,6 @@ const RankDetail = () => {
 					if (response) {
 						setStudentSubjectData([].concat(response.RankMatrix || []));
 						console.log('GetRankDetailPageInfo', [].concat(response.RankMatrix || []));
-						//GetRankTypeList();
 					}
 				}
 			}
@@ -166,7 +159,8 @@ const RankDetail = () => {
 		// 按下去的時候才存
 		window.history.go(-1);
 		sessionStorage.setItem('IsBack', 't');
-		console.log('The link was clicked.');
+		sessionStorage.setItem('RankType', selectedRankType);
+		// console.log('The link was clicked.');
 	};
 
 
@@ -186,7 +180,7 @@ const RankDetail = () => {
 
 	const handleHistoryBack = (e) => {
 		window.history.back();
-		console.log('The link was clicked.');
+		// console.log('The link was clicked.');
 	};
 
 	const handleManual = (e) => {
@@ -209,7 +203,6 @@ const RankDetail = () => {
 			<div className="container px-3 px-sm-4 py-5 ">
 
 				<div class="d-flex justify-content-between">
-
 					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
 					<button type="button" className="btn btn-back active d-flex justify-content-start me-2" onClick={handleManual}>五標說明</button>
 				</div>
@@ -235,7 +228,6 @@ const RankDetail = () => {
 						<div className='d-flex align-items-center mb-3'>
 							<div className="col-12 col-md-6 col-lg-6 my-2">
 								<select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
-									{/* <option value="Y" key="Y">(選擇排名類別)</option> */}
 									{rankTypeList.map((rankType, index) => {
 										return <option key={index} value={rankType}>
 											{rankType}</option>
