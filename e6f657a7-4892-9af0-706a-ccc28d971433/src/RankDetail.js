@@ -162,6 +162,7 @@ const RankDetail = () => {
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
+		sessionStorage.setItem('RankType', e.target.value);
 	};
 
 
@@ -169,7 +170,7 @@ const RankDetail = () => {
 		// 按下去的時候才存
 		window.history.go(-1);
 		sessionStorage.setItem('IsBack', 't');
-		sessionStorage.setItem('RankType', selectedRankType);
+		//sessionStorage.setItem('RankType', selectedRankType);
 		// console.log('The link was clicked.');
 	};
 
@@ -184,14 +185,10 @@ const RankDetail = () => {
 		sessionStorage.setItem('Semester', semester);
 		sessionStorage.setItem('Subject', storageSubject);
 		sessionStorage.setItem('PassingStandard', passingStandard);
-
 	}
 
 
-	const handleHistoryBack = (e) => {
-		window.history.back();
-		// console.log('The link was clicked.');
-	};
+
 
 	const handleManual = (e) => {
 		// alert(text);

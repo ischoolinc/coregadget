@@ -6,6 +6,15 @@ import { Link } from 'react-router-dom';
 import greenDown from './down.png';
 import redUp from './up.png';
 
+
+
+export function ConvertStudentName(name) {
+  const htmlText = `${name}`
+
+  return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
+}
+
+
 function Main() {
 
   // 學生清單
@@ -202,6 +211,7 @@ function Main() {
                 }
               });
               if (!temp) {
+                sessionStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -256,8 +266,10 @@ function Main() {
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
-              else if (sameAsCurrency)
+              else if (sameAsCurrency) {
                 setViewSemester(currSemester);
+                sessionStorage.clear();
+              }
 
             }
             else {
@@ -311,6 +323,19 @@ function Main() {
             setCourseExamList([].concat(response.ExamList || []));
             if ([].concat(response.ExamList || []).length < 1 || selectedExam === null) {
               setViewExam('0');
+              console.log('ASAselectedExam,',selectedExam)
+            }
+            if([].concat(response.ExamList || []).length || selectedExam === null){
+              var temp = false;
+              [].concat(response.ExamList || []).forEach(element => {
+                if (element.exam_id === selectedExam) {
+                  setViewExam(selectedExam);
+                  temp = true;
+                }
+              });
+              if (!temp) {
+                setViewExam('0');
+              }             
             }
           }
         }
@@ -442,21 +467,16 @@ function Main() {
             'ToViewTime': avg.toviewtime
           }
           avgScoreArray.push(avgScoreObj);
-          //obj = {
           var subject = (avgSetting === '加權平均' ? avgSetting : '算術平均');
-          //var field = avgScoreArray;
           var domain = '';
           var courseID = 0;
           var passingStandard = avgPassingStardard;
-          //field= avgScoreArray
-          //}
         }
         var dd1 = { CourseID: courseID, Domain: domain, Subject: subject, PassingStandard: passingStandard, Field: avgScoreArray };
         courseExamScoreNewPlusSource.push(dd1);
       }
 
     setCourseExamScorePlusAvg(courseExamScoreNewPlusSource);
-    console.log('courseExamScoreNewNew', courseExamScoreNewPlusSource);
 
   }
 
@@ -477,13 +497,11 @@ function Main() {
     setFailedCount(failCount);
   }
 
-  // 手動重新整理清除sessionStorage //須請俊威發布一版試試看會不會把sessionStorage帶到別的主機
+  // 手動重新整理/去別的頁面，將清除sessionStorage 
   window.onunload = function () {
     sessionStorage.clear();
   }
 
-
-  
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
   let isShowFailSubjectCount = true;
 
@@ -492,26 +510,28 @@ function Main() {
       <div className="container px-3 px-sm-4 py-5 ">
 
         <div className='titleBorder d-flex align-items-center'>
-
-          {/* <div style={{ width: '5px', height: '72px', background: '#5B9BD5' }}></div> */}
-
+        {/* overlay={
+            <Tooltip id={`tooltip-${placement}`}>
+              Tooltip on <strong>{placement}</strong>.
+            </Tooltip>
+          } */}
           <div>
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
-            {position==='student'?'':
-            <div className='putLeft'>
-              {studentDateRange.map((student) => {
-                if (student.id === studentID)
-                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{student.name}</button>
-                else
-                  return <button type="button" className="btn btn-outline-blue me-1 ms-1" key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
-              })}
-            </div>
+            {position === 'student' ? '' :
+              <div className='putLeft'>
+                {studentDateRange.map((student) => {
+                  if (student.id === studentID)
+                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{ConvertStudentName(student.name)}</button>
+                  else
+                  return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{ConvertStudentName(student.name)}</button>
+                })}
+              </div>
             }
           </div>
 
         </div>
 
-
+        
         {/* <div className="d-flex col-12 col-md-6 col-lg-6 m-2">
           <select className="form-select me-3" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
             <option value="Y" key="Y">(選擇學年度學期)</option>
@@ -534,7 +554,7 @@ function Main() {
 
 
         <div className='row align-items-center my-1'>
-          <div className='col-12 col-md-3 col-lg-3 ms-2 p-2'>
+          <div className='col-12 col-md-3 col-lg-3 ms-1 p-2 me-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
               <option value="Y" key="Y">(選擇學年度學期)</option>
               {courseSemesterRange.map((courseSemester, index) => {
@@ -543,7 +563,7 @@ function Main() {
               })}
             </select>
           </div>
-          <div className='col-12 col-md-3 col-lg-3 ms-2 p-2'>
+          <div className='col-12 col-md-3 col-lg-3 ms-1 p-2'>
             <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
               <option value="0" key="Y">總覽</option>
               {courseExamList.map((examList, index) => {
@@ -791,5 +811,6 @@ function Main() {
 }
 
 export default Main;
+
 
 
