@@ -6,15 +6,6 @@ import { Link } from 'react-router-dom';
 import greenDown from './down.png';
 import redUp from './up.png';
 
-
-
-export function ConvertStudentName(name) {
-  const htmlText = `${name}`
-
-  return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
-}
-
-
 function Main() {
 
   // 學生清單
@@ -417,8 +408,9 @@ function Main() {
 
   //**************************** */
 
-  const handleChangeStudent = (e) => {
-    setStudent(e.target.value);
+  const handleChangeStudent = (studentID) => {
+    debugger;
+    setStudent(studentID);
   }
 
   const handleChangeViewSemester = (e) => {
@@ -497,6 +489,12 @@ function Main() {
     setFailedCount(failCount);
   }
 
+  function ConvertStudentName(name) {
+    const htmlText = `${name}`
+  
+    return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
+  }
+
   // 手動重新整理/去別的頁面，將清除sessionStorage 
   window.onunload = function () {
     sessionStorage.clear();
@@ -521,9 +519,12 @@ function Main() {
               <div className='putLeft'>
                 {studentDateRange.map((student) => {
                   if (student.id === studentID)
-                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{ConvertStudentName(student.name)}</button>
+                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
                   else
-                  return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{ConvertStudentName(student.name)}</button>
+                  return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
+                  // return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{student.name}</button>
+                  // else
+                  // return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
                 })}
               </div>
             }
