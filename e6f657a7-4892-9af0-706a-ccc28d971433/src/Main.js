@@ -555,7 +555,7 @@ function Main() {
 
 
         <div className='row align-items-center my-1'>
-          <div className='col-12 col-md-3 col-lg-3 ms-1 p-2 me-2'>
+          <div className='col-12 col-md-3 col-lg-3  py-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
               <option value="Y" key="Y">(選擇學年度學期)</option>
               {courseSemesterRange.map((courseSemester, index) => {
@@ -564,7 +564,7 @@ function Main() {
               })}
             </select>
           </div>
-          <div className='col-12 col-md-3 col-lg-3 ms-1 p-2'>
+          <div className='col-12 col-md-3 col-lg-3  py-2'>
             <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
               <option value="0" key="Y">總覽</option>
               {courseExamList.map((examList, index) => {
@@ -573,20 +573,16 @@ function Main() {
               })}
             </select>
           </div>
-
         </div>
 
 
-
         {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
-          <div className='d-flex align-items-center mb-3 col-12 col-md-6 col-lg-6'>
-            <div className="col-2 col-md-4 col-lg-2">排名類別</div>
-            <div className="col-10 col-md-8 col-lg-10 mx-2">
+          <div className='d-flex align-items-center mb-3 col-12 col-md-6 col-lg-6  py-2'>
+            <div className="col-2 col-md-4 col-lg-2 pe-1">排名類別</div>
+            <div className="col-10 col-md-8 col-lg-10 ps-1  pe-lg-2  pe-md-3">
               <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
                 {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>}
-
-                {/* <option value="Y" key="Y">(選擇排名類別)</option> */}
 
                 {examRankType.map((rankType, index) => {
                   return <option key={index} value={rankType.rank_type}>
