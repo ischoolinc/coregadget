@@ -22,4 +22,13 @@ export class ParamsService {
   public get scheduleSource(): 'standard' | 'personal' {
     return this.allParams.schedule_source;
   }
+
+  public get hideOha(): boolean {
+    return this.allParams.hide_oha || false;
+  }
+
+  // 未實作
+  public get oha(): {url: string, tip: string} | undefined {
+    return this.allParams.oha;
+  }
 }

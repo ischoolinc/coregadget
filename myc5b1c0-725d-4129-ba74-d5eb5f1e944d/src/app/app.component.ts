@@ -81,7 +81,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private ConnectedSettingSrv: ConnectedSettingService,
     private crSrv: ClassroomService,
     private store: Store,
-    private params: ParamsService
+    public params: ParamsService
   ) {}
 
   async ngOnInit() {
@@ -94,6 +94,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // 課表來源(校務行政 or 教師自行輸入)。
     this.scheduleSource = this.params.scheduleSource;
+    console.log(`hide oha: ${this.params.hideOha}`);
+    console.log(this.params.oha);
 
     // 取得 DSNS、我的登入帳號(需為 Google 登入才能使用此功能)
     // 確認管理者是否已設定連結 Google 帳號
