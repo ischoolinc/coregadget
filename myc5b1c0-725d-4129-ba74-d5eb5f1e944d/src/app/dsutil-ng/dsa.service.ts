@@ -63,17 +63,13 @@ export class DSAService {
         try {
           await conn.connect();
         } catch(err) {
-          // 見鬼了還是會出錯…
-          if(err instanceof DSAError) {
-            if(err.code == '502') {
-              await new Promise<void>((r, j) => {
-                setTimeout(() => { r(); }, 500);
-              });
-              // 硬等 500 毫秒再連一次。
-              await conn.connect();
-            }
-          }
-          throw err;
+          console.log('有異常!');
+          // console.log(err);
+          await new Promise<void>((r, j) => {
+            setTimeout(() => { r(); }, 500);
+          });
+          // 硬等 500 毫秒再連一次。
+          await conn.connect();
         }
 
         this.#connCache.set(cacheKey, conn);
