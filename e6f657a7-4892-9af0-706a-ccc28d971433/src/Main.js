@@ -804,7 +804,7 @@ function Main() {
 
                                       {avgField.Score !== '' && Number(avgField.Score) < avgPassingStardard ?
                                         <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
-                                        : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : avgField.Score}</div>}
+                                        : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
 
                                       {/* <div className={scoreColor}>{avgField.Score === '' ? '-' : avgField.Score}</div> */}
                                       <div className='me-0 pe-0'>分數</div>

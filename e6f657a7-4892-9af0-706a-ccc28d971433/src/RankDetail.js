@@ -243,7 +243,7 @@ const RankDetail = () => {
 					if (data.rank_type === selectedRankType)
 						return <div className='d-flex'>
 							<div className='d-flex me-auto p-2 align-items-center'>
-								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.Score) * 100) / 100 : data.score}</div>
+								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
 								<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 							</div>
 							<div className='justify-content-end'>
