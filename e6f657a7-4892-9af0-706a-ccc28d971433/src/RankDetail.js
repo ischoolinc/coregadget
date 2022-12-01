@@ -78,12 +78,12 @@ const RankDetail = () => {
 				if (data.rank_type === selectedRankType) //所選的排名類別
 				{
 					console.log('data', data);
-					source["100"] = data.level_gte100;
-					source["90-99"] = data.level_90;
-					source["80-89"] = data.level_80;
-					source["70-79"] = data.level_70;
-					source["60-69"] = data.level_60;
-					source["<60"] = data.under60;
+					source["100"] = Number(data.level_gte100);
+					source["90-99"] = Number(data.level_90);
+					source["80-89"] = Number(data.level_80);
+					source["70-79"] = Number(data.level_70);
+					source["60-69"] = Number(data.level_60);
+					source["<60"] = Number(data.under60);
 
 					const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
 
@@ -243,7 +243,7 @@ const RankDetail = () => {
 					if (data.rank_type === selectedRankType)
 						return <div className='d-flex'>
 							<div className='d-flex me-auto p-2 align-items-center'>
-								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{studentSubjectData.score}50</div>
+								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.Score) * 100) / 100 : data.score}</div>
 								<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 							</div>
 							<div className='justify-content-end'>
@@ -298,7 +298,7 @@ const RankDetail = () => {
 
 													<tr>
 														<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
-														<td style={{ background: '#DEEBF7' }}>{Math.round(data.std_dev_pop * 100) / 100}</td>
+														<td style={{ background: '#DEEBF7' }}>{data.std_dev_pop === '' ? '' : Math.round(data.std_dev_pop * 100) / 100}</td>
 													</tr>
 												</tbody>
 
@@ -359,23 +359,23 @@ const RankDetail = () => {
 											<tbody style={{ borderTop: '4px solid #fff' }}>
 												<tr style={{ background: '#D2DEEF' }}>
 													<td className='w-50'>新頂標</td>
-													<td>{Math.round(data.pr_88 * 100) / 100}</td>
+													<td>{data.pr_88 === '' ? '' : Math.round(data.pr_88 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#EAEFF7' }}>
 													<td>新前標</td>
-													<td>{Math.round(data.pr_75 * 100) / 100}</td>
+													<td>{data.pr_75 === '' ? '' : Math.round(data.pr_75 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#D2DEEF' }}>
 													<td>新均標</td>
-													<td>{Math.round(data.pr_50 * 100) / 100}</td>
+													<td>{data.pr_50 === '' ? '' : Math.round(data.pr_50 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#EAEFF7' }}>
 													<td>新後標</td>
-													<td>{Math.round(data.pr_25 * 100) / 100}</td>
+													<td>{data.pr_25 === '' ? '' : Math.round(data.pr_25 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#D2DEEF' }}>
 													<td>新底標</td>
-													<td>{Math.round(data.pr_12 * 100) / 100}</td>
+													<td>{data.pr_12 === '' ? '' : Math.round(data.pr_12 * 100) / 100}</td>
 												</tr>
 											</tbody>
 										</table>
