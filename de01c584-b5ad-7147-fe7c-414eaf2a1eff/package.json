@@ -1,0 +1,45 @@
+{
+  "name": "de01c584-b5ad-7147-fe7c-414eaf2a1eff",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "popover": "^2.4.1",
+    "react": "^18.2.0",
+    "react-bootstrap-validation": "^0.1.11",
+    "react-dom": "^18.2.0",
+    "react-overlay-trigger": "^1.2.0",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "5.0.1",
+    "recharts": "^2.1.16",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "firebase": "set PUBLIC_URL=/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build",
+    "prod": "set PUBLIC_URL=/deployment/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
