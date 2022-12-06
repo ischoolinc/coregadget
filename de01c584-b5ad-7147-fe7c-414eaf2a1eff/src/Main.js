@@ -30,7 +30,7 @@ function Main() {
   const [selectedExam, setViewExam] = useState(sessionStorage.getItem('ExamID'));
 
   //當前顯示 科目成績 or 領域成績 //sessionStorage
-  const [selectedSubjectType, setSubjectType] = useState(0);
+  const [selectedSubjectType, setSubjectType] = useState(Number(sessionStorage.getItem('SelectedSubjectType')));
 
   //當前顯示 定期&平時 or 定期+平時 //sessionStorage
   //const [selectedScoreType, setScoreType] = useState(0);
@@ -197,7 +197,7 @@ function Main() {
           return 'err';
         } else {
           if (response) {
-            setAvgRankMatrix([].concat(response.Rule || []));
+            setAvgRankMatrix([].concat(response.RankAvg || []));
           }
         }
       }
@@ -445,7 +445,7 @@ function Main() {
           return 'err';
         } else {
           if (response) {
-            setCourseDomainExamScore([].concat(response.ExamScore || []));
+            setCourseDomainExamScore([].concat(response.DomainScore || []));
           }
         }
       }
@@ -472,20 +472,39 @@ function Main() {
   // }
 
   const handleSubjectType = (e) => {
-    setSubjectType(e.target.value);
+    setSubjectType(Number(e.target.value));
   }
 
   const handleShowRankDetail = (e) => {
+    var subject = e.Subject;
+    var courseID = e.CourseID;
+    var subjectType = 'subject';
+
+    if (!e.Subject && !e.Domain){
+
+      subject = e.ItemName;
+      subjectType = 'avg';
+    }
+
+    if (!e.Subject && !e.ItemName){
+      subjectType = 'domain';
+      subject = e.Domain;
+    }
+
+    if (!e.CourseID)
+      courseID = 0;
+
     sessionStorage.clear();
     // 按下去的時候才存
     sessionStorage.setItem('StudentID', studentID);
     sessionStorage.setItem('ExamID', selectedExam);
     //sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('CourseID', e.CourseID);
+    sessionStorage.setItem('CourseID', courseID);
     sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', e.Subject);
-    sessionStorage.setItem('PassingStandard', e.PassingStandard);
-
+    sessionStorage.setItem('Subject', subject);
+    //sessionStorage.setItem('PassingStandard', e.PassingStandard);
+    sessionStorage.setItem('SubjectType', subjectType); 
+    sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
   };
 
 
@@ -519,9 +538,9 @@ function Main() {
               <div className='putLeft'>
                 {studentDateRange.map((student) => {
                   if (student.id === studentID)
-                    return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
+                    return <button type="button" className="btn btn-outline-blue active me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
                   else
-                    return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
+                    return <button type="button" className="btn btn-outline-blue me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
                 })}
               </div>
             }
@@ -584,14 +603,13 @@ function Main() {
         </div>
 
 
-        <div>{[].concat(courseSubjectExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
-        <div>{selectedSubjectType === 1 && [].concat(courseDomainScore || []).length < 1 ? '尚無資料。' : ''}</div>
+        <div>{[].concat(courseSubjectExamScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
+        <div>{selectedSubjectType === 1 && [].concat(examAvgRankMatrix || []).length < 1 ? '尚無資料。' : ''}</div>
 
         <div className="row row-cols-1 row-cols-md-2 g-4 ">
 
           {/* 評量> 科目成績 */}
-
-          {courseSubjectExamScore.map((ces) => {
+          {selectedSubjectType === 0 ? <>          {courseSubjectExamScore.map((ces) => {
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
@@ -671,7 +689,7 @@ function Main() {
 
                         <div className='row align-items-center'>
 
-                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> :<>
+                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> : <>
                             <div className='col-6 col-md-6 col-lg-4 my-2'>
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
@@ -680,7 +698,7 @@ function Main() {
                                     <div className='me-0 pe-0'>定期評量</div>
                                   </div>
 
-                                  <div>{index === 0 ||  cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
@@ -694,7 +712,7 @@ function Main() {
                                     <div className='me-0 pe-0'>平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 ||  cField.AssignmentScore === '' || ces.Field[im].AssignmentScore === '' ? '' : Number(ces.Field[index].AssignmentScore) > Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].AssignmentScore) < Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.AssignmentScore === '' || ces.Field[im].AssignmentScore === '' ? '' : Number(ces.Field[index].AssignmentScore) > Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].AssignmentScore) < Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
@@ -704,20 +722,27 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score)*100)/100}</div>
+                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
                                     <div className='me-0 pe-0'>定期+平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 ||  cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
                             </div>
 
 
-</>}
+                          </>}
 
                         </div>
+
+                        {cField.ToView === 'f' ? '' :
+                          <div className='d-flex me-auto p-2 align-items-center'>
+                            {/* <div className=''>計算時間：{cField.CreateTime}</div> */}
+                            <div className=''>{cField.Message}</div>
+                          </div>
+                        }
 
 
                       </Link>
@@ -728,69 +753,26 @@ function Main() {
 
               })}
             </>
-          })}
+          })}</> : ''}
+
 
           {/* 評量> 領域成績 */}
-
-
-
-          {/* 評量> 總計成績 */}
-
-          {examAvgRankMatrix.map((ces) => {
+          {selectedSubjectType === 1 ? <>   {courseDomainScore.map((ces) => {
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   //let roundColor = '#A9D18E';
                   let passColor = 'card card-pass h-100';
-                  let examScoreColor, assignmentScoreColor, scoreColor = 'fs-4 me-0 pe-0';
+                  let examScoreColor = 'fs-4 me-0 pe-0';
+                  let scoreColor = 'fs-4 me-0 pe-0';
                   let show = '/RankDetail';
                   let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
-                  // if (cField.IsPass === 'f') {
-                  //   roundColor = '#FF0000';
-                  //   passColor = 'card card-unpass h-100';
-                  //   scoreColor = 'fs-4 text-danger me-0 pe-0';
-                  // }
-                  if (cField.ToView === 'f') {
-                    //roundColor = '#5B9BD5';
-                    //passColor = 'card h-100';
-                    //if (cField.ToView === 'f') {
-                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                    show = null;
-                    //isShowFailSubjectCount = false;
-                    //}
-                  }
 
-                  // if ([].concat(examRankType || []).length < 1) {
-                  //   show = null;
-                  //   disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                  // }
-
-                  // if (cField.Score === '') {
-                  //   //roundColor = '#5B9BD5';
-                  //   scoreColor = 'fs-4 me-0 pe-0';
-                  //   //passColor = 'card h-100';
-                  // }
-
-                  //缺或免  紅字
-                  if (cField.ExamScore !== '' && cField.ExamScoreText !== '')
+                  // 有成績 且 60分以下 紅字
+                  if (cField.ExamScore !== '' && Number(cField.ExamScore) < 60)
                     examScoreColor = 'fs-4 text-danger me-0 pe-0';
-                  if (cField.AssignmentScore !== '' && cField.AssignmentScoreText !== '')
-                    assignmentScoreColor = 'fs-4 text-danger me-0 pe-0';
-
-                  // 有成績 且 非缺 非免 且 60分以下 紅字
-                  if (cField.ExamScore !== '' && cField.ExamScoreText === '' && Number(cField.ExamScore) < 60)
-                    examScoreColor = 'fs-4 text-danger me-0 pe-0';
-                  if (cField.AssignmentScore !== '' && cField.AssignmentScoreText === '' && Number(cField.AssignmentScore) < 60)
-                    assignmentScoreColor = 'fs-4 text-danger me-0 pe-0';
-
                   if (cField.Score !== '' && Number(cField.Score) < 60)
                     scoreColor = 'fs-4 text-danger me-0 pe-0';
-
-                  // 沒有定期+平時 成績 視為沒計算固定排名，無法點入詳細資料
-                  if (cField.Score === '') {
-                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                    show = null;
-                  }
 
                   let im = 0;
                   let previousExamID = selectedExam;
@@ -805,44 +787,62 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
 
-                            <div className='fs-4 fw-bold'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
+                            <div className='fs-4 fw-bold'>{ces.Domain}</div>
                           </div>
-                          <div className='d-flex p-2' >
-                            <div>{ces.Subject === avgSetting ? '' : '權數'}</div><div>{ces.Credit}</div>
-                          </div>
+                          {/* <div className='d-flex p-2' >
+                            <div>權數</div><div>{ces.Credit}</div>
+                          </div> */}
                         </div>
 
                         <div className='row align-items-center'>
 
-                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> :<>
-                            <div className='col-6 col-md-6 col-lg-6 my-2'>
-                              <div className='row align-items-center'>
-                                <div className='d-flex justify-content-center'>
-                                  <div className='row align-items-center'>
-                                    <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}</div>
-                                    <div className='me-0 pe-0'>分數</div>
-                                  </div>
 
-                                  <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
-
+                          <div className='col-6 col-md-6 col-lg-6 my-2'>
+                            <div className='row align-items-center'>
+                              <div className='d-flex justify-content-center'>
+                                <div className='row align-items-center'>
+                                  <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>
+                                  <div className='me-0 pe-0'>定期評量</div>
                                 </div>
+
+                                <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+
                               </div>
                             </div>
-                                                                    <div className='col-6 col-md-6 col-lg-6 my-2'>
-                                                                    <div className='row align-self-center'>
-                                                                      <div className='d-flex justify-content-center'>
-                                                                        <div className='fs-4'>{cField.Percentile}</div>
-                                                                      </div>
-                                                                      <div>百分比</div>
-                                                                    </div>
-                                                                  </div>
-                                                                  </>
-                          }
+                          </div>
 
+                          <div className='col-6 col-md-6 col-lg-6 my-2'>
+                            <div className='row align-items-center'>
+                              <div className='d-flex justify-content-center'>
+                                <div className='row align-items-center'>
+                                  <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                  <div className='me-0 pe-0'>定期+平時評量</div>
+                                </div>
 
+                                <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+
+                              </div>
+                            </div>
+                          </div>
+
+{/* {箭頭排版} */}
+                          {/* <div className='col-6 col-md-6 col-lg-6 my-2'>
+                            <div className='row align-items-center m-2'>
+                              <div className='d-flex justify-content-center'>
+                                <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                              </div>
+                              <div className=''>定期+平時評量</div>
+                            </div>
+                          </div> */}
 
                         </div>
 
+
+
+                        <div className='d-flex me-auto p-2 align-items-center'>
+                          <div className=''>計算時間：{cField.CreateTime}</div>
+                        </div>
 
                       </Link>
                     </div>
@@ -852,6 +852,97 @@ function Main() {
 
               })}
             </>
+          })}</> : ''}
+
+
+          {/* 評量> 總計成績 */}
+          {examAvgRankMatrix.map((ces) => {
+            if (ces.ItemName === avgSetting)
+              return <>
+                {[].concat(ces.Field || []).map((cField, index) => {
+                  if (cField.ExamID === selectedExam) {
+                    //let roundColor = '#A9D18E';
+                    let passColor = 'card card-pass h-100';
+                    let examScoreColor = 'fs-4 me-0 pe-0';
+                    let scoreColor = 'fs-4 me-0 pe-0';
+                    let show = '/RankDetail';
+                    let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+
+                    // 有成績 且 60分以下 紅字
+                    if (cField.ExamScore !== '' && Number(cField.ExamScore) < 60)
+                      examScoreColor = 'fs-4 text-danger me-0 pe-0';
+                    if (cField.Score !== '' && Number(cField.Score) < 60)
+                      scoreColor = 'fs-4 text-danger me-0 pe-0';
+
+                    let im = 0;
+                    let previousExamID = selectedExam;
+                    if (index !== 0) {
+                      im = index - 1;
+                      previousExamID = ces.Field[im].ExamID;
+                    }
+                    return <div className="col"><div className={passColor}>
+                      <div className="card-body">
+                        <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
+                          <div className='d-flex'>
+                            <div className='d-flex me-auto p-2 align-items-center'>
+                              {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
+
+                              <div className='fs-4 fw-bold'>{ces.ItemName}</div>
+                            </div>
+                            {/* <div className='d-flex p-2' >
+                            <div>權數</div><div>{ces.Credit}</div>
+                          </div> */}
+                          </div>
+
+                          <div className='row align-items-center'>
+
+
+                            <div className='col-6 col-md-6 col-lg-6 my-2'>
+                              <div className='row align-items-center'>
+                                <div className='d-flex justify-content-center'>
+                                  <div className='row align-items-center'>
+                                    <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>
+                                    <div className='me-0 pe-0'>定期評量</div>
+                                  </div>
+
+                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className='col-6 col-md-6 col-lg-6 my-2'>
+                              <div className='row align-items-center'>
+                                <div className='d-flex justify-content-center'>
+                                  <div className='row align-items-center'>
+                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                    <div className='me-0 pe-0'>定期+平時評量</div>
+                                  </div>
+
+                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+
+                                </div>
+                              </div>
+                            </div>
+
+
+
+                          </div>
+
+
+
+                          <div className='d-flex me-auto p-2 align-items-center'>
+                            <div className=''>計算時間：{cField.CreateTime}</div>
+                          </div>
+
+                        </Link>
+                      </div>
+                    </div>
+                    </div>
+                  }
+
+                })}
+              </>
           })}
 
 
@@ -859,15 +950,14 @@ function Main() {
           {/* 總覽> 科目成績_定期 */}
 
           {courseSubjectExamScore.map((nces) => {
-
             if (selectedExam === '0') {
               return <div className="col">
-                <div className={nces.Subject === avgSetting ? 'card h-100' : 'card card-pass h-100'}>
+                <div className='card card-pass h-100'>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
                         <div className='d-flex me-auto p-2 align-items-center'>
-                          {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>}
+                          {/* {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>} */}
 
                           <div className='fs-4 fw-bold'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
                         </div>
@@ -876,27 +966,30 @@ function Main() {
                         </div>
                       </div>
 
-
                       <div className='row align-items-center'>
 
                         {[].concat(nces.Field || []).map((nField, index) => {
                           let scoreColor = 'fs-4';
-                          if (nField.IsPass === 'f') {
-                            scoreColor = 'fs-4 text-danger';
-                          }
-                          if (nField.ToView === 'f' || nField.Score === '') {
-                            scoreColor = 'fs';
-                          }
+
+                          //缺或免  紅字
+                          if (nField.ExamScore !== '' && nField.ExamScoreText !== '')
+                            scoreColor = 'fs-4 text-danger me-0 pe-0';
+
+                          // 有成績 且 非缺 非免 且 60分以下 紅字
+                          if (nField.ExamScore !== '' && nField.ExamScoreText === '' && Number(nField.ExamScore) < 60)
+                            scoreColor = 'fs-4 text-danger me-0 pe-0';
+
+
 
                           let im = 0;
                           if (index !== 0)
                             im = index - 1
                           return <div className='col-6 col-md-6 col-lg-6'>
-                            <div className='row align-items-center m-2'>
+                            <div className='row align-items-center my-2'>
                               <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{nField.ToView === 't' ? nField.Score === '' ? '-' : nField.Score : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
+                                <div className={scoreColor}>{nField.ToView === 't' ? nField.ExamScore === '' ? '-' : nField.ExamScore : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
                                 </div>
-                                <div>{index === 0 || nField.ToView === 'f' || nField.Score === '' || nces.Field[im].Score === '' ? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
                               </div>
                               <div>{nField.ExamName}</div>
                             </div>
@@ -913,7 +1006,58 @@ function Main() {
           })}
 
           {/* 總覽> 總計 */}
+          {examAvgRankMatrix.map((earm) => {
+            if (selectedExam === '0' && earm.ItemName === avgSetting) {
+              return <div className="col">
+                <div className='card card-pass h-100'>
+                  <div className="card-body">
+                    <div className="card-block">
+                      <div className='d-flex'>
+                        <div className='d-flex me-auto p-2 align-items-center'>
+                          {/* {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>} */}
 
+                          <div className='fs-4 fw-bold'>{earm.ItemName}</div>
+                        </div>
+                        {/* <div className='d-flex p-2' >
+            <div>{nces.Subject === avgSetting ? '' : '權數'}</div><div>{nces.Credit}</div>
+          </div> */}
+                      </div>
+
+                      <div className='row align-items-center'>
+
+                        {[].concat(earm.Field || []).map((mField, index) => {
+                          let scoreColor = 'fs-4';
+
+
+                          // 有成績 且 非缺 非免 且 60分以下 紅字
+                          if (mField.ExamScore !== '' && Number(mField.ExamScore) < 60)
+                            scoreColor = 'fs-4 text-danger me-0 pe-0';
+
+
+
+                          let im = 0;
+                          if (index !== 0)
+                            im = index - 1
+                          return <div className='col-6 col-md-6 col-lg-6'>
+                            <div className='row align-items-center my-2'>
+                              <div className='d-flex justify-content-center'>
+                                <div className={scoreColor}>{mField.ExamScore === '' ? '-' : Math.round(Number(mField.ExamScore) * 100) / 100}
+                                </div>
+                                <div>{index === 0 || mField.ExamScore === '' || earm.Field[im].ExamScore === '' ? '' : Number(earm.Field[index].ExamScore) > Number(earm.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(earm.Field[index].ExamScore) < Number(earm.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                              </div>
+                              <div>{mField.ExamName}</div>
+                            </div>
+                          </div>
+                        })}
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          })}
 
 
 
