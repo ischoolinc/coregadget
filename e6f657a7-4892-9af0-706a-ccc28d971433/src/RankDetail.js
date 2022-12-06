@@ -277,7 +277,7 @@ const RankDetail = () => {
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
 													<tr>
 														<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
-														<td style={{ background: '#DEEBF7' }}>{Math.round(data.std_dev_pop * 100) / 100}</td>
+														<td style={{ background: '#DEEBF7' }}>{data.std_dev_pop === '' ? '' : Math.round(data.std_dev_pop * 100) / 100}</td>
 													</tr>
 												</tbody>
 											else
