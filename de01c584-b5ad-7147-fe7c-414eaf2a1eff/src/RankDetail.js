@@ -11,9 +11,10 @@ const RankDetail = () => {
 	const examID = sessionStorage.getItem('ExamID');
 	const semester = sessionStorage.getItem('Semester');
 	const courseID = sessionStorage.getItem('CourseID');
-	const defaultRankType = sessionStorage.getItem('RankType');
+	const subjectType = sessionStorage.getItem('SubjectType');
+	//const defaultRankType = sessionStorage.getItem('RankType');
 	const storageSubject = sessionStorage.getItem('Subject');
-	const passingStandard = sessionStorage.getItem('PassingStandard');
+	///const passingStandard = sessionStorage.getItem('PassingStandard');
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
@@ -39,18 +40,15 @@ const RankDetail = () => {
 
 	const position = window.gadget.params.system_position;
 
-	var _connection = window.gadget.getContract("1campus.h.exam.parent");
+	var _connection = window.gadget.getContract("1campus.j.exam.parent");
 
 	if (position === 'student')
-		_connection = window.gadget.getContract("1campus.h.exam.student");
-
-
-
+		_connection = window.gadget.getContract("1campus.j.exam.student");
 
 
 	useEffect(() => {
 		GetRankDetailPageInfo();
-		GetViewSetting();
+		//GetViewSetting();
 	}, []);
 
 	useEffect(() => {
@@ -100,9 +98,12 @@ const RankDetail = () => {
 			studentSubjectData.forEach(data => {
 				if (data.rank_type !== '')
 					typeList.push(data.rank_type)
-				if (data.rank_type === defaultRankType)
-					setViewRankType(defaultRankType);
+				// if (data.rank_type === defaultRankType)
+				// 	setViewRankType(defaultRankType);
+
+
 			});
+			setViewRankType(typeList[0]);
 		setRankTypeList(typeList);
 	}
 
@@ -124,7 +125,8 @@ const RankDetail = () => {
 				ViewSemester: semester,
 				ExamID: examID,
 				Subject: storageSubject,
-				CourseID: courseID
+				CourseID: courseID,
+				SubjectType:subjectType
 			},
 			result: function (response, error, http) {
 				if (error !== null) {
@@ -142,27 +144,27 @@ const RankDetail = () => {
 
 	// 取得顯示 或不顯示排名 
 	async function GetViewSetting() {
-		await _connection.send({
-			service: "_.GetViewSetting",
-			body: {},
-			result: function (response, error, http) {
-				if (error !== null) {
-					console.log('GetViewSetting', error);
-					return 'err';
-				} else {
-					if (response) {
-						let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
-						setShowNoRankSetting(isShowRank);
-					}
-				}
-			}
-		});
+		// await _connection.send({
+		// 	service: "_.GetViewSetting",
+		// 	body: {},
+		// 	result: function (response, error, http) {
+		// 		if (error !== null) {
+		// 			console.log('GetViewSetting', error);
+		// 			return 'err';
+		// 		} else {
+		// 			if (response) {
+		// 				let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
+		// 				setShowNoRankSetting(isShowRank);
+		// 			}
+		// 		}
+		// 	}
+		// });
 	}
 
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		sessionStorage.setItem('RankType', e.target.value);
+		//sessionStorage.setItem('RankType', e.target.value);
 	};
 
 
@@ -184,7 +186,7 @@ const RankDetail = () => {
 		sessionStorage.setItem('CourseID', courseID);
 		sessionStorage.setItem('Semester', semester);
 		sessionStorage.setItem('Subject', storageSubject);
-		sessionStorage.setItem('PassingStandard', passingStandard);
+		//sessionStorage.setItem('PassingStandard', passingStandard);
 	}
 
 
@@ -247,7 +249,8 @@ const RankDetail = () => {
 								<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 							</div>
 							<div className='justify-content-end'>
-								<div className='d-flex justify-content-end'>及格標準：{passingStandard}分</div>
+								{/* <div className='d-flex justify-content-end'>及格標準：{passingStandard}分</div> */}
+								<div className='d-flex justify-content-end'>定期</div>
 								<div className='d-flex justify-content-end'>計算排名時間：{data.create_time}</div>
 							</div>
 						</div>

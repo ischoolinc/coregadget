@@ -62,6 +62,10 @@ function Main() {
   // 該學生的指定學年期的定期評量固定排名資料
   const [examRankMatrix, setRankMatrix] = useState([]);
 
+
+  // 該學生的指定學年期的 "加權/算術"平均 固定排名及分數
+  const [examAvgRankMatrix, setAvgRankMatrix] = useState([]);
+
   //******************* */
 
   const position = window.gadget.params.system_position;
@@ -82,8 +86,9 @@ function Main() {
     GetCourseExamList();
     GetAllExamScore();
     GetRankInfo()
-    GetExamAvgScore();
+    //GetExamAvgScore();
     GetScoreCalcRulePassingStandard();
+    GetExamAvgRankMatrix();
   }, [studentID, selectedSemester]);
 
   useEffect(() => {
@@ -91,9 +96,9 @@ function Main() {
   }, [selectedSemester, selectedExam]);
 
 
-  useEffect(() => {
-    OrganizeCourseExamScore();
-  }, [courseExamScore]);
+  // useEffect(() => {
+  //   OrganizeCourseExamScore();
+  // }, [courseExamScore]);
 
 
   useEffect(() => {
@@ -314,9 +319,9 @@ function Main() {
             setCourseExamList([].concat(response.ExamList || []));
             if ([].concat(response.ExamList || []).length < 1 || selectedExam === null) {
               setViewExam('0');
-              console.log('ASAselectedExam,',selectedExam)
+              console.log('ASAselectedExam,', selectedExam)
             }
-            if([].concat(response.ExamList || []).length || selectedExam === null){
+            if ([].concat(response.ExamList || []).length || selectedExam === null) {
               var temp = false;
               [].concat(response.ExamList || []).forEach(element => {
                 if (element.exam_id === selectedExam) {
@@ -326,7 +331,7 @@ function Main() {
               });
               if (!temp) {
                 setViewExam('0');
-              }             
+              }
             }
           }
         }
@@ -373,7 +378,7 @@ function Main() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetRankInfo', error);
+          console.log('GetRankInfoError', error);
           return 'err';
         } else {
           if (response) {
@@ -395,7 +400,7 @@ function Main() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetAllExamScore', error);
+          console.log('GetAllExamScoreError', error);
           return 'err';
         } else {
           if (response) {
@@ -406,10 +411,30 @@ function Main() {
     });
   }
 
+  // 該學生的指定學年期的 "加權/算術"平均 固定排名及分數
+  async function GetExamAvgRankMatrix() {
+    await _connection.send({
+      service: "_.GetExamAvgRankMatrix",
+      body: {
+        StudentID: studentID,
+        ViewSemester: selectedSemester
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetExamAvgRankMatrixError', error);
+          return 'err';
+        } else {
+          if (response) {
+            setAvgRankMatrix([].concat(response.RankMatrix || []));
+          }
+        }
+      }
+    });
+  }
   //**************************** */
 
   const handleChangeStudent = (studentID) => {
-    debugger;
+
     setStudent(studentID);
   }
 
@@ -432,6 +457,18 @@ function Main() {
     sessionStorage.setItem('Subject', e.Subject);
     sessionStorage.setItem('PassingStandard', e.PassingStandard);
 
+  };
+
+  const handleShowAvgRankDetail = (e) => {
+    sessionStorage.clear();
+    // 按下去的時候才存
+    sessionStorage.setItem('StudentID', studentID);
+    sessionStorage.setItem('ExamID', selectedExam);
+    sessionStorage.setItem('RankType', selectedRankType);
+    sessionStorage.setItem('CourseID', 0);
+    sessionStorage.setItem('Semester', selectedSemester);
+    sessionStorage.setItem('Subject', e.ItemName);
+    sessionStorage.setItem('PassingStandard', avgPassingStardard);
   };
 
 
@@ -469,8 +506,11 @@ function Main() {
       }
 
     setCourseExamScorePlusAvg(courseExamScoreNewPlusSource);
-
+    //setCourseExamScorePlusAvg(courseExamScore);
   }
+
+
+
 
   // 處理 該評量 不及格科目數
   function CountFailedExamSubject() {
@@ -491,7 +531,7 @@ function Main() {
 
   function ConvertStudentName(name) {
     const htmlText = `${name}`
-  
+
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
@@ -506,22 +546,16 @@ function Main() {
   return (
     <div className="App">
       <div className="container px-3 px-sm-4 py-5 ">
-
         <div className='titleBorder d-flex align-items-center'>
-        {/* overlay={
-            <Tooltip id={`tooltip-${placement}`}>
-              Tooltip on <strong>{placement}</strong>.
-            </Tooltip>
-          } */}
           <div>
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
             {position === 'student' ? '' :
               <div className='putLeft'>
                 {studentDateRange.map((student) => {
                   if (student.id === studentID)
-                  return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
+                    return <button type="button" className="btn btn-outline-blue active me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
                   else
-                  return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
+                    return <button type="button" className="btn btn-outline-blue me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
                   // return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{student.name}</button>
                   // else
                   // return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
@@ -532,7 +566,7 @@ function Main() {
 
         </div>
 
-        
+
         {/* <div className="d-flex col-12 col-md-6 col-lg-6 m-2">
           <select className="form-select me-3" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
             <option value="Y" key="Y">(選擇學年度學期)</option>
@@ -582,8 +616,8 @@ function Main() {
             <div className="col-10 col-md-8 col-lg-10 ps-1  pe-lg-2  pe-md-3">
               <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
-                {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>}
-
+                {/* {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>} */}
+                {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
                 {examRankType.map((rankType, index) => {
                   return <option key={index} value={rankType.rank_type}>
                     {rankType.rank_type}</option>
@@ -592,11 +626,12 @@ function Main() {
             </div>
           </div>}
 
-        <div>{[].concat(courseExamScorePlusAvg || []).length < 1 ? '尚無資料。' : ''}</div>
+        <div>{[].concat(courseExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
 
         <div className="row row-cols-1 row-cols-md-2 g-4 ">
 
-          {courseExamScorePlusAvg.map((ces) => {
+          {/* 評量成績 */}
+          {courseExamScore.map((ces) => {
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
@@ -728,13 +763,126 @@ function Main() {
             </>
           })}
 
+          {/* 評量成績 的加權平均*/}
+          {[].concat(examRankType || []).length > 0 && selectedExam !== '0' ? <div className="col">
+            <div className='card h-100'>
+              <div className="card-body">
+                <div className='d-flex'>
+                  <div className='d-flex me-auto p-2 align-items-center'>
+                    <div className='fs-4 fw-bold'>{avgSetting}</div>
+                  </div>
+                </div>
+                {examAvgRankMatrix.map((examAvg) => {
+                  if (examAvg.ItemName === avgSetting) {
+                    return <>
+                      {[].concat(examAvg.Field || []).map((avgField, index) => {
+                        if (avgField.ExamID === selectedExam && avgField.RankType === selectedRankType) {
+                          // if (avgField.RankType === selectedRankType) {
+                          let show = '/RankDetail';
+                          let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
 
+                          if ([].concat(examRankType || []).length < 1) {
+                            show = null;
+                            disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                          }
+
+                          let im = 0;
+                          let previousExamID = selectedExam;
+
+                          if (index !== 0) {
+                            im = index - 1;
+                            previousExamID = examAvg.Field[im].ExamID;
+                          }
+
+                          // if (avgField.ExamID === selectedExam) 
+                          return <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
+                            <div className='row align-items-center'>
+                              <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                <div className='row align-items-center'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className='row align-items-center'>
+
+                                      {avgField.Score !== '' && Number(avgField.Score) < avgPassingStardard ?
+                                        <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
+                                        : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
+
+                                      {/* <div className={scoreColor}>{avgField.Score === '' ? '-' : avgField.Score}</div> */}
+                                      <div className='me-0 pe-0'>分數</div>
+                                    </div>
+
+                                    <div>{index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' : Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+
+                                  </div>
+                                </div>
+                              </div>
+
+{showNoRankSetting? '':<><div className='col-6 col-md-6 col-lg-6 my-2'>
+                                <div className='d-flex justify-content-center'>
+                                  <div className='row align-self-center'>
+                                    <div className='fs-4 pe-0 me-0'>{avgField.Rank}</div>
+                                    <div className='pe-0 me-0'>名次</div>
+                                  </div>
+
+                                  <div>{previousExamID === '' || avgField.Rank === '' || examAvg.Field[im].Rank === '' ? '' : Number(avgField.Rank) > Number(examAvg.Field[im].Rank) ? <img className='arrow' src={greenDown} alt='↓' /> : Number(avgField.Rank) === Number(examAvg.Field[im].Rank) ? '' : <img className='arrow' src={redUp} alt='↑' />}</div>
+                                </div>
+                              </div>
+
+                              <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                <div className='row align-self-center'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className='fs-4'>{avgField.PR}</div>
+                                  </div>
+                                  <div>PR</div>
+                                </div>
+                              </div>
+
+                              <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                <div className='row align-self-center'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className='fs-4'>{avgField.Percentile}</div>
+                                  </div>
+                                  <div>百分比</div>
+                                </div>
+                              </div></>}
+                              
+
+
+                            </div>
+                          </Link>
+                        }
+                      })}
+                    </>
+                  }
+
+
+
+
+
+                })}
+              </div>
+            </div>
+          </div>
+            : selectedExam !== '0' && [].concat(examRankType || []).length < 1 ? 
+            <div className="col">
+              <div className='card h-100'>
+              <div className="card-body">
+                <div className='d-flex'>
+                  <div className='d-flex me-auto p-2 align-items-center'>
+                    <div className='fs-4 fw-bold'>{avgSetting}</div>
+                  </div>
+                </div>
+                <div className='pt-2'>
+                  <div>尚未計算。</div>
+                </div>
+              </div>
+            </div>
+            </div> : ''}
 
 
 
           {/* {總覽} */}
 
-          {courseExamScorePlusAvg.map((nces) => {
+          {courseExamScore.map((nces) => {
 
             if (selectedExam === '0') {
               return <div className="col">
@@ -752,8 +900,7 @@ function Main() {
                         </div>
                       </div>
 
-                      {/* <div className='d-flex justify-content-around'> */}{/* 一排版面:取消註解 */}
-                      <div className='row align-items-center'>{/* 一排版面:註解 */}
+                      <div className='row align-items-center'>
 
                         {[].concat(nces.Field || []).map((nField, index) => {
                           let scoreColor = 'fs-4';
@@ -767,8 +914,8 @@ function Main() {
                           let im = 0;
                           if (index !== 0)
                             im = index - 1
-                          return <div className='col-6 col-md-6 col-lg-6'>{/* 一排版面:刪除 */}
-                            <div className='row align-items-center m-2'>{/* 一排版面:m-2刪除 */}
+                          return <div className='col-6 col-md-6 col-lg-6'>
+                            <div className='row align-items-center m-2'>
                               <div className='d-flex justify-content-center'>
                                 <div className={scoreColor}>{nField.ToView === 't' ? nField.Score === '' ? '-' : nField.Score : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
                                 </div>
@@ -787,6 +934,63 @@ function Main() {
               </div>
             }
           })}
+
+
+          {/* {總覽 加權平均} */}
+          {examAvgRankMatrix.map((earm) => {
+            if (earm.ItemName === avgSetting)
+              if (selectedExam === '0') {
+                return <div className="col">
+                  <div className='card h-100'>
+                    <div className="card-body">
+                      <div className="card-block">
+                        <div className='d-flex'>
+                          <div className='d-flex me-auto p-2 align-items-center'>
+                            <div className='fs-4 fw-bold'>{earm.ItemName}</div>
+                          </div>
+                          {/* <div className='d-flex p-2' >
+                          <div></div><div></div>
+                        </div> */}
+                        </div>
+
+                        <div className='row align-items-center'>
+
+                          {[].concat(earm.Field || []).map((nField, index) => {
+                            if (nField.RankType === '年排名'){
+                            let scoreColor = 'fs-4';
+                            if (Number(nField.Score) < avgPassingStardard) {
+                              scoreColor = 'fs-4 text-danger';
+                            }
+                            if (nField.Score === '') {
+                              scoreColor = 'fs';
+                            }
+
+                            let im = 0;
+                            if (index !== 0)
+                              im = index - 1
+                            
+                              return <div className='col-6 col-md-6 col-lg-6'>
+                                <div className='row align-items-center m-2'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className={scoreColor}>{nField.Score === '' ? '-' : Math.round(Number(nField.Score) * 100) / 100}
+                                    </div>
+                                    <div>{index === 0 || nField.Score === '' || earm.Field[im].Score === '' ? '' : Number(earm.Field[index].Score) > Number(earm.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(earm.Field[index].Score) < Number(earm.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  </div>
+                                  <div>{nField.ExamName}</div>
+                                </div>
+                              </div>
+                              }
+                          })}
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+          })}
+
 
 
         </div>
