@@ -12,7 +12,7 @@ import { MyCourseRec, MyTargetBaseRec, PeriodRec, Semester } from './core/data/m
 import { SelectComponent } from './shared/select/select/select.component';
 import { SnackbarService } from './shared/snackbar/snackbar.service';
 import { MyInfo, SelectedContext } from './core/data/login';
-import { ConnectedSettingService } from './core/connected-setting.service';
+import { ConnectedSettingService, GoogleServiceInfo } from './core/connected-setting.service';
 import { ClassroomService } from './core/classroom.service';
 import { Context } from './core/states/context.actions';
 import { ContextState } from './core/states/context.state';
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
   dsns = '';
   role = '';
   myInfo: MyInfo = {} as MyInfo;
-  adminConnectedGoogle: { success: boolean, message: string, link_account: string } = { success: false, message: '', link_account: '' };
+  adminConnectedGoogle: GoogleServiceInfo = { success: false, message: '', link_account: '', service_type: 'google_classroom_admin' };
   courses: MyCourseRec[] = [];
 
   #updateTimestamp = dj();
@@ -104,12 +104,16 @@ export class AppComponent implements OnInit, OnDestroy {
     // 組合兩者的資訊
 
     try {
+
       const info = this.store.selectSnapshot(ContextState.personalInfo);
       this.myInfo = info;
 
       this.curSelectedContext = await this.login.getSelectedContext().toPromise() as SelectedContext;
       this.dsns = this.curSelectedContext.dsns;
       this.role = this.curSelectedContext.role;
+
+      // 這行需要在畫面 render 課程之前就先確定，之後的程式會依靠結果執行。
+      await this.checkConnected();
 
       this.semesterRowSource = await this.getAttendSemesters();
       this.semester.selected = this.getHeadSemester();
@@ -119,7 +123,6 @@ export class AppComponent implements OnInit, OnDestroy {
       dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
       this.weekdayTabChange(this.tabs[dayOfWeek], true);
 
-      await this.checkConnected();
     } catch (error) {
       console.log(error);
     } finally {
