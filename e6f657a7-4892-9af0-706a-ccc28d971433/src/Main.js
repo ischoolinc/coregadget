@@ -124,11 +124,8 @@ function Main() {
           if (response) {
             let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
             setShowNoRankSetting(isShowRank);
+            //setShowNoRankSetting(true);
             setAvgSetting(response.Setting.show_score);
-            // console.log('GetViewSetting', response.Setting);
-            // console.log('isShowRank', isShowRank);
-            // console.log('response.Setting.show_score', response.Setting.show_score);
-            //debugger;
           }
         }
       }
@@ -628,10 +625,13 @@ function Main() {
 
         <div>{[].concat(courseExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
 
-        <div className="row row-cols-1 row-cols-md-2 g-4 ">
-
+        {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}{/* 兩排 */}
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
           {/* 評量成績 */}
           {courseExamScore.map((ces) => {
+            let col = 'col-6 col-md-6 col-lg-3 my-2';
+            if (showNoRankSetting)//不顯示排名(只有分數) 
+              col = 'col-12 my-2';
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
@@ -688,7 +688,7 @@ function Main() {
                         <div className='row align-items-center'>
 
                           {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> :
-                            <div className='col-6 col-md-6 col-lg-6 my-2'>
+                            <div className={col}>
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
@@ -715,7 +715,7 @@ function Main() {
 
                                     if (rField.RankType === selectedRankType && rField.ExamID === selectedExam && !showNoRankSetting)
                                       return <>
-                                        <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                        <div className={col}>
                                           <div className='d-flex justify-content-center'>
                                             <div className='row align-self-center'>
                                               <div className='fs-4 pe-0 me-0'>{rField.Rank}</div>
@@ -725,7 +725,7 @@ function Main() {
                                             <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ? '' : Number(rField.Rank) > Number(previousExamRank) ? <img className='arrow' src={greenDown} alt='↓' /> : Number(rField.Rank) === Number(previousExamRank) ? '' : <img className='arrow' src={redUp} alt='↑' />}</div>
                                           </div>
                                         </div>
-                                        <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                        <div className={col}>
                                           <div className='row align-self-center'>
                                             <div className='d-flex justify-content-center'>
                                               <div className='fs-4'>{rField.PR}</div>
@@ -734,7 +734,7 @@ function Main() {
                                           </div>
                                         </div>
 
-                                        <div className='col-6 col-md-6 col-lg-6 my-2'>
+                                        <div className={col}>
                                           <div className='row align-self-center'>
                                             <div className='d-flex justify-content-center'>
                                               <div className='fs-4'>{rField.Percentile}</div>
@@ -774,6 +774,9 @@ function Main() {
                 </div>
                 {examAvgRankMatrix.map((examAvg) => {
                   if (examAvg.ItemName === avgSetting) {
+                    let col = 'col-6 col-md-6 col-lg-3 my-2';
+                    if (showNoRankSetting)//不顯示排名(只有分數) 
+                      col = 'col-12 my-2';
                     return <>
                       {[].concat(examAvg.Field || []).map((avgField, index) => {
                         if (avgField.ExamID === selectedExam && avgField.RankType === selectedRankType) {
@@ -797,7 +800,7 @@ function Main() {
                           // if (avgField.ExamID === selectedExam) 
                           return <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
                             <div className='row align-items-center'>
-                              <div className='col-6 col-md-6 col-lg-6 my-2'>
+                              <div className={col}>
                                 <div className='row align-items-center'>
                                   <div className='d-flex justify-content-center'>
                                     <div className='row align-items-center'>
@@ -816,7 +819,7 @@ function Main() {
                                 </div>
                               </div>
 
-{showNoRankSetting? '':<><div className='col-6 col-md-6 col-lg-6 my-2'>
+                              {showNoRankSetting ? '' : <><div className={col}>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-self-center'>
                                     <div className='fs-4 pe-0 me-0'>{avgField.Rank}</div>
@@ -827,24 +830,24 @@ function Main() {
                                 </div>
                               </div>
 
-                              <div className='col-6 col-md-6 col-lg-6 my-2'>
-                                <div className='row align-self-center'>
-                                  <div className='d-flex justify-content-center'>
-                                    <div className='fs-4'>{avgField.PR}</div>
+                                <div className={col}>
+                                  <div className='row align-self-center'>
+                                    <div className='d-flex justify-content-center'>
+                                      <div className='fs-4'>{avgField.PR}</div>
+                                    </div>
+                                    <div>PR</div>
                                   </div>
-                                  <div>PR</div>
                                 </div>
-                              </div>
 
-                              <div className='col-6 col-md-6 col-lg-6 my-2'>
-                                <div className='row align-self-center'>
-                                  <div className='d-flex justify-content-center'>
-                                    <div className='fs-4'>{avgField.Percentile}</div>
+                                <div className={col}>
+                                  <div className='row align-self-center'>
+                                    <div className='d-flex justify-content-center'>
+                                      <div className='fs-4'>{avgField.Percentile}</div>
+                                    </div>
+                                    <div>百分比</div>
                                   </div>
-                                  <div>百分比</div>
-                                </div>
-                              </div></>}
-                              
+                                </div></>}
+
 
 
                             </div>
@@ -862,21 +865,21 @@ function Main() {
               </div>
             </div>
           </div>
-            : selectedExam !== '0' && [].concat(examRankType || []).length < 1 ? 
-            <div className="col">
-              <div className='card h-100'>
-              <div className="card-body">
-                <div className='d-flex'>
-                  <div className='d-flex me-auto p-2 align-items-center'>
-                    <div className='fs-4 fw-bold'>{avgSetting}</div>
+            : selectedExam !== '0' && [].concat(examRankType || []).length < 1 ?
+              <div className="col">
+                <div className='card h-100'>
+                  <div className="card-body">
+                    <div className='d-flex'>
+                      <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='fs-4 fw-bold'>{avgSetting}</div>
+                      </div>
+                    </div>
+                    <div className='pt-2'>
+                      <div>尚未計算。</div>
+                    </div>
                   </div>
                 </div>
-                <div className='pt-2'>
-                  <div>尚未計算。</div>
-                </div>
-              </div>
-            </div>
-            </div> : ''}
+              </div> : ''}
 
 
 
@@ -956,19 +959,19 @@ function Main() {
                         <div className='row align-items-center'>
 
                           {[].concat(earm.Field || []).map((nField, index) => {
-                            if (nField.RankType === '年排名'){
-                            let scoreColor = 'fs-4';
-                            if (Number(nField.Score) < avgPassingStardard) {
-                              scoreColor = 'fs-4 text-danger';
-                            }
-                            if (nField.Score === '') {
-                              scoreColor = 'fs';
-                            }
+                            if (nField.RankType === '年排名') {
+                              let scoreColor = 'fs-4';
+                              if (Number(nField.Score) < avgPassingStardard) {
+                                scoreColor = 'fs-4 text-danger';
+                              }
+                              if (nField.Score === '') {
+                                scoreColor = 'fs';
+                              }
 
-                            let im = 0;
-                            if (index !== 0)
-                              im = index - 1
-                            
+                              let im = 0;
+                              if (index !== 0)
+                                im = index - 1
+
                               return <div className='col-6 col-md-6 col-lg-6'>
                                 <div className='row align-items-center m-2'>
                                   <div className='d-flex justify-content-center'>
@@ -979,7 +982,7 @@ function Main() {
                                   <div>{nField.ExamName}</div>
                                 </div>
                               </div>
-                              }
+                            }
                           })}
                         </div>
 
