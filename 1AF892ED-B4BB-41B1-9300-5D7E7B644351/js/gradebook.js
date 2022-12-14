@@ -211,11 +211,11 @@
                  * @returns true: valid datetime string format
                  */
                 const isValidSqlTimeOrDateTime = (t) => {
-                    if(t == '') return false; //input 有空字串
+                    if (t == '') return false; //input 有空字串
 
                     let newDateTest = new Date(t);
 
-                    if(newDateTest == 'Invalid Date'){ //'Invalid Date' 為 js Date(Web API) parse 回傳的錯誤碼
+                    if (newDateTest == 'Invalid Date') { //'Invalid Date' 為 js Date(Web API) parse 回傳的錯誤碼
                         let transformTest = luxon.DateTime.fromSQL(t).toISO();
                         if (transformTest == null) {
                             return false;
@@ -226,7 +226,7 @@
                     }
 
                     return true;
-                    
+
                 }
                 /**
                  * 
@@ -246,10 +246,10 @@
                 const timestampWrapper = (timestamp) => {
 
                     let newDateTest = new Date(timestamp);
-                    if(newDateTest == 'Invalid Date'){//Date constructor 返回的錯誤碼
+                    if (newDateTest == 'Invalid Date') {//Date constructor 返回的錯誤碼
                         console.log('timestamp iso: ', luxon.DateTime.fromSQL(timestamp).toISO())
                         return luxon.DateTime.fromSQL(timestamp).toISO();
-                    }else{
+                    } else {
                         console.log('timestamp str: ', timestamp)
                         return timestamp;
                     }
@@ -354,14 +354,14 @@
 
                                 // 是否開放課程成績輸入
                                 temp.Lock = !(new Date(timestampWrapper(temp.InputStartTime)) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(timestampWrapper(temp.InputEndTime)));
-            
+
                             } else {
-            
+
                                 temp.Lock = true;
-            
+
                             }
                             //temp.Lock = !(new Date(temp.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(temp.InputEndTime));
-                            
+
                             $scope.templateList.push(temp);
                         }
                     });
@@ -1587,7 +1587,7 @@
 
             var namePass = true;
             var weightPass = true;
-            var examNameList = [];
+            var subExamNameList = [];
             var dataRepeat = false;
             var repeatExamName = '';
             console.log("gradeItemConfig.Item", $scope.gradeItemConfig.Item);
@@ -1606,7 +1606,7 @@
                 if (pass && !dataRepeat) {
 
                     // 再一個試別 Exam 下 小考試別不能重覆
-                    if (examNameList.indexOf(item.RefExamID + '_' + item.Name) > -1) {
+                    if (subExamNameList.indexOf(item.RefExamID + '_' + item.Name) > -1) {
                         dataRepeat = true;
                         repeatExamName = item.Name;
                     }
@@ -1621,6 +1621,9 @@
                         '@Weight': item.Weight,
                         //'@Index': item.Index
                     });
+                    subExamNameList.push(
+                        item.RefExamID + '_' + item.Name
+                    );
                 }
             });
             if (namePass && weightPass && !dataRepeat) {
@@ -2309,47 +2312,48 @@
                 $scope.$apply(function () {
                     val.forEach(function (courseRec) {
                         if (typeof (courseRec) != "undefined") {
-                            if (typeof (courseRec.Scores) != "undefined") {
-                                // 處理當只有一筆資料  [].concat
-                                [].concat(courseRec.Scores.Score).forEach(function (scs) {
-                                    //       console.log(scs.Name);
-                                    var itemName = courseRec.CourseName + ":" + scs.Name;
+                            if (typeof (courseRec.Scores) != "undefined")
+                                if (typeof (courseRec.Scores.Score) != "undefined") {
+                                    // 處理當只有一筆資料  [].concat
+                                    [].concat(courseRec.Scores.Score).forEach(function (scs) {
+                                        //       console.log(scs.Name);
+                                        var itemName = courseRec.CourseName + ":" + scs.Name;
 
-                                    // 取得相對小考
-                                    var subItemList = [];
-                                    courseRec.ItemList.forEach(function (subItem) {
-                                        if (subItem.RefExamID === scs.ExamID) {
-                                            subItemList.push(subItem);
+                                        // 取得相對小考
+                                        var subItemList = [];
+                                        courseRec.ItemList.forEach(function (subItem) {
+                                            if (subItem.RefExamID === scs.ExamID) {
+                                                subItemList.push(subItem);
+                                            }
+                                        });
+
+                                        var itemDisable = false;
+                                        // 檢查如果有設評分項目就無法勾選
+                                        if (subItemList.length > 0) {
+                                            itemDisable = true;
                                         }
+
+
+                                        var item = {
+                                            id: idx,
+                                            CourseID: courseRec.CourseID,
+                                            CourseName: courseRec.CourseName,
+                                            Name: itemName,
+                                            ExamID: scs.ExamID,
+                                            ExamName: scs.Name,
+                                            SubItemLst: subItemList,
+                                            Selected: false,
+                                            ItemDisable: itemDisable
+                                        }
+                                        if (currItemName !== itemName) {
+                                            $scope.CanSelectCourseExamList.push(item);
+                                        }
+
+                                        $scope.CourseExamList.push(item);
+                                        idx = idx + 1;
+
                                     });
-
-                                    var itemDisable = false;
-                                    // 檢查如果有設評分項目就無法勾選
-                                    if (subItemList.length > 0) {
-                                        itemDisable = true;
-                                    }
-
-
-                                    var item = {
-                                        id: idx,
-                                        CourseID: courseRec.CourseID,
-                                        CourseName: courseRec.CourseName,
-                                        Name: itemName,
-                                        ExamID: scs.ExamID,
-                                        ExamName: scs.Name,
-                                        SubItemLst: subItemList,
-                                        Selected: false,
-                                        ItemDisable: itemDisable
-                                    }
-                                    if (currItemName !== itemName) {
-                                        $scope.CanSelectCourseExamList.push(item);
-                                    }
-
-                                    $scope.CourseExamList.push(item);
-                                    idx = idx + 1;
-
-                                });
-                            }
+                                }
                         }
                     });
                     $('#copyModal').modal('show');
