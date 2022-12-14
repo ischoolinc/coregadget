@@ -1588,10 +1588,17 @@
             var namePass = true;
             var weightPass = true;
             var subExamNameList = [];
+            var subExamIDList = [];
             var dataRepeat = false;
             var repeatExamName = '';
+
+            var subIDsRepeat = false;
+
             console.log("gradeItemConfig.Item", $scope.gradeItemConfig.Item);
             $scope.gradeItemConfig.Item.forEach(function (item) {
+
+                var subNewID = item.Name;
+                //var subNewID = item.Name + Date.now().toString();
 
                 var pass = true;
                 if (!item.Name) {
@@ -1610,19 +1617,30 @@
                         dataRepeat = true;
                         repeatExamName = item.Name;
                     }
+
+                    //不允許 ID重複，若重複則加上時間
+                    if (subExamIDList.indexOf(item.RefExamID + '_' + item.Name) > -1) {
+                        subIDsRepeat = true;
+                        subNewID = item.Name + Date.now().toString();
+                    }
+
                     if ($scope.current.template.ExamID == item.RefExamID) {
                         logDescription += $scope.current.Course.CourseName + " : " + $scope.current.template.Name + ":" + item.Name + "\n";
 
                     }
                     body.Content.CourseExtension.Extension.GradeItem.Item.push({
                         '@ExamID': item.RefExamID,
-                        '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
+                        // '@SubExamID': item.SubExamID == '' ? item.Name : item.SubExamID,
+                        '@SubExamID': item.SubExamID == '' ? subNewID : item.SubExamID,
                         '@Name': item.Name,
                         '@Weight': item.Weight,
                         //'@Index': item.Index
                     });
                     subExamNameList.push(
                         item.RefExamID + '_' + item.Name
+                    );
+                    subExamIDList.push(
+                        item.RefExamID + '_' + item.SubExamID
                     );
                 }
             });
