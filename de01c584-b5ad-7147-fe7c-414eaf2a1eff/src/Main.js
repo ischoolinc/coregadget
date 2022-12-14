@@ -606,8 +606,9 @@ function Main() {
         <div>{[].concat(courseSubjectExamScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
         <div>{selectedSubjectType === 1 && [].concat(examAvgRankMatrix || []).length < 1 ? '尚無資料。' : ''}</div>
 
-        <div className="row row-cols-1 row-cols-md-2 g-4 ">
-
+        {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
+        
           {/* 評量> 科目成績 */}
           {selectedSubjectType === 0 ? <>          {courseSubjectExamScore.map((ces) => {
             return <>
