@@ -459,7 +459,7 @@ function Main() {
 
 
         <div className='row align-items-center my-1'>
-          <div className='col-12 col-md-4 col-lg-3 py-2'>
+          <div className='col-12 col-md-6 col-lg-3 py-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
               <option value="Y" key="Y">(選擇學年度學期)</option>
               {semesterRange.map((semester, index) => {
@@ -469,7 +469,7 @@ function Main() {
             </select>
           </div>
 
-          <div className='col-12 col-md-4 col-lg-3 py-2'>
+          <div className='col-12 col-md-6 col-lg-3 py-2'>
             <select className="form-select" value={selectedSubjectType} onChange={(e) => handleSubjectType(e)}>
               <option value={0} key={0}>科目成績</option>
               <option value={1} key={1}>領域成績</option>
@@ -477,12 +477,12 @@ function Main() {
           </div>
 
           {!showRank ? '' :
-            <div className='d-flex align-items-center col-12 col-md-4 col-lg-6 py-2'>
-              <div className="col-2 col-md-4 col-lg-2">排名類別</div>
-              <div className="col-10 col-md-8 col-lg-10 ps-1">
+            <div className='d-flex align-items-center col-12 col-md-12 col-lg-6 py-2'>
+              <div className="col-2 col-md-2 col-lg-2">排名類別</div>
+              <div className="col-10 col-md-10 col-lg-10 ps-1">
                 <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
-                  {[].concat(rankTypeList || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>}
+                  {[].concat(rankTypeList || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <></>}
 
                   {rankTypeList.map((rankType, index) => {
                     return <option key={index} value={rankType.rank_type}>
@@ -505,29 +505,52 @@ function Main() {
           {/* 科目成績 */}
           {selectedSubjectType === 0 ? <>
             {semesterSubjectScore.map((sss) => {
-              let col = 'col-6 col-md-6 col-lg-6 my-2';
-              if (showRank)
-                 col = 'col-6 col-md-6 col-lg-4 my-2';
 
-              let roundColor = '#A9D18E';
+              let makeUpText = '';
+              let makeUpTextColor = 'text-blue align-self-end';
+              if (Number(sss.score) === Number(sss.pscore) && Number(sss.oscore) !== Number(sss.pscore))
+                makeUpText = '補';
+
+              let col = 'col-6 my-2';
+              let roundColor = '#5b9bd5';//A9D18E
               let passColor = 'card card-pass h-100';
-              let scoreColor = 'fs-4-blue';
+              let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+              let passText = '及格';
+              let passTextColor = 'text-green';
+
               if (Number(sss.score) < passingStardard) {
-                roundColor = '#FF0000';
+                roundColor = '#FF66CC';
                 passColor = 'card card-unpass h-100';
-                scoreColor = 'fs-4 text-danger me-0 pe-0';
+                scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
+                passText = '不及格';
+                passTextColor = 'text-danger';
+                makeUpTextColor = 'text-red align-self-end';
               }
               if (!showNow) {
-                roundColor = '#5B9BD5';
                 passColor = 'card h-100';
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                 show = null;
                 //isShowFailSubjectCount = false;
               }
 
+              if (showRank && [].concat(rankTypeList || []).length > 0) {
+                // 顯示排名 且 有排名
+                col = 'col-6 col-md-4 col-lg-1-5 my-2';
+                if ((!showScore && showDegree) || (showScore && !showDegree))
+                  col = 'col-6 col-md-3 col-lg-3 my-2';
+              }
+  
+              if (!showRank || [].concat(rankTypeList || []).length < 1) {
+                //不顯示排名 或 沒有排名
+                col = 'col-6 my-2';
+                if ((!showScore && showDegree) || (showScore && !showDegree)) //只有分數or只有等第
+                  col = 'col-12 my-2';
+              }
+  
               if ([].concat(rankTypeList || []).length < 1) {
+                //不顯示排名 可以點進去看組距 ，但沒有排名就沒有資料可以顯示，所以不給點
                 show = null;
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
               }
@@ -538,20 +561,24 @@ function Main() {
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
                         {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
-                        <div className='fs-4 fw-bold'>{sss.domain === "" ? "" : sss.domain + "-"}{sss.subject}</div>
+                        <div className='fs-4 fw-bold text-start'>{sss.domain === "" ? "" : sss.domain + "-"}{sss.subject}</div>
                       </div>
-                      <div className='d-flex p-2' >
-                        <div>權數</div><div>{sss.credit}</div>
+                      <div className='d-flex align-items-center p-2' >
+                        <div className={passTextColor}>{passText}</div>
                       </div>
                     </div>
 
-                    <div className='row align-items-center'>
+                    <div className='d-flex  ms-4'>節/權數 {sss.period === sss.credit ? sss.credit : sss.period + '/' + sss.credit}</div>
+                    <div className='row align-items-center  p-2'>
 
                       {!showNow ? <div><div>未開放查詢。</div> <div>開放查詢時間：{viewTime}</div></div> : <>
                         {showScore ?
                           <div className={col}>
-                            <div >
-                              <div className={scoreColor}>{sss.score === '' ? '-' : sss.score}</div>
+                            <div>
+                              <div className='d-flex justify-content-center' >
+                                <div className={scoreColor}>{sss.score === '' ? '-' : sss.score}</div>
+                                <div className={makeUpTextColor}>{makeUpText}</div>
+                              </div>
                               <div className='me-0 pe-0'>分數</div>
                             </div>
                           </div>
@@ -574,22 +601,22 @@ function Main() {
                             return <>
                               <div className={col}>
                                 <div>
-                                  <div className='fs-4-blue'>{rank.rank}</div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
                                   <div className='pe-0 me-0'>名次</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
-                                  <div className='fs-4-blue'>{rank.pr}</div>
-                                
-                                <div>PR</div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
+
+                                  <div>PR</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
-                                  <div className='fs-4-blue'>{rank.percentile}</div>
-                                
-                                <div>百分比</div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
+
+                                  <div>百分比</div>
                                 </div>
                               </div>
                             </>
@@ -598,7 +625,7 @@ function Main() {
 
 
                     </div>
-
+                    <div className='d-flex text-start p-2 ms-2'>{sss.textq}</div>
 
                   </Link>
                 </div>
@@ -614,29 +641,51 @@ function Main() {
           {/* 領域成績 */}
           {selectedSubjectType === 1 ? <>
             {semesterDomainScore.map((sds) => {
-              let col = 'col-6 col-md-6 col-lg-6 my-2';
-              if (showRank)
-                col = 'col-6 col-md-6 col-lg-4 my-2';
-              let roundColor = '#A9D18E';
+              let makeUpText = '';
+              let makeUpTextColor = 'text-blue align-self-end';
+              if (Number(sds.score) === Number(sds.pscore) && Number(sds.oscore) !== Number(sds.pscore))
+                makeUpText = '補';
+
+              let col = 'col-6 my-2';
+              let roundColor = '#5b9bd5';//A9D18E
               let passColor = 'card card-pass h-100';
-              let scoreColor = 'fs-4-blue';
+              let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+              let passText = '及格';
+              let passTextColor = 'text-green';
 
               if (Number(sds.score) < passingStardard) {
-                roundColor = '#FF0000';
+                roundColor = '#FF66CC';
                 passColor = 'card card-unpass h-100';
-                scoreColor = 'fs-4 text-danger me-0 pe-0';
+                scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
+                passText = '不及格';
+                passTextColor = 'text-danger';
+                makeUpTextColor = 'text-red align-self-end';
               }
               if (!showNow) {
-                roundColor = '#5B9BD5';
                 passColor = 'card h-100';
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                 show = null;
                 //isShowFailSubjectCount = false;
               }
 
+              if (showRank && [].concat(rankTypeList || []).length > 0) {
+                // 顯示排名 且 有排名
+                col = 'col-6 col-md-4 col-lg-1-5 my-2';
+                if ((!showScore && showDegree) || (showScore && !showDegree))
+                  col = 'col-6 col-md-3 col-lg-3 my-2';
+              }
+  
+              if (!showRank || [].concat(rankTypeList || []).length < 1) {
+                //不顯示排名 或 沒有排名
+                col = 'col-6 my-2';
+                if ((!showScore && showDegree) || (showScore && !showDegree)) //只有分數or只有等第
+                  col = 'col-12 my-2';
+              }
+  
               if ([].concat(rankTypeList || []).length < 1) {
+                //不顯示排名 可以點進去看組距 ，但沒有排名就沒有資料可以顯示，所以不給點
                 show = null;
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
               }
@@ -647,20 +696,25 @@ function Main() {
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
                         {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
-                        <div className='fs-4 fw-bold'>{sds.domain}</div>
+                        <div className='fs-4 fw-bold text-start'>{sds.domain}</div>
                       </div>
-                      <div className='d-flex p-2' >
-                        <div>權數</div><div>{sds.credit}</div>
+                      <div className='d-flex align-items-center p-2' >
+                        <div className={passTextColor}>{passText}</div>
                       </div>
                     </div>
-
-                    <div className='row align-items-center'>
+                    <div className='d-flex  ms-4'>節/權數 {sds.period === sds.credit ? sds.credit : sds.period + '/' + sds.credit}</div>
+                    <div className='row align-items-center  p-2'>
 
                       {!showNow ? <div><div>未開放查詢。</div> <div>開放查詢時間：{viewTime}</div></div> : <>
                         {showScore ?
+
+
                           <div className={col}>
-                            <div >
-                              <div className={scoreColor}>{sds.score === '' ? '-' : sds.score}</div>
+                            <div>
+                              <div className='d-flex justify-content-center' >
+                                <div className={scoreColor}>{sds.score === '' ? '-' : sds.score}</div>
+                                <div className={makeUpTextColor}>{makeUpText}</div>
+                              </div>
                               <div className='me-0 pe-0'>分數</div>
                             </div>
                           </div>
@@ -681,34 +735,34 @@ function Main() {
                         if (showRank && showNow)
                           if (rank.item_type === '學期/領域成績' && rank.rank_type === selectedRankType && rank.item_name === sds.domain) {
                             return <>
-                            <div className={col}>
-                              <div>
-                                <div className='fs-4-blue'>{rank.rank}</div>
-                                <div className='pe-0 me-0'>名次</div>
+                              <div className={col}>
+                                <div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
+                                  <div className='pe-0 me-0'>名次</div>
+                                </div>
                               </div>
-                            </div>
-                            <div className={col}>
-                              <div>
-                                <div className='fs-4-blue'>{rank.pr}</div>
-                              
-                              <div>PR</div>
+                              <div className={col}>
+                                <div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
+
+                                  <div>PR</div>
+                                </div>
                               </div>
-                            </div>
-                            <div className={col}>
-                              <div>
-                                <div className='fs-4-blue'>{rank.percentile}</div>
-                              
-                              <div>百分比</div>
+                              <div className={col}>
+                                <div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
+
+                                  <div>百分比</div>
+                                </div>
                               </div>
-                            </div>
-                          </>
+                            </>
                           }
                       })}
 
 
                     </div>
 
-
+                    <div className='d-flex text-start p-2 ms-2'>{sds.textq}</div>
                   </Link>
                 </div>
               </div>
@@ -720,28 +774,36 @@ function Main() {
 
           {/* 總計成績 */}
           {semesterMixDomainScore.map((smds) => {
-            let col = 'col-6 col-md-6 col-lg-6 my-2';
-            if (showRank)
-              col = 'col-6 col-md-6 col-lg-4 my-2';
-            let roundColor = '#A9D18E';
-            let passColor = 'card card-pass h-100';
-            let scoreColor = 'fs-4-blue';
+            let col = 'col-6 my-2';
+            let scoreColor = 'fs-4-blue text-nowrap';
             let show = '/RankDetail';
             let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+
             if (Number(smds.score) < passingStardard) {
-              roundColor = '#FF0000';
-              passColor = 'card card-unpass h-100';
-              scoreColor = 'fs-4 text-danger me-0 pe-0';
+              scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
             }
             if (!showNow) {
-              roundColor = '#5B9BD5';
-              passColor = 'card h-100';
               disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
               show = null;
               //isShowFailSubjectCount = false;
             }
 
+            if (showRank && [].concat(rankTypeList || []).length > 0) {
+              // 顯示排名 且 有排名
+              col = 'col-6 col-md-4 col-lg-1-5 my-2';
+              if ((!showScore && showDegree) || (showScore && !showDegree))
+                col = 'col-6 col-md-3 col-lg-3 my-2';
+            }
+
+            if (!showRank || [].concat(rankTypeList || []).length < 1) {
+              //不顯示排名 或 沒有排名
+              col = 'col-6 my-2';
+              if ((!showScore && showDegree) || (showScore && !showDegree)) //只有分數or只有等第
+                col = 'col-12 my-2';
+            }
+
             if ([].concat(rankTypeList || []).length < 1) {
+              //不顯示排名 可以點進去看組距 ，但沒有排名就沒有資料可以顯示，所以不給點
               show = null;
               disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
             }
@@ -752,7 +814,7 @@ function Main() {
                   <div className='d-flex'>
                     <div className='d-flex me-auto p-2 align-items-center'>
                       {/* {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
-                      <div className='fs-4 fw-bold'>{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}</div>
+                      <div className='fs-4 fw-bold text-start'>{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}</div>
                     </div>
                     {/* <div className='d-flex p-2' >
                         <div>權數</div><div>{smds.credit}</div>
@@ -786,27 +848,27 @@ function Main() {
                       if (showRank && showNow)
                         if (rank.item_type === '學期/總計成績' && rank.rank_type === selectedRankType && rank.item_name === smds.subject) {
                           return <>
-                          <div className={col}>
-                            <div>
-                              <div className='fs-4-blue'>{rank.rank}</div>
-                              <div className='pe-0 me-0'>名次</div>
+                            <div className={col}>
+                              <div>
+                                <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
+                                <div className='pe-0 me-0'>名次</div>
+                              </div>
                             </div>
-                          </div>
-                          <div className={col}>
-                            <div>
-                              <div className='fs-4-blue'>{rank.pr}</div>
-                            
-                            <div>PR</div>
+                            <div className={col}>
+                              <div>
+                                <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
+
+                                <div>PR</div>
+                              </div>
                             </div>
-                          </div>
-                          <div className={col}>
-                            <div>
-                              <div className='fs-4-blue'>{rank.percentile}</div>
-                            
-                            <div>百分比</div>
+                            <div className={col}>
+                              <div>
+                                <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
+
+                                <div>百分比</div>
+                              </div>
                             </div>
-                          </div>
-                        </>
+                          </>
                         }
                     })}
 
