@@ -386,33 +386,28 @@ function Main() {
   }
 
   const handleShowRankDetail = (e) => {
-    var subject = e.Subject;
-    var courseID = e.CourseID;
+    var subject = e.subject;
     var subjectType = 'subject';
 
-    if (!e.Subject && !e.Domain) {
-
-      subject = e.ItemName;
-      subjectType = 'avg';
-    }
-
-    if (!e.Subject && !e.ItemName) {
+    if (!e.subject) {
+      subject = e.domain;
       subjectType = 'domain';
-      subject = e.Domain;
     }
 
-    if (!e.CourseID)
-      courseID = 0;
+    if (!e.domain && !e.domain) {
+      subjectType = 'mixdomain';
+    }
+
+    if(e.subject && e.domain==='')
+    subjectType = 'subject';
 
     sessionStorage.clear();
     // 按下去的時候才存
     sessionStorage.setItem('StudentID', studentID);
-    //sessionStorage.setItem('ExamID', selectedExam);
-    //sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('CourseID', courseID);
+    sessionStorage.setItem('RankType', selectedRankType);
     sessionStorage.setItem('Semester', selectedSemester);
     sessionStorage.setItem('Subject', subject);
-    //sessionStorage.setItem('PassingStandard', e.PassingStandard);
+    //sessionStorage.setItem('PassingStandard', passingStardard);
     sessionStorage.setItem('SubjectType', subjectType);
     sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
   };
@@ -549,12 +544,6 @@ function Main() {
                   col = 'col-12 my-2';
               }
   
-              if ([].concat(rankTypeList || []).length < 1) {
-                //不顯示排名 可以點進去看組距 ，但沒有排名就沒有資料可以顯示，所以不給點
-                show = null;
-                disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-              }
-
               return <div className="col"><div className={passColor}>
                 <div className="card-body">
                   <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(sss); }}>
@@ -579,7 +568,7 @@ function Main() {
                                 <div className={scoreColor}>{sss.score === '' ? '-' : sss.score}</div>
                                 <div className={makeUpTextColor}>{makeUpText}</div>
                               </div>
-                              <div className='me-0 pe-0'>分數</div>
+                              <div className='text-nowrap'>分數</div>
                             </div>
                           </div>
                           : <></>}
@@ -588,7 +577,7 @@ function Main() {
                           <div className={col}>
                             <div>
                               <div className='fs-4-blue'>{sss.namedegree === '' ? '-' : sss.namedegree}</div>
-                              <div className='me-0 pe-0'>等第</div>
+                              <div className='text-nowrap'>等第</div>
                             </div>
                           </div>
                           : <></>}
@@ -602,21 +591,19 @@ function Main() {
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
-                                  <div className='pe-0 me-0'>名次</div>
+                                  <div className='text-nowrap'>名次</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
-
-                                  <div>PR</div>
+                                  <div className='text-nowrap'>PR</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
-
-                                  <div>百分比</div>
+                                  <div className='text-nowrap'>百分比</div>
                                 </div>
                               </div>
                             </>
@@ -684,11 +671,6 @@ function Main() {
                   col = 'col-12 my-2';
               }
   
-              if ([].concat(rankTypeList || []).length < 1) {
-                //不顯示排名 可以點進去看組距 ，但沒有排名就沒有資料可以顯示，所以不給點
-                show = null;
-                disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-              }
 
               return <div className="col"><div className={passColor}>
                 <div className="card-body">
@@ -715,7 +697,7 @@ function Main() {
                                 <div className={scoreColor}>{sds.score === '' ? '-' : sds.score}</div>
                                 <div className={makeUpTextColor}>{makeUpText}</div>
                               </div>
-                              <div className='me-0 pe-0'>分數</div>
+                              <div className='text-nowrap'>分數</div>
                             </div>
                           </div>
                           : <></>}
@@ -724,7 +706,7 @@ function Main() {
                           <div className={col}>
                             <div>
                               <div className='fs-4-blue'>{sds.namedegree === '' ? '-' : sds.namedegree}</div>
-                              <div className='me-0 pe-0'>等第</div>
+                              <div className='text-nowrap'>等第</div>
                             </div>
                           </div>
                           : <></>}
@@ -738,21 +720,19 @@ function Main() {
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
-                                  <div className='pe-0 me-0'>名次</div>
+                                  <div className='text-nowrap'>名次</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
-
-                                  <div>PR</div>
+                                  <div className='text-nowrap'>PR</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
-
-                                  <div>百分比</div>
+                                  <div className='text-nowrap'>百分比</div>
                                 </div>
                               </div>
                             </>
@@ -802,12 +782,6 @@ function Main() {
                 col = 'col-12 my-2';
             }
 
-            if ([].concat(rankTypeList || []).length < 1) {
-              //不顯示排名 可以點進去看組距 ，但沒有排名就沒有資料可以顯示，所以不給點
-              show = null;
-              disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-            }
-
             return <div className="col"><div className='card h-100'>
               <div className="card-body">
                 <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(smds); }}>
@@ -828,7 +802,7 @@ function Main() {
                         <div className={col}>
                           <div >
                             <div className={scoreColor}>{smds.score === '' ? '-' : smds.score}</div>
-                            <div className='me-0 pe-0'>分數</div>
+                            <div className='text-nowrap'>分數</div>
                           </div>
                         </div>
                         : <></>}
@@ -837,7 +811,7 @@ function Main() {
                         <div className={col}>
                           <div>
                             <div className='fs-4-blue'>{smds.namedegree === '' ? '-' : smds.namedegree}</div>
-                            <div className='me-0 pe-0'>等第</div>
+                            <div className='text-nowrap'>等第</div>
                           </div>
                         </div>
                         : <></>}
@@ -851,21 +825,19 @@ function Main() {
                             <div className={col}>
                               <div>
                                 <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
-                                <div className='pe-0 me-0'>名次</div>
+                                <div className='text-nowrap'>名次</div>
                               </div>
                             </div>
                             <div className={col}>
                               <div>
                                 <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
-
-                                <div>PR</div>
+                                <div className='text-nowrap'>PR</div>
                               </div>
                             </div>
                             <div className={col}>
                               <div>
                                 <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
-
-                                <div>百分比</div>
+                                <div className='text-nowrap'>百分比</div>
                               </div>
                             </div>
                           </>
