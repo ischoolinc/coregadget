@@ -678,7 +678,7 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {ces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
                             {/* <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div> */}
-                            <div className='fs-4 fw-bold'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
+                            <div className='fs-4 fw-bold text-start'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
                           </div>
                           <div className='d-flex p-2' >
                             <div>{ces.Subject === avgSetting ? '' : '權數'}</div><div>{ces.Credit}</div>

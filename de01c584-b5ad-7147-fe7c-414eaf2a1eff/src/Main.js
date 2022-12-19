@@ -681,7 +681,7 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
 
-                            <div className='fs-4 fw-bold'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
+                            <div className='fs-4 fw-bold text-start'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
                           </div>
                           <div className='d-flex p-2' >
                             <div>權數</div><div>{ces.Credit}</div>
@@ -788,7 +788,7 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
 
-                            <div className='fs-4 fw-bold'>{ces.Domain}</div>
+                            <div className='fs-4 fw-bold text-start'>{ces.Domain}</div>
                           </div>
                           {/* <div className='d-flex p-2' >
                             <div>權數</div><div>{ces.Credit}</div>
@@ -888,7 +888,7 @@ function Main() {
                             <div className='d-flex me-auto p-2 align-items-center'>
                               {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
 
-                              <div className='fs-4 fw-bold'>{ces.ItemName}</div>
+                              <div className='fs-4 fw-bold text-start'>{ces.ItemName}</div>
                             </div>
                             {/* <div className='d-flex p-2' >
                             <div>權數</div><div>{ces.Credit}</div>
@@ -960,10 +960,10 @@ function Main() {
                         <div className='d-flex me-auto p-2 align-items-center'>
                           {/* {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>} */}
 
-                          <div className='fs-4 fw-bold'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
+                          <div className='fs-4 fw-bold text-start'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
                         </div>
                         <div className='d-flex p-2' >
-                          <div>{nces.Subject === avgSetting ? '' : '權數'}</div><div>{nces.Credit}</div>
+                          <div>權數</div><div>{nces.Credit}</div>
                         </div>
                       </div>
 

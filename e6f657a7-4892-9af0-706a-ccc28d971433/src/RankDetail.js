@@ -237,18 +237,23 @@ const RankDetail = () => {
 				</div>
 
 
-				<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div>
+				{/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div> */}
 
 				{studentSubjectData.map((data) => {
 					if (data.rank_type === selectedRankType)
-						return <div className='d-flex'>
+						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
+						<div className='col'>
 							<div className='d-flex me-auto p-2 align-items-center'>
 								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
 								<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 							</div>
+							</div>
+
+							<div className='col'>
 							<div className='justify-content-end'>
-								<div className='d-flex justify-content-end'>及格標準：{passingStandard}分</div>
-								<div className='d-flex justify-content-end'>計算排名時間：{data.create_time}</div>
+								<div className='d-flex justify-content-end text-end'>及格標準：{passingStandard}分</div>
+								<div className='d-flex justify-content-end text-end'>計算排名時間：{data.create_time}</div>
+							</div>
 							</div>
 						</div>
 				})}
