@@ -551,7 +551,8 @@ function Main() {
         <div className='row align-items-center my-1'>
           <div className='col-12 col-md-4 col-lg-3 py-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
-              <option value="Y" key="Y">(選擇學年度學期)</option>
+            {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
+              {/* <option value="Y" key="Y">(選擇學年度學期)</option> */}
               {courseSemesterRange.map((courseSemester, index) => {
                 return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
                   {courseSemester.schoolyear}學年度第{courseSemester.semester}學期</option>
