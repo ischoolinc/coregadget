@@ -32,7 +32,7 @@ const RankDetail = () => {
 	const [chartMax, setChartMax] = useState(0);
 
 	//取長條圖height
-	const [chartHeight, setChartHeight] = useState(450);
+	const [chartHeight, setChartHeight] = useState('chartHeightNoShowRank');
 
 	// 該校設定 不顯示排名(true:不顯示，false:顯示) (desktop設定需要同時更新才可生效)
 	const [showNoRankSetting, setShowNoRankSetting] = useState(true);
@@ -109,9 +109,9 @@ const RankDetail = () => {
 
 	function GetChartHeight() {
 		if (showNoRankSetting) //不顯示排名
-			setChartHeight(450);
+			setChartHeight('chartHeightNoShowRank');
 		else
-			setChartHeight(350);
+			setChartHeight('chartHeightShowRank');
 	}
 
 
@@ -312,16 +312,20 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								<div className='d-flex justify-content-center align-items-center'><div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div><div>級距</div></div>
-								<ResponsiveContainer width="100%" height={chartHeight}>
+								<div className='d-flex justify-content-center align-items-center'>
+									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
+									<div>級距</div>
+								</div>
 
-									<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
-										<XAxis dataKey="name" />
-										<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-										<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
-									</BarChart>
-								</ResponsiveContainer>
-
+								<div className={chartHeight} >
+									<ResponsiveContainer width="100%" height="100%">
+										<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
+											<XAxis dataKey="name" />
+											<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
+										</BarChart>
+									</ResponsiveContainer>
+								</div>
 							</div>
 
 							{studentSubjectData.map((data) => {

@@ -72,6 +72,38 @@ body {
   max-width: 400px;
 }
 
+.chartHeightShowRank{
+  height: 350px;
+}
+.chartHeightNoShowRank{
+  height: 350px;
+}
+
+@media (min-width: 768px) {
+  .chartHeightShowRank{
+    height: 350px;
+  }
+  .chartHeightNoShowRank{
+    height: 450px;
+  }
+}
+@media (min-width: 992px) {
+  .chartHeightShowRank{
+    height: 350px;
+  }
+  .chartHeightNoShowRank{
+    height: 450px;
+  }
+}
+@media (min-width: 1200px) {
+  .chartHeightShowRank{
+    height: 350px;
+  }
+  .chartHeightNoShowRank{
+    height: 450px;
+  }
+}
+
 
 /* .innerText {
     font-size: 5vw;
@@ -91,3 +123,8 @@ body {
         font-size: 3vw;
       } */
 }
+
+
+
+
+

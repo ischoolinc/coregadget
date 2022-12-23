@@ -31,7 +31,7 @@ const RankDetail = () => {
 	const [chartMax, setChartMax] = useState(0);
 
 	//取長條圖height
-	const [chartHeight, setChartHeight] = useState(450);
+	const [chartHeight, setChartHeight] = useState('chartHeightNoShowRank');
 
 	//預設不顯示排名
 	const [showRank, setShowRank] = useState(false);
@@ -108,9 +108,9 @@ const RankDetail = () => {
 
 	function GetChartHeight() {
 		if (showRank) //顯示排名
-			setChartHeight(190);
+			setChartHeight('chartHeightShowRank');
 		else
-			setChartHeight(280);
+			setChartHeight('chartHeightNoShowRank');
 	}
 
 
@@ -350,15 +350,22 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								<div className='d-flex justify-content-center align-items-center'><div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div><div>級距</div></div>
-								<ResponsiveContainer width="100%" height={chartHeight}>
+								<div className='d-flex justify-content-center align-items-center'>
+									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
+									<div>級距</div>
+								</div>
+								{/* style={{ height: "220px" }} */}
+								<div className={chartHeight} >
+									{/* <ResponsiveContainer width="100%" height={chartHeight}> */}
+									<ResponsiveContainer width="100%" height="100%">
+										<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
+											<XAxis dataKey="name" />
+											<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
+										</BarChart>
+									</ResponsiveContainer>
+								</div>
 
-									<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
-										<XAxis dataKey="name" />
-										<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-										<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
-									</BarChart>
-								</ResponsiveContainer>
 							</>}
 					</div>
 
@@ -370,7 +377,7 @@ const RankDetail = () => {
 										<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>
 											<thead>
 												<tr style={{ background: '#5B9BD5' }}>
-													<th colspan="2">五標</th>
+													<th colSpan="2">五標</th>
 												</tr>
 											</thead>
 											<tbody style={{ borderTop: '4px solid #fff' }}>
@@ -400,7 +407,7 @@ const RankDetail = () => {
 										<table className="table table-bordered mt-2" style={{ border: '1px solid #fff' }}>
 											<thead>
 												<tr style={{ background: '#5B9BD5' }}>
-													<th colspan="2">新五標</th>
+													<th colSpan="2">新五標</th>
 												</tr>
 											</thead>
 											<tbody style={{ borderTop: '4px solid #fff' }}>

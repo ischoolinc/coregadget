@@ -133,11 +133,11 @@ function Main() {
               setShowNow(response.Setting.toview.toLowerCase() === 't');
               setViewtime(response.Setting.viewtime);
 
-              console.log('showscore[]', response.Setting.showscore.toLowerCase() === 'true');
-              console.log('showdegree[]', response.Setting.showdegree.toLowerCase() === 'true');
-              console.log('showrank[]', response.Setting.showrank.toLowerCase() === 'true');
-              console.log('toview[]', response.Setting.toview.toLowerCase() === 't');
-              console.log('viewtime[]', response.Setting.viewtime);
+              // console.log('showscore[]', response.Setting.showscore.toLowerCase() === 'true');
+              // console.log('showdegree[]', response.Setting.showdegree.toLowerCase() === 'true');
+              // console.log('showrank[]', response.Setting.showrank.toLowerCase() === 'true');
+              // console.log('toview[]', response.Setting.toview.toLowerCase() === 't');
+              // console.log('viewtime[]', response.Setting.viewtime);
             }
           }
         }
