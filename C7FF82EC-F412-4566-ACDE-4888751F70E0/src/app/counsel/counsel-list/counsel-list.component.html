@@ -192,10 +192,19 @@
             <li>班級</li>
             <li>座號</li>
             <li>姓名</li>
-            <li>筆數</li>
-            <li>最後日期</li>
-            <li>對象</li>
-            <li>方式</li>
+            <li style="position:relative"> 晤談次數 
+            
+              <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
+              style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align" >
+                info
+        </mat-icon>
+        <div  *ngIf="isShowInfo" class="info_section "  style="  position:absolute ;left :-1px  ;bottom :-50px ;z-index: 9999;">
+         教師各人對該位學生不分學年度之總晤談次數
+        </div>  
+            </li>
+            <li>最近一次日期</li>
+            <li>最近一次晤談對象</li>
+            <li>最近一次晤談方式</li>
             <!-- <li>聯絡事項</li>
                             <li>轉介</li> -->
           </ol>
@@ -207,7 +216,7 @@
             <li data-title="班級">{{ item.ClassName }}</li>
             <li data-title="座號">{{ item.SeatNo }}</li>
             <li data-title="姓名">{{ item.StudentName }}</li>
-            <li data-title="筆數">{{ item.VGCount }}</li>
+            <li data-title="晤談次數">{{ item.VGCount }} </li>
             <li data-title="最後日期">
               {{ item.LastUpdateVg | date: "yyyy-MM-dd" }}
             </li>
