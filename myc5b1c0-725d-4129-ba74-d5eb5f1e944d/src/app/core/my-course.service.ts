@@ -4,6 +4,7 @@ import { LoginService } from './login.service';
 import { ConfigService } from './config.service';
 import { AttendSemesters, MyCourseRec, MyCourseTeacherRec } from './data/my-course';
 import { DSAService } from '../dsutil-ng/dsa.service';
+import { ConnectedSettingService } from './connected-setting.service';
 
 const TeacherContract = 'web3.v1.teacher';
 @Injectable({
@@ -16,11 +17,18 @@ export class MyCourseService {
     private login: LoginService,
     private config: ConfigService,
     private dsa: DSAService,
+    private settingSrv: ConnectedSettingService
   ) {
   }
 
   public formatCourseAlias(dsns: string, course: { CourseId: number }) {
-    return `d:${dsns}@course@${course.CourseId}`;
+    const { lastServiceInfo: srvInfo } = this.settingSrv;
+    let prefix = 'd';
+    // GCP 服務帳戶模式「改用」「p」。
+    if(srvInfo?.service_type === 'google_classroom_service_account') {
+      prefix = 'p';
+    }
+    return `${prefix}:${dsns}@course@${course.CourseId}`;
   }
 
   /**教師取得課程清單 */

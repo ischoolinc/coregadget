@@ -248,8 +248,9 @@ export class AddGoogleClassroomComponent implements OnInit {
             if (reason.error.status === 'ALREADY_EXISTS') {
               this.studentMap.set(student.StudentId, { info: 'success', message: reason.error.message, student });
             } else {
+              console.error(student.StudentId, { info: 'error', message: reason.error.message, student });
               this.studentMap.set(student.StudentId, { info: 'error', message: reason.error.message, student });
-              this.snackbarSrv.show(`建立學生${student.StudentName}時發生問題！`);
+              // this.snackbarSrv.show(`建立學生${student.StudentName}時發生問題！`);
             }
           })
           .finally(() => {

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MyCourseRec } from '../core/data/my-course';
 import { LoginService } from '../core/login.service';
+import { ParamsService } from '../params.service';
 
 @Component({
   selector: 'app-launcher-oha',
@@ -17,7 +18,7 @@ export class LauncherOhaComponent implements OnInit {
   #classroom_url = 'https://oha.1campus.net';
 
   constructor(
-    private login: LoginService,
+    private login: LoginService
   ) { }
 
   ngOnInit(): void {

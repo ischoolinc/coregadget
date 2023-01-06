@@ -31,7 +31,7 @@ const RankDetail = () => {
 	const [chartMax, setChartMax] = useState(0);
 
 	//取長條圖height
-	const [chartHeight, setChartHeight] = useState(450);
+	const [chartHeight, setChartHeight] = useState('chartHeightNoShowRank');
 
 	// 該校設定 不顯示排名(true:不顯示，false:顯示) (desktop設定需要同時更新才可生效)
 	const [showNoRankSetting, setShowNoRankSetting] = useState(true);
@@ -78,12 +78,12 @@ const RankDetail = () => {
 				if (data.rank_type === selectedRankType) //所選的排名類別
 				{
 					console.log('data', data);
-					source["100"] = data.level_gte100;
-					source["90-99"] = data.level_90;
-					source["80-89"] = data.level_80;
-					source["70-79"] = data.level_70;
-					source["60-69"] = data.level_60;
-					source["<60"] = data.under60;
+					source["100"] = Number(data.level_gte100);
+					source["90-99"] = Number(data.level_90);
+					source["80-89"] = Number(data.level_80);
+					source["70-79"] = Number(data.level_70);
+					source["60-69"] = Number(data.level_60);
+					source["<60"] = Number(data.under60);
 
 					const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
 
@@ -108,9 +108,9 @@ const RankDetail = () => {
 
 	function GetChartHeight() {
 		if (showNoRankSetting) //不顯示排名
-			setChartHeight(450);
+			setChartHeight('chartHeightNoShowRank');
 		else
-			setChartHeight(350);
+			setChartHeight('chartHeightShowRank');
 	}
 
 
@@ -237,18 +237,23 @@ const RankDetail = () => {
 				</div>
 
 
-				<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div>
+				{/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div> */}
 
 				{studentSubjectData.map((data) => {
 					if (data.rank_type === selectedRankType)
-						return <div className='d-flex'>
+						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
+						<div className='col'>
 							<div className='d-flex me-auto p-2 align-items-center'>
-								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{studentSubjectData.score}50</div>
+								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
 								<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 							</div>
+							</div>
+
+							<div className='col'>
 							<div className='justify-content-end'>
-								<div className='d-flex justify-content-end'>及格標準：{passingStandard}分</div>
-								<div className='d-flex justify-content-end'>計算排名時間：{data.create_time}</div>
+								<div className='d-flex justify-content-end text-end'>及格標準：{passingStandard}分</div>
+								<div className='d-flex justify-content-end text-end'>計算排名時間：{data.create_time}</div>
+							</div>
 							</div>
 						</div>
 				})}
@@ -277,7 +282,7 @@ const RankDetail = () => {
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
 													<tr>
 														<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
-														<td style={{ background: '#DEEBF7' }}>{Math.round(data.std_dev_pop * 100) / 100}</td>
+														<td style={{ background: '#DEEBF7' }}>{data.std_dev_pop === '' ? '' : Math.round(data.std_dev_pop * 100) / 100}</td>
 													</tr>
 												</tbody>
 											else
@@ -298,23 +303,26 @@ const RankDetail = () => {
 
 													<tr>
 														<td className='w-50' style={{ background: '#BDD7EE' }}>標準差</td>
-														<td style={{ background: '#DEEBF7' }}>{Math.round(data.std_dev_pop * 100) / 100}</td>
+														<td style={{ background: '#DEEBF7' }}>{data.std_dev_pop === '' ? '' : Math.round(data.std_dev_pop * 100) / 100}</td>
 													</tr>
 												</tbody>
 
 									})}
 								</table>
 
-								<div className='d-flex justify-content-center align-items-center'><div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div><div>級距</div></div>
-								<ResponsiveContainer width="100%" height={chartHeight}>
-
+								<div className='d-flex justify-content-center align-items-center'>
+									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
+									<div>級距</div>
+									</div>
+								<div className={chartHeight} >
+									<ResponsiveContainer width="100%" height="100%">
 									<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
 										<XAxis dataKey="name" />
 										<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
 										<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
 									</BarChart>
 								</ResponsiveContainer>
-
+								</div>
 							</div>
 
 							{studentSubjectData.map((data) => {
@@ -359,23 +367,23 @@ const RankDetail = () => {
 											<tbody style={{ borderTop: '4px solid #fff' }}>
 												<tr style={{ background: '#D2DEEF' }}>
 													<td className='w-50'>新頂標</td>
-													<td>{Math.round(data.pr_88 * 100) / 100}</td>
+													<td>{data.pr_88 === '' ? '' : Math.round(data.pr_88 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#EAEFF7' }}>
 													<td>新前標</td>
-													<td>{Math.round(data.pr_75 * 100) / 100}</td>
+													<td>{data.pr_75 === '' ? '' : Math.round(data.pr_75 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#D2DEEF' }}>
 													<td>新均標</td>
-													<td>{Math.round(data.pr_50 * 100) / 100}</td>
+													<td>{data.pr_50 === '' ? '' : Math.round(data.pr_50 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#EAEFF7' }}>
 													<td>新後標</td>
-													<td>{Math.round(data.pr_25 * 100) / 100}</td>
+													<td>{data.pr_25 === '' ? '' : Math.round(data.pr_25 * 100) / 100}</td>
 												</tr>
 												<tr style={{ background: '#D2DEEF' }}>
 													<td>新底標</td>
-													<td>{Math.round(data.pr_12 * 100) / 100}</td>
+													<td>{data.pr_12 === '' ? '' : Math.round(data.pr_12 * 100) / 100}</td>
 												</tr>
 											</tbody>
 										</table>

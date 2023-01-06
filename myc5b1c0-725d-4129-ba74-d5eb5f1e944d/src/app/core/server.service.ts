@@ -30,4 +30,6 @@ export class ServerService {
 export interface GadgetParams {
   /** 課表來源設定。 */
   schedule_source: 'standard' | 'personal';
+  hide_oha?: boolean;
+  oha?: {url: string, tip: string};
 }

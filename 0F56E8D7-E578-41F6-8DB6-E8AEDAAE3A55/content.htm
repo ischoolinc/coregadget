@@ -207,6 +207,8 @@
                   ng-show="current.Exam.InputStartTime && current.Exam.InputEndTime">
                 {{current.Exam.InputStartTime || '未指定'}} ~ {{current.Exam.InputEndTime || '未指定'}}
             </span>
+            <!-- 2022/12/07 Cynthia 和佳樺討論，若使用者未指定評量，則如果現在時間在某次評量輸入時間範圍內，就顯示那個時間範圍 -->
+            <span ng-show="!current.Exam && !current.Exam">{{defaultDate}}</span>
             <span ng-show="!current.Exam.InputStartTime && !current.Exam.InputEndTime">未開放</span>
             <span  style=" float: right; width: auto; color :#D83A56" > 若缺考為0分者，請記得輸入0分</span>
         </div>

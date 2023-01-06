@@ -12,7 +12,7 @@ const PARAMS_STATE_TOKEN = new StateToken<ParamsStateModel>('Params');
 @State<ParamsStateModel>({
   name: PARAMS_STATE_TOKEN,
   defaults: {
-    schedule_source: 'personal',
+    schedule_source: 'personal'
   }
 })
 @Injectable()

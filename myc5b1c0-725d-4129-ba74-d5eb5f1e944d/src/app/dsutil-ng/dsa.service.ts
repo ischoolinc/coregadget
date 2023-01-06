@@ -8,6 +8,7 @@ import { AccessTokenCredential, DSA_ACCESSTOKEN } from './credential_provider';
 import { DSAHttpClient } from './dsa_http_client';
 import { PassportAccessToken } from './envelope';
 import djs from 'dayjs';
+import { DSAError } from './errors';
 
 @Injectable({
   providedIn: 'root'
@@ -59,12 +60,23 @@ export class DSAService {
     // 正確解法是修掉 DSA 問題，目前已確認問題。
     return new Promise<Connection>((r, j) => {
       setTimeout(async () => {
-        await conn.connect();
-        this.#connCache.set(cacheKey, conn);   
+        try {
+          await conn.connect();
+        } catch(err) {
+          console.log('有異常!');
+          // console.log(err);
+          await new Promise<void>((r, j) => {
+            setTimeout(() => { r(); }, 500);
+          });
+          // 硬等 500 毫秒再連一次。
+          await conn.connect();
+        }
+
+        this.#connCache.set(cacheKey, conn);
         r(conn);
       }, Math.random() * 300);
     })
-    
+
   }
 
   private genKey(dsns: string, contract: string) {

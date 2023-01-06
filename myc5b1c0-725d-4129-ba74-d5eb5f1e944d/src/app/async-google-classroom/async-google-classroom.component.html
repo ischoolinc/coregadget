@@ -20,20 +20,16 @@
   <div *ngIf="processState === 2000" class="mt-20">
     <img class="mx-auto mb-4" src="assets/img/success.svg" alt="loading">
     <p class="text-2xl font-semibold text-center text-success mb-4">完成</p>
-    <div class="text-center mb-4">
+    <!-- <div class="text-center mb-4">
       <a href="javascript:;"
         class="text-secondary hover:text-secondary-light focus:outline-none"
         (click)="viewReason()">查看詳細資訊</a>
-    </div>
-    <div class="flex justify-around mb-20 text-sm text-gray-text3">
+    </div> -->
+    <!-- <div class="flex justify-around mb-20 text-sm text-gray-text3">
       <div></div>
-      <div>
-        <div class="leading-7">1. 已加入的學生不會重複建立</div>
-        <div class="leading-7">2. 非 Google 教育帳號不能被加入</div>
-        <div class="leading-7">3. 學生異動後，可使用同步功能自動加入</div>
-      </div>
+      <div class="leading-7" style="text-indent: 2em;">系統會嘗試將學生加入 Google Classroom 學生清單中，但因 安全性因素，並非所有機構的 Google Classroom 允許此動作，但學生仍可以透過此應用進入 Google Classroom，之後才會顯示在名單上。</div>
       <div></div>
-    </div>
+    </div> -->
     <div class="text-right mb-2">
       <button mat-dialog-close
         class="inline-block mr-2 btn py-2 text-gray-text3 px-4 border-transparent rounded-full hover:text-primary focus:outline-none"
