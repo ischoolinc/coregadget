@@ -424,6 +424,9 @@
                         if (course.TemplateExtension.Extension.OrdinarilyEndTime)
                             usualScoreOrdinarilyOrdinarilyEndTime = course.TemplateExtension.Extension.OrdinarilyEndTime;
 
+                        if ($scope.defaultDate === "未開放" || $scope.defaultDate === "")
+                            if (usualScoreOrdinarilyStartTime != "" && usualScoreOrdinarilyOrdinarilyEndTime != "")
+                                $scope.defaultDate = usualScoreOrdinarilyStartTime + ' ~ ' + usualScoreOrdinarilyOrdinarilyEndTime;
                     }
 
                     var usualScore = {
@@ -479,6 +482,10 @@
 
                         if (course.TemplateExtension.Extension.TextEndTime)
                             textTextEndTime = course.TemplateExtension.Extension.TextEndTime;
+
+                        if ($scope.defaultDate === "未開放" || $scope.defaultDate === "")
+                            if (textTextStartTime != "" && textTextEndTime != "")
+                                $scope.defaultDate = textTextStartTime + ' ~ ' + textTextEndTime;
                     }
 
                     var textScore = {
@@ -1927,6 +1934,7 @@
                     body: body,
                     result: function (response, error, http) {
                         if (error) {
+                            console.log('error', error);
                             reject("TeacherAccess.SetSCAttendExtensionKH 平時 Error");
                         } else {
                             resolve("平時評量結算成功。");
