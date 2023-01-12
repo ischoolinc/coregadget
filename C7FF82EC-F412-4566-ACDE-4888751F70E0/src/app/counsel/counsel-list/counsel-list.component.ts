@@ -14,6 +14,7 @@ import { MatSnackBar } from "@angular/material";
   styleUrls: ["./counsel-list.component.css"]
 })
 export class CounselListComponent implements OnInit {
+  isShowInfo =false;
   public deny: boolean;
   public mod: string;
   public target: string;

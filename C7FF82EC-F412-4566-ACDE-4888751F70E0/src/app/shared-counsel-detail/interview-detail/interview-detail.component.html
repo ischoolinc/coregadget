@@ -1,50 +1,56 @@
 <div *ngIf="!isLoading; else tmpLoading">
   <!-- 學生個人 - 輔導紀錄 -->
-  <div class="tab-pane fade-in"
-       id="listOne">
-    <!-- <div class="d-md-flex align-items-center sub-title base-class-header ">
+  <div class="tab-pane fade-in" id="listOne">
+    <div class="d-md-flex align-items-center sub-title base-class-header ">
       <h4 class="mb-0 mr-auto">
-     <b>輔導紀錄</b>   
+        <b>輔導紀錄</b>
       </h4>
-  
-    </div> -->
+    </div>
+
     <div class="d-flex mb-3 mb-md-0">
       <div class="dropdown">
-      
-        <div aria-labelledby="dropdownMenuButton1"
-             class="dropdown-menu menu">
+
+        <div aria-labelledby="dropdownMenuButton1" class="dropdown-menu menu">
           <h6 class="dropdown-header">107學年度 第1學期</h6>
-          <a class="dropdown-item"
-             href="#">Excel</a>
-          <a class="dropdown-item"
-             href="#">Html</a>
+          <a class="dropdown-item" href="#">Excel</a>
+          <a class="dropdown-item" href="#">Html</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">106學年度 第2學期</h6>
-          <a class="dropdown-item"
-             href="#">Excel</a>
-          <a class="dropdown-item"
-             href="#">Html</a>
+          <a class="dropdown-item" href="#">Excel</a>
+          <a class="dropdown-item" href="#">Html</a>
         </div>
       </div>
       <!-- 新增-輔導 -->
-  
+
     </div>
-    <button class=" mb-2 btn btn-info btn_bul_rad float-right">
+    <div class="float-right">
+      <button class=" mb-2 btn btn-info btn_bul_rad  padding : 0" (click)="addInterviewModal()"
+        style=" align-items: center;">
+        <a class="material-icons" style=" font-size  :14px ;margin: 0px !important">add</a>
+        <span>
+          新增
+        </span>
+      </button>
+
+      <button class=" mb-2 btn btn-info btn_bul_rad ">
 
 
- <a href="" target="_blank">產出晤談記錄清單</a>
+        <a href="" target="_blank">產出晤談記錄清單</a>
 
-</button>
-    <button class=" mb-2 btn btn-info btn_bul_rad float-right"
-    (click)="addInterviewModal()">
-<i class="material-icons">add</i> 新增
-</button>
+      </button>
+
+    </div>
+
     <ng-container *ngIf="_semesterInfo.length === 0">
-      <div class="row justify-content-center">沒有資料。</div>
+      <div class="row justify-content-center" style="margin-top: 15%; padding-top: 30px; padding-bottom: 30px;">沒有資料。</div>
+      <!-- <img style="margin-top: 100px  ; display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 13% ;" src="../../../assets/img/no_data.svg"> -->
     </ng-container>
     <ng-container *ngFor="let semInfo of _semesterInfo">
       <div class="font-weight-bold mb-2 ">
-     <b>{{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期</b>   
+        <b>{{ semInfo.SchoolYear }}學年度 第{{ semInfo.Semester }}學期</b>
 
       </div>
       <ul class="rwd-table">
@@ -62,76 +68,61 @@
             <li style="width:10%"></li>
           </ol>
         </li>
-        <li class="tbody point"
-            *ngFor="let counselRec of _counselInterview">
+        <li class="tbody point" *ngFor="let counselRec of _counselInterview">
           <ng-container *ngIf="
             semInfo.SchoolYear === counselRec.SchoolYear &&
             semInfo.Semester === counselRec.Semester
           ">
-            <ol class="tr"
-                data-toggle="modal ">
-              <li data-title="日期" 
-              class="  align-middle"
-                  (click)="viewInterviewModal(counselRec)">
+            <ol class="tr" data-toggle="modal ">
+              <li data-title="日期" class="  align-middle" (click)="viewInterviewModal(counselRec)">
                 {{ counselRec.OccurDate | date: "yyyy/MM/dd" }}
               </li>
-              <li class="text-normal align-middle"
-                  data-title="對象"
-                  (click)="viewInterviewModal(counselRec)">
+              <li class="text-normal align-middle" data-title="對象" (click)="viewInterviewModal(counselRec)">
                 {{ counselRec.ContactName }}
               </li>
-              <li class="text-normal align-middle"
-                  data-title="方式"
-                  (click)="viewInterviewModal(counselRec)">
+              <li class="text-normal align-middle" data-title="方式" (click)="viewInterviewModal(counselRec)">
                 {{ counselRec.CounselType }}
               </li>
-              <li class="align-middle" data-title="記錄者"
-                  (click)="viewInterviewModal(counselRec)">{{ counselRec.AuthorName }}</li>
-              <li class="text-left text-normal align-middle"
-                  data-title="聯絡事項及內容"
-                  (click)="viewInterviewModal(counselRec)">
-                <span *ngIf="counselRec.ContactItem"
-                class="align-middle"
-                   style="white-space: pre-wrap;word-break: break-all;">
-               
-                <strong>聯絡事項：</strong>{{ counselRec.ContactItem }}
+              <li class="align-middle" data-title="記錄者" (click)="viewInterviewModal(counselRec)">{{
+                counselRec.AuthorName }}</li>
+              <li class="text-left text-normal align-middle" data-title="聯絡事項及內容"
+                (click)="viewInterviewModal(counselRec)">
+                <span *ngIf="counselRec.ContactItem" class="align-middle"
+                  style="white-space: pre-wrap;word-break: break-all;">
+
+                  <strong>聯絡事項：</strong>{{ counselRec.ContactItem }}
                 </span>
                 <br>
-                <span class="mt-3" *ngIf="counselRec.Content"
-                   style="white-space: pre-wrap;word-break: break-all;">
-                 
-                 <strong>內容：</strong>{{ counselRec.Content }}
+                <span class="mt-3" *ngIf="counselRec.Content" style="white-space: pre-wrap;word-break: break-all;">
+
+                  <strong>內容：</strong>{{ counselRec.Content }}
                 </span>
               </li>
               <ng-container *ngIf="referralVisible === true">
-                <li data-title="轉介狀況" class =" align-middle"
-                    >{{ counselRec.getIsReferralString() }}
-                    <mat-icon *ngIf=" counselRec.getIsReferralString()!=''"
-                    class = " ml-4 cuser"  
-                    style ="font-size: 18px ;color :gray;"
-                    aria-hidden="false" aria-label="Example home icon"
-                    style="color:  #4d94ff; cursor:pointer " (click)="referralRromModal(counselRec)"
-                    >
+                <li data-title="轉介狀況" class=" align-middle">{{ counselRec.getIsReferralString() }}
+                  <mat-icon *ngIf=" counselRec.getIsReferralString()!=''" class=" ml-4 cuser"
+                    style="font-size: 18px ;color :gray;" aria-hidden="false" aria-label="Example home icon"
+                    style="color:  #4d94ff; cursor:pointer " (click)="referralRromModal(counselRec)">
                     post_add
-                   </mat-icon>
-                  </li>
-            
-                  </ng-container>
+                  </mat-icon>
+                </li>
 
-              <li data-title="" class =" align-middle">
+              </ng-container>
+
+              <li data-title="" class=" align-middle">
 
 
-                <mat-icon aria-hidden="false" aria-label="Example home icon"
-                style="color:  #4d94ff; cursor:pointer " (click)="editInterviewModal(counselRec)">
-                mode_edit
-              </mat-icon>
-              <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
-                style="color: #E05D5D ; cursor:pointer ;" (click)="delInterviewModal(counselRec)">
-                <!-- 處理disable 部分 -->
-                highlight_off
-              </mat-icon>
+                <mat-icon aria-hidden="false" aria-label="Example home icon" style="color:  #4d94ff; cursor:pointer "
+                  (click)="editInterviewModal(counselRec)">
+                  mode_edit
+                </mat-icon>
+                <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
+                  style="color: #E05D5D ; cursor:pointer ;" (click)="delInterviewModal(counselRec)">
+                  <!-- 處理disable 部分 -->
+                  highlight_off
+                </mat-icon>
 
-           
+
               </li>
             </ol>
           </ng-container>
@@ -142,10 +133,8 @@
 </div>
 
 
-<ng-template #tmpLoading
-             class="container">
-  <div class="row justify-content-center"
-       style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>
@@ -153,4 +142,4 @@
 <app-add-interview-modal #addInterview></app-add-interview-modal>
 <app-view-interview-modal #viewInterview></app-view-interview-modal>
 <app-del-interview-modal #delInterview></app-del-interview-modal>
-<app-add-referral-form #referralForm [_CounselInterview]="currentInterview" ></app-add-referral-form>
+<app-add-referral-form #referralForm [_CounselInterview]="currentInterview"></app-add-referral-form>

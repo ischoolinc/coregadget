@@ -54,13 +54,14 @@ ul.rwd-table .tr li.sticky-top {
 }
 
 .btn_bul_rad {
-    border-radius: 50px !important;
+    border-radius: 12px !important;
     background: white !important;
     font-size: 15px;
     border: 1.7px solid #afccd6 !important;
     color: #618794 !important;
     box-shadow: none !important;
     font-weight: 900;
+    margin-right: 10px !important;
 
 }
 
@@ -144,16 +145,16 @@ ul.rwd-table .tr li.sticky-top {
 
 ul.rwd-table ol:nth-child(even) {
 
-    background: #c1dad845 !important;
+    background: #e7e7e745 !important;
     border: none !important;
     cursor: pointer;
     /* border : 1px  solid grey !important;   */
-    border-bottom: 0.7px solid #E3E1E1 !important;
+    /* border-bottom: 0.7px solid #E3E1E1 !important; */
 }
 
 ul.rwd-table ol:nth-child(odd) {
     border: none !important;
-    border-bottom: 0.7px solid #E3E1E1 !important;
+    /* border-bottom: 0.7px solid #E3E1E1 !important; */
     cursor: pointer;
 }
 
@@ -237,7 +238,8 @@ ul.rwd-table .thead li {
 
     background: #94d0cc !important;
     color: #3e495f;
-    font-size: 16px;
+    font-size: 17px;
+    padding: 19px 2px !important;
 
 }
 
@@ -756,6 +758,13 @@ textarea{
  
     vertical-align: baseline !important;
 
+}
+
+
+.material-icons{
+
+
+    font-size: 14px !important;
 }
 
 
