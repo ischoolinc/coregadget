@@ -85,14 +85,14 @@
         <tr class= "sticky">
           <th class="thBorder"
               style="min-width:110px;">
+              <!-- 所選日期是今日 -->
             <div *ngIf="getDateString(currentDate)==getDateString(todayDate)">
               <div class="btn-group">
-                <button (click)="saveData()"
+                <button  [disabled]="isLoading" (click)="saveData()"
                         type="button"
                         class="btn btn-sm"
                         [ngClass]="{'btn-success': completed=='t', 'btn-warning': completed!='t'}">
-                  {{(completed=='t') ? '儲存變更 '+getDisplayDateString(currentDate)+'' : '完成點名
-                  '+getDisplayDateString(currentDate)+''}}
+                  {{(completed=='t') ? '儲存變更 '+getDisplayDateString(currentDate)+'' : '完成點名'+getDisplayDateString(currentDate)+''}}
                 </button>
               </div>
               <span *ngIf="completed=='t'"
@@ -100,9 +100,10 @@
                 已點名
               </span>
             </div>
+            <!-- 所選日期飛今日 -->
             <div *ngIf="getDateString(currentDate)!=getDateString(todayDate)">
               <div class="btn-group">
-                <button (click)="saveData()"
+                <button  [disabled]="isLoading" (click)="saveData()"
                         type="button"
                         class="btn btn-sm btn-danger">
                   {{'儲存變更 '+getDisplayDateString(currentDate)+''}}

@@ -9,6 +9,7 @@ import * as rx from 'rxjs/Rx';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  isLoading :boolean = false ;
   mouseMoveTime ;
   // 林口康橋 : 客制
   listCheckInTimes: any[]=[];
@@ -107,6 +108,10 @@ export class AppComponent implements OnInit {
           this.selClass = this.classes[0];
           // 訂閱班級異動
           this.classSubject$.subscribe((c) => {
+            // 
+            this.isLoading = true ;
+          
+
             if (this.isShowCheckInTime) { // 林口康橋才有此設定
               // alert("ss")
             this.appService.getCheckIntimeFromDB(this.selClass,this.getDateStringForCheckIn(this.currentDate)).subscribe(
@@ -119,7 +124,8 @@ export class AppComponent implements OnInit {
                 this.completed = complete;
               })
               .subscribe(() => {
-       
+                this.isLoading =false
+            
               });
           });
           // 切換班級
@@ -270,6 +276,7 @@ getCheckInTime(studentID,date) :any{
 
   /**儲存點名結果 */
   saveData() {
+    alert("save")
     let data = [];
 
     this.students.forEach((s) => {
