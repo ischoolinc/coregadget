@@ -631,7 +631,7 @@ function Main() {
           {/* 評量成績 */}
           {courseExamScore.map((ces) => {
             let col = 'col-6 col-md-6 col-lg-3 my-2';
-            if (showNoRankSetting)//不顯示排名(只有分數) 
+            if (showNoRankSetting||(!showNoRankSetting&&[].concat(examRankType || []).length < 1))//不顯示排名(只有分數)   || 顯示排名但沒排名
               col = 'col-12 my-2';
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {

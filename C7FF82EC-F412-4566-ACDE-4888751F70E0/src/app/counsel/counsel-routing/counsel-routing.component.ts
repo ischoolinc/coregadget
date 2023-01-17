@@ -13,11 +13,12 @@ import { GlobalService } from "../../global.service";
   styleUrls: ["./counsel-routing.component.css"]
 })
 export class CounselRoutingComponent implements OnInit {
+  private isNotData: Boolean = true;
   constructor(
     private counselStudentService: CounselStudentService,
     private globalService: GlobalService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -46,6 +47,8 @@ export class CounselRoutingComponent implements OnInit {
             relativeTo: this.route,
             skipLocationChange: true
           });
+        } else {
+          this.isNotData=false;
         }
       }
     } else {

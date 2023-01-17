@@ -111,6 +111,7 @@ export class AppService {
       service: "_.checkTodayRollCall",
       body: { classId: selClass.classId },
       map: (rsp) => {
+       
         return rsp.completed;
       }
     }) as Rx.Observable<boolean>;
