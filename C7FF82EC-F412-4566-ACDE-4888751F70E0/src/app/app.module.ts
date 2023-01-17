@@ -94,6 +94,8 @@ import { TeacherServiceComponent } from './teacher-service/teacher-service.compo
 import { DelServiceModalComponent } from './teacher-service/del-service-modal/del-service-modal.component';
 import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
 import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';import { CounselInterviewListComponent } from './simple-page/print/counsel-interview-list/counsel-interview-list.component';
+import { ServiceItemStatisticsComponent } from './service-item-statistics/service-item-statistics.component';
+import { ServiceItemsStatisticsComponent } from './counsel-statistics/reports/service-items-statistics/service-items-statistics.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -148,6 +150,8 @@ import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/co
     DelServiceModalComponent,
     CounselInterviewListComponent,
     CounselHistoryPsychologicaltestComponent,
+    ServiceItemStatisticsComponent,
+    ServiceItemsStatisticsComponent,
     // MatSnackBarModule
     
     

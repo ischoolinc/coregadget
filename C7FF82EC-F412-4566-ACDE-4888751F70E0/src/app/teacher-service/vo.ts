@@ -77,9 +77,10 @@ addTargetDetail(detail:ServiceDetailDB){
 /**   */
 getTargetDetailString (){
 
+console.log('targetDetailList',this.targetDetailList)
    this.DetailDisplayString ='';
    this.targetDetailList.forEach(x=>{
-   this.DetailDisplayString += `${x.ServiceTarget}(${x.gender}) 、` 
+   this.DetailDisplayString += `${x.ServiceTarget}-${x.gender}(${x.peopleCount}) ` +'\n'
 
 })
 return    this.DetailDisplayString 

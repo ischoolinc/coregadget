@@ -65,7 +65,7 @@ length
           <li class="sticky-top">服務日期 </li>
           <li class="sticky-top">服務項目</li>
           <li class="sticky-top">內容描述</li>
-          <li class="sticky-top">對象(年級) </li>
+          <li class="sticky-top">對象-性別(人次) </li>
           <li class="sticky-top">晤談紀錄編號 </li>
           <li class="sticky-top">
             <span>
@@ -86,13 +86,14 @@ length
             <li data-title=""  style="width: 25% !important;">
               <div>{{ item.ServiceDescription}}</div> 
             </li>
-            <li data-title="對象(年級)" style="width: 25% !important;">
+            <li data-title="對象-性別(人次)" style="width: 25% !important;">
               <div class="teacherNumber">
                {{item.getTargetDetailString()}} 
               </div>
     
               <div>{{ item.TeacherReportRole}}</div>
             </li>
+
 
             <li data-title="來自晤談紀錄" style="width: 25% !important;">
                  {{item.CaseInterviewID}}

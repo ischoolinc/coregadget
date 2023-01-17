@@ -44,6 +44,8 @@ export class CounselStatisticsComponent implements OnInit {
     this.selectMonth = dt.getMonth() + 1;
     this.reportTypeList.push('輔導工作月統計');
     this.reportTypeList.push('導師輔導記錄');
+    this.reportTypeList.push('服務項目總覽');
+   
     this.reportTypeList.push('晤談記錄');
     if (this.coubselReferralVisible) {
       this.reportTypeList.push('轉介學生清單');
