@@ -1272,7 +1272,7 @@ auth = function () {
     }); auth.onStatusChanged(function (newStatus) {
         if (newStatus == "authorized") {
             userInfo =
-            {}; $(function () { if (loginFrame) loginFrame.remove(); if (menuElement) menuElement.remove() }); var greeningConnection = auth.connectTo("http://web.ischool.com.tw/service/shared/user"); greeningConnection.send({
+            {}; $(function () { if (loginFrame) loginFrame.remove(); if (menuElement) menuElement.remove() }); return; var greeningConnection = auth.connectTo("http://web.ischool.com.tw/service/shared/user"); greeningConnection.send({
                 service: "DS.Base.GetPassportToken", body: {}, autoRetry: true, result: function (resp, errorInfo, XMLHttpRequest) {
                     if (resp) {
                         var validateRequest = { "Header": { "TargetService": "DS.Base.Connect", "SecurityToken": { "@Type": "Passport", "DSAPassport": resp.DSAPassport } }, "Body": {} }; userInfo = greeningConnection.getUserInfo();
