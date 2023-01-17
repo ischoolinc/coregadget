@@ -18,7 +18,7 @@ export class CounselRoutingComponent implements OnInit {
     private counselStudentService: CounselStudentService,
     private globalService: GlobalService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit() {
