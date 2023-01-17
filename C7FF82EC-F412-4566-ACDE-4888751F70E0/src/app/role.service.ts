@@ -82,11 +82,11 @@ export class RoleService {
 
   constructor(private dsaService: DsaService) {
     this.reload();
-    this.loadLoginTeacherData();
   }
 
   async reload() {
 
+    await this.loadLoginTeacherData();
     this._isLoading = true;
     let resp = await this.dsaService.send("GetRole", {});
 
@@ -140,7 +140,7 @@ export class RoleService {
     }
 
     if (
-      this._role.indexOf("管理者") >= 0 || true
+      this._role.indexOf("管理者") >= 0
     ) {
       this._enableTransferStudents = true; // TODO: 要改成正確的
     }
