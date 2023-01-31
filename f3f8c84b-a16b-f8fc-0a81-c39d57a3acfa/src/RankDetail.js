@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-//import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
 
 const RankDetail = () => {
