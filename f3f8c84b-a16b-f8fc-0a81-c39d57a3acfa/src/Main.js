@@ -201,7 +201,7 @@ function Main() {
         } else {
           if (response) {//semesterRange
             if ([].concat(response.Semester || []).length) {
-              console.log('ScoreSemester[]', [].concat(response.Semester || []));
+              //console.log('ScoreSemester[]', [].concat(response.Semester || []));
               setSubjectScoreSemesterList([].concat(response.Semester || []));
               var tempSelectedSemester = selectedSemester;
 
@@ -910,7 +910,6 @@ function Main() {
 
           {/* 總計成績 */}
           {semesterMixDomainScore.map((smds,index) => {
-            console.log('smds',smds);
             let col = 'col-6 my-2';
             let scoreColor = 'fs-4-blue text-nowrap';
             let show = '/RankDetail';
