@@ -3,8 +3,8 @@ import './App.css';
 import { Link } from 'react-router-dom';
 // import greenDown from './greenDown.png';
 // import redUp from './redUp.png';
-import greenDown from './down.png';
-import redUp from './up.png';
+import down from './down.png';
+import up from './up.png';
 
 function Main() {
 
@@ -341,7 +341,7 @@ function Main() {
             setCourseExamList([].concat(response.ExamList || []));
             if ([].concat(response.ExamList || []).length < 1 || selectedExam === null) {
               setViewExam('0');
-              console.log('ASAselectedExam,', selectedExam)
+              //console.log('ASAselectedExam,', selectedExam)
             }
             if ([].concat(response.ExamList || []).length || selectedExam === null) {
               var temp = false;
@@ -700,7 +700,7 @@ function Main() {
                                     <div className='me-0 pe-0'>定期評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
@@ -714,7 +714,7 @@ function Main() {
                                     <div className='me-0 pe-0'>平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.AssignmentScore === '' || ces.Field[im].AssignmentScore === '' ? '' : Number(ces.Field[index].AssignmentScore) > Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].AssignmentScore) < Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.AssignmentScore === '' || ces.Field[im].AssignmentScore === '' ? '' : Number(ces.Field[index].AssignmentScore) > Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].AssignmentScore) < Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
@@ -728,7 +728,7 @@ function Main() {
                                     <div className='me-0 pe-0'>定期+平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
@@ -807,7 +807,7 @@ function Main() {
                                   <div className='me-0 pe-0'>定期評量</div>
                                 </div>
 
-                                <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                               </div>
                             </div>
@@ -821,7 +821,7 @@ function Main() {
                                   <div className='me-0 pe-0'>定期+平時評量</div>
                                 </div>
 
-                                <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                               </div>
                             </div>
@@ -859,6 +859,7 @@ function Main() {
 
           {/* 評量> 總計成績 */}
           {examAvgRankMatrix.map((ces) => {
+            //console.log('ces',ces);
             if (ces.ItemName === avgSetting)
               return <>
                 {[].concat(ces.Field || []).map((cField, index) => {
@@ -907,7 +908,7 @@ function Main() {
                                     <div className='me-0 pe-0'>定期評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
@@ -921,12 +922,11 @@ function Main() {
                                     <div className='me-0 pe-0'>定期+平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={redUp} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
 
                                 </div>
                               </div>
                             </div>
-
 
 
                           </div>
@@ -991,7 +991,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className={scoreColor}>{nField.ToView === 't' ? nField.ExamScore === '' ? '-' : nField.ExamScore : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
                                 </div>
-                                <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
                               <div>{nField.ExamName}</div>
                             </div>
@@ -1009,6 +1009,7 @@ function Main() {
 
           {/* 總覽> 總計 */}
           {examAvgRankMatrix.map((earm) => {
+            //console.log('earm',earm);
             if (selectedExam === '0' && earm.ItemName === avgSetting) {
               return <div className="col">
                 <div className='card card-pass h-100'>
@@ -1045,7 +1046,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className={scoreColor}>{mField.ExamScore === '' ? '-' : Math.round(Number(mField.ExamScore) * 100) / 100}
                                 </div>
-                                <div>{index === 0 || mField.ExamScore === '' || earm.Field[im].ExamScore === '' ? '' : Number(earm.Field[index].ExamScore) > Number(earm.Field[im].ExamScore) ? <img className='arrow' src={redUp} alt='↑' /> : Number(earm.Field[index].ExamScore) < Number(earm.Field[im].ExamScore) ? <img className='arrow' src={greenDown} alt='↓' /> : ''}</div>
+                                <div>{index === 0 || mField.ExamScore === '' || earm.Field[im].ExamScore === '' ? '' : Number(earm.Field[index].ExamScore) > Number(earm.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(earm.Field[index].ExamScore) < Number(earm.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
                               <div>{mField.ExamName}</div>
                             </div>

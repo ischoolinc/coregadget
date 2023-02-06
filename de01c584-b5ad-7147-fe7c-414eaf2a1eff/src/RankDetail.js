@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
+//import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
 
 const RankDetail = () => {
@@ -24,6 +24,9 @@ const RankDetail = () => {
 
 	//所有的排名類別清單
 	const [rankTypeList, setRankTypeList] = useState([]);
+
+	//所選的分數類別 //定期  //定期+平時
+	const [selectedScoreType, setScoreType] = useState("定期");
 
 	//長條圖
 	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
@@ -62,7 +65,7 @@ const RankDetail = () => {
 
 	useEffect(() => {
 		ToBarChart();
-	}, [selectedRankType]);
+	}, [selectedRankType, selectedScoreType]);
 
 
 	function ToBarChart() {
@@ -72,10 +75,10 @@ const RankDetail = () => {
 
 		if (studentSubjectData.length > 0) {
 			studentSubjectData.forEach(data => {
-				console.log('studentSubjectData', studentSubjectData);
-				if (data.rank_type === selectedRankType) //所選的排名類別
+				//console.log('studentSubjectData', studentSubjectData);
+				if (data.rank_type === selectedRankType && data.score_type === selectedScoreType) //所選的排名類別 & 定期or定期+平時
 				{
-					console.log('data', data);
+					//console.log('data', data);
 					source["100"] = Number(data.level_gte100);
 					source["90-99"] = Number(data.level_90);
 					source["80-89"] = Number(data.level_80);
@@ -87,6 +90,7 @@ const RankDetail = () => {
 
 					setLevelList(merge);
 					setChartMax(Math.ceil(Math.max(...merge.map(c => c.count)) / 4) * 4);
+					//setChartMax(Math.max(...merge.map(c => c.count)));
 				}
 			});
 		}
@@ -96,7 +100,7 @@ const RankDetail = () => {
 		const typeList = [];
 		if (studentSubjectData.length > 0)
 			studentSubjectData.forEach(data => {
-				if (data.rank_type !== '')
+				if (data.rank_type !== '' && !typeList.includes(data.rank_type))
 					typeList.push(data.rank_type)
 				// if (data.rank_type === defaultRankType)
 				// 	setViewRankType(defaultRankType);
@@ -126,7 +130,7 @@ const RankDetail = () => {
 				ExamID: examID,
 				Subject: storageSubject,
 				CourseID: courseID,
-				SubjectType: subjectType
+				SubjectType: subjectType,
 			},
 			result: function (response, error, http) {
 				if (error !== null) {
@@ -167,6 +171,9 @@ const RankDetail = () => {
 		//sessionStorage.setItem('RankType', e.target.value);
 	};
 
+	const handleChangeScoreType = (e) => {
+		setScoreType(e.target.value);
+	};
 
 	const handleBackToHomePage = (e) => {
 		// 按下去的時候才存
@@ -241,11 +248,11 @@ const RankDetail = () => {
 				{/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div> */}
 
 				{studentSubjectData.map((data) => {
-					if (data.rank_type === selectedRankType)
+					if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto p-2 align-items-center'>
-									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '算術平均' ? Math.round(Number(data.score) * 100) / 100 : data.score_type === '定期+平時' && data.subject_type === '科目成績' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>
@@ -253,7 +260,7 @@ const RankDetail = () => {
 							<div className='col'>
 								<div className='justify-content-end'>
 									{/* <div className='d-flex justify-content-end'>及格標準：{passingStandard}分</div> */}
-									<div className='d-flex justify-content-end text-end'>定期</div>
+									<div className='d-flex justify-content-end text-end'>{selectedScoreType}</div>
 									<div className='d-flex justify-content-end text-end'>計算排名時間：{data.create_time}</div>
 								</div>
 							</div>
@@ -263,8 +270,8 @@ const RankDetail = () => {
 
 				{[].concat(rankTypeList || []).length < 1 ? <div className='fs-4'>無排名資料</div> :
 					<>
-						<div className='d-flex align-items-center mb-3'>
-							<div className="col-12 col-md-6 col-lg-6 my-2">
+						<div className='row align-items-center mb-3'>
+							<div className="col-12 col-md-6 col-lg-6 mt-2">
 								<select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 									{rankTypeList.map((rankType, index) => {
 										return <option key={index} value={rankType}>
@@ -272,14 +279,27 @@ const RankDetail = () => {
 									})}
 								</select>
 							</div>
+
+
+							<div className="col-12 col-md-6 col-lg-6 mt-2">
+								<select className="form-select" value={selectedScoreType} onChange={(e) => handleChangeScoreType(e)}>
+									<option value="定期">定期</option>
+									<option value="定期+平時">定期+平時</option>
+								</select>
+							</div>
+
+
 						</div>
+
+
+
 
 						<div className='row align-items-start mt-3'>
 							<div className='col-12 col-md-6 col-lg-6'>
 
 								<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 									{studentSubjectData.map((data) => {
-										if (data.rank_type === selectedRankType)
+										if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 											if (showNoRankSetting) //true: 不顯示 false:顯示
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
 													<tr>
@@ -312,16 +332,19 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								<div className='d-flex justify-content-center align-items-center'>
+								{/* <div className='d-flex justify-content-center align-items-center'>
 									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
 									<div>級距</div>
-								</div>
+								</div> */}
 
 								<div className={chartHeight} >
 									<ResponsiveContainer width="100%" height="100%">
-										<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
-											<XAxis dataKey="name" />
-											<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+										{/* <BarChart margin={{ top: 20, right: 30, bottom: 20, left: 5 }} data={levelList} >
+											<XAxis dataKey="name"  label={{ value: '級距', position: 'bottom', offset: 0 }}/>
+											<YAxis dateKey="count" label={{ value: '人數', position: 'insideLeft', offset: 0 }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} /> */}
+										<BarChart margin={{ top: 40, right: 50, bottom: 0, left: 0 }} data={levelList} >
+											<XAxis dataKey="name" label={{ value: '組距', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} />
+											<YAxis dateKey="count" label={{ value: '人數', position: 'insideTopLeft', offset: 0, dy: -25, dx: 35, fill: '#498ED0' }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
 											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
 										</BarChart>
 									</ResponsiveContainer>
@@ -329,7 +352,7 @@ const RankDetail = () => {
 							</div>
 
 							{studentSubjectData.map((data) => {
-								if (data.rank_type === selectedRankType)
+								if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 									return <div className='col-12 col-md-6 col-lg-6'>
 										<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>
 											<thead>
