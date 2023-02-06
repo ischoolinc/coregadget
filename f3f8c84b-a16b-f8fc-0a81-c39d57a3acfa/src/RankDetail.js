@@ -70,10 +70,8 @@ const RankDetail = () => {
 
 		if (studentSubjectData.length > 0) {
 			studentSubjectData.forEach(data => {
-				console.log('studentSubjectData', studentSubjectData);
 				if (data.rank_type === selectedRankType) //所選的排名類別
 				{
-					console.log('data', data);
 					source["100"] = Number(data.level_gte100);
 					source["90-99"] = Number(data.level_90);
 					source["80-89"] = Number(data.level_80);
@@ -254,7 +252,6 @@ const RankDetail = () => {
 									<div className='d-flex justify-content-end text-end'></div>
 									<div className='d-flex justify-content-end text-end mt-2'>計算排名時間：{data.create_time === '' ? '未計算' : data.create_time}</div>
 								</div>
-
 							</div>
 						</div>
 
@@ -315,7 +312,6 @@ const RankDetail = () => {
 
 								<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 									{studentSubjectData.map((data) => {
-										console.log('showRank', showRank);
 										if (data.rank_type === selectedRankType)
 											if (!showRank)
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
@@ -349,17 +345,17 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								<div className='d-flex justify-content-center align-items-center'>
+								{/* <div className='d-flex justify-content-center align-items-center'>
 									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
 									<div>級距</div>
-								</div>
-								{/* style={{ height: "220px" }} */}
+								</div> */}
+
+
 								<div className={chartHeight} >
-									{/* <ResponsiveContainer width="100%" height={chartHeight}> */}
 									<ResponsiveContainer width="100%" height="100%">
-										<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
-											<XAxis dataKey="name" />
-											<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+										<BarChart margin={{ top: 40, right: 50, bottom: 0, left: 0 }} data={levelList} >
+											<XAxis dataKey="name" label={{ value: '組距', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} />
+											<YAxis dateKey="count" label={{ value: '人數', position: 'insideTopLeft', offset: 0, dy: -25, dx: 35, fill: '#498ED0' }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
 											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
 										</BarChart>
 									</ResponsiveContainer>
