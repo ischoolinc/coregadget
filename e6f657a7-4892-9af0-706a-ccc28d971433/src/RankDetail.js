@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
 
 const RankDetail = () => {
@@ -46,8 +45,6 @@ const RankDetail = () => {
 
 
 
-
-
 	useEffect(() => {
 		GetRankDetailPageInfo();
 		GetViewSetting();
@@ -74,10 +71,10 @@ const RankDetail = () => {
 
 		if (studentSubjectData.length > 0) {
 			studentSubjectData.forEach(data => {
-				console.log('studentSubjectData', studentSubjectData);
+				//console.log('studentSubjectData', studentSubjectData);
 				if (data.rank_type === selectedRankType) //所選的排名類別
 				{
-					console.log('data', data);
+					//console.log('data', data);
 					source["100"] = Number(data.level_gte100);
 					source["90-99"] = Number(data.level_90);
 					source["80-89"] = Number(data.level_80);
@@ -128,12 +125,12 @@ const RankDetail = () => {
 			},
 			result: function (response, error, http) {
 				if (error !== null) {
-					console.log('GetRankDetailPageInfo', error);
+					console.log('GetRankDetailPageInfoError', error);
 					return 'err';
 				} else {
 					if (response) {
 						setStudentSubjectData([].concat(response.RankMatrix || []));
-						console.log('GetRankDetailPageInfo', [].concat(response.RankMatrix || []));
+						//console.log('GetRankDetailPageInfo', [].concat(response.RankMatrix || []));
 					}
 				}
 			}
@@ -147,7 +144,7 @@ const RankDetail = () => {
 			body: {},
 			result: function (response, error, http) {
 				if (error !== null) {
-					console.log('GetViewSetting', error);
+					console.log('GetViewSettingError', error);
 					return 'err';
 				} else {
 					if (response) {
@@ -242,18 +239,18 @@ const RankDetail = () => {
 				{studentSubjectData.map((data) => {
 					if (data.rank_type === selectedRankType)
 						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
-						<div className='col'>
-							<div className='d-flex me-auto p-2 align-items-center'>
-								<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
-								<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
-							</div>
+							<div className='col'>
+								<div className='d-flex me-auto p-2 align-items-center'>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
+									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
+								</div>
 							</div>
 
 							<div className='col'>
-							<div className='justify-content-end'>
-								<div className='d-flex justify-content-end text-end'>及格標準：{passingStandard}分</div>
-								<div className='d-flex justify-content-end text-end'>計算排名時間：{data.create_time}</div>
-							</div>
+								<div className='justify-content-end'>
+									<div className='d-flex justify-content-end text-end'>及格標準：{passingStandard}分</div>
+									<div className='d-flex justify-content-end text-end'>計算排名時間：{data.create_time}</div>
+								</div>
 							</div>
 						</div>
 				})}
@@ -310,18 +307,20 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								<div className='d-flex justify-content-center align-items-center'>
+								{/* <div className='d-flex justify-content-center align-items-center'>
 									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
 									<div>級距</div>
-									</div>
+								</div> */}
+
 								<div className={chartHeight} >
 									<ResponsiveContainer width="100%" height="100%">
-									<BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} >
-										<XAxis dataKey="name" />
-										<YAxis dateKey="count" type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-										<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
-									</BarChart>
-								</ResponsiveContainer>
+										{/* <BarChart margin={{ top: 20, right: 30, bottom: 5, left: 0 }} data={levelList} > */}
+										<BarChart margin={{ top: 40, right: 50, bottom: 0, left: 0 }} data={levelList} >
+											<XAxis dataKey="name" label={{ value: '組距', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} />
+											<YAxis dateKey="count" label={{ value: '人數', position: 'insideTopLeft', offset: 0, dy: -25, dx: 35, fill: '#498ED0' }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
+										</BarChart>
+									</ResponsiveContainer>
 								</div>
 							</div>
 
