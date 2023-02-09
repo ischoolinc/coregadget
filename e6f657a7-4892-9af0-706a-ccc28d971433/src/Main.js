@@ -474,7 +474,7 @@ function Main() {
   };
 
 
-/*棄用*/
+  /*棄用*/
   function OrganizeCourseExamScore() {
     //寫入加權平均or算術平均
     let courseExamScoreNewPlusSource = courseExamScore;
@@ -588,7 +588,7 @@ function Main() {
         <div className='row align-items-center my-1'>
           <div className='col-12 col-md-3 col-lg-3  py-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
-            {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
+              {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
               {/* <option value="Y" key="Y">(選擇學年度學期)</option> */}
               {courseSemesterRange.map((courseSemester, index) => {
                 return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
@@ -605,24 +605,24 @@ function Main() {
               })}
             </select>
           </div>
+          {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
+
+<div className="col-12 col-md-6 col-lg-6  py-2">
+  <div className='d-flex align-items-center text-nowrap'>
+    <div className='pe-1'>排名類別</div><select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
+
+      {/* {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>} */}
+      {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
+      {examRankType.map((rankType, index) => {
+        return <option key={index} value={rankType.rank_type}>
+          {rankType.rank_type}</option>
+      })}
+    </select></div>
+</div>
+}
+
         </div>
 
-
-        {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
-          <div className='d-flex align-items-center mb-3 col-12 col-md-6 col-lg-6  py-2'>
-            <div className="col-2 col-md-4 col-lg-2 pe-1">排名類別</div>
-            <div className="col-10 col-md-8 col-lg-10 ps-1  pe-lg-2  pe-md-3">
-              <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
-
-                {/* {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>} */}
-                {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
-                {examRankType.map((rankType, index) => {
-                  return <option key={index} value={rankType.rank_type}>
-                    {rankType.rank_type}</option>
-                })}
-              </select>
-            </div>
-          </div>}
 
         <div>{[].concat(courseExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
 
@@ -631,24 +631,24 @@ function Main() {
           {/* 評量成績 */}
           {courseExamScore.map((ces) => {
             let col = 'col-6 col-md-6 col-lg-3 my-2';
-            if (showNoRankSetting||(!showNoRankSetting&&[].concat(examRankType || []).length < 1))//不顯示排名(只有分數) || 顯示排名但沒排名
+            if (showNoRankSetting || (!showNoRankSetting && [].concat(examRankType || []).length < 1))//不顯示排名(只有分數) || 顯示排名但沒排名
               col = 'col-12 my-2';
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow-sm h-100';
                   let scoreColor = 'fs-4 me-0 pe-0';
                   let show = '/RankDetail';
                   let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
                   if (cField.IsPass === 'f') {
                     roundColor = '#FF0000';
-                    passColor = 'card card-unpass h-100';
+                    passColor = 'card card-unpass shadow-sm h-100';
                     scoreColor = 'fs-4 text-danger me-0 pe-0';
                   }
                   if (cField.ToView === 'f' || ces.Subject === avgSetting) {
                     roundColor = '#5B9BD5';
-                    passColor = 'card h-100';
+                    passColor = 'card shadow-sm h-100';
                     if (cField.ToView === 'f') {
                       disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                       show = null;
@@ -664,7 +664,7 @@ function Main() {
                   if (cField.Score === '') {
                     roundColor = '#5B9BD5';
                     scoreColor = 'fs-4 me-0 pe-0';
-                    passColor = 'card h-100';
+                    passColor = 'card shadow-sm h-100';
                   }
                   let im = 0;
                   let previousExamID = selectedExam;
@@ -697,7 +697,11 @@ function Main() {
                                     <div className='me-0 pe-0'>分數</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                  <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ?
+                                    <img className='arrow' /> :
+                                    Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' />
+                                      : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' />
+                                        : <img className='arrow' />}</div>
 
                                 </div>
                               </div>
@@ -723,24 +727,27 @@ function Main() {
                                               <div className='pe-0 me-0'>名次</div>
                                             </div>
 
-                                            <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ? '' : Number(rField.Rank) > Number(previousExamRank) ? <img className='arrow' src={down} alt='↓' /> : Number(rField.Rank) === Number(previousExamRank) ? '' : <img className='arrow' src={up} alt='↑' />}</div>
+                                            <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ?
+                                              <img className='arrow' /> : Number(rField.Rank) > Number(previousExamRank) ? <img className='arrow' src={down} alt='↓' />
+                                                : Number(rField.Rank) === Number(previousExamRank) ?
+                                                  <img className='arrow' /> : <img className='arrow' src={up} alt='↑' />}</div>
                                           </div>
                                         </div>
                                         <div className={col}>
-                                          <div className='row align-self-center'>
-                                            <div className='d-flex justify-content-center'>
+                                          <div className='d-flex justify-content-center'>
+                                            <div className='row align-self-center'>
                                               <div className='fs-4'>{rField.PR}</div>
+                                              <div>PR</div>
                                             </div>
-                                            <div>PR</div>
                                           </div>
                                         </div>
 
                                         <div className={col}>
-                                          <div className='row align-self-center'>
-                                            <div className='d-flex justify-content-center'>
+                                          <div className='d-flex justify-content-center'>
+                                            <div className='row align-self-center'>
                                               <div className='fs-4'>{rField.Percentile}</div>
+                                              <div className='text-nowrap'>百分比</div>
                                             </div>
-                                            <div>百分比</div>
                                           </div>
                                         </div>
                                       </>
@@ -766,7 +773,7 @@ function Main() {
 
           {/* 評量成績 的加權平均*/}
           {[].concat(examRankType || []).length > 0 && selectedExam !== '0' ? <div className="col">
-            <div className='card h-100'>
+            <div className='card shadow-sm h-100'>
               <div className="card-body">
                 <div className='d-flex'>
                   <div className='d-flex me-auto p-2 align-items-center'>
@@ -833,20 +840,20 @@ function Main() {
                               </div>
 
                                 <div className={col}>
-                                  <div className='row align-self-center'>
-                                    <div className='d-flex justify-content-center'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className='row align-self-center'>
                                       <div className='fs-4'>{avgField.PR}</div>
+                                      <div>PR</div>
                                     </div>
-                                    <div>PR</div>
                                   </div>
                                 </div>
 
                                 <div className={col}>
-                                  <div className='row align-self-center'>
-                                    <div className='d-flex justify-content-center'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className='row align-self-center'>
                                       <div className='fs-4'>{avgField.Percentile}</div>
+                                      <div className='text-nowrap'>百分比</div>
                                     </div>
-                                    <div>百分比</div>
                                   </div>
                                 </div></>}
 
@@ -869,7 +876,7 @@ function Main() {
           </div>
             : selectedExam !== '0' && [].concat(examRankType || []).length < 1 ?
               <div className="col">
-                <div className='card h-100'>
+                <div className='card shadow-sm h-100'>
                   <div className="card-body">
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
@@ -891,7 +898,7 @@ function Main() {
 
             if (selectedExam === '0') {
               return <div className="col">
-                <div className={nces.Subject === avgSetting ? 'card h-100' : 'card card-pass h-100'}>
+                <div className={nces.Subject === avgSetting ? 'card shadow-sm h-100' : 'card card-pass shadow-sm h-100'}>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
@@ -946,7 +953,7 @@ function Main() {
             if (earm.ItemName === avgSetting)
               if (selectedExam === '0') {
                 return <div className="col">
-                  <div className='card h-100'>
+                  <div className='card shadow-sm h-100'>
                     <div className="card-body">
                       <div className="card-block">
                         <div className='d-flex'>
