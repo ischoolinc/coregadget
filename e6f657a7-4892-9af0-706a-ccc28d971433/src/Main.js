@@ -607,19 +607,19 @@ function Main() {
           </div>
           {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
 
-<div className="col-12 col-md-6 col-lg-6  py-2">
-  <div className='d-flex align-items-center text-nowrap'>
-    <div className='pe-1'>排名類別</div><select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
+            <div className="col-12 col-md-6 col-lg-6  py-2">
+              <div className='d-flex align-items-center text-nowrap'>
+                <div className='pe-1'>排名類別</div><select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
-      {/* {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>} */}
-      {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
-      {examRankType.map((rankType, index) => {
-        return <option key={index} value={rankType.rank_type}>
-          {rankType.rank_type}</option>
-      })}
-    </select></div>
-</div>
-}
+                  {/* {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>} */}
+                  {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
+                  {examRankType.map((rankType, index) => {
+                    return <option key={index} value={rankType.rank_type}>
+                      {rankType.rank_type}</option>
+                  })}
+                </select></div>
+            </div>
+          }
 
         </div>
 
@@ -637,18 +637,18 @@ function Main() {
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass shadow-sm h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let scoreColor = 'fs-4 me-0 pe-0';
                   let show = '/RankDetail';
                   let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
                   if (cField.IsPass === 'f') {
                     roundColor = '#FF0000';
-                    passColor = 'card card-unpass shadow-sm h-100';
+                    passColor = 'card card-unpass shadow h-100';
                     scoreColor = 'fs-4 text-danger me-0 pe-0';
                   }
                   if (cField.ToView === 'f' || ces.Subject === avgSetting) {
                     roundColor = '#5B9BD5';
-                    passColor = 'card shadow-sm h-100';
+                    passColor = 'card shadow h-100';
                     if (cField.ToView === 'f') {
                       disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                       show = null;
@@ -664,7 +664,7 @@ function Main() {
                   if (cField.Score === '') {
                     roundColor = '#5B9BD5';
                     scoreColor = 'fs-4 me-0 pe-0';
-                    passColor = 'card shadow-sm h-100';
+                    passColor = 'card shadow h-100';
                   }
                   let im = 0;
                   let previousExamID = selectedExam;
@@ -750,6 +750,11 @@ function Main() {
                                             </div>
                                           </div>
                                         </div>
+                                        <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                          更多
+                                          </div>
+                                        
                                       </>
                                   })}
 
@@ -773,7 +778,7 @@ function Main() {
 
           {/* 評量成績 的加權平均*/}
           {[].concat(examRankType || []).length > 0 && selectedExam !== '0' ? <div className="col">
-            <div className='card shadow-sm h-100'>
+            <div className='card shadow h-100'>
               <div className="card-body">
                 <div className='d-flex'>
                   <div className='d-flex me-auto p-2 align-items-center'>
@@ -855,7 +860,12 @@ function Main() {
                                       <div className='text-nowrap'>百分比</div>
                                     </div>
                                   </div>
-                                </div></>}
+                                </div>
+                                <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                          更多
+                                          </div>
+                                </>}
 
 
 
@@ -876,7 +886,7 @@ function Main() {
           </div>
             : selectedExam !== '0' && [].concat(examRankType || []).length < 1 ?
               <div className="col">
-                <div className='card shadow-sm h-100'>
+                <div className='card shadow h-100'>
                   <div className="card-body">
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
@@ -898,7 +908,7 @@ function Main() {
 
             if (selectedExam === '0') {
               return <div className="col">
-                <div className={nces.Subject === avgSetting ? 'card shadow-sm h-100' : 'card card-pass shadow-sm h-100'}>
+                <div className={nces.Subject === avgSetting ? 'card shadow h-100' : 'card card-pass shadow h-100'}>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
@@ -953,7 +963,7 @@ function Main() {
             if (earm.ItemName === avgSetting)
               if (selectedExam === '0') {
                 return <div className="col">
-                  <div className='card shadow-sm h-100'>
+                  <div className='card shadow h-100'>
                     <div className="card-body">
                       <div className="card-block">
                         <div className='d-flex'>

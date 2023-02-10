@@ -40,6 +40,10 @@ body {
   color: #f9c187;
   font-size: 16px;
 }
+.text-more {
+  color: #4a8ac7;
+}
+
 
 .disabledCursor {
   cursor: default;
@@ -51,7 +55,7 @@ body {
 }
 
 .arrow {
-  height: 17px;
+  /* height: 17px; */
   width: 17px;
   margin-top: 10px;
 }
@@ -103,6 +107,7 @@ body {
     height: 450px;
   }
 }
+
 
 /* .innerText {
     font-size: 5vw;
