@@ -586,14 +586,14 @@ function Main() {
               {[].concat(cses.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let examScoreColor = 'fs-4';
 
                   //let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
 
                   if (cField.ToView === 'f') {
                     roundColor = '#5B9BD5';
-                    passColor = 'card h-100';
+                    passColor = 'card shadow h-100';
                     //disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                     isShowFailSubjectCount = false;
                   }
@@ -601,7 +601,7 @@ function Main() {
                   //<60分  紅字
                   if (cField.ExamScore !== '' && Number(cField.ExamScore) < 60){
                     examScoreColor = 'fs-4 text-danger';
-                    passColor = 'card card-unpass h-100';
+                    passColor = 'card card-unpass shadow h-100';
                   }
 
 
@@ -674,19 +674,19 @@ function Main() {
               {[].concat(cdes.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let examScoreColor = 'fs-4';
 
                   if (cField.ToView === 'f') {
                     roundColor = '#5B9BD5';
-                    passColor = 'card h-100';
+                    passColor = 'card shadow h-100';
                     isShowFailDomainCount = false;
                   }
 
                   //<60分  紅字
                   if (cField.ExamScore !== '' && Number(cField.ExamScore) < 60){
                     examScoreColor = 'fs-4 text-danger';
-                    passColor = 'card card-unpass h-100';
+                    passColor = 'card card-unpass shadow h-100';
                   }
 
                   let im = 0;
@@ -749,7 +749,7 @@ function Main() {
               if (index !== 0)
                 im = index - 1
 
-              return <div className="col"><div className='card h-100'>
+              return <div className="col"><div className='card shadow h-100'>
                 <div className="card-body">
                   <div className='d-flex'>
                     <div className='d-flex me-auto p-2 align-items-center'>
@@ -791,14 +791,14 @@ function Main() {
               {[].concat(csas.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let examScoreColor = 'fs-4';
 
                   //let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
 
                   if (cField.ToView === 'f') {
                     roundColor = '#5B9BD5';
-                    passColor = 'card h-100';
+                    passColor = 'card shadow h-100';
                     //disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                     isShowFailAssignmenetSubjectCount = false;
                   }
@@ -806,7 +806,7 @@ function Main() {
                   //<60分  紅字
                   if (cField.ExamScore !== '' && Number(cField.ExamScore) < 60){
                     examScoreColor = 'fs-4 text-danger';
-                    passColor = 'card card-unpass h-100';
+                    passColor = 'card card-unpass shadow h-100';
                   }
 
 
@@ -878,19 +878,19 @@ function Main() {
               {[].concat(cdas.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let examScoreColor = 'fs-4';
 
                   if (cField.ToView === 'f') {
                     roundColor = '#5B9BD5';
-                    passColor = 'card h-100';
+                    passColor = 'card shadow h-100';
                     isShowFailAssignmenetDomainCount = false;
                   }
 
                   //<60分  紅字
                   if (cField.ExamScore !== '' && Number(cField.ExamScore) < 60){
                     examScoreColor = 'fs-4 text-danger';
-                    passColor = 'card card-unpass h-100';
+                    passColor = 'card card-unpass shadow h-100';
                   }
 
                   let im = 0;
@@ -956,7 +956,7 @@ function Main() {
               if (index !== 0)
                 im = index - 1
 
-              return <div className="col"><div className='card h-100'>
+              return <div className="col"><div className='card shadow h-100'>
                 <div className="card-body">
                   <div className='d-flex'>
                     <div className='d-flex me-auto p-2 align-items-center'>
@@ -995,7 +995,7 @@ function Main() {
             //console.log('總覽(各評量)> 科目成績', nces);
             if (selectedExam === '0' && selectedSubjectType === 0) {
               return <div className="col">
-                <div className='card card-pass h-100'>
+                <div className='card card-pass shadow h-100'>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
@@ -1071,7 +1071,7 @@ function Main() {
             //console.log('studentID', studentID);
             if (selectedExam === '0' && selectedSubjectType === 1) {
               return <div className="col">
-                <div className='card card-pass h-100'>
+                <div className='card card-pass shadow h-100'>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
@@ -1146,7 +1146,7 @@ function Main() {
           {/* 總覽(各評量&平時)> 總計 */}
           {selectedExam === '0' && ([].concat(examAvgList || []).length || [].concat(assignmentAvgList || []).length) ?
             <div className="col">
-              <div className='card h-100'>
+              <div className='card shadow h-100'>
                 <div className="card-body">
                   <div className="card-block">
                     <div className='d-flex'>
