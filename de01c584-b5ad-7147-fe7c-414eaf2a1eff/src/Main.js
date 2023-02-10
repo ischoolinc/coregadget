@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
-// import greenDown from './greenDown.png';
-// import redUp from './redUp.png';
 import down from './down.png';
 import up from './up.png';
 
@@ -480,13 +478,13 @@ function Main() {
     var courseID = e.CourseID;
     var subjectType = 'subject';
 
-    if (!e.Subject && !e.Domain){
+    if (!e.Subject && !e.Domain) {
 
       subject = e.ItemName;
       subjectType = 'avg';
     }
 
-    if (!e.Subject && !e.ItemName){
+    if (!e.Subject && !e.ItemName) {
       subjectType = 'domain';
       subject = e.Domain;
     }
@@ -503,7 +501,7 @@ function Main() {
     sessionStorage.setItem('Semester', selectedSemester);
     sessionStorage.setItem('Subject', subject);
     //sessionStorage.setItem('PassingStandard', e.PassingStandard);
-    sessionStorage.setItem('SubjectType', subjectType); 
+    sessionStorage.setItem('SubjectType', subjectType);
     sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
   };
 
@@ -551,7 +549,7 @@ function Main() {
         <div className='row align-items-center my-1'>
           <div className='col-12 col-md-4 col-lg-3 py-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
-            {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
+              {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
               {/* <option value="Y" key="Y">(選擇學年度學期)</option> */}
               {courseSemesterRange.map((courseSemester, index) => {
                 return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
@@ -609,14 +607,14 @@ function Main() {
 
         {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
-        
+
           {/* 評量> 科目成績 */}
           {selectedSubjectType === 0 ? <>          {courseSubjectExamScore.map((ces) => {
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   //let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let examScoreColor = 'fs-4 me-0 pe-0';
                   let assignmentScoreColor = 'fs-4 me-0 pe-0';
                   let scoreColor = 'fs-4 me-0 pe-0';
@@ -735,6 +733,7 @@ function Main() {
                             </div>
 
 
+
                           </>}
 
                         </div>
@@ -745,7 +744,12 @@ function Main() {
                             <div className=''>{cField.Message}</div>
                           </div>
                         }
-
+                        {cField.Score === '' ? '' :
+                          <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                            <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                            更多
+                          </div>
+                        }
 
                       </Link>
                     </div>
@@ -764,7 +768,7 @@ function Main() {
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   //let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass h-100';
+                  let passColor = 'card card-pass shadow h-100';
                   let examScoreColor = 'fs-4 me-0 pe-0';
                   let scoreColor = 'fs-4 me-0 pe-0';
                   let show = '/RankDetail';
@@ -827,7 +831,7 @@ function Main() {
                             </div>
                           </div>
 
-{/* {箭頭排版} */}
+                          {/* {箭頭排版} */}
                           {/* <div className='col-6 col-md-6 col-lg-6 my-2'>
                             <div className='row align-items-center m-2'>
                               <div className='d-flex justify-content-center'>
@@ -845,7 +849,10 @@ function Main() {
                         <div className='d-flex me-auto p-2 align-items-center'>
                           <div className=''>計算時間：{cField.CreateTime}</div>
                         </div>
-
+                        {cField.CreateTime === '' ? '' : <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          更多
+                        </div>}
                       </Link>
                     </div>
                   </div>
@@ -865,7 +872,7 @@ function Main() {
                 {[].concat(ces.Field || []).map((cField, index) => {
                   if (cField.ExamID === selectedExam) {
                     //let roundColor = '#A9D18E';
-                    let passColor = 'card card-pass h-100';
+                    let passColor = 'card card-pass shadow h-100';
                     let examScoreColor = 'fs-4 me-0 pe-0';
                     let scoreColor = 'fs-4 me-0 pe-0';
                     let show = '/RankDetail';
@@ -936,6 +943,11 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             <div className=''>計算時間：{cField.CreateTime}</div>
                           </div>
+                          {cField.CreateTime === '' ? '' :
+                            <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                              <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                              更多
+                            </div>}
 
                         </Link>
                       </div>
@@ -954,7 +966,7 @@ function Main() {
           {courseSubjectExamScore.map((nces) => {
             if (selectedExam === '0') {
               return <div className="col">
-                <div className='card card-pass h-100'>
+                <div className='card card-pass shadow h-100'>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
@@ -1012,7 +1024,7 @@ function Main() {
             //console.log('earm',earm);
             if (selectedExam === '0' && earm.ItemName === avgSetting) {
               return <div className="col">
-                <div className='card card-pass h-100'>
+                <div className='card card-pass shadow h-100'>
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
