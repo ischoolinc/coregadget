@@ -603,7 +603,7 @@ function Main() {
 
 
         <div>{[].concat(courseSubjectExamScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
-        <div>{selectedSubjectType === 1 && [].concat(examAvgRankMatrix || []).length < 1 ? '尚無資料。' : ''}</div>
+        <div>{selectedExam !== '0' &&selectedSubjectType === 1 && [].concat(examAvgRankMatrix || []).length < 1 ? '尚無資料。' : ''}</div>
 
         {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
