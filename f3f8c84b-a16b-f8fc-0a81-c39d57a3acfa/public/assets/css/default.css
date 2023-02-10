@@ -60,6 +60,10 @@ body {
   font-size: 16px;
 }
 
+.text-more {
+  color: #4a8ac7;
+}
+
 .disabledCursor {
   cursor: default;
 }

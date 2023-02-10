@@ -468,7 +468,7 @@ function Main() {
     setViewRankType(e.target.value);
   };
 
-  const handleOnMouseEnter = (index,target) => {
+  const handleOnMouseEnter = (index, target) => {
     setCurrentTargetIndex(index);
     setCurrentTarget(target);
   }
@@ -531,25 +531,24 @@ function Main() {
 
           {/*高雄 無論設定都不顯示排名 */}
           {!showRank || system_type === 'kh' ? '' :
-            <div className='d-flex align-items-center col-12 col-md-12 col-lg-6 py-2'>
-              <div className="col-2 col-md-2 col-lg-2">排名類別</div>
-              <div className="col-10 col-md-10 col-lg-10 ps-1">
-                <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
+            <div className='d-flex align-items-center text-nowrap col-12 col-md-6 col-lg-6 py-2'>
+              <div className='pe-1'>排名類別</div>
+              <select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
-                  {[].concat(rankTypeList || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <></>}
+                {[].concat(rankTypeList || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <></>}
 
-                  {rankTypeList.map((rankType, index) => {
-                    return <option key={index} value={rankType.rank_type}>
-                      {rankType.rank_type}</option>
-                  })}
-                </select>
-              </div>
+                {rankTypeList.map((rankType, index) => {
+                  return <option key={index} value={rankType.rank_type}>
+                    {rankType.rank_type}</option>
+                })}
+              </select>
+
             </div>}
 
 
 
           <div className='col-12 col-md-6 col-lg-3 text-start py-2'>
-            {!showNow ?'': selectedSubjectType === 0 ? '不及格科目數：' + failedSubjectCount : '不及格領域數：' + failedDomainCount}
+            {!showNow ? '' : selectedSubjectType === 0 ? '不及格科目數：' + failedSubjectCount : '不及格領域數：' + failedDomainCount}
             {/* {showNow && selectedSubjectType === 0 ? '不及格科目數：' + failedSubjectCount : '不及格領域數：' + failedDomainCount} */}
           </div>
 
@@ -576,7 +575,7 @@ function Main() {
 
               let col = 'col-6 my-2';
               let roundColor = '#5b9bd5';//A9D18E
-              let passColor = 'card card-pass h-100';
+              let passColor = 'card card-pass shadow h-100';
               let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
@@ -585,30 +584,30 @@ function Main() {
 
               if (Number(sss.score) < passingStardard) {
                 roundColor = '#FF66CC';
-                passColor = 'card card-unpass h-100';
+                passColor = 'card card-unpass shadow h-100';
                 scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
                 passText = '不及格';
                 passTextColor = 'text-danger';
                 makeUpTextColor = 'text-red align-self-end';
               }
               if (!showNow) {
-                passColor = 'card h-100';
+                passColor = 'card shadow h-100';
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                 show = null;
                 //isShowFailSubjectCount = false;
               }
 
               if (showRank && [].concat(rankTypeList || []).length > 0) {
-                // 顯示排名 且 有排名
-                col = 'col-6 col-md-4 col-lg-1-5 my-2';
-                if ((!showScore && showDegree) || (showScore && !showDegree))
+                // 顯示排名 且 有排名 (共5個)
+                col = 'col-4 col-md-4 col-lg-1-5 my-2';
+                if ((!showScore && showDegree) || (showScore && !showDegree))//(共4個)
                   col = 'col-6 col-md-3 col-lg-3 my-2';
               }
 
               if (!showRank || [].concat(rankTypeList || []).length < 1) {
-                //不顯示排名 或 沒有排名
+                //不顯示排名 或 沒有排名 //只有分數+等第 (共2個)
                 col = 'col-6 my-2';
-                if ((!showScore && showDegree) || (showScore && !showDegree)) //只有分數or只有等第
+                if ((!showScore && showDegree) || (showScore && !showDegree)) //只有分數or只有等第  (共1個)
                   col = 'col-12 my-2';
               }
 
@@ -634,10 +633,10 @@ function Main() {
 
                   <div className="card-body">
 
-                    <OverlayTrigger key={sss.index} placement='auto' show={currentTargetIndex === index&& currentTarget==='subject' && system_type === 'kh' && showNow}
+                    <OverlayTrigger key={sss.index} placement='auto' show={currentTargetIndex === index && currentTarget === 'subject' && system_type === 'kh' && showNow}
                       containerPadding={0}
                       overlay={
-                        <Popover id='popover-contained' key={sss.index} onMouseEnter={() => { handleOnMouseEnter(index,'subject'); }} onMouseLeave={handleOnMouseLeave}>
+                        <Popover id='popover-contained' key={sss.index} onMouseEnter={() => { handleOnMouseEnter(index, 'subject'); }} onMouseLeave={handleOnMouseLeave}>
                           <Popover.Body>
                             【{sss.domain === "" ? "" : sss.domain + "-"}{sss.subject}】<br />
                             原始分數：{sss.oscore}<br />
@@ -646,7 +645,7 @@ function Main() {
                         </Popover>
                       }>
 
-                      <Link className={disabledCursor} to={show} key={sss.index} onMouseEnter={() => { handleOnMouseEnter(index,'subject'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sss); }}>
+                      <Link className={disabledCursor} to={show} key={sss.index} onMouseEnter={() => { handleOnMouseEnter(index, 'subject'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sss); }}>
                         <div className='d-flex'>
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
@@ -716,6 +715,8 @@ function Main() {
                                       <div className='text-nowrap'>百分比</div>
                                     </div>
                                   </div>
+
+
                                 </>
                               }
                           })}
@@ -725,7 +726,11 @@ function Main() {
 
 
                         <div className='d-flex text-start p-2 ms-2'>{sss.textq}</div>
-
+                        {system_type === 'kh' ? '' :
+                          <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                            <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                            更多
+                          </div>}
                       </Link>
 
 
@@ -754,7 +759,7 @@ function Main() {
 
               let col = 'col-6 my-2';
               let roundColor = '#5b9bd5';//A9D18E
-              let passColor = 'card card-pass h-100';
+              let passColor = 'card card-pass shadow h-100';
               let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
@@ -763,23 +768,23 @@ function Main() {
 
               if (Number(sds.score) < passingStardard) {
                 roundColor = '#FF66CC';
-                passColor = 'card card-unpass h-100';
+                passColor = 'card card-unpass shadow h-100';
                 scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
                 passText = '不及格';
                 passTextColor = 'text-danger';
                 makeUpTextColor = 'text-red align-self-end';
               }
               if (!showNow) {
-                passColor = 'card h-100';
+                passColor = 'card shadow h-100';
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                 show = null;
                 //isShowFailSubjectCount = false;
               }
 
               if (showRank && [].concat(rankTypeList || []).length > 0) {
-                // 顯示排名 且 有排名
-                col = 'col-6 col-md-4 col-lg-1-5 my-2';
-                if ((!showScore && showDegree) || (showScore && !showDegree))
+                // 顯示排名 且 有排名  (共5個)
+                col = 'col-4 col-md-4 col-lg-1-5 my-2';
+                if ((!showScore && showDegree) || (showScore && !showDegree))  //(共4個)
                   col = 'col-6 col-md-3 col-lg-3 my-2';
               }
 
@@ -809,10 +814,10 @@ function Main() {
 
               return <div className="col"><div className={passColor}>
                 <div className="card-body">
-                  <OverlayTrigger key={sds.index} placement='auto' show={currentTargetIndex === index && currentTarget==='domain'&& system_type === 'kh' && showNow}
+                  <OverlayTrigger key={sds.index} placement='auto' show={currentTargetIndex === index && currentTarget === 'domain' && system_type === 'kh' && showNow}
                     containerPadding={0}
                     overlay={
-                      <Popover id='popover-contained' key={sds.index} onMouseEnter={() => { handleOnMouseEnter(index,'domain'); }} onMouseLeave={handleOnMouseLeave}>
+                      <Popover id='popover-contained' key={sds.index} onMouseEnter={() => { handleOnMouseEnter(index, 'domain'); }} onMouseLeave={handleOnMouseLeave}>
                         <Popover.Body>
                           【{sds.domain}】<br />
                           原始分數：{sds.oscore}<br />
@@ -820,7 +825,7 @@ function Main() {
                         </Popover.Body>
                       </Popover>
                     }>
-                    <Link className={disabledCursor} to={show} onMouseEnter={() => { handleOnMouseEnter(index,'domain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sds); }}>
+                    <Link className={disabledCursor} to={show} onMouseEnter={() => { handleOnMouseEnter(index, 'domain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sds); }}>
                       <div className='d-flex'>
                         <div className='d-flex me-auto p-2 align-items-center'>
                           {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
@@ -890,6 +895,7 @@ function Main() {
                                     <div className='text-nowrap'>百分比</div>
                                   </div>
                                 </div>
+
                               </>
                             }
                         })}
@@ -898,6 +904,11 @@ function Main() {
                       </div>
 
                       <div className='d-flex text-start p-2 ms-2'>{sds.textq}</div>
+                      {system_type === 'kh' ? '' :
+                        <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          更多
+                        </div>}
                     </Link>
                   </OverlayTrigger>
                 </div>
@@ -909,7 +920,7 @@ function Main() {
             : ''}
 
           {/* 總計成績 */}
-          {semesterMixDomainScore.map((smds,index) => {
+          {semesterMixDomainScore.map((smds, index) => {
             let col = 'col-6 my-2';
             let scoreColor = 'fs-4-blue text-nowrap';
             let show = '/RankDetail';
@@ -925,9 +936,9 @@ function Main() {
             }
 
             if (showRank && [].concat(rankTypeList || []).length > 0) {
-              // 顯示排名 且 有排名
-              col = 'col-6 col-md-4 col-lg-1-5 my-2';
-              if ((!showScore && showDegree) || (showScore && !showDegree))
+              // 顯示排名 且 有排名  (共5個)
+              col = 'col-4 col-md-4 col-lg-1-5 my-2';
+              if ((!showScore && showDegree) || (showScore && !showDegree)) // (共4個)
                 col = 'col-6 col-md-3 col-lg-3 my-2';
             }
 
@@ -952,80 +963,86 @@ function Main() {
                 col = 'col-12 my-2';
             }
 
-            return <div className="col"><div className='card h-100'>
+            return <div className="col"><div className='card shadow h-100'>
               <div className="card-body">
-              <OverlayTrigger key={smds.index} placement='auto' show={currentTargetIndex === index && currentTarget==='mixdomain'&& system_type === 'kh' && showNow}
-                    containerPadding={0}
-                    overlay={
-                      <Popover id='popover-contained' key={smds.index} onMouseEnter={() => { handleOnMouseEnter(index); }} onMouseLeave={handleOnMouseLeave}>
-                        <Popover.Body>
-                          【{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}】<br />
-                          原始分數：{smds.oscore}<br />
-                          {/* {smds.pscore === '' ? '' : '補考分數：' + smds.pscore} */}
-                        </Popover.Body>
-                      </Popover>
-                    }>          
-                <Link className={disabledCursor} to={show} onMouseEnter={() => { handleOnMouseEnter(index,'mixdomain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(smds); }}>
-                  <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}</div>
+                <OverlayTrigger key={smds.index} placement='auto' show={currentTargetIndex === index && currentTarget === 'mixdomain' && system_type === 'kh' && showNow}
+                  containerPadding={0}
+                  overlay={
+                    <Popover id='popover-contained' key={smds.index} onMouseEnter={() => { handleOnMouseEnter(index); }} onMouseLeave={handleOnMouseLeave}>
+                      <Popover.Body>
+                        【{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}】<br />
+                        原始分數：{smds.oscore}<br />
+                        {/* {smds.pscore === '' ? '' : '補考分數：' + smds.pscore} */}
+                      </Popover.Body>
+                    </Popover>
+                  }>
+                  <Link className={disabledCursor} to={show} onMouseEnter={() => { handleOnMouseEnter(index, 'mixdomain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(smds); }}>
+                    <div className='d-flex'>
+                      <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='fs-4 fw-bold text-start'>{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}</div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className='row align-items-center'>
+                    <div className='row align-items-center'>
 
-                    {!showNow ? <div><div>未開放查詢。</div> <div>開放查詢時間：{viewTime}</div></div> : <>
-                      {showScore ?
-                        <div className={col}>
-                          <div >
-                            <div className={scoreColor}>{smds.score === '' ? '-' : smds.score}</div>
-                            <div className='text-nowrap'>分數</div>
+                      {!showNow ? <div><div>未開放查詢。</div> <div>開放查詢時間：{viewTime}</div></div> : <>
+                        {showScore ?
+                          <div className={col}>
+                            <div >
+                              <div className={scoreColor}>{smds.score === '' ? '-' : smds.score}</div>
+                              <div className='text-nowrap'>分數</div>
+                            </div>
                           </div>
-                        </div>
-                        : <></>}
+                          : <></>}
 
-                      {showDegree ?
-                        <div className={col}>
-                          <div>
-                            <div className='fs-4-blue'>{smds.namedegree === '' ? '-' : smds.namedegree}</div>
-                            <div className='text-nowrap'>等第</div>
+                        {showDegree ?
+                          <div className={col}>
+                            <div>
+                              <div className='fs-4-blue'>{smds.namedegree === '' ? '-' : smds.namedegree}</div>
+                              <div className='text-nowrap'>等第</div>
+                            </div>
                           </div>
-                        </div>
-                        : <></>}
-                    </>
-                    }
+                          : <></>}
+                      </>
+                      }
 
-                    {semesterRankMatrix.map((rank, index) => {
-                      if (showRank && showNow && system_type !== 'kh')
-                        if (rank.item_type === '學期/總計成績' && rank.rank_type === selectedRankType && rank.item_name === smds.subject) {
-                          return <>
-                            <div className={col}>
-                              <div>
-                                <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
-                                <div className='text-nowrap'>名次</div>
+                      {semesterRankMatrix.map((rank, index) => {
+                        if (showRank && showNow && system_type !== 'kh')
+                          if (rank.item_type === '學期/總計成績' && rank.rank_type === selectedRankType && rank.item_name === smds.subject) {
+                            return <>
+                              <div className={col}>
+                                <div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
+                                  <div className='text-nowrap'>名次</div>
+                                </div>
                               </div>
-                            </div>
-                            <div className={col}>
-                              <div>
-                                <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
-                                <div className='text-nowrap'>PR</div>
+                              <div className={col}>
+                                <div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
+                                  <div className='text-nowrap'>PR</div>
+                                </div>
                               </div>
-                            </div>
-                            <div className={col}>
-                              <div>
-                                <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
-                                <div className='text-nowrap'>百分比</div>
+                              <div className={col}>
+                                <div>
+                                  <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
+                                  <div className='text-nowrap'>百分比</div>
+                                </div>
                               </div>
-                            </div>
-                          </>
-                        }
-                    })}
 
 
-                  </div>
+                            </>
+                          }
+                      })}
+
+                      {system_type === 'kh' ? '' :
+                        <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          更多
+                        </div>}
+                    </div>
 
 
-                </Link>
+                  </Link>
                 </OverlayTrigger>
               </div>
             </div>
