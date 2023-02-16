@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Routes, Route, Link } from 'react-router-dom';
 import RankDetail from './RankDetail';
+import CreditDetail from './CreditDetail';
 import Main from './Main';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/RankDetail" element={<RankDetail />} />
+        <Route path="/CreditDetail" element={<CreditDetail />} />
       </Routes>
     </div>
   );
