@@ -93,44 +93,44 @@ const CreditDetail = () => {
 					<div className='text-end'>取得學分/習修學分</div>
 				</div>
 
-				<div className='row align-items-start'>
+				<div className='row align-items-start text-table'>
 					<div className='col-12 col-md-12 col-lg-6'>
 						<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 							<tbody style={{ borderTop: '4px solid #fff' }}>
 								<tr>
 									<td style={{ background: '#BDD7EE' }}>必修</td>
-									<td style={{ background: '#DEEBF7' }}>{credit.must_pass_count}/{credit.must_studied_count}</td>
+									<td style={{ background: '#DEEBF7' }}>{Number(credit.must_pass_count)}/{Number(credit.must_studied_count)}</td>
 									<td style={{ background: '#BDD7EE' }}>選修</td>
-									<td style={{ background: '#DEEBF7' }}>{credit.choose_pass_count}/{credit.choose_studied_count}</td>
+									<td style={{ background: '#DEEBF7' }}>{Number(credit.choose_pass_count)}/{Number(credit.choose_studied_count)}</td>
 								</tr>
 								<tr>
 									<td colSpan="2" style={{ background: '#BDD7EE' }}>合計學分</td>
-									<td colSpan="2" style={{ background: '#DEEBF7' }}>{credit.pass_count}/{credit.studied_count}</td>
+									<td colSpan="2" style={{ background: '#DEEBF7' }}>{Number(credit.pass_count)}/{Number(credit.studied_count)}</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
 
-				<div className='row align-items-start'>
+				<div className='row align-items-start text-table'>
 					<div className='col-12 col-md-12 col-lg-6'>
 						<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 							<tbody style={{ borderTop: '4px solid #fff' }}>
 								<tr>
 									<td style={{ background: '#C5E0B4' }}>部定必修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.b_must_pass_count}/{credit.b_must_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.b_must_pass_count)}/{Number(credit.b_must_studied_count)}</td>
 									<td style={{ background: '#C5E0B4' }}>部定選修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.b_choose_pass_count}/{credit.b_choose_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.b_choose_pass_count)}/{Number(credit.b_choose_studied_count)}</td>
 								</tr>
 								<tr>
 									<td style={{ background: '#C5E0B4' }}>校訂必修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.school_must_pass_count}/{credit.school_must_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.school_must_pass_count)}/{Number(credit.school_must_studied_count)}</td>
 									<td style={{ background: '#C5E0B4' }}>校訂選修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.school_choose_pass_count}/{credit.school_choose_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.school_choose_pass_count)}/{Number(credit.school_choose_studied_count)}</td>
 								</tr>
 								<tr>
 									<td colSpan="2" style={{ background: '#C5E0B4' }}>合計學分</td>
-									<td colSpan="2" style={{ background: '#E2F0D9' }}>{credit.pass_count}/{credit.studied_count}</td>
+									<td colSpan="2" style={{ background: '#E2F0D9' }}>{Number(credit.pass_count)}/{Number(credit.studied_count)}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -141,19 +141,19 @@ const CreditDetail = () => {
 							<tbody style={{ borderTop: '4px solid #fff' }}>
 								<tr>
 									<td style={{ background: '#FFE699' }}>一般科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.r_pass_count}/{credit.r_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.r_pass_count)}/{Number(credit.r_studied_count)}</td>
 									<td style={{ background: '#FFE699' }}>專業科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.zy_pass_count}/{credit.zy_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.zy_pass_count)}/{Number(credit.zy_studied_count)}</td>
 								</tr>
 								<tr>
 									<td style={{ background: '#FFE699' }}>實習科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.sx_pass_count}/{credit.sx_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.sx_pass_count)}/{Number(credit.sx_studied_count)}</td>
 									<td style={{ background: '#FFE699' }}>核心科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.core_pass_count}/{credit.core_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.core_pass_count)}/{Number(credit.core_studied_count)}</td>
 								</tr>
 								<tr>
 									<td colSpan="2" style={{ background: '#FFE699' }}>合計學分</td>
-									<td colSpan="2" style={{ background: '#FFF2CC' }}>{credit.pass_count}/{credit.studied_count}</td>
+									<td colSpan="2" style={{ background: '#FFF2CC' }}>{Number(credit.pass_count)}/{Number(credit.studied_count)}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -168,44 +168,44 @@ const CreditDetail = () => {
 					<div className='text-end'>取得學分/習修學分</div>
 				</div>
 
-				<div className='row align-items-start'>
+				<div className='row align-items-start text-table'>
 					<div className='col-12 col-md-12 col-lg-6'>
 						<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 							<tbody style={{ borderTop: '4px solid #fff' }}>
 								<tr>
 									<td style={{ background: '#BDD7EE' }}>必修</td>
-									<td style={{ background: '#DEEBF7' }}>{credit.must_pass_count}/{credit.must_studied_count}</td>
+									<td style={{ background: '#DEEBF7' }}>{Number(credit.must_pass_count)}/{Number(credit.must_studied_count)}</td>
 									<td style={{ background: '#BDD7EE' }}>選修</td>
-									<td style={{ background: '#DEEBF7' }}>{credit.choose_pass_count}/{credit.choose_studied_count}</td>
+									<td style={{ background: '#DEEBF7' }}>{Number(credit.choose_pass_count)}/{Number(credit.choose_studied_count)}</td>
 								</tr>
 								<tr>
 									<td colSpan="2" style={{ background: '#BDD7EE' }}>合計學分</td>
-									<td colSpan="2" style={{ background: '#DEEBF7' }}>{credit.pass_count}/{credit.studied_count}</td>
+									<td colSpan="2" style={{ background: '#DEEBF7' }}>{Number(credit.pass_count)}/{Number(credit.studied_count)}</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
 
-				<div className='row align-items-start'>
+				<div className='row align-items-start text-table'>
 					<div className='col-12 col-md-12 col-lg-6'>
 						<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 							<tbody style={{ borderTop: '4px solid #fff' }}>
 								<tr>
 									<td style={{ background: '#C5E0B4' }}>部定必修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.b_must_pass_count}/{credit.b_must_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.b_must_pass_count)}/{Number(credit.b_must_studied_count)}</td>
 									<td style={{ background: '#C5E0B4' }}>部定選修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.b_choose_pass_count}/{credit.b_choose_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.b_choose_pass_count)}/{Number(credit.b_choose_studied_count)}</td>
 								</tr>
 								<tr>
 									<td style={{ background: '#C5E0B4' }}>校訂必修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.school_must_pass_count}/{credit.school_must_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.school_must_pass_count)}/{Number(credit.school_must_studied_count)}</td>
 									<td style={{ background: '#C5E0B4' }}>校訂選修</td>
-									<td style={{ background: '#E2F0D9' }}>{credit.school_choose_pass_count}/{credit.school_choose_studied_count}</td>
+									<td style={{ background: '#E2F0D9' }}>{Number(credit.school_choose_pass_count)}/{Number(credit.school_choose_studied_count)}</td>
 								</tr>
 								<tr>
 									<td colSpan="2" style={{ background: '#C5E0B4' }}>合計學分</td>
-									<td colSpan="2" style={{ background: '#E2F0D9' }}>{credit.pass_count}/{credit.studied_count}</td>
+									<td colSpan="2" style={{ background: '#E2F0D9' }}>{Number(credit.pass_count)}/{Number(credit.studied_count)}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -216,19 +216,19 @@ const CreditDetail = () => {
 							<tbody style={{ borderTop: '4px solid #fff' }}>
 								<tr>
 									<td style={{ background: '#FFE699' }}>一般科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.r_pass_count}/{credit.r_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.r_pass_count)}/{Number(credit.r_studied_count)}</td>
 									<td style={{ background: '#FFE699' }}>專業科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.zy_pass_count}/{credit.zy_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.zy_pass_count)}/{Number(credit.zy_studied_count)}</td>
 								</tr>
 								<tr>
 									<td style={{ background: '#FFE699' }}>實習科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.sx_pass_count}/{credit.sx_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.sx_pass_count)}/{Number(credit.sx_studied_count)}</td>
 									<td style={{ background: '#FFE699' }}>核心科目</td>
-									<td style={{ background: '#FFF2CC' }}>{credit.core_pass_count}/{credit.core_studied_count}</td>
+									<td style={{ background: '#FFF2CC' }}>{Number(credit.core_pass_count)}/{Number(credit.core_studied_count)}</td>
 								</tr>
 								<tr>
 									<td colSpan="2" style={{ background: '#FFE699' }}>合計學分</td>
-									<td colSpan="2" style={{ background: '#FFF2CC' }}>{credit.pass_count}/{credit.studied_count}</td>
+									<td colSpan="2" style={{ background: '#FFF2CC' }}>{Number(credit.pass_count)}/{Number(credit.studied_count)}</td>
 								</tr>
 							</tbody>
 						</table>
