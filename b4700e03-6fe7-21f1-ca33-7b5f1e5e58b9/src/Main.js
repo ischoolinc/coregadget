@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
+// import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+// import Popover from 'react-bootstrap/Popover';
+import ScrollToTopButton from './ScrollToTopButton';
 
 function Main() {
 
@@ -58,7 +59,6 @@ function Main() {
   //const [failedSubjectCount, setFailedSubjectCount] = useState(0);
 
   const position = window.gadget.params.system_position;
-  //const system_type = window.gadget.params.system_type;
 
   useEffect(() => {
     GetCurrentSemester();
@@ -383,28 +383,21 @@ function Main() {
   // }
 
   const handleShowRankDetail = (e) => {
+
     var subject = e.subject;
     var subjectType = 'subject';
-    //subject //entry //credit
 
     if (!e.subject) {
-      subject = e.domain;
-      subjectType = 'domain';
+      subject = e.entry;
+      subjectType = 'entry';
     }
 
-
-    if (e.subject && e.domain === '')
-      subjectType = 'subject';
-
     sessionStorage.clear();
-    // 按下去的時候才存
     sessionStorage.setItem('StudentID', studentID);
     sessionStorage.setItem('RankType', selectedRankType);
     sessionStorage.setItem('Semester', selectedSemester);
     sessionStorage.setItem('Subject', subject);
-    //sessionStorage.setItem('PassingStandard', passingStardard);
     sessionStorage.setItem('SubjectType', subjectType);
-    //sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
   };
 
   const handleShowCreditDetail = (e) => {
@@ -413,7 +406,10 @@ function Main() {
     // 按下去的時候才存
     sessionStorage.setItem('StudentID', studentID);
     sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('RankType', selectedRankType);
+
+    const selectElement = document.getElementById("form-semester");
+    sessionStorage.setItem('SemesterText', selectElement.options[selectElement.selectedIndex].innerHTML);
+    //sessionStorage.setItem('QQ', selectedRankType);
   };
 
   const handleChangeViewRank = (e) => {
@@ -435,12 +431,13 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除sessionStorage 
+  // 重新整理將清除sessionStorage 
   window.onunload = function () {
     sessionStorage.clear();
   }
 
 
+  
   return (
     <div className="App">
       <div className="container px-3 px-sm-4 py-5 ">
@@ -463,7 +460,7 @@ function Main() {
 
         <div className='row align-items-center my-1'>
           <div className='col-12 col-md-6 col-lg-3 py-2'>
-            <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
+            <select id='form-semester' className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
               {[].concat(semesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
               {semesterRange.map((semester, index) => {
                 return <option key={index} value={semester.schoolyear + semester.semester}>
@@ -502,10 +499,11 @@ function Main() {
           <div className='col'>
             <div class="card card-credit shadow">
               <div class="card-body">
-                <Link className='card-block stretched-link text-decoration-none link-dark' to='/CreditDetail' key='' onClick={() => { handleShowCreditDetail(); }}>
+                <Link className={showNow ? 'card-block stretched-link text-decoration-none link-dark' : 'card-block stretched-link text-decoration-none link-dark disabledCursor'}
+                  to={showNow ? '/CreditDetail' : null} key='' onClick={() => { handleShowCreditDetail(); }}>
                   <div className='fs-4 fw-bold text-start ms-3'>取得學分</div>
                   {!showNow ? <div className='' style={{ color: '#86B963' }}>開放查詢時間：{viewTime}</div> : <>
-                    {semesterCredit.map((credit) => {
+                    {[].concat(semesterCredit || []).map((credit) => {
                       return <div className='row row-cols-2'>
                         <div className='col'>
                           <div className='fs-4-blue text-nowrap'>{credit.studied_count === '' ? '-' : credit.studied_count}</div>
@@ -517,6 +515,12 @@ function Main() {
                         </div>
                       </div>
                     })}
+
+                    <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more mt-2">
+                      <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                      更多
+                    </div>
+
                   </>}
                 </Link>
               </div>
@@ -527,7 +531,7 @@ function Main() {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
           {/* 科目成績 */}
-          {semesterSubjectScore.map((sss, index) => {
+          {[].concat(semesterSubjectScore || []).map((sss, index) => {
             //console.log('semesterSubjectScore', semesterSubjectScore);
             let scoreMark = 'text-blue text-nowrap align-self-end';
             let col = 'col-12 my-2';
@@ -564,7 +568,6 @@ function Main() {
               //不顯示排名 或 沒有排名 //只有分數
               col = 'col-12 my-2';
             }
-
 
             return <div className="col">
               <div className={passColor}>
@@ -650,33 +653,29 @@ function Main() {
 
 
                 </div>
-
-
-
               </div>
             </div>
 
           })}
 
           {/* 分項成績 */}
-          {semesterEntryScore.map((ses, index) => {
+          {[].concat(semesterEntryScore || []).map((ses, index) => {
             if (!ses.entry.includes('原始')) {
-              console.log('semesterEntryScore', semesterEntryScore);
+              //console.log('semesterEntryScore', semesterEntryScore);
               // let scoreMark = 'text-blue text-nowrap align-self-end';
               let col = 'col-12 my-2';
-              let roundColor = '#5b9bd5';//A9D18E
+
               // let passColor = 'card card-pass shadow h-100';
               let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
 
-              //如果沒有及格標準，直接當60
-              if (Number(ses.score) < 60) {
-                roundColor = '#FF66CC';
-                // passColor = 'card card-unpass shadow h-100';
-                scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
-                // scoreMark = 'text-red text-nowrap align-self-end';
-              }
+              // //如果沒有及格標準，直接當60
+              // if (Number(ses.score) < 60) {
+              //   // passColor = 'card card-unpass shadow h-100';
+              //   scoreColor = 'fs-4 text-danger text-nowrap me-0 pe-0';
+              //   // scoreMark = 'text-red text-nowrap align-self-end';
+              // }
               if (!showNow) {
                 // passColor = 'card shadow h-100';
                 disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
@@ -769,8 +768,9 @@ function Main() {
 
         </div>
 
-      </div>
+        <ScrollToTopButton />
 
+      </div>
     </div>
   );
 }

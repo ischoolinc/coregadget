@@ -26,7 +26,7 @@ body {
 }
 
 .card-credit {
-  border-color: #86B963;
+  border-color: #86b963;
 }
 
 .card-pass {
@@ -56,6 +56,16 @@ body {
   color: #dc3545;
 }
 
+.text-table {
+  /* font-size: calc(0.75rem + 0.3vw) !important;
+  white-space: nowrap; */
+}
+
+td {
+  /* display: table-cell; */
+  vertical-align: middle;
+}
+
 .form-select {
   border: 1px solid #9dc3e6;
 }
@@ -82,19 +92,14 @@ body {
   box-shadow: none;
 }
 
-.checkbox{
+.checkbox {
   /* font-size: 1rem; */
   font-size: 18px;
 }
 
 .material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 18
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 18;
 }
-
 
 .arrow {
   height: 17px;
@@ -114,20 +119,99 @@ body {
   border-top: 1px solid #5b9bd5;
 }
 
+.credit-detail-border {
+  border-bottom: 1px solid #5b9bd5;
+}
+
 .popover {
   max-width: 400px;
 }
 
-.chartHeightShowRank{
+.chartHeightShowRank {
   height: 350px;
 }
-.chartHeightNoShowRank{
+.chartHeightNoShowRank {
   height: 350px;
 }
+
+.table {
+  table-layout: fixed;
+  /* margin-bottom: 1rem; */
+}
+.body {
+  scroll-behavior: smooth;
+}
+
+/* .btn-back-to-top {
+  opacity: 0.8;
+  color: #fff;
+  background-color: #5b9bd5;
+  border-color: #5b9bd5;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2;
+  font-size:calc(0.8rem + 0.9vw);
+  font-weight: 600;
+  padding: 0.5rem 0.7rem;
+}
+.btn-back-to-top:hover {
+  opacity: 0.8;
+  color: #fff;
+} */
+
+.top-btn{
+  vertical-align: middle;
+  /* font-size:calc(1rem + 0.9vw); */
+  font-size:26px;
+}
+
+.hide-button {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.show-button {
+  /* 使按鈕在card link之上 */
+  z-index: 2;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #7BAFDD;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  /* font-size:26px;
+  font-size:calc(1rem + 0.9vw); */
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.alert-primary {
+  /* color: #084298; */
+  background-color: #DEEBF7;
+  border-color: #DEEBF7;
+}
+
+
+
+
+
 
 /* .innerText {
     font-size: 5vw;
   } 百分比、分數、名次*/
+  @media (max-width: 350px) {
+
+  }
+
 
 @media (max-width: 480px) {
   .innerText {
@@ -164,10 +248,10 @@ body {
     width: 20%;
     float: left;
   }
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 190px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 280px;
   }
 }
@@ -176,10 +260,10 @@ body {
     width: 20%;
     float: left;
   }
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 190px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 280px;
   }
 }
@@ -188,10 +272,10 @@ body {
     width: 20%;
     float: left;
   }
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 190px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 280px;
   }
 }
