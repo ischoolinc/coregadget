@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 // import redUp from './redUp.png';
 import down from './down.png';
 import up from './up.png';
+import ScrollToTopButton from './ScrollToTopButton';
 
 function Main() {
 
@@ -1021,14 +1022,11 @@ function Main() {
           <div className='d-flex justify-content-left'>
             <div>不及格科目數：</div><div>{failedCount}</div>
           </div>
-          {/* 評分樣板不同，前次考試不一定來自同一個試別，先註解
-          <div className='d-flex justify-content-left'>
-             <div>進退步參考試別：</div><div>第一次</div>
-          </div>*/}
         </div>}
 
-      </div>
+        <ScrollToTopButton />
 
+      </div>
     </div>
   );
 }
