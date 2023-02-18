@@ -95,6 +95,40 @@ body {
   max-width: 400px;
 }
 
+.top-btn {
+  vertical-align: middle;
+  /* font-size:calc(1rem + 0.9vw); */
+  font-size: 26px;
+}
+
+.hide-button {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.show-button {
+  /* 使按鈕在card link之上 */
+  z-index: 2;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #7bafdd;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  /* font-size:26px;
+  font-size:calc(1rem + 0.9vw); */
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
 .chartHeightShowRank{
   height: 350px;
 }
@@ -107,6 +141,12 @@ body {
   } 百分比、分數、名次*/
 
 @media (max-width: 480px) {
+  .chartHeightShowRank{
+    height: 300px;
+  }
+  .chartHeightNoShowRank{
+    height: 300px;
+  }
   .innerText {
     font-size: 3vw;
   }

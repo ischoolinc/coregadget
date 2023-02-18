@@ -3,6 +3,7 @@ import './App.css';
 import { Link } from 'react-router-dom';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import ScrollToTopButton from './ScrollToTopButton';
 
 function Main() {
 
@@ -75,7 +76,7 @@ function Main() {
 
   const position = window.gadget.params.system_position;
   const system_type = window.gadget.params.system_type;
-
+ 
   useEffect(() => {
     GetCurrentSemester();
     //GetViewSetting();
@@ -558,9 +559,9 @@ function Main() {
 
 
 
-        <div>{selectedSubjectType === 0 && [].concat(semesterSubjectScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
+        <div>{selectedSubjectType === 0 && [].concat(semesterSubjectScore || []).length < 1 && [].concat(semesterMixDomainScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
 
-        <div>{selectedSubjectType === 1 && [].concat(semesterDomainScore || []).length < 1 ? '尚無資料。' : ''}</div>
+        <div>{selectedSubjectType === 1 && [].concat(semesterDomainScore || []).length < 1 && [].concat(semesterMixDomainScore || []).length < 1 ? '尚無資料。' : ''}</div>
 
         {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -1052,9 +1053,8 @@ function Main() {
 
 
         </div>
-
+        <ScrollToTopButton />
       </div>
-
     </div>
   );
 }
