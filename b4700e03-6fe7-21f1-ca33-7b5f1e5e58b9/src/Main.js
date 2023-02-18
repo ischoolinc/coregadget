@@ -437,7 +437,7 @@ function Main() {
   }
 
 
-  
+
   return (
     <div className="App">
       <div className="container px-3 px-sm-4 py-5 ">
@@ -493,40 +493,41 @@ function Main() {
 
         <div>{[].concat(semesterSubjectScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
 
-
-
-        <div className="row row-cols-1 row-cols-md-1 row-cols-lg-3 g-4 mb-4">
-          <div className='col'>
-            <div class="card card-credit shadow">
-              <div class="card-body">
-                <Link className={showNow ? 'card-block stretched-link text-decoration-none link-dark' : 'card-block stretched-link text-decoration-none link-dark disabledCursor'}
-                  to={showNow ? '/CreditDetail' : null} key='' onClick={() => { handleShowCreditDetail(); }}>
-                  <div className='fs-4 fw-bold text-start ms-3'>取得學分</div>
-                  {!showNow ? <div className='' style={{ color: '#86B963' }}>開放查詢時間：{viewTime}</div> : <>
-                    {[].concat(semesterCredit || []).map((credit) => {
-                      return <div className='row row-cols-2'>
-                        <div className='col'>
-                          <div className='fs-4-blue text-nowrap'>{credit.studied_count === '' ? '-' : credit.studied_count}</div>
-                          <div className=''>已修學分</div>
+        {/* 取得學分 */}
+        {[].concat(semesterCredit || []).length ?
+          <div className="row row-cols-1 row-cols-md-1 row-cols-lg-3 g-4 mb-4">
+            <div className='col'>
+              <div class="card card-credit shadow">
+                <div class="card-body">
+                  <Link className={showNow ? 'card-block stretched-link text-decoration-none link-dark' : 'card-block stretched-link text-decoration-none link-dark disabledCursor'}
+                    to={showNow ? '/CreditDetail' : null} key='' onClick={() => { handleShowCreditDetail(); }}>
+                    <div className='fs-4 fw-bold text-start ms-3'>取得學分</div>
+                    {!showNow ? <div className='' style={{ color: '#86B963' }}>開放查詢時間：{viewTime}</div> : <>
+                      {[].concat(semesterCredit || []).map((credit) => {
+                        return <div className='row row-cols-2'>
+                          <div className='col'>
+                            <div className='fs-4-blue text-nowrap'>{credit.studied_count === '' ? '-' : credit.studied_count}</div>
+                            <div className=''>已修學分</div>
+                          </div>
+                          <div className='col'>
+                            <div className='fs-4-blue text-nowrap'>{credit.pass_count === '' ? '-' : credit.pass_count}</div>
+                            <div className=''>取得學分</div>
+                          </div>
                         </div>
-                        <div className='col'>
-                          <div className='fs-4-blue text-nowrap'>{credit.pass_count === '' ? '-' : credit.pass_count}</div>
-                          <div className=''>取得學分</div>
-                        </div>
+                      })}
+
+                      <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more mt-2">
+                        <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                        更多
                       </div>
-                    })}
 
-                    <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more mt-2">
-                      <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
-                      更多
-                    </div>
-
-                  </>}
-                </Link>
+                    </>}
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+          : ''}
 
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
