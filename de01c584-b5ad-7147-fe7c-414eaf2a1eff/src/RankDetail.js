@@ -273,7 +273,7 @@ const RankDetail = () => {
 						return <div className='detailBorder row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
-									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '算術平均' ? Math.round(Number(data.score) * 100) / 100 : data.score_type === '定期+平時' && data.subject_type === '科目成績' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.score_type === '定期+平時'||subjectType==='domain'|subjectType==='avg' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>
