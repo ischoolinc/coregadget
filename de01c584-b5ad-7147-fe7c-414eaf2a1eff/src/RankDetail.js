@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 //import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
+import ScrollToTopButton from './ScrollToTopButton';
 
 const RankDetail = () => {
 
@@ -75,10 +76,25 @@ const RankDetail = () => {
 
 		if (studentSubjectData.length > 0) {
 			studentSubjectData.forEach(data => {
-				//console.log('studentSubjectData', studentSubjectData);
 				if (data.rank_type === selectedRankType && data.score_type === selectedScoreType) //所選的排名類別 & 定期or定期+平時
 				{
-					//console.log('data', data);
+					//排名分數
+					let score = Number(data.rank_score);
+					let position_name = '';
+
+					if (score >= 100)
+						position_name = '100';
+					if (score >= 90 && score < 100)
+						position_name = '90-99';
+					if (score >= 80 && score < 90)
+						position_name = '80-89';
+					if (score >= 70 && score < 80)
+						position_name = '70-79';
+					if (score >= 60 && score < 70)
+						position_name = '60-69';
+					if (score < 60)
+						position_name = '<60';
+
 					source["100"] = Number(data.level_gte100);
 					source["90-99"] = Number(data.level_90);
 					source["80-89"] = Number(data.level_80);
@@ -86,7 +102,12 @@ const RankDetail = () => {
 					source["60-69"] = Number(data.level_60);
 					source["<60"] = Number(data.under60);
 
-					const merge = Object.getOwnPropertyNames(source).map(v => ({ name: v, count: source[v] }));
+					const merge = Object.getOwnPropertyNames(source).map(v => ({
+						name: v,
+						count: source[v],
+						fill: v === position_name ? '#F8A1A4' : '#498ED0',
+						labelFill: v === position_name ? '#F47378' : '#2196f3',
+					}));
 
 					setLevelList(merge);
 					setChartMax(Math.ceil(Math.max(...merge.map(c => c.count)) / 4) * 4);
@@ -139,7 +160,7 @@ const RankDetail = () => {
 				} else {
 					if (response) {
 						setStudentSubjectData([].concat(response.RankMatrix || []));
-						console.log('GetRankDetailPageInfo', [].concat(response.RankMatrix || []));
+						//console.log('GetRankDetailPageInfo', [].concat(response.RankMatrix || []));
 					}
 				}
 			}
@@ -249,19 +270,19 @@ const RankDetail = () => {
 
 				{studentSubjectData.map((data) => {
 					if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
-						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
+						return <div className='detailBorder row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
-								<div className='d-flex me-auto p-2 align-items-center'>
+								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
 									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '算術平均' ? Math.round(Number(data.score) * 100) / 100 : data.score_type === '定期+平時' && data.subject_type === '科目成績' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>
 
-							<div className='col'>
-								<div className='justify-content-end'>
-									{/* <div className='d-flex justify-content-end'>及格標準：{passingStandard}分</div> */}
-									<div className='d-flex justify-content-end text-end'>{selectedScoreType}</div>
-									<div className='d-flex justify-content-end text-end'>計算排名時間：{data.create_time}</div>
+							<div className='col align-self-end'>
+								<div className='text-end pt-0 pt-md-2 pt-lg-2 pe-2'>
+									{/* <div className=''>及格標準：{passingStandard}分</div> */}
+									<div className=''>{selectedScoreType}</div>
+									<div className=''>計算排名時間：{data.create_time === '' ? '未計算' : data.create_time}</div>
 								</div>
 							</div>
 						</div>
@@ -287,8 +308,6 @@ const RankDetail = () => {
 									<option value="定期+平時">定期+平時</option>
 								</select>
 							</div>
-
-
 						</div>
 
 
@@ -337,15 +356,23 @@ const RankDetail = () => {
 									<div>級距</div>
 								</div> */}
 
-								<div className={chartHeight} >
+								{/* <div className={chartHeight} >
 									<ResponsiveContainer width="100%" height="100%">
-										{/* <BarChart margin={{ top: 20, right: 30, bottom: 20, left: 5 }} data={levelList} >
-											<XAxis dataKey="name"  label={{ value: '級距', position: 'bottom', offset: 0 }}/>
-											<YAxis dateKey="count" label={{ value: '人數', position: 'insideLeft', offset: 0 }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} /> */}
 										<BarChart margin={{ top: 40, right: 50, bottom: 0, left: 0 }} data={levelList} >
 											<XAxis dataKey="name" label={{ value: '組距', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} />
 											<YAxis dateKey="count" label={{ value: '人數', position: 'insideTopLeft', offset: 0, dy: -25, dx: 35, fill: '#498ED0' }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
 											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
+										</BarChart>
+									</ResponsiveContainer>
+								</div> */}
+
+								<div className={chartHeight}  >
+									<ResponsiveContainer height="100%" width="100%">
+										<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: -10, bottom: 0 }}>
+											<XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+											<YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
+											<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
+											</Bar>
 										</BarChart>
 									</ResponsiveContainer>
 								</div>
@@ -419,6 +446,7 @@ const RankDetail = () => {
 						</div>
 					</>
 				}
+				<ScrollToTopButton />
 			</div>
 		</div>
 	);
