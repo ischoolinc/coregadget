@@ -786,56 +786,6 @@ function Main() {
             </>
           })}</> : ''}
 
-          {/* 各評量> 總計成績 */}
-          {examAvgList.map((cdes, index) => {
-            //console.log('examAvgList', examAvgList);
-            if (cdes.exam_id === selectedExam) {
-              let eScore = cdes.score_avg;
-              if (avgSetting === '加權平均')
-                eScore = cdes.score_weightavg;
-              let scoreColor = 'fs-4';
-
-              // 有成績 且 60分以下 紅字
-              if (eScore !== '' && Number(eScore) < 60)
-                scoreColor = 'fs-4 text-danger';
-
-              let im = 0;
-              if (index !== 0)
-                im = index - 1
-
-              return <div className="col"><div className='card shadow h-100'>
-                <div className="card-body">
-                  <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{avgSetting}</div>
-                    </div>
-                  </div>
-
-                  <div className='row align-items-center'>
-                    {cdes.toview === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cdes.toviewtime}</div></div> : <>
-                      <div className='col-12 col-md-12 col-lg-12 my-2'>
-                        <div className='row align-items-center'>
-                          <div className='d-flex justify-content-center'>
-                            <div className='row align-items-center'>
-                              <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
-                              <div className=''>分數</div>
-                            </div>
-
-                            {avgSetting === '加權平均' ?
-                              <div>{index === 0 || eScore === '' || examAvgList[im].score_weightavg === '' ? '' : Number(examAvgList[index].score_weightavg) > Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_weightavg) < Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
-                              :
-                              <div>{index === 0 || eScore === '' || examAvgList[im].score_avg === '' ? '' : Number(examAvgList[index].score_avg) > Number(examAvgList[im].score_avg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_avg) < Number(examAvgList[im].score_avg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
-                          </div>
-                        </div>
-                      </div>
-                    </>}
-                  </div>
-                </div>
-              </div>
-              </div>
-            }
-
-          })}
 
           {/* (8大領域)各評量> 總計成績 */}
           {examAvgInSpecificDomainList.map((cdes, index) => {
@@ -884,8 +834,58 @@ function Main() {
               </div>
               </div>
             }
+          })}
+
+          {/* 各評量> 總計成績 */}
+          {examAvgList.map((cdes, index) => {
+            if (cdes.exam_id === selectedExam) {
+              let eScore = cdes.score_avg;
+              if (avgSetting === '加權平均')
+                eScore = cdes.score_weightavg;
+              let scoreColor = 'fs-4';
+
+              // 有成績 且 60分以下 紅字
+              if (eScore !== '' && Number(eScore) < 60)
+                scoreColor = 'fs-4 text-danger';
+
+              let im = 0;
+              if (index !== 0)
+                im = index - 1
+
+              return <div className="col"><div className='card shadow h-100'>
+                <div className="card-body">
+                  <div className='d-flex'>
+                    <div className='d-flex me-auto p-2 align-items-center'>
+                      <div className='fs-4 fw-bold text-start'>{avgSetting}(含彈性課程)</div>
+                    </div>
+                  </div>
+
+                  <div className='row align-items-center'>
+                    {cdes.toview === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cdes.toviewtime}</div></div> : <>
+                      <div className='col-12 col-md-12 col-lg-12 my-2'>
+                        <div className='row align-items-center'>
+                          <div className='d-flex justify-content-center'>
+                            <div className='row align-items-center'>
+                              <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
+                              <div className=''>分數</div>
+                            </div>
+
+                            {avgSetting === '加權平均' ?
+                              <div>{index === 0 || eScore === '' || examAvgList[im].score_weightavg === '' ? '' : Number(examAvgList[index].score_weightavg) > Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_weightavg) < Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                              :
+                              <div>{index === 0 || eScore === '' || examAvgList[im].score_avg === '' ? '' : Number(examAvgList[index].score_avg) > Number(examAvgList[im].score_avg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_avg) < Number(examAvgList[im].score_avg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
+                          </div>
+                        </div>
+                      </div>
+                    </>}
+                  </div>
+                </div>
+              </div>
+              </div>
+            }
 
           })}
+
 
           {/* 平時評量> 科目成績 */}
           {selectedSubjectType === 0 ? <>  {courseSubjectAssignmentScore.map((csas) => {
@@ -1040,57 +1040,6 @@ function Main() {
 
 
 
-
-          {/* 平時評量> 總計成績 */}
-          {assignmentAvgList.map((asal, index) => {
-            //console.log('examAvgList', examAvgList);
-            if (asal.exam_id === selectedExam) {
-              let eScore = asal.score_avg;
-              if (avgSetting === '加權平均')
-                eScore = asal.score_weightavg;
-              let scoreColor = 'fs-4';
-
-              // 有成績 且 60分以下 紅字
-              if (eScore !== '' && Number(eScore) < 60)
-                scoreColor = 'fs-4 text-danger';
-
-              let im = 0;
-              if (index !== 0)
-                im = index - 1
-
-              return <div className="col"><div className='card shadow h-100'>
-                <div className="card-body">
-                  <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{avgSetting}</div>
-                    </div>
-                  </div>
-
-                  <div className='row align-items-center'>
-                    {asal.toview === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{asal.toviewtime}</div></div> : <>
-                      <div className='col-12 col-md-12 col-lg-12 my-2'>
-                        <div className='row align-items-center'>
-                          <div className='d-flex justify-content-center'>
-                            <div className='row align-items-center'>
-                              <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
-                              <div className=''>分數</div>
-                            </div>
-
-                            {avgSetting === '加權平均' ?
-                              <div>{index === 0 || eScore === '' || examAvgList[im].score_weightavg === '' ? '' : Number(examAvgList[index].score_weightavg) > Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_weightavg) < Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
-                              :
-                              <div>{index === 0 || eScore === '' || examAvgList[im].score_avg === '' ? '' : Number(examAvgList[index].score_avg) > Number(examAvgList[im].score_avg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_avg) < Number(examAvgList[im].score_avg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
-                          </div>
-                        </div>
-                      </div>
-                    </>}
-                  </div>
-                </div>
-              </div>
-              </div>
-            }
-
-          })}
           {/* (8大領域)平時評量> 總計成績 */}
           {assignmentAvgInSpecificDomainList.map((asal, index) => {
             //console.log('examAvgList', examAvgList);
@@ -1141,6 +1090,57 @@ function Main() {
             }
 
           })}
+          {/* 平時評量> 總計成績 */}
+          {assignmentAvgList.map((asal, index) => {
+            //console.log('examAvgList', examAvgList);
+            if (asal.exam_id === selectedExam) {
+              let eScore = asal.score_avg;
+              if (avgSetting === '加權平均')
+                eScore = asal.score_weightavg;
+              let scoreColor = 'fs-4';
+
+              // 有成績 且 60分以下 紅字
+              if (eScore !== '' && Number(eScore) < 60)
+                scoreColor = 'fs-4 text-danger';
+
+              let im = 0;
+              if (index !== 0)
+                im = index - 1
+
+              return <div className="col"><div className='card shadow h-100'>
+                <div className="card-body">
+                  <div className='d-flex'>
+                    <div className='d-flex me-auto p-2 align-items-center'>
+                      <div className='fs-4 fw-bold text-start'>{avgSetting}(含彈性課程)</div>
+                    </div>
+                  </div>
+
+                  <div className='row align-items-center'>
+                    {asal.toview === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{asal.toviewtime}</div></div> : <>
+                      <div className='col-12 col-md-12 col-lg-12 my-2'>
+                        <div className='row align-items-center'>
+                          <div className='d-flex justify-content-center'>
+                            <div className='row align-items-center'>
+                              <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
+                              <div className=''>分數</div>
+                            </div>
+
+                            {avgSetting === '加權平均' ?
+                              <div>{index === 0 || eScore === '' || examAvgList[im].score_weightavg === '' ? '' : Number(examAvgList[index].score_weightavg) > Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_weightavg) < Number(examAvgList[im].score_weightavg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                              :
+                              <div>{index === 0 || eScore === '' || examAvgList[im].score_avg === '' ? '' : Number(examAvgList[index].score_avg) > Number(examAvgList[im].score_avg) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvgList[index].score_avg) < Number(examAvgList[im].score_avg) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
+                          </div>
+                        </div>
+                      </div>
+                    </>}
+                  </div>
+                </div>
+              </div>
+              </div>
+            }
+
+          })}
+
 
 
 
@@ -1297,6 +1297,75 @@ function Main() {
           })}
 
 
+
+          {/* 總覽(8大領域)(各評量&平時)> 總計 */}
+          {selectedExam === '0' && ([].concat(examAvgInSpecificDomainList || []).length || [].concat(assignmentAvgInSpecificDomainList || []).length) ?
+            <div className="col">
+              <div className='card shadow h-100'>
+                <div className="card-body">
+                  <div className="card-block">
+                    <div className='d-flex'>
+                      <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='fs-4 fw-bold'>{avgSetting}(八大領域)</div>
+                      </div>
+                    </div>
+                    <div className='row align-items-center'>
+
+                      {/* 總覽(各評量&平時)> 總計 */}
+                      {examAvgInSpecificDomainList.map((earm, index) => {
+                        let eScore = earm.score_avg;
+                        if (avgSetting === '加權平均')
+                          eScore = earm.score_weightavg;
+                        let scoreColor = 'fs-4';
+
+                        // 有成績 且 60分以下 紅字
+                        if (eScore !== '' && Number(eScore) < 60)
+                          scoreColor = 'fs-4 text-danger';
+
+                        let im = 0;
+                        if (index !== 0)
+                          im = index - 1
+
+                        return <div className='col-6 col-md-6 col-lg-6'>
+                          <div className='row align-items-center my-2'>
+                            <div className='d-flex justify-content-center'>
+                              <div className={scoreColor}>{earm.toview === 't' ? eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100 : <div className='text-unview'><div>開放查詢時間：</div><div>{earm.toviewtime}</div></div>}
+                              </div>
+
+                            </div>
+                            <div>{earm.exam_name}</div>
+                          </div>
+                        </div>
+                      })}
+
+                      {/* 總覽(平時評量)> 總計 */}
+                      {assignmentAvgInSpecificDomainList.map((aal, index) => {
+                        let eScore = aal.score_avg;
+                        if (avgSetting === '加權平均')
+                          eScore = aal.score_weightavg;
+                        let scoreColor = 'fs-4';
+
+                        // 有成績 且 60分以下 紅字
+                        if (eScore !== '' && Number(eScore) < 60)
+                          scoreColor = 'fs-4 text-danger';
+
+                        return <div className='col-6 col-md-6 col-lg-6'>
+                          <div className='row align-items-center my-2'>
+                            <div className='d-flex justify-content-center'>
+                              <div className={scoreColor}>{aal.toview === 't' ? eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100 : <div className='text-unview'><div>開放查詢時間：</div><div>{aal.toviewtime}</div></div>}
+                              </div>
+
+                            </div>
+                            <div>{aal.exam_name}</div>
+                          </div>
+                        </div>
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            : ''}
           {/* 總覽(各評量&平時)> 總計 */}
           {selectedExam === '0' && ([].concat(examAvgList || []).length || [].concat(assignmentAvgList || []).length) ?
             <div className="col">
@@ -1305,7 +1374,7 @@ function Main() {
                   <div className="card-block">
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
-                        <div className='fs-4 fw-bold'>{avgSetting}</div>
+                        <div className='fs-4 fw-bold'>{avgSetting}(含彈性課程)</div>
                       </div>
                     </div>
                     <div className='row align-items-center'>
@@ -1381,80 +1450,6 @@ function Main() {
             </div>
             : ''}
 
-          {/* 總覽(8大領域)(各評量&平時)> 總計 */}
-          {selectedExam === '0' && ([].concat(examAvgInSpecificDomainList || []).length || [].concat(assignmentAvgInSpecificDomainList || []).length) ?
-            <div className="col">
-              <div className='card shadow h-100'>
-                <div className="card-body">
-                  <div className="card-block">
-                    <div className='d-flex'>
-                      <div className='d-flex me-auto p-2 align-items-center'>
-                        <div className='fs-4 fw-bold'>{avgSetting}(八大領域)</div>
-                      </div>
-                    </div>
-                    <div className='row align-items-center'>
-
-                      {/* 總覽(各評量&平時)> 總計 */}
-                      {examAvgInSpecificDomainList.map((earm, index) => {
-                        let eScore = earm.score_avg;
-                        if (avgSetting === '加權平均')
-                          eScore = earm.score_weightavg;
-                        let scoreColor = 'fs-4';
-
-                        // 有成績 且 60分以下 紅字
-                        if (eScore !== '' && Number(eScore) < 60)
-                          scoreColor = 'fs-4 text-danger';
-
-                        let im = 0;
-                        if (index !== 0)
-                          im = index - 1
-
-                        return <div className='col-6 col-md-6 col-lg-6'>
-                          <div className='row align-items-center my-2'>
-                            <div className='d-flex justify-content-center'>
-                              <div className={scoreColor}>{earm.toview === 't' ? eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100 : <div className='text-unview'><div>開放查詢時間：</div><div>{earm.toviewtime}</div></div>}
-                              </div>
-
-                            </div>
-                            <div>{earm.exam_name}</div>
-                          </div>
-                        </div>
-
-
-                      })}
-
-                      {/* 總覽(平時評量)> 總計 */}
-                      {assignmentAvgInSpecificDomainList.map((aal, index) => {
-                        //console.log('aal', aal);
-
-                        let eScore = aal.score_avg;
-                        if (avgSetting === '加權平均')
-                          eScore = aal.score_weightavg;
-                        let scoreColor = 'fs-4';
-
-                        // 有成績 且 60分以下 紅字
-                        if (eScore !== '' && Number(eScore) < 60)
-                          scoreColor = 'fs-4 text-danger';
-
-                        return <div className='col-6 col-md-6 col-lg-6'>
-                          <div className='row align-items-center my-2'>
-                            <div className='d-flex justify-content-center'>
-                              <div className={scoreColor}>{aal.toview === 't' ? eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100 : <div className='text-unview'><div>開放查詢時間：</div><div>{aal.toviewtime}</div></div>}
-                              </div>
-
-                            </div>
-                            <div>{aal.exam_name}</div>
-                          </div>
-                        </div>
-
-
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            : ''}
 
         </div>
 
