@@ -9,7 +9,7 @@
 	<link href="css/font-awesome.css" rel="stylesheet" type="text/css">
 	<link href="css/base.css" rel="stylesheet" />
 	<link href="css/defalut.css" rel="stylesheet" />
-	<!-- <script type='text/javascript'>
+    <script type='text/javascript'>
         var gadget = window.opener?window.opener.gadget:window.parent.getGadgetProxy((function () {
             var vars = [], hash;
             var p = window.location.href.slice(window.location.href.indexOf('?') + 1);
@@ -25,22 +25,12 @@
             return vars;
         }()).id);
         try { window.parent = null; } catch (exc) { }
-    </script> -->
+    </script>
 	<script src="js/angular.min.js"></script>
 	<script src="js/jquery-1.8.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/default.js"></script>
 	<script src="js/gadget.js"></script>
-	<script>
-		init({
-			paramValues: {
-			},
-			oAuth: {
-				clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-			}
-		});
-	</script>
 </head>
 
 <body ng-controller="MenuCtrl" ng-switch="pageView">
@@ -163,10 +153,10 @@
 								<li class="list-group-item li1"><em>監護人 - 電話</em>{{activeStudent.CustodianName}}<span
 										ng-if="activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone != null"> -
 									</span>{{activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone}}</li>
-								<li class="list-group-item"><em>&emsp;父親 - 電話</em>{{activeStudent.FatherName}}<span
+								<li class="list-group-item"><em>&ensp;父/母 - 電話</em>{{activeStudent.FatherName}}<span
 										ng-if="activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone != null"> -
 									</span>{{activeStudent.FatherOtherInfo.FatherOtherInfo.Phone}}</li>
-								<li class="list-group-item"><em>&emsp;母親 - 電話</em>{{activeStudent.MotherName}}<span
+								<li class="list-group-item"><em>&ensp;母/父 - 電話</em>{{activeStudent.MotherName}}<span
 										ng-if="activeStudent.CustdoianOtherInfo.CustodianOtherInfo.Phone != null"> -
 									</span>{{activeStudent.MotherOtherInfo.MotherOtherInfo.Phone}}</li>
 							</ul>

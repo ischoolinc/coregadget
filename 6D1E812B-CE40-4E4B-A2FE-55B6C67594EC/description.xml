@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="班導師通訊錄(高雄)" description="班導師通訊錄小工具(高雄國中客制版本">
+  <ModulePrefs title="班導師通訊錄(高雄)" description="班導師通訊錄(高雄國中)">
     <Title lang="zh-TW">班導師通訊錄(高雄)</Title>
     <Icon>img/icon.png</Icon>
     <Mobile />
