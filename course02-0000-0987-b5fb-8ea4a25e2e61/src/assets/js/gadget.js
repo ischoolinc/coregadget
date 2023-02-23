@@ -848,7 +848,7 @@
         }
     }
 }(); var config = function () {
-    var authServerUrl = "https://auth.ischool.com.tw/"; var greeningServerUrl = "https://greening.ischool.com.tw/dsa/greening/"; try { ajaxCrossDomain.send({ autoRetry: true, url: "https://greening.ischool.com.tw:8443/dsa/greening/", result: function (resp, hasError, XMLHttpRequest) { if (hasError); else greeningServerUrl = "https://greening.ischool.com.tw:8443/dsa/greening/" } }) } catch (exc) { } authServerUrl = authServerUrl.replace(/\/$/g, "") + "/"; greeningServerUrl = greeningServerUrl.replace(/\/$/g, "") + "/"; return {
+    var authServerUrl = "https://auth.ischool.com.tw/"; var greeningServerUrl = "https://greening.ischool.com.tw/dsa/greening/"; try { ajaxCrossDomain.send({ autoRetry: true, url: "https://greening.ischool.com.tw/dsa/greening/", result: function (resp, hasError, XMLHttpRequest) { if (hasError); else greeningServerUrl = "https://greening.ischool.com.tw/dsa/greening/" } }) } catch (exc) { } authServerUrl = authServerUrl.replace(/\/$/g, "") + "/"; greeningServerUrl = greeningServerUrl.replace(/\/$/g, "") + "/"; return {
         authServer: function (path) {
             return authServerUrl +
                 path.replace(/^\//g, "")
