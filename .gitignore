@@ -26,4 +26,5 @@
 # System Files
 **/.DS_Store
 **/Thumbs.db
-1AF892ED-B4BB-41B1-9300-5D7E7B644351/yarn.lock
+**/yarn.lock
+**/package-lock.json
