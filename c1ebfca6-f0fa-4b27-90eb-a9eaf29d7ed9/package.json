@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "node-version": "nvm use 12.22.1",
     "start": "ng serve --host=0.0.0.0",
     "build": "ng build --prod"
   },
