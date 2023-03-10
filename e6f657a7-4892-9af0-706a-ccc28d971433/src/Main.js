@@ -666,6 +666,8 @@ function Main() {
                     roundColor = '#5B9BD5';
                     scoreColor = 'fs-4 me-0 pe-0';
                     passColor = 'card shadow h-100';
+                    show = null;
+                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                   }
                   let im = 0;
                   let previousExamID = selectedExam;
