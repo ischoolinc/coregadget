@@ -17,39 +17,39 @@ export class AddInterviewModalComponent implements OnInit {
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     private dissector: SentenceService,
-    private sanitizer:DomSanitizer,
+    private sanitizer: DomSanitizer,
     @Optional()
     private counselDetailComponent: CounselDetailComponent
   ) { }
-  fileSizeLimit : number = 3 * 1024 * 1024 
-   // 上傳檔案相關
-  fileContent: any 
+  fileSizeLimit: number = 3 * 1024 * 1024
+  // 上傳檔案相關
+  fileContent: any
   /** insert檔案使用 */
-  fileUpladed: { FileName, FileContent, TargetID,href } |any={};
+  fileUpladed: { FileName, FileContent, TargetID, href, BelongTable } | any = {};
   /** 當前學生 */
-  currentStudentInfo: CounselStudent ;
+  currentStudentInfo: CounselStudent;
   /**當前學生 ID */
-  currentStudentID :string ;
+  currentStudentID: string;
   /** 前一位學生 */
-  perviousStudent: CounselStudent ;
+  perviousStudent: CounselStudent;
   /** 下一位學生 */
-  nextStudent: CounselStudent ;
+  nextStudent: CounselStudent;
   /** 目前學生 index  */
-  studentCurrentIndex :number ;
+  studentCurrentIndex: number;
   /**  */
-  targetClassStudent :CounselStudent[];
+  targetClassStudent: CounselStudent[];
   /** 是否連續輸入 */
-  
-  isAllowSerial =false ;
-  isSerialMode = false ;
+
+  isAllowSerial = false;
+  isSerialMode = false;
   isCancel: boolean = false;
   _editMode: string = "add";
   editModeString: string = "新增";
   _studentName: string;
   public referralVisible: boolean = false;
-  
+
   // 學生輔導紀錄
-  _currentCounselInterview: CounselInterview; 
+  _currentCounselInterview: CounselInterview;
 
   async ngOnInit() {
     this.referralVisible = false;
@@ -57,14 +57,14 @@ export class AddInterviewModalComponent implements OnInit {
       this.referralVisible = true;
     }
     this._currentCounselInterview = new CounselInterview();
-  
-    if( this.counselDetailComponent){
-      await this.loadDefaultData(    this.counselDetailComponent.currentStudent);
+
+    if (this.counselDetailComponent) {
+      await this.loadDefaultData(this.counselDetailComponent.currentStudent);
     }
   }
 
   /**設定isSerial */
-  setIsSerial(){
+  setIsSerial() {
 
   }
 
@@ -72,17 +72,17 @@ export class AddInterviewModalComponent implements OnInit {
    * 整班的陣列
    * 設定目前模式(連續輸入)
   */
-  loadSerialEnterDefaultData(isAllowSerial :boolean,targetClassStudent :CounselStudent[]){
+  loadSerialEnterDefaultData(isAllowSerial: boolean, targetClassStudent: CounselStudent[]) {
     this.isAllowSerial = isAllowSerial;
-    this.targetClassStudent = targetClassStudent ;
- }
+    this.targetClassStudent = targetClassStudent;
+  }
 
   /**載入預設資料 
    * 此功能載入此畫面一些預設值設定
   */
-  async loadDefaultData(currentStudent:CounselStudent) {
-    this.currentStudentInfo =currentStudent ;
-    if ( this.currentStudentInfo) {
+  async loadDefaultData(currentStudent: CounselStudent) {
+    this.currentStudentInfo = currentStudent;
+    if (this.currentStudentInfo) {
       if (this._editMode === "edit" && this._currentCounselInterview) {
         // 修改
         this.editModeString = "修改";
@@ -93,7 +93,7 @@ export class AddInterviewModalComponent implements OnInit {
         // 新增
         this._currentCounselInterview = new CounselInterview();
         this._studentName = this.currentStudentInfo.StudentName; // 學生姓名
-        this._currentCounselInterview.StudentID =  this.currentStudentInfo.StudentID; // 學生ID 
+        this._currentCounselInterview.StudentID = this.currentStudentInfo.StudentID; // 學生ID 
         this._currentCounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear; // 學年度 
         this._currentCounselInterview.Semester = this.counselStudentService.currentSemester; // 學期
         // 帶入日期與輸入者
@@ -117,19 +117,19 @@ export class AddInterviewModalComponent implements OnInit {
       this._currentCounselInterview.checkValue();
     }
 
-    this.currentStudentInfo = currentStudent ; // 設定當前學生
+    this.currentStudentInfo = currentStudent; // 設定當前學生
     this.setPerviousAndNextStudent("firstLoad");
   }
 
   // click 取消
   cancel() {
-   let result = confirm('尚未儲存，確定取消?') ;
-    if(!result){
-    this.isCancel = true;
-    return
-  }else{
-    
-    $("#addInterview").modal("hide");
+    let result = confirm('尚未儲存，確定取消?');
+    if (!result) {
+      this.isCancel = true;
+      return
+    } else {
+
+      $("#addInterview").modal("hide");
 
     }
   }
@@ -141,12 +141,12 @@ export class AddInterviewModalComponent implements OnInit {
       this.isCancel = false;
       this._currentCounselInterview.isSaveDisable = true;
       if (this._currentCounselInterview.isReferralValue)
-      this._currentCounselInterview.isReferral = "t";
+        this._currentCounselInterview.isReferral = "t";
       else this._currentCounselInterview.isReferral = "f";
       this._currentCounselInterview.Category = JSON.stringify(this._currentCounselInterview._category);
 
       await this.SetCounselInterview(this._currentCounselInterview);
-      if(!this.isSerialMode){ //
+      if (!this.isSerialMode) { //
         $("#addInterview").modal("hide");
       }
       this._currentCounselInterview.isSaveDisable = false;
@@ -158,7 +158,7 @@ export class AddInterviewModalComponent implements OnInit {
   }
 
   /** 載入新學生 */
-  loadNowStudentInfo(currentStudent:CounselStudent){
+  loadNowStudentInfo(currentStudent: CounselStudent) {
     this._currentCounselInterview = new CounselInterview();
     this._studentName = currentStudent.StudentName; // 學生姓名
     this._currentCounselInterview.StudentID = currentStudent.StudentID; // 學生ID 
@@ -174,68 +174,66 @@ export class AddInterviewModalComponent implements OnInit {
 
 
   /** 下一筆學生*/
-  next(){
+  next() {
     this._currentCounselInterview.checkValue()
-    if(this._currentCounselInterview.isSaveDisable)
-    {
-     alert("未填寫完整!") ;
-     return ;
+    if (this._currentCounselInterview.isSaveDisable) {
+      alert("未填寫完整!");
+      return;
     }
-    try{
+    try {
       this.save();
       this.setPerviousAndNextStudent("next");// 設定前後學生
       this.loadNowStudentInfo(this.currentStudentInfo);
-    }catch(ex){
-     alert("發生錯誤!");
-    }finally{
+    } catch (ex) {
+      alert("發生錯誤!");
+    } finally {
 
 
     }
   }
   /**前一個學生 */
-  pervious(){
+  pervious() {
     this._currentCounselInterview.checkValue()
-    if(this._currentCounselInterview.isSaveDisable)
-    {
-     alert("未填寫完整!");
-     return ;
+    if (this._currentCounselInterview.isSaveDisable) {
+      alert("未填寫完整!");
+      return;
     }
-    try{
+    try {
       this.save();
       this.setPerviousAndNextStudent("pervious"); // 設定前後學生
       this.loadNowStudentInfo(this.currentStudentInfo);
-    }catch(ex){
-     alert("發生錯誤!");
-    }finally{
+    } catch (ex) {
+      alert("發生錯誤!");
+    } finally {
 
     }
   }
 
 
   /** 設定前後 */
-  setPerviousAndNextStudent(action :string){
-    this.studentCurrentIndex = this.targetClassStudent.findIndex(x=> x.StudentID ===  this.currentStudentInfo.StudentID);
-    if(action =="firstLoad"){
-      this.currentStudentInfo = this.targetClassStudent[ this.studentCurrentIndex]; //設定目前學生
+  setPerviousAndNextStudent(action: string) {
+    this.studentCurrentIndex = this.targetClassStudent.findIndex(x => x.StudentID === this.currentStudentInfo.StudentID);
+    if (action == "firstLoad") {
+      this.currentStudentInfo = this.targetClassStudent[this.studentCurrentIndex]; //設定目前學生
 
-    }else if(action =="next"){
-      this.currentStudentInfo = this.targetClassStudent[ ++this.studentCurrentIndex]; //設定目前學生
-    }else if(action =="pervious"){
-      this.currentStudentInfo = this.targetClassStudent[ --this.studentCurrentIndex]; 
+    } else if (action == "next") {
+      this.currentStudentInfo = this.targetClassStudent[++this.studentCurrentIndex]; //設定目前學生
+    } else if (action == "pervious") {
+      this.currentStudentInfo = this.targetClassStudent[--this.studentCurrentIndex];
     }
     // 設定前一位學生
-    if(this.studentCurrentIndex >= 0){
-        const perviousIndex =this.studentCurrentIndex - 1 ;
-        this.perviousStudent = this.targetClassStudent[perviousIndex];
-      }else {
-        this.perviousStudent =null ;
-      }
+    if (this.studentCurrentIndex >= 0) {
+      const perviousIndex = this.studentCurrentIndex - 1;
+      this.perviousStudent = this.targetClassStudent[perviousIndex];
+    } else {
+      this.perviousStudent = null;
+    }
     //設定下一位學生
-    if(this.studentCurrentIndex < this.targetClassStudent.length ){
-        const nextInndex = this.studentCurrentIndex + 1 ;
-        this.nextStudent = this.targetClassStudent[nextInndex];
-    }else {
-        this.nextStudent = null ;
+    if (this.studentCurrentIndex < this.targetClassStudent.length) {
+      const nextInndex = this.studentCurrentIndex + 1;
+      this.nextStudent = this.targetClassStudent[nextInndex];
+    } else {
+      this.nextStudent = null;
     }
   }
 
@@ -287,17 +285,17 @@ export class AddInterviewModalComponent implements OnInit {
         Request: req
       });
 
-    // 開始上傳附檔
-    if (this.fileUpladed && resp.Result.uid) {
-      this.fileUpladed.TargetID = resp.Result.uid;
-      let respfile = await this.dsaService.send("SetFiles", {
-        Request: {
-          FileInfo: this.fileUpladed
-        }
-      });
-      
-      console.log("檔案回來的值", respfile);
-    }
+      // 開始上傳附檔
+      if (this.fileUpladed && resp.Result.uid) {
+        this.fileUpladed.TargetID = resp.Result.uid;
+        let respfile = await this.dsaService.send("SetFiles", {
+          Request: {
+            FileInfo: this.fileUpladed
+          }
+        });
+
+        console.log("檔案回來的值", respfile);
+      }
     } catch (err) {
       alert('無法新增：' + err.dsaError.message);
     }
@@ -328,60 +326,64 @@ export class AddInterviewModalComponent implements OnInit {
   }
   async handleInputChange(event: any) {
     const file = event.target.files[0];
-    console.log('file',file);
-       // 確認檔案類型
-     if(file.type !=="application/pdf"){
+    console.log('file', file);
+    // 確認檔案類型
+    if (file.type !== "application/pdf") {
       alert("請上傳正確檔案類型!")
-       return 
+      return
     }
-       // 確認檔案大小
-       if(file.size > this.fileSizeLimit ){
-        alert("檔案過大，請重新選擇檔案!")
-        event.target.files[0] =null ;
-      }
+    // 確認檔案大小
+    if (file.size > this.fileSizeLimit) {
+      alert("檔案過大，請重新選擇檔案!")
+      event.target.files[0] = null;
+    }
     this.readBase64(file)
       .then((data) => {
-        this.fileContent = data; 
-        const dataArray :any[]  = data.split(',');
-        console.log("dataArray " ,dataArray[1]);
+        this.fileContent = data;
+        const dataArray: any[] = data.split(',');
+        console.log("dataArray ", dataArray[1]);
         this.fileUpladed.FileContent = btoa(data);
         this.fileUpladed.FileName = file.name;
-        this.fileUpladed.BelongTable = "一級輔導晤談" ;
+        this.fileUpladed.BelongTable = "一級輔導晤談";
         // this.fileUpladed.href =this.sanitizer.bypassSecurityTrustUrl( data) ;
         // this.fileUpladed.FileContent = data ;
         // console.log("filesss",  data);
         // const downObj = atob( this.fileUpladed.FileContent)
         // console.log("downloadObj",downObj) ;
       });
+      this._currentCounselInterview.isSaveDisable = false;
   }
 
   /** 取消檔案 */
-  deleteFile(){
-    this.fileUpladed ={};
-   }
+  deleteFile() {
+    this.fileUpladed = {};
+    this._currentCounselInterview.isSaveDisable = false;
+  }
 
 
-       /** 取得檔案 */
+  /** 取得檔案 */
   async getFile(targetID: string) {
-        this.fileUpladed ={};
-        try {
-          let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
-            Request: {
-              TargetID: targetID,
-              BelongTable: '一級輔導晤談'
-            }
-    
-          });
-  
-          if(rsp.rs){
-            this.fileUpladed.FileName = rsp.rs.file_name;
-            let data  = atob( rsp.rs.content)
-           this.fileUpladed.href =this.sanitizer.bypassSecurityTrustUrl( data) 
-          }
-        
-        } catch (ex) {
-          alert('取得檔案發生錯誤:' + JSON.stringify(ex))
+    this.fileUpladed = {};
+    try {
+      let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
+        Request: {
+          TargetID: targetID,
+          BelongTable: '一級輔導晤談'
         }
+
+      });
+
+      if (rsp.rs) {
+        this.fileUpladed.FileName = rsp.rs.file_name;
+        this.fileUpladed.BelongTable = '一級輔導晤談';
+        this.fileUpladed.FileContent = rsp.rs.content;
+        let data = atob(rsp.rs.content);
+        this.fileUpladed.href = this.sanitizer.bypassSecurityTrustUrl(data);
       }
-  
+
+    } catch (ex) {
+      alert('取得檔案發生錯誤:' + JSON.stringify(ex))
+    }
+  }
+
 }

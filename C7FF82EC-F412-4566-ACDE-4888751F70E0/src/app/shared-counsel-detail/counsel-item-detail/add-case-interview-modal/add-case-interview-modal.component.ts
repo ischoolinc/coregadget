@@ -1,7 +1,7 @@
 import { ANALYZE_FOR_ENTRY_COMPONENTS, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { DsaService } from '../../../dsa.service';
 import { CaseInterview, QOption } from '../case-interview-vo';
-import {DomSanitizer} from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { SelectorMatcher } from "@angular/compiler";
 @Component({
   selector: "app-add-case-interview-modal",
@@ -9,22 +9,22 @@ import { SelectorMatcher } from "@angular/compiler";
   styleUrls: ["./add-case-interview-modal.component.css"]
 })
 export class AddCaseInterviewModalComponent implements OnInit {
-  @ViewChild('fileInput') fileInput:ElementRef; 
+  @ViewChild('fileInput') fileInput: ElementRef;
   constructor(
     private dsaService: DsaService
-  ,private sanitizer:DomSanitizer
+    , private sanitizer: DomSanitizer
   ) { }
   /** 當insert 成功後回傳的ID */
-  InsertCaseInterViewID  =""
-  fileSizeLimit : number = 3 * 1024 * 1024 
+  InsertCaseInterViewID = ""
+  fileSizeLimit: number = 3 * 1024 * 1024
   isCancel: boolean = true;
-  isAddServiceWork =false ;
+  isAddServiceWork = false;
   _editMode: string = "add";
   editModeString: string = "新增";
   // _studentName: string;
   // 上檔案相關變數  
   fileContent: any
-  fileUpladed: { FileName, FileContent, TargetID,href } |any={};
+  fileUpladed: { FileName, FileContent, TargetID, href, BelongTable } | any = {};
   _CaseInterview: CaseInterview;
   ngOnInit() {
     this.isCancel = true;
@@ -33,29 +33,31 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
 
 
-    /** 取得檔案 */
-    async getFile(targetID: string) {
-      this.fileUpladed ={};
-  
-      try {
-        let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
-          Request: {
-            TargetID: targetID,
-            BelongTable: '二級輔導個案晤談'
-          }
-  
-        });
-  
-        if(rsp.rs){
-          this.fileUpladed.FileName = rsp.rs.file_name;
-          let data  = atob( rsp.rs.content)
-         this.fileUpladed.href =this.sanitizer.bypassSecurityTrustUrl( data) 
+  /** 取得檔案 */
+  async getFile(targetID: string) {
+    this.fileUpladed = {};
+
+    try {
+      let rsp = await this.dsaService.send('File.GetFileByTypeAndTargetID', {
+        Request: {
+          TargetID: targetID,
+          BelongTable: '二級輔導個案晤談'
         }
-      
-      } catch (ex) {
-        alert('取得檔案發生錯誤:' + JSON.stringify(ex))
+
+      });
+
+      if (rsp.rs) {
+        this.fileUpladed.FileName = rsp.rs.file_name;
+        this.fileUpladed.BelongTable = '二級輔導個案晤談';
+        this.fileUpladed.FileContent = rsp.rs.content;
+        let data = atob(rsp.rs.content);
+        this.fileUpladed.href = this.sanitizer.bypassSecurityTrustUrl(data);
       }
+
+    } catch (ex) {
+      alert('取得檔案發生錯誤:' + JSON.stringify(ex))
     }
+  }
 
   // 載入預設資料
   async loadDefaultData() {
@@ -73,19 +75,19 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   // click 取消
   cancel() {
-     let isLeave =  confirm("尚未儲存，確定離開?")
-     debugger
-     if(!isLeave){
+    let isLeave = confirm("尚未儲存，確定離開?")
+    debugger
+    if (!isLeave) {
       return
-    }else{ // 確定要離開
+    } else { // 確定要離開
       this.isCancel = true;
       $("#addCaseInterview").modal("hide");
     }
   }
 
   /** 儲存 參數使否繼續編輯服務項目*/
-  async save(isAddSerWork :boolean =false ) {
-    this.isAddServiceWork =isAddSerWork ;
+  async save(isAddSerWork: boolean = false) {
+    this.isAddServiceWork = isAddSerWork;
     this.isCancel = false;
     try {
       this._CaseInterview.isSaveDisable = true;
@@ -157,9 +159,9 @@ export class AddCaseInterviewModalComponent implements OnInit {
     let resp = await this.dsaService.send("SetCaseInterview", {
       Request: req
     });
-    this.InsertCaseInterViewID = resp.Result.uid ;
-     // 開始上傳附檔
-    if (this.fileUpladed&&resp.Result.uid) {
+    this.InsertCaseInterViewID = resp.Result.uid;
+    // 開始上傳附檔
+    if (this.fileUpladed && resp.Result.uid) {
       this.fileUpladed.TargetID = resp.Result.uid;
       let respfile = await this.dsaService.send("SetFiles", {
         Request: {
@@ -173,22 +175,22 @@ export class AddCaseInterviewModalComponent implements OnInit {
   /** 上傳資料 */
   async handleInputChange(event: any) {
     const file = event.target.files[0];
-    console.log('file',file);
-    if(file.type !=="application/pdf"){
+    console.log('file', file);
+    if (file.type !== "application/pdf") {
       alert("請上傳正確檔案類型!")
-       return 
+      return
     }
     // 確認檔案大小
-     if(file.size > this.fileSizeLimit ){
-       alert("檔案過大，請重新選擇檔案!")
-       event.target.files[0] =null ;
-     }
+    if (file.size > this.fileSizeLimit) {
+      alert("檔案過大，請重新選擇檔案!")
+      event.target.files[0] = null;
+    }
     this.readBase64(file)
       .then((data) => {
-        this.fileContent = data; 
-        this.fileUpladed.FileContent=btoa(data);
+        this.fileContent = data;
+        this.fileUpladed.FileContent = btoa(data);
         this.fileUpladed.FileName = file.name;
-        this.fileUpladed.BelongTable = "二級輔導個案晤談" ;
+        this.fileUpladed.BelongTable = "二級輔導個案晤談";
       });
   }
 
@@ -208,9 +210,9 @@ export class AddCaseInterviewModalComponent implements OnInit {
   }
 
   /** 取消檔案 */
-  deleteFile(){
-    this.fileInput.nativeElement.value =null;
+  deleteFile() {
+    this.fileInput.nativeElement.value = null;
 
-   this.fileUpladed ={};
+    this.fileUpladed = {};
   }
 }
