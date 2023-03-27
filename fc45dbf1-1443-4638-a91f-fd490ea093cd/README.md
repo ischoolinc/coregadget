@@ -1,3 +1,7 @@
+【高雄國中】【fc45dbf1-1443-4638-a91f-fd490ea093cd】
+目前最新版本在
+https://github.com/ischool-3rd/fc45dbf1-1443-4638-a91f-fd490ea093cd
+
 Angular Gadget
 ====
 
