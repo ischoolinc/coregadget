@@ -90,20 +90,20 @@
             <label class="col-form-label">轉介說明</label>
             <label class="form-control">{{ _CounselInterview.ReferralDesc }}</label>
           </div>
-          <div *ngIf="fileInfo.FileName ">
-            <!-- 檔案下載區塊-->
-            <a class="download"  [href]= "this.fileInfo.href" 
-            [download]="fileInfo.FileName">
-            <mat-icon  aria-hidden="false" aria-label="Example home icon">
-              file_download
-            </mat-icon>
-              <span class="ml-1">
-                  {{fileInfo.FileName }}
-              </span> 
-              </a>
-          </div>
-
         </ng-container>
+        
+        <div *ngIf="fileInfo.FileName ">
+          <!-- 檔案下載區塊-->
+          <a class="download"  [href]= "this.fileInfo.href" 
+          [download]="fileInfo.FileName">
+          <mat-icon  aria-hidden="false" aria-label="Example home icon">
+            file_download
+          </mat-icon>
+            <span class="ml-1">
+                {{fileInfo.FileName }}
+            </span> 
+            </a>
+        </div>
       </div>
       <div class="modal-footer">
         <div class="dropdown">
