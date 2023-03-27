@@ -1,3 +1,6 @@
+* 【高中】【3438c959-4fea-49ed-b801-d2006d2ccab4】: 最新版本
+* https://github.com/ischool-3rd/3438c959-4fea-49ed-b801-d2006d2ccab4
+
 Angular Gadget
 ====
 
