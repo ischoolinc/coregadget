@@ -1,3 +1,6 @@
+* 【新竹國中】【3224cead-22fe-4928-bb7f-c33a24b071a8】
+* https://github.com/ischool-3rd/3224cead-22fe-4928-bb7f-c33a24b071a8
+
 Angular Gadget
 ====
 
