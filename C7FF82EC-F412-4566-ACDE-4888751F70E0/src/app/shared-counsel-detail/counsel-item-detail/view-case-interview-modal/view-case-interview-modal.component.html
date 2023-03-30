@@ -97,7 +97,7 @@
                     </label>
                     <textarea readonly class="form-control"
                               id="description"
-                              rows="3"
+                              [rows]="(Content.split('\n').length>1)?Content.split('\n').length : 2" 
                               placeholder="請輸入內容說明"
                               [(ngModel)]="Content"></textarea>
 

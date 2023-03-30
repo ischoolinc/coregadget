@@ -26,12 +26,11 @@ export class AddCaseInterviewModalComponent implements OnInit {
   fileContent: any
   fileUpladed: { FileName, FileContent, TargetID, href, BelongTable } | any = {};
   _CaseInterview: CaseInterview;
+
   ngOnInit() {
     this.isCancel = true;
     this._CaseInterview = new CaseInterview();
   }
-
-
 
   /** 取得檔案 */
   async getFile(targetID: string) {
@@ -76,12 +75,13 @@ export class AddCaseInterviewModalComponent implements OnInit {
   // click 取消
   cancel() {
     let isLeave = confirm("尚未儲存，確定離開?")
-    debugger
+    // debugger
     if (!isLeave) {
       return
     } else { // 確定要離開
       this.isCancel = true;
       $("#addCaseInterview").modal("hide");
+      document.getElementById('description').style.height = 'auto';
     }
   }
 
@@ -94,7 +94,8 @@ export class AddCaseInterviewModalComponent implements OnInit {
       this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
       await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
-
+      document.getElementById('description').style.height = 'auto';
+      
       this._CaseInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
@@ -215,4 +216,10 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
     this.fileUpladed = {};
   }
+  
+  autoResize(textarea: any): void {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+
 }

@@ -121,60 +121,51 @@
               <b class="modal-sub-title"> 內容說明</b>
               <span class=" text-muted"></span>
             </label>
-            <textarea style="margin: 20px ;width: 92%;" class="form-control " id="description" rows="5"
-              placeholder="請輸入內容說明" [(ngModel)]="_CaseInterview.Content"
+            <textarea id="description" (input)="autoResize($event.target)"
+              [rows]="_CaseInterview.Content?.split('\n').length > 1 ?_CaseInterview.Content.split('\n').length : 2"
+              class="form-control my-3 p-3" placeholder="請輸入內容說明" [(ngModel)]="_CaseInterview.Content"
               (keyup)="_CaseInterview.checkValue()"></textarea>
+
           </div>
         </div>
         <!-- 上傳檔案 -->
 
         <div class="d-flex">
-      
-        <div class="image-upload ml-3">
-       
-          <span  class="upload-file-btn">
-       <span class="text">
-
-
-        <label   for="fileInput">
-            選擇檔案 
-        </label>
-           
-       </span>
-       <span class="icon">
-        <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
-        style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align">
-          info
-      </mat-icon>
-      
-       </span>
-      </span>
-          <input style="display:none"  #fileInput id="fileInput" name="imageUrl" type="file" accept="application/pdf"
-            (change)="handleInputChange($event)" />
+          <div class="image-upload ml-3">
+            <span class="upload-file-btn">
+              <span class="text">
+                <label for="fileInput">
+                  選擇檔案
+                </label>
+              </span>
+              <span class="icon">
+                <mat-icon (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false" aria-hidden="false"
+                  aria-label="Example home icon" style="cursor:pointer ;font-size: 17px;  position:relative"
+                  class="material-symbols-outlined material-icons-align">
+                  info
+                </mat-icon>
+              </span>
+            </span>
+            <input style="display:none" #fileInput id="fileInput" name="imageUrl" type="file" accept="application/pdf"
+              (change)="handleInputChange($event)" />
 
             <div *ngIf="isShowInfo" class="info_section ">
-              僅能上傳 3MB 以下 PDF檔 
+              僅能上傳 3MB 以下 PDF檔
             </div>
+          </div>
+          <div class="p-1 m-2" *ngIf=" this.fileUpladed?.FileName"
+            style="border:1px soild gray ; height:15px; min-width:200px">
+            <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
+              {{ this.fileUpladed.FileName }}
+            </a>
+            <span (click)="deleteFile()">
+              <mat-icon style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false"
+                aria-label="Example home icon" (click)="delete(item)">
+                highlight_off
+              </mat-icon>
+            </span>
+          </div>
         </div>
-
-
-
-        <div class="p-1 m-2" *ngIf=" this.fileUpladed?.FileName"
-          style="border:1px soild gray ; height:15px; min-width:200px">
-          <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
-            {{ this.fileUpladed.FileName }}
-
-          </a>
-          <span (click)="deleteFile()">
-            <mat-icon style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false"
-              aria-label="Example home icon" (click)="delete(item)">
-              highlight_off
-            </mat-icon>
-          </span>
-        </div>
-
-    
-      </div>
         <!-- //   個案類別  -->
         <div class="form-row">
           <div class="form-group col-md-12 ">
@@ -211,8 +202,9 @@
 
 
         <div class="modal-footer">
-          <button *ngIf="_editMode=='add'" type="button" class="btn btn-info" [disabled]="_CaseInterview.isSaveDisable" (click)="save(true)">
-           輸入服務項目
+          <button *ngIf="_editMode=='add'" type="button" class="btn btn-info" [disabled]="_CaseInterview.isSaveDisable"
+            (click)="save(true)">
+            輸入服務項目
           </button>
           <button type="button" class="btn btn-dark" (click)="cancel()">
             取消
