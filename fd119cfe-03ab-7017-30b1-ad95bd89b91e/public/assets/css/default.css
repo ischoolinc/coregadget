@@ -41,6 +41,29 @@ body {
   font-size: 16px;
 }
 
+.text-small {
+  font-size: 1rem;
+}
+
+.text-subject {
+  /* fs-4 */
+  font-size:calc(1.275rem + 0.3vw); 
+  text-align: left;
+  /* fw-bold */
+  font-weight: 700; 
+}
+
+
+@media (max-width: 480px) {
+  .text-small {
+    font-size:calc(0.7rem + 0.9vw);
+  }
+  .text-subject {
+    font-size: calc(1rem + 0.9vw);
+  }
+}
+
+
 .disabledCursor {
   cursor: default;
 }

@@ -35,9 +35,6 @@ function Main() {
   // 處理如果兩個都是false，則設為加權平均。
   const [avgSetting, setAvgSetting] = useState('加權平均');
 
-  //取得 及格標準分數 --- 國中一律為60
-  const [avgPassingStardard, setAvgPassingStardard] = useState(60);
-
   // 該學生的指定學年期、每次評量 之加權平均&算術平均
   const [examAvgList, setExamAvgList] = useState([]);
 
@@ -86,24 +83,27 @@ function Main() {
 
 
   useEffect(() => {
-    GetCourseSemesterList();
+    if (studentID)
+      GetCourseSemesterList();
   }, [studentID]);
 
 
   useEffect(() => {
-    GetCourseExamList();
-    GetAllSubjectExamScoreKH();
-    GetAllSubjectAssignmentScoreKH();
-    GetAllDomainExamScoreKH();
-    GetAllDomainAssignmentScoreKH();
-    GetExamAvgScoreKH();
-    GetAssignmentAvgScoreKH();
-    GetExamAvgScoreInSpecificDomainKH();
-    GetAssignmentAvgScoreInSpecificDomainKH();
-    GetFailedExamSubjectCountKH();
-    GetFailedAssignmentSubjectCountKH();
-    GetFailedExamDomainCountKH();
-    GetFailedAssignmentDomainCountKH();
+    if (studentID && selectedSemester) {
+      GetCourseExamList();
+      GetAllSubjectExamScoreKH();
+      GetAllSubjectAssignmentScoreKH();
+      GetAllDomainExamScoreKH();
+      GetAllDomainAssignmentScoreKH();
+      GetExamAvgScoreKH();
+      GetAssignmentAvgScoreKH();
+      GetExamAvgScoreInSpecificDomainKH();
+      GetAssignmentAvgScoreInSpecificDomainKH();
+      GetFailedExamSubjectCountKH();
+      GetFailedAssignmentSubjectCountKH();
+      GetFailedExamDomainCountKH();
+      GetFailedAssignmentDomainCountKH();
+    }
   }, [studentID, selectedSemester]);
 
 
@@ -130,30 +130,6 @@ function Main() {
     });
   }
 
-  // 取得判斷加權平均、算術平均 的及格標準分數 
-  async function GetScoreCalcRulePassingStandard() {
-    // await _connection.send({
-    //   service: "_.GetScoreCalcRulePassingStandard",
-    //   body: {
-    //     StudentID: studentID,
-    //     ViewSemester: selectedSemester
-    //   },
-    //   result: function (response, error, http) {
-    //     if (error !== null) {
-    //       console.log('GetScoreCalcRulePassingStandardError', error);
-    //       return 'err';
-    //     } else {
-    //       if (response) {
-    //         if ([].concat(response.Rule || []).length) {
-    //           if (response.Rule.passing_standard !== '')
-    //             setAvgPassingStardard(response.Rule.passing_standard);
-    //           //console.log('GetScoreCalcRulePassingStandard', response.Rule.passing_standard);
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
-  }
 
   // 取得 各評量 不及格科目數 
   async function GetFailedExamSubjectCountKH() {
@@ -669,13 +645,13 @@ function Main() {
                     <div className="card-body">
                       {/* <Link className={disabledCursor}  > */}
                       <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='d-flex me-auto ps-2 align-items-center'>
                           {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
 
-                          <div className='fs-4 fw-bold text-start'>{cses.Domain === "" ? "" : cses.Domain + "-"}{cses.Subject}</div>
+                          <div className='text-subject'>{cses.Domain === "" ? "" : cses.Domain + "-"}{cses.Subject}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>權數</div><div>{cses.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-2' >
+                          <div>權數{cses.Credit}</div>
                         </div>
                       </div>
 
@@ -687,7 +663,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
                                   <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : cField.ExamScore}</div>
-                                  <div className=''>分數</div>
+                                  <div className='text-small'>分數</div>
                                 </div>
 
                                 <div>{index === 0 || cField.ExamScore === '' || cses.Field[im].ExamScore === '' ? '' : Number(cses.Field[index].ExamScore) > Number(cses.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(cses.Field[index].ExamScore) < Number(cses.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
@@ -701,7 +677,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
                                   <div className='fs-4'>{cField.Effort === '' ? '-' : cField.Effort}</div>
-                                  <div className=''>努力程度</div>
+                                  <div className='text-small'>努力程度</div>
                                 </div>
                               </div>
                             </div>
@@ -752,13 +728,13 @@ function Main() {
                   return <div className="col"><div className={passColor}>
                     <div className="card-body">
                       <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='d-flex me-auto ps-2 align-items-center'>
                           {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
 
-                          <div className='fs-4 fw-bold text-start'>{cdes.Domain}</div>
+                          <div className='text-subject'>{cdes.Domain}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>權數</div><div>{cdes.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-2' >
+                          <div>權數{cdes.Credit}</div>
                         </div>
                       </div>
 
@@ -769,7 +745,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
                                   <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>
-                                  <div className=''>分數</div>
+                                  <div className='text-small'>分數</div>
                                 </div>
                                 <div>{index === 0 || cField.ExamScore === '' || cdes.Field[im].ExamScore === '' ? '' : Number(cdes.Field[index].ExamScore) > Number(cdes.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(cdes.Field[index].ExamScore) < Number(cdes.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
@@ -806,8 +782,8 @@ function Main() {
               return <div className="col"><div className='card shadow h-100'>
                 <div className="card-body">
                   <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{avgSetting}(八大領域)</div>
+                    <div className='d-flex me-auto ps-2 align-items-center'>
+                      <div className='text-subject'>{avgSetting}(八大領域)</div>
                     </div>
                   </div>
 
@@ -818,7 +794,7 @@ function Main() {
                           <div className='d-flex justify-content-center'>
                             <div className='row align-items-center'>
                               <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
-                              <div className=''>分數</div>
+                              <div className='text-small'>分數</div>
                             </div>
 
                             {avgSetting === '加權平均' ?
@@ -855,8 +831,8 @@ function Main() {
               return <div className="col"><div className='card shadow h-100'>
                 <div className="card-body">
                   <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{avgSetting}(含彈性課程)</div>
+                    <div className='d-flex me-auto ps-2 align-items-center'>
+                      <div className='text-subject'>{avgSetting}(含彈性課程)</div>
                     </div>
                   </div>
 
@@ -867,7 +843,7 @@ function Main() {
                           <div className='d-flex justify-content-center'>
                             <div className='row align-items-center'>
                               <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
-                              <div className=''>分數</div>
+                              <div className='text-small'>分數</div>
                             </div>
 
                             {avgSetting === '加權平均' ?
@@ -922,13 +898,13 @@ function Main() {
                     <div className="card-body">
                       {/* <Link className={disabledCursor}  > */}
                       <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='d-flex me-auto ps-2 align-items-center'>
                           {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
 
-                          <div className='fs-4 fw-bold text-start'>{csas.Domain === "" ? "" : csas.Domain + "-"}{csas.Subject}</div>
+                          <div className='text-subject'>{csas.Domain === "" ? "" : csas.Domain + "-"}{csas.Subject}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>權數</div><div>{csas.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-2' >
+                          <div>權數{csas.Credit}</div>
                         </div>
                       </div>
 
@@ -940,7 +916,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
                                   <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : cField.ExamScore}</div>
-                                  <div className=''>分數</div>
+                                  <div className='text-small'>分數</div>
                                 </div>
 
                                 {/* <div>{index === 0 || cField.ExamScore === '' || csas.Field[im].ExamScore === '' ? '' : Number(csas.Field[index].ExamScore) > Number(csas.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(csas.Field[index].ExamScore) < Number(csas.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div> */}
@@ -954,7 +930,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
                                   <div className='fs-4'>{cField.Effort === '' ? '-' : cField.Effort}</div>
-                                  <div className=''>努力程度</div>
+                                  <div className='text-small'>努力程度</div>
                                 </div>
                               </div>
                             </div>
@@ -1004,13 +980,13 @@ function Main() {
                   return <div className="col"><div className={passColor}>
                     <div className="card-body">
                       <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='d-flex me-auto ps-2 align-items-center'>
                           {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
 
-                          <div className='fs-4 fw-bold text-start'>{cdas.Domain}</div>
+                          <div className='text-subject'>{cdas.Domain}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>權數</div><div>{cdas.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-2' >
+                          <div>權數{cdas.Credit}</div>
                         </div>
                       </div>
 
@@ -1021,7 +997,7 @@ function Main() {
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
                                   <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>
-                                  <div className=''>分數</div>
+                                  <div className='text-small'>分數</div>
                                 </div>
                                 {/* <div>{index === 0 || cField.ExamScore === '' || cdas.Field[im].ExamScore === '' ? '' : Number(cdas.Field[index].ExamScore) > Number(cdas.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(cdas.Field[index].ExamScore) < Number(cdas.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div> */}
                               </div>
@@ -1060,8 +1036,8 @@ function Main() {
               return <div className="col"><div className='card shadow h-100'>
                 <div className="card-body">
                   <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{avgSetting}(八大領域)</div>
+                    <div className='d-flex me-auto ps-2 align-items-center'>
+                      <div className='text-subject'>{avgSetting}(八大領域)</div>
                     </div>
                   </div>
 
@@ -1072,7 +1048,7 @@ function Main() {
                           <div className='d-flex justify-content-center'>
                             <div className='row align-items-center'>
                               <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
-                              <div className=''>分數</div>
+                              <div className='text-small'>分數</div>
                             </div>
 
                             {avgSetting === '加權平均' ?
@@ -1110,8 +1086,8 @@ function Main() {
               return <div className="col"><div className='card shadow h-100'>
                 <div className="card-body">
                   <div className='d-flex'>
-                    <div className='d-flex me-auto p-2 align-items-center'>
-                      <div className='fs-4 fw-bold text-start'>{avgSetting}(含彈性課程)</div>
+                    <div className='d-flex me-auto ps-2 align-items-center'>
+                      <div className='text-subject'>{avgSetting}(含彈性課程)</div>
                     </div>
                   </div>
 
@@ -1122,7 +1098,7 @@ function Main() {
                           <div className='d-flex justify-content-center'>
                             <div className='row align-items-center'>
                               <div className={scoreColor}>{eScore === '' ? '-' : Math.round(Number(eScore) * 100) / 100}</div>
-                              <div className=''>分數</div>
+                              <div className='text-small'>分數</div>
                             </div>
 
                             {avgSetting === '加權平均' ?
@@ -1153,12 +1129,12 @@ function Main() {
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='d-flex me-auto ps-2 align-items-center'>
                           {/* {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>} */}
-                          <div className='fs-4 fw-bold text-start'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
+                          <div className='text-subject'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>權數</div><div>{nces.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-2' >
+                          <div>權數{nces.Credit}</div>
                         </div>
                       </div>
 
@@ -1181,7 +1157,7 @@ function Main() {
                                 </div>
                                 <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
-                              <div>{nField.ExamName}</div>
+                              <div className='text-small'>{nField.ExamName}</div>
                             </div>
                           </div>
                         })}
@@ -1202,7 +1178,7 @@ function Main() {
                                     <div className={scoreColor}>{csasField.ToView === 't' ? csasField.ExamScore === '' ? '-' : csasField.ExamScore : <div className='text-unview'><div>開放查詢時間：</div><div>{csasField.ToViewTime}</div></div>}
                                     </div>
                                   </div>
-                                  <div>{csasField.ExamName}</div>
+                                  <div className='text-small'>{csasField.ExamName}</div>
                                 </div>
 
                               })}
@@ -1229,12 +1205,12 @@ function Main() {
                   <div className="card-body">
                     <div className="card-block">
                       <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
+                        <div className='d-flex me-auto ps-2 align-items-center'>
                           {/* {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>} */}
-                          <div className='fs-4 fw-bold text-start'>{cdes.Domain}</div>
+                          <div className='text-subject'>{cdes.Domain}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>權數</div><div>{cdes.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-0' >
+                          <div>權數{cdes.Credit}</div>
                         </div>
                       </div>
 
@@ -1257,7 +1233,7 @@ function Main() {
                                 </div>
                                 <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || cdes.Field[im].ExamScore === '' ? '' : Number(cdes.Field[index].ExamScore) > Number(cdes.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(cdes.Field[index].ExamScore) < Number(cdes.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
-                              <div>{nField.ExamName}</div>
+                              <div className='text-small'>{nField.ExamName}</div>
                             </div>
                           </div>
                         })}
@@ -1279,7 +1255,7 @@ function Main() {
                                     <div className={scoreColor}>{cdasField.ToView === 't' ? cdasField.ExamScore === '' ? '-' : Math.round(Number(cdasField.ExamScore) * 100) / 100 : <div className='text-unview'><div>開放查詢時間：</div><div>{cdasField.ToViewTime}</div></div>}
                                     </div>
                                   </div>
-                                  <div>{cdasField.ExamName}</div>
+                                  <div className='text-small'>{cdasField.ExamName}</div>
                                 </div>
 
                               })}
@@ -1305,8 +1281,8 @@ function Main() {
                 <div className="card-body">
                   <div className="card-block">
                     <div className='d-flex'>
-                      <div className='d-flex me-auto p-2 align-items-center'>
-                        <div className='fs-4 fw-bold'>{avgSetting}(八大領域)</div>
+                      <div className='d-flex me-auto ps-2 align-items-center'>
+                        <div className='text-subject'>{avgSetting}(八大領域)</div>
                       </div>
                     </div>
                     <div className='row align-items-center'>
@@ -1333,7 +1309,7 @@ function Main() {
                               </div>
 
                             </div>
-                            <div>{earm.exam_name}</div>
+                            <div className='text-small'>{earm.exam_name}</div>
                           </div>
                         </div>
                       })}
@@ -1356,7 +1332,7 @@ function Main() {
                               </div>
 
                             </div>
-                            <div>{aal.exam_name}</div>
+                            <div className='text-small'>{aal.exam_name}</div>
                           </div>
                         </div>
                       })}
@@ -1373,8 +1349,8 @@ function Main() {
                 <div className="card-body">
                   <div className="card-block">
                     <div className='d-flex'>
-                      <div className='d-flex me-auto p-2 align-items-center'>
-                        <div className='fs-4 fw-bold'>{avgSetting}(含彈性課程)</div>
+                      <div className='d-flex me-auto pt-2 align-items-center'>
+                        <div className='text-subject'>{avgSetting}(含彈性課程)</div>
                       </div>
                     </div>
                     <div className='row align-items-center'>
@@ -1408,7 +1384,7 @@ function Main() {
  */}
 
                             </div>
-                            <div>{earm.exam_name}</div>
+                            <div className='text-small'>{earm.exam_name}</div>
                           </div>
                         </div>
 
@@ -1437,7 +1413,7 @@ function Main() {
                               </div> */}
 
                             </div>
-                            <div>{aal.exam_name}</div>
+                            <div className='text-small'>{aal.exam_name}</div>
                           </div>
                         </div>
 
