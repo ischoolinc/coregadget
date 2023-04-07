@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { ServiceConfState } from '../core/states/conf.state';
   templateUrl: './launcher-google-meet.component.html',
   styleUrls: ['./launcher-google-meet.component.scss']
 })
-export class LauncherGoogleMeetComponent implements OnInit {
+export class LauncherGoogleMeetComponent implements OnInit, OnDestroy {
 
   meetLink = undefined;
   unSubscribe$ = new Subject();
@@ -36,6 +36,10 @@ export class LauncherGoogleMeetComponent implements OnInit {
       this.meetLink = meetConf.link;
 
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unSubscribe$.next();
   }
 
   getMeetLink() {
