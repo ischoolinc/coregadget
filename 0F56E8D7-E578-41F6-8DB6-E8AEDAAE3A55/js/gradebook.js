@@ -1055,46 +1055,46 @@
 
                                 item.ParseValues = a;
                                 item.HasError = false;
-                                // for (var i = 0; i < item.ParseValues.length; i++) {
-                                //     var flag = false;
-                                //     var temp = Number(item.ParseValues[i]);
-                                //     // if (!temp == '' && temp != '-') {
+                                for (var i = 0; i < item.ParseValues.length; i++) {
+                                    // var flag = false;
+                                    // var temp = Number(item.ParseValues[i]);
+                                    // if (!temp == '' && temp != '-') {
 
-                                //     //     temp = item.ParseValues[i];
-                                //     // }
+                                    //     temp = item.ParseValues[i];
+                                    // }
 
-                                //     if (!isNaN(temp) && temp <= 100 && temp >= 0) {
+                                    // if (!isNaN(temp) && temp <= 100 && temp >= 0) {
 
-                                //         if (item.ParseValues[i] != '') {
-                                //             flag = true;
-                                //         }
-                                //     }
-                                //     //     // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
-                                //     //     else if (temp == '-') {
-                                //     //         item.ParseValues[i] = '';
-                                //     //     }
-                                //     //     else {
-                                //     //         item.ParseValues[i] = '錯誤';
-                                //     //         item.HasError = true;
-                                //     //     }
-                                //     // }
+                                    //     if (item.ParseValues[i] != '') {
+                                    //         flag = true;
+                                    //     }
+                                    // }
+                                    //     // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
+                                    //     else if (temp == '-') {
+                                    //         item.ParseValues[i] = '';
+                                    //     }
+                                    //     else {
+                                    //         item.ParseValues[i] = '錯誤';
+                                    //         item.HasError = true;
+                                    //     }
+                                    // }
 
-                                //     if (item.ParseValues[i] == '-') {
-                                //         flag = true;
-                                //         item.ParseValues[i] = '';
-                                //     } else if (item.ParseValues[i] == '缺') {
-                                //         flag = true;
-                                //     }
-                                //     if (flag) {
-                                //         if (!isNaN(temp) && item.ParseValues[i] != '') {
-                                //             item.ParseValues[i] = temp;
-                                //         }
-                                //     }
-                                //     else {
-                                //         item.ParseValues[i] = '錯誤';
-                                //         item.HasError = true;
-                                //     }
-                                // }
+                                    if (item.ParseValues[i] == '-') //{
+                                        // flag = true;
+                                        item.ParseValues[i] = '';
+                                    // } else if (item.ParseValues[i] == '缺') {
+                                    //     flag = true;
+                                    // }
+                                    // if (flag) {
+                                    //     if (!isNaN(temp) && item.ParseValues[i] != '') {
+                                    //         item.ParseValues[i] = temp;
+                                    //     }
+                                    // }
+                                    // else {
+                                    //     item.ParseValues[i] = '錯誤';
+                                    //     item.HasError = true;
+                                    // }
+                                }
 
                                 // $scope.studentList.forEach(function (stuRec, index) {
                                 //     if (index >= item.ParseValues.length) {
@@ -1588,7 +1588,7 @@
 
                     var done = false;
                     // 努力程度轉換
-                    if ('' + $scope.current.Value) {
+                    if ('' + $scope.current.Value && ('' + $scope.current.Value!=='缺')) {
                         $scope.effortPairList.forEach(function (effortItem) {
                             if (!done && $scope.current.Value >= effortItem.Score) {
                                 $scope.current.Student[$scope.current.Exam.ExamID + '_努力程度'] = effortItem.Code;
