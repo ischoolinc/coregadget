@@ -26,8 +26,8 @@ export class CaseStudent {
   OccurDate: string; 
   /** 個案編號 */
   CaseNo: string; 
-  /** 轉借概況 */
-  ReportReferralStatus :string  ;
+  /** 轉介概況 */
+  ReportReferralStatus:string = "無轉介"; // 預設值為無轉介
   /** 學生身分 */
   StudentIdentity: string; // 學生身份
   /**  疑似特殊生類別 */
