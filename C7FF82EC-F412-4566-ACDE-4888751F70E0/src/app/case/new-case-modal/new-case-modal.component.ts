@@ -88,6 +88,7 @@ export class NewCaseModalComponent implements OnInit {
   async loadData() {
 
     this.CounselTeacherList = [];
+    this.selectGradeValue = "請選擇年級";
     this.selectClassNameValue = "請選擇班級";
     this.selectSeatNoValue = "請選擇座號";
     this.selectCaseTeachersValue = "請選擇認輔老師";
@@ -400,6 +401,11 @@ export class NewCaseModalComponent implements OnInit {
 
 
     }
+  }
+
+  SetReportReferralStatus(item: string){
+    this.caseStudent.ReportReferralStatus = item;   
+    this.caseStudent.checkValue();
   }
 
 

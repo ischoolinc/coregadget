@@ -26,8 +26,8 @@ export class CaseStudent {
   OccurDate: string; 
   /** 個案編號 */
   CaseNo: string; 
-  /** 轉借概況 */
-  ReportReferralStatus :string  ;
+  /** 轉介概況 */
+  ReportReferralStatus:string = "無轉介"; // 預設值為無轉介
   /** 學生身分 */
   StudentIdentity: string; // 學生身份
   /**  疑似特殊生類別 */
@@ -108,6 +108,7 @@ export class CaseStudent {
   isOccurDateHasValue: boolean = false;
   // isCaseNoHasValue: boolean = false;
   isGuidanceTeacherHasValue: boolean = false;
+  isReportReferralStatusHasValue: boolean = false;
   isCaseSourceHasValue: boolean = false;
   isSaveButtonDisable: boolean = true;
   isAddButtonDisable: boolean = true;
@@ -673,6 +674,13 @@ public loadProblemMainCategoryTemplate()
       }
     }
 
+    if (this.ReportReferralStatus){
+      this.isReportReferralStatusHasValue = true;
+    }
+    else{
+      this.isReportReferralStatusHasValue = false;
+    }
+
     if (this.CaseLevel != '')
     {
       this.isCaseLevelHasValue = true;
@@ -684,6 +692,7 @@ public loadProblemMainCategoryTemplate()
       this.isOccurDateHasValue &&
       // this.isCaseNoHasValue &&
       this.isGuidanceTeacherHasValue &&
+      this.isReportReferralStatusHasValue &&
       this.isCaseSourceHasValue &&
       // this.isDeviantBehaviorHasValue && 20210510 依據需求改為非必填
       // this.isProblemCategoryHasValue && 20210513 副類別改為非必填

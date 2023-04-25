@@ -133,7 +133,7 @@
             <div class="form-group">
               <label for="semester" class="col-form-label p-0">
                 <span class="text-samll text-danger" style="width:10px; height: 10px; display: inline-block; ">
-                  <ng-container *ngIf="!caseStudent.isStudentStatusHasValue">*</ng-container>
+                  <ng-container *ngIf="!caseStudent.isCaseSourceHasValue">*</ng-container>
                 </span>
                 <div *ngTemplateOutlet="icon"></div>
                 <b class="question_title"> 個案來源： </b>
@@ -311,7 +311,7 @@
           <div class="form-group ">
             <label for="interviewDate" class="col-form-label">
               <span class="text-samll text-danger star-place">
-                <ng-container *ngIf="true">*</ng-container>
+                <ng-container *ngIf="!caseStudent.isReportReferralStatusHasValue">*</ng-container>
               </span>
               <div *ngTemplateOutlet="icon"></div>
               <b class="question_title"> 轉介概況 :</b>
@@ -323,8 +323,8 @@
                 {{caseStudent.ReportReferralStatus ||'請選擇'}}
               </button>
               <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item cuser" (click)="caseStudent.ReportReferralStatus =item"
-                  *ngFor="let item of   caseReferalList">
+                <a class="dropdown-item cuser" (click)="SetReportReferralStatus(item)"
+                  *ngFor="let item of caseReferalList">
                   {{item}}
                 </a>
                
