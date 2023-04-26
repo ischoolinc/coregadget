@@ -601,3 +601,22 @@ ul.rwd-table ol:nth-child(even) {
 	-ms-flex-align: center !important;
 	align-items: center !important;
 }
+
+.multi_label {
+  background: rgba(189, 189, 189, 0.192) !important;
+  border: none !important;
+  padding: 16px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.row2 {
+	white-space: pre-line;
+	word-break: break-all;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	/* autoprefixer: off */
+	-webkit-box-orient: vertical;
+	/* autoprefixer: on */
+}

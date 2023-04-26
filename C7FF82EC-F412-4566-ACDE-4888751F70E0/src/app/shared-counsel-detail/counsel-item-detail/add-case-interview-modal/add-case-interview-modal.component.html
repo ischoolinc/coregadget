@@ -122,10 +122,9 @@
               <span class=" text-muted"></span>
             </label>
             <textarea id="description" (input)="autoResize($event.target)"
-              [rows]="_CaseInterview.Content?.split('\n').length > 1 ?_CaseInterview.Content.split('\n').length : 2"
-              class="form-control my-3 p-3" placeholder="請輸入內容說明" [(ngModel)]="_CaseInterview.Content"
+              class="form-control my-3 p-3"
+              placeholder="請輸入內容說明" [(ngModel)]="_CaseInterview.Content"
               (keyup)="_CaseInterview.checkValue()"></textarea>
-
           </div>
         </div>
         <!-- 上傳檔案 -->

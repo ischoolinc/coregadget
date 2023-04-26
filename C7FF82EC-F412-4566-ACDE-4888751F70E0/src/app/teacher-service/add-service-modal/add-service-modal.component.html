@@ -66,7 +66,8 @@
             <b class="question_title mr-2 question-title-size ml-3"> 內容描述 :</b>
           </label>
           <div class="px-3">
-            <textarea class="form-control " id="contactMatter" rows="3" placeholder="請輸入 400 字以內結案說明(非必填)"
+            <textarea id="contactMatter" (input)="autoResize($event.target)"
+              class="form-control" placeholder="請輸入 400 字以內結案說明(非必填)"
               [(ngModel)]="currentServiceItem.ServiceDescription"></textarea>
           </div>
         </div>
@@ -89,7 +90,7 @@
                 <b class="question_title mr-2 question-title-size"> 服務對象 </b>
 
               </label>
-              <div class="dropdown  mr-2 ">
+              <div class="dropdown mr-2">
                 <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;"
                   type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                   aria-expanded="false">

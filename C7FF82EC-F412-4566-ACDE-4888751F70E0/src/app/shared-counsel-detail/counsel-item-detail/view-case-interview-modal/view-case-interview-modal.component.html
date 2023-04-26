@@ -92,14 +92,15 @@
                 <div class="form-group">
                     <label for="description"
                            class="col-form-label">
-                           <b class ="modal-sub-title">       內容說明 </b>
+                           <b class ="modal-sub-title">內容說明 </b>
                         <span class="text-muted"></span>
                     </label>
-                    <textarea readonly class="form-control"
+                    <label class="form-control multi_label">{{ Content || ' ' }}</label>
+                    <!-- <textarea readonly class="form-control"
                               id="description"
                               [rows]="(Content.split('\n').length>1)?Content.split('\n').length : 2" 
                               placeholder="請輸入內容說明"
-                              [(ngModel)]="Content"></textarea>
+                              [(ngModel)]="Content"></textarea> -->
 
                 </div>
 

@@ -385,5 +385,9 @@ export class AddInterviewModalComponent implements OnInit {
       alert('取得檔案發生錯誤:' + JSON.stringify(ex))
     }
   }
+  autoResize(textarea: any): void {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
 
 }

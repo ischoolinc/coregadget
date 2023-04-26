@@ -233,4 +233,8 @@ export class AddServiceModalComponent implements OnInit {
     this.isClose = true;
     $("#addServiceModal").modal("hide");
   }
+  autoResize(textarea: any): void {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
 }

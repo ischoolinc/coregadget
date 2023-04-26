@@ -63,8 +63,7 @@
               聯絡事項
             </b> 
           </label>
-          <label class="form-control"
-                 style="white-space: pre-wrap;word-break: break-all;">{{ _CounselInterview.ContactItem || ' ' }}</label>
+          <label class="form-control multi_label">{{ _CounselInterview.ContactItem || ' ' }}</label>
         </div>
 
         <div class="form-group">
@@ -73,8 +72,7 @@
             輔導內容
           </b>
           </label>
-          <label class="form-control"
-                 style="white-space: pre-wrap;word-break: break-all;">{{ _CounselInterview.Content || ' ' }}</label>
+          <label class="form-control multi_label">{{ _CounselInterview.Content || ' ' }}</label>
         </div>
 
         <ng-container *ngIf="referralVisible === true">

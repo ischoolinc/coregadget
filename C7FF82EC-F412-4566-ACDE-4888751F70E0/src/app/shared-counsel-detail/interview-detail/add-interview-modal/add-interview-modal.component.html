@@ -6,11 +6,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addInterviewLabel">
-        <b>
-          {{ editModeString }}輔導紀錄 - {{ _studentName }}
-        </b>
+          <b>
+            {{ editModeString }}輔導紀錄 - {{ _studentName }}
+          </b>
         </h5>
-        <button type="button" class="close"   (click)="cancel()">
+        <button type="button" class="close" (click)="cancel()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -19,7 +19,7 @@
           <div class="form-group col-md-4">
             <label for="schoolYear" class="col-form-label">
               <span *ngIf="!_currentCounselInterview.isSchoolYearHasValue" class="text-samll text-danger">*</span>
-              <b class ="modal-sub-title">學年度</b>
+              <b class="modal-sub-title">學年度</b>
             </label>
             <input type="text" class="form-control" id="schoolYear" placeholder="請輸入學年度" required
               [(ngModel)]="_currentCounselInterview.SchoolYear" (keyup)="_currentCounselInterview.checkValue()" />
@@ -27,7 +27,7 @@
           <div class="form-group col-md-4">
             <label for="semester" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isSemesterHasValue">*</span>
-              <b class ="modal-sub-title">學期</b>
+              <b class="modal-sub-title">學期</b>
             </label>
             <input type="text" class="form-control" id="semester" placeholder="請輸入學期"
               [(ngModel)]="_currentCounselInterview.Semester" (keyup)="_currentCounselInterview.checkValue()" />
@@ -35,7 +35,7 @@
           <div class="form-group col-md-4">
             <label for="interviewDate" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
-              <b class ="modal-sub-title">  日期</b>
+              <b class="modal-sub-title"> 日期</b>
             </label>
             <input type="date" class="form-control" id="interviewDate" placeholder="請輸入日期"
               [(ngModel)]="_currentCounselInterview.OccurDate" (keyup)="_currentCounselInterview.checkValue()"
@@ -47,7 +47,7 @@
           <div class="form-group ">
             <label class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isCounselTypeHasValue">*</span>
-              <b class ="modal-sub-title">方式</b>
+              <b class="modal-sub-title">方式</b>
             </label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -74,9 +74,8 @@
           <!-- 對象 -->
           <div class="form-group">
             <label class="col-form-label">
-              <span class="text-samll text-danger"
-                *ngIf="!_currentCounselInterview.isContactNameHasValue">*</span>
-                <b  class ="modal-sub-title">對象</b>
+              <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContactNameHasValue">*</span>
+              <b class="modal-sub-title">對象</b>
             </label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -103,7 +102,7 @@
           <div class="form-group">
             <label for="recorder" class="col-form-label">
               <span class="text-samll text-danger"></span>
-               <b  class ="modal-sub-title">記錄者</b>
+              <b class="modal-sub-title">記錄者</b>
             </label>
             <label class="form-control" id="recorder">{{
               _currentCounselInterview.AuthorName
@@ -125,80 +124,83 @@
         <div class="form-group">
           <label for="contactMatter" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContactItemHasValue">*</span>
-            <b class ="modal-sub-title">聯絡事項</b>
+            <b class="modal-sub-title">聯絡事項</b>
           </label>
-          <textarea class="form-control" id="contactMatter" rows="3" placeholder="請輸入聯絡事項"
+          <textarea id="contactMatter" (input)="autoResize($event.target)" 
+            class="form-control" placeholder="請輸入聯絡事項"
             [(ngModel)]="_currentCounselInterview.ContactItem"
             (keyup)="_currentCounselInterview.checkValue()"></textarea>
         </div>
         <div class="form-group">
           <label for="description" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContentHasValue">*</span>
-            <b class ="modal-sub-title" >輔導內容 </b>
+            <b class="modal-sub-title">輔導內容 </b>
             <span class="text-muted">（會顯示於輔導記錄卡）</span>
           </label>
-          <textarea class="form-control" id="description" rows="3" placeholder="請輸入輔導內容"
-            [(ngModel)]="_currentCounselInterview.Content" (keyup)="_currentCounselInterview.checkValue()"></textarea>
+          <textarea id="description" (input)="autoResize($event.target)"
+            class="form-control" placeholder="請輸入輔導內容"
+            [(ngModel)]="_currentCounselInterview.Content"></textarea>
         </div>
 
-     
-      <!-- 上傳檔案 -->
 
-      <div class="d-flex">
-      
-        <div class="image-upload ml-3">
-       
-          <span  class="upload-file-btn">
-       <span class="text">
+        <!-- 上傳檔案 -->
+
+        <div class="d-flex">
+
+          <div class="image-upload ml-3">
+
+            <span class="upload-file-btn">
+              <span class="text">
 
 
-        <label   for="fileInput">
-            選擇檔案 
-        </label>
-           
-       </span>
-       <span class="icon">
-        <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
-        style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align">
-          info
-      </mat-icon>
-      
-       </span>
-      </span>
-          <input style="display:none"  #fileInput id="fileInput" name="imageUrl" type="file" accept="application/pdf"
-            (change)="handleInputChange($event)" />
+                <label for="fileInput">
+                  選擇檔案
+                </label>
+
+              </span>
+              <span class="icon">
+                <mat-icon (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false" aria-hidden="false"
+                  aria-label="Example home icon" style="cursor:pointer ;font-size: 17px;  position:relative"
+                  class="material-symbols-outlined material-icons-align">
+                  info
+                </mat-icon>
+
+              </span>
+            </span>
+            <input style="display:none" #fileInput id="fileInput" name="imageUrl" type="file" accept="application/pdf"
+              (change)="handleInputChange($event)" />
 
             <div *ngIf="isShowInfo" class="info_section w-50">
-              僅能上傳 3MB 以下 PDF檔 
+              僅能上傳 3MB 以下 PDF檔
             </div>
+          </div>
+
+
+
+          <div class="p-1 m-2" *ngIf=" this.fileUpladed?.FileName"
+            style="border:1px soild gray ; height:15px; min-width:200px">
+            <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
+              {{ this.fileUpladed.FileName }}
+
+            </a>
+            <span (click)="deleteFile()">
+              <mat-icon style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false"
+                aria-label="Example home icon" (click)="delete(item)">
+                highlight_off
+              </mat-icon>
+            </span>
+          </div>
+
+
         </div>
 
 
 
-        <div class="p-1 m-2" *ngIf=" this.fileUpladed?.FileName"
-          style="border:1px soild gray ; height:15px; min-width:200px">
-          <a style=" text-decoration: none;" [href]="fileUpladed.href" [download]="fileUpladed.FileName">
-            {{ this.fileUpladed.FileName }}
-
-          </a>
-          <span (click)="deleteFile()">
-            <mat-icon style="cursor: pointer; color :gray ; font-size: 17px;" class="" aria-hidden="false"
-              aria-label="Example home icon" (click)="delete(item)">
-              highlight_off
-            </mat-icon>
-          </span>
-        </div>
-
-    
-      </div>
-
-
- 
 
         <div class="form-group">
           <label for="semester" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isCategoryHasValue">*</span>
-            <b class ="modal-sub-title">類別</b>
+            <b class="modal-sub-title">類別</b>
           </label>
           <div class="d-flex flex-wrap">
             <div class="custom-control custom-checkbox w-25" *ngFor="let item of _currentCounselInterview._category">
@@ -256,8 +258,7 @@
 
       </div>
       <div *ngIf="isSerialMode" id="nextAndPervious" class="d-flex justify-content-between  mb-2">
-        <div class="d-flex justify-content-center" (click)="pervious()"
-          style=" 
+        <div class="d-flex justify-content-center" (click)="pervious()" style=" 
            padding: 10px;
            color :#203a47 ;
            font-size: 17px;
@@ -265,17 +266,16 @@
            width :200px ;
            cursor: pointer;">
 
-          <div  *ngIf="perviousStudent?.StudentName">
-            <span> 
+          <div *ngIf="perviousStudent?.StudentName">
+            <span>
               <i class="material-icons"> navigate_before</i>
-               {{ perviousStudent?.StudentName }} ({{perviousStudent?.SeatNo}})
-              </span>
+              {{ perviousStudent?.StudentName }} ({{perviousStudent?.SeatNo}})
+            </span>
           </div>
 
         </div>
 
-        <div  class="d-flex justify-content-center" (click)="next()"
-          style=" 
+        <div class="d-flex justify-content-center" (click)="next()" style=" 
           padding: 10px;  
           color :#203a47 ;
           font-size: 17px;
@@ -283,7 +283,7 @@
           width :200px ; 
           cursor: pointer; ">
 
-          <div  *ngIf="nextStudent?.StudentName">
+          <div *ngIf="nextStudent?.StudentName">
 
             <span>{{ nextStudent?.StudentName }} ({{nextStudent?.SeatNo}})
               <i class="material-icons"> navigate_next</i>

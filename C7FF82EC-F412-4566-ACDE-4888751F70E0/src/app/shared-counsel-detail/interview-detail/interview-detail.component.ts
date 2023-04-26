@@ -26,7 +26,7 @@ export class InterviewDetailComponent implements OnInit {
   isLoading = false;
   isDeleteButtonDisable: boolean = true;
   currentInterview: CounselInterview;
-  refferalNotDealCount :number ;
+  refferalNotDealCount: number;
   public referralVisible: boolean = false;
 
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
@@ -68,7 +68,7 @@ export class InterviewDetailComponent implements OnInit {
 
   async onReferStateChange() {
     await this.getRefList();
-  
+
     this.communicationService.emitChange(this.refferalNotDealCount)
 
 
@@ -164,19 +164,22 @@ export class InterviewDetailComponent implements OnInit {
       $("#addInterview").off("hide.bs.modal");
     });
   }
-   /** 修改 */
+  /** 修改 */
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
     let obj = Object.assign({}, counselView);
     this._addInterview._currentCounselInterview = counselView;
-    this._addInterview._currentCounselInterview.selectCounselType =counselView.CounselType;
-   
+    this._addInterview._currentCounselInterview.selectCounselType = counselView.CounselType;
+
     this._addInterview._currentCounselInterview.selectContactName = counselView.ContactName;
     this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
     this._addInterview._currentCounselInterview.isSaveDisable = true;
     this._addInterview.getFile(counselView.UID);
     $("#addInterview").modal({ backdrop: 'static' });
-    $("#addInterview").modal("show");
+    // $("#addInterview").modal("show");
+    $("#addInterview").on('shown.bs.modal', () => {
+      this.resize();
+    });
     // 關閉畫面
     $("#addInterview").on("hide.bs.modal", () => {
       if (!this._addInterview.isCancel) {
@@ -214,7 +217,7 @@ export class InterviewDetailComponent implements OnInit {
   async referralRromModal(counselView: CounselInterview) {
 
 
-     this._referralForm._CounselInterview =counselView ;
+    this._referralForm._CounselInterview = counselView;
 
     await this._referralForm.loadingInitInfo("");
     $("#referralForm").modal("show");
@@ -307,4 +310,12 @@ export class InterviewDetailComponent implements OnInit {
     return data;
   }
 
+  resize() {
+    const textArea = document.querySelectorAll('textarea');
+    for (var index = 0; index < textArea.length; index++) {
+      textArea[index].style.overflow = 'hidden';
+      textArea[index].style.height = 'auto';
+      textArea[index].style.height = textArea[index].scrollHeight + 'px';
+    }
+  }
 }

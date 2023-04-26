@@ -95,12 +95,20 @@ export class TeacherServiceComponent implements OnInit {
     this._addServiceModal.mode = 'edit'
     this._addServiceModal.currentServiceItem = item;
     $("#addServiceModal").modal({ backdrop: 'static' });
-    $("#addServiceModal").modal("show");
+    $("#addServiceModal").on('shown.bs.modal', () => {
+      this.resize();
+    });
     $("#addServiceModal").on("hide.bs.modal", () => {
      // 如果關掉舊重新 load 資料
         this.loadData();
 
       $("#addServiceModal").off("hide.bs.modal");
     });
+  }
+  resize(){
+    const textArea = document.querySelector('textarea');
+    textArea.style.overflow = 'hidden';
+    textArea.style.height = 'auto';
+    textArea.style.height = textArea.scrollHeight + 'px';
   }
 }
