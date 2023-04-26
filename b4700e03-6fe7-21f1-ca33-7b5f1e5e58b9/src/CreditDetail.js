@@ -90,7 +90,7 @@ const CreditDetail = () => {
 					return <>
 						<div className='col-12 col-md-12 col-lg-6 mt-2'>
 							<div className='text-start fs-4 fw-bold'>{semesterText}取得學分狀況</div>
-							<div className='text-end'>取得學分/習修學分</div>
+							<div className='text-end'>取得學分/修習學分</div>
 						</div>
 
 						<div className='row align-items-start text-table'>
@@ -166,7 +166,7 @@ const CreditDetail = () => {
 					return <>
 						<div className='col-12 col-md-12 col-lg-6 mt-2'>
 							<div className='text-start fs-4 fw-bold'>累計取得學分狀況</div>
-							<div className='text-end'>取得學分/習修學分</div>
+							<div className='text-end'>取得學分/修習學分</div>
 						</div>
 
 						<div className='row align-items-start text-table'>
