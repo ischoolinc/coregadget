@@ -116,9 +116,9 @@ jQuery(function () {
                 }
 
             })
-    
+
             element.val(commentString.join(','));
-      
+
         }
 
         if (e.which === 38) {
@@ -131,28 +131,28 @@ jQuery(function () {
         }
     });
 
-    	/*
-	 * 將xml、json轉換中不支援的字元取代為全型
-	*/
-	$.replaceChar = function (input) {
-		// &lt;的方式 DSA 儲存的sql會轉錯
+    /*
+ * 將xml、json轉換中不支援的字元取代為全型
+*/
+    $.replaceChar = function (input) {
+        // &lt;的方式 DSA 儲存的sql會轉錯
         var chars = [
-        	{key:'/', value:'／'},
-            {key:'\\\\', value:'＼'},
-            {key:',', value:'，'},
-            {key:'<', value:'＜'},
-            {key:'>', value:'＞'},
-            {key:'\'', value:'＇'},
-            {key:'"', value:'＂'},
-            {key:':', value:'：'}
+            { key: '/', value: '／' },
+            { key: '\\\\', value: '＼' },
+            { key: ',', value: '，' },
+            { key: '<', value: '＜' },
+            { key: '>', value: '＞' },
+            { key: '\'', value: '＇' },
+            { key: '"', value: '＂' },
+            { key: ':', value: '：' }
         ];
 
-        chars.forEach(function(c){
-          var re = new RegExp(c.key, "g");
-          input = input.replace(re, c.value);
+        chars.forEach(function (c) {
+            var re = new RegExp(c.key, "g");
+            input = input.replace(re, c.value);
         });
         return input;
-	};
+    };
 });
 
 var _gg = function () {
@@ -212,7 +212,7 @@ var _gg = function () {
                     var commentTable = [];
                     $(response.Response.ClubComment).each(function (index, item) {
 
-                        commentTable.push('<tr><td>'+item.Code+'</td><td>'+item.Comment+'</td></tr>');
+                        commentTable.push('<tr><td>' + item.Code + '</td><td>' + item.Comment + '</td></tr>');
                         club_comment[item.Code.toLowerCase()] = item.Comment;
                     });
 
@@ -790,6 +790,8 @@ var _gg = function () {
                     });
                 }
 
+                $('#myModalOpen').addClass('hide');
+
             } else {
 
                 edit_title = edit_target;
@@ -806,6 +808,7 @@ var _gg = function () {
                     });
                 }
 
+                $('#myModalOpen').removeClass('hide');
             }
 
             $('#editModal').find('h3').html(edit_title).end().find('fieldset').html(arys.join(''));
@@ -833,48 +836,61 @@ var _gg = function () {
                             UID: (student.SCUID || '0')
                         },
                         Comment: function () {
-                            var that_comment = $.trim($('#' + (student.SCUID)).val() || '');
-                            return $.replaceChar(that_comment);
+                            if (scoreType === "評語") {
+                                var that_comment = $.trim($('#' + (student.SCUID)).val() || '');
+                                return $.replaceChar(that_comment);
+                            }
+                            else {
+                                return student.Comment;
+                            }
                         }(),
                         Score: function () {
-                            var that_score = $.trim($('#' + (student.SCUID)).val() || '');
-                            if (that_score !== '') {
-                                that_score = parseInt(that_score, 10) + '';
-                            } else {
-                                that_score = '';
-                            }
-                            student.ColScore[scoreType] = that_score;
-                            if (student.Score.Xml && student.Score.Xml.Item) {
-                                $(student.Score.Xml.Item).each(function () {
-                                    if (this.Name === scoreType) {
-                                        this.Score = that_score;
-                                        change_data = true;
-                                    }
-                                });
-                                if (!change_data) {
-                                    if (!$.isArray(student.Score.Xml.Item)) {
-                                        student.Score.Xml.Item = [student.Score.Xml.Item];
-                                    }
-                                    student.Score.Xml.Item.push({
-                                        '@': ['Name', 'Score'],
-                                        'Name': scoreType,
-                                        'Score': that_score
-                                    });
+                            //如果開啟欄位是評語,則
+                            if (scoreType !== "評語") {
+
+                                var that_score = $.trim($('#' + (student.SCUID)).val() || '');
+                                if (that_score !== '') {
+                                    that_score = parseInt(that_score, 10) + '';
+                                } else {
+                                    that_score = '';
                                 }
-                            } else {
-                                student.Score = {
-                                    Xml: {
-                                        Item: [{
+                                student.ColScore[scoreType] = that_score;
+                                if (student.Score.Xml && student.Score.Xml.Item) {
+                                    $(student.Score.Xml.Item).each(function () {
+                                        if (this.Name === scoreType) {
+                                            this.Score = that_score;
+                                            change_data = true;
+                                        }
+                                    });
+                                    if (!change_data) {
+                                        if (!$.isArray(student.Score.Xml.Item)) {
+                                            student.Score.Xml.Item = [student.Score.Xml.Item];
+                                        }
+                                        student.Score.Xml.Item.push({
                                             '@': ['Name', 'Score'],
                                             'Name': scoreType,
                                             'Score': that_score
-                                        }]
+                                        });
                                     }
-                                };
+                                } else {
+                                    student.Score = {
+                                        Xml: {
+                                            Item: [{
+                                                '@': ['Name', 'Score'],
+                                                'Name': scoreType,
+                                                'Score': that_score
+                                            }]
+                                        }
+                                    };
+
+                                }
+
+                                return student.Score;
+                            }
+                            else {
+                                return student.Score;
 
                             }
-
-                            return student.Score;
                         }()
                     };
                     request.push(tmp_obj);
@@ -905,7 +921,7 @@ var _gg = function () {
                                     value[scoreType] = tmp_score;
                                     $('#s' + scoreType + value.SCUID).html(tmp_score);
                                 } else {
-                               
+
                                     var that_comment = $.trim($('#' + (value.SCUID)).val() || '');
                                     value.Comment = $.replaceChar(that_comment);
                                     $('#s' + scoreType + value.SCUID).html(that_comment);
