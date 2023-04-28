@@ -1,0 +1,112 @@
+body {
+  background-color: var(--bs-body-bg);
+}
+
+
+.title_border {
+  border-left: 7px solid #5EC2C7;
+  display: flex;
+  align-items: center;
+}
+
+
+.table-cell {
+  background-image: url('bg2.png');
+  /* background-image: url('../bg2.png'); */
+  /* background-image: url('/public/bg2.png'); */
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+tbody, td, tfoot, th, thead, tr {
+  border-style:none;
+  text-align: center;
+}
+
+
+.table {
+  /* border: 2px solid rgb(255, 255, 255);  */
+  border-collapse: collapse; /* 合併相鄰的邊框線 */
+  /* text-align: center; */
+}
+
+.table > :not(caption) > * > *{
+  /* background-color:#98E5E9; */
+  background-color:#baebf0;
+  /* border: 1px solid rgb(255, 255, 255); */
+  border-radius: inherit;
+  box-shadow: inset 2px 2px rgb(255, 255, 255);
+}
+
+.table>:not(:last-child)>:last-child>* {
+  border-bottom-color: inherit;
+}
+
+.accordion-button::after {
+  background-image:none;
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: none;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #000;
+  background-color: #FCF8E3;
+  box-shadow: none;
+  background-image:none;
+  border-radius: 5px;
+  /* border: 1px solid #859B6D; */
+
+}
+.accordion-item {
+  color: #000;
+  background-color: #FCF8E3;
+  box-shadow: none;
+  border: none;
+}
+
+
+
+.d-center {
+  display: flex!important;
+  align-items: center;
+  color: #8A6D3B;
+  text-align: left;
+}
+
+.text-center {
+  position: relative;
+  width: fit-content;
+}
+
+
+
+.btn-outline-blue {
+  color: #000;
+  border-color: #5b9bd5;
+  background-color: #fff;
+}
+
+.btn-outline-blue:hover,
+.btn-outline-blue.active {
+  background-color: #deebf7;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
+
+.btn-back {
+  color: #5b9bd5;
+}
+
+
+
+
+
+
