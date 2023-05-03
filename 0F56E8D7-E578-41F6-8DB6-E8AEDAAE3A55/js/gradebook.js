@@ -1823,7 +1823,7 @@
                             </Request>`,
                     result: function (response, error, http) {
                         if (error !== null) {
-                            alert(error);
+                            alert('InsertLogFromWeb Error');
                         } else {
                             console.log('成功輸入!');
                         }
@@ -2008,7 +2008,7 @@
                             </Request>`,
                     result: function (response, error, http) {
                         if (error !== null) {
-                            alert(error);
+                            alert('InsertLogFromWeb Error');
                         } else {
                             console.log('成功輸入!');
                         }
