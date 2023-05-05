@@ -17,7 +17,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",    
+    "firebase": "set PUBLIC_URL=/da7b17d4-33e6-c138-6603-b64a1e04033e&&react-scripts build",
+    "prod": "set PUBLIC_URL=/deployment/da7b17d4-33e6-c138-6603-b64a1e04033e&&react-scripts build"
   },
   "eslintConfig": {
     "extends": [

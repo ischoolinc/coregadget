@@ -9,27 +9,42 @@ function App() {
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
-  //選擇的學生 //sessionStorage
+  //選擇的學生 
   const [studentID, setStudent] = useState('');
 
+  // 班級清單
+  const [classDateRange, setClassList] = useState([]);
+
+  //選擇的班級 
+  const [classID, setClass] = useState('');
+
   // 學期歷程
-  const [semesterList, setHistoryList] = useState([]);
+  const [allSemesters, setHistoryList] = useState([]);
+  // const [semesterList, setHistoryList] = useState([]);
 
-  const allSemesters = [
-    { name: "Semester1", title: "" },
-    { name: "Semester2", title: "" },
-    { name: "Semester3", title: "" },
-    { name: "Semester4", title: "" },
-    { name: "Semester5", title: "" },
-    { name: "Semester6", title: "" }
-  ];
+  // const allSemesters = [
+  //   { name: "Semester1", title: "", days: "" },
+  //   { name: "Semester2", title: "", days: "" },
+  //   { name: "Semester3", title: "", days: "" },
+  //   { name: "Semester4", title: "", days: "" },
+  //   { name: "Semester5", title: "", days: "" },
+  //   { name: "Semester6", title: "", days: "" }
+  // ];
 
-  //整理學習歷程
-  const updatedSemesters = semesterList.map((semester) => {
-    const semesterIndex = allSemesters.findIndex((s) => s.name === semester.name);
-    allSemesters[semesterIndex].title = semester.title;
-    return allSemesters[semesterIndex];
-  });
+  // //整理學習歷程
+  // const updatedSemesters = semesterList.map((semester) => {
+  //   const semesterIndex = allSemesters.findIndex((s) => s.name === semester.name);
+  //   allSemesters[semesterIndex].title = semester.title;
+  //   allSemesters[semesterIndex].days = semester.days;
+  //   return allSemesters[semesterIndex];
+  // });
+
+
+  //整理上課天數
+  const totalDays = allSemesters.reduce((accumulator, semester) => {
+    return accumulator + parseInt(semester.days);
+  }, 0);
+
 
 
   // 學期成績
@@ -37,6 +52,9 @@ function App() {
 
   // 缺曠
   const [absenceList, setAbsenceList] = useState([]);
+
+  // 缺曠總計
+  const [totalAbsenceList, setTotalAbsenceList] = useState([]);
 
   // 獎懲
   const [disciplineList, setDisciplineList] = useState([]);
@@ -71,44 +89,91 @@ function App() {
   });
 
 
-
   const position = window.gadget.params.system_position;
 
   var _connection = window.gadget.getContract("1campus.graduate.alarm.student");
 
-  if (position === 'student')
-    _connection = window.gadget.getContract("1campus.graduate.alarm.student");
+  if (position === 'teacher')
+    _connection = window.gadget.getContract("1campus.graduate.alarm.teacher");
 
+  if (position === 'parent')
+    _connection = window.gadget.getContract("1campus.graduate.alarm.parent");
 
 
   useEffect(() => {
     GetDegree();
-    GetStudentList();
-    GetHistory();
-    GetSemesterScore();
-    GetScoreCalcRule();
-    GetDailyCalcRule();
-    GetDiscipline();
-    GetAbsence();
-    GetAbsenceAndPeriods();
+
+    if (position === 'teacher')
+      GetClass();
+    else
+      GetStudentList();
+
   }, []);
+
+  useEffect(() => {
+    if (position === 'teacher' && classID !== '') {
+      GetStudentList();
+    }
+  }, [classID]);
+
+
+
+  useEffect(() => {
+    if (studentID !== '') {
+      GetHistory();
+      GetSemesterScore();
+      GetScoreCalcRule();
+      GetDailyCalcRule();
+      GetDiscipline();
+      GetAbsence();
+      GetAbsenceAndPeriods();
+      GetTotalAbsence();
+    }
+  }, [studentID]);
+
+
+
 
 
   // 取得學生清單
   async function GetStudentList() {
     await _connection.send({
       service: "_.GetStudentList",
-      body: {},
+      body: {
+        ClassID: classID,
+      },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetStudentListError', error);
+          console.log('GetStudentList Error', error);
           return 'err';
         } else {
           if (response) {
             setStudentList([].concat(response.Student || []));
 
-            if (studentID === '' || studentID === null) {
-              setStudent([].concat(response.Student || [])[0].id);
+            // if (studentID === '' || studentID === null) {
+            setStudent([].concat(response.Student || [])[0].id);
+            // }
+          }
+        }
+      }
+    });
+  }
+
+  // 取得班級清單
+  async function GetClass() {
+    await _connection.send({
+      service: "_.GetClass",
+      body: {},
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetClass', error);
+          return 'err';
+        } else {
+          if (response) {
+            setClassList([].concat(response.Class || []));
+
+            if (classID === '' || classID === null) {
+              setClass([].concat(response.Class || [])[0].id);
             }
           }
         }
@@ -125,7 +190,7 @@ function App() {
       },
       result: function (response, error, http) {
         if (error !== null) {
-          console.log('GetHistoryError', error);
+          console.log('GetHistory Error', error);
           return 'err';
         } else {
           if (response) {
@@ -169,12 +234,36 @@ function App() {
         } else {
           if (response) {
             setAbsenceList([].concat(response.response || []));
-            console.log('GetAbsence', [].concat(response.response || []));
+            //console.log('GetAbsence', [].concat(response.response || []));
           }
         }
       }
     });
   }
+
+  // 取得缺曠總計
+  async function GetTotalAbsence() {
+    await _connection.send({
+      service: "_.GetTotalAbsence",
+      body: {
+        StudentID: studentID,
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetTotalAbsence Error', error);
+          return 'err';
+        } else {
+          if (response) {
+            setTotalAbsenceList([].concat(response.response || []));
+            //console.log('GetTotalAbsence', [].concat(response.response || []));
+          }
+        }
+      }
+    });
+  }
+
+
+
 
   // 取得獎懲
   async function GetDiscipline() {
@@ -210,13 +299,12 @@ function App() {
         } else {
           if (response) {
             setAbsenceAndPeriods([].concat(response.Rule || []));
-            console.log('GetAbsenceAndPeriods', [].concat(response.Rule || []));
+            //console.log('GetAbsenceAndPeriods', [].concat(response.Rule || []));
           }
         }
       }
     });
   }
-
 
   // 取得成績畢業條件
   async function GetScoreCalcRule() {
@@ -252,7 +340,7 @@ function App() {
         } else {
           if (response) {
             setDailyCalcRule([].concat(response.Rule || []));
-            console.log('學務畢業條件', [].concat(response.response || []));
+            //console.log('GetDailyCalcRule', [].concat(response.response || []));
           }
         }
       }
@@ -279,13 +367,69 @@ function App() {
     });
   }
 
+  const handleChangeStudent = (studentID) => {
+    setStudent(studentID);
+  }
+
+  const handleChangeClass = (event) => {
+    setClass(event.target.value);
+  }
+  const handleChangeClassStudent = (event) => {
+    setStudent(event.target.value);
+  }
+
+  function ConvertStudentName(name) {
+    const htmlText = `${name}`
+    return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
+  }
 
   return (
     <div className="App">
       <div className="container px-3 px-sm-4 py-5 ">
-        <div className='title_border mb-2'>
-          <div className='ms-2 me-4 d-flex align-items-center fs-4'>畢業預警查詢</div>
+        <div className='title_border d-flex mb-2'>
+          <div>
+            <div className='ms-2 me-4 d-flex align-items-center fs-4'>畢業預警查詢</div>
+            {position === 'parent' ? <div className='text-left'>
+              {studentDateRange.map((student) => {
+                if (student.id === studentID)
+                  return <button type="button" className="btn btn-g active me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
+                else
+                  return <button type="button" className="btn btn-g me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
+              })}
+            </div> : <></>
+
+            }
+
+          </div>
+
         </div>
+
+        {position === 'teacher' ? <div className='d-flex'>
+          <div className='col-6 col-md-6 col-lg-3 pe-1 py-2'>
+            <select className="form-select" value={classID} onChange={(e) => handleChangeClass(e)} >
+              {[].concat(classDateRange || []).length < 1 ? <option value="Y" key="Y">(選擇班級)</option> : <></>}
+              {classDateRange.map((cls, index) => {
+                return <option key={cls.index} value={cls.id}>
+                  {cls.class_name}
+                </option>
+              })}
+            </select>
+          </div>
+
+          <div className="col-6 col-md-6 col-lg-3 ps-2 py-2">
+            <select className="form-select" value={studentID} onChange={(e) => handleChangeClassStudent(e)}>
+              {[].concat(studentDateRange || []).length < 1 ? <option value="Y" key="Y">(選擇學生)</option> : ''}
+              {studentDateRange.map((stu, index) => {
+                return <option key={stu.id} value={stu.id}>
+                  {ConvertStudentName(stu.name)}
+                </option>
+              })}
+            </select>
+          </div>
+        </div> : <></>}
+
+
+
 
         <div className="accordion-item " style={{ borderRadius: '5px', border: '0px solid #8A6D3B' }}>
           <h2 className="accordion-header" id="00">
@@ -526,21 +670,43 @@ function App() {
                 {[].concat(allSemesters || []).map((semester) => (
                   <th style={{ background: '#45A7AC', color: 'white' }}>{semester.title}</th>
                 ))}
+                <th style={{ background: '#45A7AC', color: 'white' }}>總計</th>
               </tr>
             </thead>
             <tbody>
 
-
               {[].concat(absenceList || []).map((abs) => (
+
                 absenceAndPeriodsList.includes(abs.Name) ?
                   <tr>
                     <th style={{ background: '#7BD8DC' }}>{abs.Name}（節）</th>
                     {[].concat(allSemesters || []).map((semester) => {
                       const matchedField = [].concat(abs.Field || []).find((a) => a.SchoolYear + '-' + a.Semester === semester.title);
-                      return <td>{matchedField ? matchedField.Sum : '0'}</td>;
+                      return <td>{matchedField ? matchedField.Sum : ''}</td>;
                     })}
+
+                    {[].concat(totalAbsenceList || []).map((total) => {
+                      if (abs.Name === total.name) {
+                        return <td>{total.sum}</td>;
+                      }
+                      return null;
+                    })}
+
+
                   </tr> : null
               ))}
+
+
+
+              <tr>
+                <th style={{ background: '#7BD8DC' }}>上課天數（天）</th>
+                {[].concat(allSemesters || []).map((semester) => {
+                  return <td>{semester.days}</td>;
+                })}
+                {/* 上課天數總計 */}
+                <td>{totalDays}</td>
+              </tr>
+
 
             </tbody>
 
