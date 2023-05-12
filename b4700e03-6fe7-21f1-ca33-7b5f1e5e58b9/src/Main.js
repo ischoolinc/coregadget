@@ -67,22 +67,28 @@ function Main() {
 
 
   useEffect(() => {
-    GetSubjectScoreSemesterList();
+    if (studentID)
+      GetSubjectScoreSemesterList();
   }, [studentID]);
 
 
   useEffect(() => {
-    GetAllSemesterSubjectScore();
-    GetAllSemesterEntryScore();
-    GetSemesterCredit();
-    //GetFailedSemesterSubjectCount();
 
-    GetRankInfo();
-    GetRankType();
+    if (studentID && selectedSemester) {
+      GetAllSemesterSubjectScore();
+      GetAllSemesterEntryScore();
+      GetSemesterCredit();
+      //GetFailedSemesterSubjectCount();
+
+      GetRankInfo();
+      GetRankType();
+    }
+
   }, [studentID, selectedSemester]);
 
   useEffect(() => {
-    GetViewSetting();
+    if (selectedSemester)
+      GetViewSetting();
   }, [selectedSemester]);
 
 
@@ -501,17 +507,17 @@ function Main() {
                 <div class="card-body">
                   <Link className={showNow ? 'card-block stretched-link text-decoration-none link-dark' : 'card-block stretched-link text-decoration-none link-dark disabledCursor'}
                     to={showNow ? '/CreditDetail' : null} key='' onClick={() => { handleShowCreditDetail(); }}>
-                    <div className='fs-4 fw-bold text-start ms-3'>取得學分</div>
+                    <div className='text-subject ms-3'>取得學分</div>
                     {!showNow ? <div className='' style={{ color: '#86B963' }}>開放查詢時間：{viewTime}</div> : <>
                       {[].concat(semesterCredit || []).map((credit) => {
                         return <div className='row row-cols-2'>
                           <div className='col'>
                             <div className='fs-4-blue text-nowrap'>{credit.studied_count === '' ? '-' : credit.studied_count}</div>
-                            <div className=''>已修學分</div>
+                            <div className='text-small'>已修學分</div>
                           </div>
                           <div className='col'>
                             <div className='fs-4-blue text-nowrap'>{credit.pass_count === '' ? '-' : credit.pass_count}</div>
-                            <div className=''>取得學分</div>
+                            <div className='text-small'>取得學分</div>
                           </div>
                         </div>
                       })}
@@ -575,7 +581,7 @@ function Main() {
                       <div className='d-flex'>
                         <div className='d-flex me-auto pb-2 align-items-center'>
                           <div className='rounded-circle me-1' style={{ width: '10px', height: '10px' }}></div>
-                          <div className='fs-4 fw-bold text-start'>{ses.entry}成績</div>
+                          <div className='text-subject'>{ses.entry}成績</div>
                         </div>
                       </div>
 
@@ -587,7 +593,7 @@ function Main() {
                               <div className='d-flex justify-content-center' >
                                 <div className={scoreColor}>{ses.score === '' ? '-' : ses.score}</div>
                               </div>
-                              <div className='text-nowrap'>分數</div>
+                              <div className='text-nowrap text-small'>分數</div>
                             </div>
                           </div>
 
@@ -601,19 +607,19 @@ function Main() {
                                 <div className={col}>
                                   <div>
                                     <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
-                                    <div className='text-nowrap'>名次</div>
+                                    <div className='text-nowrap text-small'>名次</div>
                                   </div>
                                 </div>
                                 <div className={col}>
                                   <div>
                                     <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
-                                    <div className='text-nowrap'>PR</div>
+                                    <div className='text-nowrap text-small'>PR</div>
                                   </div>
                                 </div>
                                 <div className={col}>
                                   <div>
                                     <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
-                                    <div className='text-nowrap'>百分比</div>
+                                    <div className='text-nowrap text-small'>百分比</div>
                                   </div>
                                 </div>
 
@@ -689,14 +695,14 @@ function Main() {
                     <div className='d-flex'>
                       <div className='d-flex me-auto pb-2 align-items-center'>
                         {!showNow ? <div className='rounded-circle me-1' style={{ width: '10px', height: '10px' }}></div> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
-                        <div className='fs-4 fw-bold text-start'>{sss.domain === "" ? "" : sss.domain + "-"}{sss.subject}</div>
+                        <div className='text-subject'>{sss.domain === "" ? "" : sss.domain + "-"}{sss.subject}</div>
                       </div>
                       <div className='d-flex align-items-center' >
-                        <div>{sss.entry}分項</div>
+                        <div className='text-small'>{sss.entry}分項</div>
                       </div>
                     </div>
 
-                    <div className='d-flex ms-3'>級別{sss.level} {sss.required_by} {sss.is_required} {sss.credit}學分</div>
+                    <div className='d-flex text-small ms-3'>級別{sss.level} {sss.required_by} {sss.is_required} {sss.credit}學分</div>
 
                     <div className='row align-items-center p-2'>
                       {/* {!showNow ? <div><div>未開放查詢。</div> <div>開放查詢時間：{viewTime}</div></div> : <> */}
@@ -707,7 +713,7 @@ function Main() {
                               <div className={scoreColor}>{sss.score === '' ? '-' : sss.score}</div>
                               <div className={scoreMark}>{sss.score_mark}</div>
                             </div>
-                            <div className='text-nowrap'>分數</div>
+                            <div className='text-nowrap text-small'>分數</div>
                           </div>
                         </div>
 
@@ -721,19 +727,19 @@ function Main() {
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.rank}</div>
-                                  <div className='text-nowrap'>名次</div>
+                                  <div className='text-nowrap text-small'>名次</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.pr}</div>
-                                  <div className='text-nowrap'>PR</div>
+                                  <div className='text-nowrap text-small'>PR</div>
                                 </div>
                               </div>
                               <div className={col}>
                                 <div>
                                   <div className='fs-4-blue text-nowrap'>{rank.percentile}</div>
-                                  <div className='text-nowrap'>百分比</div>
+                                  <div className='text-nowrap text-small'>百分比</div>
                                 </div>
                               </div>
 

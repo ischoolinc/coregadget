@@ -682,10 +682,10 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {ces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
                             {/* <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div> */}
-                            <div className='fs-4 fw-bold text-start'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
+                            <div className='text-subject text-start'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
                           </div>
-                          <div className='d-flex p-2' >
-                            <div>{ces.Subject === avgSetting ? '' : '權數'}</div><div>{ces.Credit}</div>
+                          <div className='d-flex text-small pt-2 pe-2' >
+                            <div>{ces.Subject === avgSetting ? '' : '權數'}{ces.Credit}</div>
                           </div>
                         </div>
 
@@ -697,7 +697,7 @@ function Main() {
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
                                     <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}</div>
-                                    <div className='me-0 pe-0'>分數</div>
+                                    <div className='text-small me-0 pe-0'>分數</div>
                                   </div>
 
                                   <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ?
@@ -727,7 +727,7 @@ function Main() {
                                           <div className='d-flex justify-content-center'>
                                             <div className='row align-self-center'>
                                               <div className='fs-4 pe-0 me-0'>{rField.Rank}</div>
-                                              <div className='pe-0 me-0'>名次</div>
+                                              <div className='text-small pe-0 me-0'>名次</div>
                                             </div>
 
                                             <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ?
@@ -740,7 +740,7 @@ function Main() {
                                           <div className='d-flex justify-content-center'>
                                             <div className='row align-self-center'>
                                               <div className='fs-4'>{rField.PR}</div>
-                                              <div>PR</div>
+                                              <div className='text-small'>PR</div>
                                             </div>
                                           </div>
                                         </div>
@@ -749,7 +749,7 @@ function Main() {
                                           <div className='d-flex justify-content-center'>
                                             <div className='row align-self-center'>
                                               <div className='fs-4'>{rField.Percentile}</div>
-                                              <div className='text-nowrap'>百分比</div>
+                                              <div className='text-nowrap text-small'>百分比</div>
                                             </div>
                                           </div>
                                         </div>
@@ -785,7 +785,7 @@ function Main() {
               <div className="card-body">
                 <div className='d-flex'>
                   <div className='d-flex me-auto p-2 align-items-center'>
-                    <div className='fs-4 fw-bold'>{avgSetting}</div>
+                    <div className='text-subject'>{avgSetting}</div>
                   </div>
                 </div>
                 {examAvgRankMatrix.map((examAvg) => {
@@ -827,7 +827,7 @@ function Main() {
                                         : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
 
                                       {/* <div className={scoreColor}>{avgField.Score === '' ? '-' : avgField.Score}</div> */}
-                                      <div className='me-0 pe-0'>分數</div>
+                                      <div className='text-small me-0 pe-0'>分數</div>
                                     </div>
 
                                     <div>{index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' : Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
@@ -840,7 +840,7 @@ function Main() {
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-self-center'>
                                     <div className='fs-4 pe-0 me-0'>{avgField.Rank}</div>
-                                    <div className='pe-0 me-0'>名次</div>
+                                    <div className='text-small pe-0 me-0'>名次</div>
                                   </div>
 
                                   <div>{previousExamID === '' || avgField.Rank === '' || examAvg.Field[im].Rank === '' ? '' : Number(avgField.Rank) > Number(examAvg.Field[im].Rank) ? <img className='arrow' src={down} alt='↓' /> : Number(avgField.Rank) === Number(examAvg.Field[im].Rank) ? '' : <img className='arrow' src={up} alt='↑' />}</div>
@@ -851,7 +851,7 @@ function Main() {
                                   <div className='d-flex justify-content-center'>
                                     <div className='row align-self-center'>
                                       <div className='fs-4'>{avgField.PR}</div>
-                                      <div>PR</div>
+                                      <div className='text-small'>PR</div>
                                     </div>
                                   </div>
                                 </div>
@@ -860,7 +860,7 @@ function Main() {
                                   <div className='d-flex justify-content-center'>
                                     <div className='row align-self-center'>
                                       <div className='fs-4'>{avgField.Percentile}</div>
-                                      <div className='text-nowrap'>百分比</div>
+                                      <div className='text-nowrap text-small'>百分比</div>
                                     </div>
                                   </div>
                                 </div>
@@ -893,7 +893,7 @@ function Main() {
                   <div className="card-body">
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
-                        <div className='fs-4 fw-bold'>{avgSetting}</div>
+                        <div className='text-subject'>{avgSetting}</div>
                       </div>
                     </div>
                     <div className='pt-2'>
@@ -918,10 +918,10 @@ function Main() {
                         <div className='d-flex me-auto p-2 align-items-center'>
                           {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>}
 
-                          <div className='fs-4 fw-bold'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
+                          <div className='text-subject'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
                         </div>
-                        <div className='d-flex p-2' >
-                          <div>{nces.Subject === avgSetting ? '' : '權數'}</div><div>{nces.Credit}</div>
+                        <div className='d-flex text-small pt-2 pe-2' >
+                          <div>{nces.Subject === avgSetting ? '' : '權數'}{nces.Credit}</div>
                         </div>
                       </div>
 
@@ -946,7 +946,7 @@ function Main() {
                                 </div>
                                 <div>{index === 0 || nField.ToView === 'f' || nField.Score === '' || nces.Field[im].Score === '' ? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
-                              <div>{nField.ExamName}</div>
+                              <div className='text-small'>{nField.ExamName}</div>
                             </div>
                           </div>
                         })}
@@ -971,7 +971,7 @@ function Main() {
                       <div className="card-block">
                         <div className='d-flex'>
                           <div className='d-flex me-auto p-2 align-items-center'>
-                            <div className='fs-4 fw-bold'>{earm.ItemName}</div>
+                            <div className='text-subject'>{earm.ItemName}</div>
                           </div>
                           {/* <div className='d-flex p-2' >
                           <div></div><div></div>
