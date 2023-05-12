@@ -68,7 +68,7 @@ function App() {
   // 等第對照表
   const [degreeList, setDegreeList] = useState([]);
 
-  // 核可假別
+  // 核可節次（有勾選"所有學期缺課結束合計未超過上課節數"才會有值）
   const [absenceAndPeriodsList, setAbsenceAndPeriods] = useState([]);
 
 
@@ -626,24 +626,24 @@ function App() {
                 {[].concat(dailyCalcRule || []).map((scr) => (
                   <>
                     <div className='d-center'> {scr.type === 'AbsenceAmountEach' && scr.checked === 'True' ?
-                      '◇ 每學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（核可假別：' + scr.假別 + '）' : ''}</div>
+                      '◇ 每學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（統計假別：' + scr.假別.replace(/,/g, "、") + '）' : ''}</div>
 
                     <div className='d-center'> {scr.type === 'AbsenceAmountLast' && scr.checked === 'True' ?
-                      '◇ 第六學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（核可假別：' + scr.假別 + '）' : ''}</div>
+                      '◇ 第六學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（統計假別：' + scr.假別.replace(/,/g, "、") + '）' : ''}</div>
 
                     <div className='d-center'> {scr.type === 'AbsenceAmountAll' && scr.checked === 'True' ?
-                      '◇ 所有學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（核可假別：' + scr.假別 + '）' : ''}</div>
+                      '◇ 所有學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（統計假別：' + scr.假別.replace(/,/g, "、") + '）' : ''}</div>
 
 
                     <div className='d-center'> {scr.type === 'AbsenceAmountEachFraction' && scr.checked === 'True' ?
-                      '◇ 每學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（核可假別：' + scr.假別 + '、每日節數：' + scr.每日節數 + '）' : ''}</div>
+                      <div> <div>◇ 每日上課節數{scr.每日節數}節。</div><div>◇ 每學期授課總節數扣除學校核可之公、喪、病，缺課節數合計未超過{scr.節數}，符合畢業資格。（統計假別：{scr.假別.replace(/,/g, "、")}）</div></div> : ''}</div>
 
 
                     <div className='d-center'> {scr.type === 'AbsenceAmountLastFraction' && scr.checked === 'True' ?
-                      '◇ 第六學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（核可假別：' + scr.假別 + '、每日節數：' + scr.每日節數 + '）' : ''}</div>
+                      <div> <div>◇ 每日上課節數{scr.每日節數}節。</div><div>◇ 第六學期授課總節數扣除學校核可之公、喪、病，缺課節數合計未超過{scr.節數}，符合畢業資格。（統計假別：{scr.假別.replace(/,/g, "、")}）</div></div> : ''}</div>
 
                     <div className='d-center'> {scr.type === 'AbsenceAmountAllFraction' && scr.checked === 'True' ?
-                      '◇ 所有學期缺課節數合計未超過' + scr.節數 + '節，符合畢業資格。（核可假別：' + scr.假別 + '、每日節數：' + scr.每日節數 + '）' : ''}</div>
+                      <div> <div>◇ 每日上課節數{scr.每日節數}節。</div><div>◇ 所有學期授課總節數扣除學校核可之公、喪、病（核可假別：{scr.核可假別.replace(/,/g, "、")}），缺課節數合計未超過{scr.節數}，符合畢業資格。（統計假別：{scr.假別.replace(/,/g, "、")}）</div></div> : ''}</div>
 
 
 
@@ -675,7 +675,7 @@ function App() {
             </thead>
             <tbody>
 
-              {[].concat(absenceList || []).map((abs) => (
+              {/* {[].concat(absenceList || []).map((abs) => (
 
                 absenceAndPeriodsList.includes(abs.Name) ?
                   <tr>
@@ -694,7 +694,35 @@ function App() {
 
 
                   </tr> : null
-              ))}
+              ))} */}
+
+
+              {[].concat(absenceList || []).map((abs) => {
+                if (absenceAndPeriodsList.length > 0 && !absenceAndPeriodsList.includes(abs.Type)) {
+                  return null;
+                }
+                return (
+                  <tr key={abs.Name}>
+                    <th style={{ background: '#7BD8DC' }}>{abs.Name}（節）</th>
+                    {[].concat(allSemesters || []).map((semester) => {
+                      const matchedField = [].concat(abs.Field || []).find((a) => a.SchoolYear + '-' + a.Semester === semester.title);
+                      return <td key={semester.title}>{matchedField ? matchedField.Sum : ''}</td>;
+                    })}
+                    {[].concat(totalAbsenceList || []).map((total) => {
+                      if (abs.Name === total.name) {
+                        return <td key={total.name}>{total.sum}</td>;
+                      }
+                      return null;
+                    })}
+                  </tr>
+                );
+              })}
+
+
+
+
+
+
 
 
 
