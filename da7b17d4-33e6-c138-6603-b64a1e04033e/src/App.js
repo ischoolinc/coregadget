@@ -532,7 +532,8 @@ function App() {
 
 
         <div className="overflow-x-auto mt-2">
-          <table className="table table-compact w-full">
+          {/* _GetDiscipline 依照學期對照表顯示 */}
+          {/* <table className="table table-compact w-full">
             <thead>
               <tr>
                 <th className="table-cell">
@@ -609,7 +610,71 @@ function App() {
 
             </tbody>
 
-          </table>
+          </table> */}
+
+          {/* GetDiscipline 顯示所有學期 */}
+          {[].concat(disciplineList || []).length ?
+            <table className="table table-compact w-full">
+              <thead>
+                <tr>
+                  <th className="table-cell">
+                    <div className='text-end' style={{ color: 'white' }}>學期</div>
+                    <div className='text-start'>獎懲</div>
+                  </th>
+
+                  {[].concat(disciplineList || []).map((d) => (
+                    <th style={{ background: '#45A7AC', color: 'white' }}>{d.school_year}-{d.semester}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+
+
+
+                <tr>
+                  <th style={{ background: '#7BD8DC' }}>大功</th>
+                  {[].concat(disciplineList || []).map((dis) => {
+                    return <td>{dis.大功}</td>;
+                  })}
+                </tr>
+
+                <tr>
+                  <th style={{ background: '#7BD8DC' }}>小功</th>
+                  {[].concat(disciplineList || []).map((dis) => {
+                    return <td>{dis.小功}</td>;
+                  })}
+                </tr>
+                <tr>
+                  <th style={{ background: '#7BD8DC' }}>嘉獎</th>
+                  {[].concat(disciplineList || []).map((dis) => {
+                    return <td>{dis.嘉獎}</td>;
+                  })}
+                </tr>
+                <tr>
+                  <th style={{ background: '#7BD8DC' }}>大過</th>
+                  {[].concat(disciplineList || []).map((dis) => {
+                    return <td>{dis.大過}</td>;
+                  })}
+                </tr>
+                <tr>
+                  <th style={{ background: '#7BD8DC' }}>小過</th>
+                  {[].concat(disciplineList || []).map((dis) => {
+                    return <td>{dis.小過}</td>;
+                  })}
+                </tr>
+                <tr>
+                  <th style={{ background: '#7BD8DC' }}>警告</th>
+                  {[].concat(disciplineList || []).map((dis) => {
+                    return <td>{dis.警告}</td>;
+                  })}
+                </tr>
+
+
+
+              </tbody>
+
+            </table>
+            : <div className="my-3">未有獎懲紀錄，或所有懲戒已銷過。</div>}
         </div>
 
 
