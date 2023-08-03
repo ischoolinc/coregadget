@@ -1,3 +1,5 @@
+<!-- 輔導學生打開學生的頁面 -->
+
 <div *ngIf="!counselStudentService.isLoading; else tmpLoading">
   <app-permission-denied *ngIf="deny"></app-permission-denied>
   <div *ngIf="!deny">
@@ -12,7 +14,15 @@
             </div> -->
      
             
-               <div class ="d-flex flex-wrap align-middle" style ="  border-left: 2px solid  #94d0cc ; padding-left :5px ;margin:0px ;font-size: 18px; font-weight: 650;" >
+               <div class ="d-flex flex-wrap align-middle" style =" 
+                border-left: 2px solid
+                #94d0cc ; padding-left :5px ;
+                margin:0px ;font-size: 18px; 
+                font-weight: 650;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left:15px;
+                " >
               <div class="text-nowrap mr-2" > 
                 {{ currentStudent.ClassName }}
         

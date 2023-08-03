@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RoutesRecognized } from "@angular/router";
 import { RoleService } from "./role.service";
 import { GlobalService } from "./global.service";
@@ -13,7 +13,18 @@ import { PublicSecurityToken } from "./dsutil-ng/envelope";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"]
 })
+
+
+
+
 export class AppComponent implements OnInit {
+
+
+  @HostListener('window:scroll', ['$event']) onScrollEvent($event){
+    console.log($event);
+    console.log("scrolling");
+    // alert(1234)
+  } 
 
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
@@ -174,5 +185,10 @@ export class AppComponent implements OnInit {
     this.hasNewTransfer = !!(pointState.find(v => v.Enabled === 't'));
   }
 
+
+  onScroll (){
+   alert(" hey")
+
+  }
 }
 

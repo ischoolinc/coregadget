@@ -2,7 +2,7 @@
 
 <div *ngIf="true" class="modal fade" id="addInterview" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
   aria-hidden="true">
-  <div class="modal-dialog 	modal-lg" role="document">
+  <div class="modal-dialog 	modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addInterviewLabel">
@@ -126,7 +126,7 @@
             <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContactItemHasValue">*</span>
             <b class="modal-sub-title">聯絡事項</b>
           </label>
-          <textarea id="contactMatter" (input)="autoResize($event.target)" 
+          <textarea  rows="6"  id="contactMatter" (input)="autoResize($event.target)" 
             class="form-control" placeholder="請輸入聯絡事項"
             [(ngModel)]="_currentCounselInterview.ContactItem"
             (keyup)="_currentCounselInterview.checkValue()"></textarea>
@@ -137,7 +137,7 @@
             <b class="modal-sub-title">輔導內容 </b>
             <span class="text-muted">（會顯示於輔導記錄卡）</span>
           </label>
-          <textarea id="description" (input)="autoResize($event.target)"
+          <textarea  rows="6"  id="description" (input)="autoResize($event.target)"
             class="form-control" placeholder="請輸入輔導內容"
             [(ngModel)]="_currentCounselInterview.Content"></textarea>
         </div>

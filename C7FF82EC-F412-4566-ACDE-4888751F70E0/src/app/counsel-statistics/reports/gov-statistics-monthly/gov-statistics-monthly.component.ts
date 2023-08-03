@@ -433,9 +433,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
       const ws3 = XLSX.utils.table_to_sheet(table);
 
-      XLSX.utils.book_append_sheet(wb, ws1, "表A-1-輔導教師-1_當月個案");
-      XLSX.utils.book_append_sheet(wb, ws2, "表A-2-輔導教師-2_相關服務");
-      XLSX.utils.book_append_sheet(wb, ws3, "填報說明-A-輔導教師");
+      XLSX.utils.book_append_sheet(wb, ws1, "1.當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
+      XLSX.utils.book_append_sheet(wb, ws3, "3.填報說明");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
     } else {

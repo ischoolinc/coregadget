@@ -16,7 +16,7 @@ import { MatSnackBar } from "@angular/material";
 export class CounselListComponent implements OnInit {
   isShowInfo =false;
   public deny: boolean;
-  public mod: string;
+  public mod: 'class'|'guidance'|'search'|string;
   public target: string;
   /**顯示的list <可能有條件塞選>(view use) */ 
   public targetList: CounselStudent[];

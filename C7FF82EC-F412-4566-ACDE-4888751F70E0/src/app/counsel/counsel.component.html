@@ -11,25 +11,26 @@
       <div *ngIf="roleService.enableCounsel" class="tab-pane fade show active ">
          <div class="input-group my-3">
             <div *ngIf="counselStudentService.counselClass" class="input-group-prepend">
-               <button id ="counsel-student" class="btn btn-light dropdown-toggle btn-deep" type="button" data-toggle="dropdown"
+               <button id ="counsel-student" class="btn btn-light dropdown-toggle btn-deep" type="button" data-toggle="dropdown" style ="width :200px ; font-size : "
                   aria-haspopup="true" aria-expanded="false">
                   {{ selectItem || "請選擇" }} 
+   
                </button>
-               <div class="dropdown-menu scrollable-menu" style="min-width: 180px; ">
-                  <h6 class="dropdown-header" *ngIf="roleService.role.indexOf('班導師') >= 0">班導師身分</h6>
+               <div class="dropdown-menu scrollable-menu" style="min-width: 200px; min-height: 500px; ">
+                  <h6 class="dropdown-header drop-list-title" *ngIf="roleService.role.indexOf('班導師') >= 0">班導師身分</h6>
 
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('班導師')"
                      [routerLink]="['list', 'class', classRec.ClassID]"
                      [ngClass]="{ active: selectItem === classRec.ClassName }" class="dropdown-item">
-                     {{ classRec.ClassName }}
+                     {{ classRec.ClassName }} 
                   </a>
-                  <h6 class="dropdown-header" style="border-top :2px solid #80808057"
+                  <h6 class="dropdown-header drop-list-title" style="border-top :2px solid #80808057"
                      *ngIf="roleService.role.indexOf('認輔老師') >= 0">個案認輔教師身分</h6>
                   <a class="dropdown-item" *ngIf="roleService.role.indexOf('認輔老師') >= 0"
                      [routerLink]="['list', 'guidance', 'g']" [ngClass]="{ active: selectItem === '認輔學生' }">
                      個案認輔學生
                   </a>
-                  <h6 class="dropdown-header" style="border-top :2px solid #80808057"
+                  <h6 class="dropdown-header drop-list-title" style="border-top :2px solid #80808057"
                      *ngIf="roleService.role.indexOf('輔導老師') >= 0">輔導老師身分</h6>
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('輔導老師')"
                      [routerLink]="['list', 'class', classRec.ClassID]"

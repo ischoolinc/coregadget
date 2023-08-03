@@ -4687,10 +4687,14 @@ fieldset:disabled a.btn {
   max-width: 52.5rem;
 }
 
+.modal-xl {
+  max-width: 72.5rem;
+  margin-top: 50px;
+  /* z-index: 9999 !important; */
+}
 .modal-sm {
   max-width: 17.5rem;
 }
-
 .modal-body {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
@@ -12289,7 +12293,7 @@ a.bg-light:active, a.bg-light:focus, a.bg-light:hover {
   .sticky-top {
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: 50px;
     z-index: 40;
   }
 }

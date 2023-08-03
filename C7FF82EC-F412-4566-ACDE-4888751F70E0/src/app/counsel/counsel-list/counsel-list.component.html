@@ -1,3 +1,5 @@
+<!-- 學生 mod -->
+<!-- {{mod}} -->
 <div *ngIf="!counselStudentService?.isLoading; else tmpLoading">
   <app-permission-denied *ngIf="deny"></app-permission-denied>
   <div *ngIf="!deny">
@@ -15,9 +17,8 @@
       </ng-container>
 
       <div class="font-weight-bold mb-2">
-        <h5>
-
-          {{ currentSchoolYear }}學年度 第{{ currentSemester }}學期
+        <h5  class ="base-semester " style ="padding-left: 20px;">
+          {{ currentSchoolYear }}學年度 第{{ currentSemester }}學期 
         </h5>
       </div>
       <ul class="rwd-table">
@@ -65,11 +66,11 @@
               <div style="width:100%;position: relative;">
                 <div *ngIf="stuRec.Status!='一般'"
                      class="text-danger"
-                     style="position: absolute; top:-17px; left:-12px; z-index: 100;">
+                     style="position: absolute; top:-17px; left:-12px; z-index: 30;">
                   <small>{{stuRec.Status}}</small>
                 </div>
                 <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
-                  <div class="w-100 align-baseline" style ="cursor: context-menu !important;">
+                  <div class="w-100 align-baseline base-studentname" style ="cursor: context-menu !important;">
                   {{ stuRec.StudentName }}
                 </div>
               </div>
@@ -87,7 +88,7 @@
             style ="cursor: context-menu !important;"
                 title="{{stuRec.LastInterviewContact}}">
               <div style="width:100%;position: relative;">
-                <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
+                <!-- <div style="width:100%;position:ab solute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
                   <div  class="w-100 align-baseline">
                   {{ stuRec.LastInterviewContact }}
                 </div>

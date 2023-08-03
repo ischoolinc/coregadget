@@ -1,6 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
+:root {
+    --header-height : 30px;
+  }
 body {
 /* background: rgba(206, 255, 250, 0.521) !important; */
 
@@ -238,7 +241,7 @@ ul.rwd-table .thead li {
 
     background: #94d0cc !important;
     color: #3e495f;
-    font-size: 17px;
+    font-size: 16px;
     padding: 19px 2px !important;
 
 }
@@ -247,8 +250,9 @@ ul.rwd-table .thead li {
 .nav-tabs .nav-link.active {
 
     color: #2e334a !important;
-    font-size: 16px !important;
+    font-size: 17px !important;
     background: #94d0cc17 !important;
+    
 
 }
 
@@ -317,7 +321,7 @@ ul.rwd-table .thead li {
 
 .sm-title {
     margin: 10px;
-    padding: 15px;
+    padding: 10px;
     font-size: 1.2rem;
     margin-bottom: 6px;
 
@@ -799,15 +803,47 @@ textarea{
     font-weight: 900;
     overflow :hidden ;
     cursor:  pointer;
-     border: none;
-     outline: none ;
+    border: none;
+    outline: none ;
 
 }
 
 
 .upload-file-btn :active{
-
     border: none;
-     outline: none ;
-     
+    outline: none ;
+}
+
+
+
+.base-semester{
+   font-size :20px ;
+   padding: 5px ;
+   font-weight: 900;
+}
+.base-studentname{
+   font-weight: 900; 
+}
+
+.header{
+    /* height: 60px; */
+    position: fixed !important;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+    /* background-color: #a8d9d6; */
+    background-color: #ffffff;
+}
+.header-base {
+    height: 30px;
+    margin-bottom:10px ;
+    width: 100%;
+    /* background-color: #bae5dc; */
+    z-index: 40;
+}
+
+.drop-list-title {
+    background: #e6edebd3;
+    line-height :1.0rem !important;
+
 }

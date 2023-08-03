@@ -1,9 +1,10 @@
-<router-outlet name="simple-page"></router-outlet>
+<!-- <router-outlet name="simple-page"></router-outlet> -->
 
 
 
-<div  id="appcomponent" class="container-fluid cbs d-flex justify-content-between flex-column" style="padding-top: 0px;">
-  <div hidden id="userInfo"
+
+<div   id="appcomponent" class="cbs d-flex justify-content-between flex-column" >
+  <!-- <div hidden id="userInfo"
     style ="display: float ;
           z-index: 99;
            width :300px;
@@ -12,25 +13,21 @@
            position: fixed;
            border-radius: 0px 50px 50px 0px;
            bottom:0px;
-          left:0px;
-">
+          left:0px;">
 目前權限 :
 {{roleService.role}}
-
-
-
-  </div>
+  </div> -->
   <div id="index" page>
-    <nav aria-label="breadcrumb text-nowrap text-truncate">
+ 
       <!-- <ol class="breadcrumb">
         <li class="breadcrumb-item active"
             aria-current="page">輔導紀錄</li>
       </ol> -->
-    </nav>
+
+    <ul class="nav nav-justified nav-tabs mb-3 header-base ">
+    </ul>
     <!-- TAB NAV -->
-
-
-    <ul class="nav nav-justified nav-tabs mb-3">
+    <ul  class="nav nav-justified nav-tabs mb-3 header ">
       <ng-container *ngIf="counselVisable === true">
         <li class="nav-item">
           <a class="nav-link" [attr.data-toggle]="roleService.enableCounsel?'tab':null"
@@ -172,9 +169,16 @@
 
 
     </ul>
-    <router-outlet></router-outlet>
+
+    <!-- style="margin-top: 0px; padding: left 20px;; -->
+    <div style ="padding-left :10px; padding-right: 10px; ">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 
+
+
+  
   <footer class="text-center p-2 mt-auto">
     Powered By ischool
   </footer>
