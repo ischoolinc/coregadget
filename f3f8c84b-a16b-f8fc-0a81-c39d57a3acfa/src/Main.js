@@ -10,8 +10,8 @@ function Main() {
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
-  //選擇的學生 //sessionStorage
-  const [studentID, setStudent] = useState(sessionStorage.getItem('StudentID'));
+  //選擇的學生 //localStorage
+  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
 
   // 該學生的所有學期成績 學年期
   const [semesterRange, setSubjectScoreSemesterList] = useState([]);
@@ -19,14 +19,14 @@ function Main() {
   //系統學年期 
   const [currSemester, setCurrSemester] = useState("");
 
-  //當前顯示學年期 //sessionStorage
-  const [selectedSemester, setViewSemester] = useState(sessionStorage.getItem('Semester'));
+  //當前顯示學年期 //localStorage
+  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
 
-  //當前顯示 科目成績 or 領域成績 //sessionStorage
-  const [selectedSubjectType, setSubjectType] = useState(Number(sessionStorage.getItem('SelectedSubjectType')));
+  //當前顯示 科目成績 or 領域成績 //localStorage
+  const [selectedSubjectType, setSubjectType] = useState(Number(localStorage.getItem('SelectedSubjectType')));
 
-  //當前顯示排名類別 //sessionStorage
-  const [selectedRankType, setViewRankType] = useState(sessionStorage.getItem('RankType'));
+  //當前顯示排名類別 //localStorage
+  const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
 
   // 該學生的指定學年期 之排名類別
   const [rankTypeList, setRankTypeList] = useState([]);
@@ -76,7 +76,7 @@ function Main() {
 
   const position = window.gadget.params.system_position;
   const system_type = window.gadget.params.system_type;
- 
+
   useEffect(() => {
     GetCurrentSemester();
     //GetViewSetting();
@@ -85,22 +85,26 @@ function Main() {
 
 
   useEffect(() => {
-    GetSubjectScoreSemesterList();
+    if (studentID)
+      GetSubjectScoreSemesterList();
   }, [studentID]);
 
 
   useEffect(() => {
-    GetAllSemesterSubjectScore();
-    GetAllSemesterDomainScore();
-    GetAllSemesterMixDomainScore();
-    GetFailedSemesterSubjectCount();
-    GetFailedSemesterDomainCount();
-    GetRankInfo();
-    GetRankType();
+    if (studentID && selectedSemester) {
+      GetAllSemesterSubjectScore();
+      GetAllSemesterDomainScore();
+      GetAllSemesterMixDomainScore();
+      GetFailedSemesterSubjectCount();
+      GetFailedSemesterDomainCount();
+      GetRankInfo();
+      GetRankType();
+    }
   }, [studentID, selectedSemester]);
 
   useEffect(() => {
-    GetViewSetting();
+    if (selectedSemester)
+      GetViewSetting();
     //GetRankType();
   }, [selectedSemester]);
 
@@ -178,7 +182,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                sessionStorage.clear();
+                localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -227,16 +231,16 @@ function Main() {
               setViewSemester([].concat(response.Semester || [])[0].schoolyear + [].concat(response.Semester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (sessionStorage.getItem('IsBack')) {
+              if (localStorage.getItem('IsBack')) {
                 setViewSemester(tempSelectedSemester);
-                //sessionStorage.removeItem('IsBack');
-                sessionStorage.clear();
+                //localStorage.removeItem('IsBack');
+                localStorage.clear();
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                sessionStorage.clear();
+                localStorage.clear();
               }
 
             }
@@ -453,15 +457,15 @@ function Main() {
     if (e.subject && e.domain === '')
       subjectType = 'subject';
 
-    sessionStorage.clear();
+    localStorage.clear();
     // 按下去的時候才存
-    sessionStorage.setItem('StudentID', studentID);
-    sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', subject);
-    //sessionStorage.setItem('PassingStandard', passingStardard);
-    sessionStorage.setItem('SubjectType', subjectType);
-    sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
+    localStorage.setItem('StudentID', studentID);
+    localStorage.setItem('RankType', selectedRankType);
+    localStorage.setItem('Semester', selectedSemester);
+    localStorage.setItem('Subject', subject);
+    //localStorage.setItem('PassingStandard', passingStardard);
+    localStorage.setItem('SubjectType', subjectType);
+    localStorage.setItem('SelectedSubjectType', selectedSubjectType);
   };
 
 
@@ -484,9 +488,9 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除sessionStorage 
+  // 手動重新整理/去別的頁面，將清除localStorage 
   window.onunload = function () {
-    sessionStorage.clear();
+    localStorage.clear();
   }
 
 
@@ -729,7 +733,7 @@ function Main() {
                         <div className='d-flex text-start p-2 ms-2'>{sss.textq}</div>
                         {system_type === 'kh' ? '' :
                           <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                            <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                            <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                             更多
                           </div>}
                       </Link>
@@ -907,7 +911,7 @@ function Main() {
                       <div className='d-flex text-start p-2 ms-2'>{sds.textq}</div>
                       {system_type === 'kh' ? '' :
                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
                         </div>}
                     </Link>
@@ -1037,7 +1041,7 @@ function Main() {
 
                       {system_type === 'kh' ? '' :
                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
                         </div>}
                     </div>
