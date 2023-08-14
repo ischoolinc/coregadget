@@ -12,8 +12,8 @@ function Main() {
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
-  //選擇的學生 //sessionStorage
-  const [studentID, setStudent] = useState(sessionStorage.getItem('StudentID'));
+  //選擇的學生 //localStorage
+  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
 
   // 該學生的所有課程學年期
   const [courseSemesterRange, setCourseSemesterList] = useState([]);
@@ -24,14 +24,14 @@ function Main() {
   //系統學年期 
   const [currSemester, setCurrSemester] = useState("");
 
-  //當前顯示學年期 //sessionStorage
-  const [selectedSemester, setViewSemester] = useState(sessionStorage.getItem('Semester'));
+  //當前顯示學年期 //localStorage
+  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
 
-  //當前顯示評量ID //sessionStorage
-  const [selectedExam, setViewExam] = useState(sessionStorage.getItem('ExamID'));
+  //當前顯示評量ID //localStorage
+  const [selectedExam, setViewExam] = useState(localStorage.getItem('ExamID'));
 
-  //當前顯示排名類別 //sessionStorage
-  const [selectedRankType, setViewRankType] = useState(sessionStorage.getItem('RankType'));
+  //當前顯示排名類別 //localStorage
+  const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
 
   // 該學生的指定學年期、指定評量 之排名類別
   const [examRankType, setRankType] = useState([]);
@@ -79,21 +79,25 @@ function Main() {
 
 
   useEffect(() => {
-    GetCourseSemesterList();
+    if (studentID)
+      GetCourseSemesterList();
   }, [studentID]);
 
 
   useEffect(() => {
-    GetCourseExamList();
-    GetAllExamScore();
-    GetRankInfo()
-    //GetExamAvgScore();
-    GetScoreCalcRulePassingStandard();
-    GetExamAvgRankMatrix();
+    if (studentID && selectedSemester) {
+      GetCourseExamList();
+      GetAllExamScore();
+      GetRankInfo()
+      //GetExamAvgScore();
+      GetScoreCalcRulePassingStandard();
+      GetExamAvgRankMatrix();
+    }
   }, [studentID, selectedSemester]);
 
   useEffect(() => {
-    GetRankType();
+    if (selectedSemester && selectedExam)
+      GetRankType();
   }, [selectedSemester, selectedExam]);
 
 
@@ -103,7 +107,8 @@ function Main() {
 
 
   useEffect(() => {
-    CountFailedExamSubject();
+    if (selectedExam && selectedSemester && courseExamScore)
+      CountFailedExamSubject();
   }, [selectedExam, selectedSemester, courseExamScore]);
 
 
@@ -122,12 +127,13 @@ function Main() {
           console.log('GetViewSettingError', error);
           return 'err';
         } else {
-          if (response) {
-            let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
-            setShowNoRankSetting(isShowRank);
-            //setShowNoRankSetting(true);
-            setAvgSetting(response.Setting.show_score);
-          }
+          if (response)
+            if (response.length) {
+              let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
+              setShowNoRankSetting(isShowRank);
+              //setShowNoRankSetting(true);
+              setAvgSetting(response.Setting.show_score);
+            }
         }
       }
     });
@@ -205,7 +211,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                sessionStorage.clear();
+                localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -253,16 +259,16 @@ function Main() {
               setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (sessionStorage.getItem('IsBack')) {
+              if (localStorage.getItem('IsBack')) {
                 setViewSemester(tempSelectedSemester);
-                //sessionStorage.removeItem('IsBack');
-                sessionStorage.clear();
+                //localStorage.removeItem('IsBack');
+                localStorage.clear();
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                sessionStorage.clear();
+                localStorage.clear();
               }
 
             }
@@ -317,7 +323,7 @@ function Main() {
             setCourseExamList([].concat(response.ExamList || []));
             if ([].concat(response.ExamList || []).length < 1 || selectedExam === null) {
               setViewExam('0');
-              console.log('ASAselectedExam,', selectedExam)
+              //console.log('ASAselectedExam,', selectedExam)
             }
             if ([].concat(response.ExamList || []).length || selectedExam === null) {
               var temp = false;
@@ -445,28 +451,28 @@ function Main() {
   }
 
   const handleShowRankDetail = (e) => {
-    sessionStorage.clear();
+    localStorage.clear();
     // 按下去的時候才存
-    sessionStorage.setItem('StudentID', studentID);
-    sessionStorage.setItem('ExamID', selectedExam);
-    sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('CourseID', e.CourseID);
-    sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', e.Subject);
-    sessionStorage.setItem('PassingStandard', e.PassingStandard);
+    localStorage.setItem('StudentID', studentID);
+    localStorage.setItem('ExamID', selectedExam);
+    localStorage.setItem('RankType', selectedRankType);
+    localStorage.setItem('CourseID', e.CourseID);
+    localStorage.setItem('Semester', selectedSemester);
+    localStorage.setItem('Subject', e.Subject);
+    localStorage.setItem('PassingStandard', e.PassingStandard);
 
   };
 
   const handleShowAvgRankDetail = (e) => {
-    sessionStorage.clear();
+    localStorage.clear();
     // 按下去的時候才存
-    sessionStorage.setItem('StudentID', studentID);
-    sessionStorage.setItem('ExamID', selectedExam);
-    sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('CourseID', 0);
-    sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', e.ItemName);
-    sessionStorage.setItem('PassingStandard', avgPassingStardard);
+    localStorage.setItem('StudentID', studentID);
+    localStorage.setItem('ExamID', selectedExam);
+    localStorage.setItem('RankType', selectedRankType);
+    localStorage.setItem('CourseID', 0);
+    localStorage.setItem('Semester', selectedSemester);
+    localStorage.setItem('Subject', e.ItemName);
+    localStorage.setItem('PassingStandard', avgPassingStardard);
   };
 
 
@@ -533,9 +539,9 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除sessionStorage 
+  // 手動重新整理/去別的頁面，將清除localStorage 
   window.onunload = function () {
-    sessionStorage.clear();
+    localStorage.clear();
   }
 
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
@@ -754,10 +760,10 @@ function Main() {
                                           </div>
                                         </div>
                                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                                           更多
-                                          </div>
-                                        
+                                        </div>
+
                                       </>
                                   })}
 
@@ -865,10 +871,10 @@ function Main() {
                                   </div>
                                 </div>
                                 <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
-                                          更多
-                                          </div>
-                                </>}
+                                  <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                  更多
+                                </div>
+                              </>}
 
 
 
