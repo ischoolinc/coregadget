@@ -8,14 +8,14 @@ import ScrollToTopButton from './ScrollToTopButton';
 
 const RankDetail = () => {
 
-	const studentID = sessionStorage.getItem('StudentID');
-	const examID = sessionStorage.getItem('ExamID');
-	const semester = sessionStorage.getItem('Semester');
-	const courseID = sessionStorage.getItem('CourseID');
-	const subjectType = sessionStorage.getItem('SubjectType');
-	//const defaultRankType = sessionStorage.getItem('RankType');
-	const storageSubject = sessionStorage.getItem('Subject');
-	///const passingStandard = sessionStorage.getItem('PassingStandard');
+	const studentID = localStorage.getItem('StudentID');
+	const examID = localStorage.getItem('ExamID');
+	const semester = localStorage.getItem('Semester');
+	const courseID = localStorage.getItem('CourseID');
+	const subjectType = localStorage.getItem('SubjectType');
+	//const defaultRankType = localStorage.getItem('RankType');
+	const storageSubject = localStorage.getItem('Subject');
+	///const passingStandard = localStorage.getItem('PassingStandard');
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
@@ -189,7 +189,7 @@ const RankDetail = () => {
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		//sessionStorage.setItem('RankType', e.target.value);
+		//localStorage.setItem('RankType', e.target.value);
 	};
 
 	const handleChangeScoreType = (e) => {
@@ -199,21 +199,21 @@ const RankDetail = () => {
 	const handleBackToHomePage = (e) => {
 		// 按下去的時候才存
 		window.history.go(-1);
-		sessionStorage.setItem('IsBack', 't');
-		//sessionStorage.setItem('RankType', selectedRankType);
+		localStorage.setItem('IsBack', 't');
+		//localStorage.setItem('RankType', selectedRankType);
 	};
 
 
 	// 手動重新整理保留原本畫面
 	window.onunload = function () {
-		//sessionStorage.clear();
-		sessionStorage.setItem('StudentID', studentID);
-		sessionStorage.setItem('ExamID', examID);
-		sessionStorage.setItem('RankType', selectedRankType);
-		sessionStorage.setItem('CourseID', courseID);
-		sessionStorage.setItem('Semester', semester);
-		sessionStorage.setItem('Subject', storageSubject);
-		//sessionStorage.setItem('PassingStandard', passingStandard);
+		//localStorage.clear();
+		localStorage.setItem('StudentID', studentID);
+		localStorage.setItem('ExamID', examID);
+		localStorage.setItem('RankType', selectedRankType);
+		localStorage.setItem('CourseID', courseID);
+		localStorage.setItem('Semester', semester);
+		localStorage.setItem('Subject', storageSubject);
+		//localStorage.setItem('PassingStandard', passingStandard);
 	}
 
 
@@ -240,7 +240,7 @@ const RankDetail = () => {
 		<div className="App">
 			<div className="container px-3 px-sm-4 py-5 ">
 
-				<div class="d-flex justify-content-between">
+				<div className="d-flex justify-content-between">
 					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
 					{/* <OverlayTrigger key='' placement='left' containerPadding={100} overlay={<Tooltip id='0'>{text}</Tooltip>}> */}
 					<OverlayTrigger key='' placement='bottom' containerPadding={30} overlay={<Popover id='popover-contained'>
@@ -384,7 +384,7 @@ const RankDetail = () => {
 										<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>
 											<thead>
 												<tr style={{ background: '#5B9BD5' }}>
-													<th colspan="2">五標</th>
+													<th colSpan="2">五標</th>
 												</tr>
 											</thead>
 											<tbody style={{ borderTop: '4px solid #fff' }}>
@@ -414,7 +414,7 @@ const RankDetail = () => {
 										<table className="table table-bordered mt-2" style={{ border: '1px solid #fff' }}>
 											<thead>
 												<tr style={{ background: '#5B9BD5' }}>
-													<th colspan="2">新五標</th>
+													<th colSpan="2">新五標</th>
 												</tr>
 											</thead>
 											<tbody style={{ borderTop: '4px solid #fff' }}>
