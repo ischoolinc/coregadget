@@ -10,8 +10,8 @@ function Main() {
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
-  //選擇的學生 //sessionStorage
-  const [studentID, setStudent] = useState(sessionStorage.getItem('StudentID'));
+  //選擇的學生 //localStorage
+  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
 
   // 該學生的所有學期成績 學年期
   const [semesterRange, setSubjectScoreSemesterList] = useState([]);
@@ -19,11 +19,11 @@ function Main() {
   //系統學年期 
   const [currSemester, setCurrSemester] = useState("");
 
-  //當前顯示學年期 //sessionStorage
-  const [selectedSemester, setViewSemester] = useState(sessionStorage.getItem('Semester'));
+  //當前顯示學年期 //localStorage
+  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
 
-  //當前顯示排名類別 //sessionStorage
-  const [selectedRankType, setViewRankType] = useState(sessionStorage.getItem('RankType'));
+  //當前顯示排名類別 //localStorage
+  const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
 
   // 該學生的指定學年期 之排名類別
   const [rankTypeList, setRankTypeList] = useState([]);
@@ -77,9 +77,10 @@ function Main() {
     if (studentID && selectedSemester) {
       GetAllSemesterSubjectScore();
       GetAllSemesterEntryScore();
-      GetSemesterCredit();
-      //GetFailedSemesterSubjectCount();
-
+      if ([].concat(semesterSubjectScore || []).length < 1)
+        GetSemesterCredit();
+      else
+        setSemesterCredit([]);
       GetRankInfo();
       GetRankType();
     }
@@ -148,7 +149,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                sessionStorage.clear();
+                localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -197,16 +198,16 @@ function Main() {
               setViewSemester([].concat(response.Semester || [])[0].schoolyear + [].concat(response.Semester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (sessionStorage.getItem('IsBack')) {
+              if (localStorage.getItem('IsBack')) {
                 setViewSemester(tempSelectedSemester);
-                //sessionStorage.removeItem('IsBack');
-                sessionStorage.clear();
+                //localStorage.removeItem('IsBack');
+                localStorage.clear();
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                sessionStorage.clear();
+                localStorage.clear();
               }
 
             }
@@ -398,24 +399,24 @@ function Main() {
       subjectType = 'entry';
     }
 
-    sessionStorage.clear();
-    sessionStorage.setItem('StudentID', studentID);
-    sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', subject);
-    sessionStorage.setItem('SubjectType', subjectType);
+    localStorage.clear();
+    localStorage.setItem('StudentID', studentID);
+    localStorage.setItem('RankType', selectedRankType);
+    localStorage.setItem('Semester', selectedSemester);
+    localStorage.setItem('Subject', subject);
+    localStorage.setItem('SubjectType', subjectType);
   };
 
   const handleShowCreditDetail = (e) => {
-    //sessionStorage.clear();
+    //localStorage.clear();
 
     // 按下去的時候才存
-    sessionStorage.setItem('StudentID', studentID);
-    sessionStorage.setItem('Semester', selectedSemester);
+    localStorage.setItem('StudentID', studentID);
+    localStorage.setItem('Semester', selectedSemester);
 
     const selectElement = document.getElementById("form-semester");
-    sessionStorage.setItem('SemesterText', selectElement.options[selectElement.selectedIndex].innerHTML);
-    //sessionStorage.setItem('QQ', selectedRankType);
+    localStorage.setItem('SemesterText', selectElement.options[selectElement.selectedIndex].innerHTML);
+    //localStorage.setItem('QQ', selectedRankType);
   };
 
   const handleChangeViewRank = (e) => {
@@ -437,9 +438,9 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 重新整理將清除sessionStorage 
+  // 重新整理將清除localStorage 
   window.onunload = function () {
-    sessionStorage.clear();
+    localStorage.clear();
   }
 
 
@@ -503,8 +504,8 @@ function Main() {
         {[].concat(semesterCredit || []).length ?
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
             <div className='col'>
-              <div class="card card-credit shadow">
-                <div class="card-body">
+              <div className="card card-credit shadow">
+                <div className="card-body">
                   <Link className={showNow ? 'card-block stretched-link text-decoration-none link-dark' : 'card-block stretched-link text-decoration-none link-dark disabledCursor'}
                     to={showNow ? '/CreditDetail' : null} key='' onClick={() => { handleShowCreditDetail(); }}>
                     <div className='text-subject ms-3'>取得學分</div>
@@ -523,7 +524,7 @@ function Main() {
                       })}
 
                       <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more mt-2">
-                        <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                        <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                         更多
                       </div>
 
@@ -632,7 +633,7 @@ function Main() {
 
                       {showNow ?
                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
                         </div>
                         : ''}
@@ -753,14 +754,14 @@ function Main() {
                     {showNow ?
                       <div className="d-flex align-items-center justify-content-between text-nowrap text-end">
                         <div className="d-flex align-items-center text-start">
-                          {sss.is_pass === '是' ? <span class="material-symbols-outlined checkbox text-check">check_box</span>
-                            : <span class="material-symbols-outlined checkbox">check_box_outline_blank</span>}
+                          {sss.is_pass === '是' ? <span className="material-symbols-outlined checkbox text-check">check_box</span>
+                            : <span className="material-symbols-outlined checkbox">check_box_outline_blank</span>}
 
                           取得學分
                         </div>
 
                         <div className="d-flex align-items-center text-end text-more">
-                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
                         </div>
                       </div>

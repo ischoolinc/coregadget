@@ -4,9 +4,9 @@ import ScrollToTopButton from './ScrollToTopButton';
 
 const CreditDetail = () => {
 
-	const studentID = sessionStorage.getItem('StudentID');
-	const semester = sessionStorage.getItem('Semester');
-	const semesterText = sessionStorage.getItem('SemesterText');
+	const studentID = localStorage.getItem('StudentID');
+	const semester = localStorage.getItem('Semester');
+	const semesterText = localStorage.getItem('SemesterText');
 
 	//取得學生本學期學分狀況
 	const [currentSemesterCredit, setCurrentSemesterCredit] = useState([]);
@@ -43,7 +43,7 @@ const CreditDetail = () => {
 				} else {
 					if (response) {
 						setCurrentSemesterCredit([].concat(response.SemesterCredit || []));
-						console.log('GetSemesterCredit', [].concat(response.SemesterCredit || []));
+						//console.log('GetSemesterCredit', [].concat(response.SemesterCredit || []));
 					}
 				}
 			}
@@ -65,7 +65,7 @@ const CreditDetail = () => {
 				} else {
 					if (response) {
 						setSemesterGrandTotalCredit([].concat(response.SemesterCredit || []));
-						console.log('GetSemesterGrandTotalCredit', [].concat(response.SemesterCredit || []));
+						//console.log('GetSemesterGrandTotalCredit', [].concat(response.SemesterCredit || []));
 					}
 				}
 			}
@@ -75,7 +75,7 @@ const CreditDetail = () => {
 
 	const handleBackToHomePage = (e) => {
 		window.history.go(-1);
-		sessionStorage.setItem('IsBack', 't');
+		localStorage.setItem('IsBack', 't');
 	};
 
 
@@ -83,7 +83,7 @@ const CreditDetail = () => {
 		<div className="App">
 			<div className="container px-3 px-sm-4 py-5 ">
 
-				<div class="d-flex justify-content-between credit-detail-border">
+				<div className="d-flex justify-content-between credit-detail-border">
 					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
 				</div>
 				{[].concat(currentSemesterCredit || []).map((credit) => {
