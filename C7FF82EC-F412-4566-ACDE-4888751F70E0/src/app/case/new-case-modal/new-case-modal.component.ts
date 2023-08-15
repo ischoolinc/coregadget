@@ -675,7 +675,7 @@ export class NewCaseModalComponent implements OnInit {
     data.SpecialSituation = JSON.stringify(data.special_situation);
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
-   data.TeacherCounselLevels =JSON.stringify(data.teacher_counsel_level);
+    data.TeacherCounselLevels =JSON.stringify(data.teacher_counsel_level);
     data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
     
 

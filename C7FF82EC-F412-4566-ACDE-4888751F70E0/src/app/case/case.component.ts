@@ -280,7 +280,7 @@ export class CaseComponent implements OnInit {
         rec.SpecialSituation = caseRec.SpecialSituation;
         rec.EvaluationResult = caseRec.EvaluationResult;
         rec.IsClosed = caseRec.IsClosed;
-        rec.CloseDate = caseRec.CloseDate;
+        rec.CloseDate = rec.parseDate(new Date(caseRec.CloseDate), '-')
         rec.ClosedByTeacherID = caseRec.ClosedByTeacherID;
         rec.CloseDescription = caseRec.CloseDescription;
         rec.StudentID = caseRec.StudentID;
