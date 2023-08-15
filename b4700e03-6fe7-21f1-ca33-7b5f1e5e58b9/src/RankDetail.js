@@ -7,13 +7,13 @@ import ScrollToTopButton from './ScrollToTopButton';
 
 const RankDetail = () => {
 
-	const studentID = sessionStorage.getItem('StudentID');
-	const semester = sessionStorage.getItem('Semester');
-	const subjectType = sessionStorage.getItem('SubjectType');
-	const defaultRankType = sessionStorage.getItem('RankType');
-	const storageSubject = sessionStorage.getItem('Subject');
+	const studentID = localStorage.getItem('StudentID');
+	const semester = localStorage.getItem('Semester');
+	const subjectType = localStorage.getItem('SubjectType');
+	const defaultRankType = localStorage.getItem('RankType');
+	const storageSubject = localStorage.getItem('Subject');
 
-	///const passingStandard = sessionStorage.getItem('PassingStandard');
+	///const passingStandard = localStorage.getItem('PassingStandard');
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
@@ -68,6 +68,7 @@ const RankDetail = () => {
 	}, [studentSubjectData, selectedScoreType]);
 
 	useEffect(() => {
+		if(rankBatchID)
 		GetRankBatchSettingByID();
 	}, [rankBatchID]);
 
@@ -228,7 +229,7 @@ const RankDetail = () => {
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		sessionStorage.setItem('RankType', e.target.value);
+		localStorage.setItem('RankType', e.target.value);
 	};
 
 	const handleChangeScoreType = (e) => {
@@ -237,7 +238,7 @@ const RankDetail = () => {
 
 	const handleBackToHomePage = (e) => {
 		window.history.go(-1);
-		sessionStorage.setItem('IsBack', 't');
+		localStorage.setItem('IsBack', 't');
 	};
 
 	const handleManual = (e) => {
@@ -261,7 +262,7 @@ const RankDetail = () => {
 		<div className="App">
 			<div className="container px-3 px-sm-4 py-5 ">
 
-				<div class="d-flex justify-content-between">
+				<div className="d-flex justify-content-between">
 					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
 					{showRank ?
 						<OverlayTrigger key='' placement='bottom' containerPadding={30} overlay={<Popover id='popover-contained'>
@@ -316,11 +317,9 @@ const RankDetail = () => {
 
 				<div className='row align-items-start mt-3'>
 					<div className='col-12 col-md-6 col-lg-6'>
-						<div class="card card-pass">
-							<div class="card-body">
+						<div className="card card-pass">
+							<div className="card-body">
 								{studentSubjectData.map((data) => {
-									console.log(data);
-									console.log(data.r_score);
 									if (data.rank_type === selectedRankType && data.score_type === selectedScoreType) {
 										let scoreCount = 2; //預設只顯示 原始、補考
 										if (data.r_score !== '')//重修3
@@ -411,8 +410,8 @@ const RankDetail = () => {
 							</div>
 
 
-							{/* <div class="card card-pass">
-								<div class="card-body">
+							{/* <div className="card card-pass">
+								<div className="card-body">
 									{scoreTypesString} 擇優採計。
 								</div>
 							</div> */}

@@ -10,8 +10,8 @@ function Main() {
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
-  //選擇的學生 //sessionStorage
-  const [studentID, setStudent] = useState(sessionStorage.getItem('StudentID'));
+  //選擇的學生 //localStorage
+  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
 
   // 該學生的所有課程學年期
   const [courseSemesterRange, setCourseSemesterList] = useState([]);
@@ -22,20 +22,20 @@ function Main() {
   //系統學年期 
   const [currSemester, setCurrSemester] = useState("");
 
-  //當前顯示學年期 //sessionStorage
-  const [selectedSemester, setViewSemester] = useState(sessionStorage.getItem('Semester'));
+  //當前顯示學年期 //localStorage
+  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
 
-  //當前顯示評量ID //sessionStorage
-  const [selectedExam, setViewExam] = useState(sessionStorage.getItem('ExamID'));
+  //當前顯示評量ID //localStorage
+  const [selectedExam, setViewExam] = useState(localStorage.getItem('ExamID'));
 
-  //當前顯示 科目成績 or 領域成績 //sessionStorage
-  const [selectedSubjectType, setSubjectType] = useState(Number(sessionStorage.getItem('SelectedSubjectType')));
+  //當前顯示 科目成績 or 領域成績 //localStorage
+  const [selectedSubjectType, setSubjectType] = useState(Number(localStorage.getItem('SelectedSubjectType')));
 
-  //當前顯示 定期&平時 or 定期+平時 //sessionStorage
+  //當前顯示 定期&平時 or 定期+平時 //localStorage
   //const [selectedScoreType, setScoreType] = useState(0);
 
-  //當前顯示排名類別 //sessionStorage
-  //const [selectedRankType, setViewRankType] = useState(sessionStorage.getItem('RankType'));
+  //當前顯示排名類別 //localStorage
+  //const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
 
   // 該學生的指定學年期、指定評量 之排名類別
   //const [examRankType, setRankType] = useState([]);
@@ -81,18 +81,21 @@ function Main() {
 
 
   useEffect(() => {
-    GetCourseSemesterList();
+    if (studentID)
+      GetCourseSemesterList();
   }, [studentID]);
 
 
   useEffect(() => {
-    GetCourseExamList();
-    GetAllSubjectExamScore();
-    GetAllDomainExamScore();
-    //GetRankInfo()
-    //GetExamAvgScore();
-    //GetScoreCalcRulePassingStandard();
-    GetRankAvgScore();
+    if (studentID && selectedSemester) {
+      GetCourseExamList();
+      GetAllSubjectExamScore();
+      GetAllDomainExamScore();
+      //GetRankInfo()
+      //GetExamAvgScore();
+      //GetScoreCalcRulePassingStandard();
+      GetRankAvgScore();
+    }
   }, [studentID, selectedSemester]);
 
   // useEffect(() => {
@@ -126,9 +129,11 @@ function Main() {
           return 'err';
         } else {
           if (response) {
+
             // let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
             // setShowNoRankSetting(isShowRank);
-            setAvgSetting(response.Setting.show_score);
+            if (response.length)
+              setAvgSetting(response.Setting.show_score);
           }
         }
       }
@@ -228,7 +233,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                sessionStorage.clear();
+                localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -276,16 +281,16 @@ function Main() {
               setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (sessionStorage.getItem('IsBack')) {
+              if (localStorage.getItem('IsBack')) {
                 setViewSemester(tempSelectedSemester);
-                //sessionStorage.removeItem('IsBack');
-                sessionStorage.clear();
+                //localStorage.removeItem('IsBack');
+                localStorage.clear();
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                sessionStorage.clear();
+                localStorage.clear();
               }
 
             }
@@ -493,17 +498,17 @@ function Main() {
     if (!e.CourseID)
       courseID = 0;
 
-    sessionStorage.clear();
+    localStorage.clear();
     // 按下去的時候才存
-    sessionStorage.setItem('StudentID', studentID);
-    sessionStorage.setItem('ExamID', selectedExam);
-    //sessionStorage.setItem('RankType', selectedRankType);
-    sessionStorage.setItem('CourseID', courseID);
-    sessionStorage.setItem('Semester', selectedSemester);
-    sessionStorage.setItem('Subject', subject);
-    //sessionStorage.setItem('PassingStandard', e.PassingStandard);
-    sessionStorage.setItem('SubjectType', subjectType);
-    sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
+    localStorage.setItem('StudentID', studentID);
+    localStorage.setItem('ExamID', selectedExam);
+    //localStorage.setItem('RankType', selectedRankType);
+    localStorage.setItem('CourseID', courseID);
+    localStorage.setItem('Semester', selectedSemester);
+    localStorage.setItem('Subject', subject);
+    //localStorage.setItem('PassingStandard', e.PassingStandard);
+    localStorage.setItem('SubjectType', subjectType);
+    localStorage.setItem('SelectedSubjectType', selectedSubjectType);
   };
 
 
@@ -518,9 +523,9 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除sessionStorage 
+  // 手動重新整理/去別的頁面，將清除localStorage 
   window.onunload = function () {
-    sessionStorage.clear();
+    localStorage.clear();
   }
 
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
@@ -747,7 +752,7 @@ function Main() {
                         }
                         {cField.Score === '' ? '' :
                           <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                            <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                            <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                             更多
                           </div>
                         }
@@ -851,7 +856,7 @@ function Main() {
                           <div className=''>計算時間：{cField.CreateTime}</div>
                         </div>
                         {cField.CreateTime === '' ? '' : <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                          <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
                         </div>}
                       </Link>
@@ -946,7 +951,7 @@ function Main() {
                           </div>
                           {cField.CreateTime === '' ? '' :
                             <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                              <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                              <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                               更多
                             </div>}
 

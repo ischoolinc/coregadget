@@ -7,13 +7,13 @@ import ScrollToTopButton from './ScrollToTopButton';
 
 const RankDetail = () => {
 
-	const studentID = sessionStorage.getItem('StudentID');
-	const semester = sessionStorage.getItem('Semester');
-	const subjectType = sessionStorage.getItem('SubjectType');
-	const defaultRankType = sessionStorage.getItem('RankType');
-	const storageSubject = sessionStorage.getItem('Subject');
+	const studentID = localStorage.getItem('StudentID');
+	const semester = localStorage.getItem('Semester');
+	const subjectType = localStorage.getItem('SubjectType');
+	const defaultRankType = localStorage.getItem('RankType');
+	const storageSubject = localStorage.getItem('Subject');
 
-	///const passingStandard = sessionStorage.getItem('PassingStandard');
+	///const passingStandard = localStorage.getItem('PassingStandard');
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
@@ -156,7 +156,6 @@ const RankDetail = () => {
 				} else {
 					if (response) {
 						setStudentSubjectData([].concat(response.RankMatrix || []));
-						console.log('GetRankDetailPageInfo', [].concat(response.RankMatrix || []));
 					}
 				}
 			}
@@ -188,7 +187,7 @@ const RankDetail = () => {
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		sessionStorage.setItem('RankType', e.target.value);
+		localStorage.setItem('RankType', e.target.value);
 	};
 	const handleChangeScoreType = (e) => {
 		setScoreType(e.target.value);
@@ -197,19 +196,19 @@ const RankDetail = () => {
 	const handleBackToHomePage = (e) => {
 		// 按下去的時候才存
 		window.history.go(-1);
-		sessionStorage.setItem('IsBack', 't');
+		localStorage.setItem('IsBack', 't');
 	};
 
 
 	// 手動重新整理保留原本畫面
 	window.onunload = function () {
-		//sessionStorage.clear();
-		sessionStorage.setItem('StudentID', studentID);
-		sessionStorage.setItem('RankType', selectedRankType);
-		sessionStorage.setItem('Semester', semester);
-		sessionStorage.setItem('Subject', storageSubject);
-		//sessionStorage.setItem('SelectedSubjectType', selectedSubjectType);
-		//sessionStorage.setItem('PassingStandard', passingStandard);
+		//localStorage.clear();
+		localStorage.setItem('StudentID', studentID);
+		localStorage.setItem('RankType', selectedRankType);
+		localStorage.setItem('Semester', semester);
+		localStorage.setItem('Subject', storageSubject);
+		//localStorage.setItem('SelectedSubjectType', selectedSubjectType);
+		//localStorage.setItem('PassingStandard', passingStandard);
 	}
 
 
@@ -236,7 +235,7 @@ const RankDetail = () => {
 		<div className="App">
 			<div className="container px-3 px-sm-4 py-5 ">
 
-				<div class="d-flex justify-content-between">
+				<div className="d-flex justify-content-between">
 					<button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
 					{/* <OverlayTrigger key='' placement='left' containerPadding={100} overlay={<Tooltip id='0'>{text}</Tooltip>}> */}
 					<OverlayTrigger key='' placement='bottom' containerPadding={30} overlay={<Popover id='popover-contained'>
@@ -291,8 +290,8 @@ const RankDetail = () => {
 
 				<div className='row align-items-start mt-3'>
 					<div className='col-12 col-md-6 col-lg-6'>
-						<div class="card card-pass">
-							<div class="card-body">
+						<div className="card card-pass">
+							<div className="card-body">
 								{studentSubjectData.map((data) => {
 									if (data.rank_type === selectedRankType&& data.score_type === selectedScoreType)
 										return <>
