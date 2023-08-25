@@ -173,3 +173,18 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 	-ms-flex-align: center !important;
 	align-items: center !important;
 }
+
+.container-fluid {
+	padding-left: 16px;
+	padding-right: 16px;
+}
+
+.table-auto th, .table-auto td {
+	padding: 8px 8px;
+}
+
+@media(min-width: 1024px){
+	.table-auto th, .table-auto td {
+		padding: 8px 32px;
+	}
+}

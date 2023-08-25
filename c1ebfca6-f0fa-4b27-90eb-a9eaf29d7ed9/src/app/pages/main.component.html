@@ -24,52 +24,35 @@
  </i> -->
     <ul class="list-group mb-3"
         *ngIf="!loading;else Loading">
-        <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
-            <div class="col-7 text-nowrap">
-                <span class="pr-3 "><b>今日點名</b></span>
-            </div>
-            <div class="col-2 text-nowrap text-center"><b>節次</b></div>
-            <div class="col-1 text-center"><b></b></div>
-            <div class="col-1 text-center"><b>教師已點名</b></div>
-         
-            <div class="col-1 text-center"><b>小幫手點名</b></div>
+        <li class="grid grid-cols-5 lg:grid-cols-7 items-center list-group-item active py-2  main-bg-color">
+            <div class="col-span-2 lg:col-span-3 text-nowrap"><b>今日點名</b></div>
+            <div class="col-span-1 lg:col-span-2 text-nowrap text-center"><b>節次</b></div>
+            <div class="text-center px-1" style="min-width: 45px;"><b>教師已點名</b></div>
+            <div class="text-center px-1" style="min-width: 45px;"><b>小幫手點名</b></div>
         </li>
         <ng-container *ngIf="conf&&conf.Schedule&&conf.Schedule.length; else noSchedule">
             <li class="list-group-item point"
                 *ngFor="let suggest of conf.Schedule"
                 (click)="openSchedule(suggest)">
-                <div class="row pointer" >
-                    <div class="col-7 text-nowrap">
-                        <span class="pr-3">{{suggest.ClassName?suggest.ClassName:suggest.CourseName}}</span>
+                <div class="grid grid-cols-5 lg:grid-cols-7 pointer" >
+                    <div class="col-span-2 lg:col-span-3">
+                        {{suggest.ClassName?suggest.ClassName:suggest.CourseName}}
                     </div>
-                    <div class="col-2 text-nowrap text-center">{{suggest.Period}}</div>
-                    <div class="col-1 text-center"><b></b></div>
-                    <div class="col-1 text-center">
+                    <div class="col-span-1 lg:col-span-2 text-nowrap text-center">{{suggest.Period}}</div>
+                    <div class="text-center">
                         <ng-container *ngIf="suggest.Checked=='true'">
-                            <i class="material-icons icon-green"
-                              >
-                                check_circle
-                            </i>
+                            <i class="material-icons icon-green">check_circle</i>
                         </ng-container>
                         <ng-container *ngIf="suggest.Checked!='true'">
-                            <i class="material-icons"
-                               style="color:#C9C9C9">
-                                check_circle_outline
-                            </i>
+                            <i class="material-icons" style="color:#C9C9C9">check_circle_outline</i>
                         </ng-container>
                     </div>
-                    <div class="col-1 text-center">
+                    <div class="text-center">
                         <ng-container *ngIf="suggest.StudentChecked=='true'">
-                            <i class="material-icons icon-green"
-                              >
-                                check_circle
-                            </i>
+                            <i class="material-icons icon-green">check_circle</i>
                         </ng-container>
                         <ng-container *ngIf="suggest.StudentChecked!='true'">
-                            <i class="material-icons"
-                               style="color:#C9C9C9">
-                                check_circle_outline
-                            </i>
+                            <i class="material-icons" style="color:#C9C9C9">check_circle_outline</i>
                         </ng-container>
                     </div>
                 </div>

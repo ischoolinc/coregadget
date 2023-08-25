@@ -40,51 +40,48 @@
 
   <!--  -->
   <ng-template #elseTemplate>
-    <div  class="d-flex flex-column-reverse flex-sm-row mb-3 justify-content-between">
+
+      <!-- 顯示英文名 -->
+
+
+  <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
+
+  <div class="d-flex justify-center align-items-center form-check z-20 -mb-0 sm:-mb-9 p-0">
+    <input class="mr-2" type="checkbox" value="" id="flexCheckDefault" [checked]=displayEnglishName (change)="displayEnglishName=!displayEnglishName">
+    <label class="form-check-label"  style="color :#656566" for="flexCheckDefault">
+     Display EnglishName
+    </label>
+  </div>
+
+    <div class="d-flex flex-wrap justify-content-between position-sticky top-0 bg-white z-10 py-2">
       <div>
-      <div class="btn-group dropdown ">
-        <button [matMenuTriggerFor]="menu"
-                type="button"
-                class="btn btn-dark dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
-          <span *ngIf="!selectedAbsence">選擇假別</span>
-          <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
+        <div class="dropdown">
+          <button [matMenuTriggerFor]="menu"
+                  type="button"
+                  class="btn btn-dark dropdown-toggle"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+            <span *ngIf="!selectedAbsence">選擇假別</span>
+            <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
+        
+          </button>
+        
+          <mat-menu #menu="matMenu">
+            <div *ngIf="!periodConf">loading...</div>
+            <button mat-menu-item
+                    *ngFor="let abb of periodConf?.Absence"
+                    (click)="selectedAbsenceItem(abb)">{{abb.Name}}</button>
+          </mat-menu>
       
-        </button>
-       
-        <mat-menu #menu="matMenu">
-          <div *ngIf="!periodConf">loading...</div>
-          <button mat-menu-item
-                  *ngFor="let abb of periodConf?.Absence"
-                  (click)="selectedAbsenceItem(abb)
-                  "
-                
-                  >{{abb.Name}}</button>
-        </mat-menu>
-    
-      </div>
-        <span *ngIf=" this.groupInfo.type=='Course'" class = "m-2 p-2" style="color: #ff3333; margin :auto"> 
-          {{explainMessage}}
-        </span>
-    </div>
-  <!-- 顯示英文名 -->
- 
-
-      <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
-      <div class="float-right d-flex align-items-end">
-
-        <div class="form-check mr-3  d-flex align-items-center" style =" display: inline-block;">
-          <input class="form-check-input    " type="checkbox" value="" id="flexCheckDefault" [checked]=displayEnglishName (change)="displayEnglishName=!displayEnglishName">
-          <label class="form-check-label   "  style= "color :#656566"for="flexCheckDefault">
-           Display EnglishName
-          </label>
         </div>
-      
-        <ng-container  [ngTemplateOutlet]="save"></ng-container>
-      </div>
+        <span *ngIf=" this.groupInfo.type=='Course'" class = "m-2" style="color: #ff3333;">{{explainMessage}}</span>
     </div>
+    <ng-container  [ngTemplateOutlet]="save"></ng-container>
+  </div>
+  
+
+
     <!-- 無修課紀錄時 -->
 
  
@@ -131,15 +128,13 @@
 
 
     <!-- 學生資料 (with photo)-->
-    <div class="st-list d-flex flex-wrap mt-3 mt-lg-1"
+    <div class="st-list d-flex flex-wrap justify-center sm:justify-start gap-2 mt-3 mt-lg-1"
     style =""
          *ngIf="showPhoto">
       <div class="card st-check"
-           style="height:320px ;min-width:152px ;max-width: 50%;"
+           style="height:320px ;min-width:150px ;max-width: 50%; margin-right: 0;"
            *ngFor="let student of studentChecks">
-        <label (click)="changeAttendance(student)"
-    
-        class="point">
+        <label (click)="changeAttendance(student)" class="point">
           <div style="height: 259px;width: 100%;">
             <div class ="pic" style="height:100%;width:100%;background-position: center center;background-size: cover;"
                  [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
@@ -150,7 +145,7 @@
             (mouseout)="hideCurrentAbsType(student)"   
                  class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{showAbsText(student)}}</div>
-            <div class="card-body py-2 text-truncate w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
+            <div class="card-body p-2 px-xl-3 text-truncate w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
               <div class="text-gray d-flex">
                 <!-- <strong class="mb-0 text-truncate" inhtml>{{student.data?.Name}}</strong> -->
                 <div  *ngIf="!displayEnglishName" class=" card-stu-name">
@@ -170,12 +165,13 @@
           
               </div>
       
-              <div class="text-gray text-truncate d-flex left-pad-3">
+              <div class="text-gray text-truncate d-flex">
                 <span>{{student.data?.StudentNumber}}</span>
-                <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
+                <span class="ml-auto mr-2">{{student.data?.ClassName}}</span>
+                <span>{{student.data?.SeatNo}}</span>
    
               </div>
-              <div  class="text-gray text-truncate d-flex left-pad-3"> 
+              <div  class="text-gray text-truncate d-flex"> 
 
                 <span *ngIf="isShowCheckInTime" style="font-size: 13px; color: rgb(75, 83, 97);"><b>
 
@@ -200,13 +196,11 @@
   </ng-template>
 
   <ng-template #save >
-<div class="float-right">
 
   <button *ngIf="studentChecks.length!==0"(click)="saveRollCall()"
           type="button"
-          class="btn btn-lg btn-info">{{checkSummary? '送出 ( ' + checkSummary +' )': '全到 ( 送出 )'}}</button>
+          class="btn btn-lg btn-info text-nowrap">{{checkSummary? '送出 ( ' + checkSummary +' )': '全到 ( 送出 )'}}</button>
 
-</div>
   </ng-template>
 
 
