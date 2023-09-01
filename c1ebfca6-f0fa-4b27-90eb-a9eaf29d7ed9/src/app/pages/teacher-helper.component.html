@@ -1,5 +1,4 @@
-<div id="attendence-page"
-     page>
+<div id="attendence-page" page>
 
   <nav aria-label="breadcrumb text-nowrap text-truncate ">
     <ol class="breadcrumb  second-page-header">
@@ -7,16 +6,13 @@
         <a [routerLink]="['/main']">課堂點名</a>
       </li>
       <ng-container *ngIf="!(students.length > 0) else titleText">
-        <li class="breadcrumb-item active"
-            aria-current="page">loading...</li>
+        <li class="breadcrumb-item active" aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item"
-            aria-current="page">
-            <a [routerLink]="['/setting']">設定小幫手</a>
+        <li class="breadcrumb-item" aria-current="page">
+          <a [routerLink]="['/setting']">設定小幫手</a>
         </li>
-        <li class="breadcrumb-item active"
-            aria-current="page">{{targetName}}</li>
+        <li class="breadcrumb-item active" aria-current="page">{{targetName}}</li>
       </ng-template>
     </ol>
   </nav>
@@ -33,25 +29,20 @@
 
     <!--新樣板 -->
     <!-- 學生資料(no photo)-->
-    <div class="row mt-3 mt-lg-1"
-         *ngIf="!showPhoto">
-      <div class=" col-12 col-sm-6 col-lg-4"
-           style="margin-bottom: 0.75rem;"
-           *ngFor="let student of students">
+    <div class="row mt-3 mt-lg-1" *ngIf="!showPhoto">
+      <div class=" col-12 col-sm-6 col-lg-4" style="margin-bottom: 0.75rem;" *ngFor="let student of students">
         <div class="card">
-          <div (click)="changeTeacherHelper(student)"
-            class="point row pr-2">
+          <div (click)="changeTeacherHelper(student)" class="point row pr-2">
             <div class="col-9 card-body p-2 text-truncate ">
               <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate" [innerHTML] ="student.Name"> </strong>
+                <strong class="mb-0 text-truncate" [innerHTML]="student.Name"> </strong>
               </div>
               <div class="text-gray text-truncate d-flex">
                 <span>{{student.StudentNumber}}</span>
                 <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
               </div>
             </div>
-            <div class="col-3 ad-status text-truncate py-2 my-auto"
-                 [ngStyle]="getTeacherHelperStyle(student)">
+            <div class="col-3 ad-status text-truncate py-2 my-auto" [ngStyle]="getTeacherHelperStyle(student)">
               {{getTeacherHelperText(student)}}</div>
           </div>
         </div>
@@ -61,29 +52,27 @@
 
     <!-- 學生資料 (with photo)-->
 
-    <div class="st-list d-flex flex-wrap justify-center md:justify-start gap-2 mt-3 mt-lg-1"
-         *ngIf="showPhoto">
-      <div class="card st-check mr-0"
-           style="height:320px; min-width: 150px;"
-           *ngFor="let student of students">
-        <label (click)="changeTeacherHelper(student)"
-               class="point">
+    <div class="st-list d-flex flex-wrap justify-center md:justify-start gap-2 mt-3 mt-lg-1" *ngIf="showPhoto">
+      <div class="card st-check mr-0" style="min-width: 155px;" *ngFor="let student of students">
+        <label (click)="changeTeacherHelper(student)" class="point">
           <div style="height: 259px;width: 100%;">
             <div style="height:100%;width:100%;background-position: center center;background-size: cover;"
-                 [style.background-image]="'url(' + student.PhotoUrl + ')'"></div>
+              [style.background-image]="'url(' + student.PhotoUrl + ')'"></div>
           </div>
-          <div style="position:absolute;bottom:0px;width:100%;">
-            <div [ngStyle]="getTeacherHelperStyle(student)"
-                 class="w-100 ad-status text-truncate">
+          <div style="margin-top: -54px; width:100%;">
+            <div [ngStyle]="getTeacherHelperStyle(student)" class="w-100 ad-status">
               {{getTeacherHelperText(student)}}</div>
-            <div class="card-body py-2 text-truncate w-100 ">
-              <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate " [innerHtml]="student.Name"></strong>
+            <div class="card-body py-2 w-100 ">
+              <div class="text-gray d-flex">
+                <strong class="mb-0 " [innerHtml]="student.Name"></strong>
 
               </div>
-              <div class="text-gray text-truncate d-flex">
-                <span>{{student.StudentNumber}}</span>
-                <span class="ml-auto">{{student.ClassName}}&nbsp;&nbsp;{{student.SeatNo}}</span>
+              <div class="d-flex flex-wrap text-gray">
+                <span style="overflow: auto;">{{student.StudentNumber}}</span>
+                <div class="ml-auto">
+                  <span class="mr-2">{{student.ClassName}}</span>
+                  <span class="">{{student.SeatNo}}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -121,9 +110,8 @@
   </ng-template>
 
   <ng-template #save>
-    <button (click)="saveTeacherHelper()"
-            type="button"
-            class="btn btn-lg btn-info">{{checkSummary? '儲存 (' + checkSummary
+    <button (click)="saveTeacherHelper()" type="button" class="btn btn-lg btn-info">{{checkSummary? '儲存 (' +
+      checkSummary
       +')': '儲存'}}</button>
   </ng-template>
 

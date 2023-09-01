@@ -1,7 +1,7 @@
 <!-- 課程節次 -->
   <!-- <div class="modal-dialog modal-dialog-centered" role="document"> -->
     <!-- <div class="modal-content"> -->
-      <div class="modal-header">
+      <div class="modal-header px-0 pt-0 align-items-start">
         <h5 class="modal-title" id="choosePeriodTitle">
           {{title}}
         </h5>
@@ -9,7 +9,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body px-0 text-center">
         <div *ngIf="!periods">loading...</div>
         <button mat-raised-button *ngFor="let period of periods" [disabled]="allow_choose(period)" (click)="gotoPick(period)" class="gd-button-primary m-1">{{period.Name}}</button>
         <!-- <button type="button" class="btn btn-light mb-2" >一</button>

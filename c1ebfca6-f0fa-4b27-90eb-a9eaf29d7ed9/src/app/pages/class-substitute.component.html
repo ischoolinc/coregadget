@@ -51,8 +51,7 @@
             <span class="pr-3">{{grade.GradeYear?grade.GradeYear+"年級":"未分年級"}} (班級:{{grade.Class.length}})</span>
           </div>
         </li>
-        <li class="list-group-item point"
-            style="display: flex;flex-wrap: wrap; justify-content: flex-start">
+        <li class="d-flex flex-wrap justify-content-center justify-content-md-start list-group-item point">
           <!-- 顯示班級 -->
   
           <div *ngFor="let tClass of grade.Class"
@@ -61,7 +60,7 @@
                  (click)=openClass(tClass)>
               <button mat-raised-button
                       style="width: 200px; font-size:16px">
-                <span>{{tClass.ClassName}}</span>
+                <span style="white-space: pre-wrap;">{{tClass.ClassName}}</span>
                 <span *ngIf="selectedPeriod">({{selectedPeriod.Name}})</span>
               </button>
             </div>

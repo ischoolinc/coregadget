@@ -87,27 +87,23 @@
         </div>
         <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
          
-                <div class="col-10 text-nowrap"> <b>我的課程</b></div>
-                <div class="col-2 text-nowrap text-center"> <b>小幫手</b></div>
+                <div class="col-8 col-lg-10 text-nowrap"> <b>我的課程</b></div>
+                <div class="col-4 col-lg-2 text-nowrap"> <b class="ml-2">小幫手</b></div>
           
           
         
         </li>
         <ng-container *ngIf="conf&&conf.CourseConf&&conf.CourseConf.length; else noCourse">
             <li class="list-group-item point"
-                *ngFor="let course of conf.CourseConf"
-                (click)="openPicker(course)">
-                <div class="d-flex justify-content-between align-items-center row">
-                    <div class="col-10 text-nowrap">
-                        <span class="pr-3" style ="font-size:16px">{{course.CourseName}}</span>
+                >
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="col-8 col-lg-10 text-nowrap">
+                        <span class="pr-3" style ="font-size:16px; white-space: normal;">{{course.CourseName}}</span>
                     </div>
-                    <div class="col-2 text-wrap text-center  text-truncate">
-                        <div class="text-center d-inline-block mr-1 align-middle" *ngIf="course.StudentName != ''" style ="height: 30px; width: 95%;  padding: 3px; border-left:2px solid  #3f51b5a3;">
-                           
+                    <div class="col-4 col-lg-2 text-wrap text-truncate">
+                        <div class="align-middle p-1" *ngIf="course.StudentName != ''" style =" white-space: normal; border-left:2px solid  #3f51b5a3;">
                      {{course.StudentName}} ({{course.StudentNumber}})
-     
                         </div>
-                  
                     </div>
                 </div>
             </li>
