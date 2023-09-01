@@ -4,19 +4,71 @@
   <div class="row-fluid">
     <div class="span12">
       <h1 *ngIf="loadState !== 'finish'">選課</h1>
-      <h1 *ngIf="loadState === 'finish'">
-        <span>{{currSchoolYear}} 學年度 {{currSemester | semesterFormat}}</span>
-        <ul class="nav nav-tabs my-navtabs">
-          <li [ngClass]="{'active': currTab === 'sa01'}" *ngIf="['1', '2', 's1', 's2', 's5'].indexOf(currLevel) !== -1"><a
-              href="javascript:;" (click)="toggleTab('sa01')">可選課程</a></li>
-          <li [ngClass]="{'active': currTab === 'sa06'}" *ngIf="['0', 's3', 's4'].indexOf(currLevel) !== -1"><a href="javascript:;"
-              (click)="toggleTab('sa06')">選課最終確認</a></li>
-          <li [ngClass]="{'active': currTab === 'sa02'}"><a href="javascript:;" (click)="toggleTab('sa02')">課程總表</a></li>
-          <li [ngClass]="{'active': currTab === 'sa03'}"><a href="javascript:;" (click)="toggleTab('sa03')">衝堂與限制複選課程</a></li>
-          <li [ngClass]="{'active': currTab === 'sa04'}"><a href="javascript:;" (click)="toggleTab('sa04')">選課注意事項</a></li>
-          <li [ngClass]="{'active': currTab === 'sa05'}"><a href="javascript:;" (click)="toggleTab('sa05')">選課問答集</a></li>
+      <h1 *ngIf="loadState === 'finish'" class="sticky md:relative bg-white top-0 z-50">
+        <div class="flex justify-between">
+          <span>{{currSchoolYear}} 學年度 {{currSemester | semesterFormat}}</span>
+          <div class="dropdown">
+            <button type="button" id="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              class="dropdown-toggle p-2 text-gray-500 rounded cursor-pointer md:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white float-right">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <svg class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </button>
+
+            <ul class="dropdown-menu" aria-labelledby="menu">
+              <li [ngClass]="{'active': currTab === 'sa01'}"
+                *ngIf="['1', '2', 's1', 's2', 's5'].indexOf(currLevel) !== -1">
+                <a href="javascript:;" (click)="toggleTab('sa01')">可選課程</a>
+              </li>
+              <li [ngClass]="{'active': currTab === 'sa06'}" *ngIf="['0', 's3', 's4'].indexOf(currLevel) !== -1">
+                <a href="javascript:;" (click)="toggleTab('sa06')">選課最終確認</a>
+              </li>
+              <li [ngClass]="{'active': currTab === 'sa02'}"><a href="javascript:;" (click)="toggleTab('sa02')">課程總表</a>
+              </li>
+              <li [ngClass]="{'active': currTab === 'sa03'}">
+                <a href="javascript:;" (click)="toggleTab('sa03')">衝堂與限制複選課程</a>
+              </li>
+              <li [ngClass]="{'active': currTab === 'sa04'}">
+                <a href="javascript:;" (click)="toggleTab('sa04')">選課注意事項</a>
+              </li>
+              <li [ngClass]="{'active': currTab === 'sa05'}">
+                <a href="javascript:;" (click)="toggleTab('sa05')">選課問答集</a>
+              </li>
+              <li><a [href]="webUrl" target="_blank">課程計劃</a></li>
+              <li [ngClass]="{'active': currTab === 'sa07'}">
+                <a href="javascript:;" (click)="toggleTab('sa07')">點數選課規則</a>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+
+
+
+        <ul class="nav nav-tabs my-navtabs dis-none">
+          <li [ngClass]="{'active': currTab === 'sa01'}" *ngIf="['1', '2', 's1', 's2', 's5'].indexOf(currLevel) !== -1">
+            <a href="javascript:;" (click)="toggleTab('sa01')">可選課程</a>
+          </li>
+          <li [ngClass]="{'active': currTab === 'sa06'}" *ngIf="['0', 's3', 's4'].indexOf(currLevel) !== -1"><a
+              href="javascript:;" (click)="toggleTab('sa06')">選課最終確認</a></li>
+          <li [ngClass]="{'active': currTab === 'sa02'}"><a href="javascript:;" (click)="toggleTab('sa02')">課程總表</a>
+          </li>
+          <li [ngClass]="{'active': currTab === 'sa03'}"><a href="javascript:;"
+              (click)="toggleTab('sa03')">衝堂與限制複選課程</a></li>
+          <li [ngClass]="{'active': currTab === 'sa04'}"><a href="javascript:;" (click)="toggleTab('sa04')">選課注意事項</a>
+          </li>
+          <li [ngClass]="{'active': currTab === 'sa05'}"><a href="javascript:;" (click)="toggleTab('sa05')">選課問答集</a>
+          </li>
           <li><a [href]="webUrl" target="_blank">課程計劃</a></li>
-          <li [ngClass]="{'active': currTab === 'sa07'}"><a href="javascript:;" (click)="toggleTab('sa07')">點數選課規則</a></li>
+          <li [ngClass]="{'active': currTab === 'sa07'}"><a href="javascript:;" (click)="toggleTab('sa07')">點數選課規則</a>
+          </li>
         </ul>
       </h1>
       <div class="tab-content">
@@ -40,29 +92,38 @@
                   至 {{allOpeningData.get('Level2')?.EndTime || '未設定' }} 止。
                 </ng-container>
               </div>
+              <button type="button" data-toggle="collapse" data-target="#footwear" aria-expanded="false"
+                aria-controls="footwear" class="btn btn-info" style="outline: none; margin-bottom: 16px;">選課說明</button>
 
               <!--第一、二階段選課說明文字-->
-              <div class="alert alert-info">
-                <div *ngIf="currLevel === '1'" style="color:black; background-color:white;" [innerHTML]="configuration.cs_content1_template | safeHtml"></div>
-                <div *ngIf="currLevel === '2'" style="color:black; background-color:white;" [innerHTML]="configuration.cs_content2_template | safeHtml"></div>
+              <div class="collapse" id="footwear">
+                <div class="alert alert-info">
+                  <div *ngIf="currLevel === '1'" class="p-2 text-justify" style="color:black; background-color:white;"
+                    [innerHTML]="configuration.cs_content1_template | safeHtml"></div>
+                  <div *ngIf="currLevel === '2'" class="p-2 text-justify" style="color:black; background-color:white;"
+                    [innerHTML]="configuration.cs_content2_template | safeHtml"></div>
+                </div>
               </div>
 
               <div *ngIf="currLevel == '1' || currLevel == '2'" class="memb-list">
-                <app-add-quit-buttons
-                  [conflicted]="conflicted"
-                  (onConfirmSave)="confirmQuitAddCourse()"
-                  (onResetAddQuit)="resetAddQuit()"
-                ></app-add-quit-buttons>
+                <app-add-quit-buttons [conflicted]="conflicted" (onConfirmSave)="confirmQuitAddCourse()"
+                  (onResetAddQuit)="resetAddQuit()"></app-add-quit-buttons>
               </div>
-
               <!-- 已指定預選課程清單 -->
+              <div *ngIf="scAttends.length > 0" class="card mt-4">
+                <div class="flex justify-between items-center heard-table cursor-pointer" data-toggle="collapse"
+                  data-target="#classlist" aria-expanded="true" aria-controls="classlist">
+                  <div class="p-2" style="color: blue;">預選課程</div>
+                  <div class="block md:hidden text-xl px-4 py-2">
+                    <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                    <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
               <table *ngIf="scAttends.length > 0" class="table table-bordered table-striped">
                 <thead>
-                  <tr>
-                    <th colspan="9" class="my-table-head1" style="color: blue">預選課程</th>
-                  </tr>
-                  <tr>
-                    <th style="width: 45px; font-size: 3">退選</th>
+                  <tr class="dis-none">
+                    <th>退選</th>
                     <th>課程編號</th>
                     <th>班次</th>
                     <th>（必/選修）課程名稱</th>
@@ -73,7 +134,74 @@
                     <th>上課時間</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of scAttends">
+                <div class="collapse in" id="classlist" aria-expanded="true">
+                  <tbody *ngFor="let item of scAttends; let i = index" class="dis-show">
+                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict.length > 0}"
+                      class="card bd-callout px-4 pt-3">
+                      <div class="text-muted" style="outline: none;">
+                        <div class="flex justify-center items-center gap-x-2 pb-3">
+                          <div class="text-center">
+                            <div class="mb-2">
+                              <button type="button" class="btn btn-danger btn-mini"
+                                (click)="confirmWithDrawn(item)">退選</button>
+                            </div>
+                            <div [appBorderColor]="item.CourseType" class="mr-1">{{
+                              courseTypeFormatPipe.transform(item.CourseType) }}</div>
+                          </div>
+                          <div class="flex flex-col">
+                            <div class="flex text-lg">
+                              <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                                class="leading-5 font-bold">{{item.CourseName}}</a>
+                              <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                            </div>
+                            <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
+                          </div>
+                          <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                            [attr.data-target]="'#classlist' + i" aria-expanded="false"
+                            [attr.aria-controls]="'classlist' + i">
+                            <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                            <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="collapse text-muted -mx-4 px-4" id="classlist{{i}}"
+                        style="background: #fafafa;">
+                        <hr class="mb-2 mt-0">
+                        <div class="flex justify-between mb-3">
+                          <div class="text-center">
+                            <div>學分</div>
+                            <div class="font-bold">{{item.Credit}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>編號</div>
+                            <div class="font-bold">{{item.NewSubjectCode}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>班次</div>
+                            <div class="font-bold">{{item.ClassName}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>人數上限</div>
+                            <div class="font-bold">{{item.Capacity}}</div>
+                          </div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教師</div>
+                          <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教室</div>
+                          <div class="font-bold">{{item.Classroom}}</div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="whitespace-pre-line mb-2">{{item.Memo}}</div>
+                      </div>
+                    </div>
+                  </tbody>
+                </div>
+
+                <tbody *ngFor="let item of scAttends" class="dis-none">
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td rowspan="2" class="text-center">
                       <button type="button" class="btn btn-danger btn-mini" (click)="confirmWithDrawn(item)">退選</button>
@@ -81,7 +209,7 @@
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -98,12 +226,19 @@
               </table>
 
               <!-- 指定預選課程已退選清單 -->
+              <div *ngIf="scAttendWithdrawnLogs.length > 0" class="card mt-4">
+                <div class="flex justify-between items-center heard-table cursor-pointer" data-toggle="collapse"
+                  data-target="#outclasslist" aria-expanded="true" aria-controls="outclasslist">
+                  <div class="p-2" style="color: blue;">預選課程退選紀錄</div>
+                  <div class="block md:hidden text-xl px-4 py-2">
+                    <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                    <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
               <table *ngIf="scAttendWithdrawnLogs.length > 0" class="table table-bordered table-striped">
                 <thead>
-                  <tr>
-                    <th colspan="9" class="my-table-head1" style="color: blue">預選課程退選紀錄</th>
-                  </tr>
-                  <tr>
+                  <tr class="dis-none">
                     <th>退選時間</th>
                     <th>課程編號</th>
                     <th>班次</th>
@@ -115,13 +250,81 @@
                     <th>上課時間</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of scAttendWithdrawnLogs">
+                <div class="collapse in" id="outclasslist" aria-expanded="true">
+                  <tbody *ngFor="let item of scAttendWithdrawnLogs; let i = index" class="dis-show">
+                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict.length > 0}"
+                      class="card bd-callout px-4 pt-3">
+                      <div class="text-muted" style="outline: none;">
+                        <div class="flex justify-center items-center gap-x-2 pb-3">
+                          <div class="text-center">
+                            <!-- <div class="mb-2">
+                              <button type="button" class="btn btn-danger btn-mini"
+                                (click)="confirmWithDrawn(item)">退選</button>
+                            </div> -->
+                            <div [appCourseTypeBadge]="item.CourseType" class="mr-1 text-white">{{
+                              courseTypeFormatPipe.transform(item.CourseType) }}</div>
+                          </div>
+                          <div class="flex flex-col">
+                            <div class="flex text-lg">
+                              <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                                class="leading-5 font-bold">{{item.CourseName}}</a>
+                              <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                            </div>
+                            <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
+                            <div class="whitespace-pre-line mt-2">退選時間：{{item.Time}}</div>
+                          </div>
+                          <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                            [attr.data-target]="'#outclasslist' + i" aria-expanded="false"
+                            [attr.aria-controls]="'outclasslist' + i">
+                            <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                            <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="collapse text-muted -mx-4 px-4" id="outclasslist{{i}}"
+                        style="background: #fafafa;">
+                        <hr class="mb-2 mt-0">
+                        <div class="flex justify-between mb-3">
+                          <div class="text-center">
+                            <div>學分</div>
+                            <div class="font-bold">{{item.Credit}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>編號</div>
+                            <div class="font-bold">{{item.NewSubjectCode}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>班次</div>
+                            <div class="font-bold">{{item.ClassName}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>人數上限</div>
+                            <div class="font-bold">{{item.Capacity}}</div>
+                          </div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教師</div>
+                          <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                        </div>
+                        <div class="flex justify-start mb-2">
+                          <div class="mr-2">教室</div>
+                          <div class="font-bold">{{item.Classroom}}</div>
+                        </div>
+                        <!-- <hr class="my-2">
+                        <div class="whitespace-pre-line mb-2">{{item.Memo}}</div> -->
+                      </div>
+                    </div>
+                  </tbody>
+                </div>
+
+                <tbody *ngFor="let item of scAttendWithdrawnLogs" class="dis-none">
                   <tr>
                     <td>{{item.Time}}</td>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -135,16 +338,25 @@
               </table>
 
               <!-- 第一階段已加選清單(第二階段時也會顯示) -->
+              <div class="card mt-4">
+                <div class="flex justify-between items-center heard-table cursor-pointer" data-toggle="collapse"
+                  data-target="#levelclasslist" aria-expanded="true" aria-controls="levelclasslist">
+                  <div class="w-full p-2" style="color: #145240;">
+                    第一階段
+                    <span style="color: blue">已選課程</span>
+                    <span style="float: right; font-size: larger;">可用點數：{{currentPoints}} / {{orignPoints}}</span>
+                  </div>
+                  <div class="block md:hidden text-xl px-4 py-2">
+                    <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                    <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+
               <table class="table table-bordered table-striped">
                 <thead>
-                  <tr>
-                    <th colspan="10" class="my-table-head1">第一階段
-                      <span style="color: blue">已選課程</span>
-                      <span style="float: right; font-size: larger;">可用點數：{{currentPoints}} / {{orignPoints}}</span>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th style="font-size: 3">退選</th>
+                  <tr class="dis-none">
+                    <th>退選</th>
                     <th>課程編號</th>
                     <th>班次</th>
                     <th>（必/選修）課程名稱</th>
@@ -156,20 +368,108 @@
                     <th>選課人數</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of currAttends" data-type="quit">
+
+                <div class="collapse in" id="levelclasslist" aria-expanded="true">
+                  <tbody *ngFor="let item of currAttends; let j = index" data-type="quit" class="dis-show">
+                    <div *ngIf="item.ChooseItem == '1'" [appBorderColor]="item.CourseType"
+                      [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="card bd-callout px-4 pt-3">
+                      <div class="text-muted" style="outline: none;">
+                        <div class="flex justify-center items-center gap-x-2 pb-3">
+                          <div class="text-center">
+                            <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
+                              <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)"
+                                placement="right" [(ngModel)]="item.WillQuit" [value]="item.CourseID"
+                                (click)="clickCourseCheckbox(item, 'WillQuit')" style="width: 20px; height: 20px;">
+                            </div>
+                            <div [appBorderColor]="item.CourseType" class="w-7 my-2">{{
+                              courseTypeFormatPipe.transform(item.CourseType) }}</div>
+                            <div *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label">
+                            </div>
+
+                          </div>
+                          <div class="flex flex-col">
+                            <div class="flex text-lg">
+                              <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                                class="leading-5 font-bold">{{item.CourseName}}</a>
+                              <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                            </div>
+                            <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
+                            <div *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'"
+                              [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="flex">
+                              <div>投入點數：{{item.StudentSetPoints}} 點</div>
+                              <ng-template #popTemplate>
+                                <p *ngFor="let i of ['1','2','3','4','5']">
+                                  第{{i}}名 {{item.Ranks[i] || '0'}} 點
+                                </p>
+                              </ng-template>
+                              <button *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'" type="button"
+                                class="btn btn-light ml-3" [popover]="popTemplate" popoverTitle="點數投入高點排行榜"
+                                placement="auto" triggers="focus">
+                                查看排行
+                              </button>
+                            </div>
+                          </div>
+                          <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                            [attr.data-target]="'#levelclasslist' + j" aria-expanded="false"
+                            [attr.aria-controls]="'levelclasslist' + j">
+                            <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                            <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="collapse text-muted -mx-4 px-4" id="levelclasslist{{j}}"
+                        style="background: #fafafa;">
+                        <hr class="mb-2 mt-0">
+                        <div class="flex justify-between mb-3">
+                          <div class="text-center">
+                            <div>學分</div>
+                            <div class="font-bold">{{item.Credit}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>編號</div>
+                            <div class="font-bold">{{item.NewSubjectCode}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>班次</div>
+                            <div class="font-bold">{{item.ClassName}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>人數上限</div>
+                            <div class="font-bold">{{item.Capacity}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>選課人數</div>
+                            <div class="font-bold">{{item.Item1StudentCount}}</div>
+                          </div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教師</div>
+                          <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教室</div>
+                          <div class="font-bold">{{item.Classroom}}</div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="whitespace-pre-line mb-2">{{item.Memo}}</div>
+                      </div>
+                    </div>
+                  </tbody>
+                </div>
+
+                <tbody *ngFor="let item of currAttends" data-type="quit" class="dis-none">
                   <tr *ngIf="item.ChooseItem == '1'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
-                      <input type="checkbox"
-                        [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
+                      <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [(ngModel)]="item.WillQuit" [value]="item.CourseID"
-                        (click)="clickCourseCheckbox(item, 'WillQuit')"
-                        style="width: 20px; height: 20px;">
+                        (click)="clickCourseCheckbox(item, 'WillQuit')" style="width: 20px; height: 20px;">
                     </td>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
-                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -180,7 +480,8 @@
                     <td>{{item.CourseTimeInfo}}</td>
                     <td>{{item.Item1StudentCount}}</td>
                   </tr>
-                  <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'"
+                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3">
                       <div class="points">投入點數：{{item.StudentSetPoints}} 點</div>
                       <ng-template #popTemplate>
@@ -188,20 +489,16 @@
                           第{{i}}名 {{item.Ranks[i] || '0'}} 點
                         </p>
                       </ng-template>
-                      <button
-                        *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'"
-                        type="button" class="btn btn-light"
-                        style="margin-left: 10px;"
-                        [popover]="popTemplate"
-                        popoverTitle="點數投入高點排行榜"
-                        placement="auto"
-                        triggers="focus">
+                      <button *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'" type="button"
+                        class="btn btn-light" style="margin-left: 10px;" [popover]="popTemplate"
+                        popoverTitle="點數投入高點排行榜" placement="auto" triggers="focus">
                         查看排行
                       </button>
                     </td>
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
-                  <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints != 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints != 't'"
+                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="10">{{item.Memo}}</td>
                   </tr>
                 </tbody>
@@ -211,13 +508,21 @@
                 </tbody>
               </table>
               <!-- 第二階段已加選清單 -->
-              <table class="table table-bordered table-striped" *ngIf="currLevel == '2'">
+              <div *ngIf="currLevel == '2'" class="card mt-4">
+                <div class="flex justify-between items-center heard-table cursor-pointer" data-toggle="collapse"
+                  data-target="#level2classlist" aria-expanded="true" aria-controls="level2classlist">
+                  <div class="p-2">第二階段<span style="color: blue">已選課程</span></div>
+                  <div class="block md:hidden text-xl px-4 py-2">
+                    <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                    <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+
+              <table *ngIf="currLevel == '2'" class="table table-bordered table-striped">
                 <thead>
-                  <tr>
-                    <th colspan="10" class="my-table-head1">第二階段<span style="color: blue">已選課程</span></th>
-                  </tr>
-                  <tr>
-                    <th style="font-size: 3">退選</th>
+                  <tr class="dis-none">
+                    <th>退選</th>
                     <th>課程編號</th>
                     <th>班次</th>
                     <th>（必/選修）課程名稱</th>
@@ -229,20 +534,107 @@
                     <th>選課人數</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of currAttends" data-type="quit" id="choose02">
+                <div class="collapse in" id="level2classlist" aria-expanded="true">
+                  <tbody *ngFor="let item of currAttends; let j = index" data-type="quit" id="choose02"
+                    class="dis-show">
+                    <div *ngIf="item.ChooseItem == '2'" [appBorderColor]="item.CourseType"
+                      [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="card bd-callout px-4 pt-3">
+                      <div class="text-muted" style="outline: none;">
+                        <div class="flex justify-center items-center gap-x-2 pb-3">
+                          <div class="text-center">
+                            <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
+                              <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)"
+                                placement="right" [(ngModel)]="item.WillQuit" [value]="item.CourseID"
+                                (click)="clickCourseCheckbox(item, 'WillQuit')" style="width: 20px; height: 20px;">
+                            </div>
+                            <div [appBorderColor]="item.CourseType" class="w-7 my-2">{{
+                              courseTypeFormatPipe.transform(item.CourseType) }}</div>
+                            <div *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label">
+                            </div>
+
+                          </div>
+                          <div class="flex flex-col">
+                            <div class="flex text-lg">
+                              <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                                class="leading-5 font-bold">{{item.CourseName}}</a>
+                              <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                            </div>
+                            <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
+                            <div *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'"
+                              [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="flex">
+                              <div>投入點數：{{item.StudentSetPoints}} 點</div>
+                              <ng-template #popTemplate>
+                                <p *ngFor="let i of ['1','2','3','4','5']">
+                                  第{{i}}名 {{item.Ranks[i] || '0'}} 點
+                                </p>
+                              </ng-template>
+                              <button *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'" type="button"
+                                class="btn btn-light ml-3" [popover]="popTemplate" popoverTitle="點數投入高點排行榜"
+                                placement="auto" triggers="focus">
+                                查看排行
+                              </button>
+                            </div>
+                          </div>
+                          <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                            [attr.data-target]="'#level2classlist' + j" aria-expanded="false"
+                            [attr.aria-controls]="'level2classlist' + j">
+                            <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                            <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="collapse text-muted -mx-4 px-4" id="level2classlist{{j}}"
+                        style="background: #fafafa;">
+                        <hr class="mb-2 mt-0">
+                        <div class="flex justify-between mb-3">
+                          <div class="text-center">
+                            <div>學分</div>
+                            <div class="font-bold">{{item.Credit}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>編號</div>
+                            <div class="font-bold">{{item.NewSubjectCode}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>班次</div>
+                            <div class="font-bold">{{item.ClassName}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>人數上限</div>
+                            <div class="whitespace-pre-line font-bold w-20">{{item.Capacity}} (剩餘{{item.RemainderCapacity}}名額)</div>
+                          </div>
+                          <div class="text-center">
+                            <div>選課人數</div>
+                            <div class="font-bold">{{item.Item2StudentCount}}</div>
+                          </div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教師</div>
+                          <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教室</div>
+                          <div class="font-bold">{{item.Classroom}}</div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="whitespace-pre-line mb-2">{{item.Memo}}</div>
+                      </div>
+                    </div>
+                  </tbody>
+                </div>
+                <tbody *ngFor="let item of currAttends" data-type="quit" id="choose02" class="dis-none">
                   <tr *ngIf="item.ChooseItem == '2'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
-                      <input type="checkbox"
-                        [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
+                      <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [(ngModel)]="item.WillQuit" [value]="item.CourseID"
-                        (click)="clickCourseCheckbox(item, 'WillQuit')"
-                        style="width: 20px; height: 20px;">
+                        (click)="clickCourseCheckbox(item, 'WillQuit')" style="width: 20px; height: 20px;">
                     </td>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
-                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -253,7 +645,8 @@
                     <td>{{item.CourseTimeInfo}}</td>
                     <td>{{item.Item2StudentCount}}</td>
                   </tr>
-                  <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'"
+                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3">
                       <div class="points">投入點數：{{item.StudentSetPoints}} 點</div>
                       <ng-template #popTemplate>
@@ -261,20 +654,16 @@
                           第{{i}}名 {{item.Ranks[i] || '0'}} 點
                         </p>
                       </ng-template>
-                      <button
-                        *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'"
-                        type="button" class="btn btn-light"
-                        style="margin-left: 10px;"
-                        [popover]="popTemplate"
-                        popoverTitle="點數投入高點排行榜"
-                        placement="auto"
-                        triggers="focus">
+                      <button *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'" type="button"
+                        class="btn btn-light" style="margin-left: 10px;" [popover]="popTemplate"
+                        popoverTitle="點數投入高點排行榜" placement="auto" triggers="focus">
                         查看排行
                       </button>
                     </td>
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
-                  <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints != 't'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints != 't'"
+                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="10">{{item.Memo}}</td>
                   </tr>
                 </tbody>
@@ -285,13 +674,25 @@
                 </tbody>
               </table>
               <!-- 可選課清單 -->
+
+              <div class="card mt-4">
+                <div class="flex justify-between items-center cursor-pointer heard-table" data-toggle="collapse"
+                  data-target="#canclasslist" aria-expanded="true" aria-controls="canclasslist"
+                  style="background: #fff498;">
+                  <div class="w-full p-2" style="color: #7e631e;">
+                    <span style="color: red">可選課程</span>清單
+                  </div>
+                  <div class="block md:hidden text-xl px-4 py-2">
+                    <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                    <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+
               <table class="table table-bordered table-striped">
                 <thead>
-                  <tr>
-                    <th colspan="10" class="my-table-head2"><span style="color: red">可選課程</span>清單</th>
-                  </tr>
-                  <tr>
-                    <th style="font-size: 3">加選</th>
+                  <tr class="dis-none">
+                    <th>加選</th>
                     <th>課程編號</th>
                     <th>班次</th>
                     <th>（必/選修）課程名稱</th>
@@ -303,21 +704,120 @@
                     <th>選課人數</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let item of canChooseCourses" data-type="add">
+
+                <div class="collapse in" id="canclasslist" aria-expanded="true">
+                  <tbody *ngFor="let item of canChooseCourses; let j = index" data-type="add" class="dis-show">
+                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict.length > 0}"
+                      class="card bd-callout px-4 pt-3">
+                      <div class="text-muted" style="outline: none;">
+                        <div class="flex justify-center items-center gap-x-2 pb-3">
+                          <div class="text-center">
+                            <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
+                              <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)"
+                                placement="right" [checked]="item.WillAdd"
+                                (click)="clickCourseCheckbox(item, 'WillAdd', ck)" style="width: 20px; height: 20px;">
+                            </div>
+                            <div [appBorderColor]="item.CourseType" class="w-7 my-2">{{
+                              courseTypeFormatPipe.transform(item.CourseType) }}</div>
+                            <div *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label">
+                            </div>
+
+                          </div>
+                          <div class="flex flex-col">
+                            <div class="flex text-lg">
+                              <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                                class="leading-5 font-bold">{{item.CourseName}}</a>
+                              <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                            </div>
+                            <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
+                            <div [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="flex">
+                              <input *ngIf="item.NeedPoints == 't' " type="number" #inputBox
+                                [ngClass]="{'error':item.PointIsError}" [disabled]="item.WillAdd"
+                                (change)="checkPoints(inputBox.value,item)" placeholder="投入點數">
+
+                              <ng-template #popTemplate>
+                                <p *ngFor="let i of ['1','2','3','4','5']">
+                                  第{{i}}名 {{item.Ranks[i] || '0'}} 點
+                                </p>
+                              </ng-template>
+                              <button *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'" type="button"
+                                class="btn btn-light ml-3" [popover]="popTemplate" popoverTitle="點數投入高點排行榜"
+                                placement="auto" triggers="focus">
+                                查看排行
+                              </button>
+                            </div>
+                            <p *ngIf="item.NeedPoints == 't'" style="margin-top:5px;margin-bottom: 5px;">
+                              點數上限：{{item.MaxPoints}}
+                              點數下限：{{item.MinPoints}}
+                            </p>
+                            <div *ngIf="item.PointIsError" style="color: red">
+                              {{item.ErrorMsg}}
+                            </div>
+                          </div>
+                          <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                            [attr.data-target]="'#canclasslist' + j" aria-expanded="false"
+                            [attr.aria-controls]="'canclasslist' + j">
+                            <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                            <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="collapse text-muted -mx-4 px-4" id="canclasslist{{j}}"
+                        style="background: #fafafa;">
+                        <hr class="mb-2 mt-0">
+                        <div class="flex justify-between mb-3">
+                          <div class="text-center">
+                            <div>學分</div>
+                            <div class="font-bold">{{item.Credit}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>編號</div>
+                            <div class="font-bold">{{item.NewSubjectCode}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>班次</div>
+                            <div class="font-bold">{{item.ClassName}}</div>
+                          </div>
+                          <div class="text-center">
+                            <div>人數上限</div>
+                            <div class="font-bold w-20">{{item.Capacity}} (剩餘{{item.RemainderCapacity}}名額)</div>
+                          </div>
+                          <div class="text-center">
+                            <div>選課人數</div>
+                            <div class="font-bold">{{item.Item1StudentCount}}</div>
+                          </div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教師</div>
+                          <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                        </div>
+                        <div class="flex justify-start mb-3">
+                          <div class="mr-2">教室</div>
+                          <div class="font-bold">{{item.Classroom}}</div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="whitespace-pre-line mb-2">{{item.Memo}}</div>
+                      </div>
+                    </div>
+                  </tbody>
+                  <tbody *ngIf="canChooseCourses.length === 0">
+                    <div>目前無資料</div>
+                  </tbody>
+                </div>
+
+                <tbody *ngFor="let item of canChooseCourses" data-type="add" class="dis-none">
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
-                      <input type="checkbox"
-                        #ck
-                        [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
-                        [checked]="item.WillAdd"
-                        (click)="clickCourseCheckbox(item, 'WillAdd', ck)"
+                      <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
+                        [checked]="item.WillAdd" (click)="clickCourseCheckbox(item, 'WillAdd', ck)"
                         style="width: 20px; height: 20px;">
                     </td>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
-                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -332,36 +832,27 @@
                   </tr>
                   <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
                     <td colspan="3" class="d-flex flex-row">
-                        <input type="number"
-                          #inputBox
-                          *ngIf="item.NeedPoints == 't' "
-                          [ngClass]="{'error':item.PointIsError}"
-                          [disabled]="item.WillAdd"
-                          class="points"
-                          (change)="checkPoints(inputBox.value,item)"
-                          placeholder="投入點數">
+                      <input type="number" #inputBox *ngIf="item.NeedPoints == 't' "
+                        [ngClass]="{'error':item.PointIsError}" [disabled]="item.WillAdd" class="points"
+                        (change)="checkPoints(inputBox.value,item)" placeholder="投入點數">
 
-                        <ng-template #popTemplate>
-                          <p *ngFor="let i of ['1','2','3','4','5']">
-                            第{{i}}名 {{item.Ranks[i] || '0'}} 點
-                          </p>
-                        </ng-template>
-                        <button
-                          *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'"
-                          type="button" class="btn btn-light"
-                          [popover]="popTemplate"
-                          popoverTitle="點數投入高點排行榜"
-                          placement="auto"
-                          triggers="focus">
-                          查看排行
-                        </button>
-                        <p *ngIf="item.NeedPoints == 't'" style="margin-top:5px;margin-bottom: 5px;">
-                          點數上限：{{item.MaxPoints}}
-                          點數下限：{{item.MinPoints}}
+                      <ng-template #popTemplate>
+                        <p *ngFor="let i of ['1','2','3','4','5']">
+                          第{{i}}名 {{item.Ranks[i] || '0'}} 點
                         </p>
-                        <div *ngIf="item.PointIsError" style="color: red">
-                          {{item.ErrorMsg}}
-                        </div>
+                      </ng-template>
+                      <button *ngIf="item.NeedPoints == 't' && item.InvestmentRank == 't'" type="button"
+                        class="btn btn-light" [popover]="popTemplate" popoverTitle="點數投入高點排行榜" placement="auto"
+                        triggers="focus">
+                        查看排行
+                      </button>
+                      <p *ngIf="item.NeedPoints == 't'" style="margin-top:5px;margin-bottom: 5px;">
+                        點數上限：{{item.MaxPoints}}
+                        點數下限：{{item.MinPoints}}
+                      </p>
+                      <div *ngIf="item.PointIsError" style="color: red">
+                        {{item.ErrorMsg}}
+                      </div>
                     </td>
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
@@ -374,20 +865,86 @@
               </table>
 
               <div *ngIf="currLevel == '1' || currLevel == '2'" class="memb-list">
-                <app-add-quit-buttons
-                  [conflicted]="conflicted"
-                  (onConfirmSave)="confirmQuitAddCourse()"
-                  (onResetAddQuit)="resetAddQuit()"
-                ></app-add-quit-buttons>
+                <app-add-quit-buttons [conflicted]="conflicted" (onConfirmSave)="confirmQuitAddCourse()"
+                  (onResetAddQuit)="resetAddQuit()"></app-add-quit-buttons>
               </div>
             </div>
           </div>
+
+          <!-- 課程總表 -->
           <div [ngClass]="{'active': currTab === 'sa02', 'fade': currTab !== 'sa02'}" class="tab-pane sa02">
             <div>
               {{['目前無資料', '本學期選課已結束，目前尚未開放下一學期選課'][['s1', 's4'].indexOf(currLevel)]}}
             </div>
             <div *ngIf="['s1', 's4'].indexOf(currLevel) === -1">
-              <table class="table table-bordered table-striped">
+              <div class="text-center text-lg my-3 font-bold dis-show">課程總表</div>
+              <div *ngFor="let item of allCourse | mapsToArray; let i = index" class="dis-show">
+                <div [appBorderColor]="item.CourseType" class="card bd-callout px-4 pt-3">
+                  <div class="text-muted" style="outline: none;">
+                    <div class="flex justify-center items-center gap-x-2 pb-3">
+                      <div class="text-center">
+                        <!-- <div class="mb-2">
+                          <button type="button" class="btn btn-danger btn-mini"
+                            (click)="confirmWithDrawn(item)">退選</button>
+                        </div> -->
+                        <div [appCourseTypeBadge]="item.CourseType" class="label w-8"
+                          style="display: block; white-space: break-spaces;"></div>
+                        <div class="p-1"></div>
+                        <div *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label">
+                        </div>
+                      </div>
+                      <div class="flex flex-col">
+                        <div class="flex text-lg">
+                          <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                            class="leading-5 font-bold">{{item.CourseName}}</a>
+                          <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                        </div>
+                        <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
+                      </div>
+                      <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                        [attr.data-target]="'#classtable' + i" aria-expanded="false"
+                        [attr.aria-controls]="'classtable' + i">
+                        <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                        <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="collapse text-muted -mx-4 px-4" id="classtable{{i}}"
+                    style="background: #fafafa;">
+                    <hr class="mb-2 mt-0">
+                    <div class="flex justify-between mb-3">
+                      <div class="text-center">
+                        <div>學分</div>
+                        <div class="font-bold">{{item.Credit}}</div>
+                      </div>
+                      <div class="text-center">
+                        <div>編號</div>
+                        <div class="font-bold">{{item.NewSubjectCode}}</div>
+                      </div>
+                      <div class="text-center">
+                        <div>班次</div>
+                        <div class="font-bold">{{item.ClassName}}</div>
+                      </div>
+                      <div class="text-center">
+                        <div>人數上限</div>
+                        <div class="font-bold">{{item.Capacity}}</div>
+                      </div>
+                    </div>
+                    <div class="flex justify-start mb-3">
+                      <div class="mr-2">教師</div>
+                      <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                    </div>
+                    <div class="flex justify-start mb-3">
+                      <div class="mr-2">教室</div>
+                      <div class="font-bold">{{item.Classroom}}</div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="whitespace-pre-line mb-2">{{item.Memo}}</div>
+                  </div>
+                </div>
+              </div>
+              <table class="table table-bordered table-striped dis-none">
                 <thead>
                   <tr>
                     <th>課程編號</th>
@@ -400,13 +957,14 @@
                     <th>上課時間</th>
                   </tr>
                 </thead>
+
                 <tbody *ngFor="let item of allCourse | mapsToArray">
                   <tr>
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
-                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
+                      <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -427,7 +985,9 @@
               </table>
             </div>
           </div>
+          <!-- 衝堂 -->
           <div [ngClass]="{'active': currTab === 'sa03', 'fade': currTab !== 'sa03'}" class="tab-pane sa03">
+            <div class="text-center text-lg my-3 font-bold dis-show">衝堂與限制複選課程</div>
             <div>
               {{['目前無資料', '本學期選課已結束，目前尚未開放下一學期選課'][['s1', 's4'].indexOf(currLevel)]}}
             </div>
@@ -440,15 +1000,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>
-                      <span [appCourseTypeBadge]="item.course.CourseType" class="label" style="margin-right: 3px"></span>
+                    <td style="padding-top: 12px; background-color: #f9f9f9">
+                      <span [appCourseTypeBadge]="item.course.CourseType" class="label mr-1"></span>
                       <span>{{item.course.CourseName || ''}}</span>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <span *ngFor="let conflictCourse of item.conflictCourses" class="my-conflict">
-                        <span [appCourseTypeBadge]="conflictCourse.CourseType" class="label" style="margin-right: 3px"></span>
+                    <hr class="block md:hidden mt-0 mb-2">
+                    <td class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-2 gap-y-3">
+                      <span *ngFor="let conflictCourse of item.conflictCourses">
+                        <span [appCourseTypeBadge]="conflictCourse.CourseType" class="label mr-1"></span>
                         <span>{{conflictCourse.CourseName || ''}}</span>
                       </span>
                     </td>
@@ -458,7 +1019,9 @@
               <div *ngIf="conflictCourseMap.size === 0">目前無資料</div>
             </div>
           </div>
+          <!-- 選課注意事項 -->
           <div [ngClass]="{'active': currTab === 'sa04', 'fade': currTab !== 'sa04'}" class="tab-pane sa04">
+            <div class="text-center text-lg my-3 font-bold dis-show">選課注意事項</div>
             <accordion>
               <accordion-group *ngFor="let item of faq.A" panelClass="customAccordionClass">
                 <a accordion-heading [innerHTML]="item.Title | safeHtml"></a>
@@ -467,7 +1030,9 @@
             </accordion>
             <div *ngIf="faq.A.length === 0">目前無資料</div>
           </div>
+          <!-- 選課問答集 -->
           <div [ngClass]="{'active': currTab === 'sa05', 'fade': currTab !== 'sa05'}" class="tab-pane sa05">
+            <div class="text-center text-lg my-3 font-bold dis-show">選課問答集</div>
             <accordion>
               <accordion-group *ngFor="let item of faq.B" panelClass="customAccordionClass">
                 <a accordion-heading [innerHTML]="item.Title | safeHtml"></a>
@@ -476,7 +1041,10 @@
             </accordion>
             <div *ngIf="faq.B.length === 0">目前無資料</div>
           </div>
+
+          <!-- 選課最終確認 -->
           <div [ngClass]="{'active': currTab === 'sa06', 'fade': currTab !== 'sa06'}" class="tab-pane sa06">
+            <div class="text-center text-lg my-3 font-bold dis-show">選課最終確認</div>
             <div>
               {{['尚未公告選課最終結果'][['s3'].indexOf(currLevel)]}}
             </div>
@@ -491,15 +1059,72 @@
                 <div [innerHTML]="configuration.cs_final_message | safeHtml"></div>
               </div>
 
-              <app-finial-buttons
-                [currLevel]="currLevel"
-                [showSCReceivedMsg]="showSCReceivedMsg"
-                [scReceivedMsg]="scReceivedMsg"
-                (onFinalChecked)="confirmFinalChecked()"
-                (onPrintDocument)="confirmPrintDocument()"
-              ></app-finial-buttons>
+              <app-finial-buttons [currLevel]="currLevel" [showSCReceivedMsg]="showSCReceivedMsg"
+                [scReceivedMsg]="scReceivedMsg" (onFinalChecked)="confirmFinalChecked()"
+                (onPrintDocument)="confirmPrintDocument()"></app-finial-buttons>
 
-              <table class="table table-bordered table-striped">
+              <div *ngFor="let item of scAttends; let i = index" class="dis-show">
+                <div [appBorderColor]="item.CourseType" class="card bd-callout px-4 pt-3">
+                  <div class="text-muted" style="outline: none;">
+                    <div class="flex justify-center items-center gap-x-2 pb-3">
+                      <div class="text-center">
+                        <div [appCourseTypeBadge]="item.CourseType" class="label w-8"
+                          style="display: block; white-space: break-spaces;"></div>
+                        <div class="p-1"></div>
+                      </div>
+                      <div class="flex flex-col">
+                        <div class="flex text-lg">
+                          <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
+                            class="leading-5 font-bold">{{item.CourseName}}</a>
+                          <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                        </div>
+                        <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
+                      </div>
+                      <div class="flex-grow text-xl text-right pl-3 py-5 cursor-pointer" data-toggle="collapse"
+                        [attr.data-target]="'#classfinal' + i" aria-expanded="false"
+                        [attr.aria-controls]="'classfinal' + i">
+                        <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
+                        <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="collapse text-muted -mx-4 px-4" id="classfinal{{i}}"
+                    style="background: #fafafa;">
+                    <hr class="mb-2 mt-0">
+                    <div class="flex justify-between mb-3">
+                      <div class="text-center">
+                        <div>學分</div>
+                        <div class="font-bold">{{item.Credit}}</div>
+                      </div>
+                      <div class="text-center">
+                        <div>編號</div>
+                        <div class="font-bold">{{item.NewSubjectCode}}</div>
+                      </div>
+                      <div class="text-center">
+                        <div>班次</div>
+                        <div class="font-bold">{{item.ClassName}}</div>
+                      </div>
+                      <div class="text-center">
+                        <div>人數上限</div>
+                        <div class="font-bold">{{item.Capacity}}</div>
+                      </div>
+                    </div>
+                    <div class="flex justify-start mb-3">
+                      <div class="mr-2">教師</div>
+                      <div [innerHTML]="item.TeacherURLName | safeHtml"></div>
+                    </div>
+                    <div class="flex justify-start mb-3">
+                      <div class="mr-2">教室</div>
+                      <div class="font-bold">{{item.Classroom}}</div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="whitespace-pre-line mb-2">{{item.Memo}}</div>
+                  </div>
+                </div>
+              </div>
+
+              <table class="table table-bordered table-striped dis-none">
                 <thead>
                   <tr>
                     <th>課程編號</th>
@@ -517,7 +1142,7 @@
                     <td>{{item.NewSubjectCode}}</td>
                     <td>{{item.ClassName}}</td>
                     <td>
-                      <span [appCourseTypeBadge]="item.CourseType" class="label" style="margin-right: 3px"></span>
+                      <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
                     </td>
@@ -537,21 +1162,21 @@
                 </tbody>
               </table>
 
-              <app-finial-buttons
-                [currLevel]="currLevel"
-                [showSCReceivedMsg]="showSCReceivedMsg"
-                [scReceivedMsg]="scReceivedMsg"
-                (onFinalChecked)="confirmFinalChecked()"
-                (onPrintDocument)="confirmPrintDocument()"
-              ></app-finial-buttons>
+              <app-finial-buttons [currLevel]="currLevel" [showSCReceivedMsg]="showSCReceivedMsg"
+                [scReceivedMsg]="scReceivedMsg" (onFinalChecked)="confirmFinalChecked()"
+                (onPrintDocument)="confirmPrintDocument()"></app-finial-buttons>
 
             </div>
           </div>
+          <!-- 點數選課規則 -->
           <div [ngClass]="{'active': currTab === 'sa07', 'fade': currTab !== 'sa07'}" class="tab-pane">
+            <div class="text-center text-lg my-3 font-bold dis-show">點數選課規則</div>
             <div class="alert alert-info">
-              <div style="color:black; background-color:white;" [innerHTML]="configuration.button_mod_communicate_point_selection_rules | safeHtml"></div>
+              <div class="p-4 text-black bg-white text-justify"
+                [innerHTML]="configuration.button_mod_communicate_point_selection_rules | safeHtml"></div>
             </div>
           </div>
+
         </ng-container>
       </div>
     </div>
@@ -613,7 +1238,8 @@
           </table>
         </div>
       </div>
-      <p *ngIf="!page.isSign" style="page-break-after:always">-----------------------分頁線-----------------------&nbsp;</p>
+      <p *ngIf="!page.isSign" style="page-break-after:always">-----------------------分頁線-----------------------&nbsp;
+      </p>
       <div *ngIf="page.isSign">
         <div class="my-addcourse-title">課程加選欄:</div>
         <div class="my-addcourse-info">
@@ -630,22 +1256,52 @@
             </thead>
             <tbody>
               <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -662,13 +1318,13 @@
   </div>
 
   <div class="footer-space"></div>
-  <div class="footer">
-    <img style="margin-right: 10px" src="assets/src/red_logo.jpg">
-    <img style="margin-right: 10px" src="assets/src/bot_logo.png">
-    <p style="text-align: left;">
-      10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室<br>
-      TEL:886-2-33661010 FAX:886-2-23636073<br>
-      Copyright © National Taiwan University All Rights Reserved
-    </p>
+  <div class="footer justify-center flex-wrap">
+    <img class="mr-3" src="assets/src/red_logo.jpg">
+    <img class="mr-3" src="assets/src/bot_logo.png">
+    <div class="mr-3 text-left">
+      <p class="mb-2">10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室</p>
+      <p class="mb-2">TEL:886-2-33661010 FAX:886-2-23636073</p>
+      <p class="mb-2">Copyright © National Taiwan University All Rights Reserved</p>
+    </div>
   </div>
 </div>
