@@ -65,10 +65,14 @@ var app = angular
              "NONE":"None",
              "FORMERTYPE":"Former type",
              "REMARKBYLASTSTAGE":"Remark by laststage",
+             "APPLYDATE": "Apply date",
+             "APPLICANT": "Role",
+             "PARENT": 'Parent',
+             "STUDENT": 'Student',
           });
         $translateProvider.translations('zh_TW', {
-            "TITLE"     : "線上請假簽核",
-            "DATE" : "日期",
+            "TITLE" : "線上請假簽核",
+            "DATE" : "請假日期",
             "STARTDATE":"開始日期",
             "ENDDATE":"結束日期",
             "SEARCH":"查詢",
@@ -97,6 +101,10 @@ var app = angular
              "NONE":"無",
              "FORMERTYPE":"當天請假狀況",
              "REMARKBYLASTSTAGE":"上一簽核者回覆",
+             "APPLYDATE": "填表日期",
+             "APPLICANT": "填表身分",
+             "PARENT": '家長',
+             "STUDENT": '學生',
           });
         $translateProvider.preferredLanguage('zh_TW');
     }])
