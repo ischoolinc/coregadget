@@ -175,5 +175,6 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 }
 
 body.modal-open {
-	overflow: scroll;
+	overflow: auto;
+  padding-right: 0!important;
 }
