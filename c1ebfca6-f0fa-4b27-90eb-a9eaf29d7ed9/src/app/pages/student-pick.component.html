@@ -146,12 +146,12 @@
                  class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{showAbsText(student)}}</div>
             <div class="card-body p-2 px-xl-3 w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
-              <div class="text-gray d-flex">
+              <div class="text-gray d-flex flex-wrap">
                 <!-- <strong class="mb-0 text-truncate" inhtml>{{student.data?.Name}}</strong> -->
-                <div  *ngIf="!displayEnglishName" class=" card-stu-name">
+                <div  *ngIf="!displayEnglishName" class="card-stu-name">
                 <strong class="mb-0 " [innerHtml]="student.data?.Name"></strong>
                 </div>
-                <div *ngIf="displayEnglishName" class=" card-stu-name">
+                <div *ngIf="displayEnglishName" class="card-stu-name">
                   <b class="mb-0 " [innerHtml]="student.data?.EnglishName ||student.data?.Name"></b>
 
                 </div>
@@ -166,7 +166,7 @@
               </div>
       
               <div class="d-flex flex-wrap text-gray">
-                <span style="overflow: auto;">{{student.data?.StudentNumber}}</span>
+                <span>{{student.data?.StudentNumber}}</span>
                 <div class="ml-auto">
                   <span class="mr-2">{{student.data?.ClassName}}</span>
                   <span>{{student.data?.SeatNo}}</span>
