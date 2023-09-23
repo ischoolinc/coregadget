@@ -173,3 +173,8 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 	-ms-flex-align: center !important;
 	align-items: center !important;
 }
+
+body.modal-open {
+	overflow: auto;
+  padding-right: 0!important;
+}

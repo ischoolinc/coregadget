@@ -12,9 +12,9 @@
             aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active"
-            aria-current="page">
-          {{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</li>
+        <li class="breadcrumb-item active w-100" aria-current="page">
+          <div style="word-wrap: break-word; width: 85%;">{{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</div>
+        </li>
       </ng-template>
     </ol>
   </nav>
