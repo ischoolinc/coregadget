@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { GadgetService } from './gadget.service';
 
 import * as Moment from 'moment';
+import { SubscribeOnObservable } from 'rxjs/internal-compatibility';
 
 @Injectable()
 export class DSAService {
@@ -86,9 +87,23 @@ export class DSAService {
 
     return {
       TeacherName: rsp.TeacherName
+      ,TeacherID :rsp.TeacherID
       , Student: [].concat((rsp && rsp.Student) || []).map(function (item) { return item as Student; })
     };
   }
+
+  /** 查詢是否需要 password  */
+  public async getIsNeedPassword(teacher : string ) {
+      
+    const rsp = await this.contract.send('GetIsNeedPassWord',{
+      TeacherID : teacher
+    });
+
+    console.log("rsp",rsp)
+    return rsp ;
+  }
+
+
 
   //取得出席率
   public async getAbsenceRate(courseId: string) {
@@ -115,7 +130,7 @@ export class DSAService {
    */
   public async setRollCall(type: GroupType, id: string, period: string, data: RollCallCheck[]) {
     await this.ready;
-
+    debugger 
     const req: any = {
       Period: period,
       Student: data.map((item) => {
@@ -131,7 +146,7 @@ export class DSAService {
     } else {
       req.ClassID = id;
     }
-
+      debugger
     const rsp = await this.contract.send('SetRollCall', req);
 
     return rsp;
@@ -139,13 +154,16 @@ export class DSAService {
   /**
    * 儲存點名資料。
    */
-  public async setRollCallWithTeacherKey(type: GroupType, id: string, period: string, teacherName: string, teacherKey: string, data: RollCallCheck[]) {
+        
+  public async setRollCallWithTeacherKey(type: GroupType, id: string, period: string, teacherName: string, teacherKey: string, data: RollCallCheck[],isNeedPassWord :boolean ,teacherID :string  ) {
     await this.ready;
 
     const req: any = {
       Period: period,
       TeacherName: teacherName,
       TeacherKey: teacherKey,
+      CourseTeacherID :teacherID ,
+      IsNeedPassWoord :isNeedPassWord ,
       Student: data.map((item) => {
         return {
           ID: item.ID
