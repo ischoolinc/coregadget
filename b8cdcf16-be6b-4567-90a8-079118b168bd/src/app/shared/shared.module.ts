@@ -13,6 +13,8 @@ import { AddQuitButtonsComponent } from './component/add-quit-buttons/add-quit-b
 import { FinialButtonsComponent } from './component/finial-buttons/finial-buttons.component';
 import { CourseTypeFormatPipe } from './pipes/course-type.pipe';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { BorderColorDirective } from './directive/border-color';
+
 
 @NgModule({
   imports: [
@@ -31,6 +33,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
     SemesterFormatPipe,
     CourseTypeFormatPipe,
     CourseTypeBadgeDirective,
+    BorderColorDirective,
     SimpleModalComponent,
     AddQuitButtonsComponent,
     FinialButtonsComponent,
@@ -41,6 +44,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
     SemesterFormatPipe,
     CourseTypeFormatPipe,
     CourseTypeBadgeDirective,
+    BorderColorDirective,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,

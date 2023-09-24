@@ -1,8 +1,8 @@
 /* 自訂 */
 body {
-  font-family: "微軟正黑體","Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "微軟正黑體", "Helvetica Neue", Helvetica, Arial, sans-serif;
   max-width: 1024px;
-  margin: 0 auto;
+  margin: auto !important;
   background: url(images/page-bg.gif);
 }
 
@@ -10,46 +10,49 @@ input,
 button,
 select,
 textarea {
-  font-family: "微軟正黑體","Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "微軟正黑體", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .modal-body {
-  clear:both;
-  text-align:center;
+  clear: both;
+  text-align: center;
 }
-.modal-body > div {
+
+.modal-body>div {
   text-align: left;
 }
+
 .modal-backdrop.in {
   opacity: .5;
 }
 
 .footer {
-	font-size:10px;
-	text-align:center;
-	line-height: 30px;
-	height:30px;
-	width:100% !important;
-	background:rgba(255, 255, 255, 0.5);
+  font-size: 10px;
+  text-align: center;
+  line-height: 30px;
+  height: 30px;
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.5);
 }
+
 /*---------------------------------------*/
 
 @media (max-width: 767px) {
-	body {
-		padding:0;
-	}
+  body {
+    padding: 0;
+  }
 }
 
 @media (max-width: 979px) and (min-width: 768px) {
-	.row [class*="col-"] {
-		min-height:30px;
-	}
+  .row [class*="col-"] {
+    min-height: 30px;
+  }
 }
 
 @media (min-width: 1200px) {
   .row-fluid [class*="col-"] {
-		min-height:30px;
-	}
+    min-height: 30px;
+  }
 }
 
 table.table-bordered {
@@ -67,6 +70,7 @@ table.table-bordered thead th.my-table-head1 {
   color: #145240;
   border-right: 0;
 }
+
 table.table-bordered thead th.my-table-head2 {
   font-size: 16px;
   background: #fffdc5;
@@ -90,9 +94,11 @@ table tr td:nth-child(3n+2) {
 table.table-bordered tbody tr td ul {
   margin: 0;
 }
+
 table.table-bordered tbody tr td li:first-child {
   border-bottom: 1px solid #e9e9e9;
 }
+
 table.table-bordered tbody tr td li {
   list-style-type: none;
   padding: 5px 0;
@@ -104,61 +110,77 @@ table.table-bordered tbody tr td li {
   border-bottom: none;
 }
 
-.my-navtabs > li.active > a,
-.my-navtabs > li.active > a:focus,
-.my-navtabs > li.active > a:hover {
+.my-navtabs>li.active>a,
+.my-navtabs>li.active>a:focus,
+.my-navtabs>li.active>a:hover {
   color: #08c;
 }
-.my-navtabs > li > a {
+
+.my-navtabs>li>a {
   color: #686868;
 }
+
 .my-sure {
   text-align: center;
 }
+
 .sa01 .my-sure,
 .sa06 .my-sure {
   margin-bottom: 10px;
 }
+
 .my-conflict {
   margin-right: 10px;
 }
+
 .my-cbx-style {
   width: 15px;
 }
-.sa01 tbody tr.my-error td {
+
+.sa01 tbody tr.my-error td, .my-error {
   background: #F2DEDE;
 }
+
 .my-print-page {
   font: 16px/1.5 "新細明體", "Times New Roman", Arial, sans-serif;
 }
+
 .my-print-page .my-title {
   text-align: center;
 }
+
 .my-print-page .my-studnet-info table {
   font-size: 18px;
   font-weight: bold;
   border-collapse: collapse;
   width: 100%;
 }
+
 .my-print-page .my-studnet-info table td {
   padding: 0;
 }
+
 .my-print-page .my-studnet-info .my-student-number {
   width: 23%;
 }
+
 .my-print-page .my-studnet-info .my-class-name {
   width: 15%;
 }
+
 .my-print-page .my-studnet-info .my-dept-name {
   width: 30%;
 }
+
 .my-print-page .my-pages {
   text-align: right;
 }
+
 .my-print-page .my-course-info,
 .my-print-page .my-addcourse-info {
   text-align: center;
 }
+
 .my-print-page .my-course-info table,
 .my-print-page .my-addcourse-info table {
   font-size: 12px;
@@ -168,29 +190,35 @@ table.table-bordered tbody tr td li {
   margin: 2px;
   border-color: gray;
 }
+
 .my-print-page .my-course-info table tr,
 .my-print-page .my-addcourse-info table tr {
   height: 35px;
 }
+
 .my-print-page .my-course-info table th,
 .my-print-page .my-addcourse-info table th {
   text-align: center;
 }
+
 .my-print-page .my-course-info table th,
 .my-print-page .my-addcourse-info table th,
 .my-print-page .my-course-info table td,
 .my-print-page .my-addcourse-info table td {
   border: 1px solid #000;
 }
+
 .my-print-page .student-sign,
 .my-print-page .my-note-title,
 .my-print-page .my-note-info {
   font-size: 16px;
 }
+
 .my-print-page .student-sign,
 .my-print-page .my-note-title {
   line-height: 3;
 }
+
 .my-print-page .my-note-info p {
   margin: 0;
 }
@@ -198,19 +226,20 @@ table.table-bordered tbody tr td li {
 #printEndTime {
   color: red;
 }
+
 .my-label-info {
   background-color: #804688;
 }
 
-.my-lable-light{
+.my-lable-light {
   background-color: #FFC300;
 }
 
 .footer {
   border-top: 1px solid #ccc;
   padding-top: 4px;
-  height: 70px;
-  position: fixed;
+  height: auto;
+  position: unset;
   left: 8px;
   right: 8px;
   bottom: 0px;
@@ -239,8 +268,8 @@ table.table-bordered tbody tr td li {
   margin-bottom: 2px;
   border: 1px solid #e5e5e5;
   -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-          border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   box-shadow: 0;
 }
 
@@ -264,15 +293,17 @@ table.table-bordered tbody tr td li {
   margin-bottom: 100px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.2), 3px 3px 0 #ffffff, 4px 4px 0 rgba(0, 0, 0, 0.2), 6px 6px 0 #ffffff, 7px 7px 0 rgba(0, 0, 0, 0.2);
 }
+
 .my-page h1:first-child {
-  font-size: 22px;
+  /* font-size: 22px; */
   font-size: 1.2rem;
-  position: relative;
-  left: -10px;
+  /* position: relative; */
+  /* left: -10px; */
   border-left: 10px solid #B0CCC6;
   border-bottom: 1px solid whiteSmoke;
   padding-left: 20px;
 }
+
 .my-page h1 a {
   color: #333;
 }
@@ -288,21 +319,148 @@ table.table-bordered tbody tr td li {
 
 .alert-info {
   background-image: none;
+  padding: 8px 16px;
 }
 
 /*投入點數*/
-input.points{
+input.points {
   width: 120px;
   height: 30px;
   margin: 0px;
   margin-right: 10px;
 }
+
 /*錯誤的點數*/
-input.error{
+input.error {
   border-color: red;
   color: red;
 }
-div.points{
+
+div.points {
   width: 150px;
   display: inline-block;
 }
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  left: auto;
+  min-width: 160px;
+  float: right;
+}
+
+.dropdown-menu .active>a, .dropdown-menu .active>a:hover {
+  background-image: none;
+}
+
+.dis-none {
+  display: none;
+  visibility: hidden;
+}
+
+.dis-show {
+  display: block;
+  visibility: visible;
+}
+
+input[type="number"] {
+  height: 32px;
+  margin-bottom: 0;
+  width: 112px;
+}
+
+@media (max-width: 767px) {
+
+  .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td,
+  .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th,
+  .table th, .table td, .table-bordered {
+    border: 0;
+  }
+
+  .table-striped>tbody>tr:nth-of-type(odd),
+  .table-striped tbody tr:nth-child(odd) td,
+  .table-striped tbody tr:nth-child(odd) th {
+    background-color: #fff;
+  }
+
+  .table tbody+tbody {
+    border-top: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .dis-none {
+    display: contents;
+    visibility: visible;
+  }
+
+  .dis-show {
+    display: none;
+    visibility: hidden;
+  }
+
+  .footer {
+    position: fixed;
+  }
+
+  input[type="number"] {
+    width: auto;
+  }
+}
+
+.card {
+  /* position: relative;
+  display: flex;
+  flex-direction: column; */
+  min-width: 0;
+  word-wrap: break-word;
+  /* background-color: #fff; */
+  background-clip: border-box;
+  /* border: 0 solid rgba(0, 0, 0, 0.125);
+  border-radius: 1rem; */
+  /* box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15); */
+}
+
+.bd-callout {
+  /* padding: 1.25rem; */
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #e9ecef;
+  border-left-width: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.bd-callout-danger {
+  border-left-color: #d9534f;
+}
+
+.card div[aria-expanded='false'] .collapse-close {
+  display: block;
+}
+
+.card div[aria-expanded='true'] .collapse-close {
+  display: none;
+}
+
+.card div[aria-expanded='false'] .collapse-open {
+  display: none;
+}
+
+.card div[aria-expanded='true'] .collapse-open {
+  display: block;
+}
+
+.heard-table {
+  font-size: 16px;
+  background: #bbe6e2;
+  min-height: 43px;
+  border-radius: 4px;
+  border: 1px solid #dedede;
+}
+
+@media(min-width:390px){
+  .w-20 {
+    width: auto
+  }
+}
+
