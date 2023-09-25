@@ -220,13 +220,21 @@ export class NewCaseModalComponent implements OnInit {
       // 設定結案教師 
       this.closedTeacherName = `${this.roleService.loginTeacher.Name} (${this.roleService.loginTeacher.NickName})`
 
-    } else {
+    } 
+    else {
+
+      if(!confirm("若要調整個案結案狀態，會清空結案日期、結案人員、結案說明，是否確認要調整結案狀態？")){
+        return ;
+      }
+
       // 清除結案日期
       this.caseStudent.CloseDate = "";
       // 清除結案教師名稱
       this.closedTeacherName = ""
       // 清除結案教師
       this.caseStudent.ClosedByTeacherID = "";
+      // 清除結案說明
+      this.caseStudent.CloseDescription = "";
     }
 
     this.caseStudent.checkValue();
