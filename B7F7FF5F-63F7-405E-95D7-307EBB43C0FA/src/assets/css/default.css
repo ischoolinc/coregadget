@@ -178,3 +178,12 @@ body.modal-open {
 	overflow: auto;
   padding-right: 0!important;
 }
+
+.cdk-overlay-pane {
+	max-width: 672px!important;
+	margin: 16px;
+}
+
+.container-fluid {
+	padding: 16px;
+}
