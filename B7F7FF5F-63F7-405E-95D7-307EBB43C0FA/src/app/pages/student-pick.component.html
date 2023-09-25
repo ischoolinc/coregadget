@@ -84,10 +84,10 @@
 
 
     <!-- 學生資料 (with photo)-->
-    <div class="st-list d-flex flex-wrap justify-content-center justify-content-md-start mt-3 mt-lg-1"
+    <div class="st-list d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mt-3 mt-lg-1"
          *ngIf="showPhoto">
       <div class="card st-check"
-           style="height:320px; min-width: 140px;"
+           style="min-width: 145px ;max-width: 50%; margin-right: 0;"
            *ngFor="let student of studentChecks">
         <label (click)="changeAttendance(student)"
                class="point">
@@ -95,11 +95,11 @@
             <div style="height:100%;width:100%;background-position: center center;background-size: cover;"
                  [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
           </div>
-          <div style="position:absolute;bottom:0px;width:100%;">
+          <div style="margin-top: -54px; bottom:0px;width:100%;">
             <div [ngStyle]="getAttendanceStyle(student)"
-                 class="w-100 ad-status">
+                 class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{getAttendanceText(student)}}</div>
-            <div class="card-body py-2 w-100">
+            <div class="card-body p-2 px-xl-3 w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
               <div class="text-gray flex-wrap d-flex">
                 <strong class="mb-0" style="word-break: break-all;">{{student.data?.Name}}</strong>
                 <div class="ml-auto"
