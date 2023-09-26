@@ -24,6 +24,10 @@
 
   <script src="assets/js/gadget.js"></script>
   <script>
+
+    const client_id = 'b88fbfbbaa848c5b5b01ce51853eac7f';
+    const secret = '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311';
+
     var vars = [], hash;
     var p = window.location.href.slice(window.location.href.indexOf('?') + 1);
     if (p.indexOf("#") >= 0)
@@ -40,8 +44,9 @@
       init({
         application: vars.dsns,
         oAuth: {
-          clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-          clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311'
+          clientID: client_id,
+          clientSecret: secret,
+     
         },
         paramValues: {
         }
@@ -51,12 +56,14 @@
       init({
         application: "demo.h.vicky.chang",
         oAuth: {
-          clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-          clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-         
+          clientID: client_id,
+          clientSecret: secret,
+          account:'',
+          password:''
         },
         paramValues: {
-        }
+        //  "isShowCheckInTime" : true 
+       }
       });
     }
   </script>

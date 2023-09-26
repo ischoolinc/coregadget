@@ -6,24 +6,48 @@
   <!-- <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script> -->
   <script src="js/gadget.js"></script>
   <script>
-    // init({
-    //   application: "dev.sh_d", //"h.trialschool.tw", //"http://test.iteacher.tw/cs4/test_sh_d_chhs", //"dev.jh_kh",
-    //   paramValues: {
-    //     "i18n": "zh_TW",
-    //     //"i18n": "en_US",
-    //   }
-    // });
 
-    init({
-        application: "demo.h.beibei.lai",
+    const client_id = 'b88fbfbbaa848c5b5b01ce51853eac7f';
+    const secret = '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311';
+
+    var vars = [], hash;
+    var p = window.location.href.slice(window.location.href.indexOf('?') + 1);
+    if (p.indexOf("#") >= 0)
+      p = p.substring(0, p.indexOf("#"));
+    var hashes = p.split('&');
+    for (var i = 0; i < hashes.length; i++) {
+      hash = decodeURIComponent(hashes[i]);
+      var key = hash.substring(0, hash.indexOf("="));
+      vars.push(key);
+      vars[key] = hash.substring(hash.indexOf("=") + 1);
+    }
+
+    if (vars.dsns) {
+      init({
+        application: vars.dsns,
         oAuth: {
-          clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-          clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+          clientID: client_id,
+          clientSecret: secret,
+     
         },
         paramValues: {
-            "i18n": "zh_TW",
         }
       });
+    }
+    else {
+      init({
+        application: "demo.h.beibei.lai",
+        oAuth: {
+          clientID: client_id,
+          clientSecret: secret,
+          account:'',
+          password:''
+        },
+        paramValues: {
+        //  "isShowCheckInTime" : true 
+       }
+      });
+    }
   </script>
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
