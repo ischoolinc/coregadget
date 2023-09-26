@@ -43,3 +43,8 @@ a > .my-media {
 .table>tbody>tr>td {
 	border:none;
 }
+
+div.showmsg:hover {
+	cursor: pointer;
+	color: red;
+}
