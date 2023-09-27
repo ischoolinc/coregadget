@@ -132,7 +132,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="d in date">
-                                <td>{{d}}</td>
+                                <td>{{ d|myDateFormat:"yyyy/MM/dd" }}</td>
                                 <td ng-repeat="p in conf.periods">{{absencedata['p'+p.name+'--'+d]}}</td>
                                 <td class="text-right">
                                     <a class="btn btn-sm btn-default" ng-click="showEditForm(d)"><i class="fa fa-trophy"></i> {{"PROCESSING"|translate}}</a>
@@ -150,31 +150,29 @@
                         <thead>
                             <tr>
                                 <th>{{"APPLYDATE"|translate}}</th>
-                                <th>{{"APPLICANT"|translate}}</th>
+                                <th class="text-center">{{"APPLICANT"|translate}}</th>
                                 <th>{{"DATE"|translate}}</th>
                                 <th>{{"SECTION"|translate}}</th>
                                 <th>{{"TYPE"|translate}}</th>
                                 <th>{{"REASON"|translate}}</th>
                                 <th style="text-align: center;">{{"STAGE"|translate}}</th>
                                 <th>{{"STATUS"|translate}}</th>
-                                <th>{{"REMARK"|translate}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="l in list">
-                                <td>{{l.apply_date|myDateFormat:"yyyy-MM-dd"}}</td>
-                                <td>{{l.applicant_type.toUpperCase()|translate}}</td>
+                                <td>{{l.apply_date|myDateFormat:"yyyy/MM/dd"}}</td>
+                                <td class="text-center">{{l.applicant_type.toUpperCase()|translate}}</td>
                                 <td>{{l.att_occur_date|myDateFormat:"yyyy/MM/dd"}}</td>
                                 <td>{{l.att_period}}</td>
                                 <td>{{l.att_absence_type}}</td>
                                 <td>{{l.att_reason}}</td>
-                                <td style="text-align: center;"><div  class="showmsg" title="{{ l.current_responder }}">{{l.current_stage_no}}</div> </td>
-                                <td>{{l.current_status|translate}}</td>
                                 <td>
                                     <div ng-repeat=" stage in l.flows">
-                                        <div class="showmsg" title="{{ stage.Responder }}" >簽核 {{ stage.no }} : {{ stage.Message || ''}}</div>
+                                        <div class="showmsg" title="{{ stage.Responder }}" >Stage {{ stage.no }} {{ (stage.ResponderRole || 'ASSIGNEDTEACHER') | translate }} : {{ stage.Status|translate}}  {{ stage.Message ? ('(' + stage.Message + ')') : '' }} </div>
                                     </div>
                                 </td>
+                                <td>{{l.current_status|translate}}</td>
                             </tr>
                         </tbody>
                     </table>

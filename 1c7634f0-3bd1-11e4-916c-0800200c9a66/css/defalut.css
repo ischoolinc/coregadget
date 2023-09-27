@@ -48,3 +48,7 @@ div.showmsg:hover {
 	cursor: pointer;
 	color: red;
 }
+
+.text-center {
+	text-align: center;
+}

@@ -74,12 +74,15 @@ var app = angular
             "pending":"Pending",
             "rejected":"Rejected",
             "completed":"Completed",
+            "approved": "Approved",
             "LEAVERULE":"Procedure to report a leave",
             "APPLYDATE": "Apply date",
             "APPLICANT": "Role",
             "PARENT": 'Parent',
             "STUDENT": 'Student',
             "STAGE": 'Stage',
+            "HomeTeacher": "HomeTeacher",
+            "ASSIGNEDTEACHER": 'AssignedTeacher'
           });
         $translateProvider.translations('zh_TW', {
             "TITLE"     : "線上請假",
@@ -107,12 +110,15 @@ var app = angular
             "pending":"待簽核",
             "rejected":"退回",
             "completed":"完成",
+            "approved": "核准",
             "LEAVERULE":"請假規則",
             "APPLYDATE": "填表日期",
             "APPLICANT": "填表身分",
             "PARENT": '家長',
             "STUDENT": '學生',
             "STAGE": '簽核進度',
+            "HomeTeacher": "導師",
+            "ASSIGNEDTEACHER": '指定教師'
           });
         $translateProvider.preferredLanguage('zh_TW');
     }])
