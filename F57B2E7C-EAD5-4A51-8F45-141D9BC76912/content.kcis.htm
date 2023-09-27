@@ -195,6 +195,20 @@
                     </li>
                 </ul>
             </div>
+            <div class="btn-group">
+                <a href="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{current.CurrentSortedBy}}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-class="{active:current.SortedBy == 'StudentNumber'}">
+                        <a href="javascript:void(0)" ng-click="setSortBy('StudentNumber')">Sorted By Student Number</a>
+                    </li>
+                    <li ng-class="{active:current.SortedBy == 'ClassNameSeatNo'}">
+                        <a href="javascript:void(0)" ng-click="setSortBy('ClassNameSeatNo')">Sorted By Class and Seat No</a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div ng-if="studentList" class="hidden-xs" style="margin-top:10px;">
             <!--輸入Panel-->
@@ -433,6 +447,21 @@
                                 rowspan="2">
                                 Student
                             </th>
+                            <th class="text-center"
+                                style="padding: 8px 2px;"
+                                rowspan="2">
+                                Chinese Name
+                            </th>
+                            <th class="text-center"
+                                style="padding: 8px 2px;"
+                                rowspan="2">
+                                Class Name
+                            </th>
+                            <th class="text-center"
+                                style="padding: 8px 2px;"
+                                rowspan="2">
+                                Seat No
+                            </th>
                             <th ng-repeat="assessmentRec in AssessmentItem"
                                 class="text-center"
                                 style="padding: 6px 4px;overflow: hidden;position:relative;">
@@ -484,6 +513,24 @@
                                     <span>{{stuRec.EnglishName}}</span>
                                 </span>
                                 <small class="text-muted" style="position:absolute;bottom:2px;right:2px;">{{stuRec.StudentNumber}}</small>
+                            </td>
+                            <td class="text-center"
+                                style="position:relative;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="white-space: nowrap;overflow: hidden;">
+                                    <span>{{stuRec.Name}}</span>
+                                </span>
+                            </td>
+                            <td class="text-center"
+                                style="position:relative;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="white-space: nowrap;overflow: hidden;">
+                                    <span>{{stuRec.ClassName}}</span>
+                                </span>
+                            </td>
+                            <td class="text-center"
+                                style="position:relative;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="white-space: nowrap;overflow: hidden;">
+                                    <span>{{stuRec.SeatNo}}</span>
+                                </span>
                             </td>
                             <td ng-repeat="assessmentRec in AssessmentItem"
                                 ng-class="{'text-left': assessmentRec.Type=='Comment', 'text-center':assessmentRec.Type!='Comment'}"
