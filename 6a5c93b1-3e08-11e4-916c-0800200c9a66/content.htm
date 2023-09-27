@@ -69,7 +69,7 @@
                         <thead>
                             <tr>
                                 <th>{{"APPLYDATE"|translate}}</th>
-                                <th>{{"APPLICANT"|translate}}</th>
+                                <th class="my-sure">{{"APPLICANT"|translate}}</th>
                                 <th>{{"CLASS"|translate}}</th>
                                 <th>{{"SEATNO"|translate}}</th>
                                 <th>{{"STUDENTNUMBER"|translate}}</th>
@@ -83,13 +83,13 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="l in list">
-                                <td>{{l.apply_date|myDateFormat:"yyyy-MM-dd"}}</td>
-                                <td>{{l.applicant_type.toUpperCase()|translate}}</td>
+                                <td>{{l.apply_date|myDateFormat:"yyyy/MM/dd"}}</td>
+                                <td class="my-sure">{{l.applicant_type.toUpperCase()|translate}}</td>
                                 <td>{{l.class_name}}</td>
                                 <td>{{l.seat_no}}</td>
                                 <td>{{l.student_number}}</td>
                                 <td>{{l.name}}</td>
-                                <td>{{l.att_occur_date|myDateFormat:"yyyy-MM-dd"}}</td>
+                                <td>{{l.att_occur_date|myDateFormat:"yyyy/MM/dd"}}</td>
                                 <td>{{l.att_period}}</td>
                                 <td>{{l.att_absence_type}}</td>
                                 <td>{{l.att_reason}}</td>
@@ -119,7 +119,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">{{"APPLYDATE"|translate}}</label>
                 <div class="col-sm-3 control-text">
-                    {{ main.apply_date | myDateFormat:"yyyy-MM-dd"  }}
+                    {{ main.apply_date | myDateFormat:"yyyy/MM/dd"  }}
                 </div>
                 
                 <label class="col-sm-2 control-label">{{"APPLICANT"|translate}}</label>
