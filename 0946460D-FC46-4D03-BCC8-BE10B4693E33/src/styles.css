@@ -60,7 +60,7 @@
 .rwd-table2 td:before {
   content: attr(data-th);
   font-weight: bold;
-  width: 42px;
+  width: 80px;
   display: inline-block;
   color: #000;
 }
@@ -97,7 +97,7 @@
   }
 
   .rwd-table {
-    display: block;
+    display: table;
   }
 
   .accordion {

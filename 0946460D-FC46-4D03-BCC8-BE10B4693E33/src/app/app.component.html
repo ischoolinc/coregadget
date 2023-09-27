@@ -141,7 +141,7 @@
                   [attr.data-th]="period.Name" (click)="toogleShowdetail()" class="d-flex align-items-center">
                   <ng-container *ngIf="getAbsenceType(student.student_id ,period.Name)">
                     <span *ngIf="getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type"
-                      class="mr-2" style="color: rgb(202, 79, 79); width: 36px;">
+                      class="ml-3 text-nowrap" style="color: rgb(202, 79, 79);">
                       {{ getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type}}
                     </span>
                     <span class="blue-font"
@@ -169,7 +169,7 @@
                     *ngIf="!getAbsenceType(student.student_id ,period.Name)&& getRollCallLogItem(student.student_id ,period.Name)?.length != 0"
                     style="text-align: center ;">
                     <!-- {{ getRollCallLogItem(student.student_id ,period.Name)}} D -->
-                    <span class="material-icons-outlined check_icon main_color mr-2" style="width: 36px;">
+                    <span class="material-icons-outlined check_icon main_color ml-3 text-nowrap">
                       done
                     </span>
                     <!-- <span class="material-icons-outlined">
