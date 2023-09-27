@@ -339,6 +339,10 @@ button, input {
   gap: .5rem
 }
 
+.gap-4 {
+  gap: 1rem
+}
+
 .whitespace-nowrap {
   white-space: nowrap
 }
@@ -453,6 +457,9 @@ button, input {
 }
 
 @media (min-width: 1024px) {
+  .lg\:-mb-9 {
+    margin-bottom: -2.25rem;
+  }
   .lg\:block {
     display: block;
   }
