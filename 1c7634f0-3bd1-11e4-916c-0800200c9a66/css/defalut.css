@@ -1,5 +1,5 @@
 a:hover {
-	text-decoration:none;
+	text-decoration: none;
 }
 
 .my-media {
@@ -8,22 +8,22 @@ a:hover {
 	border-radius: 3px;
 }
 
-a > .my-media {
-	color:#333;
+a>.my-media {
+	color: #333;
 }
 
 .my-media img {
-	width:107px;
-	height:auto;
+	width: 107px;
+	height: auto;
 	border-radius: 3px;
 }
 
 .my-media p {
-	border-bottom:1px dashed #eee;
+	border-bottom: 1px dashed #eee;
 }
 
 .my-media p:last-child {
-	height:43px;
+	height: 43px;
 }
 
 .col-md-6 {
@@ -31,17 +31,17 @@ a > .my-media {
 }
 
 .my-em em {
-	font-style:normal;
-	text-align:right;
+	font-style: normal;
+	text-align: right;
 	width: 25%;
-	display:inline-block;
-	border-right:1px solid #eee;
-	padding-right:10px;
-	margin-right:10px;
+	display: inline-block;
+	border-right: 1px solid #eee;
+	padding-right: 10px;
+	margin-right: 10px;
 }
 
 .table>tbody>tr>td {
-	border:none;
+	border: none;
 }
 
 div.showmsg:hover {
@@ -49,6 +49,61 @@ div.showmsg:hover {
 	color: red;
 }
 
-.text-center {
+.btn-info {
+	color: #46b8da;
+}
+
+ul.dropdown-menu {
+	left: -50px !important;
+	;
+}
+
+.dis-h-t {
+	display: none !important;
+}
+
+@media(min-width: 640px) {
+	.dis-h-t {
+		display: table !important;
+	}
+}
+
+.rotate-180 {
+	rotate: 180deg;
+}
+
+.collapsed .rotate-180 {
+	rotate: 0deg;
+}
+
+.modal-content {
+	font-size: 14px;
+}
+
+td[ng-repeat="p in conf.periods"], th[ng-repeat="p in conf.periods"], .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	padding: 4px !important;
 	text-align: center;
+	border: 0;
+}
+
+.modal.fade.in {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-dialog {
+	width: 100%;
+	margin: auto;
+	max-width: 700px;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .sm\:hidden {
+    display: none !important;
+  }
 }
