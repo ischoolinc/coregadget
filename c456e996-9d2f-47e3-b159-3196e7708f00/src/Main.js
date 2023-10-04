@@ -76,6 +76,9 @@ function Main() {
 
   const position = window.gadget.params.system_position;
   const system_type = window.gadget.params.system_type;
+  const isElementarySchool = window.gadget.params.is_elementary_school ?
+    window.gadget.params.is_elementary_school.toLowerCase() === 'true' ? true : false :
+    false;
 
   useEffect(() => {
     GetCurrentSemester();
@@ -650,7 +653,7 @@ function Main() {
                         </Popover>
                       }>
 
-                      <Link className={disabledCursor} to={show} key={sss.index} onMouseEnter={() => { handleOnMouseEnter(index, 'subject'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sss); }}>
+                      <Link className={disabledCursor} to={!isElementarySchool ? show : null} key={sss.index} onMouseEnter={() => { handleOnMouseEnter(index, 'subject'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sss); }}>
                         <div className='d-flex'>
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
@@ -731,7 +734,7 @@ function Main() {
 
 
                         <div className='d-flex text-start p-2 ms-2'>{sss.textq}</div>
-                        {system_type === 'kh' ? '' :
+                        {((system_type === 'kh') || (isElementarySchool)) ? '' :
                           <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                             <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                             更多
@@ -830,7 +833,7 @@ function Main() {
                         </Popover.Body>
                       </Popover>
                     }>
-                    <Link className={disabledCursor} to={show} onMouseEnter={() => { handleOnMouseEnter(index, 'domain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sds); }}>
+                    <Link className={disabledCursor} to={!isElementarySchool ? show : null} onMouseEnter={() => { handleOnMouseEnter(index, 'domain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(sds); }}>
                       <div className='d-flex'>
                         <div className='d-flex me-auto p-2 align-items-center'>
                           {!showNow ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
@@ -909,7 +912,7 @@ function Main() {
                       </div>
 
                       <div className='d-flex text-start p-2 ms-2'>{sds.textq}</div>
-                      {system_type === 'kh' ? '' :
+                      {((system_type === 'kh') || (isElementarySchool)) ? '' :
                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                           <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
@@ -981,7 +984,7 @@ function Main() {
                       </Popover.Body>
                     </Popover>
                   }>
-                  <Link className={disabledCursor} to={show} onMouseEnter={() => { handleOnMouseEnter(index, 'mixdomain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(smds); }}>
+                  <Link className={disabledCursor} to={!isElementarySchool ? show : null} onMouseEnter={() => { handleOnMouseEnter(index, 'mixdomain'); }} onMouseLeave={handleOnMouseLeave} onClick={() => { handleShowRankDetail(smds); }}>
                     <div className='d-flex'>
                       <div className='d-flex me-auto p-2 align-items-center'>
                         <div className='fs-4 fw-bold text-start'>{smds.subject === '課程學習總成績' ? '課程學習成績(含彈性課程)' : smds.subject === '學習領域總成績' ? '學習領域成績' : smds.subject}</div>
@@ -1039,7 +1042,7 @@ function Main() {
                           }
                       })}
 
-                      {system_type === 'kh' ? '' :
+                      {((system_type === 'kh') || (isElementarySchool)) ? '' :
                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                           <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
