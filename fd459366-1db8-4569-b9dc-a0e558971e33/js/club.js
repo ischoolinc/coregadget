@@ -36,11 +36,13 @@
 
 var _gg = function () {
     var connection = gadget.getContract("ischool.universal_club.student");
+    var connection1 = gadget.getContract("basic.public");
     var Clubs = [];
     var Club = '';
     var Student = {};
     var SchoolYear = '';
     var Semester = '';
+    var now_time = '';
 
     // TODO: 錯誤訊息
     set_error_message = function(select_str, serviceName, error) {
@@ -71,6 +73,20 @@ var _gg = function () {
             $(select_str).html("<div class='alert alert-error'>\n  <button class='close' data-dismiss='alert'>×</button>\n  " + error + "\n</div>");
         }
     };
+        
+    connection1.send({
+        service: ".beta.GetNow",
+        body: '',
+        result: function (response, error, http) {
+            if (error !== null) {
+                $("#mainMsg").html("<div class='alert alert-error'>\n  <button class='close' data-dismiss='alert'>×</button>\n  <strong>呼叫服務失敗</strong>(GetNow)\n</div>");
+            } else {
+                if (response.DateTime) {
+                    now_time = new Date(response.DateTime);
+                }
+            }
+        }
+    });
 
     // TODO: 取得目前學年度學期
     init = function() {
@@ -139,6 +155,8 @@ var _gg = function () {
                                             $(response.Response.OpeningHours).each(function (index, item) {
                                                 if (item.Startdate && item.Enddate) {
                                                     var tmp_Date  = new Date();
+                                                    //改為開放時機以主機為準
+                                                    var tmp_Date  = now_time;
                                                     var Startdate = new Date(item.Startdate);
                                                     var Enddate   = new Date(item.Enddate);
 
