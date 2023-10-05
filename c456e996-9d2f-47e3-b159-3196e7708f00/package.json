@@ -1,6 +1,7 @@
 {
-  "name": "f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa",
+  "name": "c456e996-9d2f-47e3-b159-3196e7708f00",
   "version": "0.1.0",
+  "description": "康橋新竹小學的家長成績查詢模組，是拿「國中通用學期成績查詢(2023新版)」 gadget 來調整的",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -18,10 +19,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build_test": "BUILD_PATH='./build/c456e996-9d2f-47e3-b159-3196e7708f00' set PUBLIC_URL=/1campus_gadget/c456e996-9d2f-47e3-b159-3196e7708f00&&react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "firebase": "set PUBLIC_URL=/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa&&react-scripts build",
-    "prod": "set PUBLIC_URL=/deployment/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa&&react-scripts build"
+    "firebase": "set PUBLIC_URL=/c456e996-9d2f-47e3-b159-3196e7708f00&&react-scripts build",
+    "prod": "set PUBLIC_URL=/deployment/c456e996-9d2f-47e3-b159-3196e7708f00&&react-scripts build"
   },
   "eslintConfig": {
     "extends": [

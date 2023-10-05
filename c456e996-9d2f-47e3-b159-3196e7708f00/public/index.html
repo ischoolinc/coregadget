@@ -46,25 +46,48 @@
   <script src="assets/js/gadget.js"></script>
 
   <script>
-    init({
-      //application: "demo.j.vicky.chang",
-      application: "demo.j.cynthia.chen",
-      //application: "test.kh.edu.tw",
-      paramValues: {
-        "system_position": "",//"parent"(預設),"student"
-        "system_type": "",//"kh"--高雄國中,"hc"--一般國中(預設)  //
-        "is_elementary_school": "True", //"True", "False"
 
-      },
-      oAuth: {
-        clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-        clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-        account: 'bubu@debug.ischool.com.tw',
-        password: '1234'
+    const client_id = 'b88fbfbbaa848c5b5b01ce51853eac7f';
+    const secret = '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311';
 
+    var vars = [], hash;
+    var p = window.location.href.slice(window.location.href.indexOf('?') + 1);
+    if (p.indexOf("#") >= 0)
+      p = p.substring(0, p.indexOf("#"));
+    var hashes = p.split('&');
+    for (var i = 0; i < hashes.length; i++) {
+      hash = decodeURIComponent(hashes[i]);
+      var key = hash.substring(0, hash.indexOf("="));
+      vars.push(key);
+      vars[key] = hash.substring(hash.indexOf("=") + 1);
+    }
 
-      }
-    });
+    if (vars.dsns) {
+      init({
+        application: vars.dsns,
+        oAuth: {
+          clientID: client_id,
+          clientSecret: secret,
+
+        },
+        paramValues: {
+        }
+      });
+    }
+    else {
+      init({
+        application: "demo.j.cynthia.chen", //"demo.h.beibei.lai",
+        oAuth: {
+          clientID: client_id,
+          clientSecret: secret,
+          account: '',
+          password: ''
+        },
+        paramValues: {
+          //  "isShowCheckInTime" : true 
+        }
+      });
+    }
   </script>
 
   <title>學期成績</title>
