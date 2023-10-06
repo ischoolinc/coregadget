@@ -429,6 +429,7 @@ function Main() {
   }
 
   const [dc, setDc] = useState('');
+  //有時候會沒設定？ 給預設值
   const [ mappingTable, setMappingTable] = useState([{"Name":"優","EngName":"A","Score":90},{"Name":"甲","EngName":"B","Score":80},{"Name":"乙","EngName":"C","Score":70},{"Name":"丙","EngName":"D","Score":60},{"Name":"丁","EngName":"E","Score":0}])
 
   function mapScoreToDegree(rawScore, mappingTable) {
@@ -461,7 +462,7 @@ function Main() {
     return "No Match Found";
   }
 
-  // 取得指定學年期的課程 科目 定期評量 & 平時評量 & 定期+平時(固定排名) 成績
+  // 從 desktop 設定取得等第標準
   async function GetDegreeConfig() {
     await _connection.send({
       service: "_.GetDegreeConfig",
