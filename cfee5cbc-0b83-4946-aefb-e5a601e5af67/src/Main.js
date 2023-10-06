@@ -71,6 +71,10 @@ function Main() {
 
   const [viewSetting, setViewSetting] = useState({"show_score":"算術平均","show_no_rank":"True","showscore":"False","showdegree":"True"})
 
+  const isElementarySchool = window.gadget.params.is_elementary_school ?
+    window.gadget.params.is_elementary_school.toLowerCase() === 'true' ? true : false :
+    false;
+
   //******************* */
 
   const position = window.gadget.params.system_position;
@@ -628,7 +632,6 @@ function Main() {
 
   return (
     <div className="App">
-      <div>{JSON.stringify(viewSetting)}</div>
       <div className="container px-3 px-sm-4 py-5 ">
         <div className='titleBorder d-flex align-items-center'>
           <div>
@@ -776,7 +779,7 @@ function Main() {
                   }
                   return <div className="col"><div className={passColor}>
                     <div className="card-body">
-                      <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
+                      <Link className={disabledCursor} to={isElementarySchool? null : show} onClick={() => { handleShowRankDetail(ces); }}>
                         <div className='d-flex'>
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
@@ -849,7 +852,7 @@ function Main() {
                             <div className=''>{cField.Message}</div>
                           </div>
                         }
-                        {cField.Score === '' ? '' :
+                        {(cField.Score === '' || isElementarySchool) ? '' :
                           <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                             <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                             更多
@@ -893,7 +896,7 @@ function Main() {
                   }
                   return <div className="col"><div className={passColor}>
                     <div className="card-body">
-                      <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
+                      <Link className={disabledCursor} to={isElementarySchool? null : show} onClick={() => { handleShowRankDetail(ces); }}>
                         <div className='d-flex'>
                           <div className='d-flex me-auto p-2 align-items-center'>
                             {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
@@ -956,7 +959,7 @@ function Main() {
                         <div className='d-flex me-auto p-2 align-items-center'>
                           <div className=''>計算時間：{cField.CreateTime}</div>
                         </div>
-                        {cField.CreateTime === '' ? '' : <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                        {(cField.CreateTime === '' || isElementarySchool) ? '' : <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                           <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                           更多
                         </div>}
@@ -999,7 +1002,7 @@ function Main() {
                     }
                     return <div className="col"><div className={passColor}>
                       <div className="card-body">
-                        <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
+                        <Link className={disabledCursor} to={isElementarySchool? show : null} onClick={() => { handleShowRankDetail(ces); }}>
                           <div className='d-flex'>
                             <div className='d-flex me-auto p-2 align-items-center'>
                               {/* {<div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>} */}
@@ -1052,7 +1055,7 @@ function Main() {
                           <div className='d-flex me-auto p-2 align-items-center'>
                             <div className=''>計算時間：{cField.CreateTime}</div>
                           </div>
-                          {cField.CreateTime === '' ? '' :
+                          {(cField.CreateTime === '' || isElementarySchool)? '' :
                             <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                               <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                               更多

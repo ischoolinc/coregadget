@@ -56,18 +56,18 @@
             application: vars.dsns,
             oAuth: { clientID: client_id, clientSecret: secret },
             paramValues: {
-              system_position: "",
-              system_type: "",
+              system_position: "", //"parent"(預設),"student"
               is_elementary_school: "True",
             },
           })
         : init({
+            //application: "demo.j.vicky.chang",
             application: "demo.j.cynthia.chen",
             oAuth: {
               clientID: client_id,
               clientSecret: secret,
-              account: "",
-              password: "",
+              account: "bubu@debug.ischool.com.tw",
+              password: "1234",
             },
             paramValues: {
               system_position: "",
