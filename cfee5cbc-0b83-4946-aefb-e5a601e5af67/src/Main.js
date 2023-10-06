@@ -69,6 +69,8 @@ function Main() {
   // 該學生的指定學年期的 "加權/算術"平均 固定排名及分數
   const [examAvgRankMatrix, setAvgRankMatrix] = useState([]);
 
+  const [viewSetting, setViewSetting] = useState({"show_score":"算術平均","show_no_rank":"True","showscore":"False","showdegree":"True"})
+
   //******************* */
 
   const position = window.gadget.params.system_position;
@@ -77,6 +79,7 @@ function Main() {
     GetCurrentSemester();
     GetViewSetting();
     GetStudentList();
+    GetDegreeConfig();
   }, []);
 
 
@@ -129,9 +132,17 @@ function Main() {
           return 'err';
         } else {
           if (response) {
+            /*
 
-            // let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
-            // setShowNoRankSetting(isShowRank);
+            case 1: {"Response":{"Setting":{"show_score":"算術平均","show_no_rank":"True","showscore":"True","showdegree":"False"}}}
+            case 2: {"Response":""} //Give a default value for this case, default show degree
+
+            */
+            if(response.Response?.Setting){
+              setViewSetting(response.Response.Setting);
+            }
+            
+
             if (response.length)
               setAvgSetting(response.Setting.show_score);
           }
@@ -413,6 +424,90 @@ function Main() {
     // });
   }
 
+  const [dc, setDc] = useState('');
+  const [ mappingTable, setMappingTable] = useState([{"Name":"優","EngName":"A","Score":90},{"Name":"甲","EngName":"B","Score":80},{"Name":"乙","EngName":"C","Score":70},{"Name":"丙","EngName":"D","Score":60},{"Name":"丁","EngName":"E","Score":0}])
+
+  function mapScoreToDegree(rawScore, mappingTable) {
+    let score = -1; // init
+    // Attempt to cast the score to a number if it's a string
+    if (typeof rawScore === 'string') {
+      score = parseFloat(rawScore);
+    }else{
+      if(!isNaN(score)){
+        score = rawScore
+      }
+    }
+  
+    // Check if the score is a valid number within the range of 0 to 100
+    
+    if (isNaN(score) || score < 0 || score > 100) {
+      if(isNaN(score)){
+        return rawScore; // Exception: '缺', '弊'...
+      }
+      return "Invalid Score";
+    }
+  
+    for (const entry of mappingTable) {
+      if (score >= entry.Score) {
+        return entry.Name;
+      }
+    }
+  
+    // If no match is found, return a default value
+    return "No Match Found";
+  }
+
+  // 取得指定學年期的課程 科目 定期評量 & 平時評量 & 定期+平時(固定排名) 成績
+  async function GetDegreeConfig() {
+    await _connection.send({
+      service: "_.GetDegreeConfig",
+      body: {
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetDegreeConfigError', error);
+          return 'err';
+        } else {
+          if (response.Response) {
+            if(response.Response.Setting){
+              if(response.Response.Setting.length > 0){
+                if(response.Response.Setting[0].content){
+                  let xmlString = response.Response.Setting[0].content;
+                  
+                  function parseXmlString(xmlString) {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+                    
+                    const scoreMappings = xmlDoc.querySelectorAll('ScoreMapping');
+                    const results = [];
+                  
+                    for (const mapping of scoreMappings) {
+                      const Name = mapping.getAttribute('Name');
+                      const EngName = mapping.getAttribute('EngName');
+                      const Score = parseInt(mapping.getAttribute('Score'), 10) || 0; // Convert score to integer, default to 0 if empty or NaN
+                      
+                      const result = { Name, EngName, Score };
+                      results.push(result);
+                    }
+                  
+                    return results;
+                  }
+
+                  const mappingTable = parseXmlString(xmlString);
+                  setMappingTable(mappingTable);
+                  setDc(JSON.stringify(mappingTable));
+                }
+               
+              }
+            }
+            
+          }
+        }
+      }
+    });
+  }
+
+
 
   // 取得指定學年期的課程 科目 定期評量 & 平時評量 & 定期+平時(固定排名) 成績
   async function GetAllSubjectExamScore() {
@@ -533,8 +628,8 @@ function Main() {
 
   return (
     <div className="App">
+      <div>{JSON.stringify(viewSetting)}</div>
       <div className="container px-3 px-sm-4 py-5 ">
-
         <div className='titleBorder d-flex align-items-center'>
           <div>
             <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
@@ -700,11 +795,11 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : cField.ExamScore}</div>
+                                    {(viewSetting.showdegree.toLowerCase()==='true')?<div className={examScoreColor}>{cField.ExamScore === '' ? '-' : mapScoreToDegree(cField.ExamScore, mappingTable)}</div>:<div className={examScoreColor}>{cField.ExamScore === '' ? '-' : cField.ExamScore}</div>}
                                     <div className='me-0 pe-0'>定期評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                  {!(viewSetting.showdegree.toLowerCase()==='true')?<div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>:null}
 
                                 </div>
                               </div>
@@ -714,11 +809,13 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={assignmentScoreColor}>{cField.AssignmentScore === '' ? '-' : cField.AssignmentScore}</div>
+                                    {(viewSetting.showdegree.toLowerCase()==='true')?<div className={assignmentScoreColor}>{cField.AssignmentScore === '' ? '-' : mapScoreToDegree(cField.AssignmentScore, mappingTable)}</div>:
+                                    <div className={assignmentScoreColor}>{cField.AssignmentScore === '' ? '-' : cField.AssignmentScore}</div>}
                                     <div className='me-0 pe-0'>平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.AssignmentScore === '' || ces.Field[im].AssignmentScore === '' ? '' : Number(ces.Field[index].AssignmentScore) > Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].AssignmentScore) < Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                  {(viewSetting.showdegree.toLowerCase()==='true')? null :
+                                  <div>{index === 0 || cField.AssignmentScore === '' || ces.Field[im].AssignmentScore === '' ? '' : Number(ces.Field[index].AssignmentScore) > Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].AssignmentScore) < Number(ces.Field[im].AssignmentScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
 
                                 </div>
                               </div>
@@ -728,11 +825,13 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                    {(viewSetting.showdegree.toLowerCase()==='true')?<div className={scoreColor}>{cField.Score === '' ? '-' : mapScoreToDegree(Math.round(Number(cField.Score) * 100) / 100, mappingTable)}</div>:
+                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>}
                                     <div className='me-0 pe-0'>定期+平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                  {(viewSetting.showdegree.toLowerCase()==='true')? null :
+                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
 
                                 </div>
                               </div>
@@ -813,11 +912,12 @@ function Main() {
                             <div className='row align-items-center'>
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
-                                  <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>
+                                  {(viewSetting.showdegree.toLowerCase()==='true')?<div className={examScoreColor}>{cField.ExamScore === '' ? '-' : mapScoreToDegree(Math.round(Number(cField.ExamScore) * 100) / 100, mappingTable)}</div>:
+                                  <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>}
                                   <div className='me-0 pe-0'>定期評量</div>
                                 </div>
 
-                                <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                {(viewSetting.showdegree.toLowerCase()==='true')? null : <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
 
                               </div>
                             </div>
@@ -827,11 +927,12 @@ function Main() {
                             <div className='row align-items-center'>
                               <div className='d-flex justify-content-center'>
                                 <div className='row align-items-center'>
-                                  <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                  {(viewSetting.showdegree.toLowerCase()==='true')?<div className={scoreColor}>{cField.Score === '' ? '-' : mapScoreToDegree(Math.round(Number(cField.Score) * 100) / 100, mappingTable)}</div>:
+                                  <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>}
                                   <div className='me-0 pe-0'>定期+平時評量</div>
                                 </div>
 
-                                <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                {(viewSetting.showdegree.toLowerCase()==='true')? null : <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
 
                               </div>
                             </div>
@@ -917,11 +1018,12 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>
+                                    {(viewSetting.showdegree.toLowerCase()==='true')? <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : mapScoreToDegree(Math.round(Number(cField.ExamScore) * 100) / 100, mappingTable)}</div>:
+                                    <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : Math.round(Number(cField.ExamScore) * 100) / 100}</div>}
                                     <div className='me-0 pe-0'>定期評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                  {(viewSetting.showdegree.toLowerCase()==='true')? null : <div>{index === 0 || cField.ExamScore === '' || ces.Field[im].ExamScore === '' ? '' : Number(ces.Field[index].ExamScore) > Number(ces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].ExamScore) < Number(ces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
 
                                 </div>
                               </div>
@@ -931,11 +1033,12 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                    {(viewSetting.showdegree.toLowerCase()==='true')? <div className={scoreColor}>{cField.Score === '' ? '-' : mapScoreToDegree(Math.round(Number(cField.Score) * 100) / 100, mappingTable)}</div> : 
+                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>}
                                     <div className='me-0 pe-0'>定期+平時評量</div>
                                   </div>
 
-                                  <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                                  {(viewSetting.showdegree.toLowerCase()==='true')? null : <div>{index === 0 || cField.Score === '' || ces.Field[im].Score === '' ? '' : Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
 
                                 </div>
                               </div>
@@ -999,17 +1102,15 @@ function Main() {
                           if (nField.ExamScore !== '' && nField.ExamScoreText === '' && Number(nField.ExamScore) < 60)
                             scoreColor = 'fs-4 text-danger me-0 pe-0';
 
-
-
                           let im = 0;
                           if (index !== 0)
                             im = index - 1
                           return <div className='col-6 col-md-6 col-lg-6'>
                             <div className='row align-items-center my-2'>
                               <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{nField.ToView === 't' ? nField.ExamScore === '' ? '-' : nField.ExamScore : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
-                                </div>
-                                <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                              {(viewSetting.showdegree.toLowerCase()==='true')? <div className={scoreColor}>{nField.ToView === 't' ? nField.ExamScore === '' ? '-' : mapScoreToDegree(nField.ExamScore, mappingTable) : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}</div>:
+                              <div className={scoreColor}>{nField.ToView === 't' ? nField.ExamScore === '' ? '-' :nField.ExamScore : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}</div>}
+                                {(viewSetting.showdegree.toLowerCase()==='true')? null:<div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
                               </div>
                               <div>{nField.ExamName}</div>
                             </div>
@@ -1062,9 +1163,10 @@ function Main() {
                           return <div className='col-6 col-md-6 col-lg-6'>
                             <div className='row align-items-center my-2'>
                               <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{mField.ExamScore === '' ? '-' : Math.round(Number(mField.ExamScore) * 100) / 100}
-                                </div>
-                                <div>{index === 0 || mField.ExamScore === '' || earm.Field[im].ExamScore === '' ? '' : Number(earm.Field[index].ExamScore) > Number(earm.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(earm.Field[index].ExamScore) < Number(earm.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+                              {(viewSetting.showdegree.toLowerCase()==='true')? <div className={scoreColor}>{mField.ExamScore === '' ? '-' : mapScoreToDegree(Math.round(Number(mField.ExamScore) * 100) / 100, mappingTable)}</div>:
+                              <div className={scoreColor}>{mField.ExamScore === '' ? '-' : Math.round(Number(mField.ExamScore) * 100) / 100}</div>}
+                                
+                                {(viewSetting.showdegree.toLowerCase()==='true')? null : <div>{index === 0 || mField.ExamScore === '' || earm.Field[im].ExamScore === '' ? '' : Number(earm.Field[index].ExamScore) > Number(earm.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(earm.Field[index].ExamScore) < Number(earm.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>}
                               </div>
                               <div>{mField.ExamName}</div>
                             </div>
