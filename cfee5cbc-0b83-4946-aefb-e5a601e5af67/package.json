@@ -1,6 +1,7 @@
 {
-  "name": "de01c584-b5ad-7147-fe7c-414eaf2a1eff",
+  "name": "cfee5cbc-0b83-4946-aefb-e5a601e5af67",
   "version": "0.1.0",
+  "description": "新竹康橋國小家長學生定期評量成績查詢",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -19,10 +20,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build_test": "BUILD_PATH='./build/cfee5cbc-0b83-4946-aefb-e5a601e5af67' set PUBLIC_URL=/1campus_gadget/cfee5cbc-0b83-4946-aefb-e5a601e5af67&&react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "firebase": "set PUBLIC_URL=/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build",
-    "prod": "set PUBLIC_URL=/deployment/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build"
+    "firebase": "set PUBLIC_URL=/cfee5cbc-0b83-4946-aefb-e5a601e5af67&&react-scripts build",
+    "prod": "set PUBLIC_URL=/deployment/cfee5cbc-0b83-4946-aefb-e5a601e5af67&&react-scripts build"
   },
   "eslintConfig": {
     "extends": [
