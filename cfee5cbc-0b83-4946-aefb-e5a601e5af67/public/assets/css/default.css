@@ -1,0 +1,175 @@
+body {
+  background-color: var(--bs-body-bg);
+}
+
+.btn-outline-blue {
+  color: #000;
+  border-color: #5b9bd5;
+  background-color: #fff;
+}
+
+.btn-outline-blue:hover,
+.btn-outline-blue.active {
+  background-color: #deebf7;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
+
+.btn-back {
+  color: #5b9bd5;
+}
+
+.card {
+  border-color: #bf9000;
+}
+.card-pass {
+  border-color: #9dc3e6;
+}
+
+.card-unpass {
+  border-color: #ff0000;
+}
+
+.form-select {
+  border: 1px solid #9dc3e6;
+}
+
+.text-unview {
+  color: #f9c187;
+  font-size: 16px;
+}
+
+.text-more {
+  color: #4a8ac7;
+}
+
+.disabledCursor {
+  cursor: default;
+}
+
+.form-select:focus {
+  /* outline: none !important; */
+  box-shadow: none;
+}
+
+.arrow {
+  height: 17px;
+  width: 17px;
+  margin-top: 10px;
+}
+.putLeft {
+  text-align: left;
+}
+
+.titleBorder {
+  /* border-color: #5B9BD5 ; */
+  border-left: 7px solid #5b9bd5;
+}
+
+.detailBorder {
+  border-top: 1px solid #5b9bd5;
+}
+
+.popover {
+  max-width: 400px;
+}
+
+.top-btn {
+  vertical-align: middle;
+  /* font-size:calc(1rem + 0.9vw); */
+  font-size: 26px;
+}
+
+.hide-button {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.show-button {
+  /* 使按鈕在card link之上 */
+  z-index: 2;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #7bafdd;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  /* font-size:26px;
+  font-size:calc(1rem + 0.9vw); */
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.chartHeightShowRank{
+  height: 350px;
+}
+.chartHeightNoShowRank{
+  height: 350px;
+}
+
+@media (min-width: 768px) {
+  .chartHeightShowRank{
+    height: 350px;
+  }
+  .chartHeightNoShowRank{
+    height: 450px;
+  }
+}
+@media (min-width: 992px) {
+  .chartHeightShowRank{
+    height: 350px;
+  }
+  .chartHeightNoShowRank{
+    height: 450px;
+  }
+}
+@media (min-width: 1200px) {
+  .chartHeightShowRank{
+    height: 350px;
+  }
+  .chartHeightNoShowRank{
+    height: 450px;
+  }
+}
+
+
+/* .innerText {
+    font-size: 5vw;
+  } 百分比、分數、名次*/
+
+@media (max-width: 480px) {
+  .chartHeightShowRank{
+    height: 300px;
+  }
+  .chartHeightNoShowRank{
+    height: 300px;
+  }
+
+  .innerText {
+    font-size: 3vw;
+  }
+  .popover {
+    max-width: 220px;
+
+  }
+
+  /* .text-unview
+      {
+        font-size: 3vw;
+      } */
+}
+
+
+
+
+

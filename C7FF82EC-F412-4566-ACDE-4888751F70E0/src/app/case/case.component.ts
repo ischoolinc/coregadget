@@ -15,7 +15,7 @@ import { asLiteral } from "@angular/compiler/src/render3/view/util";
   styleUrls: ["./case.component.css"]
 })
 export class CaseComponent implements OnInit {
-   /**個案資料**/
+  /**個案資料**/
   caseList: CaseStudent[];
   // 是否結案
   itemClosedList: string[] = [];
@@ -36,7 +36,7 @@ export class CaseComponent implements OnInit {
   // 個案認輔老師
   caseTeacherList: CaseTeacher[];
 
-  sortType ='';
+  sortType = '';
   isLoading = false;
   constructor(
     public roleService: RoleService,
@@ -61,9 +61,9 @@ export class CaseComponent implements OnInit {
     this.case_modal.loadData();
     this.case_modal.caseStudent.loadReferalStatusList()
     this.case_modal.caseStudent.useQuestionOptionTemplate();
- 
+
     this.case_modal.caseList = this.caseList; // 將外部caseList 傳入
-    this.case_modal.selectGradeValue = "請選擇年級"  
+    this.case_modal.selectGradeValue = "請選擇年級"
     this.case_modal.selectClassNameValue = "請選擇班級";
     this.case_modal.selectSeatNoValue = "請選擇座號";
     this.case_modal.selectCaseSourceValue = "請選擇個案來源";
@@ -78,7 +78,7 @@ export class CaseComponent implements OnInit {
     this.case_modal.caseStudent.isCaseLevel1Checked = true;
     this.case_modal.caseStudent.CaseLevel = '初級';
 
-    $("#newCase").modal({backdrop:'static'});
+    $("#newCase").modal({ backdrop: 'static' });
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
@@ -98,7 +98,7 @@ export class CaseComponent implements OnInit {
     this.changeDisplay();
   }
 
- /** 查看未結案或全部 */
+  /** 查看未結案或全部 */
   changeDisplay() {
     this.caseList.forEach(item => {
       item.isDisplay = false;
@@ -132,8 +132,8 @@ export class CaseComponent implements OnInit {
   // 刪除
   delCaseModal(caseStudent: CaseStudent) {
 
-    if(this.isDeleteButtonDisable){ // 如果不能編輯
-      return ;
+    if (this.isDeleteButtonDisable) { // 如果不能編輯
+      return;
     }
     this.del_case_modal._CaseStudent = caseStudent;
     $("#delCaseModal").modal("show");
@@ -167,6 +167,7 @@ export class CaseComponent implements OnInit {
     if (this.case_modal.caseStudent.IsClosed === "t") {
       this.case_modal.caseStudent.isCloseYes = true;
       this.case_modal.caseStudent.isCloseNo = false;
+      this.case_modal.closedTeacherName = `${this.roleService.loginTeacher.Name} (${this.roleService.loginTeacher.NickName})`;
     }
 
     // 解析認輔教師
@@ -205,7 +206,7 @@ export class CaseComponent implements OnInit {
 
     this.case_modal.caseStudent.checkValue();
     item.checkValue();
-    $("#newCase").modal({backdrop:'static'});
+    $("#newCase").modal({ backdrop: 'static' });
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {
@@ -267,7 +268,7 @@ export class CaseComponent implements OnInit {
         let dt = new Date(x);
         rec.OccurDate = rec.parseDate(dt, '-');
         rec.CaseNo = caseRec.CaseNo;
-        rec.ReportReferralStatus =caseRec.ReportReferralStatus;
+        rec.ReportReferralStatus = caseRec.ReportReferralStatus;
         rec.StudentIdentity = caseRec.StudentIdentity;
         rec.PossibleSpecialCategory = caseRec.PossibleSpecialCategory;
         rec.SpecialLevel = caseRec.SpecialLevel;
@@ -275,7 +276,7 @@ export class CaseComponent implements OnInit {
         rec.HasDisabledBook = caseRec.HasDisabledBook;
         rec.DeviantBehavior = caseRec.DeviantBehavior;
         rec.ProblemCategory = caseRec.ProblemCategory;
-        rec.ProblemMainCategory = caseRec.ProblemMainCategory ;
+        rec.ProblemMainCategory = caseRec.ProblemMainCategory;
         rec.ProbleDescription = caseRec.ProbleDescription;
         rec.SpecialSituation = caseRec.SpecialSituation;
         rec.EvaluationResult = caseRec.EvaluationResult;
@@ -286,12 +287,10 @@ export class CaseComponent implements OnInit {
         rec.StudentID = caseRec.StudentID;
         rec.CaseSource = caseRec.CaseSource;
         rec.CaseCount = caseRec.CaseCount;
-        rec.StudentStatus =caseRec.StudentStatus ;
-        rec.TeacherCounselLevels =caseRec.TeacherCounselLevels;
-        rec.PhotoUrl = `${
-          this.dsaService.AccessPoint
-          }/GetStudentPhoto?stt=Session&sessionid=${
-          this.dsaService.SessionID
+        rec.StudentStatus = caseRec.StudentStatus;
+        rec.TeacherCounselLevels = caseRec.TeacherCounselLevels;
+        rec.PhotoUrl = `${this.dsaService.AccessPoint
+          }/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID
           }&parser=spliter&content=StudentID:${rec.StudentID}`;
         this.caseTeacherList.forEach(case_data => {
           if (rec.UID === case_data.CaseID) {
@@ -307,7 +306,7 @@ export class CaseComponent implements OnInit {
 
         data.push(rec);
       });
-      console.log("data....",data);
+      console.log("data....", data);
       this.caseList = data;
 
       // 放入可選班級
@@ -352,81 +351,80 @@ export class CaseComponent implements OnInit {
 
 
 
- /** 依照 (sourTarget)  排序 */
-  sortByAsc(sortTarget:string ,isNum =false){
-    
-    this.sortType ='Asc' ;
-    
-    
-    if(isNum){ // 如果需要轉成數字排序
-       this.caseList.sort((item1,item2)=>{
-       if ( parseInt(item1[sortTarget]) < parseInt(item2[sortTarget]) ){
-        return -1;
-      }
-      if ( parseInt(item1[sortTarget])> parseInt( item2[sortTarget])){
-      
-        return 1;
-      }
-      return 0;
-    })
-    }else{
-      this.caseList.sort((item1,item2)=>{
-        if ( item1[sortTarget] < item2[sortTarget] ){
+  /** 依照 (sourTarget)  排序 */
+  sortByAsc(sortTarget: string, isNum = false) {
+
+    this.sortType = 'Asc';
+
+
+    if (isNum) { // 如果需要轉成數字排序
+      this.caseList.sort((item1, item2) => {
+        if (parseInt(item1[sortTarget]) < parseInt(item2[sortTarget])) {
           return -1;
         }
-        if (item1[sortTarget]> item2[sortTarget] ){
-        
+        if (parseInt(item1[sortTarget]) > parseInt(item2[sortTarget])) {
+
           return 1;
         }
         return 0;
-      
+      })
+    } else {
+      this.caseList.sort((item1, item2) => {
+        if (item1[sortTarget] < item2[sortTarget]) {
+          return -1;
+        }
+        if (item1[sortTarget] > item2[sortTarget]) {
+
+          return 1;
+        }
+        return 0;
+
       })
     }
 
-    
+
 
   }
 
 
 
   /** 小到大 */
-  sortByDesc(sortTarget:string ,isNum =false ){
-      this.sortType ='Desc' ;
-      if(isNum )
-      {
+  sortByDesc(sortTarget: string, isNum = false) {
+    this.sortType = 'Desc';
+    if (isNum) {
 
-        this.caseList.sort((item1,item2)=>{
-      
-          if ( parseInt(item1[sortTarget])<  parseInt(item2[sortTarget] )){
-            return 1;
-          }
-          if ( parseInt(item1[sortTarget])>  parseInt(item2[sortTarget]) ){
-          
-            return -1;
-          }
-          return 0;
-        
-        })
-        
+      this.caseList.sort((item1, item2) => {
 
-      }else{
+        if (parseInt(item1[sortTarget]) < parseInt(item2[sortTarget])) {
+          return 1;
+        }
+        if (parseInt(item1[sortTarget]) > parseInt(item2[sortTarget])) {
 
-        this.caseList.sort((item1,item2)=>{
-      
-          if ( item1[sortTarget] < item2[sortTarget] ){
-            return 1;
-          }
-          if (item1[sortTarget]> item2[sortTarget] ){
-          
-            return -1;
-          }
-          return 0;
-        
-        })
-        
+          return -1;
+        }
+        return 0;
+
+      })
 
 
-      }
+    } else {
+
+      this.caseList.sort((item1, item2) => {
+
+        if (item1[sortTarget] < item2[sortTarget]) {
+          return 1;
+        }
+        if (item1[sortTarget] > item2[sortTarget]) {
+
+          return -1;
+        }
+        return 0;
+
+      })
+
+
+
+    }
 
 
   }

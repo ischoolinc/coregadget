@@ -44,6 +44,7 @@
 
 var _gg = function () {
     var connection = gadget.getContract("ischool.universal_club.student");
+    var connection1 = gadget.getContract("basic.public");
     var Clubs = [];
     var Club = '';
     var Student = {};
@@ -53,6 +54,7 @@ var _gg = function () {
     var _maxCount = 0;
     var _chooseClub = [];
     var _saved = true;
+    var now_time = '';
 
     // TODO: 錯誤訊息
     var set_error_message = function(select_str, serviceName, error) {
@@ -96,6 +98,20 @@ var _gg = function () {
                     if (response.Response.Config && response.Response.Config.Content) {
                         _maxCount = parseInt(response.Response.Config.Content, 10) || 0;
                         $('#max-count').html(_maxCount);
+                    }
+                }
+            }
+        });
+        
+        connection1.send({
+            service: ".beta.GetNow",
+            body: '',
+            result: function (response, error, http) {
+                if (error !== null) {
+                    $("#mainMsg").html("<div class='alert alert-error'>\n  <button class='close' data-dismiss='alert'>×</button>\n  <strong>呼叫服務失敗</strong>(GetNow)\n</div>");
+                } else {
+                    if (response.DateTime) {
+                        now_time = new Date(response.DateTime);
                     }
                 }
             }
@@ -164,6 +180,8 @@ var _gg = function () {
                                             $(response.Response.OpeningHours).each(function (index, item) {
                                                 if (item.Startdate && item.Enddate) {
                                                     var tmp_Date  = new Date();
+                                                    //改為開放時機以主機為準
+                                                    var tmp_Date  = now_time;
                                                     var Startdate = new Date(item.Startdate);
                                                     var Enddate   = new Date(item.Enddate);
 

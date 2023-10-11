@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="新竹康橋國小家長學生定期評量查詢" description="新竹康橋國小家長學生定期評量查詢（從 國中評量成績查詢(2023新版)複製調整)">
+    <Title lang="zh-Hant-TW">評量成績</Title>
+    <Icon>icon.png</Icon>
+    <Mobile />
+    <Title lang="zh-CN">
+    </Title>
+    <Title lang="en-US">
+    </Title>
+  </ModulePrefs>
+</Module>
