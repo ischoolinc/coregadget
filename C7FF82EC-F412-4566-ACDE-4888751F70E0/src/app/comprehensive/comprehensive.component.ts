@@ -9,6 +9,7 @@ import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrie
 import { GenerateKeyAndSetTimeComponent } from './generate-key-and-set-time/generate-key-and-set-time.component';
 import { SemesterInfo } from './../counsel-student.service';
 import { HttpClient } from '@angular/common/http';
+import { ConditionalExpr } from '@angular/compiler';
 
 @Component({
   selector: 'app-comprehensive',
@@ -34,7 +35,10 @@ export class ComprehensiveComponent implements OnInit {
   GradeYearWrongsList: any[];
   schoolTye :'高中'|'國中'|'國小'  ;
   dsnsName = "" ;
-
+  studentList : any [] =[];
+  studentStatus : string  = "" ;
+  /** 目前在更新的學生 */
+  currentUpdateStudent : any ;
 
   isEditable : boolean = false ;
   IsBringbring: Boolean = false;
@@ -346,10 +350,59 @@ export class ComprehensiveComponent implements OnInit {
     });
   }
 
+  /** 轉入校務系統欄位 */
+  async transferSystemCoreColToAFrom(){
+  
+    // 取得學生資訊 
+    this.isLoading = true;
+    try {
+      const resp = await this.dsaService.send("TranferAdminSystem.GetAllStudentsStatus1", {});
+      this.studentList =resp.rs 
+      // alert(JSON.stringify( this.studentList));
+      /** 對在校生進行轉入 */
+      for (const stud of this.studentList) {
+        try{
+          await this.transferSystemCoreColToAFromByStudent(stud);
+          this.currentUpdateStudent =stud;
+         }catch(ex){
+           alert(stud.id);
+         }
+      }
+     
+      this.isLoading = false;
+      this.transferSuccess = true;
+      // $("#genSystemCoreColtoAFrom").modal('hide');
+    } catch (ex) {
+      alert(`發生錯誤:${JSON.stringify(ex)}`);
+    }
+  }
+
+
+  /** 一個學生一個學生 */
+  async transferSystemCoreColToAFromByStudent(stud :any ) {
+    this.isLoading = true;
+    this.studentStatus += stud.id 
+    try {
+      const resp = await this.dsaService.send("TranferAdminSystem.TranferAdminSysToAformByStud", {
+        SchoolYear: this.currentSemester.SchoolYear
+        , Semester: this.currentSemester.Semester
+        , StudentID :stud.id
+      });
+  
+
+
+      // $("#genSystemCoreColtoAFrom").modal('hide');
+    } catch (ex) {
+      alert(`${stud.class_name}(${stud.seat_no}) ${stud.name} 轉入發生錯誤`);
+    }
+  }
+
+
+
   /**
    * 轉入系統核心欄位
    */
-  async transferSystemCoreColToAFrom() {
+  async transferSystemCoreColToAFrom1() {
     this.isLoading = true;
     try {
       const resp = await this.dsaService.send("TranferAdminSystem.TranferAdminSysToAform", {

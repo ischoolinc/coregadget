@@ -265,15 +265,20 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="newCaseLabel">
-          校務系統欄位轉入綜合紀錄表
+         <b>
+           校務系統欄位轉入綜合紀錄表
+         </b>
         </h5>
         <button *ngIf="!generater.isSaving" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body pb-0">
+      <div class="modal-body pb-0 p-3 ">
         <ng-container *ngIf="this.isLoading">
-          資料轉入中...
+          <div class="mb-2">
+            資料轉入中......
+            {{currentUpdateStudent.class_name}} ({{currentUpdateStudent.seat_no}}) {{currentUpdateStudent.name}}
+          </div>
         </ng-container>
         <ng-container *ngIf="!this.isLoading&&!this.transferSuccess">
           <p> {{this.currentSemester.SchoolYear}}學年度 第{{this.currentSemester.Semester}}學期 校務系統核心欄位轉入輔導A表。</p>
@@ -284,7 +289,10 @@
         </ng-container>
         <ng-container *ngIf="this.transferSuccess">
           <!-- <mat-progress-bar *ngIf ="isLoading" mode="buffer"></mat-progress-bar> -->
-          <p *ngIf="this.transferSuccess">轉入完成!</p>
+          <p *ngIf="this.transferSuccess" class =""><b>
+            轉入完成!
+          </b>
+          </p>
         </ng-container>
       </div>
       <div class="modal-footer">
