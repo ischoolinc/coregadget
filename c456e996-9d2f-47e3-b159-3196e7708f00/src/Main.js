@@ -31,11 +31,11 @@ function Main() {
   // 該學生的指定學年期 之排名類別
   const [rankTypeList, setRankTypeList] = useState([]);
 
-  //預設顯示成績
-  const [showScore, setShowScore] = useState(true);
+  //預設不顯示成績
+  const [showScore, setShowScore] = useState(false);
 
-  //預設不顯示等第
-  const [showDegree, setShowDegree] = useState(false);
+  //預設顯示等第
+  const [showDegree, setShowDegree] = useState(true);
 
   //預設不顯示排名
   const [showRank, setShowRank] = useState(false);
