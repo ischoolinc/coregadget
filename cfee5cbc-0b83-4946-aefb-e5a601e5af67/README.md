@@ -1,10 +1,16 @@
-# Getting Started with Create React App
+# 新竹康橋國小家長學生定期評量成績查詢
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+新竹康橋國小家長學生定期評量成績查詢，是拿「評量成績-國中新竹版(家長、學生)2022新版」gadget 來調整的
 
-## Available Scripts
+## Node 版本
 
-In the project directory, you can run:
+### `Node 16+`
+
+此為 react.js 18 建置的專案，請使用 Node 16+ 以上版本。
+
+## 啟動與建置相關指令
+
+以下為啟動開發環境，與建置部署檔案的相關指令：
 
 ### `npm start`
 
@@ -21,11 +27,11 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+產生正式部署的程式碼，並放到 `build` 目錄中。\
+此指令會以產品模式打包 react 程式，並以最佳效能進行最佳化。\
+此指令同時會把 `public` 目錄裡的檔案複製到 `build` 目錄中，所以記得把 gadget 的 description.xml 與 icon.png 放到 `public` 目錄中，如此在建置時便會同時複製到 `build` 目錄。\
+最後記得手動調整 `build` 目錄裡 index.html，把最下方的 `<script defer="defer" src="/static/js/main.xxxxxxx.js"></script>`, 與
+    `<link href="/static/css/main.073c9b0a.css" rel="stylesheet" />` ，把絕對目錄改成相對目錄，這樣才能符合部署環境。
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
