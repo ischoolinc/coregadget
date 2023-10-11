@@ -95,6 +95,8 @@
         </li>
         <ng-container *ngIf="conf&&conf.CourseConf&&conf.CourseConf.length; else noCourse">
             <li class="list-group-item point"
+                *ngFor="let course of conf.CourseConf"
+                (click)="openPicker(course)"
                 >
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="col-8 col-lg-10 text-nowrap">

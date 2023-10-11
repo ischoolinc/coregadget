@@ -1,0 +1,47 @@
+{
+  "name": "cfee5cbc-0b83-4946-aefb-e5a601e5af67",
+  "version": "0.1.0",
+  "description": "新竹康橋國小家長學生定期評量成績查詢",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "popover": "^2.4.1",
+    "react": "^18.2.0",
+    "react-bootstrap-validation": "^0.1.11",
+    "react-dom": "^18.2.0",
+    "react-overlay-trigger": "^1.2.0",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "5.0.1",
+    "recharts": "^2.3.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build_test": "BUILD_PATH='./build/cfee5cbc-0b83-4946-aefb-e5a601e5af67' set PUBLIC_URL=/1campus_gadget/cfee5cbc-0b83-4946-aefb-e5a601e5af67&&react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "firebase": "set PUBLIC_URL=/cfee5cbc-0b83-4946-aefb-e5a601e5af67&&react-scripts build",
+    "prod": "set PUBLIC_URL=/deployment/cfee5cbc-0b83-4946-aefb-e5a601e5af67&&react-scripts build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

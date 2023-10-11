@@ -77,7 +77,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         this.selectMonth = new Date().getMonth() + 1;
         this.buttonDisable = false;
         this.reportNameList = [
-          { reportName: "輔導工作月統計報表-教育部版", description: "版本更新月份:2022-10", isShowDescrip: false },
+          { reportName: "輔導工作月統計報表-教育部版", description: "版本更新月份:2023年10月", isShowDescrip: false },
           { reportName: "輔導工作月統計報表-新北市版", description: "" },
           { reportName: "輔導工作月統計報表-新竹國中版", description: "" },
           { reportName: "輔導工作月統計報表-新竹國小版", description: "" }
@@ -422,7 +422,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       const ws1 = XLSX.utils.table_to_sheet(this.sheet1.nativeElement);
       // 增加資料 
       XLSX.utils.sheet_add_json(ws1, data1, { skipHeader: true, origin: { r: 5, c: 0 } });// 寫入資料 從第二列開始
-      console.log("ws1", this.sheet1.nativeElement);
       // sheet 2 
 
       const ws2 = XLSX.utils.table_to_sheet(this.sheet2.nativeElement);
@@ -433,14 +432,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
       const ws3 = XLSX.utils.table_to_sheet(table);
 
-      XLSX.utils.book_append_sheet(wb, ws1, "1.當月個案");
-      XLSX.utils.book_append_sheet(wb, ws2, "2.相關服務");
-      XLSX.utils.book_append_sheet(wb, ws3, "3.填報說明");
+      XLSX.utils.book_append_sheet(wb, ws1, "表A-1-輔導教師-1.當月個案");
+      XLSX.utils.book_append_sheet(wb, ws2, "表A-2-輔導教師-2.相關服務");
+      XLSX.utils.book_append_sheet(wb, ws3, "填報說明-A-輔導教師");
       //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
       XLSX.writeFile(wb, fileName);
     } else {
       alert("沒有資料");
-    }
+    } 
 
     this.buttonDisable = false;
   }

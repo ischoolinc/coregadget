@@ -74,13 +74,21 @@ var app = angular
             "pending":"Pending",
             "rejected":"Rejected",
             "completed":"Completed",
+            "approved": "Approved",
             "LEAVERULE":"Procedure to report a leave",
+            "APPLYDATE": "Apply date",
+            "APPLICANT": "Role",
+            "PARENT": 'Parent',
+            "STUDENT": 'Student',
+            "STAGE": 'Stage',
+            "HomeTeacher": "HomeTeacher",
+            "ASSIGNEDTEACHER": 'AssignedTeacher'
           });
         $translateProvider.translations('zh_TW', {
             "TITLE"     : "線上請假",
             "INPUT"    : "輸入",
             "HISTORY" : "歷程",
-            "DATE" : "日期",
+            "DATE" : "請假日期",
             "STARTDATE":"開始日期",
             "ENDDATE":"結束日期",
             "SEARCH":"查詢",
@@ -102,7 +110,15 @@ var app = angular
             "pending":"待簽核",
             "rejected":"退回",
             "completed":"完成",
+            "approved": "核准",
             "LEAVERULE":"請假規則",
+            "APPLYDATE": "填表日期",
+            "APPLICANT": "填表身分",
+            "PARENT": '家長',
+            "STUDENT": '學生',
+            "STAGE": '簽核進度',
+            "HomeTeacher": "導師",
+            "ASSIGNEDTEACHER": '指定教師'
           });
         $translateProvider.preferredLanguage('zh_TW');
     }])
@@ -358,8 +374,31 @@ var app = angular
                 body: {ref_student_id:id},
                 result: function(response, error, http) {
                     if (!error) {
-                        if (response.data)
-                            $scope.list = [].concat(response.data);
+                        if (response.data) {
+                            const temp = [].concat(response.data);
+                            temp.forEach((item) => {
+                                const flow = xml2json.parser(item.sign_flow);
+                                let stages = flow.Workflow.Stages.Stage;
+                                if (!stages) { 
+                                    stages = []
+                                } else {
+                                    stages = [].concat(stages);
+                                }
+                                console.log( { stages });
+                                const stage_msgs = stages.map( stage => {
+                                    return `${stage.no}: ${stage.Message || ''}`
+                                });
+                                
+                                item.flows = stages
+                                item.stage_msgs = stage_msgs ;
+                            })
+                            $scope.list = temp;
+                        }
+                        //     $scope.list = [].concat(response.data);
+                        // const flow = xml2json.parser($scope.list[0].sign_flow);
+                        console.log({list: $scope.list });
+
+                        
                     } else {
                         $scope.icon_css = "icon-warning-sign";
                         set_error_message("#mainMsg", "GetRequests", error);

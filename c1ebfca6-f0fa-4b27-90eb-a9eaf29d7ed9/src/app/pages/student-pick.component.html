@@ -46,14 +46,14 @@
 
   <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
 
-  <div class="d-flex justify-center align-items-center form-check z-20 -mb-0 sm:-mb-9 p-0">
+  <div class="d-flex justify-center align-items-center form-check text-nowrap z-20 -mb-0 lg:-mb-9 p-0 w-50 mx-auto">
     <input class="mr-2" type="checkbox" value="" id="flexCheckDefault" [checked]=displayEnglishName (change)="displayEnglishName=!displayEnglishName">
     <label class="form-check-label"  style="color :#656566" for="flexCheckDefault">
      Display EnglishName
     </label>
   </div>
 
-    <div class="d-flex flex-wrap justify-content-between position-sticky top-0 bg-white z-10 py-2">
+    <div class="d-flex flex-wrap justify-content-between position-sticky top-0 bg-white z-10 py-2 gap-4">
       <div>
         <div class="dropdown">
           <button [matMenuTriggerFor]="menu"
@@ -78,7 +78,7 @@
       </div>
       <ng-container  [ngTemplateOutlet]="save"></ng-container>
     </div>
-    <span *ngIf=" this.groupInfo.type=='Course'" class = "m-2" style="color: #ff3333;">{{explainMessage}}</span>
+    <div *ngIf=" this.groupInfo.type=='Course'" class = "m-2" style="color: #ff3333;">{{explainMessage}}</div>
   
 
 
@@ -146,12 +146,12 @@
                  class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{showAbsText(student)}}</div>
             <div class="card-body p-2 px-xl-3 w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
-              <div class="text-gray d-flex">
+              <div class="text-gray d-flex flex-wrap">
                 <!-- <strong class="mb-0 text-truncate" inhtml>{{student.data?.Name}}</strong> -->
-                <div  *ngIf="!displayEnglishName" class=" card-stu-name">
+                <div  *ngIf="!displayEnglishName" class="card-stu-name">
                 <strong class="mb-0 " [innerHtml]="student.data?.Name"></strong>
                 </div>
-                <div *ngIf="displayEnglishName" class=" card-stu-name">
+                <div *ngIf="displayEnglishName" class="card-stu-name">
                   <b class="mb-0 " [innerHtml]="student.data?.EnglishName ||student.data?.Name"></b>
 
                 </div>
@@ -166,7 +166,7 @@
               </div>
       
               <div class="d-flex flex-wrap text-gray">
-                <span style="overflow: auto;">{{student.data?.StudentNumber}}</span>
+                <span>{{student.data?.StudentNumber}}</span>
                 <div class="ml-auto">
                   <span class="mr-2">{{student.data?.ClassName}}</span>
                   <span>{{student.data?.SeatNo}}</span>
@@ -201,7 +201,7 @@
 
   <button *ngIf="studentChecks.length!==0"(click)="saveRollCall()"
           type="button"
-          class="btn btn-lg btn-info text-nowrap">{{checkSummary? '送出 ( ' + checkSummary +' )': '全到 ( 送出 )'}}</button>
+          class="btn btn-lg btn-info">{{checkSummary? '送出 ( ' + checkSummary +' )': '全到 ( 送出 )'}}</button>
 
   </ng-template>
 

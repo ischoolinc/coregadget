@@ -253,6 +253,8 @@
                             , Subject: null
                             , Assessment: null
                             , AssessmentMode: ""//"ReportCard" || "CustomAssessment"
+                            , SortedBy: ''    // "StudentNumber" || "ClassNameSeatNo"
+                            , CurrentSortedBy: 'Student Number'
                             //輸入
                             , Student: null
                             , AssessmentItem: null
@@ -315,6 +317,7 @@
                                         });
                                     });
                                     $scope.studentList = response.Student;
+                                    // $scope.studentList[0].SeatNo = 20;  //for debug
                                     $scope.setCurrent($scope.studentList[0], null, true, true);
                                     $scope.calc();
                                 });
@@ -379,6 +382,25 @@
                     }
                 }
             };
+
+            $scope.setSortBy = function(sortedBy) {
+                $scope.current.sortedBy = sortedBy ;
+                $scope.current.CurrentSortedBy = (sortedBy === 'ClassNameSeatNo' ? 'Class and Seat No' : 'Student Number')
+                console.log( { sortedBy: $scope.current.CurrentSortedBy });
+
+                const studs = $scope.studentList;
+                const newStuds = studs.sort( (x, y) => {
+                    const keyX = (sortedBy === 'ClassNameSeatNo') ? ( x.ClassName + (x.SeatNo > 9 ? x.SeatNo : ("0" + x.SeatNo))) : x.StudentNumber ;
+                    const keyY = (sortedBy === 'ClassNameSeatNo') ? ( y.ClassName + (y.SeatNo > 9 ? y.SeatNo : ("0" + y.SeatNo))) : y.StudentNumber ;
+                    if (keyX > keyY) { return 1; }
+                    if (keyX < keyY) { return -1; }
+                    return 0;
+                })
+                $scope.studentList = newStuds;
+                $scope.setCurrent($scope.studentList[0], null, true, true);
+                $scope.calc();
+
+            }
 
             $scope.setAssessment = function (mode, assessment) {
                 if (mode == "ReportCard") {

@@ -43,3 +43,66 @@ a > .my-media {
 .table>tbody>tr>td {
 	border:none;
 }
+
+div.control-text {
+	padding-top: 7px;
+}
+
+.btn-info {
+	color: #46b8da;
+}
+
+ul.dropdown-menu {
+	left: -50px !important;
+	;
+}
+
+.dis-h-t {
+	display: none !important;
+}
+
+@media(min-width: 640px) {
+	.dis-h-t {
+		display: table !important;
+	}
+}
+
+.rotate-180 {
+	rotate: 180deg;
+}
+
+.collapsed .rotate-180 {
+	rotate: 0deg;
+}
+
+.modal-content {
+	font-size: 14px;
+}
+
+td[ng-repeat="p in conf.periods"], th[ng-repeat="p in conf.periods"], .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	padding: 4px !important;
+	text-align: center;
+	border: 0;
+}
+
+.modal.fade.in {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-dialog {
+	width: 100%;
+	margin: auto;
+	max-width: 700px;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .sm\:hidden {
+    display: none !important;
+  }
+}

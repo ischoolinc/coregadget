@@ -12,9 +12,9 @@
             aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active"
-            aria-current="page">
-          {{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</li>
+        <li class="breadcrumb-item active w-100" aria-current="page">
+          <div style="word-wrap: break-word; width: 85%;">{{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</div>
+        </li>
       </ng-template>
     </ol>
   </nav>
@@ -53,15 +53,15 @@
     <!-- 學生資料(no photo)-->
     <div class="row mt-3 mt-lg-1"
          *ngIf="!showPhoto">
-      <div class=" col-12 col-sm-6 col-lg-4"
+      <div class="col-12 col-sm-6 col-lg-4"
            style="margin-bottom: 0.75rem;"
            *ngFor="let student of studentChecks">
         <div class="card">
           <div (click)="changeAttendance(student)"
                class="point row pr-2">
-            <div class="col-9 card-body p-2 text-truncate ">
-              <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate">{{student.data?.Name}}</strong>
+            <div class="col-9 card-body p-2 ">
+              <div class="text-gray flex-wrap d-flex">
+                <strong class="mb-0" style="word-break: break-all;">{{student.data?.Name}}</strong>
                 <div class="ml-auto"
                      *ngIf="student.data?.AbsenceRate"
                      [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
@@ -69,12 +69,12 @@
                   <span>%</span>
                 </div>
               </div>
-              <div class="text-gray text-truncate d-flex">
+              <div class="text-gray d-flex">
                 <span>{{student.data?.StudentNumber}}</span>
                 <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
               </div>
             </div>
-            <div class="col-3 ad-status text-truncate py-2 my-auto"
+            <div class="col-3 ad-status py-2 my-auto"
                  [ngStyle]="getAttendanceStyle(student)">
               {{getAttendanceText(student)}}</div>
           </div>
@@ -84,10 +84,10 @@
 
 
     <!-- 學生資料 (with photo)-->
-    <div class="st-list d-flex flex-wrap mt-3 mt-lg-1"
+    <div class="st-list d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mt-3 mt-lg-1"
          *ngIf="showPhoto">
       <div class="card st-check"
-           style="height:320px"
+           style="min-width: 145px ;max-width: 50%; margin-right: 0;"
            *ngFor="let student of studentChecks">
         <label (click)="changeAttendance(student)"
                class="point">
@@ -95,20 +95,20 @@
             <div style="height:100%;width:100%;background-position: center center;background-size: cover;"
                  [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
           </div>
-          <div style="position:absolute;bottom:0px;width:100%;">
+          <div style="margin-top: -54px; bottom:0px;width:100%;">
             <div [ngStyle]="getAttendanceStyle(student)"
-                 class="w-100 ad-status text-truncate">
+                 class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{getAttendanceText(student)}}</div>
-            <div class="card-body py-2 text-truncate w-100">
-              <div class="text-gray text-truncate d-flex">
-                <strong class="mb-0 text-truncate">{{student.data?.Name}}</strong>
+            <div class="card-body p-2 px-xl-3 w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
+              <div class="text-gray flex-wrap d-flex">
+                <strong class="mb-0" style="word-break: break-all;">{{student.data?.Name}}</strong>
                 <div class="ml-auto"
                      *ngIf="student.data?.AbsenceRate"
                      [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
                   {{student.data?.AbsenceRate}} <span>%</span>
                 </div>
               </div>
-              <div class="text-gray text-truncate d-flex">
+              <div class="text-gray d-flex">
                 <span>{{student.data?.StudentNumber}}</span>
                 <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
               </div>

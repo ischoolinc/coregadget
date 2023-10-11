@@ -173,3 +173,21 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 	-ms-flex-align: center !important;
 	align-items: center !important;
 }
+
+body.modal-open {
+	overflow: auto;
+  padding-right: 0!important;
+}
+
+.cdk-overlay-pane {
+	max-width: 672px!important;
+	margin: 16px;
+}
+
+.container-fluid {
+	padding: 16px;
+}
+
+.gap-2 {
+	gap: 0.5rem;
+}

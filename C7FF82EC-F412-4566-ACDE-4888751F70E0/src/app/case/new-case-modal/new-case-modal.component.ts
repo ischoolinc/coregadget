@@ -29,12 +29,12 @@ export class NewCaseModalComponent implements OnInit {
     private roleService: RoleService
 
   ) { }
-   caseReferalList =[
-    '本月轉介輔諮中心' ,
+  caseReferalList = [
+    '本月轉介輔諮中心',
     '無轉介',
     '已轉介輔諮中心且該中心持續服務中',
-    '已轉介輔諮中心，該中心服務至本月結案' 
-    ]
+    '已轉介輔諮中心，該中心服務至本月結案'
+  ]
   isCancel: boolean = true;
   isAddMode: boolean = true;
   isCanSetClass: boolean = false;
@@ -44,7 +44,7 @@ export class NewCaseModalComponent implements OnInit {
   /** 當前個案學生 */
   caseStudent: CaseStudent;
   /** 轉借狀態 */
-  selectReferalStatus :string  = "";
+  selectReferalStatus: string = "";
   /** 用詞修正對應 "舊的用詞˙":"'新的用詞'" */
   updateCataTerms: Map<string, string>;
 
@@ -80,9 +80,9 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent = new CaseStudent();
     //  this.loadData();
   }
-  sayHi(){
+  sayHi() {
 
-    alert("Hey sss") ;
+    alert("Hey sss");
 
   }
   async loadData() {
@@ -94,6 +94,7 @@ export class NewCaseModalComponent implements OnInit {
     this.selectCaseTeachersValue = "請選擇認輔老師";
     this.selectCaseSourceValue = "請選擇個案來源";
     this.canSelectCaseSourceList = [];
+    this.closedTeacherName = "";
 
     this.loadUpdateCataTerm();//載入有修正
 
@@ -125,7 +126,7 @@ export class NewCaseModalComponent implements OnInit {
   /** 【畫面 初始化】載入 預設個案來源 供選擇*/
   loadCaseSource() {
     /** 2022 增加新的 */
-    const caseSource = ["學生主動求助", "家長轉介", "教師轉介（含教職員工）", "同儕轉介", "輔導老師約談", "線上預約管道（僅限高中階段）","其他"]
+    const caseSource = ["學生主動求助", "家長轉介", "教師轉介（含教職員工）", "同儕轉介", "輔導老師約談", "線上預約管道（僅限高中階段）", "其他"]
     // const caseSource = ["導師轉介", "主動求助", "親友代為求助", "輔導教師主動發現", "其他處室轉介", "其他"]
     caseSource.forEach(sourceeName => {
       this.caseStudent.CaseSourceList.push({ name: sourceeName, checked: false });
@@ -133,19 +134,19 @@ export class NewCaseModalComponent implements OnInit {
 
   }
 
-  setCaseSource(item: {name,checked}) {
-   
-    
+  setCaseSource(item: { name, checked }) {
+
+
     this.caseStudent.checkValue();
   }
 
   /** 確認CaseNum 是否重複  */
-  checkCaseNum(caseInfo :any ){ 
-    let target = this.caseList.find(x=>x.CaseNo ==caseInfo.CaseNo);
-    if(target){
-    alert('個案編號重複，請重新輸入')
-    caseInfo.CaseNo =""
-  }
+  checkCaseNum(caseInfo: any) {
+    let target = this.caseList.find(x => x.CaseNo == caseInfo.CaseNo);
+    if (target) {
+      alert('個案編號重複，請重新輸入')
+      caseInfo.CaseNo = ""
+    }
 
   }
   /** 選擇年級 */
@@ -175,19 +176,17 @@ export class NewCaseModalComponent implements OnInit {
   }
 
   cancel() {
+    if (!confirm("資料未儲存，確定取消?")) {
+      return;
+    }
 
-  
-      if(!confirm("資料未儲存，確定取消?")){
-         return ;
-       }
-     
     this.isCancel = true;
     $("#newCase").modal("hide");
   }
 
   //設定座號
   setSeatNo(item: CounselStudent) {
-   
+
     this.selectSeatNoValue = item.SeatNo;
     this.selectStudentName = item.StudentName;
     // this.caseStudent = new CaseStudent();
@@ -210,7 +209,6 @@ export class NewCaseModalComponent implements OnInit {
 
   /** 設定是否結案 */
   setIsClose(value: string) {
-    this.caseStudent.IsClosed = value;
 
     if (value === "t") {
       // 設定結案日期
@@ -220,15 +218,26 @@ export class NewCaseModalComponent implements OnInit {
       // 設定結案教師 
       this.closedTeacherName = `${this.roleService.loginTeacher.Name} (${this.roleService.loginTeacher.NickName})`
 
-    } else {
-      // 清除結案日期
-      this.caseStudent.CloseDate = "";
-      // 清除結案教師名稱
-      this.closedTeacherName = ""
-      // 清除結案教師
-      this.caseStudent.ClosedByTeacherID = "";
+    }
+    else {
+      if (this.caseStudent.isCloseYes) {
+        if (!confirm("若要調整個案結案狀態，會清空結案日期、結案人員、結案說明，是否確認要調整結案狀態？")) {
+          event.preventDefault();
+          return;
+        }
+
+        // 清除結案日期
+        this.caseStudent.CloseDate = "";
+        // 清除結案教師名稱
+        this.closedTeacherName = ""
+        // 清除結案教師
+        this.caseStudent.ClosedByTeacherID = "";
+        // 清除結案說明
+        this.caseStudent.CloseDescription = "";
+      }
     }
 
+    this.caseStudent.IsClosed = value;
     this.caseStudent.checkValue();
   }
 
@@ -258,27 +267,26 @@ export class NewCaseModalComponent implements OnInit {
     // 個案輔導預設初級
     this.caseStudent.isCaseLevel1Checked = true;
     this.caseStudent.CaseLevel = '初級';
-    this.setCaseSource({name:'導師轉介',checked :true});
+    this.setCaseSource({ name: '導師轉介', checked: true });
   }
 
 
-    /**  */
-     chechedSelected(qq: QOption)
-     {
-      let num = 0
-      this.caseStudent.problem_category.forEach(x=>{
-        if(x.answer_checked){
-          num++ ;
+  /**  */
+  chechedSelected(qq: QOption) {
+    let num = 0
+    this.caseStudent.problem_category.forEach(x => {
+      if (x.answer_checked) {
+        num++;
 
-        }
-                  
-      })
-      if(num>2){
-          alert('個案類別(副) 最多選兩項');
-          qq.answer_checked =false ;
-        return ;
       }
-     }
+
+    })
+    if (num > 2) {
+      alert('個案類別(副) 最多選兩項');
+      qq.answer_checked = false;
+      return;
+    }
+  }
 
 
 
@@ -286,8 +294,8 @@ export class NewCaseModalComponent implements OnInit {
   checkChange(qq: QOption, item: CaseStudent, title = null, target = null) {
 
     if (title == "個案類別(副)") {
-       // 只能選兩個
-      this. chechedSelected(qq);
+      // 只能選兩個
+      this.chechedSelected(qq);
 
       if (this.updateCataTerms.has(qq.answer_text)) {
         // 處理替換
@@ -309,18 +317,18 @@ export class NewCaseModalComponent implements OnInit {
     }
 
     // 處理學生身分選項
-    if(title == "學生身分"){
-    if(qq.answer_checked ==true){
-      if(qq.answer_text !=="以下皆非" ){
-        const target = this.caseStudent.student_status.find(x=>x.answer_text =='以下皆非')
-        target.answer_checked= false ;
-       }else {
-         const targetList = this.caseStudent.student_status.filter(x=>x.answer_text!=='以下皆非')
-         targetList.forEach(x=>{
-          x.answer_checked = false ;
-         })
-       }
-    }
+    if (title == "學生身分") {
+      if (qq.answer_checked == true) {
+        if (qq.answer_text !== "以下皆非") {
+          const target = this.caseStudent.student_status.find(x => x.answer_text == '以下皆非')
+          target.answer_checked = false;
+        } else {
+          const targetList = this.caseStudent.student_status.filter(x => x.answer_text !== '以下皆非')
+          targetList.forEach(x => {
+            x.answer_checked = false;
+          })
+        }
+      }
     }
     item.checkValue();
   }
@@ -403,8 +411,8 @@ export class NewCaseModalComponent implements OnInit {
     }
   }
 
-  SetReportReferralStatus(item: string){
-    this.caseStudent.ReportReferralStatus = item;   
+  SetReportReferralStatus(item: string) {
+    this.caseStudent.ReportReferralStatus = item;
     this.caseStudent.checkValue();
   }
 
@@ -599,7 +607,7 @@ export class NewCaseModalComponent implements OnInit {
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.ProblemMainCategory = JSON.stringify(data.problem_main_category);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
-    data.TeacherCounselLevels =JSON.stringify(data.teacher_counsel_level); 
+    data.TeacherCounselLevels = JSON.stringify(data.teacher_counsel_level);
     data.CloseDescription = "";
 
     // 當沒有輔導 uid 寫入 null
@@ -624,12 +632,12 @@ export class NewCaseModalComponent implements OnInit {
       }
     });
 
-  
+
     let req = {
 
       OccurDate: data.OccurDate,
       CaseNo: data.CaseNo,
-      ReportReferralStatus :data.ReportReferralStatus, 
+      ReportReferralStatus: data.ReportReferralStatus,
       StudentIdentity: data.StudentIdentity,
       PossibleSpecialCategory: data.PossibleSpecialCategory,
       SpecialLevel: data.SpecialLevel,
@@ -650,7 +658,7 @@ export class NewCaseModalComponent implements OnInit {
       CaseLevel: data.CaseLevel,
       CaseTeacher: reqCaseTeacher,
       StudentStatus: data.StudentStatus,
-      TeacherCounselLevels :data.TeacherCounselLevels
+      TeacherCounselLevels: data.TeacherCounselLevels
     };
     try {
       let resp = await this.dsaService.send("AddCase", {
@@ -675,9 +683,9 @@ export class NewCaseModalComponent implements OnInit {
     data.SpecialSituation = JSON.stringify(data.special_situation);
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
-    data.TeacherCounselLevels =JSON.stringify(data.teacher_counsel_level);
+    data.TeacherCounselLevels = JSON.stringify(data.teacher_counsel_level);
     data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
-    
+
 
     let reqCaseTeacher = [];
     this.caseStudent.selectCaseTeacers.forEach(it => {
@@ -701,7 +709,7 @@ export class NewCaseModalComponent implements OnInit {
 
         IsClosed: data.IsClosed,
         CloseDate: data.CloseDate,
-        ReportReferralStatus :data.ReportReferralStatus, 
+        ReportReferralStatus: data.ReportReferralStatus,
         CloseDescription: data.CloseDescription,
         DeviantBehavior: data.DeviantBehavior,
         ProblemCategory: data.ProblemCategory,
@@ -712,10 +720,10 @@ export class NewCaseModalComponent implements OnInit {
         CaseLevel: data.CaseLevel,
         CaseTeacher: reqCaseTeacher,
         StudentStatus: data.StudentStatus,
-        TeacherCounselLevels :data.TeacherCounselLevels
+        TeacherCounselLevels: data.TeacherCounselLevels
       };
 
- 
+
       try {
         let resp = await this.dsaService.send("UpdateCase", {
           Request: req
@@ -726,10 +734,10 @@ export class NewCaseModalComponent implements OnInit {
       }
     }
   }
-getJSON(item :any){
-return JSON.stringify(item) ;
-}
-  
+  getJSON(item: any) {
+    return JSON.stringify(item);
+  }
+
 
 
   /** 取得個案來源字串 */
@@ -739,7 +747,7 @@ return JSON.stringify(item) ;
     let selectItem = ""
     this.caseStudent.CaseSourceList.forEach(x => {
       if (x.checked) {
-        count++ ;
+        count++;
         selectItem = x.name;
       }
     });
@@ -757,9 +765,9 @@ return JSON.stringify(item) ;
 
 
   /** 個案來源選項 */
-  getSelectScourceItem(){
+  getSelectScourceItem() {
 
-  return   this.caseStudent.CaseSourceList.filter(x=>x.checked)
+    return this.caseStudent.CaseSourceList.filter(x => x.checked)
   }
 }
 

@@ -7,6 +7,7 @@ import { MenuPositionX } from '@angular/material/menu';
 import { StudentCheck } from '../student-check';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { GadgetService } from '../service/gadget.service';
+import { debounceTime } from 'rxjs-compat/operator/debounceTime';
 
 @Component({
   selector: 'gd-student-pick',
@@ -34,7 +35,7 @@ export class StudentPickComponent implements OnInit {
   settingList: any;
   objectKeys = Object.keys;
   showPhoto: boolean;
-
+  needPassword : string ='true' ;
   teacherIdentity: any;
 
   constructor(
@@ -49,6 +50,10 @@ export class StudentPickComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    // 取得這們課儲存需不需要密碼 
+
+
     this.today = await this.dsa.getToday();
 
     this.showPhoto = false;
@@ -85,13 +90,17 @@ export class StudentPickComponent implements OnInit {
         this.selectedAbsence = this.periodConf.Absence[0].Name;
       }
     });
+
   }
+
+
+
 
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
-
     const rollCallInfo = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
-    this.setTeacherIdentity(rollCallInfo.TeacherName);
+    console.log('roll info',rollCallInfo);
+    this.setTeacherIdentity(rollCallInfo.TeacherName,rollCallInfo.TeacherID );
     const students = rollCallInfo.Student;
     this.studentChecks = [];
 
@@ -116,9 +125,10 @@ export class StudentPickComponent implements OnInit {
     if (msg) this.alert.snack(msg);
   }
 
-  setTeacherIdentity(name: string) {
+  setTeacherIdentity(name: string ,teacherID : string ) {
     this.teacherIdentity = {
-      teacherName: name
+       teacherID : teacherID
+      , teacherName: name
       , teacherKey: ""
       , error: ""
       , saving: false
@@ -126,23 +136,29 @@ export class StudentPickComponent implements OnInit {
         $("#modal-key").modal({ show: true, backdrop: false, keyboard: false, focus: false });
         setTimeout(() => { $("#teacherKey").focus(); }, 500);
       }
-      , save: async () => {
+      // 教師輸入密碼後儲存
+      , save: async (isNeedPassWord :boolean ) => {
+
         //點名密碼未填不送出
-        if (!this.teacherIdentity.teacherKey) return;
-        
+        if (this.needPassword =="true" && !this.teacherIdentity.teacherKey) return;
+       
         this.teacherIdentity.saving = true;
         try {
           const items: RollCallCheck[] = [];
           for (const check of this.studentChecks) {
             items.push(check.getCheckData());
           }
+        
+          
           const rsp = await this.dsa.setRollCallWithTeacherKey(
             this.groupInfo.type
             , this.groupInfo.id
             , this.periodConf.Name
             , this.teacherIdentity.teacherName
             , this.teacherIdentity.teacherKey
-            , items);
+            , items
+            , this.needPassword  =='true'
+            , this.teacherIdentity.teacherID);
           if (rsp.Result == "Well done!") {
             this.router.navigate(['/main']);
           }
@@ -264,8 +280,9 @@ export class StudentPickComponent implements OnInit {
     // return dateAtts.find(v => v['@text'] === period);
   }
 
+  /** 小幫手 儲存點名 */
   async saveRollCall() {
-
+    console.log("this.teacherIdentity ",this.teacherIdentity );
     const items: RollCallCheck[] = [];
 
     for (const check of this.studentChecks) {
@@ -276,14 +293,37 @@ export class StudentPickComponent implements OnInit {
 
     var saved = false;
     try {
+      debugger 
       await this.dsa.setRollCall(this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);
       saved = true;
     } catch (error) {
       this.alert.json(error);
     } finally {
       dialog.close();
-      if (saved)
-        this.teacherIdentity.open();
+                
+      let rsp  =  await this.dsa.getIsNeedPassword(this.teacherIdentity.teacherID);
+      debugger
+      console.log("need ??",rsp) ;  
+      this.needPassword = rsp.isNeedPassWord ; // 只配是否有需要密碼
+ 
+      if (saved){
+        if(this.needPassword =="true" ){ // 如果需要密碼 才太出視窗
+     
+          this.teacherIdentity.open();
+        }
+        else
+         {
+          //教師沒有設定密碼 20220325與可為討論 直接儲存 
+
+          if(this.needPassword =="true")
+          {
+            this.teacherIdentity.save(this.needPassword)
+          }else{
+            this.teacherIdentity.save(this.needPassword)
+          }
+        }
+      }
+    
     }
   }
 
