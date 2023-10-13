@@ -1,53 +1,43 @@
 <div class="my-page">
   <h1>點數歷程</h1>
 
-  <div class="container">
+  <div class="">
     <div style="margin-top: 20px;">
       <div class="my-card alert alert-success">
         <div class="my-card-point">{{currPoint.Total || '計算中'}}</div>
         <div class="my-card-text">可用點數</div>
       </div>
     </div>
-    <div class="row justify-content-start" style="margin-top: 30px;">
-      <!--開始日期-->
-      <input
-        [(ngModel)]="startDate"
-        type="text"
-        placeholder="年 / 月 / 日"
-        class="form-control col-3 mr-3"
-        style="height: 30px;"
-        bsDatepicker
-        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }" />
-      <span class="mr-3"> ~ </span>
-      <!--結束日期-->
-      <input
-        [(ngModel)]="endDate"
-        type="text"
-        placeholder="年 / 月 / 日"
-        class="form-control col-3 mr-3"
-        style="height: 30px;"
-        bsDatepicker
-        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }" />
-      <!--下拉按鈕-->
-      <div class="dropdown mr-3">
+    <div class="flex flex-wrap flex-col sm:flex-row items-center justify-start sm:justify-center gap-4 mt-8">
+      <div class="dropdown">
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{targetRange}}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a *ngFor="let range of rangeList"
-            [ngClass]="{'active': range == targetRange}"
-            class="dropdown-item"
-            href="#"
+          <a *ngFor="let range of rangeList" [ngClass]="{'active': range == targetRange}" class="dropdown-item" href="#"
             (click)="selectRange(range)">{{range}}</a>
         </div>
       </div>
-      <button type="button" class="btn btn-primary col-md-2" style="height: 30px;" (click)="searchPointsLog()">
+      <!--開始日期-->
+      <div class="flex items-center">
+        <div class="mr-2">開始</div>
+        <input [(ngModel)]="startDate" type="text" placeholder="年 / 月 / 日" class="mb-0" bsDatepicker
+          [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }" />
+      </div>
+      <div class="flex items-center">
+        <div class="mr-2">結束</div>
+        <!--結束日期-->
+        <input [(ngModel)]="endDate" type="text" placeholder="年 / 月 / 日" class="mb-0" bsDatepicker
+          [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD' }" />
+      </div>
+      <!--下拉按鈕-->
+      <button type="button" class="btn btn-primary px-5 ml-3" (click)="searchPointsLog()">
         <i class="fas fa-search"></i>
         查詢
       </button>
     </div>
-    <div class="row" style="margin-top: 30px;">
+    <div class="mt-8">
       <ng-container *ngIf="isLoading">載入中...</ng-container>
       <ng-container *ngIf="!isLoading">
         <table class="table table-bordered table-striped">
@@ -64,9 +54,11 @@
               <td>{{data.OccurDate | date: 'yyyy/MM/dd'}}</td>
               <td>{{data.Type}}</td>
               <td>{{data.Source}}</td>
-              <td style="text-align: right;">{{data.Point}} 點</td>
+              <td class="text-nowrap text-end">{{data.Point}} 點</td>
             </tr>
-            <tr *ngIf="!pointHistories.length"><td colspan="4">無資料</td></tr>
+            <tr *ngIf="!pointHistories.length">
+              <td colspan="4">無資料</td>
+            </tr>
           </tbody>
         </table>
       </ng-container>
