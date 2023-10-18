@@ -1,7 +1,7 @@
 {
   "name": "cfee5cbc-0b83-4946-aefb-e5a601e5af67",
   "version": "0.1.0",
-  "description": "新竹康橋國小家長學生定期評量成績查詢",
+  "description": "新竹康橋國小家長學生定期評量成績查詢，是拿「評量成績-國中新竹版(家長、學生)2022新版」gadget 來調整的",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

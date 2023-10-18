@@ -127,3 +127,17 @@ table.table-bordered tbody tr td li {
 .panel-group .panel+.panel {
   margin-top: 0;
 }
+
+input[type="text"] {
+  height: 30px;
+  width: fit-content;
+}
+
+@media (min-width: 640px) {
+  .sm\:justify-center {
+    justify-content: center;
+  }
+  .sm\:flex-row {
+    flex-direction: row;
+  }
+}
