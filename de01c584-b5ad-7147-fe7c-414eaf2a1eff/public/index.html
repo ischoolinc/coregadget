@@ -38,21 +38,68 @@
     <script src="assets/js/gadget.js"></script>
 
     <script>
+      const client_id = "b88fbfbbaa848c5b5b01ce51853eac7f",
+              secret = "0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311";
+      var hash,
+        vars = [],
+        p = window.location.href.slice(window.location.href.indexOf("?") + 1);
+      p.indexOf("#") >= 0 && (p = p.substring(0, p.indexOf("#")));
+      for (var hashes = p.split("&"), i = 0; i < hashes.length; i++) {
+        var key = (hash = decodeURIComponent(hashes[i])).substring(
+          0,
+          hash.indexOf("=")
+        );
+        vars.push(key), (vars[key] = hash.substring(hash.indexOf("=") + 1));
+      }
+      vars.dsns
+        ? init({
+            application: vars.dsns,
+            oAuth: { clientID: client_id, clientSecret: secret },
+            paramValues: { 
+                "DefaultRound": "2" //預設小數點位數
+                //"第一次期中考Round": "1",
+                //"第二次期中考Round": "2",
+                //"期末考Round": "7",
+                //"試算Round": "1", //指定評量項目小數點位數
+                //"學期成績Round": "2"
+             },
+          })
+        : init({
+            application: "demo.j.beibei.lai",
+            oAuth: {
+              clientID: client_id,
+              clientSecret: secret,
+              account: "",
+              password: "",
+            },
+            paramValues: {
+                // "DefaultRound": "2" //預設小數點位數
+                //"第一次期中考Round": "1",
+                //"第二次期中考Round": "2",
+                //"期末考Round": "7",
+                //"試算Round": "1", //指定評量項目小數點位數
+                //"學期成績Round": "2"
+            },
+          });
+/*
+/*      
       init({
          //application: "demo.j.vicky.chang",
-        application: "demo.j.cynthia.chen",
+        // application: "demo.j.cynthia.chen",
+        application: "demo.j.beibei.lai",
         paramValues: {
-          "system_position": "",//"parent","student"
+          "system_position": "parent",//"parent","student"
         },
         oAuth: {
           clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
           clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-          //    account: '',
-          // password: ''
+          account: '',
+          password: ''
 
 
         }
       });
+*/
     </script>
 
     <title>評量成績</title>
