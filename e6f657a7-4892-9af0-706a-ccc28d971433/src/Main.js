@@ -89,7 +89,7 @@ function Main() {
       GetCourseExamList();
       GetAllExamScore();
       GetRankInfo()
-      //GetExamAvgScore();
+      GetExamAvgScore();
       GetScoreCalcRulePassingStandard();
       GetExamAvgRankMatrix();
     }
@@ -128,11 +128,13 @@ function Main() {
           return 'err';
         } else {
           if (response)
-            if (response.length) {
+            // console.log( { action: "GetViewSetting",  response, length: response.length })
+            if (response.Setting) {
               let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
               setShowNoRankSetting(isShowRank);
               //setShowNoRankSetting(true);
               setAvgSetting(response.Setting.show_score);
+              // console.log( { settingTitle: response.Setting.show_score });
             }
         }
       }
@@ -360,6 +362,7 @@ function Main() {
         } else {
           if (response) {
             setRankType([].concat(response.RankType || []));
+            console.log({ examRankType: response.RankType })
             if ([].concat(response.RankType || []).length) {
               if (selectedRankType === '' || selectedRankType === null)
                 setViewRankType([].concat(response.RankType || [])[0].rank_type);
@@ -786,6 +789,7 @@ function Main() {
           })}
 
           {/* 評量成績 的加權平均*/}
+          {/* console.log({ examRankType }); */}
           {[].concat(examRankType || []).length > 0 && selectedExam !== '0' ? <div className="col">
             <div className='card shadow h-100'>
               <div className="card-body">
