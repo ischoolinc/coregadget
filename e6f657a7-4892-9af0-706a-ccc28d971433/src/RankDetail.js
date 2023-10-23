@@ -4,16 +4,27 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 const RankDetail = () => {
 
-	const studentID = localStorage.getItem('StudentID');
-	const examID = localStorage.getItem('ExamID');
-	const semester = localStorage.getItem('Semester');
-	const courseID = localStorage.getItem('CourseID');
-	const defaultRankType = localStorage.getItem('RankType');
-	const storageSubject = localStorage.getItem('Subject');
-	const passingStandard = localStorage.getItem('PassingStandard');
+	const { appData, setAppDataValues } = useAppContext();
+
+	const studentID = appData.studentID;
+	const examID = appData.examID;
+	const semester = appData.semester;
+	const courseID = appData.courseID;
+	const defaultRankType = appData.rankType;
+	const storageSubject = appData.subject;
+	const passingStandard = appData.passingStandard;
+
+	// const studentID = localStorage.getItem('StudentID');
+	// const examID = localStorage.getItem('ExamID');
+	// const semester = localStorage.getItem('Semester');
+	// const courseID = localStorage.getItem('CourseID');
+	// const defaultRankType = localStorage.getItem('RankType');
+	// const storageSubject = localStorage.getItem('Subject');
+	// const passingStandard = localStorage.getItem('PassingStandard');
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
@@ -181,30 +192,43 @@ const RankDetail = () => {
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		localStorage.setItem('RankType', e.target.value);
+		//localStorage.setItem('RankType', e.target.value);
+
+		setAppDataValues({
+			rankType: e.target.value,
+		});
+
 	};
 
 
 	const handleBackToHomePage = (e) => {
 		// 按下去的時候才存
-		window.history.go(-1);
-		localStorage.setItem('IsBack', 't');
+
+		//localStorage.setItem('IsBack', 't');
 		//localStorage.setItem('RankType', selectedRankType);
 		// console.log('The link was clicked.');
+
+		setAppDataValues({
+			rankType: selectedRankType,
+			isBack: true,
+		});
+		window.history.go(-1);
+		console.log('appData', appData);
+
 	};
 
 
-	// 手動重新整理保留原本畫面
-	window.onunload = function () {
-		//localStorage.clear();
-		localStorage.setItem('StudentID', studentID);
-		localStorage.setItem('ExamID', examID);
-		localStorage.setItem('RankType', selectedRankType);
-		localStorage.setItem('CourseID', courseID);
-		localStorage.setItem('Semester', semester);
-		localStorage.setItem('Subject', storageSubject);
-		localStorage.setItem('PassingStandard', passingStandard);
-	}
+	// // 手動重新整理保留原本畫面
+	// window.onunload = function () {
+	// 	//localStorage.clear();
+	// 	localStorage.setItem('StudentID', studentID);
+	// 	localStorage.setItem('ExamID', examID);
+	// 	localStorage.setItem('RankType', selectedRankType);
+	// 	localStorage.setItem('CourseID', courseID);
+	// 	localStorage.setItem('Semester', semester);
+	// 	localStorage.setItem('Subject', storageSubject);
+	// 	localStorage.setItem('PassingStandard', passingStandard);
+	// }
 
 
 
