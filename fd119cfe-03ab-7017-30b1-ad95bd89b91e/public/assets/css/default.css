@@ -121,3 +121,13 @@ body {
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
+
+.detailBorder {
+  border-top: 1px solid #5b9bd5;
+}
+.chartHeightNoShowRank{
+  height: 450px;
+}
+.text-more {
+  color: #4a8ac7;
+}
