@@ -1,6 +1,7 @@
 {
   "name": "kcis-project-all",
   "version": "0.0.0",
+  "nodejsVersion": "12.22.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
