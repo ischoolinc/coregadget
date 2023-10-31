@@ -6,14 +6,17 @@ import { Link } from 'react-router-dom';
 import down from './down.png';
 import up from './up.png';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 function Main() {
+
+  const { appData, setAppDataValues } = useAppContext();
 
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
   //選擇的學生 //localStorage
-  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
+  const [studentID, setStudent] = useState(appData.studentID);
 
   // 該學生的所有課程學年期
   const [courseSemesterRange, setCourseSemesterList] = useState([]);
@@ -25,13 +28,13 @@ function Main() {
   const [currSemester, setCurrSemester] = useState("");
 
   //當前顯示學年期 //localStorage
-  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
+  const [selectedSemester, setViewSemester] = useState(appData.semester);
 
   //當前顯示評量ID //localStorage
-  const [selectedExam, setViewExam] = useState(localStorage.getItem('ExamID'));
+  const [selectedExam, setViewExam] = useState(appData.examID);
 
   //當前顯示排名類別 //localStorage
-  const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
+  const [selectedRankType, setViewRankType] = useState(appData.rankType);
 
   // 該學生的指定學年期、指定評量 之排名類別
   const [examRankType, setRankType] = useState([]);
@@ -89,7 +92,7 @@ function Main() {
       GetCourseExamList();
       GetAllExamScore();
       GetRankInfo()
-      //GetExamAvgScore();
+      GetExamAvgScore();
       GetScoreCalcRulePassingStandard();
       GetExamAvgRankMatrix();
     }
@@ -128,11 +131,13 @@ function Main() {
           return 'err';
         } else {
           if (response)
-            if (response.length) {
+            // console.log( { action: "GetViewSetting",  response, length: response.length })
+            if (response.Setting) {
               let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
               setShowNoRankSetting(isShowRank);
               //setShowNoRankSetting(true);
               setAvgSetting(response.Setting.show_score);
+              // console.log( { settingTitle: response.Setting.show_score });
             }
         }
       }
@@ -211,7 +216,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                localStorage.clear();
+                //localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -259,16 +264,19 @@ function Main() {
               setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (localStorage.getItem('IsBack')) {
+              if (appData.isBack) {
                 setViewSemester(tempSelectedSemester);
-                //localStorage.removeItem('IsBack');
-                localStorage.clear();
+                //localStorage.clear();
+                setAppDataValues({
+                  isBack: false
+                });
+
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                localStorage.clear();
+                //localStorage.clear();
               }
 
             }
@@ -360,6 +368,7 @@ function Main() {
         } else {
           if (response) {
             setRankType([].concat(response.RankType || []));
+            //console.log({ examRankType: response.RankType })
             if ([].concat(response.RankType || []).length) {
               if (selectedRankType === '' || selectedRankType === null)
                 setViewRankType([].concat(response.RankType || [])[0].rank_type);
@@ -450,7 +459,7 @@ function Main() {
     setViewExam(e.target.value);
   }
 
-  const handleShowRankDetail = (e) => {
+  const handleShowRankDetail0 = (e) => {
     localStorage.clear();
     // 按下去的時候才存
     localStorage.setItem('StudentID', studentID);
@@ -462,8 +471,21 @@ function Main() {
     localStorage.setItem('PassingStandard', e.PassingStandard);
 
   };
+  const handleShowRankDetail = (e) => {
+    setAppDataValues({
+      studentID: studentID,
+      examID: selectedExam,
+      rankType: selectedRankType,
+      courseID: e.CourseID,
+      semester: selectedSemester,
+      subject: e.Subject,
+      passingStandard: e.PassingStandard,
+    });
+  };
 
-  const handleShowAvgRankDetail = (e) => {
+
+
+  const handleShowAvgRankDetail0 = (e) => {
     localStorage.clear();
     // 按下去的時候才存
     localStorage.setItem('StudentID', studentID);
@@ -474,7 +496,17 @@ function Main() {
     localStorage.setItem('Subject', e.ItemName);
     localStorage.setItem('PassingStandard', avgPassingStardard);
   };
-
+  const handleShowAvgRankDetail = (e) => {
+    setAppDataValues({
+      studentID: studentID,
+      examID: selectedExam,
+      rankType: selectedRankType,
+      courseID: 0,
+      semester: selectedSemester,
+      subject: e.ItemName,
+      passingStandard: avgPassingStardard,
+    });
+  };
 
   const handleChangeViewRank = (e) => {
     setViewRankType(e.target.value);
@@ -539,10 +571,10 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除localStorage 
-  window.onunload = function () {
-    localStorage.clear();
-  }
+  // // 手動重新整理/去別的頁面，將清除localStorage 
+  // window.onunload = function () {
+  //   localStorage.clear();
+  // }
 
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
   let isShowFailSubjectCount = true;
@@ -786,6 +818,7 @@ function Main() {
           })}
 
           {/* 評量成績 的加權平均*/}
+          {/* console.log({ examRankType }); */}
           {[].concat(examRankType || []).length > 0 && selectedExam !== '0' ? <div className="col">
             <div className='card shadow h-100'>
               <div className="card-body">

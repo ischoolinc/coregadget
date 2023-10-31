@@ -19,6 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build_test": "BUILD_PATH='./build/e6f657a7-4892-9af0-706a-ccc28d971433' set PUBLIC_URL=/1campus_gadget/e6f657a7-4892-9af0-706a-ccc28d971433&&react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "firebase": "set PUBLIC_URL=/e6f657a7-4892-9af0-706a-ccc28d971433&&react-scripts build",

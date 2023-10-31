@@ -101,6 +101,16 @@ export class SchoolService {
       title: 'Wagor International School'
       , iconUrl: 'assets/img/wagor_logo.png'
       // , gadgets: // 空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['h.demo.1campus.net', { //h.demo.1campus.net
+      title: '1Campus Senior High School'
+      , iconUrl: ''
+      , gadgets: ['gradebook']//空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['j.demo.1campus.net', { //j.demo.1campus.net
+      title: '1Campus Junior High School'
+      , iconUrl: ''
+      , gadgets: ['gradebook']//空陣列是一個都不顯示，undefined 是顯示全部。
     }]
   ]);
 

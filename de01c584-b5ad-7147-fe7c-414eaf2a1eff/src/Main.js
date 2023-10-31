@@ -129,11 +129,11 @@ function Main() {
           return 'err';
         } else {
           if (response) {
-
+            // console.log( { response })
             // let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
             // setShowNoRankSetting(isShowRank);
-            if (response.length)
-              setAvgSetting(response.Setting.show_score);
+            if (response.Response.Setting)
+              setAvgSetting(response.Response.Setting.show_score);
           }
         }
       }
