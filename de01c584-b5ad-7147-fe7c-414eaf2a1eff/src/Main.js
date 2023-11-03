@@ -4,14 +4,17 @@ import { Link } from 'react-router-dom';
 import down from './down.png';
 import up from './up.png';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 function Main() {
+
+  const { appData, setAppDataValues } = useAppContext();
 
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
   //選擇的學生 //localStorage
-  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
+  const [studentID, setStudent] = useState(appData.studentID);
 
   // 該學生的所有課程學年期
   const [courseSemesterRange, setCourseSemesterList] = useState([]);
@@ -22,20 +25,20 @@ function Main() {
   //系統學年期 
   const [currSemester, setCurrSemester] = useState("");
 
-  //當前顯示學年期 //localStorage
-  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
+  //當前顯示學年期 
+  const [selectedSemester, setViewSemester] = useState(appData.semester);
 
-  //當前顯示評量ID //localStorage
-  const [selectedExam, setViewExam] = useState(localStorage.getItem('ExamID'));
+  //當前顯示評量ID 
+  const [selectedExam, setViewExam] = useState(appData.examID);
 
-  //當前顯示 科目成績 or 領域成績 //localStorage
-  const [selectedSubjectType, setSubjectType] = useState(Number(localStorage.getItem('SelectedSubjectType')));
+  //當前顯示 科目成績 or 領域成績 
+  const [selectedSubjectType, setSubjectType] = useState(Number(appData.selectedSubjectType));
 
-  //當前顯示 定期&平時 or 定期+平時 //localStorage
+  //當前顯示 定期&平時 or 定期+平時 
   //const [selectedScoreType, setScoreType] = useState(0);
 
-  //當前顯示排名類別 //localStorage
-  //const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
+  //當前顯示排名類別 
+  const [selectedRankType, setViewRankType] = useState(appData.rankType);
 
   // 該學生的指定學年期、指定評量 之排名類別
   //const [examRankType, setRankType] = useState([]);
@@ -233,7 +236,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                localStorage.clear();
+                //localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -281,16 +284,13 @@ function Main() {
               setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (localStorage.getItem('IsBack')) {
+              if (appData.isBack) {
                 setViewSemester(tempSelectedSemester);
-                //localStorage.removeItem('IsBack');
-                localStorage.clear();
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                localStorage.clear();
               }
 
             }
@@ -498,17 +498,31 @@ function Main() {
     if (!e.CourseID)
       courseID = 0;
 
-    localStorage.clear();
-    // 按下去的時候才存
-    localStorage.setItem('StudentID', studentID);
-    localStorage.setItem('ExamID', selectedExam);
-    //localStorage.setItem('RankType', selectedRankType);
-    localStorage.setItem('CourseID', courseID);
-    localStorage.setItem('Semester', selectedSemester);
-    localStorage.setItem('Subject', subject);
-    //localStorage.setItem('PassingStandard', e.PassingStandard);
-    localStorage.setItem('SubjectType', subjectType);
-    localStorage.setItem('SelectedSubjectType', selectedSubjectType);
+    let score = null;
+
+    [].concat(e.Field || []).forEach(f => {
+      if (f.ExamID === selectedExam || '') {
+        score = f.ExamScore;
+      }
+    })
+
+
+    setAppDataValues({
+      studentID: studentID,
+      examID: selectedExam,
+      rankType: selectedRankType,
+      courseID: courseID,
+      semester: selectedSemester,
+      subject: subject,
+      subjectType: subjectType,
+      selectedSubjectType: selectedSubjectType,
+      score: score,
+      domain: e.Domain,
+      credit: e.Credit,
+      //period: e.Period,
+
+    });
+
   };
 
 
@@ -523,10 +537,6 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除localStorage 
-  window.onunload = function () {
-    localStorage.clear();
-  }
 
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
   //let isShowFailSubjectCount = true;
@@ -631,6 +641,18 @@ function Main() {
                   //   passColor = 'card card-unpass h-100';
                   //   scoreColor = 'fs-4 text-danger me-0 pe-0';
                   // }
+
+                  // 沒有定期+平時 成績 視為沒計算固定排名
+                  // 2023.11.03 但有定期成績可以看科目定期成績的即時組距
+                  if (cField.Score === '') {
+                    scoreColor = 'me-0 pe-0 text-unview';
+                    show = '/RankDetailImmediately';
+                    if (cField.ExamScore === '') {
+                      disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                      show = null;
+                    }
+                  }
+
                   if (cField.ToView === 'f') {
                     //roundColor = '#5B9BD5';
                     //passColor = 'card h-100';
@@ -667,11 +689,7 @@ function Main() {
                   if (cField.Score !== '' && Number(cField.Score) < 60)
                     scoreColor = 'fs-4 text-danger me-0 pe-0';
 
-                  // 沒有定期+平時 成績 視為沒計算固定排名，無法點入詳細資料
-                  if (cField.Score === '') {
-                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                    show = null;
-                  }
+
 
                   let im = 0;
                   let previousExamID = selectedExam;
@@ -693,7 +711,7 @@ function Main() {
                           </div>
                         </div>
 
-                        <div className='row align-items-center'>
+                        <div className='row align-items-end'>
 
                           {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> : <>
                             <div className='col-6 col-md-6 col-lg-4 my-2'>
@@ -728,7 +746,7 @@ function Main() {
                               <div className='row align-items-center'>
                                 <div className='d-flex justify-content-center'>
                                   <div className='row align-items-center'>
-                                    <div className={scoreColor}>{cField.Score === '' ? '-' : Math.round(Number(cField.Score) * 100) / 100}</div>
+                                    <div className={scoreColor}>{cField.Score === '' ? '尚未計算' : Math.round(Number(cField.Score) * 100) / 100}</div>
                                     <div className='me-0 pe-0'>定期+平時評量</div>
                                   </div>
 
@@ -750,11 +768,14 @@ function Main() {
                             <div className=''>{cField.Message}</div>
                           </div>
                         }
-                        {cField.Score === '' ? '' :
-                          <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                            <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
-                            更多
-                          </div>
+                        {cField.Score !== '' ? <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          更多
+                        </div> : cField.ExamScore !== '' && cField.ToView === 't'? <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                          組距
+                        </div> : <></>
+
                         }
 
                       </Link>
