@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Routes, Route, Link } from 'react-router-dom';
 import RankDetail from './RankDetail';
+import RankDetailImmediately from './RankDetailImmediately';
 import Main from './Main';
 import { AppProvider } from './AppContext';
 
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/RankDetail" element={<RankDetail />} />
+          <Route path="/RankDetailImmediately" element={<RankDetailImmediately />} />
         </Routes>
       </AppProvider>
     </div>
