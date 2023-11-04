@@ -4,14 +4,17 @@ import { Link } from 'react-router-dom';
 // import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 // import Popover from 'react-bootstrap/Popover';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 function Main() {
+
+  const { appData, setAppDataValues } = useAppContext();
 
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
   //選擇的學生 //localStorage
-  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
+  const [studentID, setStudent] = useState(appData.studentID);
 
   // 該學生的所有學期成績 學年期
   const [semesterRange, setSubjectScoreSemesterList] = useState([]);
@@ -20,10 +23,10 @@ function Main() {
   const [currSemester, setCurrSemester] = useState("");
 
   //當前顯示學年期 //localStorage
-  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
+  const [selectedSemester, setViewSemester] = useState(appData.semester);
 
   //當前顯示排名類別 //localStorage
-  const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
+  const [selectedRankType, setViewRankType] = useState(appData.rankType);
 
   // 該學生的指定學年期 之排名類別
   const [rankTypeList, setRankTypeList] = useState([]);
@@ -77,15 +80,22 @@ function Main() {
     if (studentID && selectedSemester) {
       GetAllSemesterSubjectScore();
       GetAllSemesterEntryScore();
-      if ([].concat(semesterSubjectScore || []).length < 1)
-        GetSemesterCredit();
-      else
-        setSemesterCredit([]);
+      GetSemesterCredit();
       GetRankInfo();
       GetRankType();
     }
 
   }, [studentID, selectedSemester]);
+
+
+  // useEffect(() => {
+
+  //   if (studentID && selectedSemester) {
+  //     GetSemesterCredit();
+  //   }
+  // }, [studentID, selectedSemester]);
+
+
 
   useEffect(() => {
     if (selectedSemester)
@@ -198,10 +208,11 @@ function Main() {
               setViewSemester([].concat(response.Semester || [])[0].schoolyear + [].concat(response.Semester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (localStorage.getItem('IsBack')) {
+              if (appData.isBack) {
                 setViewSemester(tempSelectedSemester);
-                //localStorage.removeItem('IsBack');
-                localStorage.clear();
+                setAppDataValues({
+                  isBack: false
+                });
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
@@ -399,24 +410,58 @@ function Main() {
       subjectType = 'entry';
     }
 
-    localStorage.clear();
-    localStorage.setItem('StudentID', studentID);
-    localStorage.setItem('RankType', selectedRankType);
-    localStorage.setItem('Semester', selectedSemester);
-    localStorage.setItem('Subject', subject);
-    localStorage.setItem('SubjectType', subjectType);
+    let entryOScore = null;
+    if (subjectType === 'entry') {
+      [].concat(semesterEntryScore || []).forEach(sem => {
+        if (sem.entry.includes('原始')) {
+          entryOScore = sem.score;
+        }
+      })
+    }
+
+    setAppDataValues({
+      studentID: studentID,
+      rankType: selectedRankType,
+      semester: selectedSemester,
+      subject: subject,
+      subjectType: subjectType,
+
+      domain: e.domain,
+      score: e.score,
+      o_score: subjectType === 'subject' ? e.o_score : entryOScore,
+      p_score: e.p_score,
+      r_score: e.r_score,
+      h_score: e.h_score,
+      y_score: e.y_score,
+      period: e.period,
+      credit: e.credit,
+      entry: e.entry,
+      passingStandard: e.pass_standard,
+      level: e.level,
+      required_by: e.required_by,
+      is_required: e.is_required,
+
+    });
+
   };
 
   const handleShowCreditDetail = (e) => {
-    //localStorage.clear();
 
     // 按下去的時候才存
-    localStorage.setItem('StudentID', studentID);
-    localStorage.setItem('Semester', selectedSemester);
+    // localStorage.setItem('StudentID', studentID);
+    // localStorage.setItem('Semester', selectedSemester);
 
     const selectElement = document.getElementById("form-semester");
-    localStorage.setItem('SemesterText', selectElement.options[selectElement.selectedIndex].innerHTML);
-    //localStorage.setItem('QQ', selectedRankType);
+    //localStorage.setItem('SemesterText', selectElement.options[selectElement.selectedIndex].innerHTML);
+
+
+    setAppDataValues({
+      studentID: studentID,
+      semester: selectedSemester,
+      SemesterText: selectElement.options[selectElement.selectedIndex].innerHTML,
+
+    });
+
   };
 
   const handleChangeViewRank = (e) => {
@@ -436,11 +481,6 @@ function Main() {
     const htmlText = `${name}`
 
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
-  }
-
-  // 重新整理將清除localStorage 
-  window.onunload = function () {
-    localStorage.clear();
   }
 
 
@@ -501,7 +541,7 @@ function Main() {
         <div>{[].concat(semesterSubjectScore || []).length < 1 ? '尚無成績資料。' : ''}</div>
 
         {/* 取得學分 */}
-        {[].concat(semesterCredit || []).length ?
+        {studentID && selectedSemester ?
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
             <div className='col'>
               <div className="card card-credit shadow">
@@ -549,6 +589,10 @@ function Main() {
               let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+
+              if ([].concat(rankTypeList || []).length < 1) {
+                show = '/RankDetailImmediately'
+              }
 
               // //如果沒有及格標準，直接當60
               // if (Number(ses.score) < 60) {
@@ -663,6 +707,12 @@ function Main() {
             // let passingScore = sss.pass_standard === '' ? 60 : Number(sss.pass_standard);
             // if (Number(sss.score) < passingScore) {
 
+
+            if ([].concat(rankTypeList || []).length < 1) {
+              show = '/RankDetailImmediately'
+            }
+
+
             //如果未取得學分
             if (sss.is_pass !== '是') {
               roundColor = '#FF66CC';
@@ -754,7 +804,8 @@ function Main() {
                     {showNow ?
                       <div className="d-flex align-items-center justify-content-between text-nowrap text-end">
                         <div className="d-flex align-items-center text-start">
-                          {sss.is_pass === '是' ? <span className="material-symbols-outlined checkbox text-check">check_box</span>
+                          {sss.is_pass === '是' ?
+                            <span className="material-symbols-outlined checkbox text-check">check_box</span>
                             : <span className="material-symbols-outlined checkbox">check_box_outline_blank</span>}
 
                           取得學分

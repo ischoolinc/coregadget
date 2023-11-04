@@ -4,14 +4,17 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 const RankDetail = () => {
+	const { appData, setAppDataValues } = useAppContext();
 
-	const studentID = localStorage.getItem('StudentID');
-	const semester = localStorage.getItem('Semester');
-	const subjectType = localStorage.getItem('SubjectType');
-	const defaultRankType = localStorage.getItem('RankType');
-	const storageSubject = localStorage.getItem('Subject');
+	const studentID = appData.studentID;
+	const semester = appData.semester;
+	const defaultRankType = appData.rankType;
+	const storageSubject = appData.subject;
+	const subjectType = appData.subjectType;
+
 
 	///const passingStandard = localStorage.getItem('PassingStandard');
 
@@ -68,8 +71,8 @@ const RankDetail = () => {
 	}, [studentSubjectData, selectedScoreType]);
 
 	useEffect(() => {
-		if(rankBatchID)
-		GetRankBatchSettingByID();
+		if (rankBatchID)
+			GetRankBatchSettingByID();
 	}, [rankBatchID]);
 
 	useEffect(() => {
@@ -124,9 +127,6 @@ const RankDetail = () => {
 			});
 		}
 	}
-
-
-
 
 
 
@@ -229,7 +229,7 @@ const RankDetail = () => {
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		localStorage.setItem('RankType', e.target.value);
+		//localStorage.setItem('RankType', e.target.value);
 	};
 
 	const handleChangeScoreType = (e) => {
@@ -237,8 +237,11 @@ const RankDetail = () => {
 	};
 
 	const handleBackToHomePage = (e) => {
+		setAppDataValues({
+			rankType: selectedRankType,
+			isBack: true,
+		});
 		window.history.go(-1);
-		localStorage.setItem('IsBack', 't');
 	};
 
 	const handleManual = (e) => {
