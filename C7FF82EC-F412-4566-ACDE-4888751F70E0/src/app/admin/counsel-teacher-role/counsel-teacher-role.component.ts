@@ -29,7 +29,7 @@ export class CounselTeacherRoleComponent implements OnInit {
   options: string[] = []; //老師清單
   selectTeacherName = ""
   /** 輔導人力身分選項 */
-  reportRolesOptions = ['專任輔導教師', '兼任輔導教師', '合聘專任輔導教師-主聘學校', '合聘專任輔導教師-從聘學校']
+  reportRolesOptions = ['專任輔導教師', '兼任輔導教師', '合聘專任輔導教師-主聘學校', '合聘專任輔導教師-從聘學校','不列入統計']
   selectReportRolesOptions = null;
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -67,8 +67,7 @@ export class CounselTeacherRoleComponent implements OnInit {
     this.counselRole.push('專任輔導');
     this.counselRole.push('兼任輔導');
     this.counselRole.push('認輔老師');
-    // 根據華商需求調整 
-    this.counselRole.push('校外心理師');
+    this.counselRole.push('校外心理師');   // 根據華商需求調整 
 
     this.loadData();
   }
@@ -111,7 +110,7 @@ export class CounselTeacherRoleComponent implements OnInit {
 
     this._addCounselTeacherRole.selectRole = "請選擇身分";
     this._addCounselTeacherRole.selectTeacherName = "請選擇教師";
-    this._addCounselTeacherRole.selectReportRole = '請選擇輔導人力身分'; // 20220920 增加需求
+    this._addCounselTeacherRole.selectReportRole = "請選擇輔導人力身分"; // 20220920 增加需求
     this._addCounselTeacherRole.notTeachersCounselRole = this.notTeachersCounselRole;
     this._addCounselTeacherRole.isSaveButtonDisable = true;
     $("#addCounselTeacherRole").modal("show");

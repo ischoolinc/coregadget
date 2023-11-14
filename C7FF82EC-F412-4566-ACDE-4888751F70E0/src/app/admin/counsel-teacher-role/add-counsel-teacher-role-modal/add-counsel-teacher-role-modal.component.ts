@@ -115,6 +115,7 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   }
   /**批次設定教師角色*/
   async SetTeachersCounselRole() {
+   
     let reqTeacherCounselRole = [];
     let itItm = {
       TeacherID: this.selectTeacherID,

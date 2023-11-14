@@ -227,7 +227,7 @@ export class NewCaseModalComponent implements OnInit {
         }
 
         // 清除結案日期
-        this.caseStudent.CloseDate = "";
+        this.caseStudent.CloseDate ="";
         // 清除結案教師名稱
         this.closedTeacherName = ""
         // 清除結案教師
@@ -654,7 +654,7 @@ export class NewCaseModalComponent implements OnInit {
       CaseSource: data.changeCaseSourceToString(),
       RefCounselInterviewID: data.RefCounselInterviewID,
       IsClosed: data.IsClosed,
-      CloseDate: data.CloseDate,
+      CloseDate: data.CloseDate ,
       CaseLevel: data.CaseLevel,
       CaseTeacher: reqCaseTeacher,
       StudentStatus: data.StudentStatus,
@@ -684,7 +684,8 @@ export class NewCaseModalComponent implements OnInit {
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
     data.TeacherCounselLevels = JSON.stringify(data.teacher_counsel_level);
-    data.CloseDate = data.CloseDate.replace("/", "-").replace("/", "-");
+    
+    data.CloseDate = data.CloseDate ? data.CloseDate.replace("/", "-").replace("/", "-"):null;
 
 
     let reqCaseTeacher = [];
