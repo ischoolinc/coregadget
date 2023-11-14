@@ -485,6 +485,7 @@ function Main() {
       subject: subject,
       subjectType: subjectType,
       selectedSubjectType: selectedSubjectType,
+      score: e.score,
     });
 
 

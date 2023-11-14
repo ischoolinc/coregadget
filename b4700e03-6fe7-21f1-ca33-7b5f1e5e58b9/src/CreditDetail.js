@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 const CreditDetail = () => {
+	const { appData, setAppDataValues } = useAppContext();
 
-	const studentID = localStorage.getItem('StudentID');
-	const semester = localStorage.getItem('Semester');
-	const semesterText = localStorage.getItem('SemesterText');
+
+	const studentID = appData.studentID;
+	const semester = appData.semester;
+	const semesterText = appData.semesterText;
 
 	//取得學生本學期學分狀況
 	const [currentSemesterCredit, setCurrentSemesterCredit] = useState([]);

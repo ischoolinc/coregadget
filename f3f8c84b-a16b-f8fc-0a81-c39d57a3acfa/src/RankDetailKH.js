@@ -26,7 +26,7 @@ const RankDetailKH = () => {
 	const storagePScore = appData.p_score;
 	const storageText = appData.text;
 
-	// 班級學生組距資料(kh)
+	// 班級學生組距資料
 	const [scoreLevelData, setScoreLevel] = useState([]);
 
 	//長條圖
@@ -56,19 +56,19 @@ const RankDetailKH = () => {
 
 
 	useEffect(() => {
-		ToBarChartKH();
+		ToBarChartImmediately();
 	}, [scoreLevelData]);
 
 
 
-	function ToBarChartKH() {
+	function ToBarChartImmediately() {
 		const source = {};
 
 		levelList.forEach(v => source[v.name] = v.count);
 
 		if (scoreLevelData.length > 0) {
 			scoreLevelData.forEach(data => {
-				//排名分數
+				//擇優成績
 				let score = Number(storageScore);
 				let position_name = '';
 

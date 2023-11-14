@@ -213,24 +213,9 @@ const RankDetail = () => {
 			isBack: true,
 		});
 		window.history.go(-1);
-		console.log('appData', appData);
+		//console.log('appData', appData);
 
 	};
-
-
-	// // 手動重新整理保留原本畫面
-	// window.onunload = function () {
-	// 	//localStorage.clear();
-	// 	localStorage.setItem('StudentID', studentID);
-	// 	localStorage.setItem('ExamID', examID);
-	// 	localStorage.setItem('RankType', selectedRankType);
-	// 	localStorage.setItem('CourseID', courseID);
-	// 	localStorage.setItem('Semester', semester);
-	// 	localStorage.setItem('Subject', storageSubject);
-	// 	localStorage.setItem('PassingStandard', passingStandard);
-	// }
-
-
 
 
 	const handleManual = (e) => {
