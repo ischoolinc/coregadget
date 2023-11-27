@@ -48,7 +48,7 @@ export class AddInterviewModalComponent implements OnInit {
   _studentName: string;
   public referralVisible: boolean = false;
 
-  // 學生輔導紀錄
+  /* 學生輔導紀錄*/
   _currentCounselInterview: CounselInterview;
 
   async ngOnInit() {

@@ -4,16 +4,27 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 const RankDetail = () => {
 
-	const studentID = localStorage.getItem('StudentID');
-	const semester = localStorage.getItem('Semester');
-	const subjectType = localStorage.getItem('SubjectType');
-	const defaultRankType = localStorage.getItem('RankType');
-	const storageSubject = localStorage.getItem('Subject');
+	const { appData, setAppDataValues } = useAppContext();
 
-	///const passingStandard = localStorage.getItem('PassingStandard');
+	const studentID = appData.studentID;
+	const semester = appData.semester;
+
+	/**mixdomain、domain、subject */
+	const subjectType = appData.subjectType;
+	const defaultRankType = appData.rankType;
+	const storageSubject = appData.subject;
+
+	const storageScore = appData.score;
+
+	// const studentID = localStorage.getItem('StudentID');
+	// const semester = localStorage.getItem('Semester');
+	// const subjectType = localStorage.getItem('SubjectType');
+	// const defaultRankType = localStorage.getItem('RankType');
+	// const storageSubject = localStorage.getItem('Subject');
 
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
@@ -27,8 +38,14 @@ const RankDetail = () => {
 	//所有的排名類別清單
 	const [rankTypeList, setRankTypeList] = useState([]);
 
+	// 班級學生即時組距資料
+	const [scoreLevelData, setScoreLevel] = useState([]);
+
 	//長條圖
 	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
+
+
+	const [levelImmediatelyList, setLevelImmediatelyList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
 
 	//取長條圖最大值
 	const [chartMax, setChartMax] = useState(0);
@@ -54,6 +71,21 @@ const RankDetail = () => {
 	}, []);
 
 	useEffect(() => {
+		if (studentSubjectData.length === 1 && studentSubjectData[0].create_time === "") {
+			if (subjectType === 'subject')
+				CalculateSemesterSubjectScoreLevel();
+			if (subjectType === 'domain')
+				CalculateSemesterDomainScoreLevel();
+			if (subjectType === 'mixdomain')
+				CalculateSemesterMixDomainScoreLevel();
+
+			//console.log('CalculateLevel');
+		}
+	}, [studentSubjectData]);
+
+
+
+	useEffect(() => {
 		GetChartHeight();
 	}, [showRank]);
 
@@ -63,9 +95,64 @@ const RankDetail = () => {
 
 
 	useEffect(() => {
-		ToBarChart();
+		if (selectedRankType) {
+			ToBarChart();
+			//console.log('selectedRankType~~ToBarChart', selectedRankType);
+		}
 	}, [selectedRankType, selectedScoreType]);
 
+	useEffect(() => {
+		if (scoreLevelData.length > 0) {
+			ToBarChartImmediately();
+			//console.log('ToBarChartImmediately');
+		}
+	}, [scoreLevelData]);
+
+
+	function ToBarChartImmediately() {
+		const source = {};
+
+		levelList.forEach(v => source[v.name] = v.count);
+
+		if (scoreLevelData.length > 0) {
+			scoreLevelData.forEach(data => {
+				//擇優成績
+				let score = Number(storageScore);
+				let position_name = '';
+
+				if (score >= 100)
+					position_name = '100';
+				if (score >= 90 && score < 100)
+					position_name = '90-99';
+				if (score >= 80 && score < 90)
+					position_name = '80-89';
+				if (score >= 70 && score < 80)
+					position_name = '70-79';
+				if (score >= 60 && score < 70)
+					position_name = '60-69';
+				if (score < 60)
+					position_name = '<60';
+
+				source["100"] = Number(data.level_gte100);
+				source["90-99"] = Number(data.level_90);
+				source["80-89"] = Number(data.level_80);
+				source["70-79"] = Number(data.level_70);
+				source["60-69"] = Number(data.level_60);
+				source["<60"] = Number(data.under60);
+
+				const merge = Object.getOwnPropertyNames(source).map(v => ({
+					name: v,
+					count: source[v],
+					fill: v === position_name ? '#F8A1A4' : '#498ED0',
+					labelFill: v === position_name ? '#F47378' : '#2196f3',
+				}));
+
+				setLevelImmediatelyList(merge);
+				setChartMax(Math.ceil(Math.max(...merge.map(c => c.count)) / 4) * 4);
+
+			});
+		}
+	}
 
 	function ToBarChart() {
 		const source = {};
@@ -74,7 +161,7 @@ const RankDetail = () => {
 
 		if (studentSubjectData.length > 0) {
 			studentSubjectData.forEach(data => {
-				if (data.rank_type === selectedRankType&& data.score_type === selectedScoreType) //所選的排名類別
+				if (data.rank_type === selectedRankType && data.score_type === selectedScoreType) //所選的排名類別
 				{
 					//排名分數
 					let score = Number(data.rank_score);
@@ -118,11 +205,11 @@ const RankDetail = () => {
 		const typeList = [];
 		if (studentSubjectData.length > 0)
 			studentSubjectData.forEach(data => {
-				if (data.score_type === selectedScoreType){
-				if (data.rank_type !== '')
-					typeList.push(data.rank_type)
-				if (data.rank_type === defaultRankType)
-					setViewRankType(defaultRankType);
+				if (data.score_type === selectedScoreType) {
+					if (data.rank_type !== '')
+						typeList.push(data.rank_type)
+					if (data.rank_type === defaultRankType)
+						setViewRankType(defaultRankType);
 				}
 
 			});
@@ -184,10 +271,75 @@ const RankDetail = () => {
 		});
 	}
 
+	/** 計算 學期科目 班級組距資料*/
+	async function CalculateSemesterSubjectScoreLevel() {
+		await _connection.send({
+			service: "_.CalculateSemesterSubjectScoreLevel",
+			body: {
+				StudentID: studentID,
+				ViewSemester: semester,
+				Subject: storageSubject,
+			},
+			result: function (response, error, http) {
+				if (error !== null) {
+					console.log('CalculateSemesterSubjectScoreLevel Error', error);
+					return 'err';
+				} else {
+					if (response) {
+						setScoreLevel([].concat(response.Response.Level || []));
+					}
+				}
+			}
+		});
+	}
+	/** 計算 學期領域 班級組距資料*/
+	async function CalculateSemesterDomainScoreLevel() {
+		await _connection.send({
+			service: "_.CalculateSemesterDomainScoreLevel",
+			body: {
+				StudentID: studentID,
+				ViewSemester: semester,
+				Subject: storageSubject,
+			},
+			result: function (response, error, http) {
+				if (error !== null) {
+					console.log('CalculateSemesterDomainScoreLevel Error', error);
+					return 'err';
+				} else {
+					if (response) {
+						setScoreLevel([].concat(response.Response.Level || []));
+					}
+				}
+			}
+		});
+	}
+	/** 計算 學期總計領域 班級組距資料*/
+	async function CalculateSemesterMixDomainScoreLevel() {
+		await _connection.send({
+			service: "_.CalculateSemesterMixDomainScoreLevel",
+			body: {
+				StudentID: studentID,
+				ViewSemester: semester,
+				Subject: storageSubject,
+			},
+			result: function (response, error, http) {
+				if (error !== null) {
+					console.log('CalculateSemesterMixDomainScoreLevel Error', error);
+					return 'err';
+				} else {
+					if (response) {
+						setScoreLevel([].concat(response.Response.Level || []));
+					}
+				}
+			}
+		});
+	}
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		localStorage.setItem('RankType', e.target.value);
+		setAppDataValues({
+			rankType: e.target.value,
+		});
 	};
 	const handleChangeScoreType = (e) => {
 		setScoreType(e.target.value);
@@ -195,21 +347,13 @@ const RankDetail = () => {
 
 	const handleBackToHomePage = (e) => {
 		// 按下去的時候才存
+
+		setAppDataValues({
+			rankType: selectedRankType,
+			isBack: true,
+		});
 		window.history.go(-1);
-		localStorage.setItem('IsBack', 't');
 	};
-
-
-	// 手動重新整理保留原本畫面
-	window.onunload = function () {
-		//localStorage.clear();
-		localStorage.setItem('StudentID', studentID);
-		localStorage.setItem('RankType', selectedRankType);
-		localStorage.setItem('Semester', semester);
-		localStorage.setItem('Subject', storageSubject);
-		//localStorage.setItem('SelectedSubjectType', selectedSubjectType);
-		//localStorage.setItem('PassingStandard', passingStandard);
-	}
 
 
 
@@ -263,7 +407,10 @@ const RankDetail = () => {
 				{/* <div className='fs-2 text-white m-0 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div> */}
 
 				{studentSubjectData.map((data) => {
-					if (data.rank_type === selectedRankType&& data.score_type === selectedScoreType)
+					if (data.rank_type === selectedRankType && data.score_type === selectedScoreType) {
+						// 					console.log('studentSubjectData', data);
+						// console.log('levellllll', levelList);
+
 						return <div className='detailBorder row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
@@ -282,6 +429,7 @@ const RankDetail = () => {
 								</div>
 							</div>
 						</div>
+					}
 
 
 				})}
@@ -293,7 +441,7 @@ const RankDetail = () => {
 						<div className="card card-pass">
 							<div className="card-body">
 								{studentSubjectData.map((data) => {
-									if (data.rank_type === selectedRankType&& data.score_type === selectedScoreType)
+									if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 										return <>
 											<div className='row row row-cols-2 row-cols-md-2 row-cols-lg-2'>
 												<div className='col'>
@@ -323,26 +471,26 @@ const RankDetail = () => {
 
 						{[].concat(rankTypeList || []).length < 1 ? '' :
 							<>
-							<div className="row">
-								<div className="col-12 col-md-12 col-lg-6 my-2">
-									<select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
-										{rankTypeList.map((rankType, index) => {
-											return <option key={index} value={rankType}>
-												{rankType}</option>
-										})}
-									</select>
-								</div>
-								<div className="col-12 col-md-12 col-lg-6 my-2">
-									<select className="form-select" value={selectedScoreType} onChange={(e) => handleChangeScoreType(e)}>
-										<option value='原始成績'>原始成績</option>
-										<option value='擇優成績'>擇優成績</option>
-									</select>
-								</div>
+								<div className="row">
+									<div className="col-12 col-md-12 col-lg-6 my-2">
+										<select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
+											{rankTypeList.map((rankType, index) => {
+												return <option key={index} value={rankType}>
+													{rankType}</option>
+											})}
+										</select>
+									</div>
+									<div className="col-12 col-md-12 col-lg-6 my-2">
+										<select className="form-select" value={selectedScoreType} onChange={(e) => handleChangeScoreType(e)}>
+											<option value='原始成績'>原始成績</option>
+											<option value='擇優成績'>擇優成績</option>
+										</select>
+									</div>
 								</div>
 
 								<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
 									{studentSubjectData.map((data) => {
-										if (data.rank_type === selectedRankType&& data.score_type === selectedScoreType)
+										if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 											if (!showRank)
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
 													<tr>
@@ -375,30 +523,16 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								{/* <div className='d-flex justify-content-center align-items-center'>
-									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
-									<div>級距</div>
-								</div> */}
 
-
-								{/* <div className={chartHeight} >
-									<ResponsiveContainer width="100%" height="100%">
-										<BarChart margin={{ top: 40, right: 50, bottom: 0, left: 0 }} data={levelList} >
-											<XAxis dataKey="name" label={{ value: '組距', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} />
-											<YAxis dateKey="count" label={{ value: '人數', position: 'insideTopLeft', offset: 0, dy: -25, dx: 35, fill: '#498ED0' }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
-										</BarChart>
-									</ResponsiveContainer>
-								</div> */}
 								{/* <div className={chartHeight}  > */}
-									<ResponsiveContainer height={300} width="100%">
-										<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
-											<XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-											<YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
-											<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
-											</Bar>
-										</BarChart>
-									</ResponsiveContainer>
+								<ResponsiveContainer height={300} width="100%">
+									<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
+										<XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+										<YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
+										<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
+										</Bar>
+									</BarChart>
+								</ResponsiveContainer>
 								{/* </div> */}
 							</>}
 					</div>
@@ -406,7 +540,7 @@ const RankDetail = () => {
 					{[].concat(rankTypeList || []).length < 1 ? '' :
 						<>
 							{studentSubjectData.map((data) => {
-								if (selectedRankType !== '' && data.rank_type === selectedRankType&& data.score_type === selectedScoreType)
+								if (selectedRankType !== '' && data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 									return <div className='col-12 col-md-6 col-lg-6'>
 										<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>
 											<thead>
@@ -471,6 +605,23 @@ const RankDetail = () => {
 							})}
 						</>}
 				</div>
+
+				{[].concat(scoreLevelData.length || []) > 0 ?
+					<div className='mt-3'>
+						<ResponsiveContainer height={450} width="100%">
+							<BarChart data={levelImmediatelyList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
+								<XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+								<YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
+								<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
+								</Bar>
+							</BarChart>
+						</ResponsiveContainer>
+
+						<div>組距資訊為該班學生擇優成績（原始及補考成績進行擇優）即時統計。</div>
+					</div>
+
+					: <></>}
+
 
 				<ScrollToTopButton />
 			</div>

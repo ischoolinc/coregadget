@@ -59,9 +59,9 @@ const routes: Routes = [
     path: "counsel_statistics", component: CounselStatisticsComponent
 
   },
-  {
-    path: "counsel_doc2/:classID/:printDocumentID/:title", component: CounselDoc2BatComponent
-  },
+  // {
+  //   path: "counsel_doc2/:classID/:printDocumentID/:title", component: CounselDoc2BatComponent
+  // },
 
   { path: "referral", loadChildren: './referral/referral.module#ReferralModule' },
   { path: "case", component: CaseComponent },
@@ -109,7 +109,10 @@ const routes: Routes = [
       { path: "print/counsel_history_psychologicaltest/:studentID", component: CounselHistoryPsychologicaltestComponent },
       { path: "print/counsel-interview-doc/:param", component: CounselInterviewDocComponent },
       { path: ":dsns/comprehensive_fill", component: ComprehensiveFillComponent },
-      { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent }
+      { path: ":dsns/comprehensive_fill/:fill_in_key", component: ComprehensiveFillComponent },
+      {
+        path: "counsel_doc2/:classID/:printDocumentID/:title", component: CounselDoc2BatComponent
+      },
     ]
   },
   {

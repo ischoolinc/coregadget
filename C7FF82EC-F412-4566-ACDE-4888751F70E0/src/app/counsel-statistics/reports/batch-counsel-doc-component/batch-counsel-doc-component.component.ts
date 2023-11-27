@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { DsaService } from "../../../dsa.service";
 import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
 
@@ -9,7 +9,12 @@ import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
 })
 export class BatchCounselDocComponentComponent implements OnInit {
 
-  constructor(private dsaService: DsaService) { }
+  constructor(private dsaService: DsaService,
+    private el: ElementRef) { 
+      let myTag = this.el.nativeElement.querySelector(".header")
+       alert("myTag"+JSON.stringify(myTag))
+
+    }
 
   isExportButtonDisable: boolean = true;
   tmpGradeYear: number[] = [];
@@ -66,7 +71,8 @@ export class BatchCounselDocComponentComponent implements OnInit {
       setTimeout(
         () => {
           var title = item.ClassName + ' ' + this.selectPriDocument.DocumentName;
-          window.open(`content.htm#/counsel_doc2/${item.ClassID}/${this.selectPriDocument.PrintDocumentID}/${title}`,'_blank');
+          
+          window.open(`content.htm#/(simple-page:simple-page/counsel_doc2/${item.ClassID}/${this.selectPriDocument.PrintDocumentID}/${title})`,'_blank');
         },
         i*10000);
     });

@@ -5,18 +5,28 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 //import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
+
 
 const RankDetail = () => {
 
-	const studentID = localStorage.getItem('StudentID');
-	const examID = localStorage.getItem('ExamID');
-	const semester = localStorage.getItem('Semester');
-	const courseID = localStorage.getItem('CourseID');
-	const subjectType = localStorage.getItem('SubjectType');
-	//const defaultRankType = localStorage.getItem('RankType');
-	const storageSubject = localStorage.getItem('Subject');
-	///const passingStandard = localStorage.getItem('PassingStandard');
 
+	const { appData, setAppDataValues } = useAppContext();
+
+
+	const studentID = appData.studentID;
+	const examID = appData.examID;
+	const semester = appData.semester;
+	const courseID = appData.courseID;
+	const defaultRankType = appData.rankType;
+	const subjectType = appData.subjectType;
+	
+	const storageSubject = appData.subject;
+	const storageDomain = appData.domain;
+	const storagePeriod = appData.period;
+	const storageCredit = appData.credit;
+	const storageScore = appData.score;
+	
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
 
@@ -31,6 +41,7 @@ const RankDetail = () => {
 
 	//長條圖
 	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
+
 
 	//取長條圖最大值
 	const [chartMax, setChartMax] = useState(0);
@@ -52,8 +63,10 @@ const RankDetail = () => {
 
 	useEffect(() => {
 		GetRankDetailPageInfo();
-		//GetViewSetting();
+		GetViewSetting();
 	}, []);
+
+
 
 	useEffect(() => {
 		GetChartHeight();
@@ -117,6 +130,7 @@ const RankDetail = () => {
 		}
 	}
 
+
 	function GetRankTypeList() {
 		const typeList = [];
 		if (studentSubjectData.length > 0)
@@ -169,27 +183,29 @@ const RankDetail = () => {
 
 	// 取得顯示 或不顯示排名 
 	async function GetViewSetting() {
-		// await _connection.send({
-		// 	service: "_.GetViewSetting",
-		// 	body: {},
-		// 	result: function (response, error, http) {
-		// 		if (error !== null) {
-		// 			console.log('GetViewSetting', error);
-		// 			return 'err';
-		// 		} else {
-		// 			if (response) {
-		// 				let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
-		// 				setShowNoRankSetting(isShowRank);
-		// 			}
-		// 		}
-		// 	}
-		// });
+		await _connection.send({
+			service: "_.GetViewSetting",
+			body: {},
+			result: function (response, error, http) {
+				if (error !== null) {
+					console.log('GetViewSetting', error);
+					return 'err';
+				} else {
+					if (response) {
+						let isShowRank = (response.Response.Setting.show_no_rank.toLowerCase() === 'true')
+						setShowNoRankSetting(isShowRank);
+					}
+				}
+			}
+		});
 	}
 
 
 	const handleChangeViewRank = (e) => {
 		setViewRankType(e.target.value);
-		//localStorage.setItem('RankType', e.target.value);
+		setAppDataValues({
+			rankType: e.target.value,
+		});
 	};
 
 	const handleChangeScoreType = (e) => {
@@ -197,26 +213,12 @@ const RankDetail = () => {
 	};
 
 	const handleBackToHomePage = (e) => {
-		// 按下去的時候才存
+		setAppDataValues({
+			rankType: selectedRankType,
+			isBack: true,
+		});
 		window.history.go(-1);
-		localStorage.setItem('IsBack', 't');
-		//localStorage.setItem('RankType', selectedRankType);
 	};
-
-
-	// 手動重新整理保留原本畫面
-	window.onunload = function () {
-		//localStorage.clear();
-		localStorage.setItem('StudentID', studentID);
-		localStorage.setItem('ExamID', examID);
-		localStorage.setItem('RankType', selectedRankType);
-		localStorage.setItem('CourseID', courseID);
-		localStorage.setItem('Semester', semester);
-		localStorage.setItem('Subject', storageSubject);
-		//localStorage.setItem('PassingStandard', passingStandard);
-	}
-
-
 
 
 	const handleManual = (e) => {
@@ -273,7 +275,7 @@ const RankDetail = () => {
 						return <div className='detailBorder row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
-									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.score_type === '定期+平時'||subjectType==='domain'|subjectType==='avg' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.score_type === '定期+平時' || subjectType === 'domain' | subjectType === 'avg' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>

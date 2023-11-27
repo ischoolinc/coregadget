@@ -139,7 +139,8 @@
           </label>
           <textarea  rows="6"  id="description" (input)="autoResize($event.target)"
             class="form-control" placeholder="請輸入輔導內容"
-            [(ngModel)]="_currentCounselInterview.Content"></textarea>
+            [(ngModel)]="_currentCounselInterview.Content"
+            (keyup)="_currentCounselInterview.checkValue()"></textarea>
         </div>
 
 

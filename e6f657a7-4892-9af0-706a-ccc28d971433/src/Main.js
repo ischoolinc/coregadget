@@ -6,14 +6,17 @@ import { Link } from 'react-router-dom';
 import down from './down.png';
 import up from './up.png';
 import ScrollToTopButton from './ScrollToTopButton';
+import { useAppContext } from './AppContext';
 
 function Main() {
+
+  const { appData, setAppDataValues } = useAppContext();
 
   // 學生清單
   const [studentDateRange, setStudentList] = useState([]);
 
-  //選擇的學生 //localStorage
-  const [studentID, setStudent] = useState(localStorage.getItem('StudentID'));
+  //選擇的學生 
+  const [studentID, setStudent] = useState(appData.studentID);
 
   // 該學生的所有課程學年期
   const [courseSemesterRange, setCourseSemesterList] = useState([]);
@@ -22,16 +25,17 @@ function Main() {
   const [courseExamList, setCourseExamList] = useState([]);
 
   //系統學年期 
-  const [currSemester, setCurrSemester] = useState("");
+  //const [currSemester, setCurrSemester] = useState(appData.currentSemester);
+  const currSemester = appData.currentSemester;
 
-  //當前顯示學年期 //localStorage
-  const [selectedSemester, setViewSemester] = useState(localStorage.getItem('Semester'));
+  //當前顯示學年期 
+  const [selectedSemester, setViewSemester] = useState(appData.semester);
 
-  //當前顯示評量ID //localStorage
-  const [selectedExam, setViewExam] = useState(localStorage.getItem('ExamID'));
+  //當前顯示評量ID 
+  const [selectedExam, setViewExam] = useState(appData.examID);
 
-  //當前顯示排名類別 //localStorage
-  const [selectedRankType, setViewRankType] = useState(localStorage.getItem('RankType'));
+  //當前顯示排名類別 
+  const [selectedRankType, setViewRankType] = useState(appData.rankType);
 
   // 該學生的指定學年期、指定評量 之排名類別
   const [examRankType, setRankType] = useState([]);
@@ -72,9 +76,17 @@ function Main() {
   const position = window.gadget.params.system_position;
 
   useEffect(() => {
-    GetCurrentSemester();
+    if (!currSemester) {
+      GetCurrentSemester();
+      // console.log('Get Current Semester.', currSemester);
+    } else{
+      // console.log('Not Get Current Semester.', currSemester);
+
+    }
+
     GetViewSetting();
     GetStudentList();
+
   }, []);
 
 
@@ -89,7 +101,7 @@ function Main() {
       GetCourseExamList();
       GetAllExamScore();
       GetRankInfo()
-      //GetExamAvgScore();
+      GetExamAvgScore();
       GetScoreCalcRulePassingStandard();
       GetExamAvgRankMatrix();
     }
@@ -128,11 +140,13 @@ function Main() {
           return 'err';
         } else {
           if (response)
-            if (response.length) {
+            // console.log( { action: "GetViewSetting",  response, length: response.length })
+            if (response.Setting) {
               let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
               setShowNoRankSetting(isShowRank);
               //setShowNoRankSetting(true);
               setAvgSetting(response.Setting.show_score);
+              // console.log( { settingTitle: response.Setting.show_score });
             }
         }
       }
@@ -211,7 +225,7 @@ function Main() {
                 }
               });
               if (!temp) {
-                localStorage.clear();
+                //localStorage.clear();
                 setStudent([].concat(response.Student || [])[0].id);
               }
             }
@@ -259,16 +273,19 @@ function Main() {
               setViewSemester([].concat(response.CourseSemester || [])[0].schoolyear + [].concat(response.CourseSemester || [])[0].semester);
 
               // 再根據檢查結果填入學年期
-              if (localStorage.getItem('IsBack')) {
+              if (appData.isBack) {
                 setViewSemester(tempSelectedSemester);
-                //localStorage.removeItem('IsBack');
-                localStorage.clear();
+                //localStorage.clear();
+                setAppDataValues({
+                  isBack: false
+                });
+
               }
               else if (sameInCourse)
                 setViewSemester(tempSelectedSemester);
               else if (sameAsCurrency) {
                 setViewSemester(currSemester);
-                localStorage.clear();
+                //localStorage.clear();
               }
 
             }
@@ -293,12 +310,14 @@ function Main() {
           return 'err';
         } else {
           if (response) {
-            setCurrSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
+            //setCurrSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
 
             // if (selectedSemester === '' || selectedSemester === null) {
             //   setViewSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
             // }
-
+            setAppDataValues({
+              currentSemester: response.CurrentSemester.schoolyear + response.CurrentSemester.semester
+            });
           }
         }
       }
@@ -360,6 +379,7 @@ function Main() {
         } else {
           if (response) {
             setRankType([].concat(response.RankType || []));
+            //console.log({ examRankType: response.RankType })
             if ([].concat(response.RankType || []).length) {
               if (selectedRankType === '' || selectedRankType === null)
                 setViewRankType([].concat(response.RankType || [])[0].rank_type);
@@ -370,7 +390,6 @@ function Main() {
     });
   }
 
-  //**************************** */
 
   //取得指定學年期的固定排名
   async function GetRankInfo() {
@@ -435,7 +454,6 @@ function Main() {
       }
     });
   }
-  //**************************** */
 
   const handleChangeStudent = (studentID) => {
 
@@ -451,30 +469,41 @@ function Main() {
   }
 
   const handleShowRankDetail = (e) => {
-    localStorage.clear();
-    // 按下去的時候才存
-    localStorage.setItem('StudentID', studentID);
-    localStorage.setItem('ExamID', selectedExam);
-    localStorage.setItem('RankType', selectedRankType);
-    localStorage.setItem('CourseID', e.CourseID);
-    localStorage.setItem('Semester', selectedSemester);
-    localStorage.setItem('Subject', e.Subject);
-    localStorage.setItem('PassingStandard', e.PassingStandard);
+    //debugger;
 
+    let score = null;
+    [].concat(e.Field || []).forEach(f => {
+      if (f.ExamID === selectedExam || '') {
+        score = f.Score;
+      }
+    })
+
+    setAppDataValues({
+      studentID: studentID,
+      examID: selectedExam,
+      rankType: selectedRankType,
+      courseID: e.CourseID,
+      semester: selectedSemester,
+      subject: e.Subject,
+      passingStandard: e.PassingStandard,
+
+      
+      domain:e.Domain,
+      score:score,
+    });
   };
 
   const handleShowAvgRankDetail = (e) => {
-    localStorage.clear();
-    // 按下去的時候才存
-    localStorage.setItem('StudentID', studentID);
-    localStorage.setItem('ExamID', selectedExam);
-    localStorage.setItem('RankType', selectedRankType);
-    localStorage.setItem('CourseID', 0);
-    localStorage.setItem('Semester', selectedSemester);
-    localStorage.setItem('Subject', e.ItemName);
-    localStorage.setItem('PassingStandard', avgPassingStardard);
+    setAppDataValues({
+      studentID: studentID,
+      examID: selectedExam,
+      rankType: selectedRankType,
+      courseID: 0,
+      semester: selectedSemester,
+      subject: e.ItemName,
+      passingStandard: avgPassingStardard,
+    });
   };
-
 
   const handleChangeViewRank = (e) => {
     setViewRankType(e.target.value);
@@ -539,10 +568,10 @@ function Main() {
     return <div dangerouslySetInnerHTML={{ __html: htmlText }} />;
   }
 
-  // 手動重新整理/去別的頁面，將清除localStorage 
-  window.onunload = function () {
-    localStorage.clear();
-  }
+  // // 手動重新整理/去別的頁面，將清除localStorage 
+  // window.onunload = function () {
+  //   localStorage.clear();
+  // }
 
   //若有其中一科目是不開放查詢，則最後不會顯示 "不及格科目數"
   let isShowFailSubjectCount = true;
@@ -571,32 +600,10 @@ function Main() {
         </div>
 
 
-        {/* <div className="d-flex col-12 col-md-6 col-lg-6 m-2">
-          <select className="form-select me-3" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
-            <option value="Y" key="Y">(選擇學年度學期)</option>
-            {courseSemesterRange.map((courseSemester, index) => {
-              return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
-                {courseSemester.schoolyear}學年度第{courseSemester.semester}學期</option>
-            })}
-          </select>
-
-          <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
-            <option value="0" key="Y">總覽</option>
-            {courseExamList.map((examList, index) => {
-              return <option key={index} value={examList.exam_id}>
-                {examList.exam_name}</option>
-            })}
-          </select>
-        </div> */}
-
-
-
-
         <div className='row align-items-center my-1'>
           <div className='col-12 col-md-3 col-lg-3  py-2'>
             <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
               {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
-              {/* <option value="Y" key="Y">(選擇學年度學期)</option> */}
               {courseSemesterRange.map((courseSemester, index) => {
                 return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
                   {courseSemester.schoolyear}學年度第{courseSemester.semester}學期</option>
@@ -618,7 +625,6 @@ function Main() {
               <div className='d-flex align-items-center text-nowrap'>
                 <div className='pe-1'>排名類別</div><select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
 
-                  {/* {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : <option value="Y" key="Y">(選擇排名類別)</option>} */}
                   {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
                   {examRankType.map((rankType, index) => {
                     return <option key={index} value={rankType.rank_type}>
@@ -640,19 +646,56 @@ function Main() {
             let col = 'col-6 col-md-6 col-lg-3 my-2';
             if (showNoRankSetting || (!showNoRankSetting && [].concat(examRankType || []).length < 1))//不顯示排名(只有分數) || 顯示排名但沒排名
               col = 'col-12 my-2';
+
+
             return <>
               {[].concat(ces.Field || []).map((cField, index) => {
                 if (cField.ExamID === selectedExam) {
                   let roundColor = '#A9D18E';
                   let passColor = 'card card-pass shadow h-100';
                   let scoreColor = 'fs-4 me-0 pe-0';
-                  let show = '/RankDetail';
+                  let show = null;
                   let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+
                   if (cField.IsPass === 'f') {
                     roundColor = '#FF0000';
                     passColor = 'card card-unpass shadow h-100';
                     scoreColor = 'fs-4 text-danger me-0 pe-0';
                   }
+
+
+                  // 檢查是否有相對應的排名
+                  let matchingItem = false;
+                  [].concat(examRankMatrix || []).forEach((rank) => {
+
+                    if (rank.ItemName === ces.Subject) {
+                      //debugger;
+                      [].concat(rank.Field || []).forEach((rField) => {
+                        if (rField.ExamID === selectedExam && rField.RankType === selectedRankType) {
+                          matchingItem = true;
+                        }
+                      })
+                    }
+                  });
+
+
+                  if (matchingItem) {
+                    show = '/RankDetail';
+                  } else {
+                    show = '/RankDetailImmediately';
+                  }
+
+
+                  // 沒成績 不能看
+                  if (cField.Score === '') {
+                    roundColor = '#5B9BD5';
+                    scoreColor = 'fs-4 me-0 pe-0';
+                    passColor = 'card shadow h-100';
+                    show = null;
+                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                  }
+
+                  //時間未到 不能看
                   if (cField.ToView === 'f' || ces.Subject === avgSetting) {
                     roundColor = '#5B9BD5';
                     passColor = 'card shadow h-100';
@@ -663,18 +706,12 @@ function Main() {
                     }
                   }
 
-                  if ([].concat(examRankType || []).length < 1) {
-                    show = null;
-                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                  }
+                  // if ([].concat(examRankType || []).length < 1) {
+                  //   show = null;
+                  //   disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                  // }
 
-                  if (cField.Score === '') {
-                    roundColor = '#5B9BD5';
-                    scoreColor = 'fs-4 me-0 pe-0';
-                    passColor = 'card shadow h-100';
-                    show = null;
-                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                  }
+
                   let im = 0;
                   let previousExamID = selectedExam;
                   if (index !== 0) {
@@ -759,10 +796,11 @@ function Main() {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+
+                                        {/* <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                                           <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                                           更多
-                                        </div>
+                                        </div> */}
 
                                       </>
                                   })}
@@ -771,6 +809,18 @@ function Main() {
                               }
                           })}
 
+                          {show === '/RankDetail' ?
+                            <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                              <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                              更多
+                            </div> :
+                            show === '/RankDetailImmediately' ?
+                              <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                                <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                組距
+                              </div>
+                              : <></>
+                          }
 
                         </div>
 
@@ -786,6 +836,7 @@ function Main() {
           })}
 
           {/* 評量成績 的加權平均*/}
+          {/* console.log({ examRankType }); */}
           {[].concat(examRankType || []).length > 0 && selectedExam !== '0' ? <div className="col">
             <div className='card shadow h-100'>
               <div className="card-body">
@@ -820,7 +871,6 @@ function Main() {
                             previousExamID = examAvg.Field[im].ExamID;
                           }
 
-                          // if (avgField.ExamID === selectedExam) 
                           return <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
                             <div className='row align-items-center'>
                               <div className={col}>
@@ -884,9 +934,6 @@ function Main() {
                       })}
                     </>
                   }
-
-
-
 
 
                 })}
