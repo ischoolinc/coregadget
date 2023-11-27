@@ -9,7 +9,7 @@
 
 ## 可用指令
 
-### `npm start`
+### `yarn start`
 以開發模式運行應用程式。\
 在瀏覽器中打開 [http://localhost:3000](http://localhost:3000) 以查看它。
 

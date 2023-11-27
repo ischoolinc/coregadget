@@ -8,11 +8,13 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <div className="prose">
-    <h1 className="heading-1">設定 App 社群媒體</h1>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
+  <div>
+    <div className="navbar bg-base-100">
+      <span className="normal-case text-xl">APP社群連結設定</span>
+    </div>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
   </div>
 );
 
