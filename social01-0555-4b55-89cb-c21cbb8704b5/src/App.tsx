@@ -101,17 +101,17 @@ function App() {
               onChange={(e) => setFormData({ ...formData, BannerUrl: e.target.value })}
               autoComplete="off" />
             {
-              formData.BannerUrl && imageError && <span className='text-red-500 text-xs mt-2'>無效的 Banner 網址</span>
+              formData.BannerUrl && imageError && <span className='text-red-500 text-sm mt-2 mx-auto'>無效的 Banner 網址</span>
             }
-            <div className="w-20 mb-4">
+            <div className="flex items-center my-4 mx-auto">
+              { !imageError && <div className='label-text me-3'>Banner 預覽</div> }
               <img
                 src={formData.BannerUrl}
                 alt={imageError ? '' : 'Banner'}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
                 style={{ display: imageError ? 'none' : 'block' }}
-                width='100%'
-                className='mt-4'
+                className='w-52'
               />
             </div>
 

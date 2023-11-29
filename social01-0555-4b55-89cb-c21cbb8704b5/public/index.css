@@ -1595,7 +1595,9 @@ html {
   font-size: 0.875rem;
   line-height: 1.25rem;
   --tw-text-opacity: 1;
-  color: hsl(var(--bc) / var(--tw-text-opacity));
+  /* color: hsl(var(--bc) / var(--tw-text-opacity)); */
+  font-weight: 600;
+  color: #7287b2 !important;
 }
 
 .input[list]::-webkit-calendar-picker-indicator {
@@ -1970,4 +1972,11 @@ html {
 
 .justify-center {
   justify-content: center;
+}
+
+.container-r {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
 }

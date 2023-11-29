@@ -8,7 +8,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <div>
+  <div className='container-r'>
     <div className="navbar bg-base-100">
       <span className="normal-case text-xl">APP社群連結設定</span>
     </div>
