@@ -18,7 +18,11 @@ export class CounselDoc2BatComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
-    private title: Title) { }
+    private title: Title) { 
+
+
+      
+    }
 
   ngOnInit() {
    
