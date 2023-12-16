@@ -19,6 +19,7 @@ export const AppProvider = ({ children }) => {
         score: null,
 
         selectedSubjectType:0,//0 subject //1 domain
+        total_type:null , //八大領域 //含彈性領域
         
         currentSemester: null,
         isBack:false,
