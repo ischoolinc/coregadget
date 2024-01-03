@@ -243,9 +243,9 @@
             $scope.setCurrentCourse = function (course, term, subject, assessment) {
                 if ($scope.courseList.indexOf(course) >= 0) {
                     $scope.studentList = null;
-                    if ($scope.current)
-                        $scope.current.Course = course;
-                    else {
+                    if ($scope.current)                    
+                        $scope.current.Course = course;                        
+                    else {                        
                         $scope.current = {
                             //清單
                             Course: course
@@ -260,7 +260,7 @@
                             , AssessmentItem: null
                             , Value: null
                         };
-                    }
+                    }                    
 
                     if (term)
                         $scope.setCurrentTerm(term, subject, assessment);
@@ -320,6 +320,9 @@
                                     // $scope.studentList[0].SeatNo = 20;  //for debug
                                     $scope.setCurrent($scope.studentList[0], null, true, true);
                                     $scope.calc();
+                                    if ($scope.current.sortedBy){
+                                        $scope.setSortBy($scope.current.sortedBy);
+                                    }                                    
                                 });
 
                                 $scope.connection.send({
@@ -1165,7 +1168,7 @@
                     if (!weightPass)
                         errMsg += (errMsg ? "\n" : "") + "Weight is required and must be number.";
                     alert(errMsg);
-                }
+                }                
             };
 
             $scope.checkChange = function (next) {
