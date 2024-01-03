@@ -399,7 +399,10 @@
                     if (keyX < keyY) { return -1; }
                     return 0;
                 })
-                $scope.studentList = newStuds;
+                newStuds.forEach( (stuRec, index) => {
+                    stuRec.index = index;
+                });
+                $scope.studentList = newStuds;                
                 $scope.setCurrent($scope.studentList[0], null, true, true);
                 $scope.calc();
 
@@ -863,7 +866,7 @@
                 }, 1);
             };
 
-            $scope.goNext = function () {
+            $scope.goNext = function () {                
                 var currentIndex = $scope.current.Student ? $scope.current.Student.index : 0;
                 $scope.setCurrent(
                     (currentIndex == $scope.studentList.length - 1) ?
@@ -875,7 +878,7 @@
                 $('.pg-grade-textbox:visible').focus();
                 $timeout(function () {
                     $('.pg-grade-textbox:visible').select();
-                }, 1);
+                }, 1);              
             };
 
             $scope.enterGrade = function (event) {
