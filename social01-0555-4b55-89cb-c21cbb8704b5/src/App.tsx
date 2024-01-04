@@ -44,8 +44,10 @@ function App() {
 
   const onSave = async () => {
     if (isSaving.current) { return; }
-    if (!(formData.BannerUrl.startsWith('https://'))) { Swal.fire('Banner網址必須使用安全的 HTTPS 通訊協定'); return; }
-    if ((formData.BannerUrl.replace('https://', '')).length === 0) { Swal.fire('Banner網址無效'); return; }
+    if (formData.BannerUrl) {
+      if (!(formData.BannerUrl.startsWith('https://'))) { Swal.fire('Banner網址必須使用安全的 HTTPS 通訊協定'); return; }
+      if ((formData.BannerUrl.replace('https://', '')).length === 0) { Swal.fire('Banner網址無效'); return; }
+    }
 
     isSaving.current = true;
     _connection.send({
