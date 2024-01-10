@@ -64,8 +64,8 @@ export default class GraduationRequirement extends Component {
           if (response.Result) {
             this.setState((prevState, props) => {
               return {
-                info: 
-                `畢業應修科目及學分表：
+                info:
+                  `畢業應修科目及學分表：
                 系訂必修：${response.Result.DepartmentCredit || ''} 學分、選修：${response.Result.ElectiveCredit || ''} 學分、
                 應修最低畢業學分： ${response.Result.RequiredCredit || ''}
                 `
@@ -155,9 +155,11 @@ export default class GraduationRequirement extends Component {
                 <div className="bd-callout requiredt info px-4 pt-3 mb-5" >
                   <div className="card text-muted cursor-pointer collapsed" aria-expanded="false" data-toggle="collapse" data-target={`#leaveSchool${idx}`} aria-controls={`leaveSchool${idx}`}>
                     <div className="flex justify-center items-center gap-x-2 pb-3">
-                      <div className="requiredt w-8" style={{flexShrink: '0'}}>{item.GroupName}</div>
+                      <div className="requiredt w-8" style={{ flexShrink: '0' }}>{item.GroupName}</div>
                       <div className="flex flex-col">
-                        <div className="text-base font-semibold color-blue">{item.ChineseName}</div>
+                        <div className="text-base font-semibold color-blue">{item.ChineseName}
+                        {(data[1]['subjectId_' + item.SubjectID]) && <span className='text-muted text-sm font-base break-keep'> ({data[1]['subjectId_' + item.SubjectID]})</span>}
+                        </div>
                         <div className="whitespace-pre-line">{item.EnglishName}</div>
                       </div>
                       <div className="flex-grow text-xl text-right pr-2">
@@ -183,12 +185,12 @@ export default class GraduationRequirement extends Component {
                         <div className="font-bold">{item.NewSubjectCode}</div>
                       </div>
                     </div>
-                    <div className="flex justify-start mb-3">
+                    <div className="flex justify-start pb-3">
                       <div className="mr-2">群組別</div>
                       <div className="font-bold">{item.GroupName}</div>
                     </div>
-                    <hr className="my-2" />
-                    <div className="font-bold pb-2">{data[1]['subjectId_' + item.SubjectID]}</div>
+                    {/* <hr className="my-2" />
+                    <div className="font-bold pb-2">{data[1]['subjectId_' + item.SubjectID]}</div> */}
 
                   </div>
                 </div>

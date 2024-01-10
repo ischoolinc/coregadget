@@ -178,3 +178,11 @@ pre {
     display: none;
   }
 }
+
+.break-keep {
+  word-break: keep-all;
+}
+
+.font-base {
+  font-weight: 400;
+}
