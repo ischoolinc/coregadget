@@ -37,7 +37,6 @@ module.exports = {
         }),
         new CopyWebpackPlugin([
             { from: 'static', to: '.' },
-            { from: 'src/assets', to: './assets' },
         ]),
         new webpack
             .optimize
