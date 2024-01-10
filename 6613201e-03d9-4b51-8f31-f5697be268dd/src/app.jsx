@@ -4,8 +4,8 @@ import Academic from './components/academic';
 import CourseSemesterScore from './components/course_semester_score';
 import GraduationRequirement from './components/graduation_requirement';
 import './assets/base.css';
-import './assets/style.css';
-import './assets/purge.css';
+// import './assets/style.css';
+// import './assets/purge.css';
 import { contract } from './utility';
 
 ReactDOM.render(
