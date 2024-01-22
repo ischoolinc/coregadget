@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { DsaService } from '../../dsa.service';
 import { ComprehensiveComponent } from "../comprehensive.component";
 import * as XLSX from 'xlsx';
+import { CounselDetailComponent } from 'src/app/shared-counsel-detail';
 
 @Component({
   selector: 'app-comprehensive-statistics',
@@ -19,6 +20,7 @@ export class ComprehensiveStatisticsComponent implements OnInit {
   pluginEle: TemplateRef<any>;
 
   constructor(
+    // private counselDetailComponent :CounselDetailComponent ,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,

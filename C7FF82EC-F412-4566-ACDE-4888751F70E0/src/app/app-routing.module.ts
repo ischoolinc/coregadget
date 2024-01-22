@@ -34,6 +34,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { WorkServiceComponent } from './work-service/work-service.component';
 import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
 import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';
+import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -94,7 +95,8 @@ const routes: Routes = [
       { path: "", pathMatch: "full", component: ComprehensiveRoutingComponent },
       { path: "view/all/section/:fill_in_section_id", component: ComprehensiveSectionComponent },
       { path: "view/:class_id/section/:fill_in_section_id", component: ComprehensiveClassViewComponent },
-      { path: "statistics", component: ComprehensiveStatisticsComponent }
+      { path: "statistics", component: ComprehensiveStatisticsComponent },
+      { path: "student_info/:studentID/:interviewID", component: StudentInfoComponent }
     ]
   },
   {

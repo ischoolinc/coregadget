@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, OnInit } from "@angular/core";
+import { AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router, RoutesRecognized } from "@angular/router";
 import { RoleService } from "./role.service";
 import { GlobalService } from "./global.service";
@@ -7,6 +7,7 @@ import { CommunicationService } from "./referral/service/communication.service";
 import { Connection } from "./dsutil-ng/connection";
 import { AccessPoint } from "./dsutil-ng/access_point";
 import { PublicSecurityToken } from "./dsutil-ng/envelope";
+import { ElementRef, Renderer2 } from '@angular/core';
 
 @Component({
   selector: "app-root",
@@ -17,15 +18,16 @@ import { PublicSecurityToken } from "./dsutil-ng/envelope";
 
 
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
 
+  @ViewChildren('permissionTag') myLinks: QueryList<ElementRef> | undefined; //顯示用
 
-  @HostListener('window:scroll', ['$event']) onScrollEvent($event){
-    console.log($event);
-    console.log("scrolling");
-    // alert(1234)
-  } 
-
+  // @HostListener('window:scroll', ['$event']) onScrollEvent($event){
+  //   console.log($event);
+  //   console.log("scrolling");
+  //   // alert(1234)
+  // } 
+  mode ="";
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
   public comprehensiveStr: string = "綜合紀錄表"
@@ -47,6 +49,8 @@ export class AppComponent implements OnInit {
     private dsaService: DsaService,
     private deetect: ChangeDetectorRef,
     private communicationService: CommunicationService,
+    private renderer: Renderer2,
+    private el: ElementRef
   ) {
     communicationService.changeEmitted$.subscribe(data => {
       console.log("  this.refferalNotDealCount ",data)
@@ -54,6 +58,27 @@ export class AppComponent implements OnInit {
       deetect.detectChanges();
     })
    }
+   ngAfterViewInit() {
+    console.log('After View Init',this.myLinks);
+    this.logLinks();
+  }
+
+  ngAfterContentInit() {
+    console.log('After Content Init',this.myLinks);
+    this.logLinks();
+  }
+
+  private logLinks() {
+    if (this.myLinks) {
+      this.myLinks.forEach((link) => {
+        const nativeElement: HTMLAnchorElement = link.nativeElement;
+        console.log('Href:', nativeElement.href);
+        // 在这里进行对元素的操作
+        // 例如，为每个链接添加一个类
+        this.renderer.addClass(nativeElement, 'highlight');
+      });
+    }
+  }
 
   async ngOnInit() {
     // 預設功能畫面文字

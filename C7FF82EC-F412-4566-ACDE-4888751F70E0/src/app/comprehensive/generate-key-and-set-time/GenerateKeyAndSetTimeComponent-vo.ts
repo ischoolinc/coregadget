@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-// 放時間
+/** 開放時間 */
 export class FillInSectionInfo {
     FillInSectionID: string = "";
     SchoolYear: string = "";
