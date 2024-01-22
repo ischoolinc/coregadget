@@ -92,8 +92,11 @@
                   至 {{allOpeningData.get('Level2')?.EndTime || '未設定' }} 止。
                 </ng-container>
               </div>
-              <button type="button" data-toggle="collapse" data-target="#footwear" aria-expanded="false"
-                aria-controls="footwear" class="btn btn-info" style="outline: none; margin-bottom: 16px;">選課說明</button>
+              <div class="text-right">
+                <button type="button" data-toggle="collapse" data-target="#footwear" aria-expanded="false"
+                  aria-controls="footwear" class="btn btn-info"
+                  style="outline: none; margin-bottom: 16px;">選課說明</button>
+              </div>
 
               <!--第一、二階段選課說明文字-->
               <div class="collapse" id="footwear">
@@ -165,8 +168,7 @@
                         </div>
                       </div>
 
-                      <div class="collapse text-muted -mx-4 px-4" id="classlist{{i}}"
-                        style="background: #fafafa;">
+                      <div class="collapse text-muted -mx-4 px-4" id="classlist{{i}}" style="background: #fafafa;">
                         <hr class="mb-2 mt-0">
                         <div class="flex justify-between mb-3">
                           <div class="text-center">
@@ -282,8 +284,7 @@
                         </div>
                       </div>
 
-                      <div class="collapse text-muted -mx-4 px-4" id="outclasslist{{i}}"
-                        style="background: #fafafa;">
+                      <div class="collapse text-muted -mx-4 px-4" id="outclasslist{{i}}" style="background: #fafafa;">
                         <hr class="mb-2 mt-0">
                         <div class="flex justify-between mb-3">
                           <div class="text-center">
@@ -418,8 +419,7 @@
                         </div>
                       </div>
 
-                      <div class="collapse text-muted -mx-4 px-4" id="levelclasslist{{j}}"
-                        style="background: #fafafa;">
+                      <div class="collapse text-muted -mx-4 px-4" id="levelclasslist{{j}}" style="background: #fafafa;">
                         <hr class="mb-2 mt-0">
                         <div class="flex justify-between mb-3">
                           <div class="text-center">
@@ -602,7 +602,8 @@
                           </div>
                           <div class="text-center">
                             <div>人數上限</div>
-                            <div class="whitespace-pre-line font-bold w-20">{{item.Capacity}} (剩餘{{item.RemainderCapacity}}名額)</div>
+                            <div class="whitespace-pre-line font-bold w-20">{{item.Capacity}}
+                              (剩餘{{item.RemainderCapacity}}名額)</div>
                           </div>
                           <div class="text-center">
                             <div>選課人數</div>
@@ -763,8 +764,7 @@
                         </div>
                       </div>
 
-                      <div class="collapse text-muted -mx-4 px-4" id="canclasslist{{j}}"
-                        style="background: #fafafa;">
+                      <div class="collapse text-muted -mx-4 px-4" id="canclasslist{{j}}" style="background: #fafafa;">
                         <hr class="mb-2 mt-0">
                         <div class="flex justify-between mb-3">
                           <div class="text-center">
@@ -910,8 +910,7 @@
                     </div>
                   </div>
 
-                  <div class="collapse text-muted -mx-4 px-4" id="classtable{{i}}"
-                    style="background: #fafafa;">
+                  <div class="collapse text-muted -mx-4 px-4" id="classtable{{i}}" style="background: #fafafa;">
                     <hr class="mb-2 mt-0">
                     <div class="flex justify-between mb-3">
                       <div class="text-center">
@@ -1049,6 +1048,11 @@
               {{['尚未公告選課最終結果'][['s3'].indexOf(currLevel)]}}
             </div>
             <div *ngIf="['s3'].indexOf(currLevel) === -1">
+
+              <div class="text-right">
+                <button type="button" data-toggle="collapse" data-target="#sure" aria-expanded="false"
+                  aria-controls="sure" class="btn btn-info" style="outline: none; margin-bottom: 16px;">注意事項</button>
+              </div>
               <div class="alert alert-info">
                 <div *ngIf="allOpeningData.get('Level0')?.BeginTime || allOpeningData.get('Level0')?.EndTime">
                   加退選：
@@ -1056,7 +1060,9 @@
                   至
                   {{allOpeningData.get('Level0')?.EndTime || '未設定' }} 止。
                 </div>
-                <div [innerHTML]="configuration.cs_final_message | safeHtml"></div>
+                <div class="collapse" id="sure">
+                  <div [innerHTML]="configuration.cs_final_message | safeHtml"></div>
+                </div>
               </div>
 
               <app-finial-buttons [currLevel]="currLevel" [showSCReceivedMsg]="showSCReceivedMsg"
@@ -1089,8 +1095,7 @@
                     </div>
                   </div>
 
-                  <div class="collapse text-muted -mx-4 px-4" id="classfinal{{i}}"
-                    style="background: #fafafa;">
+                  <div class="collapse text-muted -mx-4 px-4" id="classfinal{{i}}" style="background: #fafafa;">
                     <hr class="mb-2 mt-0">
                     <div class="flex justify-between mb-3">
                       <div class="text-center">

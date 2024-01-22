@@ -243,9 +243,9 @@
             $scope.setCurrentCourse = function (course, term, subject, assessment) {
                 if ($scope.courseList.indexOf(course) >= 0) {
                     $scope.studentList = null;
-                    if ($scope.current)
-                        $scope.current.Course = course;
-                    else {
+                    if ($scope.current)                    
+                        $scope.current.Course = course;                        
+                    else {                        
                         $scope.current = {
                             //清單
                             Course: course
@@ -260,7 +260,7 @@
                             , AssessmentItem: null
                             , Value: null
                         };
-                    }
+                    }                    
 
                     if (term)
                         $scope.setCurrentTerm(term, subject, assessment);
@@ -320,6 +320,9 @@
                                     // $scope.studentList[0].SeatNo = 20;  //for debug
                                     $scope.setCurrent($scope.studentList[0], null, true, true);
                                     $scope.calc();
+                                    if ($scope.current.sortedBy){
+                                        $scope.setSortBy($scope.current.sortedBy);
+                                    }                                    
                                 });
 
                                 $scope.connection.send({
@@ -396,7 +399,10 @@
                     if (keyX < keyY) { return -1; }
                     return 0;
                 })
-                $scope.studentList = newStuds;
+                newStuds.forEach( (stuRec, index) => {
+                    stuRec.index = index;
+                });
+                $scope.studentList = newStuds;                
                 $scope.setCurrent($scope.studentList[0], null, true, true);
                 $scope.calc();
 
@@ -860,7 +866,7 @@
                 }, 1);
             };
 
-            $scope.goNext = function () {
+            $scope.goNext = function () {                
                 var currentIndex = $scope.current.Student ? $scope.current.Student.index : 0;
                 $scope.setCurrent(
                     (currentIndex == $scope.studentList.length - 1) ?
@@ -872,7 +878,7 @@
                 $('.pg-grade-textbox:visible').focus();
                 $timeout(function () {
                     $('.pg-grade-textbox:visible').select();
-                }, 1);
+                }, 1);              
             };
 
             $scope.enterGrade = function (event) {
@@ -1165,7 +1171,7 @@
                     if (!weightPass)
                         errMsg += (errMsg ? "\n" : "") + "Weight is required and must be number.";
                     alert(errMsg);
-                }
+                }                
             };
 
             $scope.checkChange = function (next) {

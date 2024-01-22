@@ -11,10 +11,10 @@ export const AppProvider = ({ children }) => {
     semester: null,
     subject: null,
     passingStandard: 60,
-    isBack:false,
-    score:null,
+    isBack: false,
+    score: null,
 
-    currentSemester:'',
+    currentSemester: '',
   });
 
   const setAppDataValues = (data) => {

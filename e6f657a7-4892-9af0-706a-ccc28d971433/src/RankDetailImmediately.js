@@ -43,7 +43,13 @@ const RankDetailImmediately = () => {
 
 
     useEffect(() => {
-        CalculateSubjectExamScoreLevel();
+        if (storageSubject === '算術平均' || storageSubject === '加權平均') {
+            CalculateExamAvgLevel();
+            console.log('CalculateExamAvgLevel');
+        } else {//科目
+            CalculateSubjectExamScoreLevel();
+            console.log('CalculateSubjectExamScoreLevel');
+        }
     }, []);
 
 
@@ -98,9 +104,8 @@ const RankDetailImmediately = () => {
     }
 
 
-    /** 計算 科目 定期分數 班級組距資料*/
+    /** 計算 科目 班級組距資料*/
     async function CalculateSubjectExamScoreLevel() {
-        debugger;
         await _connection.send({
             service: "_.CalculateSubjectExamScoreLevel",
             body: {
@@ -112,6 +117,28 @@ const RankDetailImmediately = () => {
             result: function (response, error, http) {
                 if (error !== null) {
                     console.log('CalculateSubjectExamScoreLevel Error', error);
+                    return 'err';
+                } else {
+                    if (response) {
+                        setScoreLevel([].concat(response.Response.Level || []));
+                    }
+                }
+            }
+        });
+    }
+    /** 計算 科目總計 (加權平均/算術平均) 班級組距資料*/
+    async function CalculateExamAvgLevel() {
+        await _connection.send({
+            service: "_.CalculateExamAvgLevel",
+            body: {
+                StudentID: studentID,
+                ViewSemester: semester,
+                Subject: storageSubject,
+                ExamID: examID,
+            },
+            result: function (response, error, http) {
+                if (error !== null) {
+                    console.log('CalculateExamAvgLevel Error', error);
                     return 'err';
                 } else {
                     if (response) {
@@ -143,7 +170,10 @@ const RankDetailImmediately = () => {
                 <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
                     <div className='col'>
                         <div className='d-flex me-auto align-items-center pt-2 ps-2'>
-                            <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{storageScore}</div>
+                            {/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{storageScore}</div> */}
+                            <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{storageSubject === '加權平均' || storageSubject=== '算術平均' ? Math.round(Number(storageScore) * 100) / 100 : storageScore}</div>
+                            
+                            
                             <div className='fs-4 fw-bold'>{storageDomain === "" ? "" : storageDomain + "-"}{storageSubject}</div>
                         </div>
                     </div>

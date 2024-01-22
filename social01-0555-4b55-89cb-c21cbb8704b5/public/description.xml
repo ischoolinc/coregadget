@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <ModulePrefs title="APP社群連結設定" description="APP社群連結設定">
+    <Title lang="zh-Hant-TW">APP社群連結設定</Title>
+    <Icon>icon.png</Icon>
+    <Mobile />
+    <Title lang="zh-CN">APP社群連結設定</Title>
+    <Title lang="en-US">App Community Settings</Title>
+  </ModulePrefs>
+</Module>

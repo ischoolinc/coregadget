@@ -266,12 +266,12 @@ const RankDetail = () => {
 
 				{/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div> */}
 
-				{studentSubjectData.map((data) => {
+				{[].concat(studentSubjectData || []).map((data) => {
 					if (data.rank_type === selectedRankType)
 						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
-									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '算術平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>
@@ -303,7 +303,7 @@ const RankDetail = () => {
 							<div className='col-12 col-md-6 col-lg-6'>
 
 								<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
-									{studentSubjectData.map((data) => {
+									{[].concat(studentSubjectData || []).map((data) => {
 										if (data.rank_type === selectedRankType)
 											if (showNoRankSetting) //true: 不顯示 false:顯示
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
@@ -363,7 +363,7 @@ const RankDetail = () => {
 								</div>
 							</div>
 
-							{studentSubjectData.map((data) => {
+							{[].concat(studentSubjectData || []).map((data) => {
 								if (data.rank_type === selectedRankType)
 									return <div className='col-12 col-md-6 col-lg-6'>
 										<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>

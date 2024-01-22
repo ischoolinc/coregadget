@@ -85,19 +85,23 @@ export class StudentSummaryComponent implements OnInit {
       let absenceTypeRecord = '';
       stdDetailPeriod.forEach((eachAbsenceType) => {
 
-        // 同一天不同假別須清除字串
+        // 同一天不同假別,紀錄假別名稱
         if (absenceTypeRecord !== eachAbsenceType.AbsenceType) {
-          periodString = '';
+          //periodString = '';
           absenceTypeRecord = eachAbsenceType.AbsenceType;
         }
 
         // 判斷是否有重複的缺曠類型
         if (!this.studentMappingStatics.get(keyYearSemester).has(eachAbsenceType.AbsenceType)) {
+          periodString = '';
           const tempAbsenceDetail = {
             count: 0,
             detail: new Map()
           };
           this.studentMappingStatics.get(keyYearSemester).set(eachAbsenceType.AbsenceType, tempAbsenceDetail);
+        } else {
+            // 如果同一天之前已有相同假別的節次，將節次讀出來
+            periodString = this.studentMappingStatics.get(keyYearSemester).get(eachAbsenceType.AbsenceType).detail.get(studentAttendanceList.OccurDate) || '';
         }
 
         // 組合expand-panel的字串

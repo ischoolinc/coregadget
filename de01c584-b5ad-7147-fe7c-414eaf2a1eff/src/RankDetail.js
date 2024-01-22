@@ -6,13 +6,12 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ScrollToTopButton from './ScrollToTopButton';
 import { useAppContext } from './AppContext';
-
+import { useNavigate } from 'react-router-dom';
 
 const RankDetail = () => {
 
-
 	const { appData, setAppDataValues } = useAppContext();
-
+	const navigate = useNavigate();
 
 	const studentID = appData.studentID;
 	const examID = appData.examID;
@@ -20,13 +19,13 @@ const RankDetail = () => {
 	const courseID = appData.courseID;
 	const defaultRankType = appData.rankType;
 	const subjectType = appData.subjectType;
-	
+
 	const storageSubject = appData.subject;
 	const storageDomain = appData.domain;
 	const storagePeriod = appData.period;
 	const storageCredit = appData.credit;
 	const storageScore = appData.score;
-	
+
 	// 取得 學生成績與排名資料
 	const [studentSubjectData, setStudentSubjectData] = useState([]);
 
@@ -52,6 +51,7 @@ const RankDetail = () => {
 	// 該校設定 不顯示排名(true:不顯示，false:顯示) (desktop設定需要同時更新才可生效)
 	const [showNoRankSetting, setShowNoRankSetting] = useState(true);
 
+	const [isRedirected, setRedirected] = useState(null);
 
 	const position = window.gadget.params.system_position;
 
@@ -67,7 +67,6 @@ const RankDetail = () => {
 	}, []);
 
 
-
 	useEffect(() => {
 		GetChartHeight();
 	}, [showNoRankSetting]);
@@ -80,6 +79,7 @@ const RankDetail = () => {
 	useEffect(() => {
 		ToBarChart();
 	}, [selectedRankType, selectedScoreType]);
+
 
 
 	function ToBarChart() {
@@ -131,19 +131,20 @@ const RankDetail = () => {
 	}
 
 
+
 	function GetRankTypeList() {
 		const typeList = [];
 		if (studentSubjectData.length > 0)
 			studentSubjectData.forEach(data => {
 				if (data.rank_type !== '' && !typeList.includes(data.rank_type))
 					typeList.push(data.rank_type)
-				// if (data.rank_type === defaultRankType)
-				// 	setViewRankType(defaultRankType);
-
-
 			});
 		setViewRankType(typeList[0]);
 		setRankTypeList(typeList);
+
+		// if (studentSubjectData.length > 0 && typeList.length < 1) {
+		// 	navigate('/RankDetailImmediately');
+		// }
 	}
 
 	function GetChartHeight() {
@@ -270,12 +271,12 @@ const RankDetail = () => {
 
 				{/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '100%', height: '1px', background: "#5B9BD5" }}></div> */}
 
-				{studentSubjectData.map((data) => {
+				{[].concat(studentSubjectData || []).map((data) => {
 					if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 						return <div className='detailBorder row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
-									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.score_type === '定期+平時' || subjectType === 'domain' | subjectType === 'avg' ? Math.round(Number(data.rank_score) * 100) / 100 : data.score}</div>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.score_type === '定期+平時' || subjectType === 'domain' | subjectType === 'avg' ? Math.round(Number(data.rank_score) * 100) / 100 : data.rank_score}</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>
@@ -291,7 +292,7 @@ const RankDetail = () => {
 				})}
 
 
-				{[].concat(rankTypeList || []).length < 1 ? <div className='fs-4'>無排名資料</div> :
+				{[].concat(rankTypeList || []).length < 1 ? <><div className='fs-4'>無排名資料</div></> :
 					<>
 						<div className='row align-items-center mb-3'>
 							<div className="col-12 col-md-6 col-lg-6 mt-2">
@@ -319,7 +320,7 @@ const RankDetail = () => {
 							<div className='col-12 col-md-6 col-lg-6'>
 
 								<table className="table table-bordered" style={{ border: '1px solid #fff' }}>
-									{studentSubjectData.map((data) => {
+									{[].concat(studentSubjectData || []).map((data) => {
 										if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 											if (showNoRankSetting) //true: 不顯示 false:顯示
 												return <tbody style={{ borderTop: '4px solid #fff' }}>
@@ -380,7 +381,7 @@ const RankDetail = () => {
 								</div>
 							</div>
 
-							{studentSubjectData.map((data) => {
+							{[].concat(studentSubjectData || []).map((data) => {
 								if (data.rank_type === selectedRankType && data.score_type === selectedScoreType)
 									return <div className='col-12 col-md-6 col-lg-6'>
 										<table className="table table-bordered mt-1" style={{ border: '1px solid #fff' }}>
