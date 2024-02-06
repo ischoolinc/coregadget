@@ -1,9 +1,9 @@
 <!doctype html>
-<html>
-
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="utf-8">
-  <title>react_base</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>學業成績</title>
   <script src="gadget.js"></script>
   <script>
     init({
@@ -11,16 +11,19 @@
       oAuth: {
         clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
         clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-        account: 'bubu@debug.ischool.com.tw',
-        password: '1234'
+        account: '',
+        password: ''
       },
       paramValues: {}
     });
   </script>
   <link href="vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   <link href="vendors/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
-  <link href="vendors/angular-material/layouts/angular-material.layouts.min.css" rel="stylesheet" />  
-  
+  <!-- <link href="vendors/angular-material/layouts/angular-material.layouts.min.css" rel="stylesheet" /> -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="assets/purge.css" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
+
   <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
   <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
 </head>
@@ -29,14 +32,16 @@
   <div id="widget" class="my-page">
     <div id="root"></div>
     <div class="footer-space"></div>
-    <div class="footer css_table">
-      <div class="layout-row">
-        <img src="img/red_logo.jpg" />
-        <img src="img/bot_logo.png" />
-        <div class="flex text">
-          10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室<br />
-          TEL:886-2-33661010 FAX:886-2-23636073<br/>
-          Copyright © National Taiwan University All Rights Reserved
+    <div class="footer css_table p-2">
+      <div class="flex justify-center items-center flex-col md:flex-row gap-3">
+        <div class="flex flex-none whitespace-nowrap gap-3">
+          <img src="img/red_logo.jpg" class="max-w-full" />
+          <img src="img/bot_logo.png" class="max-w-full" />
+        </div>
+        <div class="text-sm">
+          <div>台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室</div>
+          <div>TEL:886-2-33661010 FAX:886-2-23636073</div>
+          <div>Copyright © National Taiwan University All Rights Reserved</div>
         </div>
       </div>
     </div>

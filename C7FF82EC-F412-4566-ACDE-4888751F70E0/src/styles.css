@@ -260,7 +260,8 @@ ul.rwd-table .thead li {
 .card {
     box-shadow: none !important;
     transition: none !important;
-    border: 1.5px solid #00000024 !important
+    border: 1px solid #00000024 !important ;
+    border: none !important ;
 }
 
 
@@ -313,9 +314,11 @@ ul.rwd-table .thead li {
 
 .base-class-header {
     padding-left: 10px;
-    border-bottom: 2px solid #94d0cc;
+    border-bottom: 1.5px solid #94d0cc;
     margin-bottom: 15px;
     padding-top: 0px;
+    font-size: 1.5rem !important;
+    letter-spacing: 1px;
 }
 
 
@@ -682,7 +685,7 @@ div::-webkit-scrollbar {
 }
 
 .sub-title {
-    font-size: 1.2rem !important;
+    font-size: 1rem !important;
     font-weight: 900;
     color: rgb(91, 91, 91);
     margin-bottom: 10px;
@@ -845,5 +848,41 @@ textarea{
 .drop-list-title {
     background: #e6edebd3;
     line-height :1.0rem !important;
+
+}
+
+.name_link {
+
+    width:80px ;
+    padding :5px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+}
+.name_link:hover{
+
+/* font-size : 18px */
+color : rgb(59, 59, 59);
+background-color: #c4e4e3 ;
+
+border-radius: 5px;
+justify-content: center;
+/* border: 1rem solid; */
+
+
+} 
+
+.sub-title{
+
+    padding-bottom:  10px;
+    font-size: 28px;
+
+
+}
+
+
+.card-body{
+
+background: #fbfbfb !important;
 
 }

@@ -1,8 +1,14 @@
 /* 固定寬度 */
+html, body {
+  font-size: 16px;
+}
+
 body {
   max-width: 1024px;
-  margin: 0 auto;
+  margin: 0 auto !important;
   background:url(images/page-bg.gif);
+  padding-right: 0;
+  padding-left: 0;
 }
 /* 基礎框架 */
 .container-fluid {
@@ -252,8 +258,17 @@ body {
 	margin:20px auto;
 	background:#fff;
 	padding:10px;
-    margin-bottom: 100px;
+  margin-bottom: auto;
 	box-shadow:0 0 2px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, .2), 3px 3px 0 white,4px 4px 0 rgba(0, 0, 0, .2),6px 6px 0 white,7px 7px 0 rgba(0, 0, 0, .2);
+}
+
+@media (min-width: 768px) {
+  .footer {
+    position: fixed;
+  }
+  .my-page {
+    margin-bottom: 100px;
+  }
 }
 
 .my-page h1:first-child {

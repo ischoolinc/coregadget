@@ -48,7 +48,7 @@ export class ReferralListComponent implements OnInit {
 
 
   }
-
+/** 取得轉介學生資料 */
   async getRefList() {
     try {
       let resp = await this.dsaService.send("GetReferralStudent", {
