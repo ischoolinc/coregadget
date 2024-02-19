@@ -88,7 +88,11 @@ const pushNoticeLog = async (NoticeID: string) => {
         NoticeID: NoticeID,
       },
     },
-    result: function (response: any, _error: any, _http: any) {},
+    result: function (response: any, _error: any, _http: any) {
+      if (response) {
+        console.log("訊息已讀");
+      }
+    },
   });
 };
 
@@ -103,7 +107,11 @@ const pushNoticeRecycle = async (NoticeID: string) => {
         RecycleState: "Temp_Delete", //Permanent_Delete
       },
     },
-    result: function (response: any, _error: any, _http: any) {},
+    result: function (response: any, _error: any, _http: any) {
+      if (response) {
+        console.log("訊息已回收");
+      }
+    },
   });
 };
 

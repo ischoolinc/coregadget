@@ -14,7 +14,7 @@ type MsgListProps = {
   msgArr: Message[];
   handleMsgClick: (msg: Message) => void;
   inTrash: boolean;
-  handleChildChange: (ID: string, isChecked: boolean) => void;
+  handleChildChange?: (ID: string, isChecked: boolean) => void;
   checkedItems: string[];
   isLoading: boolean;
   stateInfo: string;
@@ -29,15 +29,17 @@ const MsgList: React.FC<MsgListProps> = ({
   stateInfo,
 }) => {
   if (!isLoading && msgArr && msgArr.length > 0) {
-  const { noticeID } = useParams();
+    const { noticeID } = useParams();
     return (
       <div className="grid">
         {msgArr.map((msg) => (
           <div
-            className={`flex overflow-hidden border-b border-gray-200 ${msg.ID === noticeID && "bg-gray-100" }`}
+            className={`flex overflow-hidden border-b border-gray-200 ${
+              msg.ID === noticeID && "bg-gray-100"
+            }`}
             key={msg.ID}
           >
-            {inTrash && (
+            {inTrash && handleChildChange && (
               <Checkbox
                 colorScheme="cyan"
                 className="self-center py-4 ps-4"
@@ -48,7 +50,9 @@ const MsgList: React.FC<MsgListProps> = ({
               />
             )}
             <button
-              className={`p-4 ${!inTrash && msg.Read == "true" && "opacity-70"}`}
+              className={`p-4 ${
+                !inTrash && msg.Read == "true" && "opacity-70"
+              }`}
               onClick={() => {
                 handleMsgClick(msg);
               }}

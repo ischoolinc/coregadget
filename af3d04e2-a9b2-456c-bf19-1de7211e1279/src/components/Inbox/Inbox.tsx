@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MsgList } from "../MsgList";
 import { MsgDetail } from "../MsgDetail";
 import { useNoticeStore } from "../../context/inbox.model";
@@ -27,10 +27,10 @@ import {
 import { BackIcon } from "../Icons";
 import {
   getMyNotice,
-  rollbackAllRead,
+  // rollbackAllRead,
   pushNoticeLog,
   pushAllLog,
-  rollbackAllDel,
+  // rollbackAllDel,
   searchMyNotice,
 } from "../../utilities/Api/InboxHelp";
 type Notice = {
@@ -78,35 +78,21 @@ export function Inbox() {
   const { isOpen, onToggle } = useDisclosure();
 
   /**側邊欄開啟狀態 */
-  const { getButtonProps, getDisclosureProps } = useDisclosure({
+  const { getButtonProps } = useDisclosure({
     defaultIsOpen: true,
   });
 
-  const [applyButtonProps, setApplyButtonProps] = useState(
-    window.innerWidth < 640
-  );
+
   const buttonProps = getButtonProps();
 
   /**顯示側邊欄 */
   const [showDetailPanel, setShowDetailPanel] = useState<boolean>(false);
 
-  const { colorMode, setColorMode } = useColorMode();
+  const { setColorMode } = useColorMode();
 
   useEffect(() => {
     setColorMode("light");
   }, [setColorMode]);
-
-  //監聽視窗大小以變更側邊欄狀態
-  useEffect(() => {
-    const handleResize = () => {
-      setApplyButtonProps(window.innerWidth < 640);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   // 顯示公告
   const [inboxMsgs, setInboxMsgs] = useState<Notice[]>([]);
@@ -276,7 +262,6 @@ export function Inbox() {
                     size="xs"
                     colorScheme="red"
                     onClick={() => navigate("/trash")}
-                    
                   >
                     垃圾桶
                   </Button>
@@ -348,12 +333,6 @@ export function Inbox() {
                 isLoading={isLoading}
                 stateInfo={stateInfo}
                 checkedItems={[]}
-                handleChildChange={function (
-                  ID: string,
-                  isChecked: boolean
-                ): void {
-                  throw new Error("Function not implemented.");
-                }}
               />
             </Card>
           </div>

@@ -55,6 +55,9 @@ export function Trash() {
       setNotices(res.Notice);
       setIsLoading(false);
     });
+    return () => {
+      setCheckedItems([]);
+    };
   }, []);
 
   const {
@@ -63,28 +66,13 @@ export function Trash() {
     onClose: onWithdrawClose2,
   } = useDisclosure();
 
-  const { getButtonProps, getDisclosureProps } = useDisclosure({
+  const { getButtonProps } = useDisclosure({
     defaultIsOpen: true,
   });
 
-  const [applyButtonProps, setApplyButtonProps] = React.useState(
-    window.innerWidth < 640
-  );
   const buttonProps = getButtonProps();
 
   const [showDetailPanel, setShowDetailPanel] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    //監聽視窗大小
-    const handleResize = () => {
-      setApplyButtonProps(window.innerWidth < 640);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   /**公告 */
   const [trashMsgs, setTrashMsgs] = useState<Notice[]>([]);

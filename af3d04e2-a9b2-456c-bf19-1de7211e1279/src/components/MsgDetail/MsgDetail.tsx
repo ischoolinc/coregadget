@@ -33,9 +33,7 @@ const MsgDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [msg, setMsg] = useState<Notice>({} as Notice);
-  const [inTrash, setInTrash] = useState<boolean>(
-    location.pathname.includes("/trash")
-  );
+  const [inTrash] = useState<boolean>(location.pathname.includes("/trash"));
 
   // 收件匣context
   const { notices, moveTrash } = useNoticeStore();

@@ -52,7 +52,11 @@ const pushNoticeRestore = async (NoticeID: string) => {
         RecycleState: "",
       },
     },
-    result: function (response: any, _error: any, _http: any) {},
+    result: function (response: any, _error: any, _http: any) {
+      if (response) {
+        console.log("訊息已復原");
+      }
+    },
   });
 };
 
@@ -67,7 +71,11 @@ const deleteNotice = async (NoticeID: string) => {
         RecycleState: "Permanent_Delete",
       },
     },
-    result: function (response: any, _error: any, _http: any) {},
+    result: function (response: any, _error: any, _http: any) {
+      if (response) {
+        console.log("訊息已刪除");
+      }
+    },
   });
 };
 
@@ -82,7 +90,11 @@ const pushMultipleNoticeRestore = async (noticeIDs: string[]) => {
         RecycleState: "",
       },
     },
-    result: function (response: any, _error: any, _http: any) {},
+    result: function (response: any, _error: any, _http: any) {
+      if (response) {
+        console.log("訊息已復原");
+      }
+    },
   });
 };
 
@@ -97,7 +109,11 @@ const deleteMultipleNotices = async (noticeIDs: string[]) => {
         RecycleState: "Permanent_Delete",
       },
     },
-    result: function (response: any, _error: any, _http: any) {},
+    result: function (response: any, _error: any, _http: any) {
+      if (response) {
+        console.log("訊息已刪除");
+      }
+    },
   });
 };
 export {
