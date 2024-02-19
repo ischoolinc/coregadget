@@ -1,0 +1,1 @@
+export { MsgDetail } from './MsgDetail'
