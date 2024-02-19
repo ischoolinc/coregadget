@@ -26,13 +26,13 @@ export class CounselStudentService {
     
   }
 
-  // 目前學年度
+  /**目前學年度*/
   public currentSchoolYear: number;
-  // 目前學期
+  /**目前學期 */
   public currentSemester: number;
-  // 認輔學生
+  /** 認輔學生 */ 
   public guidanceStudent: CounselStudent[];
-  // 搜尋學生
+  /** 搜尋學生*/ 
   public searchStudent: CounselStudent[];
 
   // public currentStudent: CounselStudent;

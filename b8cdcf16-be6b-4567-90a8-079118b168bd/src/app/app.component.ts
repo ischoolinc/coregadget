@@ -6,6 +6,14 @@ import { BasicService } from './service';
 import { SemesterFormatPipe, CourseTypeFormatPipe, SimpleModalComponent } from './shared';
 import { ConflictCourse, Course, OpeningInfo, Student, Configuration } from './data';
 import { GadgetService } from './gadget.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+// 定議 windows.on1CampusWebView
+declare global {
+  interface Window {
+    on1CampusWebView: boolean
+  }
+}
 
 @Component({
   selector: 'app-root',
@@ -112,7 +120,9 @@ export class AppComponent implements OnInit {
     private courseTypeFormatPipe: CourseTypeFormatPipe,
     private modalService: BsModalService,
     private viewportScroller: ViewportScroller,
-    private gadgetService: GadgetService) {
+    private gadgetService: GadgetService, 
+    private http: HttpClient,
+    ) {
   }
 
   async ngOnInit() {
@@ -1352,7 +1362,7 @@ export class AppComponent implements OnInit {
         <html>
         <head>
           <title>加退選單</title>
-          <link type="text/css" rel="stylesheet" href="../assets/css/default.css"/>
+          <link type="text/css" rel="stylesheet" href="https://legacy-web2.ischool.com.tw/deployment/b8cdcf16-be6b-4567-90a8-079118b168bd/assets/css/default.css"/>
         </head>
         <body style="width:880px;padding:40px 20px" onload="window.print();">
           <div class="my-print-page">
@@ -1361,11 +1371,23 @@ export class AppComponent implements OnInit {
         </body>
       </html>
     `;
-    const newWindow = window.open('about:blank', '_blank', '');
-    newWindow.document.open();
-    newWindow.document.write(content);
-    newWindow.document.close();
-    newWindow.focus();
+
+    const platform = window.on1CampusWebView ? 'app' : 'web';
+    if(platform === 'app') {
+      const apiUrl = 'https://1campus.net/q/create';
+      const headers = new HttpHeaders({ 'Content-Type': 'text/plain' });
+      this.http.post<any>(apiUrl, content, { headers }).subscribe(rsp => {
+        const { code } = rsp;
+        const url = `https://1campus.net/q/${code}?__target=ExternalBrowser`;
+        window.location.href = url;
+      })
+    } else {
+      const newWindow = window.open('about:blank', '_blank', '');
+      newWindow.document.open();
+      newWindow.document.write(content);
+      newWindow.document.close();
+      newWindow.focus();
+    }
   }
 
   /**中止切換頁面(確認是否有勾選課程但尚未儲存) */

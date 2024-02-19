@@ -172,11 +172,16 @@
         </li>
         <li class="tbody">
           <ng-container *ngFor="let item of caseList">
-          <ol class="tr " *ngIf="item.isDisplay === true"       >
+          <ol class="tr " *ngIf="item.isDisplay === true"     >
          
               <li data-title="班級">{{ item.ClassName }}</li>
               <li data-title="座號">{{ item.SeatNo }}</li>
-              <li data-title="姓名">{{ item.Name }}</li>
+              <li data-title="姓名" style =" justify-content: center; font-weight: 900; "  (click)="toCounselDetail(item)">
+              <div class="name_link" >
+                {{ item.Name }}
+              </div> 
+              </li>
+              
               <li data-title="性別">{{ item.Gender }}</li>
               <li data-title="學生身份">{{ item.StudentIdentity }}</li>
               <li data-title="學生身份">{{ item.OccurDate }}</li>

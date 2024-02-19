@@ -96,6 +96,7 @@ import { DSUtilNgModule } from './dsutil-ng/dsutil-ng.module';
 import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';import { CounselInterviewListComponent } from './simple-page/print/counsel-interview-list/counsel-interview-list.component';
 import { ServiceItemStatisticsComponent } from './service-item-statistics/service-item-statistics.component';
 import { ServiceItemsStatisticsComponent } from './counsel-statistics/reports/service-items-statistics/service-items-statistics.component';
+import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -152,6 +153,7 @@ import { ServiceItemsStatisticsComponent } from './counsel-statistics/reports/se
     CounselHistoryPsychologicaltestComponent,
     ServiceItemStatisticsComponent,
     ServiceItemsStatisticsComponent,
+    StudentInfoComponent,
     // MatSnackBarModule
     
     

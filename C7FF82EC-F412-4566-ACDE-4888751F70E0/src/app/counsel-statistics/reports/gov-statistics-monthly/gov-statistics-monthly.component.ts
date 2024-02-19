@@ -465,6 +465,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       case '自我傷害': value = 8; break;
       case '性別議題': value = 9; break;
       case '高風險家庭': value = 10; break;
+      case '脆弱家庭': value = 10; break; // 修正
       case '兒少保議題': value = 11; break;
       case '學習困擾': value = 12; break;
       case '生涯輔導': value = 13; break;

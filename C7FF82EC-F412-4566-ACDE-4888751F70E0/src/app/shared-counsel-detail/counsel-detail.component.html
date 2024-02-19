@@ -46,7 +46,7 @@
             <ng-container *ngIf="baseVisible === true">
               <a href="javascript:void(0);" class="list-group-item list-group-item-action d-flex"
                 (click)="!_interviewEnable||routeTo('base_info_detail')" data-toggle="list"
-                [ngClass]="{ 'active show': currentItem == 'base_info_detail','disabled': !_interviewEnable  &&  !_caseInterviewTeacher }">
+                [ngClass]="{ 'active show': currentItem == 'base_info_detail','disabled': !_interviewEnable.permitted  &&  !_caseInterviewTeacher }">
                 基本資料
               </a>
             </ng-container>
@@ -110,12 +110,13 @@
                 [ngClass]="{ 'disabled': !_interviewEnable && !_caseInterviewTeacher }">
                 學期成績
               </a>
-              <div class="list-group-item list-group-item-action  cuser " *ngIf="_interviewEnable"  data-toggle="dropdown">
+              <!-- <div class="list-group-item list-group-item-action  cuser " *ngIf="_interviewEnable"  data-toggle="dropdown"> -->
+                <div class="list-group-item list-group-item-action  cuser " *ngIf="_interviewEnable"  data-toggle="dropdown">
                 <a class=" cuser  w-100" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false"> 
                    <mat-icon style="color: gray;">
                  print
-                  </mat-icon>  <span> 列印</span></a>
+                  </mat-icon>  <span id ="print-01"> 列印</span></a>
                 <div class="dropdown-menu">
                   <ng-container *ngIf="printDocument && printDocument.length">
                     <ng-container *ngFor="let doc of printDocument">

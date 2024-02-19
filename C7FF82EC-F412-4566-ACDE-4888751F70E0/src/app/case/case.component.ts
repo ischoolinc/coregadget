@@ -7,6 +7,7 @@ import { NewCaseModalComponent } from "../case/new-case-modal/new-case-modal.com
 import { GlobalService } from "../global.service";
 import { DelCaseModalComponent } from "./del-case-modal/del-case-modal.component"
 import { asLiteral } from "@angular/compiler/src/render3/view/util";
+import { ActivatedRoute, Router } from "@angular/router";
 
 
 @Component({
@@ -39,6 +40,8 @@ export class CaseComponent implements OnInit {
   sortType = '';
   isLoading = false;
   constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
     public roleService: RoleService,
     private dsaService: DsaService,
     public globalService: GlobalService,
@@ -429,4 +432,18 @@ export class CaseComponent implements OnInit {
 
 
   }
+
+
+  toCounselDetail(student: CaseStudent) {
+ 
+    this.router.navigate(
+      ["/counsel","detail",student.StudentID,"counsel"],
+      {
+        relativeTo: this.activatedRoute
+      }
+    );
+  }
+
+
+
 }

@@ -25,14 +25,14 @@ export class CounselDetailComponent implements OnInit {
   public coubselReferralVisible: boolean = false;
   public comprehensiveStr: string = "綜合紀錄表";
 
-  // 顯示輔導紀錄
+  /** 顯示輔導紀錄 [班導師/輔導老師] */
   _interviewEnable: boolean = false;
-  // 顯示認輔紀錄
+  /** 顯示認輔紀錄 [任輔老師/輔導老師] */ 
   _counselEnable: boolean = false;
-  // 顯示心理測驗
+  /** 顯示心理測驗 [班導師/輔導導師] */ 
   _psychological_testEnable: boolean = false;
-  /** 認輔老師 */
-  _caseInterviewTeacher :boolean = false   ;
+  /** 認輔老師 [認輔老師/專輔老師] */
+  _caseInterviewTeacher :boolean = false ;
 
   printDocument: any[];
 
@@ -43,12 +43,17 @@ export class CounselDetailComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private RoleService :RoleService,
     private router: Router,
-    public counselStudentService: CounselStudentService,
+    /** 目前學生 */
+    public counselStudentService: CounselStudentService, 
     private dsaService: DsaService,
     public globalService: GlobalService,
     @Optional()
     private counselComponent: CounselComponent
   ) { }
+  getJSON (anyThing :any ){
+      return JSON.stringify(this.counselStudentService)
+
+  }
 
   ngOnInit() {
     this.baseVisible = false;

@@ -32,7 +32,9 @@ export class AdminComponent implements OnInit {
   }
 
   async ngOnInit() {
+    /** 畫面左側顯示 */
     this.teacherTypeStr = "教師輔導身分";
+    /** 畫面左側顯示 */
     this.classTypeStr = "負責輔導班級";
     this.appComponent.currentComponent = "admin";
     this.isRoleEnable = false;
@@ -44,6 +46,7 @@ export class AdminComponent implements OnInit {
       this.counselVisible = true;
     }
 
+    /** 這邊可能沒有用到 */
     if (gadget.params.system_counsel_position === 'freshman') {
       // 新生特有
       this.teacherTypeStr = "教師身分";
@@ -67,6 +70,7 @@ export class AdminComponent implements OnInit {
     this.routeTo('counsel_teacher_role');
   }
 
+  /**  */
   routeTo(to) {
     //讓特效跑
     setTimeout(
