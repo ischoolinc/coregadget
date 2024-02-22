@@ -338,7 +338,7 @@ export function Inbox() {
           </div>
         </div>
       </div>
-      <div className="rounded-r-none lg:rounded-r-3xl w-[720px] min-w-[360px] relative h-full flex flex-col pb-6">
+      <div className="rounded-r-none lg:rounded-r-3xl w-[720px] min-w-[360px] relative h-full flex flex-col pb-6 z-10">
         <div className="p-0 sm:pt-16"></div>
         <Card
           id="main"
