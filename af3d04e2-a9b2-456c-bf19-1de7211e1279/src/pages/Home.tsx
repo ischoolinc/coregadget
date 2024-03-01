@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div className="h-screen grid  place-content-center w-screen">
       <div className="text-center">
-        <img src="/logo.svg" alt="" className="w-24 mb-4" />
+        <div className="w-24 h-28 mb-4 logoOnBack" />
         <span className="loading loading-ring loading-lg"></span>
       </div>
     </div>
