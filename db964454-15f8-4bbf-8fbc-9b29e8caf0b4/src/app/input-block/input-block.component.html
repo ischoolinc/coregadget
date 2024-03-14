@@ -123,12 +123,13 @@
   </td>
 </ng-template>
 
+<!--2024/3/13 依據高雄小組需求調升maxlength為400-->
 <ng-template #tplTextType>
   <td colspan="2" class="miniPadding">
     <textarea #inputTextScore 
       [(ngModel)]="curValue"
       (keyup.enter)="enterGrade()"
-      maxlength="200"
+      maxlength="400" 
       placeholder="{{isMobile ? '' : 'Enter送出'}}"
       style="min-height: 60px;height:120px;resize: vertical;  "
       class="form-control" select-on-click>
